@@ -31,25 +31,37 @@ trait MultipleOptionsTrait
 {
     protected $options = array();
 
+    /**
+     * Build an internal options array from a provided CSV string.
+     * @param   string  $value
+     * @return  self
+     */
     public function fromString($value)
     {
-        if (empty($value) || !is_string($value)) {
+        if (!is_string($value)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->getName(), gettype($value)));
         }
 
-        $pieces = str_getcsv($value);
+        if (!empty($value)) {
+            $pieces = str_getcsv($value);
 
-        foreach ($pieces as $piece) {
-            $piece = trim($piece);
-            $this->options[$piece] = $piece;
+            foreach ($pieces as $piece) {
+                $piece = trim($piece);
+                $this->options[$piece] = $piece;
+            }
         }
 
         return $this;
     }
 
+    /**
+     * Build an internal options array from a provided array of $key => $value pairs.
+     * @param   array  $values
+     * @return  self
+     */
     public function fromArray($values)
     {
-        if (empty($values) || !is_array($values)) {
+        if (!is_array($values)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($values)));
         }
 
@@ -68,37 +80,63 @@ trait MultipleOptionsTrait
         return $this;
     }
 
-    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array())
+    /**
+     * Build an internal options array from an SQL query with required value and name fields
+     * @param   \Gibbon\sqlConnection  $pdo
+     * @param   string                 $sql
+     * @param   array                  $data
+     * @return  self
+     */
+    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array(), $groupBy = false)
     {
         $results = $pdo->executeQuery($data, $sql);
 
-        return $this->fromResults($results);
+        return $this->fromResults($results, $groupBy);
     }
 
-    public function fromResults($results)
+    /**
+     * Build an internal options array from the result set of a PDO query.
+     * @param   object  $results
+     * @return  string
+     */
+    public function fromResults($results, $groupBy = false)
     {
         if (empty($results) || !is_object($results)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromQuery expects value to be an Object, %s given.', $this->getName(), gettype($results)));
         }
 
         if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                if (!isset($row['value']) || !isset($row['name'])) {
-                    continue;
-                }
+            $options = array_filter($results->fetchAll(), function ($item) {
+                return isset($item['value']) && isset($item['name']);
+            });
 
-                $this->options[trim($row['value'])] = trim($row['name']);
+            foreach ($options as $option) {
+                $option = array_map('trim', $option);
+
+                if ($groupBy !== false) {
+                    $this->options[$option[$groupBy]][$option['value']] = $option['name'];
+                } else {
+                    $this->options[$option['value']] = $option['name'];
+                }
             }
         }
 
         return $this;
     }
 
+    /**
+     * Gets the internal options collection.
+     * @return  array
+     */
     protected function getOptions()
     {
         return $this->options;
     }
 
+    /**
+     * Recursivly count the total options in the collection.
+     * @return  int
+     */
     protected function getOptionCount()
     {
         return count($this->options, COUNT_RECURSIVE);

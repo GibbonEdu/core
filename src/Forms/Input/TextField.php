@@ -31,6 +31,11 @@ class TextField extends Input
 {
     protected $autocomplete;
 
+    /**
+     * Set a max character count for this text field.
+     * @param   string  $value
+     * @return  self
+     */
     public function maxLength($value = '')
     {
         if (!empty($value)) {
@@ -41,6 +46,11 @@ class TextField extends Input
         return $this;
     }
 
+    /**
+     * Set the default text that appears before any text has been entered.
+     * @param   string  $value
+     * @return  self
+     */
     public function placeholder($value = '')
     {
         $this->setAttribute('placeholder', $value);
@@ -48,13 +58,11 @@ class TextField extends Input
         return $this;
     }
 
-    public function readonly($value = true)
-    {
-        $this->setAttribute('readonly', $value);
-
-        return $this;
-    }
-
+    /**
+     * Enables javascript autocompletion from the supplied set of values.
+     * @param   string|array  $value
+     * @return  self
+     */
     public function autocomplete($value = '')
     {
         $this->autocomplete = (is_array($value))? $value : array($value);
@@ -63,11 +71,10 @@ class TextField extends Input
         return $this;
     }
 
-    public function getReadonly()
-    {
-        return $this->getAttribute('readonly');
-    }
-
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '<input type="text" '.$this->getAttributeString().'>';

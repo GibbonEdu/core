@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php') == false) {
@@ -45,31 +48,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     echo '<h2>';
     echo __($guid, 'Search');
-    echo '</h2>';?>
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">	
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Search For') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
-				</td>
-				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php if (isset($_GET['search'])) { echo $_GET['search']; } ?>" type="text" class="standardWidth">
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/medicalForm_manage.php">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage.php'>".__($guid, 'Clear Search').'</a>';?>
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    echo '</h2>';
+
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage.php');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+        $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
 
     echo '<h2>';
     echo __($guid, 'View');
@@ -183,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_edit.php&gibbonPersonMedicalID='.$row['gibbonPersonMedicalID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_delete.php&gibbonPersonMedicalID='.$row['gibbonPersonMedicalID']."&search=$search'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_delete.php&gibbonPersonMedicalID='.$row['gibbonPersonMedicalID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

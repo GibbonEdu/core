@@ -33,10 +33,16 @@ class Select extends Input
 
     protected $placeholder;
     protected $selected = null;
+    protected $hasSelected = false;
 
     protected $chainedToID;
     protected $chainedToValues;
 
+    /**
+     * Sets the selected element(s) of the select input.
+     * @param   mixed  $value
+     * @return  self
+     */
     public function selected($value)
     {
         $this->selected = $value;
@@ -44,6 +50,11 @@ class Select extends Input
         return $this;
     }
 
+    /**
+     * Adds an initial entry to the select input. Required elements default to 'Please select...'
+     * @param   string  $value
+     * @return  self
+     */
     public function placeholder($value = '')
     {
         $this->placeholder = $value;
@@ -51,6 +62,25 @@ class Select extends Input
         return $this;
     }
 
+    /**
+     * Set the selected element(s) to include all available options.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function selectAll()
+    {
+        if ($this->getAttribute('multiple') == true) {
+            $this->selected = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Sets the select input attribute to handle multiple selections.
+     * @param   bool    $value
+     * @return  self
+     */
     public function selectMultiple($value = true)
     {
         $this->setAttribute('multiple', $value);
@@ -58,6 +88,24 @@ class Select extends Input
         return $this;
     }
 
+    /**
+     * Add extra help text to multi-select inputs.
+     * @return string
+     */
+    public function getLabelContext($label)
+    {
+        if ($this->getAttribute('multiple') == true) {
+            return __('Use Control, Command and/or Shift to select multiple.');
+        }
+    }
+
+    /**
+     * Provide an ID of another select input to chain the values in this input to the selected element of the first input.
+     * Chained values are paired with the options array, and correlate to the available options in the first select input.
+     * @param   string  $id
+     * @param   array   $values
+     * @return  self
+     */
     public function chainedTo($id, $values)
     {
         if (count($values) != count($this->options)) {
@@ -70,24 +118,42 @@ class Select extends Input
         return $this;
     }
 
+    /**
+     * Return true if the value passed in is in the array of selected options.
+     * @param   string  $value
+     * @return  bool
+     */
     protected function isOptionSelected($value)
     {
         if ($value === '') return false;
 
+        if ($this->hasSelected) return false;
+
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
-            return ($value == $this->selected);
+            $selected = ($value == $this->selected);
+            if ($selected && $this->getAttribute('multiple') == false) $this->hasSelected = true;
+            return $selected;
         }
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '';
 
         if (!empty($this->getAttribute('multiple'))) {
-            $this->setAttribute('size', $this->getOptionCount());
-            $this->setName($this->getName().'[]');
+            if (empty($this->getAttribute('size'))) {
+                $this->setAttribute('size', $this->getOptionCount());
+            }
+
+            if (stripos($this->getName(), '[]') === false) {
+                $this->setName($this->getName().'[]');
+            }
         }
 
         $output .= '<select '.$this->getAttributeString().'>';
@@ -97,7 +163,10 @@ class Select extends Input
         }
 
         if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
-            $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
+            // Add a placeholder only if the first option is not already blank
+            if (count($this->getOptions()) == 0 || key($this->getOptions()) != '') {
+                $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
+            }
 
             if ($this->getRequired() && !empty($this->placeholder)) {
                 $this->addValidation('Validate.Exclusion', 'within: [\''.$this->placeholder.'\'], failureMessage: "'.__('Select something!').'"');
@@ -107,7 +176,7 @@ class Select extends Input
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
                 if (is_array($label)) {
-                    $output .= '<optgroup label="'.$value.'">';
+                    $output .= '<optgroup label="--'.$value.'--">';
                     foreach ($label as $subvalue => $sublabel) {
                         $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
                         $output .= '<option value="'.$subvalue.'" '.$selected.'>'.$sublabel.'</option>';

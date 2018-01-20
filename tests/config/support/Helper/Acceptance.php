@@ -63,4 +63,10 @@ class Acceptance extends \Codeception\Module
         
         return $formValues;
     }
+
+    public function seeFieldIsNotEmpty($selector)
+    {
+        $value = $this->getModule('PhpBrowser')->grabValueFrom($selector);
+        $this->assertFalse(empty($value));
+    }
 }

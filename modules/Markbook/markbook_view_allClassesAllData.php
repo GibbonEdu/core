@@ -402,7 +402,7 @@
                     }
 
                 echo "</a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$column->gibbonMarkbookColumnID."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_view.php'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                 echo '</div>';
             }
@@ -707,7 +707,7 @@
 
                                 if (empty($attainment) && $column->hasAttainmentRubric() == false) {
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
                                     }
                                 }
 
@@ -740,7 +740,7 @@
                                 if (empty($effort) && $column->hasEffortRubric() == false) {
 
                                     if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                                        print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
+                                        print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Edit") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png' width='14' height='14'/></a> " ;
                                     }
                                 }
 
@@ -773,7 +773,7 @@
                         echo "<td>";
 
                         if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                            print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . _("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
+                            print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
                         }
 
                         echo "</td>";

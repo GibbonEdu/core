@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_delete.php') == false) {
@@ -48,8 +50,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn.php'>".__($guid, 'Manage Columns')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>".__($guid, 'Edit Column')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Column Row').'</div>';
             echo '</div>';
@@ -58,31 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/ttColumn_edit_row_deleteProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
-
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/ttColumn_edit_row_deleteProcess.php?gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTColumnID=$gibbonTTColumnID", true);
+            echo $form->getOutput();
         }
     }
 }

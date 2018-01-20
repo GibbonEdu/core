@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php")==FALSE) {
 	//Acess denied
@@ -56,37 +56,21 @@ else {
 		print __($guid, "Search") ;
 		print "</h2>" ;
 
-		$search=NULL;
-		if (isset($_GET["search"])) {
-			$search=$_GET["search"] ;
-		}
+		$search = isset($_GET['search'])? $_GET['search'] : '';
 
-		?>
-		<form method="get" action="<?php print $_SESSION[$guid]["absoluteURL"]?>/index.php">
-			<table class='noIntBorder' cellspacing='0' style="width: 100%">
-				<tr><td style="width: 30%"></td><td></td></tr>
-				<tr>
-					<td>
-						<b><?php print __($guid, 'Search In') ?></b><br/>
-						<span class="emphasis small"><?php print __($guid, 'Subject, body.') ?></span>
-					</td>
-					<td class="right">
-						<input name="search" id="search" maxlength=20 value="<?php print $search ?>" type="text" class="standardWidth">
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php print $_SESSION[$guid]["module"] ?>/messenger_manage.php">
-						<input type="hidden" name="address" value="<?php print $_SESSION[$guid]["address"] ?>">
-						<?php
-						print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage.php'>" . __($guid, 'Clear Search') . "</a>" ;
-						?>
-						<input type="submit" value="<?php print __($guid, "Submit") ; ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+		$form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+		$form->setClass('noIntBorder fullWidth');
+
+		$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/messenger_manage.php');
+
+		$row = $form->addRow();
+			$row->addLabel('search', __('Search In'))->description(__('Subject, body.'));
+			$row->addTextField('search')->setValue($search);
+
+		$row = $form->addRow();
+			$row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+		echo $form->getOutput();
 
 		print "<h2>" ;
 		print __($guid, "Messages") ;
@@ -408,7 +392,7 @@ else {
 						print "</td>" ;
 						print "<td>" ;
 							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_edit.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Edit') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/config.png'/></a> " ;
-							print "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
+							print "<a class='thickbox' href='" . $_SESSION[$guid]["absoluteURL"] . "/fullscreen.php?q=/modules/" . $_SESSION[$guid]["module"] . "/messenger_manage_delete.php&gibbonMessengerID=" . $row["gibbonMessengerID"] . "&sidebar=true&search=$search&width=650&height=135'><img title='" . __($guid, 'Delete') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/garbage.png'/></a> " ;
 							print "<script type='text/javascript'>" ;
 								print "$(document).ready(function(){" ;
 									print "\$(\".comment-$count\").hide();" ;

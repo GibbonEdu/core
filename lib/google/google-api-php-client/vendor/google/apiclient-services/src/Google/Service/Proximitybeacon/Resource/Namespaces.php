@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -28,11 +28,12 @@ class Google_Service_Proximitybeacon_Resource_Namespaces extends Google_Service_
   /**
    * Lists all attachment namespaces owned by your Google Developers Console
    * project. Attachment data associated with a beacon must include a namespaced
-   * type, and the namespace must be owned by your project. Authenticate using an
-   * [OAuth access token](https://developers.google.com/identity/protocols/OAuth2)
-   * from a signed-in user with **viewer**, **Is owner** or **Can edit**
-   * permissions in the Google Developers Console project.
-   * (namespaces.listNamespaces)
+   * type, and the namespace must be owned by your project.
+   *
+   * Authenticate using an [OAuth access
+   * token](https://developers.google.com/identity/protocols/OAuth2) from a
+   * signed-in user with **viewer**, **Is owner** or **Can edit** permissions in
+   * the Google Developers Console project. (namespaces.listNamespaces)
    *
    * @param array $optParams Optional parameters.
    *

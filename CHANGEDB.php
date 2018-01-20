@@ -803,3 +803,69 @@ UPDATE gibboni18n SET active='Y' WHERE (code='sq_AL' OR code='vi_VN' OR code='th
 ++$count;
 $sql[$count][0] = '14.0.01';
 $sql[$count][1] = "";
+
+//v15.0.00
+++$count;
+$sql[$count][0] = '15.0.00';
+$sql[$count][1] = "
+UPDATE gibboni18n SET code='ka_GE' WHERE code='ke_GE';end
+ALTER TABLE `gibbonTTDay` ADD `color` VARCHAR(6) NOT NULL AFTER `nameShort`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('el_GR', 'ελληνικά - Ελλάδα', 'N', 'N', 'Konstantinos Chonias', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\\d\\\d$/i', 'd-m-Y', 'N');end
+ALTER TABLE `gibbonTTDay` ADD `fontColor` VARCHAR(6) NOT NULL AFTER `color`;end
+UPDATE gibbonSetting SET description='Allowable choices for positive behaviour' WHERE scope='Behaviour' AND name='positiveDescriptors';end
+UPDATE gibbonSetting SET description='Allowable choices for negative behaviour' WHERE scope='Behaviour' AND name='negativeDescriptors';end
+UPDATE gibbonSetting SET description='Allowable choices for severity level (from lowest to highest)' WHERE scope='Behaviour' AND name='levels';end
+UPDATE gibbonLibraryType SET name='Audio/Visual Hardware' WHERE name='Audio/Visual';end
+INSERT INTO gibbonLibraryType SET name='Optical Media', active='Y', fields='a:10:{i:0;a:6:{s:4:\"name\";s:4:\"Type\";s:11:\"description\";s:35:\"What type of optical media is this?\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:14:\"CD,DVD,Blu-Ray\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}i:1;a:6:{s:4:\"name\";s:6:\"Format\";s:11:\"description\";s:38:\"Technical details of media formatting.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:8:\"Language\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:9:\"Subtitles\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:12:\"Aspect Ratio\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"20\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:15:\"Number of Discs\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:10:\",1,2,3,4,5\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:14:\"Content Rating\";s:11:\"description\";s:39:\"Details of age guidance or retrictions.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:7;a:6:{s:4:\"name\";s:6:\"Studio\";s:11:\"description\";s:27:\"Name of originating studio.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:8;a:6:{s:4:\"name\";s:12:\"Release Date\";s:11:\"description\";s:36:\"Format: dd/mm/yyyy, mm/yyyy or yyyy.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:9;a:6:{s:4:\"name\";s:8:\"Run Time\";s:11:\"description\";s:11:\"In minutes.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"3\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}';end
+CREATE TABLE `gibbonINAssistant` (`gibbonINAssistantID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL, `gibbonPersonIDAssistant` int(10) UNSIGNED ZEROFILL NOT NULL, `comment` text COLLATE utf8_unicode_ci NOT NULL, PRIMARY KEY (`gibbonINAssistantID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
+CREATE TABLE `gibbonUsernameFormat` (`gibbonUsernameFormatID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonRoleIDList` varchar(255) NULL, `format` varchar(255) NULL, `isDefault` ENUM('Y','N') NOT NULL DEFAULT 'N', `isNumeric` ENUM('Y','N') NOT NULL DEFAULT 'N',`numericValue` int(12) UNSIGNED NOT NULL DEFAULT 0, `numericIncrement` int(3) UNSIGNED NOT NULL DEFAULT 1, `numericSize` int(3) UNSIGNED NOT NULL DEFAULT 4, PRIMARY KEY (`gibbonUsernameFormatID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
+INSERT INTO `gibbonUsernameFormat` SET gibbonRoleIDList='003', `format`=REPLACE((SELECT value FROM gibbonSetting WHERE scope='Application Form' AND name='usernameFormat'),'[preferredNameInitial]','[preferredName:1]'), `isDefault`='Y', `isNumeric`='N';end
+INSERT INTO `gibbonUsernameFormat` SET gibbonRoleIDList='001,002,006', `format`=REPLACE((SELECT value FROM gibbonSetting WHERE scope='Staff' AND name='staffApplicationFormUsernameFormat'),'[preferredNameInitial]','[preferredName:1]'), `isDefault`='N', `isNumeric`='N';end
+UPDATE gibbonAction SET URLList='house_manage.php,house_manage_edit.php,house_manage_add.php,house_manage_delete.php,house_manage_assign.php' WHERE name='Manage Houses' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='School Admin');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Students'), 'Students by House', 0, 'Reports', 'View a report of student houses by year group.', 'report_students_byHouse.php', 'report_students_byHouse.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Students' AND gibbonAction.name='Students by House'));end
+UPDATE gibbonAction SET URLList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND name='Manage Applications_edit';end
+UPDATE gibbonAction SET URLList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php' WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students') AND name='Manage Applications_editDelete';end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Application Form Accepted', 'Students', 'Manage Applications_edit', 'Core', 'All,gibbonYearGroupID', 'Y');end
+ALTER TABLE `gibbonActivity` ADD `paymentType` ENUM('Entire Programme','Per Session','Per Week','Per Term') NULL DEFAULT 'Entire Programme' AFTER `payment`, ADD `paymentFirmness` ENUM('Finalised','Estimated') NULL DEFAULT 'Finalised' AFTER `paymentType`;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('am_ET','አማርኛ - ኢትዮጵያ', 'N', 'N', 'Bruce Banner', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Timetable Admin'), 'Sync Course Enrolment', 0, 'Courses & Classes', 'Allows users to map enrolments from homerooms to classes.', 'courseEnrolment_sync.php,courseEnrolment_sync_add.php,courseEnrolment_sync_edit.php,courseEnrolment_sync_delete.php,courseEnrolment_sync_run.php', 'courseEnrolment_sync.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Timetable Admin' AND gibbonAction.name='Sync Course Enrolment'));end
+CREATE TABLE `gibbonCourseClassMap` (`gibbonCourseClassMapID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NULL,`gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NULL, `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NULL, UNIQUE KEY `gibbonCourseClassID` (gibbonCourseClassID), PRIMARY KEY (`gibbonCourseClassMapID`)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N');end
+UPDATE `gibbonNotificationEvent` SET actionName='View Student Profile_full' WHERE (event='Application Form Accepted' OR event='New Application Form') AND moduleName='Students';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', '');end
+UPDATE gibbonAction SET gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Resources');end
+DELETE FROM gibbonModule WHERE name='Resources';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('Application Form', 'enableLimitedYearsOfEntry', 'Enable Limited Years of Entry', 'If yes, applicants choices for Year of Entry can be limited to specific school years.', 'N');end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricColumnID`);end
+ALTER TABLE `gibbonRubricCell` ADD INDEX(`gibbonRubricRowID`);end
+ALTER TABLE `gibbonRubricColumn` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonPersonID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`gibbonRubricCellID`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTable`);end
+ALTER TABLE `gibbonRubricEntry` ADD INDEX(`contextDBTableID`);end
+ALTER TABLE `gibbonRubricRow` ADD INDEX(`gibbonRubricID`);end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Weekly Attendance Summary ', 'Attendance', 'Attendance Summary by Date', 'CLI', 'All,gibbonYearGroupID', 'Y');end
+ALTER TABLE `gibbonActivityStaff` MODIFY `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a low level academic alert on a student.' WHERE scope='Students' AND name='academicAlertLowThreshold';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a medium level academic alert on a student.' WHERE scope='Students' AND name='academicAlertMediumThreshold';end
+UPDATE gibbonSetting SET description='The number of Markbook concerns needed in the past 60 days to raise a high level academic alert on a student.' WHERE scope='Students' AND name='academicAlertHighThreshold';end
+INSERT INTO `gibbonSetting` (`scope`, `name`, `nameDisplay`, `description`, `value`) VALUES ('User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Are primary email addresses required to be unique?', 'N');end
+UPDATE gibbonRole SET nameShort='Adm' WHERE name='Administrator';end
+UPDATE gibbonRole SET nameShort='Std' WHERE name='Student';end
+UPDATE gibbonRole SET nameShort='Tcr' WHERE name='Teacher';end
+UPDATE gibbonRole SET nameShort='Prt' WHERE name='Parent';end
+UPDATE gibbonRole SET nameShort='SSt' WHERE name='Support Staff';end
+UPDATE gibbonAction SET entryURL='staff_view.php' WHERE entryURL='staff_view' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Staff');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('Planner', 'parentWeeklyEmailSummaryIncludeMarkbook', 'Parent Weekly Email Summary Include Markbook', 'Should Markbook information be included in the weekly planner email summary that goes out to parents?', 'N');end
+ALTER TABLE `gibbonMarkbookColumn` ADD INDEX(`completeDate`);end
+ALTER TABLE `gibbonMarkbookColumn` ADD INDEX(`complete`);end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffFormal', 'Formal Name Format', '', '[title] [preferredName:1]. [surname]');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffFormalReversed', 'Formal Name Reversed', '', '[title] [surname], [preferredName:1].');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformal', 'Informal Name Format', '', '[preferredName] [surname]');end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');end
+UPDATE gibboni18n SET active='Y' WHERE code='pt_BR';end
+";

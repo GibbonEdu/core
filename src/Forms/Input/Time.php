@@ -32,18 +32,44 @@ class Time extends TextField
     protected $format = 'H:i'; // Default to 24 hour clock
     protected $chained;
 
+    /**
+     * Set the format to output time values (default 'H:i').
+     * @param  string  $format
+     */
     public function setFormat($format)
     {
         $this->format = $format;
         return $this;
     }
 
+    /**
+     * Provide the ID of another time input to connect the input values.
+     * @param   string  $chained
+     * @return  self
+     */
     public function chainedTo($chained)
     {
         $this->chained = $chained;
         return $this;
     }
 
+    /**
+     * Adds time format to the label description
+     * @return string|bool
+     */
+    public function getLabelContext($label)
+    {
+        if (stristr($label->getDescription(), 'Format') === false) {
+            return __('Format: hh:mm (24hr)');
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $this->addValidation(
@@ -53,7 +79,7 @@ class Time extends TextField
 
         $output = '';
 
-        $output = '<input type="text" '.$this->getAttributeString().'>';
+        $output = '<input type="text" '.$this->getAttributeString().' maxlength="5">';
 
         $output .= '<script type="text/javascript">';
         $output .= '$("#'.$this->getID().'").timepicker({ "scrollDefault": "now", "timeFormat" : "'.$this->format.'"});';

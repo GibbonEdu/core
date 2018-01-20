@@ -735,8 +735,10 @@ if ($proceed == false) {
                     $mail->Send();
                 }
 
+                $skipEmailNotification = (isset($_POST['skipEmailNotification']))? $_POST['skipEmailNotification'] : false;
+
                 //Notify parent 1 of application status
-                if (!is_null($parent1email)) {
+                if (!empty($parent1email) && !$skipEmailNotification) {
                     $body = sprintf(__($guid, 'Dear Parent%1$sThank you for applying for a student place at %2$s.'), '<br/><br/>', $_SESSION[$guid]['organisationName']).' ';
                     $body .= __($guid, 'Your application was successfully submitted. Our admissions team will review your application and be in touch in due course.').'<br/><br/>';
                     $body .= __($guid, 'You may continue submitting applications for siblings with the form below and they will be linked to your family data.').'<br/><br/>';
@@ -745,7 +747,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
                     $mail = getGibbonMailer($guid);
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($parent1email);
                     $mail->CharSet = 'UTF-8';
                     $mail->Encoding = 'base64';
@@ -831,12 +833,12 @@ if ($proceed == false) {
 
         //Check return values to see if we can proceed
         if ($paymentToken == '' or $gibbonApplicationFormID == '' or $applicationFee == '') {
-            $body = __($guid, 'Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+            $body = __($guid, 'Payment via PayPal may or may not have been successful, but has not been recorded either way due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Admissions Administrator');
             $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
             $bodyPlain = emailBodyConvert($body);
 
             $mail = getGibbonMailer($guid);
-            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+            $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
             $mail->AddAddress($to);
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'base64';
@@ -883,12 +885,12 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+                    $body = __($guid, 'Payment via PayPal was successful, but has not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Admissions Administrator');
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
                     $mail = getGibbonMailer($guid);
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
                     $mail->Encoding = 'base64';
@@ -926,12 +928,12 @@ if ($proceed == false) {
                 }
 
                 if ($updateFail == true) {
-                    $body = __($guid, 'Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Administrator');
+                    $body = __($guid, 'Payment via PayPal was unsuccessful, and has also not been recorded due to a system error. Please check your PayPal account for details. The following may be useful:')."<br/><br/>Payment Token: $paymentToken<br/><br/>Payer ID: $paymentPayerID<br/><br/>Application Form ID: $gibbonApplicationFormID<br/><br/>Application Fee: $applicationFee<br/><br/>".$_SESSION[$guid]['systemName'].' '.__($guid, 'Admissions Administrator');
                     $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
                     $mail = getGibbonMailer($guid);
-                    $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
+                    $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
                     $mail->Encoding = 'base64';

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_delete.php') == false) {
@@ -58,37 +60,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>".__($guid, 'Back').'</a>';
                 echo '</div>';
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_condition_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
 
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/medicalForm_manage_condition_deleteProcess.php?gibbonPersonMedicalID=$gibbonPersonMedicalID&gibbonPersonMedicalConditionID=$gibbonPersonMedicalConditionID&search=$search");
+            echo $form->getOutput();
         }
     }
 }

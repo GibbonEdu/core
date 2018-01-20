@@ -40,14 +40,7 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
         $URL .= '&return=error0';
         header("Location: {$URL}");
     } else {
-        $activities = array();
-        for ($i = 0; $i < $_POST['count']; ++$i) {
-            if (isset($_POST["check-$i"])) {
-                if ($_POST["check-$i"] == 'on') {
-                    $activities[$i] = $_POST["gibbonActivityID-$i"];
-                }
-            }
-        }
+        $activities = isset($_POST['gibbonActivityID'])? $_POST['gibbonActivityID'] : array();
 
         //Proceed!
         //Check if person specified
@@ -79,8 +72,8 @@ if (($gibbonSchoolYearIDCopyTo == '' and $action != 'Delete') or $action == '') 
 
                         //Write the duplicate to the database
                         try {
-                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearIDCopyTo, 'active' => $row['active'], 'registration' => $row['registration'], 'name' => $name, 'provider' => $row['provider'], 'type' => $row['type'], 'gibbonSchoolYearTermIDList' => $row['gibbonSchoolYearTermIDList'], 'listingStart' => $row['listingStart'], 'listingEnd' => $row['listingEnd'], 'programStart' => $row['programStart'], 'programEnd' => $row['programEnd'], 'gibbonYearGroupIDList' => $row['gibbonYearGroupIDList'], 'maxParticipants' => $row['maxParticipants'], 'description' => $row['description'], 'payment' => $row['payment']);
-                            $sql = 'INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, active=:active, registration=:registration, name=:name, provider=:provider, type=:type, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, description=:description, payment=:payment';
+                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearIDCopyTo, 'active' => $row['active'], 'registration' => $row['registration'], 'name' => $name, 'provider' => $row['provider'], 'type' => $row['type'], 'gibbonSchoolYearTermIDList' => $row['gibbonSchoolYearTermIDList'], 'listingStart' => $row['listingStart'], 'listingEnd' => $row['listingEnd'], 'programStart' => $row['programStart'], 'programEnd' => $row['programEnd'], 'gibbonYearGroupIDList' => $row['gibbonYearGroupIDList'], 'maxParticipants' => $row['maxParticipants'], 'description' => $row['description'], 'payment' => $row['payment'], 'paymentType' => $row['paymentType'], 'paymentFirmness' => $row['paymentFirmness']);
+                            $sql = 'INSERT INTO gibbonActivity SET gibbonSchoolYearID=:gibbonSchoolYearID, active=:active, registration=:registration, name=:name, provider=:provider, type=:type, gibbonSchoolYearTermIDList=:gibbonSchoolYearTermIDList, listingStart=:listingStart, listingEnd=:listingEnd, programStart=:programStart, programEnd=:programEnd, gibbonYearGroupIDList=:gibbonYearGroupIDList, maxParticipants=:maxParticipants, description=:description, payment=:payment, paymentType=:paymentType, paymentFirmness=:paymentFirmness';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

@@ -66,6 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
+        echo '<div style="overflow-x: scroll;">';
         echo "<table class='mini' cellspacing='0' style='max-width: 100%'>";
         echo "<tr class='head'>";
         echo "<th style='width: 100%' rowspan=2>";
@@ -242,5 +243,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_a
         echo '</td>';
         echo '</tr>';
         echo '</table>';
+        echo '</div>';
     }
 }

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -42,57 +45,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         $gibbonActivityID = $_GET['gibbonActivityID'];
     }
 
-    $numberOfColumns = (isset($_GET['columns']) && $_GET['columns'] <= 20 ) ? $_GET['columns'] : 20;
+    $numberOfColumns = (isset($_GET['numberOfColumns']) && $_GET['numberOfColumns'] <= 20 ) ? $_GET['numberOfColumns'] : 20;
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Activity')  ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonActivityID">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							$selected = '';
-							if ($gibbonActivityID == $rowSelect['gibbonActivityID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Number of Columns')  ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input type="text" name="columns" class="standardWidth" maxlength="2" value="<?php echo $numberOfColumns ?>"/>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_attendance_sheet.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance_sheet.php");
+
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = "SELECT gibbonActivityID AS value, name FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+    $row = $form->addRow();
+        $row->addLabel('gibbonActivityID', __('Activity'));
+        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->isRequired()->placeholder();
+
+    $row = $form->addRow();
+        $row->addLabel('numberOfColumns', __('Number of Columns'));
+        $row->addNumber('numberOfColumns')->decimalPlaces(0)->maximum(20)->maxLength(2)->setValue($numberOfColumns)->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
 
     if ($gibbonActivityID != '') {
         $output = '';

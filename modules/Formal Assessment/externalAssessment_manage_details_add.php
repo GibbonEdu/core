@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
@@ -95,133 +97,48 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '</tr>';
             echo '</table>';
 
-            $step = null;
-            if (isset($_GET['step'])) {
-                $step = $_GET['step'];
-            }
+            $step = isset($_GET['step'])? $_GET['step'] : null;
             if ($step != 1 and $step != 2) {
                 $step = 1;
             }
 
             //Step 1
             if ($step == 1) {
-                ?>
-				<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_add.php' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Assessment Type') ?></h3>
-							</td>
-						</tr>
+                $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_add.php', 'get');
 
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Choose Assessment') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<select class="standardWidth" name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID">
-									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = "SELECT * FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-									echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-									while ($rowSelect = $resultSelect->fetch()) {
-										echo "<option id='gibbonExternalAssessmentID' value='".$rowSelect['gibbonExternalAssessmentID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									}
-									?>
-								</select>
-								<script type="text/javascript">
-									var gibbonExternalAssessmentID=new LiveValidation('gibbonExternalAssessmentID');
-									gibbonExternalAssessmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-							</td>
-						</tr>
+                $form->addHiddenValue('q', $_GET['q']);
+                $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                $form->addHiddenValue('step', 2);
+                $form->addHiddenValue('search', $search);
+                $form->addHiddenValue('allStudents', $allStudents);
 
-						<!=- Copy CATS GCSE Targets to GCSE=->
-						<script type="text/javascript">
-							$(document).ready(function(){
-								$("#copyToGCSE").css("display","none");
+                $form->addRow()->addHeading(__('Assessment Type'));
 
+                $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonExternalAssessmentID', __('Choose Assessment'));
+                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
 
-								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID').val()=="0002" ) {
-										$("#copyToGCSE").slideDown("fast", $("#copyToGCSE").css("display","table-row"));
-									}
-									else {
-										$("#copyToGCSE").css("display","none");
-									}
-								 });
-							});
-						</script>
-						<tr id="copyToGCSE">
-							<td>
-								<b><?php echo __($guid, 'Copy Target Grades?') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'These will come from the student\'s last CAT test.') ?></span>
-							</td>
-							<td class="right">
-								<input type="checkbox" name="copyToGCSECheck" id="copyToGCSECheck"><br/><br/>
-							</td>
-						</tr>
+                $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
+                $row = $form->addRow()->addClass('copyToGCSE');
+                    $row->addLabel('copyToGCSECheck', __('Copy Target Grades?'))->description(__('These will come from the student\'s last CAT test.'));
+                    $row->addCheckbox('copyToGCSECheck')->setValue('Y');
 
-						<!=- Use GCSE Grades to create IB=->
-						<script type="text/javascript">
-							$(document).ready(function(){
-								$("#copyToIB").css("display","none");
+                $form->toggleVisibilityByClass('copyToIB')->onSelect('gibbonExternalAssessmentID')->when('0003');
+                $row = $form->addRow()->addClass('copyToIB');
+                    $row->addLabel('copyToIBCheck', __('Create Target Grades?'))->description(__('These will be calculated from the student\'s GCSE grades.'));
+                    $row->addSelect('copyToIBCheck')->fromArray(array('Target' => __('From GCSE Target Grades'), 'Final' => __('GCSE Final Grades')))->placeholder();
 
-								$("#gibbonExternalAssessmentID").change(function(){
-									if ($('#gibbonExternalAssessmentID').val()=="0003" ) {
-										$("#copyToIB").slideDown("fast", $("#copyToIB").css("display","table-row"));
-									}
-									else {
-										$("#copyToIB").css("display","none");
-									}
-								 });
-							});
-						</script>
-						<tr id="copyToIB">
-							<td>
-								<b><?php echo __($guid, 'Create Target Grades?') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'These will be calculated from the student\'s GCSE grades.') ?></span>
-							</td>
-							<td class="right">
-								<select class="standardWidth" name="copyToIBCheck" id="copyToIBCheck">
-									<option value=''></option>
-									<option value='Target'><?php echo __($guid, 'From GCSE Target Grades') ?></option>
-									<option value='Final'>From <?php echo __($guid, 'GCSE Final Grades') ?></option>
-								</select>
-							</td>
-						</tr>
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit(__('Go'));
 
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="step" value="2">
-								<input type="hidden" name="search" value="<?php echo $search ?>">
-								<input type="hidden" name="allStudents" value="<?php echo $allStudents ?>">
-								<input type="hidden" name="gibbonPersonID" value="<?php echo $gibbonPersonID ?>">
-								<input type="hidden" name="q" value="<?php echo $_GET['q'] ?>">
-								<input type="submit" value="Go">
-							</td>
-						</tr>
-					</table>
-				<?php
+                echo $form->getOutput();
 
             } else {
                 $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
-                $copyToGCSECheck = null;
-                if (isset($_GET['copyToGCSECheck'])) {
-                    $copyToGCSECheck = $_GET['copyToGCSECheck'];
-                }
-                $copyToIBCheck = null;
-                if (isset($_GET['copyToIBCheck'])) {
-                    $copyToIBCheck = $_GET['copyToIBCheck'];
-                }
+                $copyToGCSECheck = isset($_GET['copyToGCSECheck'])? $_GET['copyToGCSECheck'] : null;
+                $copyToIBCheck = isset($_GET['copyToIBCheck'])? $_GET['copyToIBCheck'] : null;
 
                 try {
                     $dataSelect = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
@@ -240,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                     $rowSelect = $resultSelect->fetch();
 
                     //Attempt to get CATs grades to copy to GCSE target
-                    if ($copyToGCSECheck == 'on') {
+                    if ($copyToGCSECheck == 'Y') {
                         $grades = array();
                         try {
                             $dataCopy = array('gibbonPersonID' => $gibbonPersonID);
@@ -263,8 +180,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             }
                         }
                     }
-
                     //Attempt to get GCSE grades to copy to IB target
+                    $regression = array();
                     if ($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') {
                         $grades = array();
                         $count = 0;
@@ -275,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             $sqlCopy = "SELECT * FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentStudent ON (gibbonExternalAssessmentStudent.gibbonExternalAssessmentID=gibbonExternalAssessment.gibbonExternalAssessmentID) WHERE name='GCSE/iGCSE' AND gibbonPersonID=:gibbonPersonID ORDER BY date DESC";
                             $resultCopy = $connection2->prepare($sqlCopy);
                             $resultCopy->execute($dataCopy);
-                        } catch (PDOException $e) {
+                        } catch (PDOException $e) { echo $e->getMessage();
                         }
 
                         if ($resultCopy->rowCount() > 0) {
@@ -309,6 +226,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                                     $grades[$count][1] = 2;
                                 } elseif ($rowCopy2['value'] == 'F') {
                                     $grades[$count][1] = 1;
+                                } else {
+                                    $grades[$count][1] = 0;
                                 }
 
                                 ++$countWeighted;
@@ -323,13 +242,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                             }
 
                             //Calculate GCSE numeric mean
-                            if ($countWeighted != 0)
+                            if ($countWeighted != 0) {
                                 $mean = $total / $countWeighted;
-                            else
+                            } else {
                                 $mean = 0;
+                            }
 
                             //Apply regression
-                            $regression = array();
                             $regression[1][1] = 'Biology';
                             $regression[1][2] = 1.165650007;
                             $regression[1][3] = -2.25440921;
@@ -433,209 +352,102 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         }
                     }
 
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_addProcess.php?search=$search&allStudents=$allStudents" ?>" enctype="multipart/form-data">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Assessment Type') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-								</td>
-								<td class="right" colspan=2>
-									<input readonly name="name" id="name" maxlength=20 value="<?php echo $rowSelect['name'] ?>" type="text" style="width: 300px; text-align: right">
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Date') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-                    if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                        echo 'dd/mm/yyyy';
-                    } else {
-                        echo $_SESSION[$guid]['i18n']['dateFormat'];
+                    $form = Form::create('addAssessment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessment_manage_details_addProcess.php?search='.$search.'&allStudents='.$allStudents);
+                    $form->removeClass('standardForm');
+
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+                    $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
+
+                    $row = $form->addRow();
+                    $row->addLabel('name', __('Assessment Type'));
+                    $row->addTextField('name')->isRequired()->readOnly()->setValue(__($rowSelect['name']));
+
+                    $row = $form->addRow();
+                    $row->addLabel('date', __('Date'));
+                    $row->addDate('date')->isRequired();
+
+                    if ($rowSelect['allowFileUpload'] == 'Y') {
+                        $row = $form->addRow();
+                        $row->addLabel('file', __('Upload File'))->description(__('Use this to attach raw data, graphical summary, etc.'));
+                        $row->addFileUpload('file');
                     }
-                    ?><br/></span>
-								</td>
-								<td class="right" colspan=2>
-									<input name="date" id="date" maxlength=10 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var date=new LiveValidation('date');
-										date.add(Validate.Presence);
-										date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-										}
-										?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-											echo 'dd/mm/yyyy';
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormat'];
-										}
-															?>." } );
-									</script>
-									 <script type="text/javascript">
-										$(function() {
-											$( "#date" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
-							<?php
-                            if ($rowSelect['allowFileUpload'] == 'Y') {
-                                ?>
-								<tr>
-									<td style='width: 275px'>
-										<b><?php echo __($guid, 'Upload File') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Use this to attach raw data, graphical summary, etc.') ?></span>
-									</td>
-									<td class="right" colspan=2>
-										<input type="file" name="file" id="file"><br/><br/>
-										<?php
-                                        //Get list of acceptable file extensions
-                                        try {
-                                            $dataExt = array();
-                                            $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                                            $resultExt = $connection2->prepare($sqlExt);
-                                            $resultExt->execute($dataExt);
-                                        } catch (PDOException $e) {
-                                        }
-                                $ext = '';
-                                while ($rowExt = $resultExt->fetch()) {
-                                    $ext = $ext."'.".$rowExt['extension']."',";
-                                }
-                                ?>
-
-										<script type="text/javascript">
-											var file=new LiveValidation('file');
-											file.add( Validate.Inclusion, { within: [<?php echo $ext;
-                                ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-										</script>
-									</td>
-								</tr>
-								<?php
-
-                            }
 
                     try {
                         $dataField = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
-                        $sqlField = 'SELECT gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order';
+                        $sqlField = 'SELECT category, gibbonExternalAssessmentField.*, gibbonScale.usage FROM gibbonExternalAssessmentField JOIN gibbonScale ON (gibbonExternalAssessmentField.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, gibbonExternalAssessmentField.order';
                         $resultField = $connection2->prepare($sqlField);
                         $resultField->execute($dataField);
                     } catch (PDOException $e) {
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
-                    if ($resultField->rowCount() < 1) {
-                        echo "<tr class='break'>";
-                        echo '<td colspan=3> ';
-                        echo "<div class='warning'>";
-                        echo __($guid, 'There are no fields in this assessment.');
-                        echo '</div>';
-                        echo '</td>';
-                        echo '</tr>';
+                    if ($resultField->rowCount() <= 0) {
+                        $form->addRow()->addAlert(__('There are no fields in this assessment.'), 'warning');
                     } else {
-                        $lastCategory = '';
+                        $fieldGroup = $resultField->fetchAll(\PDO::FETCH_GROUP);
                         $count = 0;
 
-                        while ($rowField = $resultField->fetch()) {
-                            if ($rowField['category'] != $lastCategory) {
-                                echo "<tr class='break'>";
-                                echo '<td colspan=3> ';
-                                echo '<h3>';
-                                if (strpos($rowField['category'], '_') === false) {
-                                    echo $rowField['category'];
-                                } else {
-                                    echo substr($rowField['category'], (strpos($rowField['category'], '_') + 1));
-                                }
-                                echo '</h3>';
-                                echo '</td>';
-                                echo '</tr>';
-                                echo '<tr>';
-                                echo '<td> ';
+                        foreach ($fieldGroup as $category => $fields) {
+                            $categoryName = (strpos($category, '_') !== false)? substr($category, (strpos($category, '_') + 1)) : $category;
 
-                                echo '</td>';
-                                echo "<td class='right'>";
-                                echo "<span style='font-weight: bold'>".__($guid, 'Grade').'</span>';
-                                echo '</td>';
-                                echo '</tr>';
-                            }
-                            ?>
-							<tr>
-								<td>
-									<span style='font-weight: bold' title='<?php echo $rowField['usage'] ?>'><?php echo __($guid, $rowField['name']) ?></span><br/>
-								</td>
-								<td class="right">
-									<input name="<?php echo $count?>-gibbonExternalAssessmentFieldID" id="<?php echo $count?>-gibbonExternalAssessmentFieldID" value="<?php echo $rowField['gibbonExternalAssessmentFieldID'] ?>" type="hidden">
-									<?php
-										$preselectValue = null;
-                                        $mode = 'id';
-                                        if ($copyToGCSECheck == 'on' and $rowField['category'] == '0_Target Grade') {
-                                            if (isset($grades[$rowField['name']][0]))
-                                                $preselectValue = $grades[$rowField['name']][0];
-                                            else
-                                                $preselectValue = '';
+                            $row = $form->addRow();
+                            $row->addHeading($categoryName);
+                            $row->addContent(__('Grade'))->wrap('<b>', '</b>')->setClass('right');
+
+                            foreach ($fields as $field) {
+                                $preselectValue = null;
+                                $mode = 'id';
+                                if ($copyToGCSECheck == 'Y' and $field['category'] == '0_Target Grade') {
+                                    $preselectValue = isset($grades[$field['name']][0])? $grades[$field['name']][0] : '';
+                                }
+                                if (($copyToIBCheck == 'Target' || $copyToIBCheck == 'Final') && $field['category'] == '0_Target Grade') {
+                                    //Compare subject name to $regression and find entry for current subject
+                                    foreach ($regression as $subject) {
+                                        //Compare subject name to $regression and find entry for current subject
+                                        $match = true;
+                                        $subjectName = explode(' ', $subject[1]);
+                                        foreach ($subjectName as $subjectToken) {
+                                            //General/rough match check for all subjects
+                                            if (stripos($field['name'], $subjectToken) === false) {
+                                                $match = false;
+                                            }
+                                            //Exact check for mathematics SL & HL
+                                            if (stripos($field['name'], 'Mathematics')) {
+                                                if ($field['name'] != $subject) {
+                                                    $match = false;
+                                                }
+                                            }
                                         }
-										if (($copyToIBCheck == 'Target' or $copyToIBCheck == 'Final') and $rowField['category'] == '0_Target Grade') {
-											//Compare subject name to $regression and find entry for current subject
-											foreach ($regression as $subject) {
-												$match = true;
-												$subjectName = explode(' ', $subject[1]);
-												foreach ($subjectName as $subjectToken) {
-													//General/rough match check for all subjects
-													if (stripos($rowField['name'], $subjectToken) === false) {
-														$match = false;
-													}
-													//Exact check for mathematics SL & HL
-													if (stripos($rowField['name'], 'Mathematics')) {
-														if ($rowField['name'] != $subject) {
-															$match = false;
-														}
-													}
-												}
 
-												if ($match == true) {
-													$preselectValue = $subject[4];
-												}
-											}
-                                            $mode = 'value';
-										}
-
-                                        echo renderGradeScaleSelect($connection2, $guid, $rowField['gibbonScaleID'], "$count-gibbonScaleGradeID", 'id', false, '150', $mode, $preselectValue);
-										?>
-									</td>
-								</tr>
-								<?php
-
-									    $lastCategory = $rowField['category'];
-										++$count;
-									}
-								}
-							}
-							?>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?>
-								<?php
-                                if ($rowSelect['allowFileUpload'] == 'Y') {
-                                    echo getMaxUpload($guid);
+                                        if ($match == true) {
+                                            $preselectValue = $subject[4];
+                                        }
+                                    }
+                                    $mode = 'value';
                                 }
-                				?>
-								</span>
-							</td>
-							<td class="right" colspan=2>
-								<input name="count" id="count" value="<?php echo $count ?>" type="hidden">
-								<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
-								<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php echo $gibbonExternalAssessmentID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
 
+                                $form->addHiddenValue($count.'-gibbonExternalAssessmentFieldID', $field['gibbonExternalAssessmentFieldID']);
+                                $gradeScale = renderGradeScaleSelect($connection2, $guid, $field['gibbonScaleID'], $count.'-gibbonScaleGradeID', 'id', false, '150', $mode, $preselectValue);
+
+                                $row = $form->addRow();
+                                $row->addLabel($count.'-gibbonScaleGradeID', $field['name'])->setTitle($field['usage']);
+                                $row->addContent($gradeScale);
+
+                                $count++;
+                            }
+                        }
+
+                        $form->addHiddenValue('count', $count);
+                    }
+
+                    $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                    echo $form->getOutput();
+                }
             }
         }
     }
 }
-?>

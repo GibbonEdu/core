@@ -48,49 +48,67 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $row = $form->addRow();
-        $row->addLabel('type', 'Type');
-        $row->addSelect('type')->fromString('Learning Area, Administration')->isRequired();
+    $types = array(
+        'Learning Area' => __('Learning Area'),
+        'Administration' => __('Administration'),
+    );
+
+    $typesLA = array(
+        'Coordinator'           => __('Coordinator'),
+        'Assistant Coordinator' => __('Assistant Coordinator'),
+        'Teacher (Curriculum)'  => __('Teacher (Curriculum)'),
+        'Teacher'               => __('Teacher'),
+        'Other'                 => __('Other'),
+    );
+
+    $typesAdmin = array(
+        'Director'      => __('Director'),
+        'Manager'       => __('Manager'),
+        'Administrator' => __('Administrator'),
+        'Other'         => __('Other'),
+    );
 
     $row = $form->addRow();
-        $row->addLabel('name', 'Name');
+        $row->addLabel('type', 'Type');
+        $row->addSelect('type')->fromArray($types)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'));
         $row->addTextField('name')->maxLength(40)->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('nameShort', 'Short Name');
+        $row->addLabel('nameShort', __('Short Name'));
         $row->addTextField('nameShort')->maxLength(4)->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('subjectListing', 'Subject Listing');
+        $row->addLabel('subjectListing', __('Subject Listing'));
         $row->addTextField('subjectListing')->maxLength(255);
 
     $row = $form->addRow();
        $column = $row->addColumn()->setClass('');
-       $column->addLabel('blurb', 'Blurb');
+       $column->addLabel('blurb', __('Blurb'));
        $column->addEditor('blurb', $guid);
 
     $row = $form->addRow();
-        $row->addLabel('file', 'Logo')->description('125x125px jpg/png/gif');
+        $row->addLabel('file', __('Logo'))->description(__('125x125px jpg/png/gif'));
         $row->addFileUpload('file')
-            ->accepts('.jpg,.jpeg,.gif,.png')
-            ->append('<br/><br/>'.getMaxUpload($guid))
-            ->addClass('right');
+            ->accepts('.jpg,.jpeg,.gif,.png');
 
     $row = $form->addRow();
-        $row->addLabel('staff', 'Staff')->description('Use Control, Command and/or Shift to select multiple.');
+        $row->addLabel('staff', __('Staff'));
         $row->addSelectStaff('staff')->selectMultiple();
 
     $form->toggleVisibilityByClass('roleLARow')->onSelect('type')->when('Learning Area');
 
     $row = $form->addRow()->setClass('roleLARow');
         $row->addLabel('roleLA', 'Role');
-        $row->addSelect('roleLA')->fromString('Coordinator, Assistant Coordinator, Teacher (Curriculum), Teacher, Other');
+        $row->addSelect('roleLA')->fromArray($typesLA);
 
     $form->toggleVisibilityByClass('roleAdmin')->onSelect('type')->when('Administration');
 
     $row = $form->addRow()->setClass('roleAdmin');
         $row->addLabel('roleAdmin', 'Role');
-        $row->addSelect('roleAdmin')->fromString('Director, Manager, Administrator, Other');
+        $row->addSelect('roleAdmin')->fromArray($typesAdmin);
 
     $row = $form->addRow();
         $row->addFooter();

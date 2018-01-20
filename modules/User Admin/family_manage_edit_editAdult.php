@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_editAdult.php') == false) {
@@ -58,150 +60,94 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__($guid, 'Back').'</a>';
                 echo '</div>';
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editAdultProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'Adult\'s Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input readonly name="child" id="child" maxlength=200 value="<?php echo formatName(htmlPrep($row['title']), htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Parent') ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Comment') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Data displayed in full Student Profile') ?><br/></span>
-						</td>
-						<td class="right">
-							<textarea name="comment" id="comment" rows=8 class="standardWidth"><?php echo $row['comment'] ?></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Data Access?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Access data on family\'s children?') ?></span>
-						</td>
-						<td class="right">
-							<select name="childDataAccess" id="childDataAccess" class="standardWidth">
-								<option <?php if ($row['childDataAccess'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['childDataAccess'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Contact Priority') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'The order in which school should contact family members.') ?></span>
-						</td>
-						<td class="right">
-							<select name="contactPriority" id="contactPriority" class="standardWidth">
-								<option <?php if ($row['contactPriority'] == '1') { echo 'selected '; } ?>value="1"><?php echo __($guid, '1') ?></option>
-								<option <?php if ($row['contactPriority'] == '2') { echo 'selected '; } ?>value="2"><?php echo __($guid, '2') ?></option>
-								<option <?php if ($row['contactPriority'] == '3') { echo 'selected '; } ?>value="3"><?php echo __($guid, '3') ?></option>
-							</select>
-							<script type="text/javascript">
-								/* Advanced Options Control */
-								$(document).ready(function(){
-									<?php 
-                                    if ($row['contactPriority'] == '1') {
-                                        echo '$("#contactCall").attr("disabled", "disabled");';
-                                        echo '$("#contactSMS").attr("disabled", "disabled");';
-                                        echo '$("#contactEmail").attr("disabled", "disabled");';
-                                        echo '$("#contactMail").attr("disabled", "disabled");';
-                                    }
-           	 					?>	
-									$("#contactPriority").change(function(){
-										if ($('#contactPriority').val()=="1" ) {
-											$("#contactCall").attr("disabled", "disabled");
-											$("#contactCall").val("Y");
-											$("#contactSMS").attr("disabled", "disabled");
-											$("#contactSMS").val("Y");
-											$("#contactEmail").attr("disabled", "disabled");
-											$("#contactEmail").val("Y");
-											$("#contactMail").attr("disabled", "disabled");
-											$("#contactMail").val("Y");
-										} 
-										else {
-											$("#contactCall").removeAttr("disabled");
-											$("#contactSMS").removeAttr("disabled");
-											$("#contactEmail").removeAttr("disabled");
-											$("#contactMail").removeAttr("disabled");
-										}
-									 });
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Call?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency phone calls from school?') ?></span>
-						</td>
-						<td class="right">
-							<select name="contactCall" id="contactCall" class="standardWidth">
-								<option <?php if ($row['contactCall'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactCall'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'SMS?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency SMS messages from school?') ?></span>
-						</td>
-						<td class="right">
-							<select name="contactSMS" id="contactSMS" class="standardWidth">
-								<option <?php if ($row['contactSMS'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactSMS'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Email?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Receive non-emergency emails from school?') ?></span>
-						</td>
-						<td class="right">
-							<select name="contactEmail" id="contactEmail" class="standardWidth">
-								<option <?php if ($row['contactEmail'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactEmail'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Mail?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Receive postage mail from school?') ?></span>
-						</td>
-						<td class="right">
-							<select name="contactMail" id="contactMail" class="standardWidth">
-								<option <?php if ($row['contactMail'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['contactMail'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editAdultProcess.php?gibbonPersonID=$gibbonPersonID&gibbonFamilyID=$gibbonFamilyID&search=$search");
+
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $form->addRow()->addHeading(__('Add Adult'));
+
+            $row = $form->addRow();
+                $row->addLabel('adult', __('Adult\'s Name'));
+                $row->addTextField('adult')->setValue(formatName(htmlPrep($values['title']), htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Parent'))->isRequired()->readonly();
+
+            $row = $form->addRow();
+                $row->addLabel('comment', __('Comment'))->description(__('Data displayed in full Student Profile'));
+                $row->addTextArea('comment')->setRows(8);
+
+            $row = $form->addRow();
+                $row->addLabel('childDataAccess', __('Data Access?'))->description(__('Access data on family\'s children?'));
+                $row->addYesNo('childDataAccess')->isRequired();
+
+            $priorities = array(
+                '1' => __('1'),
+                '2' => __('2'),
+                '3' => __('3')
+            );
+            $row = $form->addRow();
+                $row->addLabel('contactPriority', __('Contact Priority'))->description(__('The order in which school should contact family members.'));
+                $row->addSelect('contactPriority')->fromArray($priorities)->isRequired();
+
+            $row = $form->addRow()->addClass('contact');
+                $row->addLabel('contactCall', __('Call?'))->description(__('Receive non-emergency phone calls from school?'));
+                $row->addYesNo('contactCall')->isRequired();
+
+            $row = $form->addRow()->addClass('contact');
+                $row->addLabel('contactSMS', __('SMS?'))->description(__('Receive non-emergency SMS messages from school?'));
+                $row->addYesNo('contactSMS')->isRequired();
+
+            $row = $form->addRow()->addClass('contact');
+                $row->addLabel('contactEmail', __('Email?'))->description(__('Receive non-emergency emails from school?'));
+                $row->addYesNo('contactEmail')->isRequired();
+
+            $row = $form->addRow()->addClass('contact');
+                $row->addLabel('contactMail', __('Mail?'))->description(__('Receive postage mail from school?'));
+                $row->addYesNo('contactMail')->isRequired();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
+
+            echo "<script type=\"text/javascript\">
+                $(document).ready(function(){
+                    $(\"#contactCall\").attr(\"disabled\", \"disabled\");
+                    $(\"#contactSMS\").attr(\"disabled\", \"disabled\");
+                    $(\"#contactEmail\").attr(\"disabled\", \"disabled\");
+                    $(\"#contactMail\").attr(\"disabled\", \"disabled\");
+                    $(\"#contactPriority\").change(function(){
+                        if ($('#contactPriority').val()==\"1\" ) {
+                            $(\"#contactCall\").attr(\"disabled\", \"disabled\");
+                            $(\"#contactCall\").val(\"Y\");
+                            $(\"#contactSMS\").attr(\"disabled\", \"disabled\");
+                            $(\"#contactSMS\").val(\"Y\");
+                            $(\"#contactEmail\").attr(\"disabled\", \"disabled\");
+                            $(\"#contactEmail\").val(\"Y\");
+                            $(\"#contactMail\").attr(\"disabled\", \"disabled\");
+                            $(\"#contactMail\").val(\"Y\");
+                        }
+                        else {
+                            $(\"#contactCall\").removeAttr(\"disabled\");
+                            $(\"#contactSMS\").removeAttr(\"disabled\");
+                            $(\"#contactEmail\").removeAttr(\"disabled\");
+                            $(\"#contactMail\").removeAttr(\"disabled\");
+                        }
+                    });
+                    $(\"#contactPriority\").change();
+                });
+            </script>";
 
         }
     }

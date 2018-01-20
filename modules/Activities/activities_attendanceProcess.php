@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         // Iterate through the session columns
         foreach ($sessions as $i => $session) {
             $sessionTimestamp = $session;
-            $sessionDate = date('Y-m-d', $sessionTimestamp);
+            $sessionDate = date('Y-m-d', intval($sessionTimestamp));
 
             if (empty($sessionTimestamp) || empty($sessionDate)) {
                 $URL .= '&return=error1';

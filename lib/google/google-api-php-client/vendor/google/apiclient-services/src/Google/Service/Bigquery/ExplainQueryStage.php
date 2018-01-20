@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,6 +26,7 @@ class Google_Service_Bigquery_ExplainQueryStage extends Google_Collection
   public $readRatioMax;
   public $recordsRead;
   public $recordsWritten;
+  public $status;
   protected $stepsType = 'Google_Service_Bigquery_ExplainQueryStep';
   protected $stepsDataType = 'array';
   public $waitRatioAvg;
@@ -97,10 +98,24 @@ class Google_Service_Bigquery_ExplainQueryStage extends Google_Collection
   {
     return $this->recordsWritten;
   }
+  public function setStatus($status)
+  {
+    $this->status = $status;
+  }
+  public function getStatus()
+  {
+    return $this->status;
+  }
+  /**
+   * @param Google_Service_Bigquery_ExplainQueryStep
+   */
   public function setSteps($steps)
   {
     $this->steps = $steps;
   }
+  /**
+   * @return Google_Service_Bigquery_ExplainQueryStep
+   */
   public function getSteps()
   {
     return $this->steps;

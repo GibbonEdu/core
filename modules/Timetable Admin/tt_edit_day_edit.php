@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit.php') == false) {
@@ -36,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     } else {
         try {
             $data = array('gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTDayID' => $gibbonTTDayID);
-            $sql = 'SELECT gibbonTT.gibbonTTID, gibbonSchoolYear.name AS yearName, gibbonTT.name AS ttName, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTColumnID FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTDayID=:gibbonTTDayID';
+            $sql = 'SELECT gibbonTT.gibbonTTID, gibbonSchoolYear.name AS schoolYear, gibbonTT.name AS ttName, gibbonTTDay.name, gibbonTTDay.nameShort, gibbonTTDay.color, gibbonTTDay.fontColor, gibbonTTColumn.gibbonTTColumnID, gibbonTTColumn.name AS columnName  FROM gibbonTTDay JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTT.gibbonTTID=:gibbonTTID AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTDayID=:gibbonTTDayID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -49,7 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
+
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Timetable Day').'</div>';
             echo '</div>';
@@ -58,108 +61,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_editProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo htmlPrep($row['yearName']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var yearName=new LiveValidation('yearName');
-								yearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="ttName" id="ttName" maxlength=20 value="<?php echo $row['ttName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var courseName=new LiveValidation('courseName');
-								coursename2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=12 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this timetable.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=4 value="<?php echo htmlPrep($row['nameShort']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Timetable Column') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            try {
-                                $dataSelect = array('gibbonTTColumnID' => $row['gibbonTTColumnID']);
-                                $sqlSelect = 'SELECT * FROM gibbonTTColumn WHERE gibbonTTColumnID=:gibbonTTColumnID';
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_editProcess.php?gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID");
 
-							if ($resultSelect->rowCount() == 1) {
-								$rowSelect = $resultSelect->fetch();
-								?>
-								<input readonly name="column" id="column" maxlength=20 value="<?php echo htmlPrep($rowSelect['name']) ?>" type="text" class="standardWidth">
-								<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonTTID', $gibbonTTID);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('gibbonTTColumnID', $values['gibbonTTColumnID']);
 
-								}
-								?>				
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $gibbonTTID ?>" type="hidden">
-							<input name="gibbonTTColumnID" id="gibbonTTColumnID" value="<?php echo $row['gibbonTTColumnID'] ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('schoolYear', __('School Year'));
+                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+
+            $row = $form->addRow();
+                $row->addLabel('ttName', __('Timetable'));
+                $row->addTextField('ttName')->maxLength(20)->isRequired()->readonly()->setValue($values['ttName']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('name')->maxLength(12)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('nameShort')->maxLength(4)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('color', __('Header Background Colour'))->description(__('RGB Hex value, without leading #.'));
+                $row->addTextField('color')->maxLength(6);
+
+            $row = $form->addRow();
+                $row->addLabel('fontColor', __('Header Font Colour'))->description(__('RGB Hex value, without leading #.'));
+                $row->addTextField('fontColor')->maxLength(6);
+
+            $row = $form->addRow();
+                $row->addLabel('columnName', __('Timetable Column'));
+                $row->addTextField('columnName')->maxLength(30)->isRequired()->readonly();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
 
             echo '<h2>';
             echo __($guid, 'Edit Classes by Period');
             echo '</h2>';
 
             try {
-                $data = array('gibbonTTColumnID' => $row['gibbonTTColumnID']);
+                $data = array('gibbonTTColumnID' => $values['gibbonTTColumnID']);
                 $sql = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart, name';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);

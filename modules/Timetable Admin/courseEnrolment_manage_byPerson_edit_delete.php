@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php') == false) {
@@ -62,32 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            echo "<div class='linkTop'>";
-            if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search&gibbonSchoolYearID=$gibbonSchoolYearID&type=$type'>".__($guid, 'Back').'</a>';
-            }
-            echo '</div>'; ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px' colspan=2>
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
-
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
+            echo $form->getOutput();
         }
     }
 }

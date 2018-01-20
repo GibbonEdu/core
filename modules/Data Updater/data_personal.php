@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -71,91 +74,62 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         echo '<h2>';
         echo __($guid, 'Choose User');
         echo '</h2>';
+		
+		$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
-        $gibbonPersonID = null;
-        if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
-        }
-        ?>
+        $form = Form::create('selectPerson', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_personal.php');
+    
+        if ($highestAction == 'Update Personal Data_any') {
+			$data = array();
+            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
+        } else {
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+			$sql = "(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
+					FROM gibbonFamilyAdult 
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+					JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+					JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID) 
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
+					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full') 
+				UNION (SELECT gibbonFamily.gibbonFamilyID, gibbonFamily.name as familyName, adult.surname, adult.preferredName, adult.gibbonPersonID 
+					FROM gibbonFamilyAdult 
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+					JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+					JOIN gibbonPerson as adult ON (familyAdult.gibbonPersonID=adult.gibbonPersonID) 
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID AND adult.status='Full')
+				ORDER BY surname, preferredName";
+		}
+		$result = $pdo->executeQuery($data, $sql);
+		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
 
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'Person') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonPersonID">
-							<?php
-                            $self = false;
-							if ($highestAction == 'Update Personal Data_any') {
-								try {
-									$dataSelect = array();
-									$sqlSelect = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								echo "<option value=''></option>";
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-									}
-									$self = true;
-								}
-							} else {
-								try {
-									$dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-									$sqlSelect = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								echo "<option value=''></option>";
-								while ($rowSelect = $resultSelect->fetch()) {
-									try {
-										$dataSelect2 = array('gibbonFamilyID1' => $rowSelect['gibbonFamilyID'], 'gibbonFamilyID2' => $rowSelect['gibbonFamilyID']);
-										$sqlSelect2 = "(SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID1) UNION (SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID FROM gibbonFamilyAdult JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID2)";
-										$resultSelect2 = $connection2->prepare($sqlSelect2);
-										$resultSelect2->execute($dataSelect2);
-									} catch (PDOException $e) {
-									}
-									while ($rowSelect2 = $resultSelect2->fetch()) {
-										if ($gibbonPersonID == $rowSelect2['gibbonPersonID']) {
-											echo "<option selected value='".$rowSelect2['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-										} else {
-											echo "<option value='".$rowSelect2['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-										}
-                                        //Check for self
-                                        if ($rowSelect2['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
-                                            $self = true;
-                                        }
-									}
-								}
-							}
+		// Collect a list of people with formatted names, add username for Data_any access
+		$people = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
+			$id = str_pad($person['gibbonPersonID'], 10, '0', STR_PAD_LEFT);
+			$carry[$id] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+			if ($highestAction == 'Update Personal Data_any') {
+				$carry[$id] .= ' ('.$person['username'].')';
+			}
+			return $carry;
+		}, array());
 
-							if ($self == false) {
-								if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
-									echo "<option selected value='".$_SESSION[$guid]['gibbonPersonID']."'>".formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true).'</option>';
-								} else {
-									echo "<option value='".$_SESSION[$guid]['gibbonPersonID']."'>".formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true).'</option>';
-								}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_personal.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+		// Add self to people if not in the list
+		if (array_key_exists($_SESSION[$guid]['gibbonPersonID'], $people) == false) {
+			$people[$_SESSION[$guid]['gibbonPersonID']] = formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Student', true);
+		}
+		
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonID', __('Person'));
+            $row->addSelect('gibbonPersonID')
+                ->fromArray($people)
+                ->isRequired()
+                ->selected($gibbonPersonID)
+                ->placeholder();
+        
+        $row = $form->addRow();
+            $row->addSubmit();
+        
+		echo $form->getOutput();    
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
@@ -196,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                             ++$checkCount;
                         }
                         //Check for self
-                        if ($rowSelect2['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
+                        if ($rowCheck2['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
                             $self = true;
                         }
                     }
@@ -222,31 +196,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
                 if ($resultSelect->rowCount() == 1) {
                     $rowSelect = $resultSelect->fetch();
-                    $staff = false;
-                    $student = false;
-                    $parent = false;
-                    $other = false;
-                    $roles = explode(',', $rowSelect['gibbonRoleIDAll']);
-                    foreach ($roles as $role) {
-                        $roleCategory = getRoleCategory($role, $connection2);
-                        if ($roleCategory == 'Staff') {
-                            $staff = true;
-                        }
-                        if ($roleCategory == 'Student') {
-                            $student = true;
-                        }
-                        if ($roleCategory == 'Parent') {
-                            $parent = true;
-                        }
-                        if ($roleCategory == 'Other') {
-                            $other = true;
-                        }
-                    }
+					//Get categories
+					$staff = false;
+					$student = false;
+					$parent = false;
+					$other = false;
+					$roles = explode(',', $rowSelect['gibbonRoleIDAll']);
+					foreach ($roles as $role) {
+						$roleCategory = getRoleCategory($role, $connection2);
+						$staff = $staff || ($roleCategory == 'Staff');
+						$student = $student || ($roleCategory == 'Student');
+						$parent = $parent || ($roleCategory == 'Parent');
+						$other = $other || ($roleCategory == 'Other');
+					}
                 }
 
                 //Check if there is already a pending form for this user
                 $existing = false;
-                $proceed = false;
+				$proceed = false;
+				$required = array();
+
                 try {
                     $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                     $sql = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND gibbonPersonIDUpdater=:gibbonPersonIDUpdater AND status='Pending'";
@@ -302,1618 +271,338 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                 if ($proceed == true) {
                     //Let's go!
-                    $row = $result->fetch(); ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personalProcess.php?gibbonPersonID='.$gibbonPersonID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Basic Information') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Title') ?><?php if (isset($required['title'])) {
-									if ($required['title'] == 'Y') {
-										echo ' *';
-									}
-								}
-                    			?></b><br/>
-								</td>
-								<td class="right">
-									<select class="standardWidth" name="title" id="title">
-										<?php if ($required['title'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-                    					?>
-										<option <?php if ($row['title'] == 'Ms.') { echo 'selected '; }
-										?>value="Ms."><?php echo __($guid, 'Ms.') ?></option>
-															<option <?php if ($row['title'] == 'Miss') { echo 'selected '; }
-										?>value="Miss"><?php echo __($guid, 'Miss') ?></option>
-															<option <?php if ($row['title'] == 'Mr.') { echo 'selected '; }
-										?>value="Mr."><?php echo __($guid, 'Mr.') ?></option>
-															<option <?php if ($row['title'] == 'Mrs.') { echo 'selected '; }
-										?>value="Mrs."><?php echo __($guid, 'Mrs.') ?></option>
-															<option <?php if ($row['title'] == 'Dr.') { echo 'selected '; }
-										?>value="Dr."><?php echo __($guid, 'Dr.') ?></option>
-									</select>
-									<?php
-                                    $fieldName = 'title';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Surname') ?><?php if (isset($required['surname'])) {
-										if ($required['surname'] == 'Y') {
-											echo ' *';
-										}
-									}
-                    				?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Family name as shown in ID documents.') ?></span>
-								</td>
-								<td class="right">
-									<input name="surname" id="surname" maxlength=30 value="<?php echo htmlPrep($row['surname']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'surname';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'First Name') ?><?php if (isset($required['firstName'])) {
-									if ($required['firstName'] == 'Y') {
-										echo ' *';
-									}
-								}
-                    			?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'First name as shown in ID documents.') ?></span>
-								</td>
-								<td class="right">
-									<input name="firstName" id="firstName" maxlength=30 value="<?php echo htmlPrep($row['firstName']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'firstName';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Preferred Name') ?><?php if (isset($required['preferredName'])) {
-									if ($required['preferredName'] == 'Y') {
-										echo ' *';
-									}
-								}
-                    			?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Most common name, alias, nickname, etc.') ?></span>
-								</td>
-								<td class="right">
-									<input name="preferredName" id="preferredName" maxlength=30 value="<?php echo htmlPrep($row['preferredName']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'preferredName';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Official Name') ?><?php if (isset($required['officialName'])) {
-										if ($required['officialName'] == 'Y') {
-											echo ' *';
-										}
-									}
-                    				?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Full name as shown in ID documents.') ?></span>
-								</td>
-								<td class="right">
-									<input name="officialName" id="officialName" maxlength=150 value="<?php echo htmlPrep($row['officialName']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'officialName';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Name In Characters') ?><?php if (isset($required['nameInCharacters'])) {
-									if ($required['nameInCharacters'] == 'Y') {
-										echo ' *';
-									}
-								}
-                    			?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Chinese or other character-based name.') ?></span>
-								</td>
-								<td class="right">
-									<input name="nameInCharacters" id="nameInCharacters" maxlength=20 value="<?php echo htmlPrep($row['nameInCharacters']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'nameInCharacters';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Date of Birth') ?><?php if (isset($required['dob'])) {
-    								if ($required['dob'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-									<span class="emphasis small"><?php echo $_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-								</td>
-								<td class="right">
-									<input name="dob" id="dob" maxlength=10 value="<?php echo dateConvertBack($guid, $row['dob']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'dob';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo $fieldName.'add( Validate.Format, {pattern:';
-											if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-												echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-											} else {
-												echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-											}
-											echo ', failureMessage: "Use dd/mm/yyyy." } );';
-											echo '</script>';
-										}
-									} else {
-										echo '<script type="text/javascript">';
-										echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-										echo $fieldName.'add( Validate.Format, {pattern:';
-										if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-										}
-										echo ', failureMessage: "Use dd/mm/yyyy." } );';
-										echo '</script>';
-									}
-									?>
-									<script type="text/javascript">
-										$(function() {
-											$( "#dob" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
+					$values = $result->fetch(); 
 
-							<?php
-                            if ($student or $staff) {
-                                ?>
-								<tr class='break'>
-									<td colspan=2>
-										<h3><?php echo __($guid, 'Emergency Contacts') ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td colspan=2>
-										<?php echo __($guid, 'These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.') ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 1 Name') ?><?php if (isset($required['emergency1Name'])) {
-											if ($required['emergency1Name'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency1Name" id="emergency1Name" maxlength=30 value="<?php echo htmlPrep($row['emergency1Name']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency1Name';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 1 Relationship') ?><?php if (isset($required['emergency1Relationship'])) {
-											if ($required['emergency1Relationship'] == 'Y') {
-												echo ' *';
-											}
-										}
-                               			?></b><br/>
-									</td>
-									<td class="right">
-										<select name="emergency1Relationship" id="emergency1Relationship" class="standardWidth">
-											<?php if ($required['emergency1Relationship'] == 'Y') {
-												echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-											} else {
-												echo "<option value=''></option>";
-											}
-                                			?>
-											<option <?php if ($row['emergency1Relationship'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Spouse') { echo 'selected '; } ?>value="Spouse"><?php echo __($guid, 'Spouse') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Offspring') { echo 'selected '; } ?>value="Offspring"><?php echo __($guid, 'Offspring') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Friend') { echo 'selected '; } ?>value="Friend"><?php echo __($guid, 'Friend') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Other Relation') { echo 'selected '; } ?>value="Other Relation"><?php echo __($guid, 'Other Relation') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Doctor') { echo 'selected '; } ?>value="Doctor"><?php echo __($guid, 'Doctor') ?></option>
-											<option <?php if ($row['emergency1Relationship'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
-										</select>
-										<?php
-                                        $fieldName = 'emergency1Relationship';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 1 Number 1') ?><?php if (isset($required['emergency1Number1'])) {
-											if ($required['emergency1Number1'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency1Number1" id="emergency1Number1" maxlength=30 value="<?php echo htmlPrep($row['emergency1Number1']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency1Number1';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 1 Number 2') ?><?php if (isset($required['emergency1Number2'])) {
-										if ($required['emergency1Number2'] == 'Y') {
-											echo ' *';
-										}
-									}
-                                	?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency1Number2" id="emergency1Number2" maxlength=30 value="<?php echo htmlPrep($row['emergency1Number2']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency1Number2';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 2 Name') ?><?php if (isset($required['emergency2Name'])) {
-											if ($required['emergency2Name'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency2Name" id="emergency2Name" maxlength=30 value="<?php echo htmlPrep($row['emergency2Name']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency2Name';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 2 Relationship') ?><?php if (isset($required['emergency2Relationship'])) {
-											if ($required['emergency2Relationship'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<select name="emergency2Relationship" id="emergency2Relationship" class="standardWidth">
-											<?php if ($required['emergency2Relationship'] == 'Y') {
-												echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-											} else {
-												echo "<option value=''></option>";
-											}
-                               				?>
-											<option <?php if ($row['emergency2Relationship'] == 'Parent') { echo 'selected '; } ?>value="Parent"><?php echo __($guid, 'Parent') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Spouse') { echo 'selected '; } ?>value="Spouse"><?php echo __($guid, 'Spouse') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Offspring') { echo 'selected '; } ?>value="Offspring"><?php echo __($guid, 'Offspring') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Friend') { echo 'selected '; } ?>value="Friend"><?php echo __($guid, 'Friend') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Other Relation') { echo 'selected '; } ?>value="Other Relation"><?php echo __($guid, 'Other Relation') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Doctor') { echo 'selected '; } ?>value="Doctor"><?php echo __($guid, 'Doctor') ?></option>
-											<option <?php if ($row['emergency2Relationship'] == 'Other') { echo 'selected '; } ?>value="Other"><?php echo __($guid, 'Other') ?></option>
-										</select>
-										<?php
-                                        $fieldName = 'emergency2Relationship';
-                                if (isset($required[$fieldName])) {
-                                    if ($required[$fieldName] == 'Y') {
-                                        echo '<script type="text/javascript">';
-                                        echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-                                        echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-                                        echo '</script>';
-                                    }
-                                }
-                                ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 2 Number 1') ?><?php if (isset($required['emergency2Number1'])) {
-											if ($required['emergency2Number1'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency2Number1" id="emergency2Number1" maxlength=30 value="<?php echo htmlPrep($row['emergency2Number1']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency2Number1';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Contact 2 Number 2') ?><?php if (isset($required['emergency2Number2'])) {
-											if ($required['emergency2Number2'] == 'Y') {
-												echo ' *';
-											}
-										}
-                               	 ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="emergency2Number2" id="emergency2Number2" maxlength=30 value="<?php echo htmlPrep($row['emergency2Number2']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'emergency2Number2';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-										?>
-									</td>
-								</tr>
-								<?php
-                            }
-                    		?>
+                    $form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_personalProcess.php?gibbonPersonID='.$gibbonPersonID);
+					$form->setFactory(DatabaseFormFactory::create($pdo));
 
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Contact Information') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Email') ?><?php if (isset($required['email'])) {
-    								if ($required['email'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<input name="email" id="email" maxlength=50 value="<?php echo htmlPrep($row['email']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'email';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo $fieldName.'.add(Validate.Email);';
-											echo '</script>';
-										}
-									} else {
-										echo '<script type="text/javascript">';
-										echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-										echo $fieldName.'.add(Validate.Email);';
-										echo '</script>';
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Alternate Email') ?><?php if (isset($required['emailAlternate'])) {
-   	 								if ($required['emailAlternate'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<input name="emailAlternate" id="emailAlternate" maxlength=50 value="<?php echo htmlPrep($row['emailAlternate']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'email';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo $fieldName.'.add(Validate.Email);';
-											echo '</script>';
-										}
-									} else {
-										echo '<script type="text/javascript">';
-										echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-										echo $fieldName.'.add(Validate.Email);';
-										echo '</script>';
-									}
-									?>
-								</td>
-							</tr>
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('existing', isset($values['gibbonPersonUpdateID'])? $values['gibbonPersonUpdateID'] : 'N');
+					
+					// BASIC INFORMATION
+					$form->addRow()->addHeading(__('Basic Information'));
 
-							<tr>
-								<td colspan=2>
-									<div class='warning'>
-										<?php echo __($guid, 'Address information for an individual only needs to be set under the following conditions:') ?>
-										<ol>
-											<li><?php echo __($guid, 'If the user is not in a family.') ?></li>
-											<li><?php echo __($guid, 'If the user\'s family does not have a home address set.') ?></li>
-											<li><?php echo __($guid, 'If the user needs an address in addition to their family\'s home address.') ?></li>
-										</ol>
-									</div>
-								</td>
-							</tr>
-							<?php
-                            //Controls to hide address fields unless they are present, or box is checked
-                            $addressSet = false;
-							if ($row['address1'] != '' or $row['address1District'] != '' or $row['address1Country'] != '' or $row['address2'] != '' or $row['address2District'] != '' or $row['address2Country'] != '') {
-								$addressSet = true;
+					$row = $form->addRow();
+						$row->addLabel('title', __('Title'));
+						$row->addSelectTitle('title');
+
+					$row = $form->addRow();
+						$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+						$row->addTextField('surname')->maxLength(30);
+
+					$row = $form->addRow();
+						$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
+						$row->addTextField('firstName')->maxLength(30);
+
+					$row = $form->addRow();
+						$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+						$row->addTextField('preferredName')->maxLength(30);
+
+					$row = $form->addRow();
+						$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
+						$row->addTextField('officialName')->maxLength(150)->setTitle(__('Please enter full name as shown in ID documents'));
+
+					$row = $form->addRow();
+						$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+						$row->addTextField('nameInCharacters')->maxLength(20);
+
+					$row = $form->addRow();
+						$row->addLabel('dob', __('Date of Birth'));
+						$row->addDate('dob');
+
+					// EMERGENCY CONTACTS
+					if ($student || $staff) {
+						$form->addRow()->addHeading(__('Emergency Contacts'));
+
+						$form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
+
+						$row = $form->addRow();
+						$row->addLabel('emergency1Name', __('Contact 1 Name'));
+						$row->addTextField('emergency1Name')->maxLength(30);
+
+						$row = $form->addRow();
+						$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
+						$row->addSelectEmergencyRelationship('emergency1Relationship');
+
+						$row = $form->addRow();
+						$row->addLabel('emergency1Number1', __('Contact 1 Number 1'));
+						$row->addTextField('emergency1Number1')->maxLength(30);
+
+						$row = $form->addRow();
+						$row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
+						$row->addTextField('emergency1Number2')->maxLength(30);
+
+						$row = $form->addRow();
+						$row->addLabel('emergency2Name', __('Contact 2 Name'));
+						$row->addTextField('emergency2Name')->maxLength(30);
+
+						$row = $form->addRow();
+						$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
+						$row->addSelectEmergencyRelationship('emergency2Relationship');
+
+						$row = $form->addRow();
+						$row->addLabel('emergency2Number1', __('Contact 2 Number 1'));
+						$row->addTextField('emergency2Number1')->maxLength(30);
+
+						$row = $form->addRow();
+						$row->addLabel('emergency2Number2', __('Contact 2 Number 2'));
+						$row->addTextField('emergency2Number2')->maxLength(30);
+					}
+
+					// CONTACT INFORMATION
+					$form->addRow()->addHeading(__('Contact Information'));
+
+					$row = $form->addRow();
+						$row->addLabel('email', __('Email'));
+						$row->addEmail('email')->maxLength(50);
+
+					$row = $form->addRow();
+						$row->addLabel('emailAlternate', __('Alternate Email'));
+						$row->addEmail('emailAlternate')->maxLength(50);
+
+					$row = $form->addRow();
+					$row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
+						->append('<ol>')
+						->append('<li>'.__('If the user is not in a family.').'</li>')
+						->append('<li>'.__('If the user\'s family does not have a home address set.').'</li>')
+						->append('<li>'.__('If the user needs an address in addition to their family\'s home address.').'</li>')
+						->append('</ol>');
+
+					$addressSet = ($values['address1'] != '' or $values['address1District'] != '' or $values['address1Country'] != '' or $values['address2'] != '' or $values['address2District'] != '' or $values['address2Country'] != '')? 'Yes' : '';
+
+					$row = $form->addRow();
+						$row->addLabel('showAddresses', __('Enter Personal Address?'));
+						$row->addCheckbox('showAddresses')->setValue('Yes')->checked($addressSet);
+
+					$form->toggleVisibilityByClass('address')->onCheckbox('showAddresses')->when('Yes');
+
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
+						$row->addTextField('address1')->maxLength(255);
+
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
+						$row->addTextFieldDistrict('address1District');
+
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address1Country', __('Address 1 Country'));
+						$row->addSelectCountry('address1Country');
+
+					if ($values['address1'] != '') {
+						try {
+                            $dataAddress = array(
+                                'gibbonPersonID' => $values['gibbonPersonID'], 
+                                'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
+                                'gibbonFamilyPeople' => implode(',', array_keys($people)),
+                            );
+							$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category 
+                                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                                WHERE status='Full' AND address1 LIKE :addressMatch 
+                                AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID 
+                                ORDER BY surname, preferredName";
+							$resultAddress = $connection2->prepare($sqlAddress);
+							$resultAddress->execute($dataAddress);
+						} catch (PDOException $e) {
+							echo "<div class='error'>".$e->getMessage().'</div>';
+						}
+
+						if ($resultAddress->rowCount() > 0) {
+							$addressCount = 0;
+
+							$row = $form->addRow()->addClass('address  matchHighlight');
+							$row->addLabel('matchAddress', __('Matching Address 1'))->description(__('These users have similar Address 1. Do you want to change them too?'));
+							$table = $row->addTable()->setClass('standardWidth');
+
+							while ($rowAddress = $resultAddress->fetch()) {
+								$adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
+
+								$row = $table->addRow()->addClass('address');
+								$row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
+								$row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
+
+								$addressCount++;
 							}
-							?>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Enter Personal Address?') ?></b><br/>
-								</td>
-								<td class='right' colspan=2>
-									<script type="text/javascript">
-										/* Advanced Options Control */
-										$(document).ready(function(){
-											<?php
-                                            if ($addressSet == false) {
-                                                echo '$(".address").slideUp("fast"); ';
-                                            }
-                    					?>
-											$("#showAddresses").click(function(){
-												if ($('input[name=showAddresses]:checked').val()=="Yes" ) {
-													$(".address").slideDown("fast", $(".address").css("display","table-row"));
-												}
-												else {
-													$(".address").slideUp("fast");
-													$("#address1").val("");
-													$("#address1District").val("");
-													$("#address1Country").val("");
-													$("#address2").val("");
-													$("#address2District").val("");
-													$("#address2Country").val("");
 
-												}
-											 });
-										});
-									</script>
-									<input <?php if ($addressSet) { echo 'checked' ; } ?> id='showAddresses' name='showAddresses' type='checkbox' value='Yes'/>
-								</td>
-							</tr>
+							$form->addHiddenValue('matchAddressCount', $addressCount);
+						}
+					}
 
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 1') ?></b><br/>
-									<span class="emphasis small"><span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span></span>
-								</td>
-								<td class="right">
-									<input name="address1" id="address1" maxlength=255 value="<?php echo htmlPrep($row['address1']) ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 1 District') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
-								</td>
-								<td class="right">
-									<input name="address1District" id="address1District" maxlength=30 value="<?php echo $row['address1District'] ?>" type="text" class="standardWidth">
-								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-                                            try {
-                                                $dataAuto = array();
-                                                $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
-                                                $resultAuto = $connection2->prepare($sqlAuto);
-                                                $resultAuto->execute($dataAuto);
-                                            } catch (PDOException $e) {
-                                            }
-											while ($rowAuto = $resultAuto->fetch()) {
-												echo '"'.$rowAuto['name'].'", ';
-											}
-											?>
-										];
-										$( "#address1District" ).autocomplete({source: availableTags});
-									});
-								</script>
-							</tr>
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 1 Country') ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="address1Country" id="address1Country" class="standardWidth">
-										<?php
-                                        try {
-                                            $dataSelect = array();
-                                            $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-										if (!empty($required['address1Country']) && $required['address1Country'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($rowSelect['printable_name'] == $row['address1Country']) {
-												$selected = ' selected';
-											}
-											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-										}
-										?>
-									</select>
-								</td>
-							</tr>
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
+						$row->addTextField('address2')->maxLength(255);
 
-							<?php
-                            //Check for matching addresses
-                            if ($row['address1'] != '') {
-                                $addressMatch = '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $row['address1']))).'%';
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
+						$row->addTextFieldDistrict('address2District');
 
-                                try {
-                                    $dataAddress = array('addressMatch' => $addressMatch, 'gibbonPersonID' => $row['gibbonPersonID']);
-                                    $sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
-                                    $resultAddress = $connection2->prepare($sqlAddress);
-                                    $resultAddress->execute($dataAddress);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+					$row = $form->addRow()->addClass('address');
+						$row->addLabel('address2Country', __('Address 2 Country'));
+						$row->addSelectCountry('address2Country');
 
-                                if ($resultAddress->fetch() > 0) {
-                                    $addressCount = 0;
-                                    echo "<tr class='address'>";
-                                    echo "<td style='border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> ";
-                                    echo '<b>'.__($guid, 'Matching Address 1').'</b><br/>';
-                                    echo "<span style='font-size: 90%'><i>".__($guid, 'These users have similar Address 1. Do you want to change them too?').'</span>';
-                                    echo '</td>';
-                                    echo "<td style='text-align: right; border-top: 1px dashed #c00; border-bottom: 1px dashed #c00; background-color: #F6CECB'> ";
-                                    echo "<table cellspacing='0' style='width:306px; float: right; padding: 0px; margin: 0px'>";
-                                    while ($rowAddress = $resultAddress->fetch()) {
-                                        echo '<tr>';
-                                        echo "<td style='padding-left: 0px; padding-right: 0px; width:200px'>";
-                                        echo "<input readonly style='float: left; margin-left: 0px; width: 200px' type='text' value='".formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].")'>".'<br/>';
-                                        echo '</td>';
-                                        echo "<td style='padding-left: 0px; padding-right: 0px; width:60px'>";
-                                        echo "<input type='checkbox' name='$addressCount-matchAddress' value='".$rowAddress['gibbonPersonID']."'>".'<br/>';
-                                        echo '</td>';
-                                        echo '</tr>';
-                                        ++$addressCount;
-                                    }
-                                    echo '</table>';
-                                    echo '</td>';
-                                    echo '</tr>';
-                                    echo "<input type='hidden' name='matchAddressCount' value='$addressCount'>".'<br/>';
-                                }
-                            }
-                    		?>
+					for ($i = 1; $i < 5; ++$i) {
+						$row = $form->addRow();
+						$row->addLabel('phone'.$i, __('Phone').' '.$i)->description(__('Type, country code, number.'));
+						$row->addPhoneNumber('phone'.$i);
+					}
 
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 2') ?></b><br/>
-									<span class="emphasis small"><span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span></span>
-								</td>
-								<td class="right">
-									<input name="address2" id="address2" maxlength=255 value="<?php echo htmlPrep($row['address2']) ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 2 District') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
-								</td>
-								<td class="right">
-									<input name="address2District" id="address2District" maxlength=30 value="<?php echo $row['address2District'] ?>" type="text" class="standardWidth">
-								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-                                            try {
-                                                $dataAuto = array();
-                                                $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
-                                                $resultAuto = $connection2->prepare($sqlAuto);
-                                                $resultAuto->execute($dataAuto);
-                                            } catch (PDOException $e) {
-                                            }
-											while ($rowAuto = $resultAuto->fetch()) {
-												echo '"'.$rowAuto['name'].'", ';
-											}
-											?>
-										];
-										$( "#address2District" ).autocomplete({source: availableTags});
-									});
-								</script>
-							</tr>
-							<tr class='address'>
-								<td>
-									<b><?php echo __($guid, 'Address 2 Country') ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="address2Country" id="address2Country" class="standardWidth">
-										<?php
-                                        try {
-                                            $dataSelect = array();
-                                            $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-										if (!empty($required['address2Country']) && $required['address2Country'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($rowSelect['printable_name'] == $row['address2Country']) {
-												$selected = ' selected';
-											}
-											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-										}
-										?>
-									</select>
-								</td>
-							</tr>
-							<?php
-                                for ($i = 1; $i < 5; ++$i) {
-                                    ?>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Phone') ?> <?php echo $i ?><?php if (isset($required['phone'.$i])) {
-												if ($required['phone'.$i] == 'Y') {
-													echo ' *';
-												}
-											}
-                                    		?></b><br/>
-											<span class="emphasis small"><?php echo __($guid, 'Type, country code, number.') ?></span>
-										</td>
-										<td class="right">
-											<input name="phone<?php echo $i ?>" id="phone<?php echo $i ?>" maxlength=20 value="<?php echo $row['phone'.$i] ?>" type="text" style="width: 160px">
-											<?php
-                                            $fieldName = 'phone'.$i;
-											if (isset($required[$fieldName])) {
-												if ($required[$fieldName] == 'Y') {
-													echo '<script type="text/javascript">';
-													echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-													echo $fieldName.'.add(Validate.Presence);';
-													echo '</script>';
-												}
-											}
-											?>
-											<select name="phone<?php echo $i ?>CountryCode" id="phone<?php echo $i ?>CountryCode" style="width: 60px">
-												<?php
-                                                if ($required['phone'.$i] == 'Y') {
-                                                    echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                                } else {
-                                                    echo "<option value=''></option>";
-                                                }
-												try {
-													$dataSelect = array();
-													$sqlSelect = 'SELECT * FROM gibbonCountry ORDER BY printable_name';
-													$resultSelect = $connection2->prepare($sqlSelect);
-													$resultSelect->execute($dataSelect);
-												} catch (PDOException $e) {
-												}
-												while ($rowSelect = $resultSelect->fetch()) {
-													$selected = '';
-													if ($row['phone'.$i.'CountryCode'] != '' and $row['phone'.$i.'CountryCode'] == $rowSelect['iddCountryCode']) {
-														$selected = 'selected';
-													}
-													echo "<option $selected value='".$rowSelect['iddCountryCode']."'>".htmlPrep($rowSelect['iddCountryCode']).' - '.htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-												}
-												?>
-											</select>
-											<?php
-                                            $fieldName = 'phone'.$i.'CountryCode';
+					// BACKGROUND INFORMATION
+					$form->addRow()->addHeading(__('Background Information'));
 
-											if (isset($required['phone'.$i])) {
-												if ($required['phone'.$i] == 'Y') {
-													echo '<script type="text/javascript">';
-													echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-													echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-													echo '</script>';
-												}
-											}
-											?>
-											<select style="width: 70px" name="phone<?php echo $i ?>Type" id="phone<?php echo $i ?>Type">
-												<?php if ($required['phone'.$i] == 'Y') {
-													echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-												} else {
-													echo "<option value=''></option>";
-												}
-                                    			?>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Mobile') { echo 'selected'; } ?> value="Mobile"><?php echo __($guid, 'Mobile') ?></option>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Home') { echo 'selected'; } ?> value="Home"><?php echo __($guid, 'Home') ?></option>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Work') { echo 'selected'; } ?> value="Work"><?php echo __($guid, 'Work') ?></option>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Fax') { echo 'selected'; } ?> value="Fax"><?php echo __($guid, 'Fax') ?></option>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Pager') { echo 'selected'; } ?> value="Pager"><?php echo __($guid, 'Pager') ?></option>
-												<option <?php if ($row['phone'.$i.'Type'] == 'Other') { echo 'selected'; } ?> value="Other"><?php echo __($guid, 'Other') ?></option>
-											</select>
-											<?php
-                                            $fieldName = 'phone'.$i.'Type';
-											if (isset($required['phone'.$i])) {
-												if ($required['phone'.$i] == 'Y') {
-													echo '<script type="text/javascript">';
-													echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-													echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-													echo '</script>';
-												}
-											}
-											?>
-										</td>
-									</tr>
-									<?php
+					$row = $form->addRow();
+						$row->addLabel('languageFirst', __('First Language'));
+						$row->addSelectLanguage('languageFirst');
 
-                                }
-                    			?>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Background Information') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'First Language') ?><?php if (isset($required['languageFirst'])) {
-    								if ($required['languageFirst'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Student\'s native/first/mother language.') ?></span>
-								</td>
-								<td class="right">
-									<select name="languageFirst" id="languageFirst" class="standardWidth">
-										<?php
-                                        if ($required['languageFirst'] == 'Y') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        } else {
-                                            echo "<option value=''></option>";
-                                        }
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['languageFirst'] == $rowSelect['name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'languageFirst';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Second Language') ?><?php if (isset($required['languageSecond'])) {
-    								if ($required['languageSecond'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="languageSecond" id="languageSecond" class="standardWidth">
-										<?php
-                                        if ($required['languageSecond'] == 'Y') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        } else {
-                                            echo "<option value=''></option>";
-                                        }
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['languageSecond'] == $rowSelect['name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'languageSecond';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Third Language') ?><?php if (isset($required['languageThird'])) {
-    								if ($required['languageThird'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="languageThird" id="languageThird" class="standardWidth">
-										<?php
-                                        if ($required['languageThird'] == 'Y') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        } else {
-                                            echo "<option value=''></option>";
-                                        }
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['languageThird'] == $rowSelect['name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'languageThird';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Country of Birth') ?><?php if (isset($required['countryOfBirth'])) {
-    								if ($required['countryOfBirth'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="countryOfBirth" id="countryOfBirth" class="standardWidth">
-										<?php
-                                        try {
-                                            $dataSelect = array();
-                                            $sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-										if ($required['countryOfBirth'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['countryOfBirth'] == $rowSelect['printable_name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'countryOfBirth';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Ethnicity') ?><?php if (isset($required['ethnicity'])) {
-    								if ($required['ethnicity'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="ethnicity" id="ethnicity" class="standardWidth">
-										<?php if ($required['ethnicity'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-                    					?>
-										<?php
-                                        $ethnicities = explode(',', getSettingByScope($connection2, 'User Admin', 'ethnicity'));
-										foreach ($ethnicities as $ethnicity) {
-											$selected = '';
-											if (trim($ethnicity) == $row['ethnicity']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".trim($ethnicity)."'>".trim($ethnicity).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'ethnicity';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Religion') ?><?php if (isset($required['religion'])) {
-    								if ($required['religion'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="religion" id="religion" class="standardWidth">
-										<option <?php if ($row['religion'] == '') { echo 'selected '; } ?>value=""></option>
-										<?php
-                                        $religions = explode(',', getSettingByScope($connection2, 'User Admin', 'religions'));
-										foreach ($religions as $religion) {
-											$selected = '';
-											if (trim($religion) == $row['religion']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".trim($religion)."'>".trim($religion).'</option>';
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'religion';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Citizenship 1') ?><?php if (isset($required['citizenship1'])) {
-    								if ($required['citizenship1'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="citizenship1" id="citizenship1" class="standardWidth">
-										<?php
-                                        if ($required['citizenship1'] == 'Y') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        } else {
-                                            echo "<option value=''></option>";
-                                        }
-										$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-										if ($nationalityList == '') {
-											try {
-												$dataSelect = array();
-												$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-												$resultSelect = $connection2->prepare($sqlSelect);
-												$resultSelect->execute($dataSelect);
-											} catch (PDOException $e) {
-											}
-											while ($rowSelect = $resultSelect->fetch()) {
-												echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-											}
-										} else {
-											$nationalities = explode(',', $nationalityList);
-											foreach ($nationalities as $nationality) {
-												$selected = '';
-												if (trim($nationality) == $row['citizenship1']) {
-													$selected = 'selected';
-												}
-												echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
-											}
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'citizenship1';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Citizenship 1 Passport Number') ?><?php if (isset($required['citizenship1Passport'])) {
-    								if ($required['citizenship1Passport'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<input name="citizenship1Passport" id="citizenship1Passport" maxlength=30 value="<?php echo htmlPrep($row['citizenship1Passport']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'citizenship1Passport';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Citizenship 2') ?><?php if (isset($required['citizenshipr'])) {
-    								if ($required['citizenship2'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<select name="citizenship2" id="citizenship2" class="standardWidth">
-										<?php
-                                        if ($required['citizenship2'] == 'Y') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        } else {
-                                            echo "<option value=''></option>";
-                                        }
-										$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
-										if ($nationalityList == '') {
-											try {
-												$dataSelect = array();
-												$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-												$resultSelect = $connection2->prepare($sqlSelect);
-												$resultSelect->execute($dataSelect);
-											} catch (PDOException $e) {
-											}
-											while ($rowSelect = $resultSelect->fetch()) {
-												echo "<option value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-											}
-										} else {
-											$nationalities = explode(',', $nationalityList);
-											foreach ($nationalities as $nationality) {
-												$selected = '';
-												if (trim($nationality) == $row['citizenship2']) {
-													$selected = 'selected';
-												}
-												echo "<option $selected value='".trim($nationality)."'>".trim($nationality).'</option>';
-											}
-										}
-										?>
-									</select>
-									<?php
-                                    $fieldName = 'citizenship2';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Citizenship 2 Passport Number') ?><?php if (isset($required['citizenship2Passport'])) {
-    								if ($required['citizenship2Passport'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<input name="citizenship2Passport" id="citizenship2Passport" maxlength=30 value="<?php echo htmlPrep($row['citizenship2Passport']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'citizenship2Passport';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php
-                                    $star = '';
-									if (isset($required['nationalIDCardNumber'])) {
-										if ($required['nationalIDCardNumber'] == 'Y') {
-											$star = ' *';
-										}
-									}
-									if ($_SESSION[$guid]['country'] == '') {
-										echo '<b>'.__($guid, 'National ID Card Number').$star.'</b><br/>';
-									} else {
-										echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').$star.'</b><br/>';
-									}
-									?>
-								</td>
-								<td class="right">
-									<input name="nationalIDCardNumber" id="nationalIDCardNumber" maxlength=30 value="<?php echo htmlPrep($row['nationalIDCardNumber']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'nationalIDCardNumber';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php
-                                    $star = '';
-									if (isset($required['residencyStatus'])) {
-										if ($required['residencyStatus'] == 'Y') {
-											$star = ' *';
-										}
-									}
-									if ($_SESSION[$guid]['country'] == '') {
-										echo '<b>'.__($guid, 'Residency/Visa Type').$star.'</b><br/>';
-									} else {
-										echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').$star.'</b><br/>';
-									}
-									?>
-								</td>
-								<td class="right">
-									<?php
-                                    $residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
-									if ($residencyStatusList == '') {
-										echo "<input name='residencyStatus' id='residencyStatus' maxlength=30 value='".$row['residencyStatus']."' type='text' style='width: 300px'>";
-										$fieldName = 'residencyStatus';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.'.add(Validate.Presence);';
-												echo '</script>';
-											}
-										}
-									} else {
-										echo "<select name='residencyStatus' id='residencyStatus' style='width: 302px'>";
-										if ($required['residencyStatus'] == 'Y') {
-											echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-										} else {
-											echo "<option value=''></option>";
-										}
-										$residencyStatuses = explode(',', $residencyStatusList);
-										foreach ($residencyStatuses as $residencyStatus) {
-											$selected = '';
-											if (trim($residencyStatus) == $row['residencyStatus']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".trim($residencyStatus)."'>".trim($residencyStatus).'</option>';
-										}
-										echo '</select>';
-										$fieldName = 'residencyStatus';
-										if (isset($required[$fieldName])) {
-											if ($required[$fieldName] == 'Y') {
-												echo '<script type="text/javascript">';
-												echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-												echo $fieldName.".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"Select something!\"});";
-												echo '</script>';
-											}
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<?php
-                                    $star = '';
-									if (isset($required['visaExpiryDate'])) {
-										if ($required['visaExpiryDate'] == 'Y') {
-											$star = ' *';
-										}
-									}
-									if ($_SESSION[$guid]['country'] == '') {
-										echo '<b>'.__($guid, 'Visa Expiry Date').$star.'</b><br/>';
-									} else {
-										echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').$star.'</b><br/>';
-									}
-									echo "<span style='font-size: 90%'><i>Format: ";
-									if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-										echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-									echo '. '.__($guid, 'If relevant.').'</span>';
-									?>
-								</td>
-								<td class="right">
-									<input name="visaExpiryDate" id="visaExpiryDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['visaExpiryDate']) ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var visaExpiryDate=new LiveValidation('visaExpiryDate');
-										visaExpiryDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-											echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-										}
-															?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-											echo 'dd/mm/yyyy';
-										} else {
-											echo $_SESSION[$guid]['i18n']['dateFormat'];
-										}
-															?>." } );
-									 	<?php
-                                        if ($required['visaExpiryDate'] == 'Y') {
-                                            echo 'visaExpiryDate.add(Validate.Presence);';
-                                        }
-                    					?>
-									</script>
-									 <script type="text/javascript">
-										$(function() {
-											$( "#visaExpiryDate" ).datepicker();
-										});
-									</script>
-								</td>
-							</tr>
+					$row = $form->addRow();
+						$row->addLabel('languageSecond', __('Second Language'));
+						$row->addSelectLanguage('languageSecond');
 
-							<?php
-                            if ($parent) {
-                                ?>
-								<tr class='break'>
-									<td colspan=2>
-										<h3><?php echo __($guid, 'Employment') ?></h3>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Profession') ?><?php if (isset($required['profession'])) {
-										if ($required['profession'] == 'Y') {
-											echo ' *';
-										}
-									}
-                                ?></b><br/>
-									</td>
-									<td class="right">
-										<input name="profession" id="profession" maxlength=30 value="<?php echo htmlPrep($row['profession']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'profession';
-                                if (isset($required[$fieldName])) {
-                                    if ($required[$fieldName] == 'Y') {
-                                        echo '<script type="text/javascript">';
-                                        echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-                                        echo $fieldName.'.add(Validate.Presence);';
-                                        echo '</script>';
-                                    }
-                                }
-                                ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Employer') ?><?php if (isset($required['employer'])) {
-											if ($required['employer'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="employer" id="employer" maxlength=30 value="<?php echo htmlPrep($row['employer']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'employer';
-                                if (isset($required[$fieldName])) {
-                                    if ($required[$fieldName] == 'Y') {
-                                        echo '<script type="text/javascript">';
-                                        echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-                                        echo $fieldName.'.add(Validate.Presence);';
-                                        echo '</script>';
-                                    }
-                                }
-                                ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Job Title') ?><?php if (isset($required['jobTitle'])) {
-											if ($required['jobTitle'] == 'Y') {
-												echo ' *';
-											}
-										}
-                                		?></b><br/>
-									</td>
-									<td class="right">
-										<input name="jobTitle" id="jobTitle" maxlength=30 value="<?php echo htmlPrep($row['jobTitle']) ?>" type="text" class="standardWidth">
-										<?php
-                                        $fieldName = 'jobTitle';
-                                if (isset($required[$fieldName])) {
-                                    if ($required[$fieldName] == 'Y') {
-                                        echo '<script type="text/javascript">';
-                                        echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-                                        echo $fieldName.'.add(Validate.Presence);';
-                                        echo '</script>';
-                                    }
-                                }
-                                ?>
-									</td>
-								</tr>
-								<?php
+					$row = $form->addRow();
+						$row->addLabel('languageThird', __('Third Language'));
+						$row->addSelectLanguage('languageThird');
 
-                            }
-                    		?>
+					$row = $form->addRow();
+						$row->addLabel('countryOfBirth', __('Country of Birth'));
+						$row->addSelectCountry('countryOfBirth');
 
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Miscellaneous') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Vehicle Registration') ?><?php if (isset($required['vehicleRegistration'])) {
-    								if ($required['vehicleRegistration'] == 'Y') {
-											echo ' *';
-										}
-									}
-									?></b><br/>
-								</td>
-								<td class="right">
-									<input name="vehicleRegistration" id="vehicleRegistration" maxlength=30 value="<?php echo htmlPrep($row['vehicleRegistration']) ?>" type="text" class="standardWidth">
-									<?php
-                                    $fieldName = 'vehicleRegistration';
-									if (isset($required[$fieldName])) {
-										if ($required[$fieldName] == 'Y') {
-											echo '<script type="text/javascript">';
-											echo 'var '.$fieldName."=new LiveValidation('".$fieldName."');";
-											echo $fieldName.'.add(Validate.Presence);';
-											echo '</script>';
-										}
-									}
-									?>
-								</td>
-							</tr>
-							<?php
-                            //Check if any roles are "Student"
-                            $privacySet = false;
-							if ($student) {
-								$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-								$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-								$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
-								if ($privacySetting == 'Y' and $privacyBlurb != '' and $privacyOptions != '') {
-									?>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Privacy') ?></b><br/>
-											<span class="emphasis small"><?php echo htmlPrep($privacyBlurb) ?><br/>
-											</span>
-										</td>
-										<td class="right">
-											<?php
-                                            $options = explode(',', $privacyOptions);
-											$privacyChecks = explode(',', $row['privacy']);
-											foreach ($options as $option) {
-												$checked = '';
-												foreach ($privacyChecks as $privacyCheck) {
-													if ($option == $privacyCheck) {
-														$checked = 'checked';
-													}
-												}
-												echo $option." <input $checked type='checkbox' name='privacyOptions[]' value='".htmlPrep($option)."'/><br/>";
-											}
-											?>
+					$ethnicities = getSettingByScope($connection2, 'User Admin', 'ethnicity');
+					$row = $form->addRow();
+						$row->addLabel('ethnicity', __('Ethnicity'));
+						if (!empty($ethnicities)) {
+							$row->addSelect('ethnicity')->fromString($ethnicities)->placeholder();
+						} else {
+							$row->addTextField('ethnicity')->maxLength(255);
+						}
 
-										</td>
-									</tr>
-									<?php
+					$religions = getSettingByScope($connection2, 'User Admin', 'religions');
+					$row = $form->addRow();
+						$row->addLabel('religion', __('Religion'));
+						if (!empty($religions)) {
+							$row->addSelect('religion')->fromString($religions)->placeholder();
+						} else {
+							$row->addTextField('religion')->maxLength(30);
+						}
 
-									}
-								}
+					$nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
+					$row = $form->addRow();
+						$row->addLabel('citizenship1', __('Citizenship 1'));
+						if (!empty($nationalityList)) {
+							$row->addSelect('citizenship1')->fromString($nationalityList)->placeholder();
+						} else {
+							$row->addSelectCountry('citizenship1');
+						}
 
-                            //CUSTOM FIELDS
-                            $fields = unserialize($row['fields']);
-							$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, null, true);
-							if ($resultFields->rowCount() > 0) {
-								?>
-								<tr class='break'>
-									<td colspan=2>
-										<h3><?php echo __($guid, 'Custom Fields') ?></h3>
-									</td>
-								</tr>
-								<?php
-                                while ($rowFields = $resultFields->fetch()) {
-                                    $value = '';
-                                    if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
-                                        $value = $fields[$rowFields['gibbonPersonFieldID']];
-                                    }
-                                    if ($highestAction != 'Update Personal Data_any') {
-                                        echo renderCustomFieldRow($connection2, $guid, $rowFields, $value);
-                                    }
-                                    else {
-                                        echo renderCustomFieldRow($connection2, $guid, $rowFields, $value, '', '', true);
-                                    }
+					$row = $form->addRow();
+						$row->addLabel('citizenship1Passport', __('Citizenship 1 Passport Number'));
+						$row->addTextField('citizenship1Passport')->maxLength(30);
 
-                                }
-							}
-							?>
+					$row = $form->addRow();
+						$row->addLabel('citizenship2', __('Citizenship 2'));
+						if (!empty($nationalityList)) {
+							$row->addSelect('citizenship2')->fromString($nationalityList)->placeholder();
+						} else {
+							$row->addSelectCountry('citizenship2');
+						}
 
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($existing) {
-                                        echo "<input type='hidden' name='existing' value='".$row['gibbonPersonUpdateID']."'>";
-                                    } else {
-                                        echo "<input type='hidden' name='existing' value='N'>";
-                                    }
-                   		 			?>
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+					$row = $form->addRow();
+						$row->addLabel('citizenship2Passport', __('Citizenship 2 Passport Number'));
+						$row->addTextField('citizenship2Passport')->maxLength(30);
 
+					if (!empty($_SESSION[$guid]['country'])) {
+						$nationalIDCardNumberLabel = $_SESSION[$guid]['country'].' '.__('ID Card Number');
+						$nationalIDCardScanLabel = $_SESSION[$guid]['country'].' '.__('ID Card Scan');
+						$residencyStatusLabel = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
+						$visaExpiryDateLabel = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+					} else {
+						$nationalIDCardNumberLabel = __('National ID Card Number');
+						$nationalIDCardScanLabel = __('National ID Card Scan');
+						$residencyStatusLabel = __('Residency/Visa Type');
+						$visaExpiryDateLabel = __('Visa Expiry Date');
+					}
+
+					$row = $form->addRow();
+						$row->addLabel('nationalIDCardNumber', $nationalIDCardNumberLabel);
+						$row->addTextField('nationalIDCardNumber')->maxLength(30);
+
+					$residencyStatusList = getSettingByScope($connection2, 'User Admin', 'residencyStatus');
+					$row = $form->addRow();
+						$row->addLabel('residencyStatus', $residencyStatusLabel);
+						if (!empty($residencyStatusList)) {
+							$row->addSelect('residencyStatus')->fromString($residencyStatusList)->placeholder();
+						} else {
+							$row->addTextField('residencyStatus')->maxLength(30);
+						}
+
+					$row = $form->addRow();
+						$row->addLabel('visaExpiryDate', $visaExpiryDateLabel)->description(__('If relevant.'));
+						$row->addDate('visaExpiryDate');
+
+					// EMPLOYMENT
+					if ($parent) {
+						$form->addRow()->addHeading(__('Employment'));
+
+						$row = $form->addRow();
+							$row->addLabel('profession', __('Profession'));
+							$row->addTextField('profession')->maxLength(30);
+
+						$row = $form->addRow();
+							$row->addLabel('employer', __('Employer'));
+							$row->addTextField('employer')->maxLength(30);
+
+						$row = $form->addRow();
+							$row->addLabel('jobTitle', __('Job Title'));
+							$row->addTextField('jobTitle')->maxLength(30);
+					}
+
+					// MISCELLANEOUS
+					$form->addRow()->addHeading(__('Miscellaneous'));
+					
+					$row = $form->addRow();
+						$row->addLabel('vehicleRegistration', __('Vehicle Registration'));
+						$row->addTextField('vehicleRegistration')->maxLength(20);
+
+					if ($student) {
+						$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
+							$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+							$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+
+						if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+							$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+							$values['privacyOptions'] = $values['privacy'];
+
+							$row = $form->addRow();
+								$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+								$row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values);
+						}
+					}
+
+					// CUSTOM FIELDS
+					$existingFields = (isset($values['fields']))? unserialize($values['fields']) : null;
+					$resultFields = getCustomFields($connection2, $guid, $student, $staff, $parent, $other, false, true);
+					if ($resultFields->rowCount() > 0) {
+						$heading = $form->addRow()->addHeading(__('Custom Fields'));
+
+						while ($rowFields = $resultFields->fetch()) {
+							$name = 'custom'.$rowFields['gibbonPersonFieldID'];
+							$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+
+							$row = $form->addRow();
+							$row->addLabel($name, $rowFields['name']);
+							$row->addCustomField($name, $rowFields)->setValue($value);
+						}
+					}
+
+					$row = $form->addRow();
+                        $row->addFooter();
+						$row->addSubmit();
+						
+					$required = array_filter($required, function($item) {
+						return $item == 'Y';
+					});
+
+					$form->loadStateFrom('isRequired', $required);
+                    $form->loadAllValuesFrom($values);
+
+					echo $form->getOutput();
                 }
             }
         }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_manage_delete.php') == false) {
@@ -43,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = "SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND NOT status='Current'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -55,32 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYear_manage_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-							<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-						</td>
-						<td class="right">
-							
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
-
+            $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYear_manage_deleteProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID", true);
+            echo $form->getOutput();
         }
     }
 }

@@ -31,6 +31,10 @@ use Gibbon\Forms\FormFactoryInterface;
  */
 class FormFactory implements FormFactoryInterface
 {
+    /**
+     * Create and return an instance of FormFactory.
+     * @return  object FormFactory
+     */
     public static function create()
     {
         return new FormFactory();
@@ -53,6 +57,16 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
+    public function createTableCell($content = '')
+    {
+        return new Layout\TableCell($content);
+    }
+
+    public function createGrid($id = '', $columns = 1)
+    {
+        return new Layout\Grid($this, $id, $columns);
+    }
+
     public function createTrigger($selector = '')
     {
         return new Layout\Trigger($selector);
@@ -73,6 +87,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Element($content);
     }
 
+    public function createWebLink($content = '')
+    {
+    	return new Layout\WebLink($content);
+    }
+
     /* BASIC INPUT --------------------------- */
 
     public function createCustomField($name, $fields = array())
@@ -90,6 +109,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createFinder($name)
+    {
+        return new Input\Finder($name);
+    }
+
     public function createEditor($name, $guid)
     {
         return new Input\Editor($name, $guid);
@@ -100,6 +124,7 @@ class FormFactory implements FormFactoryInterface
         return (new Input\TextField($name))->addValidation('Validate.Email');
     }
 
+    //A URL web link
     public function createURL($name)
     {
         return (new Input\TextField($name) )
@@ -113,6 +138,11 @@ class FormFactory implements FormFactoryInterface
     public function createNumber($name)
     {
         return new Input\Number($name);
+    }
+
+    public function createCurrency($name)
+    {
+        return new Input\Currency($name);
     }
 
     public function createPassword($name)
@@ -150,35 +180,67 @@ class FormFactory implements FormFactoryInterface
         return new Input\Select($name);
     }
 
+    public function createMultiSelect($name)
+    {
+        return new Input\MultiSelect($this, $name);
+    }
+
+    public function createButton($label = 'Button', $onClick = '', $id = null)
+    {
+        $button = new Input\Button($label, $onClick);
+        if(!empty($id)) {
+            $button->setID($id)->setName($id);
+        }
+        
+        return $button;
+    }
+
+    public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
+    {
+        return new Input\CustomBlocks($this, $name, $block, $session);
+    }
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
-    public function createSubheading($label)
+    public function createSubheading($content, $tag = 'h4')
     {
-        $content = sprintf('<h4>%s</h4>', $label);
+        $content = sprintf('<%1$s>%2$s</%1$s>', $tag, $content);
         return $this->createContent($content);
     }
 
     public function createAlert($content, $level = 'warning')
     {
-        $content = sprintf('<div class="%s">%s</div>', $level, $content);
-        return $this->createContent($content);
+        return $this->createContent($content)->wrap('<div class="'.$level.'">', '</div>');
     }
 
     public function createSubmit($label = 'Submit')
     {
-        $content = sprintf('<input type="submit" value="%s">', $label);
+        $content = sprintf('<input type="submit" value="%s">', __($label));
         return $this->createContent($content)->setClass('right');
     }
 
-    public function createButton($label = 'Button', $onClick = '')
+    public function createSearchSubmit($session, $clearLabel = 'Clear Filters', $passParams = array())
     {
-        $content = sprintf('<input type="button" value="%s" onClick="%s">', $label, $onClick);
-        return $this->createContent($content)->setClass('right');
+        $passParams[] = 'q';
+        $parameters = array_intersect_key($_GET, array_flip($passParams));
+        $clearURL = $session->get('absoluteURL').'/index.php?'.http_build_query($parameters);
+        $clearLink = sprintf('<a href="%s" class="right">%s</a> &nbsp;', $clearURL, __($clearLabel));
+
+        return $this->createSubmit('Go')->prepend($clearLink);
     }
 
-    public function createFooter()
+    public function createConfirmSubmit($label = 'Yes', $cancel = false)
     {
-        $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        $cancelLink = ($cancel)? sprintf('<a href="%s" class="right">%s</a> &nbsp;', $_SERVER['HTTP_REFERER'], __('Cancel')) : '';
+        return $this->createSubmit($label)->prepend($cancelLink);
+    }
+
+    public function createFooter($required = true)
+    {
+        $content = '';
+        if ($required) {
+            $content = '<span class="emphasis small">* '.__('denotes a required field').'</span>';
+        }
         return $this->createContent($content);
     }
 
@@ -189,6 +251,16 @@ class FormFactory implements FormFactoryInterface
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
     }
 
+    public function createYesNoRadio($name)
+    {
+        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
+    }
+
+    public function createCheckAll($name = 'checkall')
+    {
+        return $this->createCheckbox($name)->setClass('floatNone textCenter checkall');
+    }
+
     public function createSelectTitle($name)
     {
         return $this->createSelect($name)->fromArray(array(
@@ -196,15 +268,17 @@ class FormFactory implements FormFactoryInterface
             'Miss' => __('Miss'),
             'Mr.'  => __('Mr.'),
             'Mrs.' => __('Mrs.'),
-            'Dr.'  => __('Dr.'),
+            'Dr.'  => __('Dr.')
         ))->placeholder();
     }
 
     public function createSelectGender($name)
     {
         return $this->createSelect($name)->fromArray(array(
-            'F' => __('Female'),
-            'M' => __('Male'),
+            'F'           => __('Female'),
+            'M'           => __('Male'),
+            'Other'       => __('Other'),
+            'Unspecified' => __('Unspecified')
         ))->placeholder();
     }
 
@@ -222,7 +296,44 @@ class FormFactory implements FormFactoryInterface
             'Aunt'            => __('Aunt'),
             'Uncle'           => __('Uncle'),
             'Nanny/Helper'    => __('Nanny/Helper'),
-            'Other'           => __('Other'),
+            'Other'           => __('Other')
+        ))->placeholder();
+    }
+
+    public function createSelectEmergencyRelationship($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Parent'         => __('Parent'),
+            'Spouse'         => __('Spouse'),
+            'Offspring'      => __('Offspring'),
+            'Friend'         => __('Friend'),
+            'Other Relation' => __('Other Relation'),
+            'Doctor'         => __('Doctor'),
+            'Other'          => __('Other')
+        ))->placeholder();
+    }
+
+    public function createSelectMaritalStatus($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'Married'         => __('Married'),
+            'Separated'         => __('Separated'),
+            'Divorced'      => __('Divorced'),
+            'De Facto'         => __('De Facto'),
+            'Other'          => __('Other')
+        ))->placeholder();
+    }
+    public function createSelectBloodType($name)
+    {
+        return $this->createSelect($name)->fromArray(array(
+            'O+' => 'O+',
+            'A+' => 'A+',
+            'B+' => 'B+',
+            'AB+' => 'AB+',
+            'O-' => 'O-',
+            'A-' => 'A-',
+            'B-' => 'B-',
+            'AB-' => 'AB-'
         ))->placeholder();
     }
 
@@ -232,27 +343,28 @@ class FormFactory implements FormFactoryInterface
         $currencies = array(
             'PAYPAL SUPPORTED' => array(
                 'AUD $' => 'Australian Dollar (A$)',
-                'BRL R$' => 'Brazilian Real',
+                'BRL R$' => 'Brazilian Real (R$)',
                 'GBP £' => 'British Pound (£)',
                 'CAD $' => 'Canadian Dollar (C$)',
-                'CZK Kč' => 'Czech Koruna',
-                'DKK kr' => 'Danish Krone',
+                'CZK Kč' => 'Czech Koruna (Kč)',
+                'DKK kr' => 'Danish Krone (kr)',
                 'EUR €' => 'Euro (€)',
                 'HKD $' => 'Hong Kong Dollar ($)',
-                'HUF Ft' => 'Hungarian Forint',
-                'ILS ₪' => 'Israeli New Shekel',
+                'HUF Ft' => 'Hungarian Forint (Ft)',
+                'ILS ₪' => 'Israeli New Shekel (₪)',
                 'JPY ¥' => 'Japanese Yen (¥)',
-                'MYR RM' => 'Malaysian Ringgit',
-                'MXN $' => 'Mexican Peso',
-                'TWD $' => 'New Taiwan Dollar',
+                'MYR RM' => 'Malaysian Ringgit (RM)',
+                'MXN $' => 'Mexican Peso ($)',
+                'TWD $' => 'New Taiwan Dollar ($)',
                 'NZD $' => 'New Zealand Dollar ($)',
-                'NOK kr' => 'Norwegian Krone',
-                'PHP ₱' => 'Philippine Peso',
-                'PLN zł' => 'Polish Zloty',
+                'NOK kr' => 'Norwegian Krone (kr)',
+                'PHP ₱' => 'Philippine Peso (₱)',
+                'PLN zł' => 'Polish Zloty (zł)',
+                'RUB ₽' => 'Russian Ruble (₽)',
                 'SGD $' => 'Singapore Dollar ($)',
-                'CHF' => 'Swiss Franc',
-                'THB ฿' => 'Thai Baht',
-                'TRY' => 'Turkish Lira',
+                'SEK kr‎' => 'Swedish Krona (kr)',
+                'CHF' => 'Swiss Franc (CHF)',
+                'THB ฿' => 'Thai Baht (฿)',
                 'USD $' => 'U.S. Dollar ($)',
                 ),
             'OTHERS' => array(
@@ -260,6 +372,7 @@ class FormFactory implements FormFactoryInterface
                 'BTC' => 'Bitcoin',
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
+                'CNY ¥' => 'Chinese Renminbi (¥)',
                 'EGP £' => 'Egyptian Pound (£)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
@@ -274,8 +387,11 @@ class FormFactory implements FormFactoryInterface
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
+                'ZAR R‎' => 'South African Rand (R‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
-                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
+                'TRY ₺' => 'Turkish Lira (₺)',
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)'
             ),
         );
 

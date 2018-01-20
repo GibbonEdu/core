@@ -165,8 +165,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 $count = 1;
-
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/schoolYearSpecialDay_manageProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID'>";
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo "<th style='width: 14px'>";
@@ -217,7 +215,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                             echo "<span style='color: #ff0000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.$rowSpecial['name'].'</span>';
                             echo '<br/>';
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_edit.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearTermID=".$row['gibbonSchoolYearTermID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img style='margin-top: 3px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
                         } else {
                             echo "<span style='color: #000000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>School Day</span>';
@@ -234,7 +232,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                 }
 
                 echo '</table>';
-                echo '</form>';
             }
         }
     }

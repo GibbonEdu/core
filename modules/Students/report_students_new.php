@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -53,134 +56,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     if (isset($_GET['startDateTo'])) {
         $startDateTo = $_GET['startDateTo'];
     }
-    ?>
 
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<script type="text/javascript">
-				$(document).ready(function(){
-                    <?php if ($type != 'Date Range') { echo "startDateFrom.disable(); startDateTo.disable();"; } ?>
-					$("#type").change(function(){
-						if ($('#type').val()=="Date Range" ) {
-							$("#startDateFromRow").slideDown("fast", $("#startDateFromRow").css("display","table-row"));
-							$("#startDateToRow").slideDown("fast", $("#startDateToRow").css("display","table-row"));
-							$("#ignoreEnrolmentRow").slideDown("fast", $("#ignoreEnrolmentRow").css("display","table-row"));
-                            startDateFrom.enable();
-                            startDateTo.enable();
-						} else {
-							$("#startDateFromRow").css("display","none");
-							$("#startDateToRow").css("display","none");
-							$("#ignoreEnrolmentRow").css("display","none");
-                            startDateFrom.disable();
-                            startDateTo.disable();
-						}
-					 });
-				});
-			</script>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Type') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="type" id="type" class="type">
-						<?php
-                        echo '<option';
-                        if ($type == 'Current School Year') {
-                            echo ' selected';
-                        }
-                        echo " value='Current School Year'>".__($guid, 'Current School Year').'</option>';
-                        echo '<option';
-                        if ($type == 'Date Range') {
-                            echo ' selected';
-                        }
-                        echo " value='Date Range'>".__($guid, 'Date Range').'</option>';?>
-					</select>
-				</td>
-			</tr>
-			<tr id='startDateFromRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
-				<td>
-					<b><?php echo __($guid, 'From Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Earliest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-    				?></span>
-				</td>
-				<td class="right">
-					<input name="startDateFrom" id="startDateFrom" maxlength=10 value="<?php echo $startDateFrom ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var startDateFrom=new LiveValidation('startDateFrom');
-						startDateFrom.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-                        startDateFrom.add(Validate.Presence);
-					</script>
-					<script type="text/javascript">
-						$(function() {
-							$( "#startDateFrom" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr id='startDateToRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
-				<td>
-					<b><?php echo __($guid, 'To Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Latest student start date to include.') ?><br/><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-    				?></span>
-				</td>
-				<td class="right">
-					<input name="startDateTo" id="startDateTo" maxlength=10 value="<?php echo $startDateTo ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var startDateTo=new LiveValidation('startDateTo');
-						startDateTo.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-                        startDateTo.add(Validate.Presence);
-					</script>
-					<script type="text/javascript">
-						$(function() {
-							$( "#startDateTo" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			<tr id='ignoreEnrolmentRow' <?php if ($type != 'Date Range') { echo "style='display: none'"; } ?>>
-				<td>
-					<b><?php echo __($guid, 'Ignore Enrolment') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'This is useful for picking up students who are set to Full, have a start date but are not yet enroled.') ?></span>
-				</td>
-				<td class="right">
-					<input <?php if ($ignoreEnrolment == 'on') { echo 'checked'; } ?> name="ignoreEnrolment" id="ignoreEnrolment" type="checkbox">
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_students_new.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_students_new.php");
+
+    $row = $form->addRow();
+        $row->addLabel('type', __('Type'));
+        $row->addSelect('type')->fromArray(array('Current School Year' => __('Current School Year'), 'Date Range' => __('Date Range')))->selected($type)->isRequired();
+
+    $form->toggleVisibilityByClass('dateRange')->onSelect('type')->when('Date Range');
+
+    $row = $form->addRow()->addClass('dateRange');
+        $row->addLabel('startDateFrom', __('From Date'))->description('Earliest student start date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addDate('startDateFrom')->setValue($startDateFrom)->isRequired();
+
+    $row = $form->addRow()->addClass('dateRange');
+        $row->addLabel('startDateTo', __('To Date'))->description('Latest student start date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+        $row->addDate('startDateTo')->setValue($startDateTo)->isRequired();
+
+    $row = $form->addRow()->addClass('dateRange');
+        $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.');
+        $row->addCheckbox('ignoreEnrolment')->checked($ignoreEnrolment);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
 
     if ($type != '') {
         echo '<h2>';

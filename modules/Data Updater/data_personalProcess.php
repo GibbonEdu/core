@@ -156,12 +156,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                     $email = trim($_POST['email']);
                     $emailAlternate = trim($_POST['emailAlternate']);
-                    $address1 = $_POST['address1'];
-                    $address1District = $_POST['address1District'];
-                    $address1Country = $_POST['address1Country'];
-                    $address2 = $_POST['address2'];
-                    $address2District = $_POST['address2District'];
-                    $address2Country = $_POST['address2Country'];
+                    $address1 = isset($_POST['address1'])? $_POST['address1'] : '';
+                    $address1District = isset($_POST['address1District'])? $_POST['address1District'] : '';
+                    $address1Country = isset($_POST['address1Country'])? $_POST['address1Country'] : '';
+                    $address2 = isset($_POST['address2'])? $_POST['address2'] : '';
+                    $address2District = isset($_POST['address2District'])? $_POST['address2District'] : '';
+                    $address2Country = isset($_POST['address2Country'])? $_POST['address2Country'] : '';
                     $phone1Type = $_POST['phone1Type'];
                     if ($_POST['phone1'] != '' and $phone1Type == '') {
                         $phone1Type = 'Other';
@@ -320,7 +320,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         }
                         if ($matchAddressCount > 0) {
                             for ($i = 0; $i < $matchAddressCount; ++$i) {
-                                if ($_POST[$i.'-matchAddress'] != '') {
+                                if (!empty($_POST[$i.'-matchAddress'])) {
                                     $sqlAddress = '';
                                     try {
                                         $dataCheck = array('gibbonPersonID' => $_POST[$i.'-matchAddress'], 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);

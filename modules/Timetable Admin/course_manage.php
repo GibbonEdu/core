@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -91,55 +94,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         echo '<h3>';
         echo __($guid, 'Filters');
-        echo '</h3>'; ?>
-        <form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-            <table class='noIntBorder' cellspacing='0' style="width: 100%">
-                <tr>
-                    <td>
-                        <b><?php echo __($guid, 'Search For') ?></b><br/>
-                    </td>
-                    <td class="right">
-                        <input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b><?php echo __($guid, 'Year Group') ?></b><br/>
-                        <span class="emphasis small"></span>
-                    </td>
-                    <td class="right">
-                        <?php
-                        try {
-                            $dataPurpose = array();
-                            $sqlPurpose = 'SELECT gibbonYearGroupID, name FROM gibbonYearGroup ORDER BY sequenceNumber';
-                            $resultPurpose = $connection2->prepare($sqlPurpose);
-                            $resultPurpose->execute($dataPurpose);
-                        } catch (PDOException $e) {
-                        }
+        echo '</h3>';
 
-                        echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-                        echo "<option value=''></option>";
-                        while ($rowPurpose = $resultPurpose->fetch()) {
-                            $selected = ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID)? 'selected' : '';
-                            echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-                        }
-                        echo '</select>';
-                        ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan=2 class="right">
-                        <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/course_manage.php">
-                        <input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
-                        <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-                        <?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/course_manage.php'>".__($guid, 'Clear Filters').'</a>'; ?>
-                        <input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-                    </td>
-                </tr>
-            </table>
-        </form>
-        <?php
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/course_manage.php");
+        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'));
+            $row->addTextField('search')->setValue($search);
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonYearGroupID', __('Year Group'));
+            $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID);
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
+
+        echo $form->getOutput();
+
+        echo '<h3>';
+        echo __($guid, 'View');
+        echo '</h3>';
 
         //Set pagination variable
         $page = 1;
@@ -268,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_edit.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo '</td>';
                 echo '</tr>';
 

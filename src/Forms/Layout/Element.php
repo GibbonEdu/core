@@ -35,43 +35,77 @@ class Element implements OutputableInterface
     protected $content;
     protected $appended;
     protected $prepended;
+    protected $before;
+    protected $after;
 
+    /**
+     * Create a generic form element that only holds content.
+     * @param  string  $content
+     */
     public function __construct($content = '')
     {
         $this->content = $content;
     }
 
+    /**
+     * Set the content of the element, replaces existing content.
+     * @param  string  $value
+     * @return self
+     */
     public function setContent($value)
     {
         $this->content = $value;
         return $this;
     }
 
+    /**
+     * Add a string to the beginning of the current content.
+     * @param  string  $value
+     * @return self
+     */
     public function prepend($value)
     {
         $this->prepended .= $value;
         return $this;
     }
 
+    /**
+     * Add a string to the end of the current content.
+     * @param  string  $value
+     * @return self
+     */
     public function append($value)
     {
         $this->appended .= $value;
         return $this;
     }
 
+    /**
+     * Add strings before and after to wrap the current content.
+     * @param  string  $value
+     * @return self
+     */
     public function wrap($before, $after)
     {
-        $this->prepend($before);
-        $this->append($after);
+        $this->before = $before . $this->before;
+        $this->after = $this->after . $after;
 
         return $this;
     }
 
+    /**
+     * Get the HTML output of the content element.
+     * @return  string
+     */
     public function getOutput()
     {
-        return $this->prepended.$this->getElement().$this->appended;
+        return $this->before.$this->prepended.$this->getElement().$this->appended.$this->after;
     }
 
+    /**
+     * Get the content text of the element.
+     * @return  string
+     */
     protected function getElement()
     {
         return $this->content;

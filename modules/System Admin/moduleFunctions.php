@@ -95,6 +95,27 @@ function setFirstDayOfTheWeek($connection2, $fdotw, $databaseName)
     return $return;
 }
 
+/**
+ * Load the theme manifest into an array. Handling the include in a function keeps the variable scope contained.
+ * @param string $themeName
+ * @param string $guid
+ * @return array
+ */
+function getThemeManifest($themeName, $guid)
+{
+    $name = $description = $version = $author = $url = '';
+    $responsive = 'N';
+    $manifestOK = false;
+
+    $manifestFile = $_SESSION[$guid]['absolutePath'].'/themes/'.$themeName.'/manifest.php';
+    if (is_file($manifestFile)) {
+        include $manifestFile;
+        $manifestOK = ($name == $themeName);
+    }
+    
+    return compact('themeName', 'name', 'description', 'version', 'author', 'url', 'responsive', 'manifestOK');
+}
+
 function getThemeVersion($themeName, $guid)
 {
     $return = false;
@@ -128,7 +149,7 @@ function getCurrentVersion($guid, $connection2, $version)
     $output .= "$(\"#status\").html('".__($guid, 'Version check failed').".') ;";
     $output .= '}';
     $output .= 'else {';
-    $output .= "if (parseFloat(data['version'])<=parseFloat('".$version."')) {";
+    $output .= "if (versionCompare(data['version'], '".$version."') <= 0) {";
     $output .= '$("#status").attr("class","success");';
     $output .= "$(\"#status\").html('".sprintf(__($guid, 'Version check successful. Your Gibbon installation is up to date at %1$s.'), $version).' '.sprintf(__($guid, 'If you have recently updated your system files, please check that your database is up to date in %1$sUpdates%2$s.'), "<a href=\'".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/update.php\'>", '</a>')."') ;";
     $output .= '}';

@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -64,265 +67,84 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_add.php') 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
+            
+            $scopes = array(
+                'School' => __('School'),
+                'Learning Area' => __('Learning Area'),
+            );
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_addProcess.php?search=$search&filter2=$filter2" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Rubric Basics') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Scope') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                ?>
-								<select name="scope" id="scope" class="standardWidth">
-									<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-									<option value="School"><?php echo __($guid, 'School') ?></option>
-									<option value="Learning Area"><?php echo __($guid, 'Learning Area') ?></option>
-								</select>
-								<script type="text/javascript">
-									var scope=new LiveValidation('scope');
-									scope.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								</script>
-								 <?php
+            $form = Form::create('addRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_addProcess.php?search='.$search.'&filter2='.$filter2);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-                            } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                                ?>
-								<input readonly name="scope" id="scope" value="Learning Area" type="text" class="standardWidth">
-								<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            
+            $form->addRow()->addHeading(__('Rubric Basics'));
 
-                            }
-            				?>
-						</td>
-					</tr>
+            $row = $form->addRow();
+                $row->addLabel('scope', 'Scope');
+            if ($highestAction == 'Manage Rubrics_viewEditAll') {
+                $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+                $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
+            } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
+                $row->addTextField('scope')->readOnly()->setValue('Learning Area');
+            }
 
+            if ($highestAction == 'Manage Rubrics_viewEditAll') {
+                $data = array();
+                $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+            } else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = "SELECT gibbonDepartment.gibbonDepartmentID as value, gibbonDepartment.name FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
+            }
 
-					<?php
-                    if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        ?>
-						<script type="text/javascript">
-							$(document).ready(function(){
-								$("#learningAreaRow").css("display","none");
+            $row = $form->addRow()->addClass('learningAreaRow');
+                $row->addLabel('gibbonDepartmentID', __('Learning Area'));
+                $row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
 
-								$("#scope").change(function(){
-									if ($('#scope').val()=="Learning Area" ) {
-										$("#learningAreaRow").slideDown("fast", $("#learningAreaRow").css("display","table-row"));
-										gibbonDepartmentID.enable();
-									}
-									else {
-										$("#learningAreaRow").css("display","none");
-										gibbonDepartmentID.disable();
-									}
-								 });
-							});
-						</script>
-						<?php
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->maxLength(50)->isRequired();
 
-                    }
-            		?>
-					<tr id='learningAreaRow'>
-						<td>
-							<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="gibbonDepartmentID" id="gibbonDepartmentID" class="standardWidth">
-								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<?php
-                                try {
-                                    if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                        $dataSelect = array();
-                                        $sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                                    } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
-                                        $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                        $sqlSelect = "SELECT * FROM gibbonDepartment JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonPersonID=:gibbonPersonID AND (role='Coordinator' OR role='Teacher (Curriculum)') AND type='Learning Area' ORDER BY name";
-                                    }
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-								}
-								?>
-							</select>
-							<script type="text/javascript">
-								var gibbonDepartmentID=new LiveValidation('gibbonDepartmentID');
-								gibbonDepartmentID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-								<?php
-                                if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                                    echo 'gibbonDepartmentID.disable();';
-                                }
-           	 					?>
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="active" id="active" class="standardWidth">
-								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->isRequired();
 
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Category') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="category" id="category" maxlength=100 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT category FROM gibbonRubric ORDER BY category';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.$rowAuto['category'].'", ';
-										}
-										?>
-									];
-									$( "#category" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-						</td>
-						<td class="right">
-							<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-						</td>
-						<td class="right">
-							<?php
-                            $yearGroups = getYearGroups($connection2);
-							if ($yearGroups == '') {
-								echo '<i>'.__($guid, 'No year groups available.').'</i>';
-							} else {
-								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-									$checked = 'checked ';
-									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-								}
-							}
-							?>
-							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Grade Scale') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Link columns to grades on a scale?') ?></span>
-						</td>
-						<td class="right">
-							<select name="gibbonScaleID" id="gibbonScaleID" class="standardWidth">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array();
-									$sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
-										echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
+            $sql = "SELECT DISTINCT category FROM gibbonRubric ORDER BY category";
+            $result = $pdo->executeQuery(array(), $sql);
+            $categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
 
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Rubric Design') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Initial Rows') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Rows store assessment strands.') ?></span>
-						</td>
-						<td class="right">
-							<select name="rows" id="rows" class="standardWidth">
-								<?php
-                                for ($i = 1; $i <= 10; ++$i) {
-                                    echo "<option value='$i'>$i</option>";
-                                }
-           	 					?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Initial Columns') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Columns store assessment levels.') ?></span>
-						</td>
-						<td class="right">
-							<select name="columns" id="columns" class="standardWidth">
-								<?php
-                                for ($i = 1; $i <= 10; ++$i) {
-                                    echo "<option value='$i'>$i</option>";
-                                }
-           	 					?>
-							</select>
-						</td>
-					</tr>
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+                $row->addTextField('category')->maxLength(100)->autocomplete($categories);
 
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $row = $form->addRow();
+                $row->addLabel('description', __('Description'));
+                $row->addTextArea('description')->setRows(5);
 
+            $row = $form->addRow();
+                $row->addLabel('gibbonYearGroupIDList[]', __('Year Groups'));
+                $row->addCheckboxYearGroup('gibbonYearGroupIDList[]')->addCheckAllNone()->checkAll();
+
+            $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+            $row = $form->addRow();
+                $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Link columns to grades on a scale?'));
+                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->placeholder();
+
+            $form->addRow()->addHeading(__('Rubric Design'));
+
+            $row = $form->addRow();
+                $row->addLabel('rows', __('Initial Rows'))->description(__('Rows store assessment strands.'));
+                $row->addSelect('rows')->fromArray(range(1, 10))->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('columns', __('Initial Columns'))->description(__('Columns store assessment levels.'));
+                $row->addSelect('columns')->fromArray(range(1, 10))->isRequired();
+            
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+            
+            echo $form->getOutput();
         }
     }
 }
-?>

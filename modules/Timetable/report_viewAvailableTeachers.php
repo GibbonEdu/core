@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -48,82 +50,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         $ttDate = date($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
 
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Timetable') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="gibbonTTID" id="gibbonTTID" class="standardWidth">
-						<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>
-						<?php
-                        try {
-                            $dataSelect = array();
-                            $sqlSelect = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID'].' ORDER BY name';
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                        }
+    $viewBy = (isset($_GET['viewBy']))? $_GET['viewBy'] : '';
 
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($resultSelect->rowCount() == 1) {
-								$gibbonTTID = $rowSelect['gibbonTTID'];
-							}
-							$selected = '';
-							if ($gibbonTTID == $rowSelect['gibbonTTID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonTTID']."'>".$rowSelect['name'].'</option>';
-						}
-						?>
-					</select>
-					<script type="text/javascript">
-						var gibbonTTID=new LiveValidation('gibbonTTID');
-						gibbonTTID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-					</script>	
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Date') ?></b><br/>
-				</td>
-				<td class="right">
-					<input name="ttDate" id="ttDate" maxlength=10 value="<?php echo $ttDate ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var ttDate=new LiveValidation('ttDate');
-						ttDate.add(Validate.Presence);
-						ttDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } ); 
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#ttDate" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
-			
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewAvailableTeachers.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('viewAvailableTeachers', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_viewAvailableTeachers.php');
+
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = 'SELECT gibbonTTID as value, name FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonTTID', __('Timetable'));
+        $row->addSelect('gibbonTTID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder(__('Please select...'))->selected($gibbonTTID);
+
+    $row = $form->addRow();
+        $row->addLabel('viewBy', __('View'));
+        $row->addSelect('viewBy')->fromArray(array('username' => __('Username'), 'name' => __('Name') ))->selected($viewBy);
+
+    $row = $form->addRow();
+        $row->addLabel('ttDate', __('Date'));
+        $row->addDate('ttDate')->setValue($ttDate);
+
+    $row = $form->addRow();
+        $row->addSubmit();
+
+    echo $form->getOutput();
+
 
     if ($gibbonTTID != '') {
         echo '<h2>';
@@ -224,22 +176,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             echo "<table class='mini' cellspacing='0' style='width: 760px; margin: 0px 0px 30px 0px;'>";
             echo "<tr class='head'>";
             echo "<th style='vertical-align: top; width: 70px; text-align: center'>";
-                        //Calculate week number
-                        $week = getWeekNumber($startDayStamp, $connection2, $guid);
+            //Calculate week number
+            $week = getWeekNumber($startDayStamp, $connection2, $guid);
             if ($week != false) {
                 echo __($guid, 'Week').' '.$week.'<br/>';
             }
             echo "<span style='font-weight: normal; font-style: italic;'>".__($guid, 'Time').'<span>';
             echo '</th>';
+            $count = 0;
             foreach ($days as $day) {
-                if ($day['schoolDay'] == 'Y') {
-                    $dateCorrection = ($day['sequenceNumber'] - 1);
-
-                    echo "<th style='vertical-align: top; text-align: center; width: ".(550 / $daysInWeek)."px'>";
-                    echo __($guid, $day['nameShort']).'<br/>';
-                    echo "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
-                    echo '</th>';
+                if ($count == 0) {
+                    $firstSequence = $day['sequenceNumber'];
                 }
+                $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
+
+                echo "<th style='vertical-align: top; text-align: center; width: ".(550 / $daysInWeek)."px'>";
+                echo __($guid, $day['nameShort']).'<br/>';
+                echo "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
+                echo '</th>';
+                $count++ ;
             }
             echo '</tr>';
 
@@ -253,7 +208,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             echo '</div>';
             $time = date('H:i:s', strtotime($time) + 3600);
             $spinControl = 0;
-            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 5))) {
+            while ($time <= $timeEnd and $spinControl < (23 - substr($timeStart, 0, 2))) {
                 ++$countTime;
                 echo "<div style='position: absolute; top:".(($countTime * 60) - 5)."px ; width: 71px ; border: none; height: 60px; margin: 0px; padding: 0px; font-size: 92%'>";
                 echo substr($time, 0, 5).'<br/>';
@@ -265,8 +220,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             echo '</div>';
             echo '</td>';
 
-                    //Check to see if week is at all in term time...if it is, then display the grid
-                    $isWeekInTerm = false;
+            //Check to see if week is at all in term time...if it is, then display the grid
+            $isWeekInTerm = false;
             try {
                 $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                 $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -290,208 +245,218 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                 $blank = false;
             }
 
-                    //Run through days of the week
-                    foreach ($days as $day) {
-                        $dayOut = '';
-                        if ($day['schoolDay'] == 'Y') {
-                            $dateCorrection = ($day['sequenceNumber'] - 1);
+            //Run through days of the week
+            foreach ($days as $day) {
+                $dayOut = '';
+                $zCount = 0;
 
-                            //Check to see if day is term time
-                            $isDayInTerm = false;
+                if ($day['schoolDay'] == 'Y') {
+                    $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
+
+                    //Check to see if day is term time
+                    $isDayInTerm = false;
+                    try {
+                        $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                        $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
+                        $resultTerm = $connection2->prepare($sqlTerm);
+                        $resultTerm->execute($dataTerm);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    while ($rowTerm = $resultTerm->fetch()) {
+                        if (date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))) <= $rowTerm['lastDay']) {
+                            $isDayInTerm = true;
+                        }
+                    }
+
+                    if ($isDayInTerm == true) {
+                        //Check for school closure day
+                        try {
+                            $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                            $sqlClosure = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date and type='School Closure'";
+                            $resultClosure = $connection2->prepare($sqlClosure);
+                            $resultClosure->execute($dataClosure);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultClosure->rowCount() == 1) {
+                            $rowClosure = $resultClosure->fetch();
+                            $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+                            $dayOut .= "<div style='position: relative'>";
+                            $dayOut .= "<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>";
+                            $dayOut .= "<div style='position: relative; top: 50%'>";
+                            $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".$rowClosure['name'].'</span>';
+                            $dayOut .= '</div>';
+                            $dayOut .= '</div>';
+                            $dayOut .= '</div>';
+                            $dayOut .= '</td>';
+                        } else {
+                            $schoolCalendarAlpha = 0.85;
+                            $ttAlpha = 1.0;
+
+                            $date = date('Y/m/d', ($startDayStamp + (86400 * $dateCorrection)));
+
+                            $output = '';
+                            $blank = true;
+                            //Get day start and end!
+                            $dayTimeStart = '';
+                            $dayTimeEnd = '';
                             try {
-                                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlTerm = 'SELECT gibbonSchoolYearTerm.firstDay, gibbonSchoolYearTerm.lastDay FROM gibbonSchoolYearTerm, gibbonSchoolYear WHERE gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID AND gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID';
-                                $resultTerm = $connection2->prepare($sqlTerm);
-                                $resultTerm->execute($dataTerm);
+                                $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))), 'gibbonTTID' => $gibbonTTID);
+                                $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
+                                $resultDiff = $connection2->prepare($sqlDiff);
+                                $resultDiff->execute($dataDiff);
                             } catch (PDOException $e) {
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
-                            while ($rowTerm = $resultTerm->fetch()) {
-                                if (date('Y-m-d', ($startDayStamp + (86400 * $count))) >= $rowTerm['firstDay'] and date('Y-m-d', ($startDayStamp + (86400 * $count))) <= $rowTerm['lastDay']) {
-                                    $isDayInTerm = true;
+                            while ($rowDiff = $resultDiff->fetch()) {
+                                if ($dayTimeStart == '') {
+                                    $dayTimeStart = $rowDiff['timeStart'];
+                                }
+                                if ($rowDiff['timeStart'] < $dayTimeStart) {
+                                    $dayTimeStart = $rowDiff['timeStart'];
+                                }
+                                if ($dayTimeEnd == '') {
+                                    $dayTimeEnd = $rowDiff['timeEnd'];
+                                }
+                                if ($rowDiff['timeEnd'] > $dayTimeEnd) {
+                                    $dayTimeEnd = $rowDiff['timeEnd'];
                                 }
                             }
 
-                            if ($isDayInTerm == true) {
-                                //Check for school closure day
-                                try {
-                                    $dataClosure = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-                                    $sqlClosure = "SELECT * FROM gibbonSchoolYearSpecialDay WHERE date=:date and type='School Closure'";
-                                    $resultClosure = $connection2->prepare($sqlClosure);
-                                    $resultClosure->execute($dataClosure);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($resultClosure->rowCount() == 1) {
-                                    $rowClosure = $resultClosure->fetch();
-                                    $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-                                    $dayOut .= "<div style='position: relative'>";
-                                    $dayOut .= "<div style='z-index: $zCount; position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>";
-                                    $dayOut .= "<div style='position: relative; top: 50%'>";
-                                    $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".$rowClosure['name'].'</span>';
-                                    $dayOut .= '</div>';
-                                    $dayOut .= '</div>';
-                                    $dayOut .= '</div>';
-                                    $dayOut .= '</td>';
-                                } else {
-                                    $schoolCalendarAlpha = 0.85;
-                                    $ttAlpha = 1.0;
+                            $dayDiffTime = strtotime($dayTimeEnd) - strtotime($dayTimeStart);
 
-                                    $date = date('Y/m/d', ($startDayStamp + (86400 * $count)));
+                            $startPad = strtotime($dayTimeStart) - strtotime($timeStart);
 
-                                    $output = '';
-                                    $blank = true;
-                                    //Get day start and end!
-                                    $dayTimeStart = '';
-                                    $dayTimeEnd = '';
+                            $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+                            try {
+                                $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                                $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
+                                $resultDay = $connection2->prepare($sqlDay);
+                                $resultDay->execute($dataDay);
+                            } catch (PDOException $e) {
+                                $dayOut .= "<div class='error'>".$e->getMessage().'</div>';
+                            }
+
+                            if ($resultDay->rowCount() == 1) {
+                                $rowDay = $resultDay->fetch();
+                                $zCount = 0;
+                                $dayOut .= "<div style='position: relative;'>";
+
+                                    //Draw outline of the day
                                     try {
-                                        $dataDiff = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
-                                        $sqlDiff = 'SELECT timeStart, timeEnd FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE date=:date AND gibbonTTID=:gibbonTTID';
-                                        $resultDiff = $connection2->prepare($sqlDiff);
-                                        $resultDiff->execute($dataDiff);
-                                    } catch (PDOException $e) {
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    while ($rowDiff = $resultDiff->fetch()) {
-                                        if ($dayTimeStart == '') {
-                                            $dayTimeStart = $rowDiff['timeStart'];
-                                        }
-                                        if ($rowDiff['timeStart'] < $dayTimeStart) {
-                                            $dayTimeStart = $rowDiff['timeStart'];
-                                        }
-                                        if ($dayTimeEnd == '') {
-                                            $dayTimeEnd = $rowDiff['timeEnd'];
-                                        }
-                                        if ($rowDiff['timeEnd'] > $dayTimeEnd) {
-                                            $dayTimeEnd = $rowDiff['timeEnd'];
-                                        }
-                                    }
-
-                                    $dayDiffTime = strtotime($dayTimeEnd) - strtotime($dayTimeStart);
-
-                                    $startPad = strtotime($dayTimeStart) - strtotime($timeStart);
-
-                                    $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-                                    try {
-                                        $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-                                        $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
-                                        $resultDay = $connection2->prepare($sqlDay);
-                                        $resultDay->execute($dataDay);
+                                        $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $dateCorrection))));
+                                        $sqlPeriods = 'SELECT gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
+                                        $resultPeriods = $connection2->prepare($sqlPeriods);
+                                        $resultPeriods->execute($dataPeriods);
                                     } catch (PDOException $e) {
                                         $dayOut .= "<div class='error'>".$e->getMessage().'</div>';
                                     }
-
-                                    if ($resultDay->rowCount() == 1) {
-                                        $rowDay = $resultDay->fetch();
-                                        $zCount = 0;
-                                        $dayOut .= "<div style='position: relative;'>";
-
-                                            //Draw outline of the day
-                                            try {
-                                                $dataPeriods = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
-                                                $sqlPeriods = 'SELECT gibbonTTColumnRow.gibbonTTColumnRowID, gibbonTTColumnRow.name, timeStart, timeEnd, type, date FROM gibbonTTDay JOIN gibbonTTDayDate ON (gibbonTTDay.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTDayDate.gibbonTTDayID=:gibbonTTDayID AND date=:date ORDER BY timeStart, timeEnd';
-                                                $resultPeriods = $connection2->prepare($sqlPeriods);
-                                                $resultPeriods->execute($dataPeriods);
-                                            } catch (PDOException $e) {
-                                                $dayOut .= "<div class='error'>".$e->getMessage().'</div>';
-                                            }
-                                        while ($rowPeriods = $resultPeriods->fetch()) {
-                                            $isSlotInTime = false;
-                                            if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
-                                                $isSlotInTime = true;
-                                            } elseif ($rowPeriods['timeStart'] >= $dayTimeStart and $rowPeriods['timeEnd'] <= $dayTimeEnd) {
-                                                $isSlotInTime = true;
-                                            } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
-                                                $isSlotInTime = true;
-                                            }
-
-                                            if ($isSlotInTime == true) {
-                                                $effectiveStart = $rowPeriods['timeStart'];
-                                                $effectiveEnd = $rowPeriods['timeEnd'];
-                                                if ($dayTimeStart > $rowPeriods['timeStart']) {
-                                                    $effectiveStart = $dayTimeStart;
-                                                }
-                                                if ($dayTimeEnd < $rowPeriods['timeEnd']) {
-                                                    $effectiveEnd = $dayTimeEnd;
-                                                }
-
-                                                $width = (ceil(690 / $daysInWeek) - 20).'px';
-                                                $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60).'px';
-                                                $top = ceil(((strtotime($effectiveStart) - strtotime($dayTimeStart)) + $startPad) / 60).'px';
-                                                $bg = "rgba(238,238,238,$ttAlpha)";
-                                                if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
-                                                    $bg = "rgba(179,239,194,$ttAlpha)";
-                                                }
-                                                $style = '';
-                                                if ($rowPeriods['type'] == 'Lesson') {
-                                                    $style = '';
-                                                }
-                                                $dayOut .= "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>";
-                                                if ($height > 15) {
-                                                    $dayOut .= $rowPeriods['name'].'<br/>';
-                                                }
-                                                if ($rowPeriods['type'] == 'Lesson') {
-                                                    $vacancies = '';
-                                                    try {
-                                                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
-                                                    while ($rowSelect = $resultSelect->fetch()) {
-                                                        try {
-                                                            $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonPersonID' => $rowSelect['gibbonPersonID']);
-                                                            $sqlUnique = "SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL";
-                                                            $resultUnique = $connection2->prepare($sqlUnique);
-                                                            $resultUnique->execute($dataUnique);
-                                                        } catch (PDOException $e) {
-                                                        }
-                                                        if ($resultUnique->rowCount() < 1) {
-                                                            if (isset($rowSelect['initials'])) {
-                                                                $vacancies .= $rowSelect['initials'].', ';
-                                                            } else {
-                                                                $vacancies .= $rowSelect['username'].', ';
-                                                            }
-                                                        }
-                                                    }
-                                                    $vacancies = substr($vacancies, 0, -2);
-                                                    $dayOut .= "<div title='".htmlPrep($vacancies)."' style='color: black; font-weight: normal;line-height: 0.9'>";
-                                                    if (strlen($vacancies) <= 50) {
-                                                        $dayOut .= $vacancies;
-                                                    } else {
-                                                        $dayOut .= substr($vacancies, 0, 50).'...';
-                                                    }
-
-                                                    $dayOut .= '</div>';
-                                                }
-                                                $dayOut .= '</div>';
-                                                ++$zCount;
-                                            }
-                                        }
+                                while ($rowPeriods = $resultPeriods->fetch()) {
+                                    $isSlotInTime = false;
+                                    if ($rowPeriods['timeStart'] <= $dayTimeStart and $rowPeriods['timeEnd'] > $dayTimeStart) {
+                                        $isSlotInTime = true;
+                                    } elseif ($rowPeriods['timeStart'] >= $dayTimeStart and $rowPeriods['timeEnd'] <= $dayTimeEnd) {
+                                        $isSlotInTime = true;
+                                    } elseif ($rowPeriods['timeStart'] < $dayTimeEnd and $rowPeriods['timeEnd'] >= $dayTimeEnd) {
+                                        $isSlotInTime = true;
                                     }
-                                    $dayOut .= '</td>';
+
+                                    if ($isSlotInTime == true) {
+                                        $effectiveStart = $rowPeriods['timeStart'];
+                                        $effectiveEnd = $rowPeriods['timeEnd'];
+                                        if ($dayTimeStart > $rowPeriods['timeStart']) {
+                                            $effectiveStart = $dayTimeStart;
+                                        }
+                                        if ($dayTimeEnd < $rowPeriods['timeEnd']) {
+                                            $effectiveEnd = $dayTimeEnd;
+                                        }
+
+                                        $width = (ceil(690 / $daysInWeek) - 20).'px';
+                                        $height = ceil((strtotime($effectiveEnd) - strtotime($effectiveStart)) / 60).'px';
+                                        $top = ceil(((strtotime($effectiveStart) - strtotime($dayTimeStart)) + $startPad) / 60).'px';
+                                        $bg = "rgba(238,238,238,$ttAlpha)";
+                                        if ((date('H:i:s') > $effectiveStart) and (date('H:i:s') < $effectiveEnd) and $rowPeriods['date'] == date('Y-m-d')) {
+                                            $bg = "rgba(179,239,194,$ttAlpha)";
+                                        }
+                                        $style = '';
+                                        if ($rowPeriods['type'] == 'Lesson') {
+                                            $style = '';
+                                        }
+                                        $dayOut .= "<div style='color: rgba(0,0,0,$ttAlpha); z-index: $zCount; position: absolute; top: $top; width: $width ; border: 1px solid rgba(136,136,136, $ttAlpha); height: $height; margin: 0px; padding: 0px; background-color: $bg; color: rgba(136,136,136, $ttAlpha) $style'>";
+                                        if ($height > 15) {
+                                            $dayOut .= $rowPeriods['name'].'<br/>';
+                                        }
+                                        if ($rowPeriods['type'] == 'Lesson') {
+                                            $vacancies = '';
+                                            try {
+                                                $dataSelect = array();
+                                                $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, initials, username, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' and type='Teaching' ORDER BY preferredName, surname, initials";
+                                                $resultSelect = $connection2->prepare($sqlSelect);
+                                                $resultSelect->execute($dataSelect);
+                                            } catch (PDOException $e) {
+                                            }
+                                            while ($rowSelect = $resultSelect->fetch()) {
+                                                try {
+                                                    $dataUnique = array('gibbonTTDayID' => $rowDay['gibbonTTDayID'], 'gibbonTTColumnRowID' => $rowPeriods['gibbonTTColumnRowID'], 'gibbonPersonID' => $rowSelect['gibbonPersonID']);
+                                                    $sqlUnique = "SELECT * FROM gibbonTTDayRowClass JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonTTDayRowClassExceptionID IS NULL";
+                                                    $resultUnique = $connection2->prepare($sqlUnique);
+                                                    $resultUnique->execute($dataUnique);
+                                                } catch (PDOException $e) {
+                                                }
+                                                if ($resultUnique->rowCount() < 1) {
+
+                                                    if ($viewBy == 'name') {
+                                                        $vacancies .= formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                    }
+                                                    else if ($viewBy == 'username') {
+                                                        $vacancies .= $rowSelect['username'].', ';
+                                                    }
+                                                    else if (isset($rowSelect['initials'])) {
+                                                        $vacancies .= $rowSelect['initials'].', ';
+                                                    } else {
+                                                        $vacancies .= $rowSelect['username'].', ';
+                                                    }
+                                                }
+                                            }
+                                            $vacancies = substr($vacancies, 0, -2);
+                                            $dayOut .= "<div title='".htmlPrep($vacancies)."' style='color: black; font-weight: normal;line-height: 0.9'>";
+                                            if (strlen($vacancies) <= 50) {
+                                                $dayOut .= $vacancies;
+                                            } else {
+                                                $dayOut .= substr($vacancies, 0, 50).'...';
+                                            }
+
+                                            $dayOut .= '</div>';
+                                        }
+                                        $dayOut .= '</div>';
+                                        ++$zCount;
+                                    }
                                 }
-                            } else {
-                                $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
-                                $dayOut .= "<div style='position: relative'>";
-                                $dayOut .= "<div style='position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>";
-                                $dayOut .= "<div style='position: relative; top: 50%'>";
-                                $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
-                                $dayOut .= '</div>';
-                                $dayOut .= '</div>';
-                                $dayOut .= '</div>';
-                                $dayOut .= '</td>';
                             }
-
-                            if ($day == '') {
-                                $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
-                            }
-
-                            echo $dayOut;
-
-                            ++$count;
+                            $dayOut .= '</td>';
                         }
+                    } else {
+                        $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+                        $dayOut .= "<div style='position: relative'>";
+                        $dayOut .= "<div style='position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>";
+                        $dayOut .= "<div style='position: relative; top: 50%'>";
+                        $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</div>';
+                        $dayOut .= '</td>';
                     }
+
+                    if ($day == '') {
+                        $dayOut .= "<td style='text-align: center; vertical-align: top; font-size: 11px'></td>";
+                    }
+
+                    echo $dayOut;
+
+                    ++$count;
+                }
+            }
 
             echo '</tr>';
             echo "<tr style='height: 1px'>";

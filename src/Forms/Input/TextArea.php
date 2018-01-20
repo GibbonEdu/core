@@ -29,12 +29,21 @@ class TextArea extends Input
 {
     protected $maxLength;
 
+    /**
+     * Create a textarea with a default height of 6 rows.
+     * @param  string  $name
+     */
     public function __construct($name)
     {
         $this->setRows(6);
         parent::__construct($name);
     }
 
+    /**
+     * Set the textarea rows attribute to control the height of the input box.
+     * @param  int  $count
+     * @return self
+     */
     public function setRows($count)
     {
         $this->setAttribute('rows', $count);
@@ -42,6 +51,11 @@ class TextArea extends Input
         return $this;
     }
 
+    /**
+     * Set a max character count for this textarea.
+     * @param   string  $value
+     * @return  self
+     */
     public function maxLength($value = '')
     {
         if (!empty($value)) {
@@ -52,6 +66,10 @@ class TextArea extends Input
         return $this;
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         // Unset the value attribute, textarea doesn't use them

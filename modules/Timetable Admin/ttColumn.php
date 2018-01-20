@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.php') == false) {
@@ -101,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit.php&gibbonTTColumnID='.$row['gibbonTTColumnID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_delete.php&gibbonTTColumnID='.$row['gibbonTTColumnID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_delete.php&gibbonTTColumnID='.$row['gibbonTTColumnID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
 

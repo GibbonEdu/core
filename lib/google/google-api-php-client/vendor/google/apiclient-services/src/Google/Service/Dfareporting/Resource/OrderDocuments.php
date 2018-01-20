@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -41,8 +41,8 @@ class Google_Service_Dfareporting_Resource_OrderDocuments extends Google_Service
     return $this->call('get', array($params), "Google_Service_Dfareporting_OrderDocument");
   }
   /**
-   * Retrieves a list of order documents, possibly filtered.
-   * (orderDocuments.listOrderDocuments)
+   * Retrieves a list of order documents, possibly filtered. This method supports
+   * paging. (orderDocuments.listOrderDocuments)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param string $projectId Project ID for order documents.
@@ -66,7 +66,7 @@ class Google_Service_Dfareporting_Resource_OrderDocuments extends Google_Service
    * @opt_param string siteId Select only order documents that are associated with
    * these sites.
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_OrderDocumentsListResponse
    */
   public function listOrderDocuments($profileId, $projectId, $optParams = array())

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php') == false) {
@@ -42,68 +44,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 
     //STEP 1, SELECT TERM
     if ($step == 1) {
+        echo "<h2>" ;
+			echo __($guid, 'Step 1 - Select CSV Files');
+		echo "</h2>";
+		echo "<p>";
+		      echo __($guid, 'This page allows you to import library records from a CSV file. The import includes one row for each record. The system will match records by ID, updating any matching results, whilst creating new records not already existing in the system.')."<br/>";
+		echo "</p>";
+
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_import.php&step=2');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('file')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+        $row = $form->addRow();
+            $row->addLabel('stringEnclosure', __('String Enclosure'));
+            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
+
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-		</h2>
-		<p>
-			<?php echo __($guid, 'This page allows you to import library records from a CSV file. The import includes one row for each record. The system will match records by ID, updating any matching results, whilst creating new records not already existing in the system.') ?><br/>
-		</p>
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_import.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="file" id="file" size="chars">
-						<script type="text/javascript">
-							var file=new LiveValidation('file');
-							file.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-						<script type="text/javascript">
-							var fieldDelimiter=new LiveValidation('fieldDelimiter');
-							fieldDelimiter.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-						<script type="text/javascript">
-							var stringEnclosure=new LiveValidation('stringEnclosure');
-							stringEnclosure.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-					</td>
-					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-
-
-
 		<h4>
 			<?php echo __($guid, 'Notes') ?>
 		</h4>
@@ -148,7 +118,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 						<li><b><?php echo __($guid, 'Department') ?></b> - <?php echo __($guid, '\'Name\' field for department responsible for the item.') ?></li>
 						<li><b><?php echo __($guid, 'Borrowable?') ?> *</b> - <?php echo __($guid, 'Is item available for loan?'.' '.__($guid, 'One of: \'Y\' or \'N\'.')) ?></li>
 						<li><b><?php echo __($guid, 'Status?') ?> *</b> - <?php echo __($guid, 'Initial availability.'.' '.'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
-						<li><b><?php echo __($guid, 'Comments/Notes') ?></b></li>
+                        <li><b><?php echo __($guid, 'Replacement?') ?> *</b> - <?php echo __($guid, 'One of: \'Y\' or \'N\'.') ?></li>
+                        <li><b><?php echo __($guid, 'Replacement Cost') ?> </b></li>
+                        <li><b><?php echo __($guid, 'Replacement Year') ?> </b> - <?php echo __($guid, 'School year name, as set in School Admin. Must already exist.') ?></li>
+                        <li><b><?php echo __($guid, 'Comments/Notes') ?></b></li>
 					</ol>
 					<li><b><?php echo __($guid, 'Type-Specific Details');?></b></li>
 						<ol>
@@ -217,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 				//Lock tables
 				$lockFail = false;
 				try {
-					$sql = 'LOCK TABLES gibbonLibraryItem WRITE, gibbonLibraryType WRITE, gibbonPerson WRITE, gibbonDepartment WRITE, gibbonSpace WRITE';
+					$sql = 'LOCK TABLES gibbonLibraryItem WRITE, gibbonLibraryType WRITE, gibbonPerson WRITE, gibbonDepartment WRITE, gibbonSpace WRITE, gibbonSchoolYear READ';
 					$result = $connection2->query($sql);
 				} catch (PDOException $e) {
 					$lockFail = true;
@@ -274,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 							}
 
 							//Get fields
-							if ($data[0] != '' and $data[1] != '' and $data[2] != '' and $data[3] != '' and $data[7] != '' and $data[9] != '' and $data[12] != '' and $data[13] != '') {
+							if ($data[0] != '' and $data[1] != '' and $data[2] != '' and $data[3] != '' and $data[7] != '' and $data[9] != '' and $data[12] != '' and $data[13] != '' and $data[14] != '') {
 								//General fields
 								$results[$resultSuccessCount]['type'] = '';
 								if (isset($data[0])) {
@@ -332,15 +305,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 								if (isset($data[13])) {
 									$results[$resultSuccessCount]['status'] = $data[13];
 								}
-								$results[$resultSuccessCount]['comment'] = '';
+								$results[$resultSuccessCount]['replacement'] = '';
 								if (isset($data[14])) {
-									$results[$resultSuccessCount]['comment'] = $data[14];
+									$results[$resultSuccessCount]['replacement'] = $data[14];
 								}
+								$results[$resultSuccessCount]['replacementCost'] = '';
+								if (isset($data[15])) {
+									$results[$resultSuccessCount]['replacementCost'] = $data[15];
+								}
+								$results[$resultSuccessCount]['gibbonSchoolYearIDReplacement'] = '';
+								if (isset($data[16])) {
+									$results[$resultSuccessCount]['gibbonSchoolYearIDReplacement'] = $data[16];
+								}
+								$results[$resultSuccessCount]['comment'] = '';
+								if (isset($data[17])) {
+									$results[$resultSuccessCount]['comment'] = $data[17];
+								}
+
 
 								//Type specific fields
 								$results[$resultSuccessCount]['fields'] = '';
 								$typeFieldValues = array();
-								$totalFieldCount = 15;
+								$totalFieldCount = 18;
 								if (is_array($typeFields)) {
 									foreach ($typeFields as $typeField) {
 										if (isset($data[$totalFieldCount])) {
@@ -509,6 +495,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 										}
 										$borrowable = $result['borrowable'];
 										$status = $result['status'];
+										$replacement = $result['replacement'];
+										$replacementCost = $result['replacementCost'];
+										$gibbonSchoolYearIDReplacement = $result['gibbonSchoolYearIDReplacement'];
 										$comment = $result['comment'];
 										$fields = $result['fields'];
 
@@ -526,8 +515,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 										if ($resultCheck->rowCount() == 1) { //IF IT DOES, UPDATE
 											$updateFail = false;
 											try {
-												$dataUpdate = array('gibbonLibraryTypeID' => $type, 'id' => $id, 'name' => $name, 'producer' => $producer, 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'status' => $status, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()), 'fields' => $fields);
-												$sqlUpdate = 'UPDATE gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields WHERE id=:id';
+												$dataUpdate = array('gibbonLibraryTypeID' => $type, 'id' => $id, 'name' => $name, 'producer' => $producer, 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'status' => $status, 'replacement' => $replacement, 'replacementCost' => $replacementCost, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()), 'fields' => $fields);
+												$sqlUpdate = 'UPDATE gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, replacement=:replacement, replacementCost=:replacementCost, gibbonSchoolYearIDReplacement=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE name=:gibbonSchoolYearIDReplacement), gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields WHERE id=:id';
 												$resultUpdate = $connection2->prepare($sqlUpdate);
 												$resultUpdate->execute($dataUpdate);
 											} catch (PDOException $e) {
@@ -545,8 +534,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 										} else { //IF IT DOES NOT, INSERT
 											$insertFail = false;
 											try {
-												$dataInsert = array('gibbonLibraryTypeID' => $type, 'id' => $id, 'name' => $name, 'producer' => $producer, 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'status' => $status, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()), 'fields' => $fields);
-												$sqlInsert = 'INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields';
+												$dataInsert = array('gibbonLibraryTypeID' => $type, 'id' => $id, 'name' => $name, 'producer' => $producer, 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'status' => $status, 'replacement' => $replacement, 'replacementCost' => $replacementCost, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()), 'fields' => $fields);
+												$sqlInsert = 'INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, replacement=:replacement, replacementCost=:replacementCost, gibbonSchoolYearIDReplacement=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE name=:gibbonSchoolYearIDReplacement), gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator, fields=:fields';
 												$resultInsert = $connection2->prepare($sqlInsert);
 												$resultInsert->execute($dataInsert);
 											} catch (PDOException $e) {

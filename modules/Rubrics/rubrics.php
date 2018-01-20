@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == false) {
@@ -94,54 +96,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
         echo '<h3>';
         echo __($guid, 'Filter');
         echo '</h3>';
-        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."'>";
-        echo"<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-        ?>
-		<tr>
-			<td>
-				<b><?php echo __($guid, 'Search For') ?></b><br/>
-				<span class="emphasis small"><?php echo __($guid, 'Rubric name.') ?></span>
-			</td>
-			<td class="right">
-				<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-			</td>
-		</tr>
-		<tr>
-			<td>
-				<b><?php echo __($guid, 'Learning Areas') ?></b><br/>
-				<span class="emphasis small"></span>
-			</td>
-			<td class="right">
-				<?php
-				echo "<select name='filter2' id='filter2' style='width:302px'>";
-				echo "<option value=''>".__($guid, 'All Learning Areas').'</option>';
-				try {
-					$dataSelect = array();
-					$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-					$resultSelect = $connection2->prepare($sqlSelect);
-					$resultSelect->execute($dataSelect);
-				} catch (PDOException $e) {
-				}
-				while ($rowSelect = $resultSelect->fetch()) {
-					$selected = '';
-					if ($rowSelect['gibbonDepartmentID'] == $filter2) {
-						$selected = 'selected';
-					}
-					echo "<option $selected value='".$rowSelect['gibbonDepartmentID']."'>".$rowSelect['name'].'</option>';
-				}
-				echo '</select>'; ?>
-			</td>
-		</tr>
-		<?php
-		echo '<tr>';
-        echo "<td class='right' colspan=2>";
-        echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php'>".__($guid, 'Clear Filters').'</a> ';
-        echo "<input type='submit' value='".__($guid, 'Go')."'>";
-        echo '</td>';
-        echo '</tr>';
-        echo'</table>';
-        echo '</form>';
+
+        $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics.php');
+        $form->setClass('noIntBorder fullWidth');
+
+        $row = $form->addRow();
+            $row->addLabel('search', __('Search For'))->description(__('Rubric name.'));
+            $row->addTextField('search')->setValue($search);
+
+        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+        $row = $form->addRow();
+            $row->addLabel('filter2', __('Learning Areas'));
+            $row->addSelect('filter2')
+                ->fromArray(array('' => __('All Learning Areas')))
+                ->fromQuery($pdo, $sql)
+                ->selected($filter2);
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+        echo $form->getOutput();
 
         echo '<h3>';
         echo __($guid, 'Rubrics');
@@ -245,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
 
                 if ($highestAction == 'Manage Rubrics_viewEditAll') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit.php&gibbonRubricID='.$row['gibbonRubricID']."&sidebar=false&search=$search&filter2=$filter2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_delete.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_delete.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_duplicate.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
                 } elseif ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
                     if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {
@@ -260,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
 
                         if ($resultLearningAreaStaff->rowCount() > 0) {
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit.php&gibbonRubricID='.$row['gibbonRubricID']."&sidebar=false&search=$search&filter2=$filter2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_delete.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_delete.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_duplicate.php&gibbonRubricID='.$row['gibbonRubricID']."&search=$search&filter2=$filter2'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
                         }
                     }

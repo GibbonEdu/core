@@ -137,7 +137,7 @@ if ($gibbonStaffID == '') { echo 'Fatal error loading this page!';
                 if (isset($_POST['notes'])) {
                     $notes = $_POST['notes'];
                 }
-                $contractUpload = $row['contractUpload'];
+                $contractUpload = isset($_POST['contractUpload'])? $_POST['contractUpload'] : $row['contractUpload'];
 
                 $partialFail = false;
                 if (!empty($_FILES['file1']['tmp_name'])) {

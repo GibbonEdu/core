@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,6 +20,7 @@ class Google_Service_AndroidEnterprise_ServiceAccountKey extends Google_Model
   public $data;
   public $id;
   public $kind;
+  public $publicData;
   public $type;
 
   public function setData($data)
@@ -45,6 +46,14 @@ class Google_Service_AndroidEnterprise_ServiceAccountKey extends Google_Model
   public function getKind()
   {
     return $this->kind;
+  }
+  public function setPublicData($publicData)
+  {
+    $this->publicData = $publicData;
+  }
+  public function getPublicData()
+  {
+    return $this->publicData;
   }
   public function setType($type)
   {

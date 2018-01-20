@@ -15,3 +15,28 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+/**
+ * Compares two version number strings.
+ * @param    string  a
+ * @param    string  b
+ * @return   Return values:
+            - a number < 0 if a < b
+            - a number > 0 if a > b
+            - 0 if a = b
+ */
+function versionCompare(a, b) {
+    var i, diff;
+    var regExStrip0 = /(\.0+)+$/;
+    var segmentsA = a.replace(regExStrip0, '').split('.');
+    var segmentsB = b.replace(regExStrip0, '').split('.');
+    var l = Math.min(segmentsA.length, segmentsB.length);
+
+    for (i = 0; i < l; i++) {
+        diff = parseInt(segmentsA[i], 10) - parseInt(segmentsB[i], 10);
+        if (diff) {
+            return diff;
+        }
+    }
+    return segmentsA.length - segmentsB.length;
+}

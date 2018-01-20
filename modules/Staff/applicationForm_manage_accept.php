@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Data\UsernameGenerator;
+
 @session_start();
 
 //Module includes
@@ -61,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             }
 
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
             $step = '';
             if (isset($_GET['step'])) {
                 $step = $_GET['step'];
@@ -80,54 +83,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 if ($search != '') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 }
-                echo '</div>'; ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td>
-								<b><?php echo sprintf(__($guid, 'Are you sure you want to accept the application for %1$s?'), formatName('', $row['preferredName'], $row['surname'], 'Student')) ?></b><br/>
-								<br/>
-								<?php
-                                $checkedapplicant = '';
-								if (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y') {
-									$checkedapplicant = 'checked';
-								}
-								?>
-								<input <?php echo $checkedapplicant ?> type='checkbox' name='informApplicant'/> <?php echo __($guid, 'Automatically inform <u>applicant</u> of their Gibbon login details by email?') ?><br/>
+                echo '</div>'; 
 
-								<br/>
-								<i><u><?php echo __($guid, 'The system will perform the following actions:') ?></u></i><br/>
-								<ol>
-									<?php
-                                    if ($row['gibbonPersonID'] == '') {
-                                        echo '<li>'.__($guid, 'Create a Gibbon user account for the applicant.').'</li>';
-                                        echo '<li>'.__($guid, 'Register the user as a member of staff.').'</li>';
-                                        echo '<li>'.__($guid, 'Set the status of the application to "Accepted".').'</li>';
-                                    } else {
-                                        echo '<li>'.__($guid, 'Register the user as a member of staff, if not already done.').'</li>';
-                                        echo '<li>'.__($guid, 'Set the status of the application to "Accepted".').'</li>';
-                                    }
-                                    ?>
-								</ol>
-								<br/>
-								<i><u><?php echo __($guid, 'But you may wish to manually do the following:') ?></u></i><br/>
-								<ol>
-									<li><?php echo __($guid, 'Adjust the user\'s roles within the system.') ?></li>
-									<li><?php echo __($guid, 'Create a timetable for the applicant.') ?></li>
-								</ol>
-							</td>
-						</tr>
-						<tr>
-							<td class='right'>
-								<input name="gibbonStaffApplicationFormID" id="gibbonStaffApplicationFormID" value="<?php echo $gibbonStaffApplicationFormID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="Accept">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&step=2&gibbonStaffApplicationFormID='.$gibbonStaffApplicationFormID.'&search='.$search);
+                
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
 
+                $col = $form->addRow()->addColumn()->addClass('stacked');
+                
+                $applicantName = formatName('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+                $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
+
+                $informApplicant = (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y');
+                $col->addCheckbox('informApplicant')
+                    ->description(__('Automatically inform <u>applicant</u> of their Gibbon login details by email?'))
+                    ->inline(true)
+                    ->checked($informApplicant)
+                    ->setClass('');
+
+                $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
+                $list = $col->addContent()->wrap('<ol>', '</ol>');
+
+                if (empty($values['gibbonPersonID'])) {
+                    $list->append('<li>'.__('Create a Gibbon user account for the applicant.').'</li>')
+                         ->append('<li>'.__('Register the user as a member of staff.').'</li>')
+                         ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+                } else {
+                    $list->append('<li>'.__('Register the user as a member of staff, if not already done.').'</li>')
+                         ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+                }
+
+                $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
+                $col->addContent()->wrap('<ol>', '</ol>')
+                    ->append('<li>'.__('Adjust the user\'s roles within the system.').'</li>')
+                    ->append('<li>'.__('Create a timetable for the applicant.').'</li>');
+
+                $form->addRow()->addSubmit(__('Accept'));
+
+                echo $form->getOutput();
+                
             } elseif ($step == 2) {
                 echo '<h3>';
                 echo __($guid, 'Step')." $step";
@@ -139,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 }
                 echo '</div>';
 
-                if ($row['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
+                if ($values['gibbonPersonID'] == '') { //USER IS NEW TO THE SYSTEM
                     $informApplicant = 'N';
                     if (isset($_POST['informApplicant'])) {
                         if ($_POST['informApplicant'] == 'on') {
@@ -150,11 +145,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     //DETERMINE ROLE
                     $gibbonRoleID = '006'; //Support staff by default
-                    if ($row['type'] == 'Teaching') {
+                    if ($values['type'] == 'Teaching') {
                         $gibbonRoleID = '002';
-                    } elseif ($row['type'] != 'Support') { //Work out role based on type, which appears to be drawn from role anyway
+                    } elseif ($values['type'] != 'Support') { //Work out role based on type, which appears to be drawn from role anyway
                         try {
-                            $dataRole = array('name' => $row['type']);
+                            $dataRole = array('name' => $values['type']);
                             $sqlRole = 'SELECT gibbonRoleID FROM gibbonRole WHERE name=:name';
                             $resultRole = $connection2->prepare($sqlRole);
                             $resultRole->execute($dataRole);
@@ -170,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $failapplicant = true;
                     $lock = true;
                     try {
-                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE';
+                        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonStaffApplicationForm WRITE, gibbonSetting WRITE, gibbonStaff WRITE, gibbonStaffJobOpening WRITE, gibbonUsernameFormat WRITE, gibbonRole WRITE';
                         $result = $connection2->query($sql);
                     } catch (PDOException $e) {
                         $lock = false;
@@ -190,50 +185,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             $rowAI = $resultAI->fetch();
                             $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                            //Set username & password
-                            $username = '';
-                            $usernameFormat = getSettingByScope($connection2, 'Staff', 'staffApplicationFormUsernameFormat');
-                            if ($usernameFormat == '') {
-                                $username = substr(str_replace(' ', '', preg_replace('/[^A-Za-z ]/', '', strtolower(substr($row['preferredName'], 0, 1).$row['surname']))), 0, 12);
-                            } else {
-                                $username = $usernameFormat;
-                                $username = str_replace('[preferredNameInitial]', strtolower(substr($row['preferredName'], 0, 1)), $username);
-                                $username = str_replace('[preferredName]', strtolower($row['preferredName']), $username);
-                                $username = str_replace('[surname]', strtolower($row['surname']), $username);
-                                $username = str_replace(' ', '', $username);
-                                $username = str_replace("'", '', $username);
-                                $username = str_replace("-", '', $username);
-                                $username = substr($username, 0, 12);
-                            }
-                            $usernameBase = $username;
-                            $count = 1;
-                            $continueLoop = true;
-                            while ($continueLoop == true and $count < 10000) {
-                                $gotUsername = true;
-                                try {
-                                    $dataUsername = array('username' => $username);
-                                    $sqlUsername = 'SELECT * FROM gibbonPerson WHERE username=:username';
-                                    $resultUsername = $connection2->prepare($sqlUsername);
-                                    $resultUsername->execute($dataUsername);
-                                } catch (PDOException $e) {
-                                    $gotUsername = false;
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+                            // Generate a unique username for the staff member
+                            $generator = new UsernameGenerator($pdo);
+                            $generator->addToken('preferredName', $values['preferredName']);
+                            $generator->addToken('firstName', $values['firstName']);
+                            $generator->addToken('surname', $values['surname']);
 
-                                if ($resultUsername->rowCount() == 0 and $gotUsername == true) {
-                                    $continueLoop = false;
-                                } else {
-                                    $username = $usernameBase.$count;
-                                }
-                                ++$count;
-                            }
+                            $username = $generator->generateByRole($gibbonRoleID);
 
                             $password = randomPassword(8);
                             $salt = getSalt();
                             $passwordStrong = hash('sha256', $salt.$password);
 
+                            $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
                             //Set default email address for applicant
-                            $email = $row['email'];
+                            $email = $values['email'];
                             $emailAlternate = '';
                             $applicantDefaultEmail = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail');
                             if ($applicantDefaultEmail != '') {
@@ -255,22 +222,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 echo '</h4>';
                                 $to = $_SESSION[$guid]['organisationAdministratorEmail'];
                                 $subject = sprintf(__($guid, 'Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $row['preferredName'], $row['surname'], 'Student'))."<br/><br/>";
+                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
                                 if ($applicantDefaultEmail != '') {
                                     $body .= __($guid, 'Email').': '.$email."<br/>";
                                 }
                                 if ($applicantDefaultWebsite != '') {
                                     $body .= __($guid, 'Website').': '.$website."<br/>";
                                 }
-                                if ($row['dateStart'] != '') {
-                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $row['dateStart'])."<br/>";
+                                if ($values['dateStart'] != '') {
+                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
                                 }
-                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $row['type'])."<br/>";
-                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $row['jobTitle'])."<br/>";
+                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $values['type'])."<br/>";
+                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
                                 $bodyPlain = emailBodyConvert($body);
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->IsSMTP();
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -294,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             if ($continueLoop == false) {
                                 $insertOK = true;
                                 try {
-                                    $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $row['surname'], 'firstName' => $row['firstName'], 'preferredName' => $row['preferredName'], 'officialName' => $row['officialName'], 'nameInCharacters' => $row['nameInCharacters'], 'gender' => $row['gender'], 'dob' => $row['dob'], 'languageFirst' => $row['languageFirst'], 'languageSecond' => $row['languageSecond'], 'languageThird' => $row['languageThird'], 'countryOfBirth' => $row['countryOfBirth'], 'citizenship1' => $row['citizenship1'], 'citizenship1Passport' => $row['citizenship1Passport'], 'nationalIDCardNumber' => $row['nationalIDCardNumber'], 'residencyStatus' => $row['residencyStatus'], 'visaExpiryDate' => $row['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $row['phone1Type'], 'phone1CountryCode' => $row['phone1CountryCode'], 'phone1' => $row['phone1'], 'dateStart' => $row['dateStart'], 'fields' => $row['fields']);
+                                    $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'dateStart' => $values['dateStart'], 'fields' => $values['fields']);
                                     $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='$gibbonRoleID', gibbonRoleIDAll='$gibbonRoleID', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, dateStart=:dateStart, fields=:fields";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);
@@ -307,9 +273,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                                     //Populate informApplicant array
                                     if ($informApplicant == 'Y') {
-                                        $informApplicantArray[0]['email'] = $row['email'];
-                                        $informApplicantArray[0]['surname'] = $row['surname'];
-                                        $informApplicantArray[0]['preferredName'] = $row['preferredName'];
+                                        $informApplicantArray[0]['email'] = $values['email'];
+                                        $informApplicantArray[0]['surname'] = $values['surname'];
+                                        $informApplicantArray[0]['preferredName'] = $values['preferredName'];
                                         $informApplicantArray[0]['username'] = $username;
                                         $informApplicantArray[0]['password'] = $password;
                                     }
@@ -334,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         echo '</h4>';
                         echo '<ul>';
                         echo "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>";
-                        echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $row['preferredName'], $row['surname'], 'Student').'</li>';
+                        echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['preferredName'], $values['surname'], 'Student').'</li>';
                         echo '<li><b>'.__($guid, 'Email').'</b>: '.$email.'</li>';
                         echo '<li><b>'.__($guid, 'Email Alternate').'</b>: '.$emailAlternate.'</li>';
                         echo '<li><b>'.__($guid, 'Username')."</b>: $username</li>";
@@ -344,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         //Enrol applicant
                         $enrolmentOK = true;
                         try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $row['type'], 'jobTitle' => $row['jobTitle']);
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'type' => $values['type'], 'jobTitle' => $values['jobTitle']);
                             $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -385,7 +351,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     $bodyPlain = emailBodyConvert($body);
 
                                     $mail = getGibbonMailer($guid);
-                                    $mail->IsSMTP();
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';
@@ -416,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $alreadyEnroled = false;
                     $enrolmentCheckFail = false;
                     try {
-                        $data = array('gibbonPersonID' => $row['gibbonPersonID']);
+                        $data = array('gibbonPersonID' => $values['gibbonPersonID']);
                         $sql = 'SELECT * FROM gibbonStaff WHERE gibbonPersonID=:gibbonPersonID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
@@ -439,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         $enrolmentOK = true;
 
                         try {
-                            $data = array('gibbonPersonID' => $row['gibbonPersonID'], 'type' => $row['type'], 'jobTitle' => $row['jobTitle']);
+                            $data = array('gibbonPersonID' => $values['gibbonPersonID'], 'type' => $values['type'], 'jobTitle' => $values['jobTitle']);
                             $sql = 'INSERT INTO gibbonStaff SET gibbonPersonID=:gibbonPersonID, type=:type, jobTitle=:jobTitle';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -486,7 +451,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     echo '</ul>';
 
                     echo "<div class='success' style='margin-bottom: 20px'>";
-                    echo __($guid, 'Applicant has been successfully accepted into ICHK.').' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
+                    echo sprintf(__('Applicant has been successfully accepted into %1$s.'), $_SESSION[$guid]['organisationName']).' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
                     echo '<ol>';
                     echo '<li>'.__($guid, 'Adjust the user\'s roles within the system.').'</li>';
                     echo '<li>'.__($guid, 'Create a timetable for the applicant.').'</li>';

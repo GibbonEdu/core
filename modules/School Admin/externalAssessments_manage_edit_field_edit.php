@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage_edit_field_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -35,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     } else {
         try {
             $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID, 'gibbonExternalAssessmentFieldID' => $gibbonExternalAssessmentFieldID);
-            $sql = 'SELECT gibbonExternalAssessmentField.*, gibbonExternalAssessment.name AS assName FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
+            $sql = 'SELECT gibbonExternalAssessmentField.*, gibbonExternalAssessment.name AS assessmentName FROM gibbonExternalAssessment JOIN gibbonExternalAssessmentField ON (gibbonExternalAssessment.gibbonExternalAssessmentID=gibbonExternalAssessmentField.gibbonExternalAssessmentID) WHERE gibbonExternalAssessmentField.gibbonExternalAssessmentID=:gibbonExternalAssessmentID AND gibbonExternalAssessmentField.gibbonExternalAssessmentFieldID=:gibbonExternalAssessmentFieldID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -48,7 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
+            $values['gibbonYearGroupIDList'] = explode(',', $values['gibbonYearGroupIDList']);
 
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__($guid, 'Manage External Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__($guid, 'Edit External Assessment')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Grade').'</div>';
@@ -58,141 +62,44 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_edit_field_editProcess.php?gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID&gibbonExternalAssessmentID=$gibbonExternalAssessmentID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'External Assessment') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="name" id="name" value="<?php echo $row['assName'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=50 value="<?php if (isset($row['name'])) { echo __($guid, $row['name']); } ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Category') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="category" id="category" maxlength=50 value="<?php if (isset($row['category'])) { echo $row['category']; } ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var category=new LiveValidation('category');
-								category.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Order') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Order in which fields appear within category<br/>Should be unique for this category.') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="order" id="order" maxlength=4 value="<?php if (isset($row['order'])) { echo $row['order']; } ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var order=new LiveValidation('order');
-								order.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Grade Scale') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Grade scale used to control values that can be assigned.') ?></span>
-						</td>
-						<td class="right">
-							<select name="gibbonScaleID" id="gibbonScaleID" class="standardWidth">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($row['gibbonScaleID'] == $rowSelect['gibbonScaleID']) {
-										echo "<option selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									}
-								}
-								?>				
-							</select>
-							<script type="text/javascript">
-								var gibbonScaleID=new LiveValidation('gibbonScaleID');
-								gibbonScaleID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Year groups to which this field is relevant.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            echo "<fieldset style='border: none'>"; ?>
-							<script type="text/javascript">
-								$(function () {
-									$('.checkall').click(function () {
-										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-									});
-								});
-							</script>
-							<?php
-                            echo __($guid, 'All').' / '.__($guid, 'None')." <input type='checkbox' class='checkall'><br/>";
-							$yearGroups = getYearGroups($connection2);
-							if ($yearGroups == '') {
-								echo '<i>'.__($guid, 'No year groups available.').'</i>';
-							} else {
-								$selectedYears = explode(',', $row['gibbonYearGroupIDList']);
-								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-									$checked = '';
-									foreach ($selectedYears as $selectedYear) {
-										if ($selectedYear == $yearGroups[$i]) {
-											$checked = 'checked';
-										}
-									}
+            $form = Form::create('externalAssessmentField', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_editProcess.php?gibbonExternalAssessmentFieldID='.$gibbonExternalAssessmentFieldID.'&gibbonExternalAssessmentID='.$gibbonExternalAssessmentID);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-									echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-								}
-							}
-							echo '</fieldset>'; ?>
-							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-						</td>
-					</tr>
-					
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonExternalAssessmentID" id="gibbonExternalAssessmentID" value="<?php echo $gibbonExternalAssessmentID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonExternalAssessmentID', $gibbonExternalAssessmentID);
 
+            $row = $form->addRow();
+                $row->addLabel('assessmentName', __('External Assessment'));
+                $row->addTextField('assessmentName')->readonly()->setValue($values['assessmentName']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->isRequired()->maxLength(50);
+
+            $row = $form->addRow();
+                $row->addLabel('category', __('Category'));
+                $row->addTextField('category')->isRequired()->maxLength(50);
+
+            $row = $form->addRow();
+                $row->addLabel('order', __('Order'))->description(__('Order in which fields appear within category<br/>Should be unique for this category.'));
+                $row->addNumber('order')->isRequired()->maxLength(4);
+
+            $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+            $row = $form->addRow();
+                $row->addLabel('gibbonScaleID', __('Grade Scale'))->description(__('Grade scale used to control values that can be assigned.'));
+                $row->addSelect('gibbonScaleID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('yearGroups', __('Year Groups'))->description(__('Year groups to which this field is relevant.'));
+                $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>

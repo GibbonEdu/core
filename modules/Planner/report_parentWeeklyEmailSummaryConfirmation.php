@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -40,72 +43,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     echo __($guid, 'Choose Roll Group & Week');
     echo '</h2>';
 
-    $gibbonRollGroupID = null;
-    if (isset($_GET['gibbonRollGroupID'])) {
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+    $weekOfYear = isset($_GET['weekOfYear'])? $_GET['weekOfYear'] : null;
+
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_parentWeeklyEmailSummaryConfirmation.php');
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->selected($gibbonRollGroupID);
+
+    $begin = new DateTime($_SESSION[$guid]['gibbonSchoolYearFirstDay']);
+    $end = new DateTime();
+    $dateRange = new DatePeriod($begin, new DateInterval('P1W'), $end);
+
+    $weeks = array();
+    foreach ($dateRange as $date) {
+        $weeks[$date->format('W')] = __('Week').' '.$date->format('W').': '.$date->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
-    $weekOfYear = null;
-    if (isset($_GET['weekOfYear'])) {
-        $weekOfYear = $_GET['weekOfYear'];
-    }
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonRollGroupID">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
-								echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							} else {
-								echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Calendar Week') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="weekOfYear">
-						<?php
-                        echo "<option value=''></option>";
-						for ($i = 0; $i < 10; ++$i) {
-							if ($weekOfYear == date('W', strtotime("-$i week"))) {
-								echo "<option selected value='".date('W', strtotime("-$i week"))."'>".date('W', strtotime("-$i week")).'</option>';
-							} else {
-								echo "<option value='".date('W', strtotime("-$i week"))."'>".date('W', strtotime("-$i week")).'</option>';
-							}
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_parentWeeklyEmailSummaryConfirmation.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+
+    $row = $form->addRow();
+        $row->addLabel('weekOfYear', __('Calendar Week'));
+        $row->addSelect('weekOfYear')->fromArray($weeks)->selected($weekOfYear);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+    echo $form->getOutput();
 
     if ($gibbonRollGroupID != '') {
         echo '<h2>';

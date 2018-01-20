@@ -340,13 +340,14 @@ div.minorLinks a:hover {
 ul.moduleMenu {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
 }
 
 ul.moduleMenu ul li {
 	list-style: none;
 	margin-left: 0px ;
-	padding-left: 0px
+	padding-left: 0px;
+	text-align: left;
 }
 
 ul.moduleMenu ul {
@@ -517,6 +518,9 @@ table th {
 	background: -moz-linear-gradient(top,  #ebebeb,  #dfdfdf);
 	text-align: left;
 }
+table .heading td:not(:first-child) {
+	border-left: 0px;
+}
 table tr:first-child th:first-child {
 	-moz-border-radius-topleft:3px;
 	-webkit-border-top-left-radius:3px;
@@ -624,13 +628,14 @@ table.smallIntBorder td {
 table.smallIntBorder td:last-child {
 	text-align: left;
 }
-table.smallIntBorder tr.break td {
+tr.break td {
 	background: none!important;
 }
-table.smallIntBorder tr.break td h3 {
+tr.break h3, tr.break h4 {
 	margin-top: 10px!important;
+	padding: 0;
 }
-table.smallIntBorder h3, table.smallIntBorder h4 {
+tr h3, tr h4 {
 	border: none!important;
 }
 table.mini td {
@@ -676,11 +681,21 @@ input[type="text"], input[type="password"], input[type="file"] {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
 }
 
-input[readonly] {
-	border: none ;
+input[type="text"], input[type="password"] {
+    padding-left: 4px;
+}
+
+input[readonly], textarea[readonly], select[readonly] {
+	border: none;
 	background: none;
+}
+
+textarea[readonly] {
+    font-family: inherit;
+    resize: none;
 }
 
 textarea {
@@ -689,6 +704,8 @@ textarea {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
+    padding: 4px;
 }
 
 select {
@@ -698,6 +715,7 @@ select {
 	float:right;
 	margin-left: 5px ;
 	font-size: 13px ;
+    box-sizing: border-box;
 }
 
 
@@ -749,7 +767,8 @@ input[type="submit"]:hover {
 	color: #eeeeee;
 }
 
-input[type="submit"].buttonLink {
+input[type="submit"].buttonLink,
+input[type="button"].buttonLink {
 	background: none;
 	color: #c00;
 	border: none;
@@ -759,7 +778,9 @@ input[type="submit"].buttonLink {
 	height: 28px;
 }
 
-input[type="submit"].buttonLink:hover {
+input[type="submit"].buttonLink:hover,
+input[type="button"].buttonLink:hover {
+	cursor: pointer;
 	background: none;
 	color: #069;
 	border: none;
@@ -812,6 +833,7 @@ div.success {
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
+
 div.paginationTop {
 	text-align: right;
 	font-size: 12px;
@@ -908,7 +930,8 @@ div#ui-datepicker-div {
     font-weight:bold;
     margin:6px 0px 0px 5px;
     float:right;
-    text-align: right;
+	text-align: right;
+	font-size: 12px;
 }
 
 .LV_valid {
@@ -1112,13 +1135,11 @@ span.ttPersonalCalendar {
 	padding: 5px 7px;
 	border: 1px solid #555;
 }
-
 div.ttPersonalCalendar {
 	background-color: rgb(103,153,207);
 	color: #fff;
 	font-weight: bold ;
 }
-
 span.ttSpaceBookingCalendar {
 	color: #fff;
 	font-weight: bold;
@@ -1127,13 +1148,11 @@ span.ttSpaceBookingCalendar {
 	padding: 5px 7px;
 	border: 1px solid #555;
 }
-
 div.ttSpaceBookingCalendar {
 	background-color: #E5760D;
 	color: #fff;
 	font-weight: bold ;
 }
-
 div.ttClosure {
 	border: 1px solid rgb(136,136,136);
 	background-color: rgb(255,196,202);
@@ -1203,18 +1222,16 @@ div.resourceAddSlider {
 	margin-bottom: -5px
 }
 
-/* V12 NEW CLASSES */
+/* v12 NEW CLASSES */
 p.emphasis, span.emphasis {
 	font-style: italic ;
 }
 span.small {
 	font-size: 93% ;
 }
-input.standardWidth, textarea.standardWidth, div.standardWidth {
+
+input.standardWidth, textarea.standardWidth, select.standardWidth, div.standardWidth, table.standardWidth {
 	width: 300px ;
-}
-select.standardWidth {
-	width: 302px ;
 }
 .fullWidth {
 	width: 100% ;
@@ -1234,13 +1251,17 @@ table.colorOddEven tr:nth-of-type(even) td {
 	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
 }
 
-/* V13 NEW CLASSES */
+/* Forms - ignore the colorOddEven stripe on footer */
+form table.colorOddEven tr:last-of-type td {
+	background: #fbfbfb;
+}
+
+/* v13 NEW CLASSES */
 td.wordWrap {
 	overflow-wrap: break-word;
   	word-wrap: break-word;
   	word-break: break-word !important;
 }
-
 div.notificationTray {
 	float: right;
 	font-size: 13px;
@@ -1259,7 +1280,7 @@ div.notificationTray a.inactive {
 	text-decoration: none;
 }
 
-/* v14 */
+/* v14 NEW CLASSES */
 
 /* Ensure forms leave enough room in the second column for LiveValidation to fit. Updated to fix nested tables in forms. */
 table.standardForm td.standardWidth:last-child:nth-child(2) {
@@ -1291,22 +1312,35 @@ select[multiple] {
 	width: 70px;
 }
 
-.column div:after {
+.column > div:after {
   content: "";
   display: table;
   clear: both;
 }
 
+.column.inline {
+	white-space: nowrap;
+}
+
 .column.inline div {
 	display:inline-block;
 	width:auto;
+    vertical-align: middle;
+}
+
+.column.stacked div:not(:last-of-type) {
+    margin-bottom: 10px;
+}
+
+.formTable .standardWidth {
+    width: auto;
 }
 
 .formTable input,
 .formTable select,
 .formTable textarea {
 	float: left;
-	margin-left: 0px;
+    margin-left: 0px;
 }
 
 
@@ -1338,7 +1372,8 @@ table tr.heading:first-child td:last-child {
 }
 
 /* Usability tweak to make large data tables like User Permissions easier to read */
-table.rowHighlight tr:not(.break):hover td {
+table.rowHighlight tr:not(.break):hover td,
+table.columnHighlight .hover:not(:first-child) {
 	background: #EDF7FF !important;
 }
 
@@ -1353,7 +1388,147 @@ input[name*="phone"] ~ .LV_invalid {
     display: none;
 }
 
-/* Remove the tiny gap that appears near valid elements */
-.LV_valid {
+/* Remove the tiny gap that appears near validation elements */
+.LV_valid:empty, .LV_invalid:empty {
     margin: 0;
+}
+
+/* v15 NEW CLASSES */
+.input-box {
+	float: right;
+	display: table;
+	border: 1px solid #BFBFBF;
+	background-color: #ffffff;
+    box-sizing: border-box;
+}
+
+.input-box .inline-label {
+	display:table-cell;
+	padding: 5px;
+	text-align:left;
+	vertical-align:middle;
+	word-break: break-all;
+}
+
+.input-box .inline-button {
+	display:table-cell;
+	border-left: 1px solid #BFBFBF;
+	background: #fafafa;
+	background: -moz-linear-gradient(top, #fbfbfb, #fafafa);
+	width:48px;
+	height:48px;
+	vertical-align:middle;
+	text-align:center;
+	cursor: pointer;
+}
+
+.input-box ~ .input-box {
+	border-top-width: 0px;
+}
+
+.input-box-meta {
+	float: right;
+	line-height: 22px;
+}
+
+.floatRight {
+	float: right;
+}
+
+.floatNone {
+	float:none!important;
+}
+
+.max-upload {
+    font-style: italic;
+	color: #c00;
+    font-size: 11px;
+}
+
+#content .smallIntBorder {
+  max-width: 752px;
+}
+#content-wide .smallIntBorder {
+  max-width: 1052px;
+}
+
+.matchHighlight table {
+    float: right;
+}
+
+.matchHighlight > td {
+	border-top: 1px dashed #c00;
+	border-bottom: 1px dashed #c00;
+}
+
+.matchHighlightText {
+	color: #e00;
+}
+
+tr.head td {
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.right {
+	text-align: right!important;
+}
+
+.textCenter {
+	text-align: center!important;
+}
+
+/* Hide breadcrumbs in fullscreen */
+#TB_window .trail {
+	display: none;
+}
+
+.ttDates {
+	height: 80px;
+	width: 8%;
+	vertical-align: top;
+	font-size: 10px;
+}
+
+td.standardWidth {
+	position: relative;
+}
+
+input[type="button"],
+input[type="submit"],
+input[type="reset"] {
+	padding: 0px 6px;
+}
+
+input[type="button"].alignRight {
+	position: absolute;
+	right: 5px;
+	margin: 0;
+}
+
+fieldset {
+	border: 0;
+}
+
+.displayInlineBlock {
+    display: inline-block;
+}
+
+/* Fixes an odd colspan-related width bug in Chrome */
+td.fullWidth[colspan] {
+    width: auto;
+}
+
+/* Utility classes - will be part of the larger css refactor soon */
+.noMargin {
+    margin: 0 !important; 
+}
+
+.noPadding,
+table.smallIntBorder td.noPadding {
+    padding: 0!important; 
+}
+
+.noBorder {
+    border: 0!important; 
 }

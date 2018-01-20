@@ -179,12 +179,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
             }
             $email = trim($_POST['email']);
             $emailAlternate = trim($_POST['emailAlternate']);
-            $address1 = $_POST['address1'];
-            $address1District = $_POST['address1District'];
-            $address1Country = $_POST['address1Country'];
-            $address2 = $_POST['address2'];
-            $address2District = $_POST['address2District'];
-            $address2Country = $_POST['address2Country'];
+            $address1 = isset($_POST['address1']) ? $_POST['address1'] : '';
+            $address1District = isset($_POST['address1District']) ? $_POST['address1District'] : '';
+            $address1Country = isset($_POST['address1Country']) ? $_POST['address1Country'] : '';
+            $address2 = isset($_POST['address2']) ? $_POST['address2'] : '';
+            $address2District = isset($_POST['address2District']) ? $_POST['address2District'] : '';
+            $address2Country = isset($_POST['address2Country']) ? $_POST['address2Country'] : '';
             $phone1Type = $_POST['phone1Type'];
             if ($_POST['phone1'] != '' and $phone1Type == '') {
                 $phone1Type = 'Other';
@@ -430,13 +430,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if (empty($birthCertificateScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size2 = getimagesize($path.'/'.$birthCertificateScan);
-                                $width2 = $size2[0];
-                                $height2 = $size2[1];
-                                if ($width2 > 1440 or $height2 > 900) {
-                                    $birthCertificateScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size2 = getimagesize($path.'/'.$birthCertificateScan);
+                                    $width2 = $size2[0];
+                                    $height2 = $size2[1];
+                                    if ($width2 > 1440 or $height2 > 900) {
+                                        $birthCertificateScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }
@@ -452,13 +454,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if (empty($nationalIDCardScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size3 = getimagesize($path.'/'.$nationalIDCardScan);
-                                $width3 = $size3[0];
-                                $height3 = $size3[1];
-                                if ($width3 > 1440 or $height3 > 900) {
-                                    $nationalIDCardScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size3 = getimagesize($path.'/'.$nationalIDCardScan);
+                                    $width3 = $size3[0];
+                                    $height3 = $size3[1];
+                                    if ($width3 > 1440 or $height3 > 900) {
+                                        $nationalIDCardScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }
@@ -474,13 +478,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                             if (empty($citizenship1PassportScan)) {
                                 $imageFail = true;
                             } else {
-                                //Check image sizes
-                                $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
-                                $width4 = $size4[0];
-                                $height4 = $size4[1];
-                                if ($width4 > 1440 or $height4 > 900) {
-                                    $citizenship1PassportScan = '';
-                                    $imageFail = true;
+                                if (stripos($file['tmp_name'], 'pdf') === false) {
+                                    //Check image sizes
+                                    $size4 = getimagesize($path.'/'.$citizenship1PassportScan);
+                                    $width4 = $size4[0];
+                                    $height4 = $size4[1];
+                                    if ($width4 > 1440 or $height4 > 900) {
+                                        $citizenship1PassportScan = '';
+                                        $imageFail = true;
+                                    }
                                 }
                             }
                         }

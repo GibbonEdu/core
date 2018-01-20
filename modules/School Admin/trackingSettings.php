@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 
             $count = 0;
             while ($assessment = $result->fetch()) {
-                $name = 'externalDP['.$count.'][gibbonYearGroupIDList]';
+                $name = 'externalDP['.$count.'][gibbonYearGroupIDList][]';
                 $categoryLabel = substr($assessment['category'], (strpos($assessment['category'], '_') + 1));
                 $key = $assessment['gibbonExternalAssessmentID'].'-'.$assessment['category'];
 
@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 
             $count = 0;
             foreach ($internalAssessmentTypes as $internalAssessmentType) {
-                $name = 'internalDP['.$count.'][gibbonYearGroupIDList]';
+                $name = 'internalDP['.$count.'][gibbonYearGroupIDList][]';
                 $checked = array();
                 if (isset($internalDP[$internalAssessmentType])) {
                     // Explode the saved CSV data into an array
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/trackingSetti
 
                 // Add the checkbox group for this type
                 $row = $form->addRow();
-                    $row->addLabel($name, $internalAssessmentType);
+                    $row->addLabel($name, __($internalAssessmentType));
                     $row->addCheckbox($name)->fromArray($yearGroups)->checked($checked);
 
                 $form->addHiddenValue('internalDP['.$count.'][type]', $internalAssessmentType);

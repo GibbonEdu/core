@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.php') == false) {
@@ -34,18 +36,44 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
+    echo '<h3>';
+    echo __($guid, 'search');
+    echo '</h3>';
+    $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/space_manage.php');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'));
+        $row->addTextField('search')->setValue($search);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
+
+    echo '<h3>';
+    echo __($guid, 'View');
+    echo '</h3>';
+
     //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
+    $page = isset($_GET['page'])? $_GET['page'] : 1;
     if ((!is_numeric($page)) or $page < 1) {
         $page = 1;
     }
 
     try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonSpace ORDER BY name';
+        if (!empty($search)) {
+            $data = array('search' => '%'.$search.'%');
+            $sql = 'SELECT * FROM gibbonSpace WHERE name LIKE :search OR type LIKE :search ORDER BY name';
+        } else {
+            $data = array();
+            $sql = 'SELECT * FROM gibbonSpace ORDER BY name';
+        }
+
         $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -146,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/space_manage_edit.php&gibbonSpaceID='.$row['gibbonSpaceID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/space_manage_delete.php&gibbonSpaceID='.$row['gibbonSpaceID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/space_manage_delete.php&gibbonSpaceID='.$row['gibbonSpaceID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

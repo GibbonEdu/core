@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -176,12 +176,18 @@ class Google_Service_YouTube_Resource_Videos extends Google_Service_Resource
    * YouTube video ID(s) for the resource(s) that are being retrieved. In a video
    * resource, the id property specifies the video's ID.
    * @opt_param string locale DEPRECATED
+   * @opt_param string maxHeight The maxHeight parameter specifies a maximum
+   * height of the embedded player. If maxWidth is provided, maxHeight may not be
+   * reached in order to not violate the width request.
    * @opt_param string maxResults The maxResults parameter specifies the maximum
    * number of items that should be returned in the result set.
    *
    * Note: This parameter is supported for use in conjunction with the myRating
-   * parameter, but it is not supported for use in conjunction with the id
-   * parameter.
+   * and chart parameters, but it is not supported for use in conjunction with the
+   * id parameter.
+   * @opt_param string maxWidth The maxWidth parameter specifies a maximum width
+   * of the embedded player. If maxHeight is provided, maxWidth may not be reached
+   * in order to not violate the height request.
    * @opt_param string myRating Set this parameter's value to like or dislike to
    * instruct the API to only return videos liked or disliked by the authenticated
    * user.
@@ -203,8 +209,8 @@ class Google_Service_YouTube_Resource_Videos extends Google_Service_Resource
    * retrieved.
    *
    * Note: This parameter is supported for use in conjunction with the myRating
-   * parameter, but it is not supported for use in conjunction with the id
-   * parameter.
+   * and chart parameters, but it is not supported for use in conjunction with the
+   * id parameter.
    * @opt_param string regionCode The regionCode parameter instructs the API to
    * select a video chart available in the specified region. This parameter can
    * only be used in conjunction with the chart parameter. The parameter value is

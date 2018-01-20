@@ -31,59 +31,85 @@ use Gibbon\Forms\FormRendererInterface;
  */
 class FormRenderer implements FormRendererInterface
 {
+    protected $wrappers = array(
+        'form' => 'table',
+        'row'  => 'tr',
+        'cell' => 'td',
+    );
+
+    /**
+     * Create and return an instance of FormRenderer.
+     * @return  object FormRenderer
+     */
     public static function create()
     {
         return new FormRenderer();
     }
 
+    /**
+     * Change the defailt HTML wrappers for a particular scope.
+     * @param    string  $name
+     * @param    string  $value
+     */
+    public function setWrapper($name, $value)
+    {
+        $this->wrappers[$name] = $value;
+        return $this;
+    }
+
+    /**
+     * Transform a Form object into a string of HTML and javascript output.
+     * @param   Form    $form
+     * @return  string
+     */
     public function renderForm(Form $form)
     {
         $output = '';
 
         $totalColumns = $this->getColumnCount($form, $form->getRows());
 
-        $output .= '<form autocomplete="'.$form->getAutocomplete().'" id="'.$form->getID().'" method="'.$form->getMethod().'" action="'.$form->getAction().'" enctype="multipart/form-data">';
+        $output .= '<form '.$form->getAttributeString().'>';
 
         // Output hidden values
         foreach ($form->getHiddenValues() as $values) {
-            $output .= '<input name="'.$values['name'].'" value="'.$values['value'].'" type="hidden">';
+            $output .= '<input name="'.htmlPrep($values['name']).'" value="'.htmlPrep($values['value']).'" type="hidden">';
         }
 
-        $output .= '<table class="'.$form->getClass().'" cellspacing="0">';
+        $output .= sprintf('<%1$s class="'.$form->getClass().'" cellspacing="0">', $this->wrappers['form']);
 
         // Output form rows
         foreach ($form->getRows() as $row) {
-            $output .= '<tr id="'.$row->getID().'" class="'.$row->getClass().'">';
+            $validation = '';
+            $output .= sprintf('<%1$s id="%2$s" class="%3$s">', $this->wrappers['row'], $row->getID(), $row->getClass());
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
                 $colspan = ($row->isLastElement($element) && $row->getElementCount() < $totalColumns)? 'colspan="'.($totalColumns + 1 - $row->getElementCount()).'"' : '';
 
-                $output .= '<td class="'.$element->getClass().'" '.$colspan.'>';
-                    $output .= $element->getOutput();
-                $output .= '</td>';
-            }
-            $output .= '</tr>';
-        }
+                $output .= sprintf('<%1$s class="%2$s" %3$s>', $this->wrappers['cell'], $element->getClass(), $colspan);
+                $output .= $element->getOutput();
+                $output .= sprintf('</%1$s>', $this->wrappers['cell']);
 
-        $output .= '</table>';
-
-        // Output the validation code, aggregated
-        $output .= '<script type="text/javascript">'."\n";
-
-        foreach ($form->getRows() as $row) {
-            foreach ($row->getElements() as $element) {
                 if ($element instanceof ValidatableInterface) {
-                    $output .= $element->getValidationOutput();
+                    $validation .= $element->getValidationOutput();
                 }
             }
+
+            // Output the validation code for this row
+            if (!empty($validation)) {
+                $output .= '<script type="text/javascript">'.$validation.'</script>';
+            } 
+            
+            $output .= sprintf('</%1$s>', $this->wrappers['row']);
         }
 
+        $output .= sprintf('</%1$s>', $this->wrappers['form']);
+
         // Output the trigger code
+        $output .= '<script type="text/javascript">'."\n";
         foreach (array_reverse($form->getTriggers()) as $trigger) {
             $output .= $trigger->getOutput();
         }
-
         $output .= '</script>';
 
         $output .= '</form>';
@@ -91,6 +117,10 @@ class FormRenderer implements FormRendererInterface
         return $output;
     }
 
+    /**
+     * Get the minimum columns required to render this form.
+     * @return  int
+     */
     protected function getColumnCount(Form $form, $rows)
     {
         $count = 0;
