@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,9 +29,9 @@ class Google_Service_Monitoring_Resource_ProjectsMonitoredResourceDescriptors ex
    * Gets a single monitored resource descriptor. This method does not require a
    * Stackdriver account. (monitoredResourceDescriptors.get)
    *
-   * @param string $name The monitored resource descriptor to get. The format is
-   * projects/{project_id_or_number}/monitoredResourceDescriptors/{resource_type}.
-   * The {resource_type} is a predefined type, such as cloudsql_database.
+   * @param string $name The monitored resource descriptor to get. The format is "
+   * projects/{project_id_or_number}/monitoredResourceDescriptors/{resource_type}"
+   * . The {resource_type} is a predefined type, such as cloudsql_database.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Monitoring_MonitoredResourceDescriptor
    */
@@ -47,20 +47,20 @@ class Google_Service_Monitoring_Resource_ProjectsMonitoredResourceDescriptors ex
    * (monitoredResourceDescriptors.listProjectsMonitoredResourceDescriptors)
    *
    * @param string $name The project on which to execute the request. The format
-   * is projects/{project_id_or_number}.
+   * is "projects/{project_id_or_number}".
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize A positive number that is the maximum number of
-   * results to return.
-   * @opt_param string filter An optional filter (/monitoring/api/v3/filters)
-   * describing the descriptors to be returned. The filter can reference the
-   * descriptor's type and labels. For example, the following filter returns only
-   * Google Compute Engine descriptors that have an id label: resource.type =
-   * starts_with(gce_) AND resource.label:id
+   * @opt_param string filter An optional filter describing the descriptors to be
+   * returned. The filter can reference the descriptor's type and labels. For
+   * example, the following filter returns only Google Compute Engine descriptors
+   * that have an id label: resource.type = starts_with("gce_") AND
+   * resource.label:id
    * @opt_param string pageToken If this field is not empty then it must contain
    * the nextPageToken value returned by a previous call to this method. Using
    * this field causes the method to return additional results from the previous
    * method call.
+   * @opt_param int pageSize A positive number that is the maximum number of
+   * results to return.
    * @return Google_Service_Monitoring_ListMonitoredResourceDescriptorsResponse
    */
   public function listProjectsMonitoredResourceDescriptors($name, $optParams = array())

@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentEnrolment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -42,128 +44,88 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
 
     //STEP 1, SELECT TERM
     if ($step == 1) {
+        echo '<h2>';
+        echo __('Step 1 - Select CSV Files');
+        echo '</h2>';
+        echo '<p>';
+        echo __('This page allows you to import student enrolment data from a CSV file, in one of two modes: 1) Sync - the import file includes all students. The system will take the import and delete enrolment for any existing students not present in the file, whilst importing new enrolments into the system, or 2) Import - the import file includes only student enrolments you wish to add to the system. Select the CSV file you wish to use for the synchronise operation.');
+        echo '</p>';
+
+        $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_studentEnrolment.php&step=2');
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('mode', __('Mode'));
+            $row->addSelect('mode')->fromArray(array('import' => __('Import'), 'sync' => __('Sync')))->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+            $row->addFileUpload('file')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+            $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+        $row = $form->addRow();
+            $row->addLabel('stringEnclosure', __('String Enclosure'));
+            $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-		</h2>
-		<p>
-			<?php echo __($guid, 'This page allows you to import student enrolment data from a CSV file, in one of two modes: 1) Sync - the import file includes all students. The system will take the import and delete enrolment for any existing students not present in the file, whilst importing new enrolments into the system, or 2) Import - the import file includes only student enrolments you wish to add to the system. Select the CSV file you wish to use for the synchronise operation.') ?><br/>
-		</p>
 
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/import_studentEnrolment.php&step=2' ?>" enctype="multipart/form-data">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td>
-						<b>Mode *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="mode" id="mode" class="standardWidth">
-                            <option value="import"><?php echo __($guid, 'Import') ?></option>
-							<option value="sync"><?php echo __($guid, 'Sync') ?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-					</td>
-					<td class="right">
-						<input type="file" name="file" id="file" size="chars">
-						<script type="text/javascript">
-							var file=new LiveValidation('file');
-							file.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-						<script type="text/javascript">
-							var fieldDelimiter=new LiveValidation('fieldDelimiter');
-							fieldDelimiter.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-						<script type="text/javascript">
-							var stringEnclosure=new LiveValidation('stringEnclosure');
-							stringEnclosure.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-					</td>
-					<td class="right">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-
-
-
-		<h4>
-			<?php echo __($guid, 'Notes') ?>
-		</h4>
-		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
-				<ol>
-					<li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique.') ?></li>
-					<li><b><?php echo __($guid, 'Roll Group') ?> *</b> - <?php echo __($guid, 'Roll group short name, as set in School Admim. Must already exist.') ?></li>
-					<li><b><?php echo __($guid, 'Year Group') ?> *</b> - <?php echo __($guid, 'Year group short name, as set in School Admin. Must already exist') ?></li>
-					<li><b><?php echo __($guid, 'Roll Order') ?></b> - <?php echo __($guid, 'Must be unique to roll group if set.') ?></li>
-				</ol>
-			</li>
-			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
-		</ol>
-	<?php
+        <h4>
+            <?php echo __($guid, 'Notes') ?>
+        </h4>
+        <ol>
+            <li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
+            <li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __($guid, 'Your import should only include all current students.') ?></li>
+            <li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+                <ol>
+                    <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique.') ?></li>
+                    <li><b><?php echo __($guid, 'Roll Group') ?> *</b> - <?php echo __($guid, 'Roll group short name, as set in School Admin. Must already exist.') ?></li>
+                    <li><b><?php echo __($guid, 'Year Group') ?> *</b> - <?php echo __($guid, 'Year group short name, as set in School Admin. Must already exist.') ?></li>
+                    <li><b><?php echo __($guid, 'Roll Order') ?></b> - <?php echo __($guid, 'Must be unique to roll group if set.') ?></li>
+                </ol>
+            </li>
+            <li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+        </ol>
+    <?php
 
     } elseif ($step == 2) {
         ?>
-		<h2>
-			<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
-		</h2>
-		<?php
+        <h2>
+            <?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+        </h2>
+        <?php
 
         //Check file type
         if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
             ?>
-			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+            </div>
+            <?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
-			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+            </div>
+            <?php
 
         } elseif ($_POST['mode'] != 'sync' and $_POST['mode'] != 'import') {
             ?>
-			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
-			</div>
-			<?php
+            <div class='error'>
+                <?php echo __($guid, 'Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
+            </div>
+            <?php
 
         } else {
             $proceed = true;

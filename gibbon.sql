@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.10
--- http://www.phpmyadmin.net
+-- version 4.6.5.2
+-- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 19, 2017 at 06:42 AM
--- Server version: 5.5.42
--- PHP Version: 7.0.0
+-- Generation Time: Jan 19, 2018 at 08:28 AM
+-- Server version: 5.6.35
+-- PHP Version: 7.0.15
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `sqlUpdate`
+-- Database: `gibbon`
 --
 
 -- --------------------------------------------------------
@@ -27,8 +27,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `gibbonAction` (
-  `gibbonActionID` int(7) unsigned zerofill NOT NULL,
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL,
+  `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL COMMENT 'The action name should be unqiue to the module that it is related to',
   `precedence` int(2) NOT NULL,
   `category` varchar(20) NOT NULL,
@@ -46,7 +46,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionStudent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionParent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM AUTO_INCREMENT=899 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -67,14 +67,14 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000049, 0013, 'Manage Columns', 0, 'Timetable', 'Allow admins to manage timetable columns', 'ttColumn.php, ttColumn_add.php, ttColumn_edit.php, ttColumn_delete.php, ttColumn_edit_row_add.php, ttColumn_edit_row_edit.php, ttColumn_edit_row_delete.php', 'ttColumn.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000048, 0013, 'Manage Timetables', 0, 'Timetable', 'Allow admins to create and manage timetables', 'tt.php, tt_add.php, tt_edit.php, tt_delete.php, tt_import.php, tt_edit_day_add.php, tt_edit_day_edit.php, tt_edit_day_delete.php, tt_edit_day_edit_class.php, tt_edit_day_edit_class_delete.php, tt_edit_day_edit_class_add.php, tt_edit_day_edit_class_edit.php, tt_edit_day_edit_class_exception.php, tt_edit_day_edit_class_exception_add.php, tt_edit_day_edit_class_exception_delete.php', 'tt.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000014, 0008, 'Update Personal Data_family', 0, 'Request Updates', 'Allows users to update personal information for themselves and their family members', 'data_personal.php', 'data_personal.php', 'Y', 'Y', 'N', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
-(0000047, 0012, 'Assess', 0, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php,crowdAssess_view.php,crowdAssess_view_discuss.php, crowdAssess_view_discuss_post.php', 'crowdAssess.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
+(0000047, 0012, 'Assess', 0, 'Crowd Assessment', 'Allows users to assess each other\'s work', 'crowdAssess.php,crowdAssess_view.php,crowdAssess_view_discuss.php, crowdAssess_view_discuss_post.php', 'crowdAssess.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000046, 0011, 'Individual Needs Records_viewEdit', 2, 'Individual Needs', 'Allows users to edit IN records for all students ', 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000045, 0011, 'Individual Needs Records_view', 0, 'Individual Needs', 'Allows user to view IN records for all students', 'in_view.php, in_edit.php', 'in_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000044, 0006, 'Students Not Onsite', 0, 'Reports', 'Print a report of students who are not physically on the school campus on a given day', 'report_studentsNotOnsite_byDate.php,report_studentsNotOnsite_byDate_print.php', 'report_studentsNotOnsite_byDate.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'Y'),
 (0000043, 0005, 'Students by Roll Group', 0, 'Reports', 'Print student roll group lists', 'report_students_byRollGroup.php, report_students_byRollGroup_print.php', 'report_students_byRollGroup.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000042, 0005, 'View Student Profile_myChildren', 0, 'Profiles', 'Allows parents to view their student''s information', 'student_view.php, student_view_details.php', 'student_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
-(0000041, 0007, 'View Markbook_viewMyChildrensClasses', 1, '', 'Allows parents to view their children''s classes', 'markbook_view.php', 'markbook_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
-(0000040, 0009, 'Lesson Planner_viewMyChildrensClasses', 0, 'Planning', 'Allows parents to view their children''s classes', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000042, 0005, 'View Student Profile_myChildren', 0, 'Profiles', 'Allows parents to view their student\'s information', 'student_view.php, student_view_details.php', 'student_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000041, 0007, 'View Markbook_viewMyChildrensClasses', 1, '', 'Allows parents to view their children\'s classes', 'markbook_view.php', 'markbook_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000040, 0009, 'Lesson Planner_viewMyChildrensClasses', 0, 'Planning', 'Allows parents to view their children\'s classes', 'planner.php, planner_view_full.php, planner_deadlines.php, planner_view_full_post.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000063, 0008, 'Personal Data Updates ', 0, 'Manage Updates', 'Allows admins to process data update requests for personal data', 'data_personal_manage.php, data_personal_manage_edit.php, data_personal_manage_delete.php', 'data_personal_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000039, 0007, 'View Markbook_myMarks', 2, 'Markbook', 'View your own marks', 'markbook_view.php', 'markbook_view.php', 'N', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000036, 0009, 'Lesson Planner_viewAllEditMyClasses', 2, 'Planning', 'View all planner information and edit all planner information for classes user is in', 'planner.php, planner_view_full.php, planner_add.php, planner_edit.php, planner_delete.php, planner_deadlines.php, planner_duplicate.php, planner_view_full_post.php, planner_view_full_submit_edit.php, planner_bump.php, planner_unitOverview.php', 'planner.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
@@ -105,7 +105,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000010, 0003, 'Manage Modules', 0, 'Extend & Update', '', 'module_manage.php,module_manage_install.php,module_manage_edit.php,module_manage_uninstall.php,module_manage_update.php', 'module_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000012, 0002, 'Manage Permissions', 0, 'User Management', '', 'permission_manage.php,permission_manage_edit.php', 'permission_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000009, 0002, 'Manage Roles', 0, 'User Management', '', 'role_manage.php,role_manage_add.php,role_manage_edit.php,role_manage_delete.php,role_manage_duplicate.php', 'role_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000008, 0001, 'Manage Houses', 0, 'Groupings', '', 'house_manage.php,house_manage_edit.php,house_manage_add.php,house_manage_delete.php', 'house_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000008, 0001, 'Manage Houses', 0, 'Groupings', '', 'house_manage.php,house_manage_edit.php,house_manage_add.php,house_manage_delete.php,house_manage_assign.php', 'house_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000007, 0001, 'Manage Roll Groups', 0, 'Groupings', '', 'rollGroup_manage.php,rollGroup_manage_edit.php,rollGroup_manage_add.php,rollGroup_manage_delete.php', 'rollGroup_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000005, 0003, 'System Settings', 0, 'Settings', 'Main system settings', 'systemSettings.php', 'systemSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000006, 0001, 'Manage Year Groups', 0, 'Groupings', '', 'yearGroup_manage.php,yearGroup_manage_edit.php,yearGroup_manage_add.php,yearGroup_manage_delete.php', 'yearGroup_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -128,7 +128,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000077, 0005, 'Emergency Data Summary', 0, 'Reports', 'Allows users to show a summary of emergency contact data for a group of students.', 'report_student_emergencySummary.php, report_student_emergencySummary_print.php', 'report_student_emergencySummary.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'N', 'N'),
 (0000074, 0005, 'Application Form', 0, 'Admissions', 'Allows users, with or without an account, to apply for student place.', 'applicationForm.php', 'applicationForm.php', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000001, 0002, 'Application Form Settings', 0, 'Student Management', 'Allows admins to control the application form', 'applicationFormSettings.php', 'applicationFormSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000078, 0005, 'Manage Applications_editDelete', 1, 'Admissions', 'Allows admins to view and action applications', 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php', 'applicationForm_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000078, 0005, 'Manage Applications_editDelete', 1, 'Admissions', 'Allows admins to view and action applications', 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php', 'applicationForm_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000585, 0008, 'Update Personal Data_any', 1, 'Request Updates', 'Create personal data update request for any user', 'data_personal.php', 'data_personal.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000586, 0008, 'Update Medical Data_any', 1, 'Request Updates', 'Create medical data update request for any user', 'data_medical.php', 'data_medical.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000755, 0005, 'Left Students', 1, 'Reports', 'A report showing all the students who have left within a specified date range.', 'report_students_left.php', 'report_students_left.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -144,9 +144,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000608, 0119, 'View Behaviour Records_all', 1, 'Behaviour Records', 'View behaviour records by student', 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000609, 0005, 'Emergency SMS by Transport', 0, 'Reports', 'Show SMS emergency details by transport route', 'report_emergencySMS_byTransport.php', 'report_emergencySMS_byTransport.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000610, 0001, 'Manage Resource Settings', 0, 'Teaching & Learning', 'Manage settings for the resources module', 'resourceSettings.php', 'resourceSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000611, 0120, 'Manage Resources_all', 1, 'Resources', 'Manage all resources', 'resources_manage.php, resources_manage_add.php, resources_manage_edit.php, resources_manage_delete.php', 'resources_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000612, 0120, 'Manage Resources_my', 0, 'Resources', 'Manage resources created by the user', 'resources_manage.php, resources_manage_add.php, resources_manage_edit.php, resources_manage_delete.php', 'resources_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000613, 0120, 'View Resources', 0, 'Resources', 'View resources', 'resources_view.php,resources_view_details.php,resources_view_full.php', 'resources_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000611, 0009, 'Manage Resources_all', 1, 'Resources', 'Manage all resources', 'resources_manage.php, resources_manage_add.php, resources_manage_edit.php, resources_manage_delete.php', 'resources_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000612, 0009, 'Manage Resources_my', 0, 'Resources', 'Manage resources created by the user', 'resources_manage.php, resources_manage_add.php, resources_manage_edit.php, resources_manage_delete.php', 'resources_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000613, 0009, 'View Resources', 0, 'Resources', 'View resources', 'resources_view.php,resources_view_details.php,resources_view_full.php', 'resources_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000614, 0121, 'New Message_classes_my', 1, 'Manage Messages', 'Bulk email to any of my classes', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000615, 0121, 'New Message_classes_any', 9, 'Manage Messages', 'Bulk email to any class', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000616, 0121, 'New Message_classes_parents', 5, 'Manage Messages', 'Include parents in messages posted to classes', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
@@ -165,7 +165,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000629, 0121, 'Manage Messages_my', 0, 'Manage Messages', 'Edit all messages created by the user', 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000630, 0121, 'Manage Messages_all', 1, 'Manage Messages', 'Edit all messages', 'messenger_manage.php,messenger_manage_delete.php,messenger_manage_edit.php,messenger_manage_report.php', 'messenger_manage.php', 'N', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'Y', 'N'),
 (0000631, 0003, 'Update', 0, 'Extend & Update', 'Update Gibbon to a new version', 'update.php', 'update.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000632, 0121, 'New Message_fromSchool', 0, 'Manage Messages', 'Bulk email from the school''s email address', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
+(0000632, 0121, 'New Message_fromSchool', 0, 'Manage Messages', 'Bulk email from the school\'s email address', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000662, 0009, 'Unit Planner_learningAreas', 0, 'Planning', 'Manage all units within the learning areas I have appropriate permission', 'units.php, units_add.php, units_delete.php, units_edit.php, units_duplicate.php, units_edit_deploy.php, units_edit_working.php, units_edit_working_copyback.php, units_edit_working_add.php, units_edit_copyBack.php, units_edit_copyForward.php, units_dump.php,units_edit_smartBlockify.php', 'units.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000660, 0121, 'New Message_houses_all', 15, 'Manage Messages', 'Bulk email to members of all houses', 'messenger_post.php', 'messenger_post.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'N'),
 (0000661, 0009, 'Unit Planner_all', 1, 'Planning', 'Manage all units within the school', 'units.php, units_add.php, units_delete.php, units_edit.php, units_duplicate.php, units_edit_deploy.php, units_edit_working.php, units_edit_working_copyback.php, units_edit_working_add.php, units_edit_copyBack.php, units_edit_copyForward.php, units_dump.php,units_edit_smartBlockify.php', 'units.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -229,7 +229,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000777, 0002, 'Import Student Enrolment', 0, 'Import', 'Import CSV file of students, and use it to register certain users as students.', 'import_studentEnrolment.php', 'import_studentEnrolment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000778, 0002, 'Import Families', 0, 'Import', 'Import CSV files of families and their members, and use it to sync.', 'import_families.php', 'import_families.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000779, 0136, 'View Staff Profile_brief', 1, 'Profiles', 'View brief profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
-(0000780, 0136, 'View Staff Profile_full', 2, 'Profiles', 'View full profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
+(0000780, 0136, 'View Staff Profile_full', 2, 'Profiles', 'View full profile of any staff member in the school.', 'staff_view.php,staff_view_details.php', 'staff_view.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000781, 0137, 'View Roll Groups', 1, 'Roll Groups', 'View a brief profile of roll groups in school.', 'rollGroups.php,rollGroups_details.php', 'rollGroups.php', 'Y', 'Y', 'Y', 'Y', 'Y', 'N', 'Y', 'Y', 'Y', 'Y', 'Y'),
 (0000803, 0007, 'Edit Markbook_everything', 4, 'Markbook', 'Allows editing of any column in any class.', 'markbook_edit.php, markbook_edit_add.php, markbook_edit_edit.php, markbook_edit_delete.php,markbook_edit_data.php,markbook_edit_targets.php,markbook_edit_copy.php', 'markbook_edit.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000804, 0002, 'Manage Districts', 0, 'User Management', 'Manage a list of districts for address autocomplete.', 'district_manage.php, district_manage_add.php, district_manage_edit.php, district_manage_delete.php', 'district_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -238,9 +238,9 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000807, 0005, 'Privacy Choices by Student', 0, 'Reports', 'Shows privacy options selected, for those students with a selection made.', 'report_privacy_student.php', 'report_privacy_student.php', 'N', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000808, 0014, 'View Available Teachers', 0, 'Reports', 'View unassigned teachers by timetable.', 'report_viewAvailableTeachers.php', 'report_viewAvailableTeachers.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y'),
 (0000810, 0009, 'Parent Weekly Email Summary', 0, 'Reports', 'This report shows responses to the weekly summary email, organised by calendar week and role group.', 'report_parentWeeklyEmailSummaryConfirmation.php', 'report_parentWeeklyEmailSummaryConfirmation.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000811, 0016, 'Import External Assessments', 0, 'Import', 'Import CSV file of results, to update matching records and create new records where none exist.', 'import_results.php', 'import_results.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000812, 0014, 'Manage Facility Changes_allClasses', 2, 'Facilities', 'Allows a user to create and manage one-off location changes for all classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000811, 0016, 'Import External Assessments', 0, 'Import', 'Import CSV file of results, to update matching records and create new records where none exist.', 'import_results.php', 'import_results.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES
+(0000812, 0014, 'Manage Facility Changes_allClasses', 2, 'Facilities', 'Allows a user to create and manage one-off location changes for all classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000813, 0014, 'Manage Facility Changes_myClasses', 0, 'Facilities', 'Allows a user to create and manage one-off location changes for their own classes within the timetable.', 'spaceChange_manage.php,spaceChange_manage_add.php,spaceChange_manage_edit.php,spaceChange_manage_delete.php', 'spaceChange_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000814, 0014, 'Manage Facility Bookings_allBookings', 0, 'Facilities', 'Allows a user to book a room for on-off use, and manage bookings made by all other users.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000815, 0014, 'Manage Facility Bookings_myBookings', 0, 'Facilities', 'Allows a user to book a room for on-off use, and manage their own bookings.', 'spaceBooking_manage.php,spaceBooking_manage_add.php,spaceBooking_manage_edit.php,spaceBooking_manage_delete.php', 'spaceBooking_manage.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
@@ -265,7 +265,7 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000834, 0016, 'Write Internal Assessments_myClasses', 0, 'Internal Assessment', 'Allows teachers to enter Internal Assessment assessment data to columns in their classes.', 'internalAssessment_write.php, internalAssessment_write_data.php', 'internalAssessment_write.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000835, 0016, 'Write Internal Assessments_all', 1, 'Internal Assessment', 'Allows privileged users to enter Internal Assessment assessment data to columns in all classes.', 'internalAssessment_write.php, internalAssessment_write_data.php', 'internalAssessment_write.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000836, 0016, 'View Internal Assessments_mine', 0, 'Internal Assessment', 'Allows students to view their own Internal Assessment results.', 'internalAssessment_view.php', 'internalAssessment_view.php', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N'),
-(0000837, 0016, 'View Internal Assessments_myChildrens', 1, 'Internal Assessment', 'Allows parents to view their childrens'' Internal Assessment results.', 'internalAssessment_view.php', 'internalAssessment_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000837, 0016, 'View Internal Assessments_myChildrens', 1, 'Internal Assessment', 'Allows parents to view their childrens\' Internal Assessment results.', 'internalAssessment_view.php', 'internalAssessment_view.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000838, 0016, 'View Internal Assessments_all', 2, 'Internal Assessment', 'Allows staff to see Internal Assessment results for all children.', 'internalAssessment_view.php', 'internalAssessment_view.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000839, 0001, 'Manage Facility Settings', 0, 'Other', 'Allows privileged users to manage settings for spaces.', 'spaceSettings.php', 'spaceSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000840, 0119, 'View Behaviour Records_myChildren', 0, 'Behaviour Records', 'View behaviour records for students within a family.', 'behaviour_view.php,behaviour_view_details.php', 'behaviour_view.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N'),
@@ -318,13 +318,15 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 (0000889, 0015, 'Enter Activity Attendance_leader', 0, 'Attendance', 'Record student attendance for activities you organise, coach or assist in.', 'activities_attendance.php,activities_attendanceProcess.php', 'activities_attendance.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N'),
 (0000890, 0015, 'Activity Attendance by Date', 0, 'Reports', 'Record student attendance for activities.', 'report_attendance_byDate.php,report_attendance_byDate_print.php', 'report_attendance_byDate.php', 'Y', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
 (0000891, 0003, 'Notification Settings', 0, 'Settings', 'Manage settings for system notifications.', 'notificationSettings.php,notificationSettings_manage_edit.php', 'notificationSettings.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000892, 0005, 'Manage Applications_edit', 0, 'Admissions', 'Allows admins to view and action applications, but not to delete them', 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php', 'applicationForm_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
-(0000893, 0006, 'Attendance By Roll Group_myGroups', 0, 'Take Attendance', 'Take attendance for a teacher''s own roll groups', 'attendance_take_byRollGroup.php', 'attendance_take_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N', 'Y'),
+(0000892, 0005, 'Manage Applications_edit', 0, 'Admissions', 'Allows admins to view and action applications, but not to delete them', 'applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php', 'applicationForm_manage.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000893, 0006, 'Attendance By Roll Group_myGroups', 0, 'Take Attendance', 'Take attendance for a teacher\'s own roll groups', 'attendance_take_byRollGroup.php', 'attendance_take_byRollGroup.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'N', 'N', 'Y'),
 (0000894, 0014, 'View Timetable by Person_my', 1, 'View Timetables', 'Allows users to view their own timetable', 'tt.php, tt_view.php', 'tt.php', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'Y', 'Y', 'N', 'Y'),
-(0000895, 0014, 'View Timetable by Person_myChildren', 0, 'View Timetables', 'Allows parents to view their children''s timetable', 'tt.php, tt_view.php', 'tt.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
+(0000895, 0014, 'View Timetable by Person_myChildren', 0, 'View Timetables', 'Allows parents to view their children\'s timetable', 'tt.php, tt_view.php', 'tt.php', 'Y', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N'),
 (0000896, 0005, 'View Student Profile_my', 0, 'Profiles', 'Allows students to view their own information', 'student_view.php, student_view_details.php', 'student_view.php', 'Y', 'Y', 'N', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N'),
 (0000897, 0007, 'View Markbook_myClasses', 3, 'Profiles', 'Allows teachers to view their own markbook information', 'markbook_view.php, markbook_view_full.php', 'markbook_view.php', 'Y', 'Y', 'N', 'Y', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y'),
-(0000898, 0005, 'Student Enrolment Trends', 0, 'Visualise', 'Provides a visual graph of student enrolment over a range of time.', 'report_graph_studentEnrolment.php', 'report_graph_studentEnrolment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
+(0000898, 0005, 'Student Enrolment Trends', 0, 'Visualise', 'Provides a visual graph of student enrolment over a range of time.', 'report_graph_studentEnrolment.php', 'report_graph_studentEnrolment.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000899, 0005, 'Students by House', 0, 'Reports', 'View a report of student houses by year group.', 'report_students_byHouse.php', 'report_students_byHouse.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N'),
+(0000900, 0013, 'Sync Course Enrolment', 0, 'Courses & Classes', 'Allows users to map enrolments from homerooms to classes.', 'courseEnrolment_sync.php,courseEnrolment_sync_add.php,courseEnrolment_sync_edit.php,courseEnrolment_sync_delete.php,courseEnrolment_sync_run.php', 'courseEnrolment_sync.php', 'Y', 'Y', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');
 
 -- --------------------------------------------------------
 
@@ -333,8 +335,8 @@ INSERT INTO `gibbonAction` (`gibbonActionID`, `gibbonModuleID`, `name`, `precede
 --
 
 CREATE TABLE `gibbonActivity` (
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL DEFAULT '000',
+  `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL DEFAULT '000',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `registration` enum('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Can a parent/student select this for registration?',
   `name` varchar(40) NOT NULL DEFAULT '',
@@ -348,7 +350,9 @@ CREATE TABLE `gibbonActivity` (
   `gibbonYearGroupIDList` varchar(255) NOT NULL DEFAULT '',
   `maxParticipants` int(3) NOT NULL DEFAULT '0',
   `description` text,
-  `payment` decimal(8,2) DEFAULT NULL
+  `payment` decimal(8,2) DEFAULT NULL,
+  `paymentType` enum('Entire Programme','Per Session','Per Week','Per Term') DEFAULT 'Entire Programme',
+  `paymentFirmness` enum('Finalised','Estimated') DEFAULT 'Finalised'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -358,9 +362,9 @@ CREATE TABLE `gibbonActivity` (
 --
 
 CREATE TABLE `gibbonActivityAttendance` (
-  `gibbonActivityAttendanceID` int(10) unsigned zerofill NOT NULL,
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL,
-  `gibbonPersonIDTaker` int(8) unsigned zerofill NOT NULL,
+  `gibbonActivityAttendanceID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDTaker` int(8) UNSIGNED ZEROFILL NOT NULL,
   `attendance` text NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -373,11 +377,11 @@ CREATE TABLE `gibbonActivityAttendance` (
 --
 
 CREATE TABLE `gibbonActivitySlot` (
-  `gibbonActivitySlotID` int(10) unsigned zerofill NOT NULL,
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonActivitySlotID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `locationExternal` varchar(50) NOT NULL,
-  `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL,
+  `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -389,9 +393,9 @@ CREATE TABLE `gibbonActivitySlot` (
 --
 
 CREATE TABLE `gibbonActivityStaff` (
-  `gibbonActivityStaffID` int(8) unsigned zerofill NOT NULL,
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
-  `gibbonPersonID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
+  `gibbonActivityStaffID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000',
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000',
   `role` enum('Organiser','Coach','Assistant','Other') NOT NULL DEFAULT 'Organiser'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -402,14 +406,14 @@ CREATE TABLE `gibbonActivityStaff` (
 --
 
 CREATE TABLE `gibbonActivityStudent` (
-  `gibbonActivityStudentID` int(10) unsigned zerofill NOT NULL,
-  `gibbonActivityID` int(8) unsigned zerofill NOT NULL DEFAULT '00000000',
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL DEFAULT '0000000000',
+  `gibbonActivityStudentID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000',
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000',
   `status` enum('Accepted','Pending','Waiting List','Not Accepted') NOT NULL DEFAULT 'Pending',
   `timestamp` datetime NOT NULL,
-  `gibbonActivityIDBackup` int(8) unsigned zerofill DEFAULT NULL,
+  `gibbonActivityIDBackup` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `invoiceGenerated` enum('N','Y') NOT NULL DEFAULT 'N',
-  `gibbonFinanceInvoiceID` int(14) unsigned zerofill DEFAULT NULL
+  `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -419,10 +423,10 @@ CREATE TABLE `gibbonActivityStudent` (
 --
 
 CREATE TABLE `gibbonAlarm` (
-  `gibbonAlarmID` int(5) unsigned zerofill NOT NULL,
+  `gibbonAlarmID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('General','Lockdown','Custom') DEFAULT NULL,
   `status` enum('Current','Past') NOT NULL DEFAULT 'Past',
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampStart` timestamp NULL DEFAULT NULL,
   `timestampEnd` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -434,9 +438,9 @@ CREATE TABLE `gibbonAlarm` (
 --
 
 CREATE TABLE `gibbonAlarmConfirm` (
-  `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL,
-  `gibbonAlarmID` int(5) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonAlarmConfirmID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonAlarmID` int(5) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -447,14 +451,14 @@ CREATE TABLE `gibbonAlarmConfirm` (
 --
 
 CREATE TABLE `gibbonAlertLevel` (
-  `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL,
+  `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `color` varchar(6) NOT NULL COMMENT 'RGB Hex, no leading #',
   `colorBG` varchar(6) NOT NULL COMMENT 'RGB Hex, no leading #',
   `description` text NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAlertLevel`
@@ -472,7 +476,7 @@ INSERT INTO `gibbonAlertLevel` (`gibbonAlertLevelID`, `name`, `nameShort`, `colo
 --
 
 CREATE TABLE `gibbonApplicationForm` (
-  `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
+  `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonApplicationFormHash` varchar(40) DEFAULT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
@@ -498,8 +502,8 @@ CREATE TABLE `gibbonApplicationForm` (
   `nationalIDCardNumber` varchar(30) NOT NULL,
   `residencyStatus` varchar(255) NOT NULL,
   `visaExpiryDate` date DEFAULT NULL,
-  `gibbonSchoolYearIDEntry` int(3) unsigned zerofill NOT NULL,
-  `gibbonYearGroupIDEntry` int(3) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearIDEntry` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonYearGroupIDEntry` int(3) UNSIGNED ZEROFILL NOT NULL,
   `dayType` varchar(255) DEFAULT NULL,
   `referenceEmail` varchar(100) DEFAULT NULL,
   `schoolName1` varchar(50) NOT NULL,
@@ -512,7 +516,7 @@ CREATE TABLE `gibbonApplicationForm` (
   `schoolGrades2` varchar(20) NOT NULL,
   `schoolLanguage2` varchar(50) NOT NULL,
   `schoolDate2` date DEFAULT NULL,
-  `gibbonFamilyID` int(7) unsigned zerofill DEFAULT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL DEFAULT NULL,
   `siblingName1` varchar(50) NOT NULL,
   `siblingDOB1` date DEFAULT NULL,
   `siblingSchool1` varchar(50) NOT NULL,
@@ -547,7 +551,7 @@ CREATE TABLE `gibbonApplicationForm` (
   `companyAll` enum('Y','N') DEFAULT NULL,
   `gibbonFinanceFeeCategoryIDList` text,
   `agreement` enum('N','Y') DEFAULT NULL,
-  `parent1gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
+  `parent1gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `parent1title` varchar(5) DEFAULT NULL,
   `parent1surname` varchar(30) DEFAULT '',
   `parent1firstName` varchar(30) DEFAULT '',
@@ -599,11 +603,11 @@ CREATE TABLE `gibbonApplicationForm` (
   `milestones` text NOT NULL,
   `notes` text NOT NULL,
   `dateStart` date DEFAULT NULL,
-  `gibbonRollGroupID` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `howDidYouHear` varchar(255) DEFAULT NULL,
   `howDidYouHearMore` varchar(255) DEFAULT NULL,
   `paymentMade` enum('N','Y','Exemption') NOT NULL DEFAULT 'N',
-  `gibbonPaymentID` int(14) unsigned zerofill DEFAULT NULL,
+  `gibbonPaymentID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `privacy` text,
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values',
   `parent1fields` text NOT NULL COMMENT 'Serialised array of custom field values',
@@ -617,8 +621,8 @@ CREATE TABLE `gibbonApplicationForm` (
 --
 
 CREATE TABLE `gibbonApplicationFormFile` (
-  `gibbonApplicationFormFileID` int(14) unsigned zerofill NOT NULL,
-  `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
+  `gibbonApplicationFormFileID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -630,9 +634,9 @@ CREATE TABLE `gibbonApplicationFormFile` (
 --
 
 CREATE TABLE `gibbonApplicationFormLink` (
-  `gibbonApplicationFormLinkID` int(12) unsigned NOT NULL,
-  `gibbonApplicationFormID1` int(12) unsigned zerofill NOT NULL,
-  `gibbonApplicationFormID2` int(12) unsigned zerofill NOT NULL,
+  `gibbonApplicationFormLinkID` int(12) UNSIGNED NOT NULL,
+  `gibbonApplicationFormID1` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonApplicationFormID2` int(12) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -643,9 +647,9 @@ CREATE TABLE `gibbonApplicationFormLink` (
 --
 
 CREATE TABLE `gibbonApplicationFormRelationship` (
-  `gibbonApplicationFormRelationshipID` int(14) unsigned zerofill NOT NULL,
-  `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonApplicationFormRelationshipID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `relationship` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -656,7 +660,7 @@ CREATE TABLE `gibbonApplicationFormRelationship` (
 --
 
 CREATE TABLE `gibbonAttendanceCode` (
-  `gibbonAttendanceCodeID` int(3) unsigned zerofill NOT NULL,
+  `gibbonAttendanceCodeID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `type` enum('Core','Additional') NOT NULL,
@@ -667,7 +671,7 @@ CREATE TABLE `gibbonAttendanceCode` (
   `future` enum('Y','N') NOT NULL,
   `gibbonRoleIDAll` varchar(90) NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAttendanceCode`
@@ -688,9 +692,9 @@ INSERT INTO `gibbonAttendanceCode` (`gibbonAttendanceCodeID`, `name`, `nameShort
 --
 
 CREATE TABLE `gibbonAttendanceLogCourseClass` (
-  `gibbonAttendanceLogCourseClassID` int(14) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
+  `gibbonAttendanceLogCourseClassID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -702,17 +706,17 @@ CREATE TABLE `gibbonAttendanceLogCourseClass` (
 --
 
 CREATE TABLE `gibbonAttendanceLogPerson` (
-  `gibbonAttendanceLogPersonID` int(14) unsigned zerofill NOT NULL,
-  `gibbonAttendanceCodeID` int(3) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonAttendanceLogPersonID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonAttendanceCodeID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `direction` enum('In','Out') NOT NULL,
   `type` varchar(30) NOT NULL DEFAULT '',
   `reason` varchar(30) NOT NULL DEFAULT '',
   `context` enum('Roll Group','Class','Person','Future','Self Registration') DEFAULT NULL,
   `comment` varchar(255) NOT NULL,
   `date` date DEFAULT NULL,
-  `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampTaken` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -723,9 +727,9 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
 --
 
 CREATE TABLE `gibbonAttendanceLogRollGroup` (
-  `gibbonAttendanceLogRollGroupID` int(14) unsigned zerofill NOT NULL,
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
-  `gibbonPersonIDTaker` int(10) unsigned zerofill NOT NULL,
+  `gibbonAttendanceLogRollGroupID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -737,17 +741,17 @@ CREATE TABLE `gibbonAttendanceLogRollGroup` (
 --
 
 CREATE TABLE `gibbonBehaviour` (
-  `gibbonBehaviourID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonBehaviourID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Positive','Negative') CHARACTER SET utf8 NOT NULL,
   `descriptor` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `level` varchar(100) CHARACTER SET utf8 DEFAULT NULL,
   `comment` text CHARACTER SET utf8 NOT NULL,
   `followup` text COLLATE utf8_unicode_ci NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -758,9 +762,9 @@ CREATE TABLE `gibbonBehaviour` (
 --
 
 CREATE TABLE `gibbonBehaviourLetter` (
-  `gibbonBehaviourLetterID` int(10) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonBehaviourLetterID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `letterLevel` enum('1','2','3') NOT NULL,
   `status` enum('Warning','Issued') NOT NULL,
   `recordCountAtCreation` int(3) NOT NULL,
@@ -837,7 +841,7 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Congo, the Democratic Republic of the', ''),
 ('Cook Islands', '682'),
 ('Costa Rica', '506'),
-('Cote D''Ivoire', ''),
+('Cote D\'Ivoire', ''),
 ('Croatia', '385'),
 ('Cuba', '53'),
 ('Cyprus', '357'),
@@ -896,11 +900,11 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 ('Kazakhstan', '7'),
 ('Kenya', '254'),
 ('Kiribati', '686'),
-('Korea, Democratic People''s Republic of', ''),
+('Korea, Democratic People\'s Republic of', ''),
 ('Korea, Republic of', ''),
 ('Kuwait', '965'),
 ('Kyrgyzstan', '996'),
-('Lao People''s Democratic Republic', ''),
+('Lao People\'s Democratic Republic', ''),
 ('Latvia', '371'),
 ('Lebanon', '961'),
 ('Lesotho', '266'),
@@ -1032,9 +1036,9 @@ INSERT INTO `gibbonCountry` (`printable_name`, `iddCountryCode`) VALUES
 --
 
 CREATE TABLE `gibbonCourse` (
-  `gibbonCourseID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonCourseID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `name` varchar(45) DEFAULT NULL,
   `nameShort` varchar(6) NOT NULL DEFAULT '',
   `description` text NOT NULL,
@@ -1050,14 +1054,27 @@ CREATE TABLE `gibbonCourse` (
 --
 
 CREATE TABLE `gibbonCourseClass` (
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonCourseID` int(8) unsigned zerofill NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(12) NOT NULL DEFAULT '',
   `nameShort` varchar(5) NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDTarget` int(5) unsigned zerofill DEFAULT NULL
+  `gibbonScaleIDTarget` int(5) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonCourseClassMap`
+--
+
+CREATE TABLE `gibbonCourseClassMap` (
+  `gibbonCourseClassMapID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1066,9 +1083,9 @@ CREATE TABLE `gibbonCourseClass` (
 --
 
 CREATE TABLE `gibbonCourseClassPerson` (
-  `gibbonCourseClassPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonCourseClassPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Student','Teacher','Assistant','Technician','Parent','Student - Left','Teacher - Left') NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1080,12 +1097,12 @@ CREATE TABLE `gibbonCourseClassPerson` (
 --
 
 CREATE TABLE `gibbonCrowdAssessDiscuss` (
-  `gibbonCrowdAssessDiscussID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonCrowdAssessDiscussID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryHomeworkID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
-  `gibbonCrowdAssessDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL
+  `gibbonCrowdAssessDiscussIDReplyTo` int(16) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1095,7 +1112,7 @@ CREATE TABLE `gibbonCrowdAssessDiscuss` (
 --
 
 CREATE TABLE `gibbonDaysOfWeek` (
-  `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL,
+  `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
@@ -1104,7 +1121,7 @@ CREATE TABLE `gibbonDaysOfWeek` (
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
   `schoolClose` time DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonDaysOfWeek`
@@ -1126,7 +1143,7 @@ INSERT INTO `gibbonDaysOfWeek` (`gibbonDaysOfWeekID`, `name`, `nameShort`, `sequ
 --
 
 CREATE TABLE `gibbonDepartment` (
-  `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Learning Area','Administration') NOT NULL DEFAULT 'Learning Area',
   `name` varchar(40) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
@@ -1142,8 +1159,8 @@ CREATE TABLE `gibbonDepartment` (
 --
 
 CREATE TABLE `gibbonDepartmentResource` (
-  `gibbonDepartmentResourceID` int(8) unsigned zerofill NOT NULL,
-  `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
+  `gibbonDepartmentResourceID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Link','File') NOT NULL,
   `name` varchar(100) NOT NULL,
   `url` varchar(255) NOT NULL
@@ -1156,9 +1173,9 @@ CREATE TABLE `gibbonDepartmentResource` (
 --
 
 CREATE TABLE `gibbonDepartmentStaff` (
-  `gibbonDepartmentStaffID` int(6) unsigned zerofill NOT NULL,
-  `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonDepartmentStaffID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Coordinator','Assistant Coordinator','Teacher (Curriculum)','Teacher','Director','Manager','Administrator','Other') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1169,7 +1186,7 @@ CREATE TABLE `gibbonDepartmentStaff` (
 --
 
 CREATE TABLE `gibbonDistrict` (
-  `gibbonDistrictID` int(6) unsigned zerofill NOT NULL,
+  `gibbonDistrictID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1180,14 +1197,14 @@ CREATE TABLE `gibbonDistrict` (
 --
 
 CREATE TABLE `gibbonExternalAssessment` (
-  `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
+  `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(10) NOT NULL,
   `description` varchar(255) NOT NULL,
   `website` text NOT NULL,
   `active` enum('Y','N') NOT NULL,
   `allowFileUpload` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessment`
@@ -1205,14 +1222,14 @@ INSERT INTO `gibbonExternalAssessment` (`gibbonExternalAssessmentID`, `name`, `n
 --
 
 CREATE TABLE `gibbonExternalAssessmentField` (
-  `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL,
-  `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
+  `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `category` varchar(50) NOT NULL,
   `order` int(4) NOT NULL,
-  `gibbonScaleID` int(5) unsigned zerofill NOT NULL,
+  `gibbonScaleID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `gibbonYearGroupIDList` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=133 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessmentField`
@@ -1355,9 +1372,9 @@ INSERT INTO `gibbonExternalAssessmentField` (`gibbonExternalAssessmentFieldID`, 
 --
 
 CREATE TABLE `gibbonExternalAssessmentStudent` (
-  `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL,
-  `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonExternalAssessmentStudentID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL,
   `attachment` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1369,10 +1386,10 @@ CREATE TABLE `gibbonExternalAssessmentStudent` (
 --
 
 CREATE TABLE `gibbonExternalAssessmentStudentEntry` (
-  `gibbonExternalAssessmentStudentEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL,
-  `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL,
-  `gibbonScaleGradeID` int(7) unsigned zerofill DEFAULT NULL COMMENT 'Key for the actual grade achieved'
+  `gibbonExternalAssessmentStudentEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonExternalAssessmentStudentID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'Key for the actual grade achieved'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1382,7 +1399,7 @@ CREATE TABLE `gibbonExternalAssessmentStudentEntry` (
 --
 
 CREATE TABLE `gibbonFamily` (
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameAddress` varchar(100) NOT NULL COMMENT 'The formal name to be used for addressing the family (e.g. Mr. & Mrs. Smith)',
   `homeAddress` mediumtext NOT NULL,
@@ -1401,9 +1418,9 @@ CREATE TABLE `gibbonFamily` (
 --
 
 CREATE TABLE `gibbonFamilyAdult` (
-  `gibbonFamilyAdultID` int(8) unsigned zerofill NOT NULL,
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(8) unsigned zerofill NOT NULL,
+  `gibbonFamilyAdultID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `comment` text NOT NULL,
   `childDataAccess` enum('Y','N') NOT NULL,
   `contactPriority` int(2) NOT NULL DEFAULT '1',
@@ -1420,9 +1437,9 @@ CREATE TABLE `gibbonFamilyAdult` (
 --
 
 CREATE TABLE `gibbonFamilyChild` (
-  `gibbonFamilyChildID` int(8) unsigned zerofill NOT NULL,
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(8) unsigned zerofill NOT NULL,
+  `gibbonFamilyChildID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `comment` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1433,10 +1450,10 @@ CREATE TABLE `gibbonFamilyChild` (
 --
 
 CREATE TABLE `gibbonFamilyRelationship` (
-  `gibbonFamilyRelationshipID` int(9) unsigned zerofill NOT NULL,
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
-  `gibbonPersonID1` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID2` int(10) unsigned zerofill NOT NULL,
+  `gibbonFamilyRelationshipID` int(9) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID1` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID2` int(10) UNSIGNED ZEROFILL NOT NULL,
   `relationship` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?';
 
@@ -1447,17 +1464,17 @@ CREATE TABLE `gibbonFamilyRelationship` (
 --
 
 CREATE TABLE `gibbonFamilyUpdate` (
-  `gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonFamilyUpdateID` int(9) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
-  `gibbonFamilyID` int(7) unsigned zerofill NOT NULL,
+  `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
   `nameAddress` varchar(100) NOT NULL DEFAULT '',
   `homeAddress` mediumtext NOT NULL,
   `homeAddressDistrict` varchar(255) NOT NULL DEFAULT '',
   `homeAddressCountry` varchar(255) NOT NULL DEFAULT '',
   `languageHomePrimary` varchar(30) NOT NULL,
   `languageHomeSecondary` varchar(30) NOT NULL,
-  `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1468,11 +1485,11 @@ CREATE TABLE `gibbonFamilyUpdate` (
 --
 
 CREATE TABLE `gibbonFileExtension` (
-  `gibbonFileExtensionID` int(4) unsigned zerofill NOT NULL,
+  `gibbonFileExtensionID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Document','Spreadsheet','Presentation','Graphics/Design','Video','Audio','Other') NOT NULL DEFAULT 'Other',
   `extension` varchar(7) NOT NULL,
   `name` varchar(50) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonFileExtension`
@@ -1532,16 +1549,16 @@ INSERT INTO `gibbonFileExtension` (`gibbonFileExtensionID`, `type`, `extension`,
 --
 
 CREATE TABLE `gibbonFinanceBillingSchedule` (
-  `gibbonFinanceBillingScheduleID` int(6) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonFinanceBillingScheduleID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `invoiceIssueDate` date DEFAULT NULL,
   `invoiceDueDate` date DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1552,14 +1569,14 @@ CREATE TABLE `gibbonFinanceBillingSchedule` (
 --
 
 CREATE TABLE `gibbonFinanceBudget` (
-  `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,
+  `gibbonFinanceBudgetID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(8) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `category` varchar(255) NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1570,15 +1587,15 @@ CREATE TABLE `gibbonFinanceBudget` (
 --
 
 CREATE TABLE `gibbonFinanceBudgetCycle` (
-  `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,
+  `gibbonFinanceBudgetCycleID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(7) NOT NULL,
   `status` enum('Past','Current','Upcoming') NOT NULL DEFAULT 'Upcoming',
   `dateStart` date NOT NULL,
   `dateEnd` date NOT NULL,
   `sequenceNumber` int(6) NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1589,9 +1606,9 @@ CREATE TABLE `gibbonFinanceBudgetCycle` (
 --
 
 CREATE TABLE `gibbonFinanceBudgetCycleAllocation` (
-  `gibbonFinanceBudgetCycleAllocationID` int(10) unsigned zerofill NOT NULL,
-  `gibbonFinanceBudgetID` int(5) unsigned zerofill NOT NULL,
-  `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,
+  `gibbonFinanceBudgetCycleAllocationID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceBudgetID` int(5) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceBudgetCycleID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `value` decimal(14,2) NOT NULL DEFAULT '0.00'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1602,9 +1619,9 @@ CREATE TABLE `gibbonFinanceBudgetCycleAllocation` (
 --
 
 CREATE TABLE `gibbonFinanceBudgetPerson` (
-  `gibbonFinanceBudgetPersonID` int(8) unsigned zerofill NOT NULL,
-  `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceBudgetPersonID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceBudgetID` int(4) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `access` enum('Full','Write','Read') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1615,9 +1632,9 @@ CREATE TABLE `gibbonFinanceBudgetPerson` (
 --
 
 CREATE TABLE `gibbonFinanceExpense` (
-  `gibbonFinanceExpenseID` int(14) unsigned zerofill NOT NULL,
-  `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL,
-  `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL,
+  `gibbonFinanceExpenseID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceBudgetID` int(4) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceBudgetCycleID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(60) NOT NULL,
   `body` text NOT NULL,
   `status` enum('Requested','Approved','Rejected','Cancelled','Ordered','Paid') NOT NULL,
@@ -1628,11 +1645,11 @@ CREATE TABLE `gibbonFinanceExpense` (
   `paymentMethod` enum('Cash','Cheque','Credit Card','Bank Transfer','Other') DEFAULT NULL,
   `paymentDate` date DEFAULT NULL,
   `paymentAmount` decimal(12,2) DEFAULT NULL,
-  `gibbonPersonIDPayment` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDPayment` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `paymentID` varchar(100) DEFAULT NULL,
   `paymentReimbursementReceipt` varchar(255) NOT NULL,
   `paymentReimbursementStatus` enum('Requested','Complete') DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `statusApprovalBudgetCleared` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1644,12 +1661,12 @@ CREATE TABLE `gibbonFinanceExpense` (
 --
 
 CREATE TABLE `gibbonFinanceExpenseApprover` (
-  `gibbonFinanceExpenseApproverID` int(4) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceExpenseApproverID` int(4) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(4) DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1660,9 +1677,9 @@ CREATE TABLE `gibbonFinanceExpenseApprover` (
 --
 
 CREATE TABLE `gibbonFinanceExpenseLog` (
-  `gibbonFinanceExpenseLogID` int(16) unsigned zerofill NOT NULL,
-  `gibbonFinanceExpenseID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceExpenseLogID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceExpenseID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `action` enum('Request','Approval - Partial - Budget','Approval - Partial - School','Approval - Final','Approval - Exempt','Rejection','Cancellation','Order','Payment','Reimbursement Request','Reimbursement Completion','Comment') NOT NULL,
   `comment` text NOT NULL
@@ -1675,17 +1692,17 @@ CREATE TABLE `gibbonFinanceExpenseLog` (
 --
 
 CREATE TABLE `gibbonFinanceFee` (
-  `gibbonFinanceFeeID` int(6) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonFinanceFeeID` int(6) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(6) NOT NULL,
   `description` text NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL,
+  `gibbonFinanceFeeCategoryID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `fee` decimal(12,2) NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1696,14 +1713,14 @@ CREATE TABLE `gibbonFinanceFee` (
 --
 
 CREATE TABLE `gibbonFinanceFeeCategory` (
-  `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL,
+  `gibbonFinanceFeeCategoryID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(6) NOT NULL,
   `description` text NOT NULL,
   `active` enum('Y','N') NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1714,26 +1731,26 @@ CREATE TABLE `gibbonFinanceFeeCategory` (
 --
 
 CREATE TABLE `gibbonFinanceInvoice` (
-  `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceInvoiceeID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL DEFAULT 'Family',
   `billingScheduleType` enum('Scheduled','Ad Hoc') NOT NULL DEFAULT 'Ad Hoc',
   `separated` enum('N','Y') DEFAULT NULL COMMENT 'Has this invoice been separated from its schedule in gibbonFinanceBillingSchedule? Only applies to scheduled invoices. Separation takes place during invoice issueing.',
-  `gibbonFinanceBillingScheduleID` int(6) unsigned zerofill DEFAULT NULL,
+  `gibbonFinanceBillingScheduleID` int(6) UNSIGNED ZEROFILL DEFAULT NULL,
   `status` enum('Pending','Issued','Paid','Paid - Partial','Cancelled','Refunded') NOT NULL DEFAULT 'Pending',
   `gibbonFinanceFeeCategoryIDList` text,
   `invoiceIssueDate` date DEFAULT NULL,
   `invoiceDueDate` date DEFAULT NULL,
   `paidDate` date DEFAULT NULL,
   `paidAmount` decimal(13,2) DEFAULT NULL COMMENT 'The current running total amount paid to this invoice',
-  `gibbonPaymentID` int(14) unsigned zerofill DEFAULT NULL,
+  `gibbonPaymentID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `reminderCount` int(3) NOT NULL DEFAULT '0',
   `notes` text NOT NULL,
   `key` varchar(40) NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NULL DEFAULT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1744,8 +1761,8 @@ CREATE TABLE `gibbonFinanceInvoice` (
 --
 
 CREATE TABLE `gibbonFinanceInvoicee` (
-  `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceInvoiceeID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL,
   `companyName` varchar(100) DEFAULT NULL,
   `companyContact` varchar(100) DEFAULT NULL,
@@ -1764,10 +1781,10 @@ CREATE TABLE `gibbonFinanceInvoicee` (
 --
 
 CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
-  `gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonFinanceInvoiceeUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
-  `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL,
+  `gibbonFinanceInvoiceeID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `invoiceTo` enum('Family','Company') NOT NULL,
   `companyName` varchar(100) DEFAULT NULL,
   `companyContact` varchar(100) DEFAULT NULL,
@@ -1777,7 +1794,7 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
   `companyPhone` varchar(20) DEFAULT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
-  `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -1788,14 +1805,14 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
 --
 
 CREATE TABLE `gibbonFinanceInvoiceFee` (
-  `gibbonFinanceInvoiceFeeID` int(15) unsigned zerofill NOT NULL,
-  `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL,
+  `gibbonFinanceInvoiceFeeID` int(15) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `feeType` enum('Standard','Ad Hoc') NOT NULL DEFAULT 'Ad Hoc',
-  `gibbonFinanceFeeID` int(6) unsigned zerofill DEFAULT NULL,
+  `gibbonFinanceFeeID` int(6) UNSIGNED ZEROFILL DEFAULT NULL,
   `separated` enum('N','Y') DEFAULT NULL COMMENT 'Has this fee been separated from its parent in gibbonFinanceFee? Only applies to Standard fees. Separation takes place during invoice issueing.',
   `name` varchar(100) DEFAULT NULL,
   `description` text,
-  `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonFinanceFeeCategoryID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `fee` decimal(12,2) DEFAULT NULL,
   `sequenceNumber` int(10) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -1807,11 +1824,11 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
 --
 
 CREATE TABLE `gibbonFirstAid` (
-  `gibbonFirstAidID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDPatient` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(14) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDFirstAider` int(10) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonFirstAidID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDPatient` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDFirstAider` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `description` text NOT NULL,
   `actionTaken` text NOT NULL,
   `followUp` text NOT NULL,
@@ -1828,12 +1845,12 @@ CREATE TABLE `gibbonFirstAid` (
 --
 
 CREATE TABLE `gibbonHook` (
-  `gibbonHookID` int(4) unsigned zerofill NOT NULL,
+  `gibbonHookID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `type` enum('Public Home Page','Student Profile','Unit','Parental Dashboard','Staff Dashboard','Student Dashboard') DEFAULT NULL,
   `options` text NOT NULL,
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'The module which installed this hook.'
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL COMMENT 'The module which installed this hook.'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1842,7 +1859,7 @@ CREATE TABLE `gibbonHook` (
 --
 
 CREATE TABLE `gibbonHouse` (
-  `gibbonHouseID` int(3) unsigned zerofill NOT NULL,
+  `gibbonHouseID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `logo` varchar(255) NOT NULL
@@ -1855,7 +1872,7 @@ CREATE TABLE `gibbonHouse` (
 --
 
 CREATE TABLE `gibboni18n` (
-  `gibboni18nID` int(4) unsigned zerofill NOT NULL,
+  `gibboni18nID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `code` varchar(5) NOT NULL,
   `name` varchar(100) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -1866,7 +1883,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   `rtl` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=36 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1893,8 +1910,8 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 (0020, 'bn_BD', 'বাংলা', 'N', 'N', 'Tarul Ahsan', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0021, 'da_DK', 'Dansk - Danmark', 'N', 'N', 'Jørgen Mortensen', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0022, 'fa_IR', 'فارسی', 'N', 'N', 'CR Robotic', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'Y'),
-(0023, 'pt_BR', 'Português - Brasil', 'N', 'N', 'Rodrigo Magalhães ', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
-(0024, 'ke_GE', 'ქართული ენა', 'N', 'N', 'Giorgi Beria', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0023, 'pt_BR', 'Português - Brasil', 'Y', 'N', 'Rodrigo Magalhães ', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
+(0024, 'ka_GE', 'ქართული ენა', 'N', 'N', 'Giorgi Beria', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N'),
 (0025, 'nl_NL', 'Dutch - Nederland', 'Y', 'N', 'Sint-Ignatiusschool, Brussels', 'http://sint-ignatius.be', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
 (0026, 'hu_HU', 'Magyar - Magyarország', 'N', 'N', 'Attila Pegan', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
 (0027, 'bg_BG', 'български език', 'N', 'N', 'Dimitar Hubenov', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
@@ -1905,7 +1922,9 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 (0032, 'no_NO', 'Norsk - Norge', 'N', 'N', 'Susanne Bergsmark', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
 (0033, 'vi_VN', 'Tiếng Việt - Việt Nam', 'Y', 'N', 'Daniel Owens', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
 (0034, 'sq_AL', 'Shqip - Shqipëri', 'Y', 'N', 'Jorida Shahinas', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
-(0035, 'th_TH', 'ภาษาไทย - ราชอาณาจักรไทย', 'Y', 'N', 'Wattana Hinchaisri', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N');
+(0035, 'th_TH', 'ภาษาไทย - ราชอาณาจักรไทย', 'Y', 'N', 'Wattana Hinchaisri', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
+(0036, 'el_GR', 'ελληνικά - Ελλάδα', 'N', 'N', 'Konstantinos Chonias', '', 'dd-mm-yyyy', '/^(0[1-9]|[12][0-9]|3[01])[-](0[1-9]|1[012])[-](19|20)\\d\\d$/i', 'd-m-Y', 'N'),
+(0037, 'am_ET', 'አማርኛ - ኢትዮጵያ', 'N', 'N', 'Bruce Banner', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\d\\d$/i', 'd/m/Y', 'N');
 
 -- --------------------------------------------------------
 
@@ -1914,8 +1933,8 @@ INSERT INTO `gibboni18n` (`gibboni18nID`, `code`, `name`, `active`, `systemDefau
 --
 
 CREATE TABLE `gibbonIN` (
-  `gibbonINID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonINID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `strategies` text NOT NULL,
   `targets` text NOT NULL,
   `notes` text NOT NULL
@@ -1928,8 +1947,8 @@ CREATE TABLE `gibbonIN` (
 --
 
 CREATE TABLE `gibbonINArchive` (
-  `gibbonINArchiveID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonINArchiveID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `strategies` text NOT NULL,
   `targets` text NOT NULL,
   `notes` text NOT NULL,
@@ -1941,16 +1960,29 @@ CREATE TABLE `gibbonINArchive` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `gibbonINAssistant`
+--
+
+CREATE TABLE `gibbonINAssistant` (
+  `gibbonINAssistantID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDAssistant` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `comment` text COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `gibbonINDescriptor`
 --
 
 CREATE TABLE `gibbonINDescriptor` (
-  `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL,
+  `gibbonINDescriptorID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameShort` varchar(5) NOT NULL,
   `description` text NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonINDescriptor`
@@ -1968,10 +2000,10 @@ INSERT INTO `gibbonINDescriptor` (`gibbonINDescriptorID`, `name`, `nameShort`, `
 --
 
 CREATE TABLE `gibbonINPersonDescriptor` (
-  `gibbonINPersonDescriptorID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL,
-  `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL
+  `gibbonINPersonDescriptorID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonINDescriptorID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -1981,25 +2013,25 @@ CREATE TABLE `gibbonINPersonDescriptor` (
 --
 
 CREATE TABLE `gibbonInternalAssessmentColumn` (
-  `gibbonInternalAssessmentColumnID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `groupingID` int(8) unsigned zerofill DEFAULT NULL COMMENT 'A value used to group multiple columns.',
+  `gibbonInternalAssessmentColumnID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `groupingID` int(8) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'A value used to group multiple columns.',
   `name` varchar(20) NOT NULL,
   `description` text NOT NULL,
   `type` varchar(50) NOT NULL,
   `attachment` varchar(255) NOT NULL,
   `attainment` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDAttainment` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonScaleIDAttainment` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `effort` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDEffort` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonScaleIDEffort` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `comment` enum('Y','N') NOT NULL DEFAULT 'Y',
   `uploadedResponse` enum('N','Y') NOT NULL DEFAULT 'N',
   `complete` enum('N','Y') NOT NULL,
   `completeDate` date DEFAULT NULL,
   `viewableStudents` enum('N','Y') NOT NULL,
   `viewableParents` enum('N','Y') NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2009,16 +2041,16 @@ CREATE TABLE `gibbonInternalAssessmentColumn` (
 --
 
 CREATE TABLE `gibbonInternalAssessmentEntry` (
-  `gibbonInternalAssessmentEntryID` int(12) unsigned zerofill NOT NULL,
-  `gibbonInternalAssessmentColumnID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `gibbonInternalAssessmentEntryID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonInternalAssessmentColumnID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `attainmentValue` varchar(10) DEFAULT NULL,
   `attainmentDescriptor` varchar(100) DEFAULT NULL,
   `effortValue` varchar(10) DEFAULT NULL,
   `effortDescriptor` varchar(100) DEFAULT NULL,
   `comment` text,
   `response` text,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2028,9 +2060,9 @@ CREATE TABLE `gibbonInternalAssessmentEntry` (
 --
 
 CREATE TABLE `gibbonLanguage` (
-  `gibbonLanguageID` int(4) unsigned zerofill NOT NULL,
+  `gibbonLanguageID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonLanguage`
@@ -2122,8 +2154,8 @@ INSERT INTO `gibbonLanguage` (`gibbonLanguageID`, `name`) VALUES
 --
 
 CREATE TABLE `gibbonLibraryItem` (
-  `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL,
-  `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL,
+  `gibbonLibraryItemID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonLibraryTypeID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `id` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL COMMENT 'Name for book, model for computer, etc.',
   `producer` varchar(255) NOT NULL COMMENT 'Author for book, manufacturer for computer, etc',
@@ -2134,27 +2166,27 @@ CREATE TABLE `gibbonLibraryItem` (
   `imageType` enum('','Link','File') NOT NULL DEFAULT '' COMMENT 'Type of image. Image should be 240px x 240px, or smaller.',
   `imageLocation` varchar(255) NOT NULL COMMENT 'URL or local FS path of image.',
   `comment` text NOT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `locationDetail` varchar(255) NOT NULL,
   `ownershipType` enum('School','Individual') NOT NULL DEFAULT 'School',
-  `gibbonPersonIDOwnership` int(10) unsigned zerofill DEFAULT NULL COMMENT 'If owned by school, then this is the main user. If owned by individual, then this is that individual.',
-  `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL COMMENT 'Who is responsible for managing this item? By default this will be the person who added the record, but it can be changed.',
+  `gibbonPersonIDOwnership` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'If owned by school, then this is the main user. If owned by individual, then this is that individual.',
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'Who is responsible for managing this item? By default this will be the person who added the record, but it can be changed.',
   `replacement` enum('Y','N') NOT NULL DEFAULT 'Y',
   `replacementCost` decimal(10,2) DEFAULT NULL,
-  `gibbonSchoolYearIDReplacement` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonSchoolYearIDReplacement` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `physicalCondition` enum('','As New','Lightly Worn','Moderately Worn','Damaged','Unusable') NOT NULL,
   `bookable` enum('N','Y') NOT NULL DEFAULT 'N',
   `borrowable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `status` enum('Available','In Use','Decommissioned','Lost','On Loan','Repair','Reserved') NOT NULL DEFAULT 'Available' COMMENT 'The current status of the item.',
-  `gibbonPersonIDStatusResponsible` int(10) unsigned zerofill DEFAULT NULL COMMENT 'The person who is responsible for the current status.',
-  `gibbonPersonIDStatusRecorder` int(10) unsigned zerofill DEFAULT NULL COMMENT 'The person who recored the current status.',
+  `gibbonPersonIDStatusResponsible` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who is responsible for the current status.',
+  `gibbonPersonIDStatusRecorder` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who recored the current status.',
   `timestampStatus` datetime DEFAULT NULL COMMENT 'The time the status was recorded',
   `returnExpected` date DEFAULT NULL COMMENT 'The time when the event expires.',
   `returnAction` enum('Make Available','Decommission','Repair','Reserve') DEFAULT NULL COMMENT 'What to do when the item is returned?',
-  `gibbonPersonIDReturnAction` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDReturnAction` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` datetime NOT NULL,
-  `gibbonPersonIDUpdate` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` datetime DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -2165,18 +2197,18 @@ CREATE TABLE `gibbonLibraryItem` (
 --
 
 CREATE TABLE `gibbonLibraryItemEvent` (
-  `gibbonLibraryItemEventID` int(14) unsigned zerofill NOT NULL,
-  `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL,
+  `gibbonLibraryItemEventID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonLibraryItemID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Decommission','Loss','Loan','Repair','Reserve','Other') NOT NULL DEFAULT 'Other' COMMENT 'This is maintained even after the item is returned, so we know what type of event it was.',
   `status` enum('Available','Decommissioned','Lost','On Loan','Repair','Reserved','Returned') NOT NULL DEFAULT 'Available',
-  `gibbonPersonIDStatusResponsible` int(10) unsigned zerofill DEFAULT NULL COMMENT 'The person who was responsible for the event.',
-  `gibbonPersonIDOut` int(10) unsigned zerofill DEFAULT NULL COMMENT 'The person who recored the event.',
+  `gibbonPersonIDStatusResponsible` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who was responsible for the event.',
+  `gibbonPersonIDOut` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'The person who recored the event.',
   `timestampOut` datetime DEFAULT NULL COMMENT 'The time the event was recorded',
   `returnExpected` date DEFAULT NULL COMMENT 'The time when the event expires.',
   `returnAction` enum('Make Available','Decommission','Repair','Reserve') DEFAULT NULL COMMENT 'What to do when the item is returned?',
-  `gibbonPersonIDReturnAction` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDReturnAction` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampReturn` datetime DEFAULT NULL,
-  `gibbonPersonIDIn` int(10) unsigned zerofill DEFAULT NULL
+  `gibbonPersonIDIn` int(10) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2186,23 +2218,24 @@ CREATE TABLE `gibbonLibraryItemEvent` (
 --
 
 CREATE TABLE `gibbonLibraryType` (
-  `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL,
+  `gibbonLibraryTypeID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `fields` text NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonLibraryType`
 --
 
 INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `fields`) VALUES
-(00004, 'Print Publication', 'Y', 'a:20:{i:0;a:6:{s:4:"name";s:6:"Format";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:341:",Art - Original,Art - Reproduction,Book,Braille,Cartographic material,Chart,Diorama,Electronic Resource,Filmstrip,Flash Card,Game,Globe,Journal,Kit,Large print,Magazine,Manuscript,Microform,Microscope slide,Model,Motion Picture,Music,Picture,Realia,Resource,Serial,Slide,Sound Recording,Technical Drawing,Text,Toy,Transparency,Videorecording";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:1;a:6:{s:4:"name";s:9:"Publisher";s:11:"description";s:45:"Name of the company who published the volume.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:16:"Publication Date";s:11:"description";s:36:"Format: dd/mm/yyyy, mm/yyyy or yyyy.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:22:"Country of Publication";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:7:"Edition";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:6:"ISBN10";s:11:"description";s:28:"10-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:6:"ISBN13";s:11:"description";s:28:"13-digit unique ISBN number.";s:4:"type";s:4:"Text";s:7:"options";s:2:"13";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:7;a:6:{s:4:"name";s:11:"Description";s:11:"description";s:36:"A brief blurb describing the volume.";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:8:"Subjects";s:11:"description";s:33:"Comma separated list of subjects.";s:4:"type";s:8:"Textarea";s:7:"options";s:1:"2";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:10:"Collection";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:230:",Fiction, Fiction - Best Sellers, Fiction - Classics, Fiction - Mystery, Fiction - Series, Fiction - Young Adult, Nonfiction, Nonfiction - College Prep, Nonfiction - Graphic Novels, Nonfiction - Life Skills, Nonfiction - Reference";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:14:"Control Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:20:"Cataloging Authority";s:11:"description";s:37:"Issuing authority for Control Number.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:21:"Reader Age (Youngest)";s:11:"description";s:50:"Age in years, youngest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:19:"Reader Age (Oldest)";s:11:"description";s:48:"Age in years, oldest reading age recommendation.";s:4:"type";s:4:"Text";s:7:"options";s:1:"3";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:10:"Page Count";s:11:"description";s:34:"The number of pages in the volume.";s:4:"type";s:4:"Text";s:7:"options";s:1:"4";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:6:"Height";s:11:"description";s:41:"The physical height of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:16;a:6:{s:4:"name";s:5:"Width";s:11:"description";s:40:"The physical width of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:17;a:6:{s:4:"name";s:9:"Thickness";s:11:"description";s:44:"The physical thickness of the volume, in cm.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:18;a:6:{s:4:"name";s:8:"Language";s:11:"description";s:35:"The primary language of the volume.";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:19;a:6:{s:4:"name";s:4:"Link";s:11:"description";s:44:"Link to web-based information on the volume.";s:4:"type";s:3:"URL";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00008, 'Electronics', 'Y', 'a:8:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:36:"Any chargers, remotes controls, etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00007, 'Computer', 'Y', 'a:17:{i:0;a:6:{s:4:"name";s:11:"Form Factor";s:11:"description";s:0:"";s:4:"type";s:6:"Select";s:7:"options";s:50:"Desktop, Laptop, Tablet, Phone, Set-Top Box, Other";s:7:"default";s:6:"Laptop";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:8:"CPU Type";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:9:"CPU Speed";s:11:"description";s:7:"In GHz.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:6:"Memory";s:11:"description";s:17:"Total RAM, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:8;a:6:{s:4:"name";s:12:"Storage Type";s:11:"description";s:30:"Primary internal storage type.";s:4:"type";s:6:"Select";s:7:"options";s:24:",HDD, SSD, Hybrid, Other";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:9;a:6:{s:4:"name";s:7:"Storage";s:11:"description";s:30:"Total HDD/SDD capacity, in GB.";s:4:"type";s:4:"Text";s:7:"options";s:1:"6";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:10;a:6:{s:4:"name";s:20:"Wireless MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:11;a:6:{s:4:"name";s:17:"Wired MAC Address";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"17";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:12;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:43:"Any chargers, display dongles, remotes etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:13;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:14;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:15;a:6:{s:4:"name";s:19:"Last Reinstall Date";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:16;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00009, 'Other', 'Y', 'a:1:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}}'),
-(00010, 'Software', 'Y', 'a:7:{i:0;a:6:{s:4:"name";s:7:"Version";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:1;a:6:{s:4:"name";s:16:"Operating System";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:12:"License Type";s:11:"description";s:48:"E.g. Open Source, Site License, number of users.";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:12:"License Name";s:11:"description";s:55:"If the software is registered, who is it registered to?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:21:"License Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:14:"License Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:23:"License Management Link";s:11:"description";s:34:"Link to web-based management tool.";s:4:"type";s:3:"URL";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}'),
-(00011, 'Audio/Visual', 'Y', 'a:8:{i:0;a:6:{s:4:"name";s:4:"Type";s:11:"description";s:29:"What kind of product is this?";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"Y";}i:1;a:6:{s:4:"name";s:13:"Serial Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:2;a:6:{s:4:"name";s:10:"Model Name";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:3;a:6:{s:4:"name";s:8:"Model ID";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:4;a:6:{s:4:"name";s:11:"Accessories";s:11:"description";s:36:"Any chargers, remotes controls, etc?";s:4:"type";s:4:"Text";s:7:"options";s:3:"255";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:5;a:6:{s:4:"name";s:15:"Warranty Number";s:11:"description";s:0:"";s:4:"type";s:4:"Text";s:7:"options";s:2:"50";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:6;a:6:{s:4:"name";s:15:"Warranty Expiry";s:11:"description";s:19:"Format: dd/mm/yyyy.";s:4:"type";s:4:"Date";s:7:"options";s:0:"";s:7:"default";s:0:"";s:8:"required";s:1:"N";}i:7;a:6:{s:4:"name";s:16:"Repair Log/Notes";s:11:"description";s:0:"";s:4:"type";s:8:"Textarea";s:7:"options";s:2:"10";s:7:"default";s:0:"";s:8:"required";s:1:"N";}}');
+(00004, 'Print Publication', 'Y', 'a:20:{i:0;a:6:{s:4:\"name\";s:6:\"Format\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:341:\",Art - Original,Art - Reproduction,Book,Braille,Cartographic material,Chart,Diorama,Electronic Resource,Filmstrip,Flash Card,Game,Globe,Journal,Kit,Large print,Magazine,Manuscript,Microform,Microscope slide,Model,Motion Picture,Music,Picture,Realia,Resource,Serial,Slide,Sound Recording,Technical Drawing,Text,Toy,Transparency,Videorecording\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:1;a:6:{s:4:\"name\";s:9:\"Publisher\";s:11:\"description\";s:45:\"Name of the company who published the volume.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:16:\"Publication Date\";s:11:\"description\";s:36:\"Format: dd/mm/yyyy, mm/yyyy or yyyy.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:22:\"Country of Publication\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:7:\"Edition\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:6:\"ISBN10\";s:11:\"description\";s:28:\"10-digit unique ISBN number.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:6:\"ISBN13\";s:11:\"description\";s:28:\"13-digit unique ISBN number.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"13\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}i:7;a:6:{s:4:\"name\";s:11:\"Description\";s:11:\"description\";s:36:\"A brief blurb describing the volume.\";s:4:\"type\";s:8:\"Textarea\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:8;a:6:{s:4:\"name\";s:8:\"Subjects\";s:11:\"description\";s:33:\"Comma separated list of subjects.\";s:4:\"type\";s:8:\"Textarea\";s:7:\"options\";s:1:\"2\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:9;a:6:{s:4:\"name\";s:10:\"Collection\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:230:\",Fiction, Fiction - Best Sellers, Fiction - Classics, Fiction - Mystery, Fiction - Series, Fiction - Young Adult, Nonfiction, Nonfiction - College Prep, Nonfiction - Graphic Novels, Nonfiction - Life Skills, Nonfiction - Reference\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:10;a:6:{s:4:\"name\";s:14:\"Control Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:11;a:6:{s:4:\"name\";s:20:\"Cataloging Authority\";s:11:\"description\";s:37:\"Issuing authority for Control Number.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:12;a:6:{s:4:\"name\";s:21:\"Reader Age (Youngest)\";s:11:\"description\";s:50:\"Age in years, youngest reading age recommendation.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"3\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:13;a:6:{s:4:\"name\";s:19:\"Reader Age (Oldest)\";s:11:\"description\";s:48:\"Age in years, oldest reading age recommendation.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"3\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:14;a:6:{s:4:\"name\";s:10:\"Page Count\";s:11:\"description\";s:34:\"The number of pages in the volume.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"4\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:15;a:6:{s:4:\"name\";s:6:\"Height\";s:11:\"description\";s:41:\"The physical height of the volume, in cm.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:16;a:6:{s:4:\"name\";s:5:\"Width\";s:11:\"description\";s:40:\"The physical width of the volume, in cm.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:17;a:6:{s:4:\"name\";s:9:\"Thickness\";s:11:\"description\";s:44:\"The physical thickness of the volume, in cm.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:18;a:6:{s:4:\"name\";s:8:\"Language\";s:11:\"description\";s:35:\"The primary language of the volume.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:19;a:6:{s:4:\"name\";s:4:\"Link\";s:11:\"description\";s:44:\"Link to web-based information on the volume.\";s:4:\"type\";s:3:\"URL\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}'),
+(00008, 'Electronics', 'Y', 'a:8:{i:0;a:6:{s:4:\"name\";s:4:\"Type\";s:11:\"description\";s:29:\"What kind of product is this?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}i:1;a:6:{s:4:\"name\";s:13:\"Serial Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:10:\"Model Name\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:8:\"Model ID\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:11:\"Accessories\";s:11:\"description\";s:36:\"Any chargers, remotes controls, etc?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:15:\"Warranty Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:15:\"Warranty Expiry\";s:11:\"description\";s:19:\"Format: dd/mm/yyyy.\";s:4:\"type\";s:4:\"Date\";s:7:\"options\";s:0:\"\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:7;a:6:{s:4:\"name\";s:16:\"Repair Log/Notes\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:8:\"Textarea\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}'),
+(00007, 'Computer', 'Y', 'a:17:{i:0;a:6:{s:4:\"name\";s:11:\"Form Factor\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:50:\"Desktop, Laptop, Tablet, Phone, Set-Top Box, Other\";s:7:\"default\";s:6:\"Laptop\";s:8:\"required\";s:1:\"Y\";}i:1;a:6:{s:4:\"name\";s:16:\"Operating System\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:13:\"Serial Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:10:\"Model Name\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:8:\"Model ID\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:8:\"CPU Type\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:9:\"CPU Speed\";s:11:\"description\";s:7:\"In GHz.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:7;a:6:{s:4:\"name\";s:6:\"Memory\";s:11:\"description\";s:17:\"Total RAM, in GB.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:8;a:6:{s:4:\"name\";s:12:\"Storage Type\";s:11:\"description\";s:30:\"Primary internal storage type.\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:24:\",HDD, SSD, Hybrid, Other\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:9;a:6:{s:4:\"name\";s:7:\"Storage\";s:11:\"description\";s:30:\"Total HDD/SDD capacity, in GB.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"6\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:10;a:6:{s:4:\"name\";s:20:\"Wireless MAC Address\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"17\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:11;a:6:{s:4:\"name\";s:17:\"Wired MAC Address\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"17\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:12;a:6:{s:4:\"name\";s:11:\"Accessories\";s:11:\"description\";s:43:\"Any chargers, display dongles, remotes etc?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:13;a:6:{s:4:\"name\";s:15:\"Warranty Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:14;a:6:{s:4:\"name\";s:15:\"Warranty Expiry\";s:11:\"description\";s:19:\"Format: dd/mm/yyyy.\";s:4:\"type\";s:4:\"Date\";s:7:\"options\";s:0:\"\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:15;a:6:{s:4:\"name\";s:19:\"Last Reinstall Date\";s:11:\"description\";s:19:\"Format: dd/mm/yyyy.\";s:4:\"type\";s:4:\"Date\";s:7:\"options\";s:0:\"\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:16;a:6:{s:4:\"name\";s:16:\"Repair Log/Notes\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:8:\"Textarea\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}'),
+(00009, 'Other', 'Y', 'a:1:{i:0;a:6:{s:4:\"name\";s:4:\"Type\";s:11:\"description\";s:29:\"What kind of product is this?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}}'),
+(00010, 'Software', 'Y', 'a:7:{i:0;a:6:{s:4:\"name\";s:7:\"Version\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:1;a:6:{s:4:\"name\";s:16:\"Operating System\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:12:\"License Type\";s:11:\"description\";s:48:\"E.g. Open Source, Site License, number of users.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:12:\"License Name\";s:11:\"description\";s:55:\"If the software is registered, who is it registered to?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:21:\"License Serial Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:14:\"License Expiry\";s:11:\"description\";s:19:\"Format: dd/mm/yyyy.\";s:4:\"type\";s:4:\"Date\";s:7:\"options\";s:0:\"\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:23:\"License Management Link\";s:11:\"description\";s:34:\"Link to web-based management tool.\";s:4:\"type\";s:3:\"URL\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}'),
+(00011, 'Audio/Visual Hardware', 'Y', 'a:8:{i:0;a:6:{s:4:\"name\";s:4:\"Type\";s:11:\"description\";s:29:\"What kind of product is this?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}i:1;a:6:{s:4:\"name\";s:13:\"Serial Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:10:\"Model Name\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:8:\"Model ID\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:11:\"Accessories\";s:11:\"description\";s:36:\"Any chargers, remotes controls, etc?\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:15:\"Warranty Number\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"50\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:15:\"Warranty Expiry\";s:11:\"description\";s:19:\"Format: dd/mm/yyyy.\";s:4:\"type\";s:4:\"Date\";s:7:\"options\";s:0:\"\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:7;a:6:{s:4:\"name\";s:16:\"Repair Log/Notes\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:8:\"Textarea\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}'),
+(00012, 'Optical Media', 'Y', 'a:10:{i:0;a:6:{s:4:\"name\";s:4:\"Type\";s:11:\"description\";s:35:\"What type of optical media is this?\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:14:\"CD,DVD,Blu-Ray\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"Y\";}i:1;a:6:{s:4:\"name\";s:6:\"Format\";s:11:\"description\";s:38:\"Technical details of media formatting.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:2;a:6:{s:4:\"name\";s:8:\"Language\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:3;a:6:{s:4:\"name\";s:9:\"Subtitles\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:4;a:6:{s:4:\"name\";s:12:\"Aspect Ratio\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"20\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:5;a:6:{s:4:\"name\";s:15:\"Number of Discs\";s:11:\"description\";s:0:\"\";s:4:\"type\";s:6:\"Select\";s:7:\"options\";s:10:\",1,2,3,4,5\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:6;a:6:{s:4:\"name\";s:14:\"Content Rating\";s:11:\"description\";s:39:\"Details of age guidance or retrictions.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:7;a:6:{s:4:\"name\";s:6:\"Studio\";s:11:\"description\";s:27:\"Name of originating studio.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:3:\"255\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:8;a:6:{s:4:\"name\";s:12:\"Release Date\";s:11:\"description\";s:36:\"Format: dd/mm/yyyy, mm/yyyy or yyyy.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:2:\"10\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}i:9;a:6:{s:4:\"name\";s:8:\"Run Time\";s:11:\"description\";s:11:\"In minutes.\";s:4:\"type\";s:4:\"Text\";s:7:\"options\";s:1:\"3\";s:7:\"default\";s:0:\"\";s:8:\"required\";s:1:\"N\";}}');
 
 -- --------------------------------------------------------
 
@@ -2211,13 +2244,13 @@ INSERT INTO `gibbonLibraryType` (`gibbonLibraryTypeID`, `name`, `active`, `field
 --
 
 CREATE TABLE `gibbonLike` (
-  `gibbonLikeID` int(16) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL,
+  `gibbonLikeID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `contextKeyName` varchar(255) NOT NULL,
   `contextKeyValue` int(20) NOT NULL,
-  `gibbonPersonIDRecipient` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDGiver` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDRecipient` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDGiver` int(10) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(50) NOT NULL,
   `comment` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -2230,10 +2263,10 @@ CREATE TABLE `gibbonLike` (
 --
 
 CREATE TABLE `gibbonLog` (
-  `gibbonLogID` int(16) unsigned zerofill NOT NULL,
-  `gibbonModuleID` int(4) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonLogID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `title` varchar(50) NOT NULL,
   `serialisedArray` text,
@@ -2247,36 +2280,36 @@ CREATE TABLE `gibbonLog` (
 --
 
 CREATE TABLE `gibbonMarkbookColumn` (
-  `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonHookID` int(4) unsigned zerofill DEFAULT NULL,
-  `gibbonUnitID` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill DEFAULT NULL,
-  `gibbonSchoolYearTermID` int(5) unsigned zerofill DEFAULT NULL,
-  `groupingID` int(8) unsigned zerofill DEFAULT NULL COMMENT 'A value used to group multiple markbook columns.',
+  `gibbonMarkbookColumnID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonHookID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `groupingID` int(8) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'A value used to group multiple markbook columns.',
   `type` varchar(50) NOT NULL,
   `name` varchar(20) NOT NULL,
   `description` text NOT NULL,
   `date` date DEFAULT NULL,
-  `sequenceNumber` int(3) unsigned NOT NULL DEFAULT '0',
+  `sequenceNumber` int(3) UNSIGNED NOT NULL DEFAULT '0',
   `attachment` varchar(255) NOT NULL,
   `attainment` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDAttainment` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonScaleIDAttainment` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `attainmentWeighting` decimal(5,2) DEFAULT NULL,
   `attainmentRaw` enum('Y','N') NOT NULL DEFAULT 'N',
   `attainmentRawMax` decimal(8,2) DEFAULT NULL,
   `effort` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonScaleIDEffort` int(5) unsigned zerofill DEFAULT NULL,
-  `gibbonRubricIDAttainment` int(8) unsigned zerofill DEFAULT NULL,
-  `gibbonRubricIDEffort` int(8) unsigned zerofill DEFAULT NULL,
+  `gibbonScaleIDEffort` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonRubricIDAttainment` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonRubricIDEffort` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `comment` enum('Y','N') NOT NULL DEFAULT 'Y',
   `uploadedResponse` enum('Y','N') NOT NULL DEFAULT 'Y',
   `complete` enum('N','Y') NOT NULL,
   `completeDate` date DEFAULT NULL,
   `viewableStudents` enum('N','Y') NOT NULL,
   `viewableParents` enum('N','Y') NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2286,9 +2319,9 @@ CREATE TABLE `gibbonMarkbookColumn` (
 --
 
 CREATE TABLE `gibbonMarkbookEntry` (
-  `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL,
-  `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `gibbonMarkbookEntryID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonMarkbookColumnID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `attainmentValue` varchar(10) DEFAULT NULL,
   `attainmentValueRaw` varchar(10) DEFAULT NULL,
   `attainmentDescriptor` varchar(100) DEFAULT NULL,
@@ -2298,7 +2331,7 @@ CREATE TABLE `gibbonMarkbookEntry` (
   `effortConcern` enum('N','Y') DEFAULT NULL,
   `comment` text,
   `response` varchar(255) DEFAULT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2308,9 +2341,9 @@ CREATE TABLE `gibbonMarkbookEntry` (
 --
 
 CREATE TABLE `gibbonMarkbookTarget` (
-  `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `gibbonMarkbookTargetID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonScaleGradeID` int(7) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -2321,8 +2354,8 @@ CREATE TABLE `gibbonMarkbookTarget` (
 --
 
 CREATE TABLE `gibbonMarkbookWeight` (
-  `gibbonMarkbookWeightID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
+  `gibbonMarkbookWeightID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `type` varchar(50) NOT NULL,
   `description` varchar(50) NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
@@ -2337,9 +2370,9 @@ CREATE TABLE `gibbonMarkbookWeight` (
 --
 
 CREATE TABLE `gibbonMedicalCondition` (
-  `gibbonMedicalConditionID` int(4) unsigned zerofill NOT NULL,
+  `gibbonMedicalConditionID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(80) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonMedicalCondition`
@@ -2381,7 +2414,7 @@ INSERT INTO `gibbonMedicalCondition` (`gibbonMedicalConditionID`, `name`) VALUES
 --
 
 CREATE TABLE `gibbonMessenger` (
-  `gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
+  `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `email` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall` enum('N','Y') NOT NULL DEFAULT 'N',
   `messageWall_date1` date DEFAULT NULL,
@@ -2390,7 +2423,7 @@ CREATE TABLE `gibbonMessenger` (
   `sms` enum('N','Y') NOT NULL DEFAULT 'N',
   `subject` varchar(60) NOT NULL,
   `body` text NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL,
   `emailReport` text NOT NULL,
   `emailReceipt` enum('N','Y') DEFAULT NULL,
@@ -2405,11 +2438,11 @@ CREATE TABLE `gibbonMessenger` (
 --
 
 CREATE TABLE `gibbonMessengerCannedResponse` (
-  `gibbonMessengerCannedResponseID` int(10) unsigned zerofill NOT NULL,
+  `gibbonMessengerCannedResponseID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `subject` varchar(30) NOT NULL,
   `body` text NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `gibbonPersonIDCreator` int(11) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(11) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2419,9 +2452,9 @@ CREATE TABLE `gibbonMessengerCannedResponse` (
 --
 
 CREATE TABLE `gibbonMessengerReceipt` (
-  `gibbonMessengerReceiptID` int(14) unsigned zerofill NOT NULL,
-  `gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonMessengerReceiptID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `targetType` enum('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance') COLLATE utf8_unicode_ci NOT NULL,
   `targetID` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
   `contactType` enum('Email','SMS') COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -2438,8 +2471,8 @@ CREATE TABLE `gibbonMessengerReceipt` (
 --
 
 CREATE TABLE `gibbonMessengerTarget` (
-  `gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL,
-  `gibbonMessengerID` int(12) unsigned zerofill NOT NULL,
+  `gibbonMessengerTargetID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance') DEFAULT NULL,
   `id` varchar(30) NOT NULL,
   `parents` enum('N','Y') NOT NULL DEFAULT 'N',
@@ -2454,7 +2487,7 @@ CREATE TABLE `gibbonMessengerTarget` (
 --
 
 CREATE TABLE `gibbonModule` (
-  `gibbonModuleID` int(4) unsigned zerofill NOT NULL COMMENT 'This number is assigned at install, and is only unique to the installation',
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL COMMENT 'This number is assigned at install, and is only unique to the installation',
   `name` varchar(30) NOT NULL DEFAULT '' COMMENT 'This name should be globally unique preferably, but certainly locally unique',
   `description` text NOT NULL,
   `entryURL` varchar(255) NOT NULL DEFAULT 'index.php',
@@ -2464,7 +2497,7 @@ CREATE TABLE `gibbonModule` (
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=144 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonModule`
@@ -2480,14 +2513,13 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 (0004, 'Departments', 'View details within a department', 'departments.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0009, 'Planner', 'Supports lesson planning and information sharing for staff, student and parents', 'planner.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0011, 'Individual Needs', 'Individual Needs', 'in_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
-(0012, 'Crowd Assessment', 'Allows users to assess each other''s work', 'crowdAssess.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
+(0012, 'Crowd Assessment', 'Allows users to assess each other\'s work', 'crowdAssess.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
 (0013, 'Timetable Admin', 'Timetable administration', 'tt.php', 'Core', 'Y', 'Admin', '', 'Ross Parker', 'http://rossparker.org'),
 (0014, 'Timetable', 'Allows users to view timetables', 'tt.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0015, 'Activities', 'Run a school activities program', 'activities_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
-(0008, 'Data Updater', 'Allow users to update their family''s data', 'data_personal.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
+(0008, 'Data Updater', 'Allow users to update their family\'s data', 'data_personal.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
 (0016, 'Formal Assessment', 'Facilitates tracking of student performance in external examinations.', 'externalAssessment.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
 (0119, 'Behaviour', 'Tracking Student Behaviour', 'behaviour_manage.php', 'Core', 'Y', 'People', '', 'Ross Parker', 'http://rossparker.org'),
-(0120, 'Resources', 'Collect and manage resources for teaching and learning', 'resources_view.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
 (0121, 'Messenger', 'Unified messenger for email, message wall and more.', 'messenger_manage.php', 'Core', 'Y', 'Other', '', 'Ross Parker', 'http://rossparker.org'),
 (0126, 'Rubrics', 'Allows users to create rubrics for assessment', 'rubrics.php', 'Core', 'Y', 'Assess', '', 'Ross Parker', 'http://rossparker.org'),
 (0130, 'Library', 'Allows the management of a catalog from which items can be borrowed.', 'library_manage_catalog.php', 'Core', 'Y', 'Learn', '', 'Ross Parker', 'http://rossparker.org'),
@@ -2503,10 +2535,10 @@ INSERT INTO `gibbonModule` (`gibbonModuleID`, `name`, `description`, `entryURL`,
 --
 
 CREATE TABLE `gibbonNotification` (
-  `gibbonNotificationID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonNotificationID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `status` enum('New','Archived') NOT NULL DEFAULT 'New',
-  `gibbonModuleID` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonModuleID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `count` int(4) NOT NULL DEFAULT '1',
   `text` text NOT NULL,
   `actionLink` varchar(255) NOT NULL COMMENT 'Relative to absoluteURL, start with a forward slash',
@@ -2520,14 +2552,14 @@ CREATE TABLE `gibbonNotification` (
 --
 
 CREATE TABLE `gibbonNotificationEvent` (
-  `gibbonNotificationEventID` int(6) unsigned zerofill NOT NULL,
+  `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `event` varchar(90) NOT NULL,
   `moduleName` varchar(30) NOT NULL,
   `actionName` varchar(50) NOT NULL,
   `type` enum('Core','Additional','CLI') NOT NULL DEFAULT 'Core',
   `scopes` varchar(255) NOT NULL DEFAULT 'All',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonNotificationEvent`
@@ -2543,7 +2575,7 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000007, 'Personal Data Updates', 'Data Updater', 'Personal Data Updates', 'Core', 'All', 'Y'),
 (000008, 'Login - Failed', 'User Admin', 'Manage Users', 'Core', 'All', 'Y'),
 (000009, 'New Public Registration', 'User Admin', 'Manage Users', 'Core', 'All', 'Y'),
-(000010, 'New Application Form', 'Students', 'Manage Applications_edit', 'Core', 'All', 'Y'),
+(000010, 'New Application Form', 'Students', 'View Student Profile_full', 'Core', 'All', 'Y'),
 (000011, 'New Application Form', 'Staff', 'Manage Applications', 'Core', 'All', 'Y'),
 (000012, 'Student Withdrawn', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
 (000013, 'New Activity Registration', 'Activities', 'Manage Activities', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y'),
@@ -2554,7 +2586,9 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 (000018, 'User Status Check and Fix', 'User Admin', 'Manage Users', 'CLI', 'All', 'Y'),
 (000019, 'Overdue Loan Items', 'Library', 'Lending & Activity Log', 'CLI', 'All', 'Y'),
 (000020, 'Behaviour Letters', 'Behaviour', 'View Behaviour Records_all', 'CLI', 'All', 'Y'),
-(000021, 'Parent Weekly Email Summary', 'Planner', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y');
+(000021, 'Parent Weekly Email Summary', 'Planner', 'Parent Weekly Email Summary', 'CLI', 'All', 'Y'),
+(000022, 'Application Form Accepted', 'Students', 'View Student Profile_full', 'Core', 'All,gibbonYearGroupID', 'Y'),
+(000023, 'Weekly Attendance Summary ', 'Attendance', 'Attendance Summary by Date', 'CLI', 'All,gibbonYearGroupID', 'Y');
 
 -- --------------------------------------------------------
 
@@ -2563,11 +2597,11 @@ INSERT INTO `gibbonNotificationEvent` (`gibbonNotificationEventID`, `event`, `mo
 --
 
 CREATE TABLE `gibbonNotificationListener` (
-  `gibbonNotificationListenerID` int(10) unsigned zerofill NOT NULL,
-  `gibbonNotificationEventID` int(6) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonNotificationListenerID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `scopeType` varchar(30) DEFAULT NULL,
-  `scopeID` int(20) unsigned DEFAULT NULL
+  `scopeID` int(20) UNSIGNED DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2577,16 +2611,16 @@ CREATE TABLE `gibbonNotificationListener` (
 --
 
 CREATE TABLE `gibbonOutcome` (
-  `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
+  `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
   `nameShort` varchar(14) NOT NULL,
   `category` varchar(50) NOT NULL,
   `description` text NOT NULL,
   `active` enum('Y','N') NOT NULL,
   `scope` enum('School','Learning Area') NOT NULL,
-  `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
-  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(8) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -2596,10 +2630,10 @@ CREATE TABLE `gibbonOutcome` (
 --
 
 CREATE TABLE `gibbonPayment` (
-  `gibbonPaymentID` int(14) unsigned zerofill NOT NULL,
+  `gibbonPaymentID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `foreignTable` varchar(50) NOT NULL,
-  `foreignTableID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL COMMENT 'Person recording the transaction',
+  `foreignTableID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'Person recording the transaction',
   `type` enum('Online','Bank Transfer','Cash','Cheque','Other') NOT NULL DEFAULT 'Online',
   `status` enum('Complete','Partial','Final','Failure') NOT NULL DEFAULT 'Complete' COMMENT 'Complete means paid in one go, partial is part of a set of payments, and final is last in a set of payments.',
   `amount` decimal(13,2) NOT NULL,
@@ -2619,10 +2653,10 @@ CREATE TABLE `gibbonPayment` (
 --
 
 CREATE TABLE `gibbonPermission` (
-  `permissionID` int(10) unsigned zerofill NOT NULL,
-  `gibbonRoleID` int(3) unsigned zerofill NOT NULL,
-  `gibbonActionID` int(7) unsigned zerofill NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=53964 DEFAULT CHARSET=utf8;
+  `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -3016,7 +3050,9 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 (0000053960, 003, 0000894),
 (0000053961, 004, 0000895),
 (0000053962, 003, 0000896),
-(0000053963, 001, 0000898);
+(0000053963, 001, 0000898),
+(0000053964, 001, 0000899),
+(0000053965, 001, 0000900);
 
 -- --------------------------------------------------------
 
@@ -3025,7 +3061,7 @@ INSERT INTO `gibbonPermission` (`permissionID`, `gibbonRoleID`, `gibbonActionID`
 --
 
 CREATE TABLE `gibbonPerson` (
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(5) NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
@@ -3040,7 +3076,7 @@ CREATE TABLE `gibbonPerson` (
   `passwordForceReset` enum('N','Y') NOT NULL DEFAULT 'N' COMMENT 'Force user to reset password on next login.',
   `status` enum('Full','Expected','Left','Pending Approval') NOT NULL DEFAULT 'Full',
   `canLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
-  `gibbonRoleIDPrimary` int(3) unsigned zerofill NOT NULL,
+  `gibbonRoleIDPrimary` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonRoleIDAll` varchar(255) NOT NULL,
   `dob` date DEFAULT NULL,
   `email` varchar(50) DEFAULT NULL,
@@ -3097,11 +3133,11 @@ CREATE TABLE `gibbonPerson` (
   `emergency2Number1` varchar(30) NOT NULL,
   `emergency2Number2` varchar(30) NOT NULL,
   `emergency2Relationship` varchar(30) NOT NULL,
-  `gibbonHouseID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonHouseID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `studentID` varchar(10) NOT NULL,
   `dateStart` date DEFAULT NULL,
   `dateEnd` date DEFAULT NULL,
-  `gibbonSchoolYearIDClassOf` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonSchoolYearIDClassOf` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `lastSchool` varchar(100) NOT NULL,
   `nextSchool` varchar(100) NOT NULL,
   `departureReason` varchar(50) NOT NULL,
@@ -3111,20 +3147,20 @@ CREATE TABLE `gibbonPerson` (
   `viewCalendarSchool` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewCalendarPersonal` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewCalendarSpaceBooking` enum('Y','N') NOT NULL DEFAULT 'N',
-  `gibbonApplicationFormID` int(12) unsigned zerofill DEFAULT NULL,
+  `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
   `lockerNumber` varchar(20) NOT NULL,
   `vehicleRegistration` varchar(20) NOT NULL,
   `personalBackground` varchar(255) NOT NULL,
   `messengerLastBubble` date DEFAULT NULL,
   `privacy` text,
   `dayType` varchar(255) DEFAULT NULL COMMENT 'Student day type, as specified in the application form.',
-  `gibbonThemeIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
-  `gibboni18nIDPersonal` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonThemeIDPersonal` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibboni18nIDPersonal` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `studentAgreements` text,
   `googleAPIRefreshToken` varchar(255) NOT NULL,
   `receiveNotificationEmails` enum('Y','N') NOT NULL DEFAULT 'Y',
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values'
-) ENGINE=MyISAM AUTO_INCREMENT=1099 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3133,7 +3169,7 @@ CREATE TABLE `gibbonPerson` (
 --
 
 CREATE TABLE `gibbonPersonField` (
-  `gibbonPersonFieldID` int(3) unsigned zerofill NOT NULL,
+  `gibbonPersonFieldID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `description` varchar(255) NOT NULL,
@@ -3155,8 +3191,8 @@ CREATE TABLE `gibbonPersonField` (
 --
 
 CREATE TABLE `gibbonPersonMedical` (
-  `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
@@ -3170,10 +3206,10 @@ CREATE TABLE `gibbonPersonMedical` (
 --
 
 CREATE TABLE `gibbonPersonMedicalCondition` (
-  `gibbonPersonMedicalConditionID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonMedicalConditionID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(100) NOT NULL,
-  `gibbonAlertLevelID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `triggers` varchar(255) NOT NULL,
   `reaction` varchar(255) NOT NULL,
   `response` varchar(255) NOT NULL,
@@ -3190,12 +3226,12 @@ CREATE TABLE `gibbonPersonMedicalCondition` (
 --
 
 CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
-  `gibbonPersonMedicalConditionUpdateID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonMedicalConditionID` int(12) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonMedicalID` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonMedicalConditionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonMedicalUpdateID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonMedicalConditionID` int(12) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `name` varchar(80) NOT NULL,
-  `gibbonAlertLevelID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `triggers` varchar(255) NOT NULL,
   `reaction` varchar(255) NOT NULL,
   `response` varchar(255) NOT NULL,
@@ -3203,7 +3239,7 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
   `lastEpisode` date DEFAULT NULL,
   `lastEpisodeTreatment` varchar(255) NOT NULL,
   `comment` text NOT NULL,
-  `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3214,7 +3250,7 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
 --
 
 CREATE TABLE `gibbonPersonMedicalSymptoms` (
-  `gibbonPersonMedicalSymptomsID` int(14) unsigned zerofill NOT NULL,
+  `gibbonPersonMedicalSymptomsID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) NOT NULL,
   `symptoms` text NOT NULL,
   `date` date NOT NULL,
@@ -3229,16 +3265,16 @@ CREATE TABLE `gibbonPersonMedicalSymptoms` (
 --
 
 CREATE TABLE `gibbonPersonMedicalUpdate` (
-  `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonMedicalUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
-  `gibbonPersonMedicalID` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `bloodType` enum('','O+','A+','B+','AB+','O-','A-','B-','AB-') NOT NULL,
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
   `tetanusWithin10Years` enum('','Y','N') NOT NULL,
-  `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3249,8 +3285,8 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
 --
 
 CREATE TABLE `gibbonPersonReset` (
-  `gibbonPersonResetID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonResetID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `key` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -3262,10 +3298,10 @@ CREATE TABLE `gibbonPersonReset` (
 --
 
 CREATE TABLE `gibbonPersonUpdate` (
-  `gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL DEFAULT NULL,
   `status` enum('Pending','Complete') NOT NULL DEFAULT 'Pending',
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(5) NOT NULL,
   `surname` varchar(30) NOT NULL DEFAULT '',
   `firstName` varchar(30) NOT NULL DEFAULT '',
@@ -3319,7 +3355,7 @@ CREATE TABLE `gibbonPersonUpdate` (
   `emergency2Number2` varchar(30) DEFAULT NULL,
   `emergency2Relationship` varchar(30) DEFAULT NULL,
   `vehicleRegistration` varchar(20) NOT NULL,
-  `gibbonPersonIDUpdater` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `privacy` text,
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values'
@@ -3332,10 +3368,10 @@ CREATE TABLE `gibbonPersonUpdate` (
 --
 
 CREATE TABLE `gibbonPlannerEntry` (
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonHookID` int(4) unsigned zerofill DEFAULT NULL,
-  `gibbonUnitID` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonHookID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `date` date DEFAULT NULL,
   `timeStart` time DEFAULT NULL,
   `timeEnd` time DEFAULT NULL,
@@ -3360,8 +3396,8 @@ CREATE TABLE `gibbonPlannerEntry` (
   `homeworkCrowdAssessClassmatesRead` enum('N','Y') NOT NULL,
   `viewableStudents` enum('Y','N') NOT NULL DEFAULT 'Y',
   `viewableParents` enum('Y','N') NOT NULL DEFAULT 'N',
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3371,12 +3407,12 @@ CREATE TABLE `gibbonPlannerEntry` (
 --
 
 CREATE TABLE `gibbonPlannerEntryDiscuss` (
-  `gibbonPlannerEntryDiscussID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryDiscussID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
-  `gibbonPlannerEntryDiscussIDReplyTo` int(16) unsigned zerofill DEFAULT NULL
+  `gibbonPlannerEntryDiscussIDReplyTo` int(16) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3386,9 +3422,9 @@ CREATE TABLE `gibbonPlannerEntryDiscuss` (
 --
 
 CREATE TABLE `gibbonPlannerEntryGuest` (
-  `gibbonPlannerEntryGuestID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryGuestID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Guest Student','Guest Teacher','Guest Assistant','Guest Technician','Guest Parent','Other Guest') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3399,9 +3435,9 @@ CREATE TABLE `gibbonPlannerEntryGuest` (
 --
 
 CREATE TABLE `gibbonPlannerEntryHomework` (
-  `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryHomeworkID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('Link','File') NOT NULL,
   `version` enum('Draft','Final') NOT NULL,
   `status` enum('On Time','Late','Exemption') NOT NULL,
@@ -3417,9 +3453,9 @@ CREATE TABLE `gibbonPlannerEntryHomework` (
 --
 
 CREATE TABLE `gibbonPlannerEntryOutcome` (
-  `gibbonPlannerEntryOutcomeID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryOutcomeID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `content` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -3431,8 +3467,8 @@ CREATE TABLE `gibbonPlannerEntryOutcome` (
 --
 
 CREATE TABLE `gibbonPlannerEntryStudentHomework` (
-  `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryStudentHomeworkID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) NOT NULL,
   `homeworkDueDateTime` datetime NOT NULL,
   `homeworkDetails` mediumtext NOT NULL,
@@ -3446,9 +3482,9 @@ CREATE TABLE `gibbonPlannerEntryStudentHomework` (
 --
 
 CREATE TABLE `gibbonPlannerEntryStudentTracker` (
-  `gibbonPlannerEntryStudentTrackerID` int(16) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerEntryStudentTrackerID` int(16) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `homeworkComplete` enum('Y','N') NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3459,10 +3495,10 @@ CREATE TABLE `gibbonPlannerEntryStudentTracker` (
 --
 
 CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
-  `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonPersonIDParent` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDStudent` int(10) unsigned zerofill NOT NULL,
+  `gibbonPlannerParentWeeklyEmailSummaryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDParent` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `weekOfYear` int(2) NOT NULL,
   `key` varchar(40) NOT NULL,
   `confirmed` enum('N','Y') NOT NULL DEFAULT 'N'
@@ -3475,7 +3511,7 @@ CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
 --
 
 CREATE TABLE `gibbonResource` (
-  `gibbonResourceID` int(14) unsigned zerofill NOT NULL,
+  `gibbonResourceID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(60) NOT NULL,
   `description` text NOT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
@@ -3484,7 +3520,7 @@ CREATE TABLE `gibbonResource` (
   `purpose` varchar(255) NOT NULL,
   `tags` text NOT NULL,
   `content` text NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3495,7 +3531,7 @@ CREATE TABLE `gibbonResource` (
 --
 
 CREATE TABLE `gibbonResourceTag` (
-  `gibbonResourceTagID` int(12) unsigned zerofill NOT NULL,
+  `gibbonResourceTagID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `tag` varchar(100) NOT NULL,
   `count` int(6) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -3507,7 +3543,7 @@ CREATE TABLE `gibbonResourceTag` (
 --
 
 CREATE TABLE `gibbonRole` (
-  `gibbonRoleID` int(3) unsigned zerofill NOT NULL,
+  `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `category` enum('Staff','Student','Parent','Other') NOT NULL DEFAULT 'Staff',
   `name` varchar(20) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
@@ -3516,18 +3552,18 @@ CREATE TABLE `gibbonRole` (
   `futureYearsLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
   `pastYearsLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
   `restriction` enum('None','Same Role','Admin Only') NOT NULL DEFAULT 'None'
-) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonRole`
 --
 
 INSERT INTO `gibbonRole` (`gibbonRoleID`, `category`, `name`, `nameShort`, `description`, `type`, `futureYearsLogin`, `pastYearsLogin`, `restriction`) VALUES
-(001, 'Staff', 'Administrator', 'Admn', 'Controls all aspects of the system', 'Core', 'Y', 'Y', 'Admin Only'),
-(002, 'Staff', 'Teacher', 'Tchr', 'Regular, classroom teacher', 'Core', 'Y', 'Y', 'None'),
-(003, 'Student', 'Student', 'Stud', 'Person studying in the school', 'Core', 'Y', 'Y', 'None'),
-(004, 'Parent', 'Parent', 'Prnt', 'Parent or guardian of person studying in', 'Core', 'Y', 'Y', 'None'),
-(006, 'Staff', 'Support Staff', 'SuSt', 'Staff who support teaching and learning', 'Core', 'Y', 'Y', 'None');
+(001, 'Staff', 'Administrator', 'Adm', 'Controls all aspects of the system', 'Core', 'Y', 'Y', 'Admin Only'),
+(002, 'Staff', 'Teacher', 'Tcr', 'Regular, classroom teacher', 'Core', 'Y', 'Y', 'None'),
+(003, 'Student', 'Student', 'Std', 'Person studying in the school', 'Core', 'Y', 'Y', 'None'),
+(004, 'Parent', 'Parent', 'Prt', 'Parent or guardian of person studying in', 'Core', 'Y', 'Y', 'None'),
+(006, 'Staff', 'Support Staff', 'SSt', 'Staff who support teaching and learning', 'Core', 'Y', 'Y', 'None');
 
 -- --------------------------------------------------------
 
@@ -3536,18 +3572,18 @@ INSERT INTO `gibbonRole` (`gibbonRoleID`, `category`, `name`, `nameShort`, `desc
 --
 
 CREATE TABLE `gibbonRollGroup` (
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(5) NOT NULL,
-  `gibbonPersonIDTutor` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDTutor2` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDTutor3` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDEA` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDEA2` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDEA3` int(10) unsigned zerofill DEFAULT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
-  `gibbonRollGroupIDNext` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonPersonIDTutor` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDTutor2` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDTutor3` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDEA` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDEA2` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDEA3` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonRollGroupIDNext` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
   `website` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -3559,16 +3595,16 @@ CREATE TABLE `gibbonRollGroup` (
 --
 
 CREATE TABLE `gibbonRubric` (
-  `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
+  `gibbonRubricID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(50) NOT NULL,
   `category` varchar(50) NOT NULL,
   `description` text NOT NULL,
   `active` enum('Y','N') NOT NULL,
   `scope` enum('School','Learning Area') NOT NULL,
-  `gibbonDepartmentID` int(4) unsigned zerofill DEFAULT NULL,
+  `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
-  `gibbonScaleID` int(5) unsigned zerofill DEFAULT NULL,
-  `gibbonPersonIDCreator` int(8) unsigned zerofill NOT NULL
+  `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
+  `gibbonPersonIDCreator` int(8) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3578,10 +3614,10 @@ CREATE TABLE `gibbonRubric` (
 --
 
 CREATE TABLE `gibbonRubricCell` (
-  `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL,
-  `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
-  `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL,
-  `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL,
+  `gibbonRubricCellID` int(11) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricColumnID` int(9) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricRowID` int(9) UNSIGNED ZEROFILL NOT NULL,
   `contents` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -3592,11 +3628,11 @@ CREATE TABLE `gibbonRubricCell` (
 --
 
 CREATE TABLE `gibbonRubricColumn` (
-  `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL,
-  `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
+  `gibbonRubricColumnID` int(9) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(20) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
-  `gibbonScaleGradeID` int(7) unsigned zerofill DEFAULT NULL
+  `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3606,12 +3642,12 @@ CREATE TABLE `gibbonRubricColumn` (
 --
 
 CREATE TABLE `gibbonRubricEntry` (
-  `gibbonRubricEntry` int(14) unsigned zerofill NOT NULL,
-  `gibbonRubricID` int(8) unsigned NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL,
+  `gibbonRubricEntry` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricID` int(8) UNSIGNED NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricCellID` int(11) UNSIGNED ZEROFILL NOT NULL,
   `contextDBTable` varchar(255) NOT NULL COMMENT 'Which database table is this entry related to?',
-  `contextDBTableID` int(20) unsigned zerofill NOT NULL
+  `contextDBTableID` int(20) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3621,11 +3657,11 @@ CREATE TABLE `gibbonRubricEntry` (
 --
 
 CREATE TABLE `gibbonRubricRow` (
-  `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL,
-  `gibbonRubricID` int(8) unsigned zerofill NOT NULL,
+  `gibbonRubricRowID` int(9) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRubricID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(40) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
-  `gibbonOutcomeID` int(8) unsigned zerofill DEFAULT NULL
+  `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -3635,14 +3671,14 @@ CREATE TABLE `gibbonRubricRow` (
 --
 
 CREATE TABLE `gibbonScale` (
-  `gibbonScaleID` int(5) unsigned zerofill NOT NULL,
+  `gibbonScaleID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(40) NOT NULL,
   `nameShort` varchar(5) NOT NULL,
   `usage` varchar(50) NOT NULL,
   `lowestAcceptable` varchar(5) DEFAULT NULL COMMENT 'This is the sequence number of the lowest grade a student can get without being unsatisfactory',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `numeric` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScale`
@@ -3671,13 +3707,13 @@ INSERT INTO `gibbonScale` (`gibbonScaleID`, `name`, `nameShort`, `usage`, `lowes
 --
 
 CREATE TABLE `gibbonScaleGrade` (
-  `gibbonScaleGradeID` int(7) unsigned zerofill NOT NULL,
-  `gibbonScaleID` int(5) unsigned zerofill NOT NULL,
+  `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonScaleID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `value` varchar(10) NOT NULL,
   `descriptor` varchar(50) NOT NULL,
   `sequenceNumber` int(5) NOT NULL,
   `isDefault` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM AUTO_INCREMENT=331 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScaleGrade`
@@ -4021,13 +4057,13 @@ INSERT INTO `gibbonScaleGrade` (`gibbonScaleGradeID`, `gibbonScaleID`, `value`, 
 --
 
 CREATE TABLE `gibbonSchoolYear` (
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(9) NOT NULL DEFAULT '',
   `status` enum('Past','Current','Upcoming') NOT NULL DEFAULT 'Upcoming',
   `sequenceNumber` int(3) NOT NULL,
   `firstDay` date DEFAULT NULL,
   `lastDay` date DEFAULT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSchoolYear`
@@ -4048,8 +4084,8 @@ INSERT INTO `gibbonSchoolYear` (`gibbonSchoolYearID`, `name`, `status`, `sequenc
 --
 
 CREATE TABLE `gibbonSchoolYearSpecialDay` (
-  `gibbonSchoolYearSpecialDayID` int(10) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearSpecialDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `type` enum('School Closure','Timing Change') NOT NULL,
   `name` varchar(20) NOT NULL,
   `description` varchar(255) NOT NULL,
@@ -4067,14 +4103,14 @@ CREATE TABLE `gibbonSchoolYearSpecialDay` (
 --
 
 CREATE TABLE `gibbonSchoolYearTerm` (
-  `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(5) NOT NULL,
   `name` varchar(20) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `firstDay` date NOT NULL,
   `lastDay` date NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSchoolYearTerm`
@@ -4098,13 +4134,13 @@ INSERT INTO `gibbonSchoolYearTerm` (`gibbonSchoolYearTermID`, `gibbonSchoolYearI
 --
 
 CREATE TABLE `gibbonSetting` (
-  `gibbonSettingID` int(5) unsigned zerofill NOT NULL,
+  `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `scope` varchar(50) NOT NULL,
   `name` varchar(50) NOT NULL,
   `nameDisplay` varchar(60) NOT NULL,
   `description` varchar(255) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=263 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -4117,12 +4153,12 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00174, 'System', 'organisationAdministrator', 'System Administrator', 'The staff member who receives notifications for system events.', '1'),
 (00006, 'System', 'pagination', 'Pagination Count', 'Must be numeric. Number of records shown per page.', '50'),
 (00007, 'System', 'systemName', 'System Name', '', 'Gibbon'),
-(00008, 'System', 'indexText', 'Index Page Text', 'Text displayed in system''s welcome page.', 'Welcome to Gibbon, the free, open, flexible school platform. Designed by teachers for learning, Gibbon gives you the school tools you need.'),
+(00008, 'System', 'indexText', 'Index Page Text', 'Text displayed in system\'s welcome page.', 'Welcome to Gibbon, the free, open, flexible school platform. Designed by teachers for learning, Gibbon gives you the school tools you need.'),
 (00009, 'System', 'absolutePath', 'Base Path', 'The local FS path to the system', ''),
-(00011, 'System', 'timezone', 'Timezone', 'The <a href=''http://php.net/manual/en/timezones.php''>timezone</a> where the school is located', 'Asia/Hong_Kong'),
+(00011, 'System', 'timezone', 'Timezone', 'The <a href=\'http://php.net/manual/en/timezones.php\'>timezone</a> where the school is located', 'Asia/Hong_Kong'),
 (00013, 'System', 'analytics', 'Analytics', 'Javascript code to integrate statistics, such as Google Analytics', ''),
-(00014, 'System', 'emailLink', 'Link To Email', 'The link that points to the school/''s email system', ''),
-(00015, 'System', 'webLink', 'Link To Web', 'The link that points to the school/''s website', ''),
+(00014, 'System', 'emailLink', 'Link To Email', 'The link that points to the school/\'s email system', ''),
+(00015, 'System', 'webLink', 'Link To Web', 'The link that points to the school/\'s website', ''),
 (00175, 'System', 'organisationDBA', 'Database Administrator', 'The staff member who receives notifications for data events.', '1'),
 (00018, 'System', 'defaultAssessmentScale', 'Default Assessment Scale', 'This is the scale used as a default where assessment scales need to be selected.', '00007'),
 (00176, 'System', 'organisationAdmissions', 'Admissions Administrator', 'The staff member who receives notifications for admissions events.', '1'),
@@ -4140,20 +4176,25 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00031, 'Application Form', 'scholarships', 'Scholarships', 'Information to display before the scholarship options', ''),
 (00032, 'Application Form', 'agreement', 'Agreement', 'Without this text, which is displayed above the agreement, users will not be asked to agree to anything', ''),
 (00033, 'Application Form', 'publicApplications', 'Public Applications?', 'If yes, members of the public can submit applications', 'Y'),
-(00034, 'Behaviour', 'positiveDescriptors', 'Positive Descriptors', 'Allowalbe choices for positive behaviour', 'Attitude to learning,Collaboration,Community spirit,Creativity,Effort,Leadership,Participation,Persistence,Problem solving,Quality of work,Values'),
-(00035, 'Behaviour', 'negativeDescriptors', 'Negative Descriptors', 'Allowalbe choices for negative behaviour', 'Classwork - Late,Classwork - Incomplete,Classwork - Unacceptable,Disrespectful,Disruptive,Homework - Late,Homework - Incomplete,Homework - Unacceptable,ICT Misuse,Truancy,Other'),
-(00036, 'Behaviour', 'levels', 'Levels', 'Allowalbe choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
+(00034, 'Behaviour', 'positiveDescriptors', 'Positive Descriptors', 'Allowable choices for positive behaviour', 'Attitude to learning,Collaboration,Community spirit,Creativity,Effort,Leadership,Participation,Persistence,Problem solving,Quality of work,Values'),
+(00035, 'Behaviour', 'negativeDescriptors', 'Negative Descriptors', 'Allowable choices for negative behaviour', 'Classwork - Late,Classwork - Incomplete,Classwork - Unacceptable,Disrespectful,Disruptive,Homework - Late,Homework - Incomplete,Homework - Unacceptable,ICT Misuse,Truancy,Other'),
+(00036, 'Behaviour', 'levels', 'Levels', 'Allowable choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
+<<<<<<< HEAD
 (00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '14.0.01'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with "Manage All Resources" rights', ''),
+=======
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '15.0.00'),
+(00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with \"Manage All Resources\" rights', ''),
+>>>>>>> v15.0.00
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),
 (00043, 'System', 'installType', 'Install Type', 'The purpose of this installation of Gibbon', 'Production'),
 (00044, 'System', 'statsCollection', 'Statistics Collection', 'To track Gibbon uptake, the system tracks basic data (current URL, install type, organisation name) on each install. Do you want to help?', 'Y'),
 (00045, 'Activities', 'maxPerTerm', 'Maximum Activities per Term', 'The most a student can sign up for in one term. Set to 0 for unlimited.', '0'),
 (00046, 'Planner', 'lessonDetailsTemplate', 'Lesson Details Template', 'Template to be inserted into Lesson Details field', ''),
-(00047, 'Planner', 'teachersNotesTemplate', 'Teacher''s Notes Template', 'Template to be inserted into Teacher''s Notes field', ''),
+(00047, 'Planner', 'teachersNotesTemplate', 'Teacher\'s Notes Template', 'Template to be inserted into Teacher\'s Notes field', ''),
 (00048, 'Planner', 'smartBlockTemplate', 'Smart Block Template', 'Template to be inserted into new block in Smart Unit', ''),
 (00049, 'Planner', 'unitOutlineTemplate', 'Unit Outline Template', 'Template to be inserted into Unit Outline section of planner', ''),
 (00050, 'Application Form', 'milestones', 'Milestones', 'Comma-separated list of the major steps in the application process. Applicants can be tracked through the various stages.', ''),
@@ -4168,8 +4209,8 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00059, 'User Admin', 'ethnicity', 'Ethnicity', 'Comma-separated list of ethnicities available in system', ''),
 (00060, 'User Admin', 'nationality', 'Nationality', 'Comma-separated list of nationalities available in system. If blank, system will default to list of countries', ''),
 (00061, 'User Admin', 'residencyStatus', 'Residency Status', 'Comma-separated list of residency status available in system. If blank, system will allow text input', ''),
-(00063, 'User Admin', 'personalDataUpdaterRequiredFields', 'Personal Data Updater Required Fields', 'Serialized array listed personal fields in data updater, and whether or not they are required.', 'a:47:{s:5:"title";s:1:"N";s:7:"surname";s:1:"Y";s:9:"firstName";s:1:"N";s:10:"otherNames";s:1:"N";s:13:"preferredName";s:1:"Y";s:12:"officialName";s:1:"Y";s:16:"nameInCharacters";s:1:"N";s:3:"dob";s:1:"N";s:5:"email";s:1:"N";s:14:"emailAlternate";s:1:"N";s:8:"address1";s:1:"Y";s:16:"address1District";s:1:"N";s:15:"address1Country";s:1:"N";s:8:"address2";s:1:"N";s:16:"address2District";s:1:"N";s:15:"address2Country";s:1:"N";s:10:"phone1Type";s:1:"N";s:17:"phone1CountryCode";s:1:"N";s:6:"phone1";s:1:"N";s:6:"phone2";s:1:"N";s:6:"phone3";s:1:"N";s:6:"phone4";s:1:"N";s:13:"languageFirst";s:1:"N";s:14:"languageSecond";s:1:"N";s:13:"languageThird";s:1:"N";s:14:"countryOfBirth";s:1:"N";s:9:"ethnicity";s:1:"N";s:12:"citizenship1";s:1:"N";s:20:"citizenship1Passport";s:1:"N";s:12:"citizenship2";s:1:"N";s:20:"citizenship2Passport";s:1:"N";s:8:"religion";s:1:"N";s:20:"nationalIDCardNumber";s:1:"N";s:15:"residencyStatus";s:1:"N";s:14:"visaExpiryDate";s:1:"N";s:10:"profession";s:1:"N";s:8:"employer";s:1:"N";s:8:"jobTitle";s:1:"N";s:14:"emergency1Name";s:1:"N";s:17:"emergency1Number1";s:1:"N";s:17:"emergency1Number2";s:1:"N";s:22:"emergency1Relationship";s:1:"N";s:14:"emergency2Name";s:1:"N";s:17:"emergency2Number1";s:1:"N";s:17:"emergency2Number2";s:1:"N";s:22:"emergency2Relationship";s:1:"N";s:19:"vehicleRegistration";s:1:"N";}'),
-(00065, 'School Admin', 'primaryExternalAssessmentByYearGroup', 'Primary External Assessment By Year Group', 'Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.', 'a:7:{s:3:"001";s:1:"-";s:3:"002";s:1:"-";s:3:"003";s:1:"-";s:3:"004";s:1:"-";s:3:"005";s:1:"-";s:3:"006";s:1:"-";s:3:"007";s:1:"-";}'),
+(00063, 'User Admin', 'personalDataUpdaterRequiredFields', 'Personal Data Updater Required Fields', 'Serialized array listed personal fields in data updater, and whether or not they are required.', 'a:47:{s:5:\"title\";s:1:\"N\";s:7:\"surname\";s:1:\"Y\";s:9:\"firstName\";s:1:\"N\";s:10:\"otherNames\";s:1:\"N\";s:13:\"preferredName\";s:1:\"Y\";s:12:\"officialName\";s:1:\"Y\";s:16:\"nameInCharacters\";s:1:\"N\";s:3:\"dob\";s:1:\"N\";s:5:\"email\";s:1:\"N\";s:14:\"emailAlternate\";s:1:\"N\";s:8:\"address1\";s:1:\"Y\";s:16:\"address1District\";s:1:\"N\";s:15:\"address1Country\";s:1:\"N\";s:8:\"address2\";s:1:\"N\";s:16:\"address2District\";s:1:\"N\";s:15:\"address2Country\";s:1:\"N\";s:10:\"phone1Type\";s:1:\"N\";s:17:\"phone1CountryCode\";s:1:\"N\";s:6:\"phone1\";s:1:\"N\";s:6:\"phone2\";s:1:\"N\";s:6:\"phone3\";s:1:\"N\";s:6:\"phone4\";s:1:\"N\";s:13:\"languageFirst\";s:1:\"N\";s:14:\"languageSecond\";s:1:\"N\";s:13:\"languageThird\";s:1:\"N\";s:14:\"countryOfBirth\";s:1:\"N\";s:9:\"ethnicity\";s:1:\"N\";s:12:\"citizenship1\";s:1:\"N\";s:20:\"citizenship1Passport\";s:1:\"N\";s:12:\"citizenship2\";s:1:\"N\";s:20:\"citizenship2Passport\";s:1:\"N\";s:8:\"religion\";s:1:\"N\";s:20:\"nationalIDCardNumber\";s:1:\"N\";s:15:\"residencyStatus\";s:1:\"N\";s:14:\"visaExpiryDate\";s:1:\"N\";s:10:\"profession\";s:1:\"N\";s:8:\"employer\";s:1:\"N\";s:8:\"jobTitle\";s:1:\"N\";s:14:\"emergency1Name\";s:1:\"N\";s:17:\"emergency1Number1\";s:1:\"N\";s:17:\"emergency1Number2\";s:1:\"N\";s:22:\"emergency1Relationship\";s:1:\"N\";s:14:\"emergency2Name\";s:1:\"N\";s:17:\"emergency2Number1\";s:1:\"N\";s:17:\"emergency2Number2\";s:1:\"N\";s:22:\"emergency2Relationship\";s:1:\"N\";s:19:\"vehicleRegistration\";s:1:\"N\";}'),
+(00065, 'School Admin', 'primaryExternalAssessmentByYearGroup', 'Primary External Assessment By Year Group', 'Serialized array connected gibbonExternalAssessmentID to gibbonYearGroupID, and specify which field set to use.', 'a:7:{s:3:\"001\";s:1:\"-\";s:3:\"002\";s:1:\"-\";s:3:\"003\";s:1:\"-\";s:3:\"004\";s:1:\"-\";s:3:\"005\";s:1:\"-\";s:3:\"006\";s:1:\"-\";s:3:\"007\";s:1:\"-\";}'),
 (00066, 'Markbook', 'markbookType', 'Markbook Type', 'Comma-separated list of types to make available in the Markbook.', 'Essay,Exam,Homework,Reflection,Test,Unit,End of Year,Other'),
 (00067, 'System', 'allowableHTML', 'Allowable HTML', 'TinyMCE-style list of acceptable HTML tags and options.', 'br[style],strong[style],em[style],span[style],p[style],address[style],pre[style],h1[style],h2[style],h3[style],h4[style],h5[style],h6[style],table[style],thead[style],tbody[style],tfoot[style],tr[style],td[style|colspan|rowspan],ol[style],ul[style],li[style],blockquote[style],a[style|target|href],img[style|class|src|width|height],video[style],source[style],hr[style],iframe[style|width|height|src|frameborder|allowfullscreen],embed[style],div[style],sup[style],sub[style]'),
 (00068, 'Application Form', 'howDidYouHear', 'How Did Your Hear?', 'Comma-separated list', 'Advertisement,Personal Recommendation,World Wide Web,Others'),
@@ -4230,19 +4271,19 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00130, 'System', 'cuttingEdgeCode', 'Cutting Edge Code', 'Are you running cutting edge code, instead of stable versions?', 'N'),
 (00131, 'System', 'cuttingEdgeCodeLine', 'Cutting Edge Code Line', 'What line of SQL code did the last cutting edge update hit?', ''),
 (00132, 'System', 'gibboneduComOrganisationName', 'gibbonedu.com Organisation Name', 'Name of organisation, as registered with gibbonedu.com, for access to value-added services.', ''),
-(00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation''s private key, as registered with gibbonedu.com, for access to value-added services.', ''),
+(00133, 'System', 'gibboneduComOrganisationKey', 'gibbonedu.com Organisation Key', 'Organisation\'s private key, as registered with gibbonedu.com, for access to value-added services.', ''),
 (00134, 'Application Form', 'studentDefaultEmail', 'Student Default Email', 'Set default email for students on acceptance, using [username] to insert username.', ''),
 (00135, 'Application Form', 'studentDefaultWebsite', 'Student Default Website', 'Set default website for students on acceptance, using [username] to insert username.', ''),
 (00136, 'School Admin', 'studentAgreementOptions', 'Student Agreement Options', 'Comma-separated list of agreements that students might be asked to sign in school (e.g. ICT Policy).', ''),
-(00137, 'Markbook', 'attainmentAlternativeName', 'Attainment Alternative Name', 'A name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
-(00138, 'Markbook', 'effortAlternativeName', 'Effort Alternative Name', 'A name to use isntead of "Effort" in the second grade column of the markbook.', ''),
-(00139, 'Markbook', 'attainmentAlternativeNameAbrev', 'Attainment Alternative Name Abbreviation', 'A short name to use isntead of "Attainment" in the first grade column of the markbook.', ''),
-(00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of "Effort" in the second grade column of the markbook.', ''),
+(00137, 'Markbook', 'attainmentAlternativeName', 'Attainment Alternative Name', 'A name to use isntead of \"Attainment\" in the first grade column of the markbook.', ''),
+(00138, 'Markbook', 'effortAlternativeName', 'Effort Alternative Name', 'A name to use isntead of \"Effort\" in the second grade column of the markbook.', ''),
+(00139, 'Markbook', 'attainmentAlternativeNameAbrev', 'Attainment Alternative Name Abbreviation', 'A short name to use isntead of \"Attainment\" in the first grade column of the markbook.', ''),
+(00140, 'Markbook', 'effortAlternativeNameAbrev', 'Effort Alternative Name Abbreviation', 'A short name to use isntead of \"Effort\" in the second grade column of the markbook.', ''),
 (00141, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour', 'Parent Weekly Email Summary Include Behaviour', 'Should behaviour information be included in the weekly planner email summary that goes out to parents?', 'Y'),
 (00142, 'Finance', 'financeOnlinePaymentEnabled', 'Enable Online Payment', 'Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.', 'N'),
 (00143, 'Finance', 'financeOnlinePaymentThreshold', 'Online Payment Threshold', 'If invoices are payable online, what is the maximum payment allowed? Useful for controlling payment fees. No value means unlimited.', ''),
 (00144, 'Departments', 'makeDepartmentsPublic', 'Make Departments Public', 'Should department information be made available to the public, via the Gibbon homeoage?', 'N'),
-(00145, 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP''s session.gc_maxlifetime option.', '1200'),
+(00145, 'System', 'sessionDuration', 'Session Duration', 'Time, in seconds, before system logs a user out. Should be less than PHP\'s session.gc_maxlifetime option.', '1200'),
 (00146, 'Planner', 'makeUnitsPublic', 'Make Units Public', 'Enables a public listing of units, with teachers able to opt in to share units.', 'N'),
 (00147, 'Messenger', 'messageBubbleWidthType', 'Message Bubble Width Type', 'Should the message bubble be regular or wide?', 'Regular'),
 (00148, 'Messenger', 'messageBubbleBGColor', 'Message Bubble Background Color', 'Message bubble background color in RGBA (e.g. 100,100,100,0.50). If blank, theme default will be used.', ''),
@@ -4257,11 +4298,11 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00158, 'Messenger', 'enableHomeScreenWidget', 'Enable Home Screen Widget', 'Adds a Message Wall widget to the home page, hihglighting current messages.', 'N'),
 (00159, 'User Admin', 'enablePublicRegistration', 'Enable Public Registration', 'Allows members of the public to register to use the system.', 'N'),
 (00160, 'User Admin', 'publicRegistrationMinimumAge', 'Public Registration Minimum Age', 'The minimum age, in years, permitted to register.', '13'),
-(00161, 'User Admin', 'publicRegistrationDefaultStatus', 'Public Registration Default Status', 'Should new users be ''Full'' or ''Pending Approval''?', 'Pending Approval'),
+(00161, 'User Admin', 'publicRegistrationDefaultStatus', 'Public Registration Default Status', 'Should new users be \'Full\' or \'Pending Approval\'?', 'Pending Approval'),
 (00162, 'User Admin', 'publicRegistrationDefaultRole', 'Public Registration Default Role', 'System role to be assigned to registering members of the public.', '003'),
 (00163, 'User Admin', 'publicRegistrationIntro', 'Public Registration Introductory Text', 'HTML text that will appear above the public registration form.', ''),
 (00164, 'User Admin', 'publicRegistrationPrivacyStatement', 'Public Registration Privacy Statement', 'HTML text that will appear above the Submit button, explaining privacy policy.', 'By registering for this site you are giving permission for your personal data to be used and shared within this organisation and its websites. We will not share your personal data outside our organisation.'),
-(00165, 'User Admin', 'publicRegistrationAgreement', 'Public Registration Agreement', 'Agreement that user must confirm before joining. Blank for no agreement.', 'In joining this site, and checking the box below, I agree to act lawfully, ethically and with respect for others. I agree to use this site for learning purposes only, and understand that access may be withdrawn at any time, at the discretion of the site''s administrators.'),
+(00165, 'User Admin', 'publicRegistrationAgreement', 'Public Registration Agreement', 'Agreement that user must confirm before joining. Blank for no agreement.', 'In joining this site, and checking the box below, I agree to act lawfully, ethically and with respect for others. I agree to use this site for learning purposes only, and understand that access may be withdrawn at any time, at the discretion of the site\'s administrators.'),
 (00166, 'User Admin', 'publicRegistrationPostscript', 'Public Registration Postscript', 'HTML text that will appear underneath the public registration form.', ''),
 (00167, 'System', 'alarm', 'Alarm', 'Sound a system wide alarm to all staff.', 'None'),
 (00168, 'Behaviour', 'enableDescriptors', 'Enable Descriptors', 'Setting to No reduces complexity of behaviour tracking.', 'Y'),
@@ -4275,15 +4316,15 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00180, 'Tracking', 'internalAssessmentDataPoints', 'Internal Assessment Data Points', 'Stores the internal assessment choices for data points output in tracking.', ''),
 (00181, 'Behaviour', 'enableBehaviourLetters', 'Enable Behaviour Letters', 'Should automated behaviour letter functionality be enabled?', 'N'),
 (00182, 'Behaviour', 'behaviourLettersLetter1Count', 'Letter 1 Count', 'After how many negative records should letter 1 be sent?', '3'),
-(00183, 'Behaviour', 'behaviourLettersLetter1Text', 'Letter 1 Text', 'The contents of letter 1, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the first communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child''s tutor.'),
+(00183, 'Behaviour', 'behaviourLettersLetter1Text', 'Letter 1 Text', 'The contents of letter 1, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the first communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.'),
 (00184, 'Behaviour', 'behaviourLettersLetter2Count', 'Letter 2 Count', 'After how many negative records should letter 2 be sent?', '6'),
-(00185, 'Behaviour', 'behaviourLettersLetter2Text', 'Letter 2 Text', 'The contents of letter 2, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the second communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child''s tutor.'),
+(00185, 'Behaviour', 'behaviourLettersLetter2Text', 'Letter 2 Text', 'The contents of letter 2, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the second communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.'),
 (00186, 'Behaviour', 'behaviourLettersLetter3Count', 'Letter 3 Count', 'After how many negative records should letter 3 be sent?', '9'),
-(00187, 'Behaviour', 'behaviourLettersLetter3Text', 'Letter 3 Text', 'The contents of letter 3, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the final communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child''s tutor.'),
+(00187, 'Behaviour', 'behaviourLettersLetter3Text', 'Letter 3 Text', 'The contents of letter 3, as HTML.', 'Dear Parent/Guardian,<br/><br/>This letter has been automatically generated to alert you to the fact that your child, [studentName], has reached [behaviourCount] negative behaviour incidents. Please see the list below for the details of these incidents:<br/><br/>[behaviourRecord]<br/><br/>This letter represents the final communication in a sequence of 3 potential alerts, each of which is more critical than the last.<br/><br/>If you would like more information on this matter, please contact your child\'s tutor.'),
 (00188, 'Markbook', 'enableColumnWeighting', 'Enable Column Weighting', 'Should column weighting and total scores be enabled in the Markbook?', 'N'),
 (00189, 'System', 'firstDayOfTheWeek', 'First Day Of The Week', 'On which day should the week begin?', 'Monday'),
 (00190, 'Application Form', 'usernameFormat', 'Username Format', 'How should usernames be formated? Choose from [preferredName], [preferredNameInitial], [surname].', '[preferredNameInitial][surname]'),
-(00191, 'Staff', 'jobOpeningDescriptionTemplate', 'Job Opening Description Template', 'Default HTML contents for the Job Opening Description field.', '<table style=''width: 100%''>\n	<tr>\n		<td colspan=2 style=''vertical-align: top''>\n			<span style=''text-decoration: underline; font-weight: bold''>Job Description</span><br/>\n			<br/>\n		</td>\n	</tr>\n	<tr>\n		<td style=''width: 50%; vertical-align: top''>\n			<span style=''text-decoration: underline; font-weight: bold''>Responsibilities</span><br/>\n			<ul style=''margin-top:0px''>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n		<td style=''width: 50%; vertical-align: top''>\n			<span style=''text-decoration: underline; font-weight: bold''>Required Skills/Characteristics</span><br/>\n			<ul style=''margin-top:0px''>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n	</tr>\n	<tr>\n		<td style=''width: 50%; vertical-align: top''>\n			<span style=''text-decoration: underline; font-weight: bold''>Remuneration</span><br/>\n			<ul style=''margin-top:0px''>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n		<td style=''width: 50%; vertical-align: top''>\n			<span style=''text-decoration: underline; font-weight: bold''>Other Details </span><br/>\n			<ul style=''margin-top:0px''>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n	</tr>\n</table>'),
+(00191, 'Staff', 'jobOpeningDescriptionTemplate', 'Job Opening Description Template', 'Default HTML contents for the Job Opening Description field.', '<table style=\'width: 100%\'>\n	<tr>\n		<td colspan=2 style=\'vertical-align: top\'>\n			<span style=\'text-decoration: underline; font-weight: bold\'>Job Description</span><br/>\n			<br/>\n		</td>\n	</tr>\n	<tr>\n		<td style=\'width: 50%; vertical-align: top\'>\n			<span style=\'text-decoration: underline; font-weight: bold\'>Responsibilities</span><br/>\n			<ul style=\'margin-top:0px\'>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n		<td style=\'width: 50%; vertical-align: top\'>\n			<span style=\'text-decoration: underline; font-weight: bold\'>Required Skills/Characteristics</span><br/>\n			<ul style=\'margin-top:0px\'>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n	</tr>\n	<tr>\n		<td style=\'width: 50%; vertical-align: top\'>\n			<span style=\'text-decoration: underline; font-weight: bold\'>Remuneration</span><br/>\n			<ul style=\'margin-top:0px\'>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n		<td style=\'width: 50%; vertical-align: top\'>\n			<span style=\'text-decoration: underline; font-weight: bold\'>Other Details </span><br/>\n			<ul style=\'margin-top:0px\'>\n				<li></li>\n				<li></li>\n			</ul>\n		</td>\n	</tr>\n</table>'),
 (00192, 'Staff', 'staffApplicationFormIntroduction', 'Introduction', 'Information to display before the form', ''),
 (00193, 'Staff', 'staffApplicationFormPostscript', 'Postscript', 'Information to display at the end of the form', ''),
 (00194, 'Staff', 'staffApplicationFormAgreement', 'Agreement', 'Without this text, which is displayed above the agreement, users will not be asked to agree to anything', 'In submitting this form, I confirm that all information provided above is accurate and complete to the best of my knowledge.'),
@@ -4297,13 +4338,13 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00202, 'Staff', 'staffApplicationFormDefaultWebsite', 'Default Website', 'Set default website on acceptance, using [username] to insert username.', ''),
 (00203, 'Staff', 'staffApplicationFormUsernameFormat', 'Username Format', 'How should usernames be formated? Choose from [preferredName], [preferredNameInitial], [surname].', '[preferredNameInitial].[surname]'),
 (00204, 'System', 'organisationHR', 'Human Resources Administrator', 'The staff member who receives notifications for staffing events.', '0000000001'),
-(00205, 'Staff', 'staffApplicationFormQuestions', 'Application Questions', 'HTML text that will appear as questions for the applicant to answer.', '<span style=''text-decoration: underline; font-weight: bold''>Why are you applying for this role?</span><br/><p></p>'),
+(00205, 'Staff', 'staffApplicationFormQuestions', 'Application Questions', 'HTML text that will appear as questions for the applicant to answer.', '<span style=\'text-decoration: underline; font-weight: bold\'>Why are you applying for this role?</span><br/><p></p>'),
 (00206, 'Staff', 'salaryScalePositions', 'Salary Scale Positions', 'Comma-separated list of salary scale positions, from lowest to highest.', '1,2,3,4,5,6,7,8,9,10'),
 (00207, 'Staff', 'responsibilityPosts', 'Responsibility Posts', 'Comma-separated list of posts carrying extra responsibilities.', ''),
-(00208, 'Students', 'applicationFormSENText', 'Application Form SEN Text', 'Text to appear with the Special Educational Needs section of the student application form.', 'Please indicate whether or not your child has any known, or suspected, special educational needs, or whether they have been assessed for any such needs in the past. Provide any comments or information concerning your child''s development that may be relevant to your child''s performance in the classroom or elsewhere? Incorrect or withheld information may affect continued enrolment.'),
-(00209, 'Students', 'applicationFormRefereeLink', 'Application Form Referee Link', 'Link to an external form that will be emailed to a referee of the applicant''s choosing.', ''),
+(00208, 'Students', 'applicationFormSENText', 'Application Form SEN Text', 'Text to appear with the Special Educational Needs section of the student application form.', 'Please indicate whether or not your child has any known, or suspected, special educational needs, or whether they have been assessed for any such needs in the past. Provide any comments or information concerning your child\'s development that may be relevant to your child\'s performance in the classroom or elsewhere? Incorrect or withheld information may affect continued enrolment.'),
+(00209, 'Students', 'applicationFormRefereeLink', 'Application Form Referee Link', 'Link to an external form that will be emailed to a referee of the applicant\'s choosing.', ''),
 (00210, 'User Admin', 'religions', 'Religions', 'Comma-separated list of ethnicities available in system', ',Nonreligious/Agnostic/Atheist,Buddhism,Christianity,Hinduism,Islam,Judaism,Other'),
-(00211, 'Staff', 'applicationFormRefereeLink', 'Application Form Referee Link', 'Link to an external form that will be emailed to a referee of the applicant''s choosing.', ''),
+(00211, 'Staff', 'applicationFormRefereeLink', 'Application Form Referee Link', 'Link to an external form that will be emailed to a referee of the applicant\'s choosing.', ''),
 (00212, 'Markbook', 'enableRawAttainment', 'Enable Raw Attainment Marks', 'Should recording of raw marks be enabled in the Markbook?', 'N'),
 (00213, 'Markbook', 'enableGroupByTerm', 'Group Columns by Term', 'Should columns and total scores be grouped by term?', 'N'),
 (00214, 'Markbook', 'enableEffort', 'Enable Effort', 'Should columns have the Effort section enabled?', 'Y'),
@@ -4338,16 +4379,25 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00250, 'Attendance', 'prefillPerson', 'Pre-Fill Person Attendance', 'Should Attendance by Person be pre-filled with data available from other contexts?', 'N'),
 (00251, 'Attendance', 'defaultRollGroupAttendanceType', 'Default Roll Group Attendance Type', 'The default selection for attendance type when taking Roll Group attendance', 'Present'),
 (00252, 'Attendance', 'defaultClassAttendanceType', 'Default Class Attendance Type', 'The default selection for attendance type when taking Class attendance', 'Present'),
-(00253, 'Students', 'academicAlertLowThreshold', 'Low Academic Alert Threshold', 'The number of Markbook concerns needed in the current year to raise a low level academic alert on a student.', '3'),
-(00254, 'Students', 'academicAlertMediumThreshold', 'Medium Academic Alert Threshold', 'The number of Markbook concerns needed in the current year to raise a medium level academic alert on a student.', '5'),
-(00255, 'Students', 'academicAlertHighThreshold', 'High Academic Alert Threshold', 'The number of Markbook concerns needed in the current year to raise a high level academic alert on a student.', '9'),
+(00253, 'Students', 'academicAlertLowThreshold', 'Low Academic Alert Threshold', 'The number of Markbook concerns needed in the past 60 days to raise a low level academic alert on a student.', '3'),
+(00254, 'Students', 'academicAlertMediumThreshold', 'Medium Academic Alert Threshold', 'The number of Markbook concerns needed in the past 60 days to raise a medium level academic alert on a student.', '5'),
+(00255, 'Students', 'academicAlertHighThreshold', 'High Academic Alert Threshold', 'The number of Markbook concerns needed in the past 60 days to raise a high level academic alert on a student.', '9'),
 (00256, 'Students', 'behaviourAlertLowThreshold', 'Low Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a low level alert on a student.', '3'),
 (00257, 'Students', 'behaviourAlertMediumThreshold', 'Medium Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a medium level alert on a student.', '5'),
 (00258, 'Students', 'behaviourAlertHighThreshold', 'High Behaviour Alert Threshold', 'The number of Behaviour concerns needed in the past 60 days to raise a high level alert on a student.', '9'),
 (00259, 'Markbook', 'enableDisplayCumulativeMarks', 'Enable Display Cumulative Marks', 'Should cumulative marks be displayed on the View Markbook page for Students and Parents and in Student Profiles?', 'N'),
 (00260, 'Application Form', 'scholarshipOptionsActive', 'Scholarship Options Active', 'Should the Scholarship Options section be turned on?', 'Y'),
 (00261, 'Application Form', 'paymentOptionsActive', 'Payment Options Active', 'Should the Payment section be turned on?', 'Y'),
-(00262, 'Application Form', 'senOptionsActive', 'Special Education Needs Active', 'Should the Special Education Needs section be turned on?', 'Y');
+(00262, 'Application Form', 'senOptionsActive', 'Special Education Needs Active', 'Should the Special Education Needs section be turned on?', 'Y'),
+(00263, 'Timetable Admin', 'autoEnrolCourses', 'Auto-Enrol Courses Default', 'Should auto-enrolment of new students into courses be turned on or off by default?', 'N'),
+(00264, 'Application Form', 'availableYearsOfEntry', 'Available Years of Entry', 'Which school years should be available to apply to?', ''),
+(00265, 'Application Form', 'enableLimitedYearsOfEntry', 'Enable Limited Years of Entry', 'If yes, applicants choices for Year of Entry can be limited to specific school years.', 'N'),
+(00266, 'User Admin', 'uniqueEmailAddress', 'Unique Email Address', 'Are primary email addresses required to be unique?', 'N'),
+(00267, 'Planner', 'parentWeeklyEmailSummaryIncludeMarkbook', 'Parent Weekly Email Summary Include Markbook', 'Should Markbook information be included in the weekly planner email summary that goes out to parents?', 'N'),
+(00268, 'System', 'nameFormatStaffFormal', 'Formal Name Format', '', '[title] [preferredName:1]. [surname]'),
+(00269, 'System', 'nameFormatStaffFormalReversed', 'Formal Name Reversed', '', '[title] [surname], [preferredName:1].'),
+(00270, 'System', 'nameFormatStaffInformal', 'Informal Name Format', '', '[preferredName] [surname]'),
+(00271, 'System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');
 
 -- --------------------------------------------------------
 
@@ -4356,7 +4406,7 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 --
 
 CREATE TABLE `gibbonSpace` (
-  `gibbonSpaceID` int(10) unsigned zerofill NOT NULL,
+  `gibbonSpaceID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `type` varchar(50) NOT NULL,
   `capacity` int(5) NOT NULL,
@@ -4380,9 +4430,9 @@ CREATE TABLE `gibbonSpace` (
 --
 
 CREATE TABLE `gibbonSpacePerson` (
-  `gibbonSpacePersonID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSpaceID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonSpacePersonID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSpaceID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `usageType` enum('','Teaching','Office','Other') COLLATE utf8_unicode_ci DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -4393,8 +4443,8 @@ CREATE TABLE `gibbonSpacePerson` (
 --
 
 CREATE TABLE `gibbonStaff` (
-  `gibbonStaffID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `gibbonStaffID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `type` varchar(20) NOT NULL,
   `initials` varchar(4) DEFAULT NULL,
   `jobTitle` varchar(100) NOT NULL,
@@ -4415,9 +4465,9 @@ CREATE TABLE `gibbonStaff` (
 --
 
 CREATE TABLE `gibbonStaffApplicationForm` (
-  `gibbonStaffApplicationFormID` int(12) unsigned zerofill NOT NULL,
-  `gibbonStaffJobOpeningID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill DEFAULT NULL,
+  `gibbonStaffApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonStaffJobOpeningID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `surname` varchar(30) DEFAULT NULL,
   `firstName` varchar(30) DEFAULT NULL,
   `preferredName` varchar(30) DEFAULT NULL,
@@ -4461,8 +4511,8 @@ CREATE TABLE `gibbonStaffApplicationForm` (
 --
 
 CREATE TABLE `gibbonStaffApplicationFormFile` (
-  `gibbonStaffApplicationFormFileID` int(14) unsigned zerofill NOT NULL,
-  `gibbonStaffApplicationFormID` int(12) unsigned zerofill NOT NULL,
+  `gibbonStaffApplicationFormFileID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonStaffApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -4474,8 +4524,8 @@ CREATE TABLE `gibbonStaffApplicationFormFile` (
 --
 
 CREATE TABLE `gibbonStaffContract` (
-  `gibbonStaffContractID` int(12) unsigned zerofill NOT NULL,
-  `gibbonStaffID` int(10) unsigned zerofill NOT NULL,
+  `gibbonStaffContractID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonStaffID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(100) NOT NULL,
   `status` enum('','Pending','Active','Expired') NOT NULL DEFAULT '',
   `dateStart` date NOT NULL,
@@ -4497,7 +4547,7 @@ CREATE TABLE `gibbonStaffContract` (
   `education` text NOT NULL,
   `notes` text NOT NULL,
   `contractUpload` varchar(255) DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4508,13 +4558,13 @@ CREATE TABLE `gibbonStaffContract` (
 --
 
 CREATE TABLE `gibbonStaffJobOpening` (
-  `gibbonStaffJobOpeningID` int(10) unsigned zerofill NOT NULL,
+  `gibbonStaffJobOpeningID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `type` varchar(20) NOT NULL,
   `jobTitle` varchar(100) NOT NULL,
   `dateOpen` date NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `description` text NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4525,7 +4575,7 @@ CREATE TABLE `gibbonStaffJobOpening` (
 --
 
 CREATE TABLE `gibbonString` (
-  `gibbonStringID` int(8) unsigned zerofill NOT NULL,
+  `gibbonStringID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `original` varchar(100) NOT NULL,
   `replacement` varchar(100) NOT NULL,
   `mode` enum('Whole','Partial') NOT NULL,
@@ -4540,11 +4590,11 @@ CREATE TABLE `gibbonString` (
 --
 
 CREATE TABLE `gibbonStudentEnrolment` (
-  `gibbonStudentEnrolmentID` int(8) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
-  `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL,
-  `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL,
+  `gibbonStudentEnrolmentID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `rollOrder` int(2) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4555,12 +4605,12 @@ CREATE TABLE `gibbonStudentEnrolment` (
 --
 
 CREATE TABLE `gibbonStudentNote` (
-  `gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
-  `gibbonStudentNoteCategoryID` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonStudentNoteID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonStudentNoteCategoryID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `title` varchar(50) NOT NULL,
   `note` text NOT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4571,11 +4621,11 @@ CREATE TABLE `gibbonStudentNote` (
 --
 
 CREATE TABLE `gibbonStudentNoteCategory` (
-  `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL,
+  `gibbonStudentNoteCategoryID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `template` text NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonStudentNoteCategory`
@@ -4594,21 +4644,21 @@ INSERT INTO `gibbonStudentNoteCategory` (`gibbonStudentNoteCategoryID`, `name`, 
 --
 
 CREATE TABLE `gibbonTheme` (
-  `gibbonThemeID` int(4) unsigned zerofill NOT NULL,
+  `gibbonThemeID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `description` varchar(100) NOT NULL,
   `active` enum('N','Y') NOT NULL DEFAULT 'N',
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonTheme`
 --
 
 INSERT INTO `gibbonTheme` (`gibbonThemeID`, `name`, `description`, `active`, `version`, `author`, `url`) VALUES
-(0013, 'Default', 'Gibbon''s 2015 look and feel.', 'Y', '1.0.00', 'Ross Parker', 'http://rossparker.org');
+(0013, 'Default', 'Gibbon\'s 2015 look and feel.', 'Y', '1.0.00', 'Ross Parker', 'http://rossparker.org');
 
 -- --------------------------------------------------------
 
@@ -4617,8 +4667,8 @@ INSERT INTO `gibbonTheme` (`gibbonThemeID`, `name`, `description`, `active`, `ve
 --
 
 CREATE TABLE `gibbonTT` (
-  `gibbonTTID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL,
+  `gibbonTTID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(12) NOT NULL,
   `nameShortDisplay` enum('Day Of The Week','Timetable Day Short Name','','') NOT NULL DEFAULT 'Day Of The Week',
@@ -4633,7 +4683,7 @@ CREATE TABLE `gibbonTT` (
 --
 
 CREATE TABLE `gibbonTTColumn` (
-  `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
+  `gibbonTTColumnID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(12) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
@@ -4645,8 +4695,8 @@ CREATE TABLE `gibbonTTColumn` (
 --
 
 CREATE TABLE `gibbonTTColumnRow` (
-  `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL,
-  `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
+  `gibbonTTColumnRowID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTColumnID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(12) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `timeStart` time NOT NULL,
@@ -4661,11 +4711,13 @@ CREATE TABLE `gibbonTTColumnRow` (
 --
 
 CREATE TABLE `gibbonTTDay` (
-  `gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
-  `gibbonTTID` int(8) unsigned zerofill NOT NULL,
-  `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL,
+  `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTColumnID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(12) NOT NULL,
-  `nameShort` varchar(4) NOT NULL
+  `nameShort` varchar(4) NOT NULL,
+  `color` varchar(6) NOT NULL,
+  `fontColor` varchar(6) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4675,8 +4727,8 @@ CREATE TABLE `gibbonTTDay` (
 --
 
 CREATE TABLE `gibbonTTDayDate` (
-  `gibbonTTDayDateID` int(10) unsigned zerofill NOT NULL,
-  `gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
+  `gibbonTTDayDateID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4687,11 +4739,11 @@ CREATE TABLE `gibbonTTDayDate` (
 --
 
 CREATE TABLE `gibbonTTDayRowClass` (
-  `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL,
-  `gibbonTTDayID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL
+  `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTColumnRowID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4701,9 +4753,9 @@ CREATE TABLE `gibbonTTDayRowClass` (
 --
 
 CREATE TABLE `gibbonTTDayRowClassException` (
-  `gibbonTTDayRowClassExceptionID` int(14) unsigned zerofill NOT NULL,
-  `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL
+  `gibbonTTDayRowClassExceptionID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4713,7 +4765,7 @@ CREATE TABLE `gibbonTTDayRowClassException` (
 --
 
 CREATE TABLE `gibbonTTImport` (
-  `gibbonTTImportID` int(14) unsigned zerofill NOT NULL,
+  `gibbonTTImportID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `courseNameShort` varchar(6) NOT NULL,
   `classNameShort` varchar(5) NOT NULL,
   `dayName` varchar(12) NOT NULL,
@@ -4729,10 +4781,10 @@ CREATE TABLE `gibbonTTImport` (
 --
 
 CREATE TABLE `gibbonTTSpaceBooking` (
-  `gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL,
+  `gibbonTTSpaceBookingID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `foreignKey` enum('gibbonSpaceID','gibbonLibraryItemID') NOT NULL DEFAULT 'gibbonSpaceID',
-  `foreignKeyID` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL,
+  `foreignKeyID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL
@@ -4745,11 +4797,11 @@ CREATE TABLE `gibbonTTSpaceBooking` (
 --
 
 CREATE TABLE `gibbonTTSpaceChange` (
-  `gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL,
-  `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonSpaceID` int(5) unsigned zerofill DEFAULT NULL,
+  `gibbonTTSpaceChangeID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `date` date NOT NULL,
-  `gibbonPersonID` int(12) unsigned zerofill NOT NULL
+  `gibbonPersonID` int(12) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4759,8 +4811,8 @@ CREATE TABLE `gibbonTTSpaceChange` (
 --
 
 CREATE TABLE `gibbonUnit` (
-  `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseID` int(8) unsigned zerofill NOT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(40) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `description` text NOT NULL,
@@ -4772,8 +4824,8 @@ CREATE TABLE `gibbonUnit` (
   `embeddable` enum('N','Y') NOT NULL DEFAULT 'N',
   `license` varchar(50) DEFAULT NULL,
   `sharedPublic` enum('Y','N') DEFAULT NULL,
-  `gibbonPersonIDCreator` int(10) unsigned zerofill NOT NULL,
-  `gibbonPersonIDLastEdit` int(10) unsigned zerofill NOT NULL
+  `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4783,8 +4835,8 @@ CREATE TABLE `gibbonUnit` (
 --
 
 CREATE TABLE `gibbonUnitBlock` (
-  `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,
-  `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
+  `gibbonUnitBlockID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(100) NOT NULL,
   `type` varchar(50) NOT NULL,
   `length` varchar(3) NOT NULL,
@@ -4801,9 +4853,9 @@ CREATE TABLE `gibbonUnitBlock` (
 --
 
 CREATE TABLE `gibbonUnitBlockStar` (
-  `gibbonUnitBlockStarID` int(14) unsigned zerofill NOT NULL,
-  `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPersonID` int(10) unsigned zerofill NOT NULL
+  `gibbonUnitBlockStarID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitBlockID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -4813,9 +4865,9 @@ CREATE TABLE `gibbonUnitBlockStar` (
 --
 
 CREATE TABLE `gibbonUnitClass` (
-  `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
-  `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL,
+  `gibbonUnitClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `running` enum('N','Y') NOT NULL DEFAULT 'N'
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
@@ -4826,10 +4878,10 @@ CREATE TABLE `gibbonUnitClass` (
 --
 
 CREATE TABLE `gibbonUnitClassBlock` (
-  `gibbonUnitClassBlockID` int(14) unsigned zerofill NOT NULL,
-  `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL,
-  `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL,
-  `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL,
+  `gibbonUnitClassBlockID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitBlockID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `title` varchar(100) NOT NULL,
   `type` varchar(50) NOT NULL,
   `length` varchar(3) NOT NULL,
@@ -4847,12 +4899,37 @@ CREATE TABLE `gibbonUnitClassBlock` (
 --
 
 CREATE TABLE `gibbonUnitOutcome` (
-  `gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL,
-  `gibbonUnitID` int(10) unsigned zerofill NOT NULL,
-  `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL,
+  `gibbonUnitOutcomeID` int(12) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `content` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `gibbonUsernameFormat`
+--
+
+CREATE TABLE `gibbonUsernameFormat` (
+  `gibbonUsernameFormatID` int(3) UNSIGNED ZEROFILL NOT NULL,
+  `gibbonRoleIDList` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `format` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `isDefault` enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `isNumeric` enum('Y','N') COLLATE utf8_unicode_ci NOT NULL DEFAULT 'N',
+  `numericValue` int(12) UNSIGNED NOT NULL DEFAULT '0',
+  `numericIncrement` int(3) UNSIGNED NOT NULL DEFAULT '1',
+  `numericSize` int(3) UNSIGNED NOT NULL DEFAULT '4'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- Dumping data for table `gibbonUsernameFormat`
+--
+
+INSERT INTO `gibbonUsernameFormat` (`gibbonUsernameFormatID`, `gibbonRoleIDList`, `format`, `isDefault`, `isNumeric`, `numericValue`, `numericIncrement`, `numericSize`) VALUES
+(001, '003', '[preferredName:1][surname]', 'Y', 'N', 0, 1, 4),
+(002, '001,002,006', '[preferredName:1].[surname]', 'N', 'N', 0, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -4861,11 +4938,11 @@ CREATE TABLE `gibbonUnitOutcome` (
 --
 
 CREATE TABLE `gibbonYearGroup` (
-  `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL,
+  `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonYearGroup`
@@ -5022,6 +5099,13 @@ ALTER TABLE `gibbonCourse`
 ALTER TABLE `gibbonCourseClass`
   ADD PRIMARY KEY (`gibbonCourseClassID`),
   ADD KEY `gibbonCourseID` (`gibbonCourseID`);
+
+--
+-- Indexes for table `gibbonCourseClassMap`
+--
+ALTER TABLE `gibbonCourseClassMap`
+  ADD PRIMARY KEY (`gibbonCourseClassMapID`),
+  ADD UNIQUE KEY `gibbonCourseClassID` (`gibbonCourseClassID`);
 
 --
 -- Indexes for table `gibbonCourseClassPerson`
@@ -5263,6 +5347,12 @@ ALTER TABLE `gibbonINArchive`
   ADD PRIMARY KEY (`gibbonINArchiveID`);
 
 --
+-- Indexes for table `gibbonINAssistant`
+--
+ALTER TABLE `gibbonINAssistant`
+  ADD PRIMARY KEY (`gibbonINAssistantID`);
+
+--
 -- Indexes for table `gibbonINDescriptor`
 --
 ALTER TABLE `gibbonINDescriptor`
@@ -5297,8 +5387,8 @@ ALTER TABLE `gibbonLanguage`
 --
 ALTER TABLE `gibbonLibraryItem`
   ADD PRIMARY KEY (`gibbonLibraryItemID`),
-  ADD UNIQUE KEY `id` (`id`),
-  ADD FULLTEXT KEY `fields` (`fields`);
+  ADD UNIQUE KEY `id` (`id`);
+ALTER TABLE `gibbonLibraryItem` ADD FULLTEXT KEY `fields` (`fields`);
 
 --
 -- Indexes for table `gibbonLibraryItemEvent`
@@ -5310,8 +5400,8 @@ ALTER TABLE `gibbonLibraryItemEvent`
 -- Indexes for table `gibbonLibraryType`
 --
 ALTER TABLE `gibbonLibraryType`
-  ADD PRIMARY KEY (`gibbonLibraryTypeID`),
-  ADD FULLTEXT KEY `fields` (`fields`);
+  ADD PRIMARY KEY (`gibbonLibraryTypeID`);
+ALTER TABLE `gibbonLibraryType` ADD FULLTEXT KEY `fields` (`fields`);
 
 --
 -- Indexes for table `gibbonLike`
@@ -5333,7 +5423,9 @@ ALTER TABLE `gibbonLog`
 --
 ALTER TABLE `gibbonMarkbookColumn`
   ADD PRIMARY KEY (`gibbonMarkbookColumnID`),
-  ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`);
+  ADD KEY `gibbonCourseClassID` (`gibbonCourseClassID`),
+  ADD KEY `completeDate` (`completeDate`),
+  ADD KEY `complete` (`complete`);
 
 --
 -- Indexes for table `gibbonMarkbookEntry`
@@ -5580,25 +5672,35 @@ ALTER TABLE `gibbonRubric`
 -- Indexes for table `gibbonRubricCell`
 --
 ALTER TABLE `gibbonRubricCell`
-  ADD PRIMARY KEY (`gibbonRubricCellID`);
+  ADD PRIMARY KEY (`gibbonRubricCellID`),
+  ADD KEY `gibbonRubricID` (`gibbonRubricID`),
+  ADD KEY `gibbonRubricColumnID` (`gibbonRubricColumnID`),
+  ADD KEY `gibbonRubricRowID` (`gibbonRubricRowID`);
 
 --
 -- Indexes for table `gibbonRubricColumn`
 --
 ALTER TABLE `gibbonRubricColumn`
-  ADD PRIMARY KEY (`gibbonRubricColumnID`);
+  ADD PRIMARY KEY (`gibbonRubricColumnID`),
+  ADD KEY `gibbonRubricID` (`gibbonRubricID`);
 
 --
 -- Indexes for table `gibbonRubricEntry`
 --
 ALTER TABLE `gibbonRubricEntry`
-  ADD PRIMARY KEY (`gibbonRubricEntry`);
+  ADD PRIMARY KEY (`gibbonRubricEntry`),
+  ADD KEY `gibbonRubricID` (`gibbonRubricID`),
+  ADD KEY `gibbonPersonID` (`gibbonPersonID`),
+  ADD KEY `gibbonRubricCellID` (`gibbonRubricCellID`),
+  ADD KEY `contextDBTable` (`contextDBTable`),
+  ADD KEY `contextDBTableID` (`contextDBTableID`);
 
 --
 -- Indexes for table `gibbonRubricRow`
 --
 ALTER TABLE `gibbonRubricRow`
-  ADD PRIMARY KEY (`gibbonRubricRowID`);
+  ADD PRIMARY KEY (`gibbonRubricRowID`),
+  ADD KEY `gibbonRubricID` (`gibbonRubricID`);
 
 --
 -- Indexes for table `gibbonScale`
@@ -5824,6 +5926,12 @@ ALTER TABLE `gibbonUnitOutcome`
   ADD PRIMARY KEY (`gibbonUnitOutcomeID`);
 
 --
+-- Indexes for table `gibbonUsernameFormat`
+--
+ALTER TABLE `gibbonUsernameFormat`
+  ADD PRIMARY KEY (`gibbonUsernameFormatID`);
+
+--
 -- Indexes for table `gibbonYearGroup`
 --
 ALTER TABLE `gibbonYearGroup`
@@ -5838,727 +5946,742 @@ ALTER TABLE `gibbonYearGroup`
 -- AUTO_INCREMENT for table `gibbonAction`
 --
 ALTER TABLE `gibbonAction`
-  MODIFY `gibbonActionID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=899;
+  MODIFY `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=901;
 --
 -- AUTO_INCREMENT for table `gibbonActivity`
 --
 ALTER TABLE `gibbonActivity`
-  MODIFY `gibbonActivityID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonActivityAttendance`
 --
 ALTER TABLE `gibbonActivityAttendance`
-  MODIFY `gibbonActivityAttendanceID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonActivityAttendanceID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonActivitySlot`
 --
 ALTER TABLE `gibbonActivitySlot`
-  MODIFY `gibbonActivitySlotID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonActivitySlotID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonActivityStaff`
 --
 ALTER TABLE `gibbonActivityStaff`
-  MODIFY `gibbonActivityStaffID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonActivityStaffID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonActivityStudent`
 --
 ALTER TABLE `gibbonActivityStudent`
-  MODIFY `gibbonActivityStudentID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonActivityStudentID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAlarm`
 --
 ALTER TABLE `gibbonAlarm`
-  MODIFY `gibbonAlarmID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonAlarmID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAlarmConfirm`
 --
 ALTER TABLE `gibbonAlarmConfirm`
-  MODIFY `gibbonAlarmConfirmID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonAlarmConfirmID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAlertLevel`
 --
 ALTER TABLE `gibbonAlertLevel`
-  MODIFY `gibbonAlertLevelID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+  MODIFY `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `gibbonApplicationForm`
 --
 ALTER TABLE `gibbonApplicationForm`
-  MODIFY `gibbonApplicationFormID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonApplicationFormFile`
 --
 ALTER TABLE `gibbonApplicationFormFile`
-  MODIFY `gibbonApplicationFormFileID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonApplicationFormFileID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonApplicationFormLink`
 --
 ALTER TABLE `gibbonApplicationFormLink`
-  MODIFY `gibbonApplicationFormLinkID` int(12) unsigned NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonApplicationFormLinkID` int(12) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonApplicationFormRelationship`
 --
 ALTER TABLE `gibbonApplicationFormRelationship`
-  MODIFY `gibbonApplicationFormRelationshipID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonApplicationFormRelationshipID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAttendanceCode`
 --
 ALTER TABLE `gibbonAttendanceCode`
-  MODIFY `gibbonAttendanceCodeID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
+  MODIFY `gibbonAttendanceCodeID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `gibbonAttendanceLogCourseClass`
 --
 ALTER TABLE `gibbonAttendanceLogCourseClass`
-  MODIFY `gibbonAttendanceLogCourseClassID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonAttendanceLogCourseClassID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAttendanceLogPerson`
 --
 ALTER TABLE `gibbonAttendanceLogPerson`
-  MODIFY `gibbonAttendanceLogPersonID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonAttendanceLogPersonID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonAttendanceLogRollGroup`
 --
 ALTER TABLE `gibbonAttendanceLogRollGroup`
-  MODIFY `gibbonAttendanceLogRollGroupID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonAttendanceLogRollGroupID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonBehaviour`
 --
 ALTER TABLE `gibbonBehaviour`
-  MODIFY `gibbonBehaviourID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonBehaviourID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonBehaviourLetter`
 --
 ALTER TABLE `gibbonBehaviourLetter`
-  MODIFY `gibbonBehaviourLetterID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonBehaviourLetterID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonCourse`
 --
 ALTER TABLE `gibbonCourse`
-  MODIFY `gibbonCourseID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonCourseID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonCourseClass`
 --
 ALTER TABLE `gibbonCourseClass`
-  MODIFY `gibbonCourseClassID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonCourseClassMap`
+--
+ALTER TABLE `gibbonCourseClassMap`
+  MODIFY `gibbonCourseClassMapID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonCourseClassPerson`
 --
 ALTER TABLE `gibbonCourseClassPerson`
-  MODIFY `gibbonCourseClassPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonCourseClassPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonCrowdAssessDiscuss`
 --
 ALTER TABLE `gibbonCrowdAssessDiscuss`
-  MODIFY `gibbonCrowdAssessDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonCrowdAssessDiscussID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonDaysOfWeek`
 --
 ALTER TABLE `gibbonDaysOfWeek`
-  MODIFY `gibbonDaysOfWeekID` int(2) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 --
 -- AUTO_INCREMENT for table `gibbonDepartment`
 --
 ALTER TABLE `gibbonDepartment`
-  MODIFY `gibbonDepartmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonDepartmentResource`
 --
 ALTER TABLE `gibbonDepartmentResource`
-  MODIFY `gibbonDepartmentResourceID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonDepartmentResourceID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonDepartmentStaff`
 --
 ALTER TABLE `gibbonDepartmentStaff`
-  MODIFY `gibbonDepartmentStaffID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonDepartmentStaffID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonDistrict`
 --
 ALTER TABLE `gibbonDistrict`
-  MODIFY `gibbonDistrictID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonDistrictID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessment`
 --
 ALTER TABLE `gibbonExternalAssessment`
-  MODIFY `gibbonExternalAssessmentID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+  MODIFY `gibbonExternalAssessmentID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessmentField`
 --
 ALTER TABLE `gibbonExternalAssessmentField`
-  MODIFY `gibbonExternalAssessmentFieldID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=133;
+  MODIFY `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=133;
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessmentStudent`
 --
 ALTER TABLE `gibbonExternalAssessmentStudent`
-  MODIFY `gibbonExternalAssessmentStudentID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonExternalAssessmentStudentID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonExternalAssessmentStudentEntry`
 --
 ALTER TABLE `gibbonExternalAssessmentStudentEntry`
-  MODIFY `gibbonExternalAssessmentStudentEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonExternalAssessmentStudentEntryID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFamily`
 --
 ALTER TABLE `gibbonFamily`
-  MODIFY `gibbonFamilyID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFamilyAdult`
 --
 ALTER TABLE `gibbonFamilyAdult`
-  MODIFY `gibbonFamilyAdultID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFamilyAdultID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFamilyChild`
 --
 ALTER TABLE `gibbonFamilyChild`
-  MODIFY `gibbonFamilyChildID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFamilyChildID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFamilyRelationship`
 --
 ALTER TABLE `gibbonFamilyRelationship`
-  MODIFY `gibbonFamilyRelationshipID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFamilyRelationshipID` int(9) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFamilyUpdate`
 --
 ALTER TABLE `gibbonFamilyUpdate`
-  MODIFY `gibbonFamilyUpdateID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFamilyUpdateID` int(9) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFileExtension`
 --
 ALTER TABLE `gibbonFileExtension`
-  MODIFY `gibbonFileExtensionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=48;
+  MODIFY `gibbonFileExtensionID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=48;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBillingSchedule`
 --
 ALTER TABLE `gibbonFinanceBillingSchedule`
-  MODIFY `gibbonFinanceBillingScheduleID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceBillingScheduleID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBudget`
 --
 ALTER TABLE `gibbonFinanceBudget`
-  MODIFY `gibbonFinanceBudgetID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceBudgetID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBudgetCycle`
 --
 ALTER TABLE `gibbonFinanceBudgetCycle`
-  MODIFY `gibbonFinanceBudgetCycleID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceBudgetCycleID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBudgetCycleAllocation`
 --
 ALTER TABLE `gibbonFinanceBudgetCycleAllocation`
-  MODIFY `gibbonFinanceBudgetCycleAllocationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceBudgetCycleAllocationID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceBudgetPerson`
 --
 ALTER TABLE `gibbonFinanceBudgetPerson`
-  MODIFY `gibbonFinanceBudgetPersonID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceBudgetPersonID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceExpense`
 --
 ALTER TABLE `gibbonFinanceExpense`
-  MODIFY `gibbonFinanceExpenseID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceExpenseID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceExpenseApprover`
 --
 ALTER TABLE `gibbonFinanceExpenseApprover`
-  MODIFY `gibbonFinanceExpenseApproverID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceExpenseApproverID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceExpenseLog`
 --
 ALTER TABLE `gibbonFinanceExpenseLog`
-  MODIFY `gibbonFinanceExpenseLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceExpenseLogID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceFee`
 --
 ALTER TABLE `gibbonFinanceFee`
-  MODIFY `gibbonFinanceFeeID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceFeeID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceFeeCategory`
 --
 ALTER TABLE `gibbonFinanceFeeCategory`
-  MODIFY `gibbonFinanceFeeCategoryID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceFeeCategoryID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceInvoice`
 --
 ALTER TABLE `gibbonFinanceInvoice`
-  MODIFY `gibbonFinanceInvoiceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceInvoicee`
 --
 ALTER TABLE `gibbonFinanceInvoicee`
-  MODIFY `gibbonFinanceInvoiceeID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceInvoiceeID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceInvoiceeUpdate`
 --
 ALTER TABLE `gibbonFinanceInvoiceeUpdate`
-  MODIFY `gibbonFinanceInvoiceeUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceInvoiceeUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFinanceInvoiceFee`
 --
 ALTER TABLE `gibbonFinanceInvoiceFee`
-  MODIFY `gibbonFinanceInvoiceFeeID` int(15) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFinanceInvoiceFeeID` int(15) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonFirstAid`
 --
 ALTER TABLE `gibbonFirstAid`
-  MODIFY `gibbonFirstAidID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonFirstAidID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonHook`
 --
 ALTER TABLE `gibbonHook`
-  MODIFY `gibbonHookID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+  MODIFY `gibbonHookID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT for table `gibbonHouse`
 --
 ALTER TABLE `gibbonHouse`
-  MODIFY `gibbonHouseID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonHouseID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibboni18n`
 --
 ALTER TABLE `gibboni18n`
-  MODIFY `gibboni18nID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=36;
+  MODIFY `gibboni18nID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 --
 -- AUTO_INCREMENT for table `gibbonIN`
 --
 ALTER TABLE `gibbonIN`
-  MODIFY `gibbonINID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonINID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonINArchive`
 --
 ALTER TABLE `gibbonINArchive`
-  MODIFY `gibbonINArchiveID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonINArchiveID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonINAssistant`
+--
+ALTER TABLE `gibbonINAssistant`
+  MODIFY `gibbonINAssistantID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonINDescriptor`
 --
 ALTER TABLE `gibbonINDescriptor`
-  MODIFY `gibbonINDescriptorID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+  MODIFY `gibbonINDescriptorID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- AUTO_INCREMENT for table `gibbonINPersonDescriptor`
 --
 ALTER TABLE `gibbonINPersonDescriptor`
-  MODIFY `gibbonINPersonDescriptorID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonINPersonDescriptorID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonInternalAssessmentColumn`
 --
 ALTER TABLE `gibbonInternalAssessmentColumn`
-  MODIFY `gibbonInternalAssessmentColumnID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonInternalAssessmentColumnID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonInternalAssessmentEntry`
 --
 ALTER TABLE `gibbonInternalAssessmentEntry`
-  MODIFY `gibbonInternalAssessmentEntryID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonInternalAssessmentEntryID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonLanguage`
 --
 ALTER TABLE `gibbonLanguage`
-  MODIFY `gibbonLanguageID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=78;
+  MODIFY `gibbonLanguageID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 --
 -- AUTO_INCREMENT for table `gibbonLibraryItem`
 --
 ALTER TABLE `gibbonLibraryItem`
-  MODIFY `gibbonLibraryItemID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonLibraryItemID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonLibraryItemEvent`
 --
 ALTER TABLE `gibbonLibraryItemEvent`
-  MODIFY `gibbonLibraryItemEventID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonLibraryItemEventID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonLibraryType`
 --
 ALTER TABLE `gibbonLibraryType`
-  MODIFY `gibbonLibraryTypeID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=12;
+  MODIFY `gibbonLibraryTypeID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 --
 -- AUTO_INCREMENT for table `gibbonLike`
 --
 ALTER TABLE `gibbonLike`
-  MODIFY `gibbonLikeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonLikeID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonLog`
 --
 ALTER TABLE `gibbonLog`
-  MODIFY `gibbonLogID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonLogID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMarkbookColumn`
 --
 ALTER TABLE `gibbonMarkbookColumn`
-  MODIFY `gibbonMarkbookColumnID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMarkbookColumnID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMarkbookEntry`
 --
 ALTER TABLE `gibbonMarkbookEntry`
-  MODIFY `gibbonMarkbookEntryID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMarkbookEntryID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMarkbookTarget`
 --
 ALTER TABLE `gibbonMarkbookTarget`
-  MODIFY `gibbonMarkbookTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMarkbookTargetID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMarkbookWeight`
 --
 ALTER TABLE `gibbonMarkbookWeight`
-  MODIFY `gibbonMarkbookWeightID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMarkbookWeightID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMedicalCondition`
 --
 ALTER TABLE `gibbonMedicalCondition`
-  MODIFY `gibbonMedicalConditionID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
+  MODIFY `gibbonMedicalConditionID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `gibbonMessenger`
 --
 ALTER TABLE `gibbonMessenger`
-  MODIFY `gibbonMessengerID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMessengerID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMessengerCannedResponse`
 --
 ALTER TABLE `gibbonMessengerCannedResponse`
-  MODIFY `gibbonMessengerCannedResponseID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMessengerCannedResponseID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMessengerReceipt`
 --
 ALTER TABLE `gibbonMessengerReceipt`
-  MODIFY `gibbonMessengerReceiptID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMessengerReceiptID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonMessengerTarget`
 --
 ALTER TABLE `gibbonMessengerTarget`
-  MODIFY `gibbonMessengerTargetID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonMessengerTargetID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonModule`
 --
 ALTER TABLE `gibbonModule`
-  MODIFY `gibbonModuleID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT 'This number is assigned at install, and is only unique to the installation',AUTO_INCREMENT=144;
+  MODIFY `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT COMMENT 'This number is assigned at install, and is only unique to the installation', AUTO_INCREMENT=144;
 --
 -- AUTO_INCREMENT for table `gibbonNotification`
 --
 ALTER TABLE `gibbonNotification`
-  MODIFY `gibbonNotificationID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonNotificationID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonNotificationEvent`
 --
 ALTER TABLE `gibbonNotificationEvent`
-  MODIFY `gibbonNotificationEventID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=22;
+  MODIFY `gibbonNotificationEventID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 --
 -- AUTO_INCREMENT for table `gibbonNotificationListener`
 --
 ALTER TABLE `gibbonNotificationListener`
-  MODIFY `gibbonNotificationListenerID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonNotificationListenerID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonOutcome`
 --
 ALTER TABLE `gibbonOutcome`
-  MODIFY `gibbonOutcomeID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPayment`
 --
 ALTER TABLE `gibbonPayment`
-  MODIFY `gibbonPaymentID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPaymentID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPermission`
 --
 ALTER TABLE `gibbonPermission`
-  MODIFY `permissionID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=53964;
+  MODIFY `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53966;
 --
 -- AUTO_INCREMENT for table `gibbonPerson`
 --
 ALTER TABLE `gibbonPerson`
-  MODIFY `gibbonPersonID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=1099;
+  MODIFY `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1099;
 --
 -- AUTO_INCREMENT for table `gibbonPersonField`
 --
 ALTER TABLE `gibbonPersonField`
-  MODIFY `gibbonPersonFieldID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonFieldID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonMedical`
 --
 ALTER TABLE `gibbonPersonMedical`
-  MODIFY `gibbonPersonMedicalID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonMedicalID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonMedicalCondition`
 --
 ALTER TABLE `gibbonPersonMedicalCondition`
-  MODIFY `gibbonPersonMedicalConditionID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonMedicalConditionID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonMedicalConditionUpdate`
 --
 ALTER TABLE `gibbonPersonMedicalConditionUpdate`
-  MODIFY `gibbonPersonMedicalConditionUpdateID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonMedicalConditionUpdateID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonMedicalSymptoms`
 --
 ALTER TABLE `gibbonPersonMedicalSymptoms`
-  MODIFY `gibbonPersonMedicalSymptomsID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonMedicalSymptomsID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonMedicalUpdate`
 --
 ALTER TABLE `gibbonPersonMedicalUpdate`
-  MODIFY `gibbonPersonMedicalUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonMedicalUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonReset`
 --
 ALTER TABLE `gibbonPersonReset`
-  MODIFY `gibbonPersonResetID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonResetID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPersonUpdate`
 --
 ALTER TABLE `gibbonPersonUpdate`
-  MODIFY `gibbonPersonUpdateID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPersonUpdateID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntry`
 --
 ALTER TABLE `gibbonPlannerEntry`
-  MODIFY `gibbonPlannerEntryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryDiscuss`
 --
 ALTER TABLE `gibbonPlannerEntryDiscuss`
-  MODIFY `gibbonPlannerEntryDiscussID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryDiscussID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryGuest`
 --
 ALTER TABLE `gibbonPlannerEntryGuest`
-  MODIFY `gibbonPlannerEntryGuestID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryGuestID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryHomework`
 --
 ALTER TABLE `gibbonPlannerEntryHomework`
-  MODIFY `gibbonPlannerEntryHomeworkID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryHomeworkID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryOutcome`
 --
 ALTER TABLE `gibbonPlannerEntryOutcome`
-  MODIFY `gibbonPlannerEntryOutcomeID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryOutcomeID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryStudentHomework`
 --
 ALTER TABLE `gibbonPlannerEntryStudentHomework`
-  MODIFY `gibbonPlannerEntryStudentHomeworkID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryStudentHomeworkID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerEntryStudentTracker`
 --
 ALTER TABLE `gibbonPlannerEntryStudentTracker`
-  MODIFY `gibbonPlannerEntryStudentTrackerID` int(16) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerEntryStudentTrackerID` int(16) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonPlannerParentWeeklyEmailSummary`
 --
 ALTER TABLE `gibbonPlannerParentWeeklyEmailSummary`
-  MODIFY `gibbonPlannerParentWeeklyEmailSummaryID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonPlannerParentWeeklyEmailSummaryID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonResource`
 --
 ALTER TABLE `gibbonResource`
-  MODIFY `gibbonResourceID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonResourceID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonResourceTag`
 --
 ALTER TABLE `gibbonResourceTag`
-  MODIFY `gibbonResourceTagID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonResourceTagID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRole`
 --
 ALTER TABLE `gibbonRole`
-  MODIFY `gibbonRoleID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=30;
+  MODIFY `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 --
 -- AUTO_INCREMENT for table `gibbonRollGroup`
 --
 ALTER TABLE `gibbonRollGroup`
-  MODIFY `gibbonRollGroupID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRubric`
 --
 ALTER TABLE `gibbonRubric`
-  MODIFY `gibbonRubricID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRubricID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRubricCell`
 --
 ALTER TABLE `gibbonRubricCell`
-  MODIFY `gibbonRubricCellID` int(11) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRubricCellID` int(11) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRubricColumn`
 --
 ALTER TABLE `gibbonRubricColumn`
-  MODIFY `gibbonRubricColumnID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRubricColumnID` int(9) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRubricEntry`
 --
 ALTER TABLE `gibbonRubricEntry`
-  MODIFY `gibbonRubricEntry` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRubricEntry` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonRubricRow`
 --
 ALTER TABLE `gibbonRubricRow`
-  MODIFY `gibbonRubricRowID` int(9) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonRubricRowID` int(9) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonScale`
 --
 ALTER TABLE `gibbonScale`
-  MODIFY `gibbonScaleID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=16;
+  MODIFY `gibbonScaleID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 --
 -- AUTO_INCREMENT for table `gibbonScaleGrade`
 --
 ALTER TABLE `gibbonScaleGrade`
-  MODIFY `gibbonScaleGradeID` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=331;
+  MODIFY `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=331;
 --
 -- AUTO_INCREMENT for table `gibbonSchoolYear`
 --
 ALTER TABLE `gibbonSchoolYear`
-  MODIFY `gibbonSchoolYearID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=25;
+  MODIFY `gibbonSchoolYearID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 --
 -- AUTO_INCREMENT for table `gibbonSchoolYearSpecialDay`
 --
 ALTER TABLE `gibbonSchoolYearSpecialDay`
-  MODIFY `gibbonSchoolYearSpecialDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonSchoolYearSpecialDayID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonSchoolYearTerm`
 --
 ALTER TABLE `gibbonSchoolYearTerm`
-  MODIFY `gibbonSchoolYearTermID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=28;
+  MODIFY `gibbonSchoolYearTermID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 --
 -- AUTO_INCREMENT for table `gibbonSetting`
 --
 ALTER TABLE `gibbonSetting`
-  MODIFY `gibbonSettingID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=263;
+  MODIFY `gibbonSettingID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=272;
 --
 -- AUTO_INCREMENT for table `gibbonSpace`
 --
 ALTER TABLE `gibbonSpace`
-  MODIFY `gibbonSpaceID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonSpaceID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonSpacePerson`
 --
 ALTER TABLE `gibbonSpacePerson`
-  MODIFY `gibbonSpacePersonID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonSpacePersonID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStaff`
 --
 ALTER TABLE `gibbonStaff`
-  MODIFY `gibbonStaffID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStaffID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStaffApplicationForm`
 --
 ALTER TABLE `gibbonStaffApplicationForm`
-  MODIFY `gibbonStaffApplicationFormID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStaffApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStaffApplicationFormFile`
 --
 ALTER TABLE `gibbonStaffApplicationFormFile`
-  MODIFY `gibbonStaffApplicationFormFileID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStaffApplicationFormFileID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStaffContract`
 --
 ALTER TABLE `gibbonStaffContract`
-  MODIFY `gibbonStaffContractID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStaffContractID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStaffJobOpening`
 --
 ALTER TABLE `gibbonStaffJobOpening`
-  MODIFY `gibbonStaffJobOpeningID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStaffJobOpeningID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonString`
 --
 ALTER TABLE `gibbonString`
-  MODIFY `gibbonStringID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStringID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStudentEnrolment`
 --
 ALTER TABLE `gibbonStudentEnrolment`
-  MODIFY `gibbonStudentEnrolmentID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStudentEnrolmentID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStudentNote`
 --
 ALTER TABLE `gibbonStudentNote`
-  MODIFY `gibbonStudentNoteID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonStudentNoteID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonStudentNoteCategory`
 --
 ALTER TABLE `gibbonStudentNoteCategory`
-  MODIFY `gibbonStudentNoteCategoryID` int(5) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=11;
+  MODIFY `gibbonStudentNoteCategoryID` int(5) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 --
 -- AUTO_INCREMENT for table `gibbonTheme`
 --
 ALTER TABLE `gibbonTheme`
-  MODIFY `gibbonThemeID` int(4) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=14;
+  MODIFY `gibbonThemeID` int(4) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 --
 -- AUTO_INCREMENT for table `gibbonTT`
 --
 ALTER TABLE `gibbonTT`
-  MODIFY `gibbonTTID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTColumn`
 --
 ALTER TABLE `gibbonTTColumn`
-  MODIFY `gibbonTTColumnID` int(6) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTColumnID` int(6) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTColumnRow`
 --
 ALTER TABLE `gibbonTTColumnRow`
-  MODIFY `gibbonTTColumnRowID` int(8) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTColumnRowID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTDay`
 --
 ALTER TABLE `gibbonTTDay`
-  MODIFY `gibbonTTDayID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTDayDate`
 --
 ALTER TABLE `gibbonTTDayDate`
-  MODIFY `gibbonTTDayDateID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTDayDateID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTDayRowClass`
 --
 ALTER TABLE `gibbonTTDayRowClass`
-  MODIFY `gibbonTTDayRowClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTDayRowClassException`
 --
 ALTER TABLE `gibbonTTDayRowClassException`
-  MODIFY `gibbonTTDayRowClassExceptionID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTDayRowClassExceptionID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTImport`
 --
 ALTER TABLE `gibbonTTImport`
-  MODIFY `gibbonTTImportID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTImportID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTSpaceBooking`
 --
 ALTER TABLE `gibbonTTSpaceBooking`
-  MODIFY `gibbonTTSpaceBookingID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTSpaceBookingID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonTTSpaceChange`
 --
 ALTER TABLE `gibbonTTSpaceChange`
-  MODIFY `gibbonTTSpaceChangeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonTTSpaceChangeID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnit`
 --
 ALTER TABLE `gibbonUnit`
-  MODIFY `gibbonUnitID` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnitBlock`
 --
 ALTER TABLE `gibbonUnitBlock`
-  MODIFY `gibbonUnitBlockID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitBlockID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnitBlockStar`
 --
 ALTER TABLE `gibbonUnitBlockStar`
-  MODIFY `gibbonUnitBlockStarID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitBlockStarID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnitClass`
 --
 ALTER TABLE `gibbonUnitClass`
-  MODIFY `gibbonUnitClassID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitClassID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnitClassBlock`
 --
 ALTER TABLE `gibbonUnitClassBlock`
-  MODIFY `gibbonUnitClassBlockID` int(14) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitClassBlockID` int(14) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `gibbonUnitOutcome`
 --
 ALTER TABLE `gibbonUnitOutcome`
-  MODIFY `gibbonUnitOutcomeID` int(12) unsigned zerofill NOT NULL AUTO_INCREMENT;
+  MODIFY `gibbonUnitOutcomeID` int(12) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `gibbonUsernameFormat`
+--
+ALTER TABLE `gibbonUsernameFormat`
+  MODIFY `gibbonUsernameFormatID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `gibbonYearGroup`
 --
 ALTER TABLE `gibbonYearGroup`
-  MODIFY `gibbonYearGroupID` int(3) unsigned zerofill NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+  MODIFY `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

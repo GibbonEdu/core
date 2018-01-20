@@ -32,6 +32,9 @@ getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);
 
+$parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour');
+$parentWeeklyEmailSummaryIncludeMarkbook = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeMarkbook');
+
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code'])) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {
@@ -64,7 +67,7 @@ else {
             //Lock table
             $lock = true;
             try {
-                $sqlLock = 'LOCK TABLE gibbonBehaviour WRITE, gibbonCourse WRITE, gibbonCourse AS gibbonCourse2 WRITE, gibbonCourseClass WRITE, gibbonCourseClass AS gibbonCourseClass2 WRITE, gibbonCourseClassPerson WRITE, gibbonCourseClassPerson AS gibbonCourseClassPerson2 WRITE, gibbonFamily WRITE, gibbonFamilyAdult WRITE, gibbonFamilyChild WRITE, gibbonPerson WRITE, gibbonPlannerEntry WRITE, gibbonPlannerEntry AS gibbonPlannerEntry2 WRITE, gibbonPlannerEntryStudentHomework WRITE, gibbonPlannerParentWeeklyEmailSummary WRITE, gibbonRollGroup WRITE, gibbonStudentEnrolment WRITE';
+                $sqlLock = 'LOCK TABLE gibbonBehaviour READ, gibbonCourse READ, gibbonCourse AS gibbonCourse2 READ, gibbonCourseClass READ, gibbonCourseClass AS gibbonCourseClass2 READ, gibbonCourseClassPerson READ, gibbonCourseClassPerson AS gibbonCourseClassPerson2 READ, gibbonFamily READ, gibbonFamilyAdult READ, gibbonFamilyChild READ, gibbonPerson READ, gibbonPlannerEntry READ, gibbonPlannerEntry AS gibbonPlannerEntry2 READ, gibbonPlannerEntryStudentHomework READ, gibbonPlannerParentWeeklyEmailSummary WRITE, gibbonRollGroup READ, gibbonStudentEnrolment READ, gibbonMarkbookEntry READ, gibbonMarkbookColumn READ';
                 $resultLock = $connection2->query($sqlLock);
             } catch (PDOException $e) {
                 $lock = false;
@@ -116,7 +119,6 @@ else {
                         }
 
                         $behaviour = '';
-                        $parentWeeklyEmailSummaryIncludeBehaviour = getSettingByScope($connection2, 'Planner', 'parentWeeklyEmailSummaryIncludeBehaviour');
                         if ($parentWeeklyEmailSummaryIncludeBehaviour == 'Y') {
                             //Get behaviour records for the past week, ready for email
                             $behaviour .= '<h2>'.__($guid, 'Behaviour').'</h2>';
@@ -138,6 +140,40 @@ else {
                             $behaviour .= '<li>'.__($guid, 'Positive behaviour records this week').': '.$resultBehaviourPositive->rowCount().'</li>';
                             $behaviour .= '<li>'.__($guid, 'Negative behaviour records this week').': '.$resultBehaviourNegative->rowCount().'</li>';
                             $behaviour .= '</ul><br/>';
+                        }
+
+                        $markbook = '';
+                        if ($parentWeeklyEmailSummaryIncludeMarkbook == 'Y') {
+                            try {
+                                $dataMarkbook = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                                $sqlMarkbook = "
+                                    SELECT
+                                        CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS class,
+                                        gibbonMarkbookColumn.name
+                                    FROM
+                                        gibbonMarkbookEntry
+                                        JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
+                                        JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                                        JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
+                                        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookEntry.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
+                                    WHERE
+                                        gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                                        AND gibbonMarkbookEntry.gibbonPersonIDStudent=:gibbonPersonID
+                                        AND complete='Y'
+                                        AND completeDate >'".date('Y-m-d', strtotime('-1 week'))."'
+                                        AND completeDate <='".date('Y-m-d')."'";
+                                $resultMarkbook = $connection2->prepare($sqlMarkbook);
+                                $resultMarkbook->execute($dataMarkbook);
+                            } catch (PDOException $e) { }
+
+                            if ($resultMarkbook->rowCount() > 0) {
+                                $markbook .= '<h2>'.__($guid, 'Markbook').'</h2>';
+                                $markbook .= '<ul>';
+                                while ($rowMarkbook = $resultMarkbook->fetch()) {
+                                    $markbook .= '<li>'.$rowMarkbook['class'].' - '.$rowMarkbook['name'].'</li>';
+                                }
+                                $markbook .= '</ul>';
+                            }
                         }
 
                         //Get main form tutor email for reply-to
@@ -245,12 +281,12 @@ else {
                                                 }
                                                 $body .= $homework;
                                                 $body .= $behaviour;
+                                                $body .= $markbook;
                                                 $body .= sprintf(__($guid, 'Please %1$sclick here%2$s to confirm that you have received and read this summary email.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_parentWeeklyEmailSummaryConfirm.php&key=$key&gibbonPersonIDStudent=".$row['gibbonPersonID'].'&gibbonPersonIDParent='.$rowMember['gibbonPersonID'].'&gibbonSchoolYearID='.$_SESSION[$guid]['gibbonSchoolYearID']."'>", '</a>');
                                                 $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                                                 $bodyPlain = emailBodyConvert($body);
 
                                                 $mail = getGibbonMailer($guid);
-                                                $mail->IsSMTP();
                                                 if ($replyTo != '') {
                                                     $mail->AddReplyTo($replyTo, $replyToName);
                                                 }

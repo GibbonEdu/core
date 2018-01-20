@@ -113,6 +113,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                         $partialFail = true;
                     }
                 }
+
+                //Scan through assistants
+                $staff = array();
+                if (isset($_POST['staff'])) {
+                    $staff = $_POST['staff'];
+                }
+                $comment = $_POST['comment'];
+                if (count($staff) > 0) {
+                    foreach ($staff as $t) {
+                        //Check to see if person is already registered as an assistant
+                        try {
+                            $dataGuest = array('gibbonPersonIDAssistant' => $t, 'gibbonPersonIDStudent' => $gibbonPersonID);
+                            $sqlGuest = 'SELECT * FROM gibbonINAssistant WHERE gibbonPersonIDAssistant=:gibbonPersonIDAssistant AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
+                            $resultGuest = $connection2->prepare($sqlGuest);
+                            $resultGuest->execute($dataGuest);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
+                        }
+                        if ($resultGuest->rowCount() == 0) {
+                            try {
+                                $data = array('gibbonPersonIDAssistant' => $t, 'gibbonPersonIDStudent' => $gibbonPersonID, 'comment' => $comment);
+                                $sql = 'INSERT INTO gibbonINAssistant SET gibbonPersonIDAssistant=:gibbonPersonIDAssistant, gibbonPersonIDStudent=:gibbonPersonIDStudent, comment=:comment';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+                }
             } elseif ($highestAction == 'Individual Needs Records_viewContribute') {
                 //UPDATE IEP
                 $strategies = $_POST['strategies'];

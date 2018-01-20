@@ -20,22 +20,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Layout\Element;
+use Gibbon\Forms\RowDependancyInterface;
 use Gibbon\Forms\ValidatableInterface;
 use Gibbon\Forms\Traits\InputAttributesTrait;
 
 /**
- * Input
+ * Abstract base class for form input elements.
  *
  * @version v14
  * @since   v14
  */
-abstract class Input extends Element implements ValidatableInterface
+abstract class Input extends Element implements ValidatableInterface, RowDependancyInterface
 {
     use InputAttributesTrait;
+
+    protected $row;
 
     protected $validationOptions = array();
     protected $validation = array();
 
+    /**
+     * Create an HTML form input.
+     * @param  string  $name
+     */
     public function __construct($name)
     {
         $this->setID($name);
@@ -43,23 +50,40 @@ abstract class Input extends Element implements ValidatableInterface
         $this->setClass('standardWidth');
     }
 
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
+    public function setRow($row)
+    {
+        $this->row = $row;
+    }
+
+    /**
+     * Add a LiveValidation option to the javascript object (eg: onlyOnSubmit: true, onlyOnBlur: true)
+     * @param  string  $option
+     */
     public function addValidationOption($option = '')
     {
         $this->validationOptions[] = $option;
         return $this;
     }
 
+    /**
+     * Add a LiveValidation setting to this element by type (eg: Validate.Presence)
+     * @param  string  $type
+     * @param  string  $params
+     */
     public function addValidation($type, $params = '')
     {
-        $this->validation[$type] = $params;
+        $this->validation[] = array('type' => $type, 'params' => $params);
         return $this;
     }
 
-    public function getValidation($type)
-    {
-        return (isset($this->validation[$type]))? $this->validation[$type] : null;
-    }
-
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     public function getValidationOutput()
     {
         $output = '';
@@ -81,8 +105,8 @@ abstract class Input extends Element implements ValidatableInterface
             }
 
             if (!empty($this->validation) && is_array($this->validation)) {
-                foreach ($this->validation as $type => $params) {
-                    $output .= $this->getID().'Validate.add('.$type.', {'.$params.' } ); '."\r";
+                foreach ($this->validation as $valid) {
+                    $output .= $this->getID().'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
                 }
             }
         }

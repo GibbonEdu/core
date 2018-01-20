@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                     $scope = $_POST['scope'];
                     $gibbonDepartmentID = null;
                     if ($scope == 'Learning Area') {
-                        $gibbonDepartmentID = $_POST['gibbonDepartmentID'];
+                        $gibbonDepartmentID = !empty($_POST['gibbonDepartmentID'])? $_POST['gibbonDepartmentID'] : $row['gibbonDepartmentID'];
                     }
                     $name = $_POST['name'];
 

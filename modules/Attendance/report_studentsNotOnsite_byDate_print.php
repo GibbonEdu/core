@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $currentStudent = $row['gibbonPersonID'];
             if ( $attendance->isTypeOnsite($row['type']) and $currentStudent != $lastStudent) {
                 $log[$row['gibbonPersonID']] = true;
-            } 
+            }
             $lastStudent = $currentStudent;
         }
 
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
             $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
-            
+
             $sql .= $orderBy;
 
             $result = $connection2->prepare($sql);
@@ -104,6 +104,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
             echo "<table class='mini' cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
+            echo '<th>';
+            echo __($guid, 'Count');
+            echo '</th>';
             echo '<th style="width:80px">';
             echo __($guid, 'Roll Group');
             echo '</th>';
@@ -149,6 +152,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
+                        echo $count;
+                    echo '</td>';
+                    echo '<td>';
                         echo $row['rollGroupName'];
                     echo '</td>';
                     echo '<td>';
@@ -156,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     echo '</td>';
                     echo '<td>';
                     $rowRollAttendance = null;
-                    
+
                     if ($resultAttendance->rowCount() < 1) {
                         echo '<i>Not registered</i>';
                     } else {

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 //Module includes
@@ -92,42 +94,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
                         echo __($guid, 'The specified record cannot be found.');
                         echo '</div>';
                     } else {
-                        //Let's go!
-                        $row = $result->Fetch();
-                        ?>
-						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_deleteProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID" ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-										<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-									</td>
-									<td class="right">
-										
-									</td>
-								</tr>
-								<tr>
-									<td> 
-										<input name="gibbonCourseID" id="gibbonCourseID" value="<?php echo $gibbonCourseID ?>" type="hidden">
-										<input name="gibbonUnitID" id="gibbonUnitID" value="<?php echo $gibbonUnitID ?>" type="hidden">
-										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-									</td>
-									<td class="right">
-										
-									</td>
-								</tr>
-							</table>
-						</form>
-						<?php
-
+                        $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_deleteProcess.php?gibbonUnitID=$gibbonUnitID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
+                        echo $form->getOutput();
                     }
                 }
             }
         }
     }
-    //Print sidebar
-    $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
 }
 ?>

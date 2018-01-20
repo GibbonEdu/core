@@ -17,19 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
-//Only include module include if it is not already included (which it may be been on the index page)
-$included = false;
-$includes = get_included_files();
-foreach ($includes as $include) {
-    if (str_replace('\\', '/', $include) == str_replace('\\', '/', $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php')) {
-        $included = true;
-    }
-}
-if ($included == false) {
-    include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-}
+require_once './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQuickWall.php') == false) {
     //Acess denied
@@ -52,154 +42,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     echo "<div class='warning'>";
     echo __($guid, 'This page allows you to quick post a message wall entry to all users, without needing to set a range of options, making it a quick way to post to the Message Wall.');
-    echo '</div>';
+	echo '</div>';
+	
+	$form = Form::create('postQuickWall', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postQuickWallProcess.php?address='.$_GET['q']);
+                
+	$form->addHiddenValue('messageWall', 'Y');
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postQuickWallProcess.php?address='.$_GET['q'] ?>" enctype="multipart/form-data">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Delivery Mode') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Message Wall') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Place this message on user\'s message wall?') ?><br/></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="messageWall" class="messageWall" value="Y"/> <?php echo __($guid, 'Yes') ?>
-				</td>
-			</tr>
-			<tr id="messageWallRow">
-				<td>
-					<b><?php echo __($guid, 'Publication Dates') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Select up to three individual dates.') ?></br><?php echo __($guid, 'Format:').' ';
-					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-						echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?>.<br/></span>
-				</td>
-				<td class="right">
-					<input name="date1" id="date1" maxlength=10 value="<?php echo dateConvertBack($guid, date('Y-m-d')); ?>" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var date1=new LiveValidation('date1');
-						date1.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date1" ).datepicker();
-						});
-					</script>
-					<br/>
-					<input name="date2" id="date2" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
-					<script type="text/javascript">
-						var date2=new LiveValidation('date2');
-						date2.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date2" ).datepicker();
-						});
-					</script>
-					<br/>
-					<input name="date3" id="date3" maxlength=10 value="" type="text" style="width: 300px; margin-top: 3px">
-					<script type="text/javascript">
-						var date3=new LiveValidation('date3');
-						date3.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-							echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-						}
-							?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-							echo 'dd/mm/yyyy';
-						} else {
-							echo $_SESSION[$guid]['i18n']['dateFormat'];
-						}
-						?>." } );
-					</script>
-					 <script type="text/javascript">
-						$(function() {
-							$( "#date3" ).datepicker();
-						});
-					</script>
-				</td>
-			</tr>
+	$sql = "SELECT DISTINCT category FROM gibbonRole ORDER BY category";
+	$result = $pdo->executeQuery(array(), $sql);
+	$categories = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+	foreach($categories as $key => $category) {
+		$form->addHiddenValue("roleCategories[$key]", $category);
+	}
+	
+	$form->addRow()->addHeading(__('Delivery Mode'));
 
-			<tr class='break'>
-				<td colspan=2>
-					<h3><?php echo __($guid, 'Message Details') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Subject') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input name="subject" id="subject" maxlength=60 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var subject=new LiveValidation('subject');
-						subject.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2>
-					<b><?php echo __($guid, 'Body') ?> *</b>
-					<?php
-                    echo getEditor($guid,  true, 'body', '', 20, true, true, false, true); ?>
-				</td>
-			</tr>
+	$row = $form->addRow();
+		$row->addLabel('messageWallLabel', __('Message Wall'))->description(__('Place this message on user\'s message wall?'));
+		$row->addTextField('messageWallText')->readonly()->setValue(__('Yes'));
 
-			<select name="roleCategories[]" id="roleCategories[]" multiple style="display: none">
-				<?php
-                try {
-                    $dataSelect = array();
-                    $sqlSelect = 'SELECT DISTINCT category FROM gibbonRole ORDER BY category';
-                    $resultSelect = $connection2->prepare($sqlSelect);
-                    $resultSelect->execute($dataSelect);
-                } catch (PDOException $e) {
-                }
-				while ($rowSelect = $resultSelect->fetch()) {
-					echo "<option selected value='".$rowSelect['category']."'>".htmlPrep(__($guid, $rowSelect['category'])).'</option>';
-				}
-				?>
-			</select>
+	$row = $form->addRow();
+        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
+		$col = $row->addColumn('date1')->addClass('stacked');
+		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->isRequired();
+		$col->addDate('date2');
+		$col->addDate('date3');
 
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+	$form->addRow()->addHeading(__('Message Details'));
 
+    $row = $form->addRow();
+        $row->addLabel('subject', __('Subject'));
+        $row->addTextField('subject')->isRequired()->maxLength(60);
+
+    $row = $form->addRow();
+        $col = $row->addColumn('body');
+        $col->addLabel('body', __('Body'));
+        $col->addEditor('body', $guid)->isRequired()->setRows(20)->showMedia(true);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
-?>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -28,6 +28,7 @@ class Google_Service_ShoppingContent_Resource_Inventory extends Google_Service_R
   /**
    * Updates price and availability for multiple products or stores in a single
    * request. This operation does not update the expiration date of the products.
+   * This method can only be called for non-multi-client accounts.
    * (inventory.custombatch)
    *
    * @param Google_Service_ShoppingContent_InventoryCustomBatchRequest $postBody
@@ -44,8 +45,8 @@ class Google_Service_ShoppingContent_Resource_Inventory extends Google_Service_R
   }
   /**
    * Updates price and availability of a product in your Merchant Center account.
-   * This operation does not update the expiration date of the product.
-   * (inventory.set)
+   * This operation does not update the expiration date of the product. This
+   * method can only be called for non-multi-client accounts. (inventory.set)
    *
    * @param string $merchantId The ID of the managing account.
    * @param string $storeCode The code of the store for which to update price and

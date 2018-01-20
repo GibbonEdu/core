@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -44,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as yearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpaceID, gibbonRollGroupIDNext, attendance, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
+            $sql = 'SELECT gibbonSchoolYear.gibbonSchoolYearID, gibbonRollGroupID, gibbonSchoolYear.name as schoolYearName, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, gibbonPersonIDEA, gibbonPersonIDEA2, gibbonPersonIDEA3, gibbonSpaceID, gibbonRollGroupIDNext, attendance, website FROM gibbonRollGroup JOIN gibbonSchoolYear ON gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID WHERE gibbonSchoolYear.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroupID=:gibbonRollGroupID ORDER BY sequenceNumber, gibbonRollGroup.name';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -57,267 +60,68 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rollGroup_manage_editProcess.php?gibbonRollGroupID=$gibbonRollGroupID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['yearName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var schoolYearName=new LiveValidation('schoolYearName');
-								schoolYearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=10 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="<?php echo htmlPrep($row['nameShort']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
+            $values = $result->fetch();
 
-                    <?php
-                    //Get and store staff for efficient reuse
-                    $staff = array();
-                    try {
-                        $dataSelect = array();
-                        $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {}
-                    if ($result->rowCount() > 0)
-                        $staff = $resultSelect->fetchAll();
-                    ?>
-					<tr>
-						<td rowspan=3>
-							<b><?php echo __($guid, 'Tutors') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Up to 3 per roll group. The first-listed will be marked as "Main Tutor".') ?></span>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDTutor">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDTutor'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDTutor2">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDTutor2'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDTutor3">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDTutor3'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-                    <tr>
-						<td rowspan=3>
-                            <b><?php echo __($guid, 'Educational Assistants') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Up to 3 per roll group.') ?></span>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDEA">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDEA'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDEA2">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDEA2'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td class="right">
-							<select class="standardWidth" name="gibbonPersonIDEA3">
-								<?php
-                                echo "<option value=''></option>";
-								foreach ($staff as $rowSelect) {
-									if ($row['gibbonPersonIDEA3'] == $rowSelect['gibbonPersonID']) {
-										echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-									}
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Location') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
-								<?php
-                                echo "<option value=''></option>";
-								try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if ($row['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
-										$selected = 'selected';
-									}
-									echo "<option $selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Next Roll Group') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Sets student progression on rollover.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                             $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+            $form = Form::create('rollGroupEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rollGroup_manage_editProcess.php?gibbonRollGroupID='.$gibbonRollGroupID);
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-							if ($nextYear == '') {
-								echo "<div class='warning'>";
-								echo 'The next school year cannot be determined, so this value cannot be set.';
-								echo '</div>';
-							} else {
-								echo "<select style='width: 302px' name='gibbonRollGroupIDNext'>";
-								echo "<option value=''></option>";
-								try {
-									$dataSelect = array('gibbonSchoolYearID' => $nextYear);
-									$sqlSelect = 'SELECT * FROM gibbonRollGroup WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) {
-								}
-								while ($rowSelect = $resultSelect->fetch()) {
-									if ($row['gibbonRollGroupIDNext'] == $rowSelect['gibbonRollGroupID']) {
-										echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-									} else {
-										echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-									}
-								}
-								echo '</select>';
-							}
-							?>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Should this class allow attendance to be taken?') ?></span>
-						</td>
-						<td class="right">
-							<select name="attendance" id="attendance" class="standardWidth">
-								<option <?php if ($row['attendance'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['attendance'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Website') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Include http://') ?></span>
-						</td>
-						<td class="right">
-							<input name="website" id="website" maxlength=255 value="<?php echo htmlPrep($row['website']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var website=new LiveValidation('website');
-								website.add( Validate.Format, { pattern: /(http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/, failureMessage: "Must start with http:// or https://" } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
+            $row = $form->addRow();
+                $row->addLabel('schoolYearName', __('School Year'));
+                $row->addTextField('schoolYearName')->readonly()->setValue($values['schoolYearName']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Needs to be unique in school year.'));
+                $row->addTextField('name')->isRequired()->maxLength(10);
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'))->description(__('Needs to be unique in school year.'));
+                $row->addTextField('nameShort')->isRequired()->maxLength(5);
+
+            $row = $form->addRow();
+                $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));
+                $column = $row->addColumn()->addClass('stacked');
+                $column->addSelectStaff('gibbonPersonIDTutor')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDTutor2')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDTutor3')->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per roll group.'));
+                $column = $row->addColumn()->addClass('stacked');
+                $column->addSelectStaff('gibbonPersonIDEA')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDEA2')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDEA3')->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('gibbonSpaceID', __('Location'));
+                $row->addSelectSpace('gibbonSpaceID');
+
+            $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+            $row = $form->addRow();
+                $row->addLabel('gibbonRollGroupIDNext', __('Next Roll Group'))->description(__('Sets student progression on rollover.'));
+                if (empty($nextYear)) {
+                    $row->addAlert(__('The next school year cannot be determined, so this value cannot be set.'));
+                } else {
+                    $row->addSelectRollGroup('gibbonRollGroupIDNext', $nextYear);
+                }
+
+            $row = $form->addRow();
+                $row->addLabel('attendance', __('Track Attendance?'))->description(__('Should this class allow attendance to be taken?'));
+                $row->addYesNo('attendance');
+
+            $row = $form->addRow();
+                $row->addLabel('website', __('Website'))->description(__('Include http://'));
+                $row->addURL('website')->maxLength(255);
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>

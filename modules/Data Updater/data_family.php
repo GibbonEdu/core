@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -71,67 +74,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         echo __($guid, 'Choose Family');
         echo '</h2>';
 
-        $gibbonFamilyID = null;
-        if (isset($_GET['gibbonFamilyID'])) {
-            $gibbonFamilyID = $_GET['gibbonFamilyID'];
-        }
-        ?>
+        $gibbonFamilyID = isset($_GET['gibbonFamilyID'])? $_GET['gibbonFamilyID'] : null;
 
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Family') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonFamilyID">
-							<?php
-                            if ($highestAction == 'Update Family Data_any') {
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = 'SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily ORDER BY name';
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    if ($gibbonFamilyID == $rowSelect['gibbonFamilyID']) {
-                                        echo "<option selected value='".$rowSelect['gibbonFamilyID']."'>".$rowSelect['name'].'</option>';
-                                    } else {
-                                        echo "<option value='".$rowSelect['gibbonFamilyID']."'>".$rowSelect['name'].'</option>';
-                                    }
-                                }
-                            } else {
-                                try {
-                                    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                    $sqlSelect = "SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    if ($gibbonFamilyID == $rowSelect['gibbonFamilyID']) {
-                                        echo "<option selected value='".$rowSelect['gibbonFamilyID']."'>".$rowSelect['name'].'</option>';
-                                    } else {
-                                        echo "<option value='".$rowSelect['gibbonFamilyID']."'>".$rowSelect['name'].'</option>';
-                                    }
-                                }
-                            }
-        					?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_family.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+        $form = Form::create('selectFamily', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_family.php');
+    
+        if ($highestAction == 'Update Family Data_any') {
+            $data = array();
+            $sql = "SELECT gibbonFamily.gibbonFamilyID as value, name FROM gibbonFamily ORDER BY name";
+        } else {
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT gibbonFamily.gibbonFamilyID as value, name FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
+        }
+        $row = $form->addRow();
+            $row->addLabel('gibbonFamilyID', __('Family'));
+            $row->addSelect('gibbonFamilyID')
+                ->fromQuery($pdo, $sql, $data)
+                ->isRequired()
+                ->selected($gibbonFamilyID)
+                ->placeholder();
+        
+        $row = $form->addRow();
+            $row->addSubmit();
+        
+        echo $form->getOutput();                   
 
         if ($gibbonFamilyID != '') {
             echo '<h2>';
@@ -206,217 +172,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 if ($proceed == true) {
                     //Let's go!
-                    $row = $result->fetch(); ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Address Name') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Formal name to address parents with.') ?></span>
-								</td>
-								<td class="right">
-									<input name="nameAddress" id="nameAddress" maxlength=100 value="<?php echo htmlPrep($row['nameAddress']) ?>" type="text" class="standardWidth">
-                                    <?php
-                                    if ($highestAction != 'Update Family Data_any') {
-                                        ?>
-                                        <script type="text/javascript">
-    										var nameAddress=new LiveValidation('nameAddress');
-    										nameAddress.add(Validate.Presence);
-    									</script>
-                                        <?php
-                                    }
-                                    ?>
+                    $values = $result->fetch(); 
 
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Home Address') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Unit, Building, Street') ?></span>
-								</td>
-								<td class="right">
-									<input name="homeAddress" id="homeAddress" maxlength=255 value="<?php echo $row['homeAddress'] ?>" type="text" class="standardWidth">
-                                    <?php
-                                    if ($highestAction != 'Update Family Data_any') {
-                                        ?>
-                                        <script type="text/javascript">
-    										var homeAddress=new LiveValidation('homeAddress');
-    										homeAddress.add(Validate.Presence);
-    									</script>
-                                        <?php
-                                    }
-                                    ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Home Address (District)') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'County, State, District') ?></span>
-								</td>
-								<td class="right">
-									<input name="homeAddressDistrict" id="homeAddressDistrict" maxlength=30 value="<?php echo $row['homeAddressDistrict'] ?>" type="text" class="standardWidth">
-								</td>
-								<script type="text/javascript">
-									$(function() {
-										var availableTags=[
-											<?php
-                                            try {
-                                                $dataAuto = array();
-                                                $sqlAuto = 'SELECT DISTINCT name FROM gibbonDistrict ORDER BY name';
-                                                $resultAuto = $connection2->prepare($sqlAuto);
-                                                $resultAuto->execute($dataAuto);
-                                            } catch (PDOException $e) {
-                                            }
-											while ($rowAuto = $resultAuto->fetch()) {
-												echo '"'.$rowAuto['name'].'", ';
-											}
-											?>
-										];
-										$( "#homeAddressDistrict" ).autocomplete({source: availableTags});
-									});
-								</script>
-                                <?php
-                                if ($highestAction != 'Update Family Data_any') {
-                                    ?>
-                                    <script type="text/javascript">
-                                        var homeAddressDistrict=new LiveValidation('homeAddressDistrict');
-                                        homeAddressDistrict.add(Validate.Presence);
-                                    </script>
-                                    <?php
-                                }
-                                ?>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Home Address (Country)') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
-								</td>
-								<td class="right">
-									<select name="homeAddressCountry" id="homeAddressCountry" class="standardWidth">
-										<?php
-                                        if ($highestAction != 'Update Family Data_any') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        }
-                                        else {
-                                            echo "<option value=''></option>";
-                                        }
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT printable_name FROM gibbonCountry ORDER BY printable_name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($rowSelect['printable_name'] == $row['homeAddressCountry']) {
-												$selected = ' selected';
-											}
-											echo "<option $selected value='".$rowSelect['printable_name']."'>".htmlPrep(__($guid, $rowSelect['printable_name'])).'</option>';
-										}
-										?>
-									</select>
-                                    <?php
-                                    if ($highestAction != 'Update Family Data_any') {
-                                        ?>
-                                        <script type="text/javascript">
-    										var homeAddressCountry=new LiveValidation('homeAddressCountry');
-    										homeAddressCountry.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-    									</script>
-                                        <?php
-                                    }
-                                    ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Home Language - Primary') ?><?php if ($highestAction != 'Update Family Data_any') { echo ' *';}?></b><br/>
-								</td>
-								<td class="right">
-									<select name="languageHomePrimary" id="languageHomePrimary" class="standardWidth">
-										<?php
-                                        if ($highestAction != 'Update Family Data_any') {
-                                            echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                        }
-                                        else {
-                                            echo "<option value=''></option>";
-                                        }
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['languageHomePrimary'] == $rowSelect['name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-										}
-										?>
-									</select>
-                                    <?php
-                                    if ($highestAction != 'Update Family Data_any') {
-                                        ?>
-                                        <script type="text/javascript">
-    										var languageHomePrimary=new LiveValidation('languageHomePrimary');
-    										languageHomePrimary.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-    									</script>
-                                        <?php
-                                    }
-                                    ?>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Home Language - Secondary') ?></b><br/>
-								</td>
-								<td class="right">
-									<select name="languageHomeSecondary" id="languageHomeSecondary" class="standardWidth">
-										<?php
-                                        echo "<option value=''></option>";
-										try {
-											$dataSelect = array();
-											$sqlSelect = 'SELECT name FROM gibbonLanguage ORDER BY name';
-											$resultSelect = $connection2->prepare($sqlSelect);
-											$resultSelect->execute($dataSelect);
-										} catch (PDOException $e) {
-										}
-										while ($rowSelect = $resultSelect->fetch()) {
-											$selected = '';
-											if ($row['languageHomeSecondary'] == $rowSelect['name']) {
-												$selected = 'selected';
-											}
-											echo "<option $selected value='".$rowSelect['name']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-										}
-										?>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($existing) {
-                                        echo "<input type='hidden' name='existing' value='".$row['gibbonFamilyUpdateID']."'>";
-                                    } else {
-                                        echo "<input type='hidden' name='existing' value='N'>";
-                                    }
-                   		 			?>
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    $required = ($highestAction != 'Update Family Data_any');
+                    
+                    $form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_familyProcess.php?gibbonFamilyID='.$gibbonFamilyID);
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
 
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('existing', isset($values['gibbonFamilyUpdateID'])? $values['gibbonFamilyUpdateID'] : 'N');
+
+                    $row = $form->addRow();
+                        $row->addLabel('nameAddress', __('Address Name'))->description(__('Formal name to address parents with.'));
+                        $row->addTextField('nameAddress')->maxLength(100)->setRequired($required);
+
+                    $row = $form->addRow();
+                        $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
+                        $row->addTextField('homeAddress')->maxLength(255)->setRequired($required);
+
+                    $row = $form->addRow();
+                        $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
+                        $row->addTextFieldDistrict('homeAddressDistrict')->setRequired($required);
+
+                    $row = $form->addRow();
+                        $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
+                        $row->addSelectCountry('homeAddressCountry')->setRequired($required);
+
+                    $row = $form->addRow();
+                        $row->addLabel('languageHomePrimary', __('Home Language - Primary'));
+                        $row->addSelectLanguage('languageHomePrimary')->setRequired($required);
+
+                    $row = $form->addRow();
+                        $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
+                        $row->addSelectLanguage('languageHomeSecondary');
+
+                    $row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+
+                    $form->loadAllValuesFrom($values);
+
+                    echo $form->getOutput();
                 }
             }
         }
     }
 }
-?>

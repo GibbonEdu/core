@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,8 +17,17 @@
 
 class Google_Service_Storage_BucketLifecycleRuleAction extends Google_Model
 {
+  public $storageClass;
   public $type;
 
+  public function setStorageClass($storageClass)
+  {
+    $this->storageClass = $storageClass;
+  }
+  public function getStorageClass()
+  {
+    return $this->storageClass;
+  }
   public function setType($type)
   {
     $this->type = $type;

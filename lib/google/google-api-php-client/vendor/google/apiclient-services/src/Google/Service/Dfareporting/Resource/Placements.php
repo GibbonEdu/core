@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -72,8 +72,8 @@ class Google_Service_Dfareporting_Resource_Placements extends Google_Service_Res
     return $this->call('insert', array($params), "Google_Service_Dfareporting_Placement");
   }
   /**
-   * Retrieves a list of placements, possibly filtered.
-   * (placements.listPlacements)
+   * Retrieves a list of placements, possibly filtered. This method supports
+   * paging. (placements.listPlacements)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -130,7 +130,7 @@ class Google_Service_Dfareporting_Resource_Placements extends Google_Service_Res
    * @opt_param string sizeIds Select only placements that are associated with
    * these sizes.
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @return Google_Service_Dfareporting_PlacementsListResponse
    */
   public function listPlacements($profileId, $optParams = array())

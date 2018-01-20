@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,6 +20,7 @@ class Google_Service_Partners_PublicProfile extends Google_Model
   public $displayImageUrl;
   public $displayName;
   public $id;
+  public $profileImage;
   public $url;
 
   public function setDisplayImageUrl($displayImageUrl)
@@ -45,6 +46,14 @@ class Google_Service_Partners_PublicProfile extends Google_Model
   public function getId()
   {
     return $this->id;
+  }
+  public function setProfileImage($profileImage)
+  {
+    $this->profileImage = $profileImage;
+  }
+  public function getProfileImage()
+  {
+    return $this->profileImage;
   }
   public function setUrl($url)
   {

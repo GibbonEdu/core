@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,9 +26,9 @@
 class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
 {
   /**
-   * Creates a permission for a file. (permissions.create)
+   * Creates a permission for a file or Team Drive. (permissions.create)
    *
-   * @param string $fileId The ID of the file.
+   * @param string $fileId The ID of the file or Team Drive.
    * @param Google_Service_Drive_Permission $postBody
    * @param array $optParams Optional parameters.
    *
@@ -38,6 +38,8 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    * when sharing to users or groups. This defaults to true for users and groups,
    * and is not allowed for other requests. It must not be disabled for ownership
    * transfers.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @opt_param bool transferOwnership Whether to transfer ownership to the
    * specified user and downgrade the current owner to a writer. This parameter is
    * required as an acknowledgement of the side effect.
@@ -52,9 +54,12 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
   /**
    * Deletes a permission. (permissions.delete)
    *
-   * @param string $fileId The ID of the file.
+   * @param string $fileId The ID of the file or Team Drive.
    * @param string $permissionId The ID of the permission.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    */
   public function delete($fileId, $permissionId, $optParams = array())
   {
@@ -68,6 +73,9 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
    * @param string $fileId The ID of the file.
    * @param string $permissionId The ID of the permission.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @return Google_Service_Drive_Permission
    */
   public function get($fileId, $permissionId, $optParams = array())
@@ -77,10 +85,20 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
     return $this->call('get', array($params), "Google_Service_Drive_Permission");
   }
   /**
-   * Lists a file's permissions. (permissions.listPermissions)
+   * Lists a file's or Team Drive's permissions. (permissions.listPermissions)
    *
-   * @param string $fileId The ID of the file.
+   * @param string $fileId The ID of the file or Team Drive.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param int pageSize The maximum number of permissions to return per page.
+   * When not set for files in a Team Drive, at most 100 results will be returned.
+   * When not set for files that are not in a Team Drive, the entire list will be
+   * returned.
+   * @opt_param string pageToken The token for continuing a previous list request
+   * on the next page. This should be set to the value of 'nextPageToken' from the
+   * previous response.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @return Google_Service_Drive_PermissionList
    */
   public function listPermissions($fileId, $optParams = array())
@@ -92,12 +110,14 @@ class Google_Service_Drive_Resource_Permissions extends Google_Service_Resource
   /**
    * Updates a permission with patch semantics. (permissions.update)
    *
-   * @param string $fileId The ID of the file.
+   * @param string $fileId The ID of the file or Team Drive.
    * @param string $permissionId The ID of the permission.
    * @param Google_Service_Drive_Permission $postBody
    * @param array $optParams Optional parameters.
    *
    * @opt_param bool removeExpiration Whether to remove the expiration date.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @opt_param bool transferOwnership Whether to transfer ownership to the
    * specified user and downgrade the current owner to a writer. This parameter is
    * required as an acknowledgement of the side effect.

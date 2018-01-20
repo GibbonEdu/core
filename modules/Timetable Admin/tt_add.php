@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -50,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+            $sql = 'SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -62,106 +64,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var schoolYearName=new LiveValidation('schoolYearName');
-								schoolYearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=30 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=12 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Day Column Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="nameShortDisplay">
-								<?php
-                                echo "<option value='Day Of The Week'>".__($guid, 'Day Of The Week').'</option>';
-            					echo "<option value='Timetable Day Short Name'>".__($guid, 'Timetable Day Short Name').'</option>'; ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Active') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="active">
-								<?php
-                                echo "<option value='Y'>".__($guid, 'Yes').'</option>';
-            					echo "<option value='N'>".__($guid, 'No').'</option>'; ?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Groups not in an active TT this year.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            $yearGroups = getNonTTYearGroups($connection2, $gibbonSchoolYearID);
-							if ($yearGroups == '') {
-								echo '<i>'.__($guid, 'No year groups available.').'</i>';
-							} else {
-								for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-									echo __($guid, $yearGroups[($i + 1)])." <input type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-									echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-								}
-							}
-							?>
-							<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $values = $result->fetch();
 
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_addProcess.php');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+            $row = $form->addRow();
+                $row->addLabel('schoolYear', __('School Year'));
+                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+                $row->addTextField('name')->maxLength(30)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShort', __('Short Name'));
+                $row->addTextField('nameShort')->maxLength(12)->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('nameShortDisplay', __('Day Column Name'));
+                $row->addSelect('nameShortDisplay')->fromArray(array('Day Of The Week' => __('Day Of The Week'), 'Timetable Day Short Name' => __('Timetable Day Short Name')))->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('active', __('Active'));
+                $row->addYesNo('active')->isRequired();
+
+            $yearGroups = getNonTTYearGroups($connection2, $gibbonSchoolYearID);
+            $row = $form->addRow();
+                $row->addLabel('active', __('Year Groups'))->description(__('Groups not in an active TT this year.'));
+                if ($yearGroups == '') {
+                    $row->addContent('<i>'.__($guid, 'No year groups available.').'</i>')->addClass('right');
+                } else {
+                    $yearGroupsOptions = array();
+                    for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
+                        $yearGroupsOptions[$yearGroups[$i]] = __($yearGroups[$i+1]) ;
+                    }
+                    $row->addCheckbox('gibbonYearGroupID')->fromArray($yearGroupsOptions);
+                }
+            $form->addHiddenValue('count', (count($yearGroups)/2));
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

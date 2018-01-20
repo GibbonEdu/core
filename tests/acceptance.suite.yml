@@ -8,6 +8,7 @@ class_name: AcceptanceTester
 settings:
     bootstrap: acceptance/bootstrap.php
 params:
+    - env
     - config/environment.php
 modules:
     enabled:
@@ -17,5 +18,14 @@ modules:
         - Db
         - DbHelper
         - Filesystem
+    config:
+        Db:
+            dsn: "mysql:host=%DB_HOST%;dbname=%DB_NAME%"
+            user: "%DB_USERNAME%"
+            password: "%DB_PASSWORD%"
+            dump: 'config/data/dump.sql'
+            populate: true
+            cleanup: false
+            reconnect: true
 groups:
     users: [acceptance/Users]

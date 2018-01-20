@@ -17,6 +17,7 @@ $newApplicationSettings = array_replace($originalApplicationSettings, array(
     'languageOptionsBlurb'        => 'Language Blurb Test',
     'languageOptionsLanguageList' => 'Esperanto,Latin,Klingon',
     'applicationFormRefereeLink'  => 'http://referee.test',
+    'requiredDocuments'           => 'FileUpload0,FileUpload1',
     'agreement'                   => 'Agreement Test',
 ));
 
@@ -176,9 +177,9 @@ $I->selectFromDropdown('gibbonYearGroupIDEntry', 2);
 // Check the agreement
 $I->checkOption('agreement');
 
-// Separate test?
-//$I->attachFile('file0', 'attachment.jpg');
-//$I->attachFile('file1', 'attachment.txt');
+// Attach required documents
+$I->attachFile('file0', 'attachment.jpg');
+$I->attachFile('file1', 'attachment.txt');
 
 $I->submitForm('#content form', $formValues, 'Submit');
 
@@ -196,6 +197,15 @@ $I->seeBreadcrumb('Edit Form');
 
 $I->seeInFormFields('#content form', $formValues);
 
+$file0path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload0']);
+$file1path = $I->grabFromDatabase('gibbonApplicationFormFile', 'path', ['gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => 'FileUpload1']);
+
+// Check to see the uploaded files are there
+$I->see('FileUpload0');
+$I->see(basename($file0path));
+$I->see('FileUpload1');
+$I->see(basename($file1path));
+
 // Cleanup ------------------------------------------------
 
 $urlParams = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -204,6 +214,12 @@ $I->seeBreadcrumb('Delete Form');
 
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
+
+// Delete Files ------------------------------------------------
+
+$I->deleteFile('../'.$file0path);
+$I->deleteFile('../'.$file1path);
+$I->deleteFromDatabase('gibbonApplicationFormFile', ['gibbonApplicationFormID' => $gibbonApplicationFormID]);
 
 // Restore Original Settings -----------------------------------
 

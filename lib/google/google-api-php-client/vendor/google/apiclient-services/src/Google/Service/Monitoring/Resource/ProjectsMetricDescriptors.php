@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,10 +27,10 @@ class Google_Service_Monitoring_Resource_ProjectsMetricDescriptors extends Googl
 {
   /**
    * Creates a new metric descriptor. User-created metric descriptors define
-   * custom metrics (/monitoring/custom-metrics). (metricDescriptors.create)
+   * custom metrics. (metricDescriptors.create)
    *
    * @param string $name The project on which to execute the request. The format
-   * is projects/{project_id_or_number}.
+   * is "projects/{project_id_or_number}".
    * @param Google_Service_Monitoring_MetricDescriptor $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Monitoring_MetricDescriptor
@@ -42,12 +42,13 @@ class Google_Service_Monitoring_Resource_ProjectsMetricDescriptors extends Googl
     return $this->call('create', array($params), "Google_Service_Monitoring_MetricDescriptor");
   }
   /**
-   * Deletes a metric descriptor. Only user-created custom metrics (/monitoring
-   * /custom-metrics) can be deleted. (metricDescriptors.delete)
+   * Deletes a metric descriptor. Only user-created custom metrics can be deleted.
+   * (metricDescriptors.delete)
    *
    * @param string $name The metric descriptor on which to execute the request.
-   * The format is projects/{project_id_or_number}/metricDescriptors/{metric_id}.
-   * An example of {metric_id} is: custom.googleapis.com/my_test_metric.
+   * The format is
+   * "projects/{project_id_or_number}/metricDescriptors/{metric_id}". An example
+   * of {metric_id} is: "custom.googleapis.com/my_test_metric".
    * @param array $optParams Optional parameters.
    * @return Google_Service_Monitoring_MonitoringEmpty
    */
@@ -62,9 +63,10 @@ class Google_Service_Monitoring_Resource_ProjectsMetricDescriptors extends Googl
    * account. (metricDescriptors.get)
    *
    * @param string $name The metric descriptor on which to execute the request.
-   * The format is projects/{project_id_or_number}/metricDescriptors/{metric_id}.
-   * An example value of {metric_id} is
-   * compute.googleapis.com/instance/disk/read_bytes_count.
+   * The format is
+   * "projects/{project_id_or_number}/metricDescriptors/{metric_id}". An example
+   * value of {metric_id} is
+   * "compute.googleapis.com/instance/disk/read_bytes_count".
    * @param array $optParams Optional parameters.
    * @return Google_Service_Monitoring_MetricDescriptor
    */
@@ -79,21 +81,20 @@ class Google_Service_Monitoring_Resource_ProjectsMetricDescriptors extends Googl
    * Stackdriver account. (metricDescriptors.listProjectsMetricDescriptors)
    *
    * @param string $name The project on which to execute the request. The format
-   * is projects/{project_id_or_number}.
+   * is "projects/{project_id_or_number}".
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize A positive number that is the maximum number of
-   * results to return.
    * @opt_param string filter If this field is empty, all custom and system-
-   * defined metric descriptors are returned. Otherwise, the filter
-   * (/monitoring/api/v3/filters) specifies which metric descriptors are to be
-   * returned. For example, the following filter matches all custom metrics
-   * (/monitoring/custom-metrics): metric.type =
-   * starts_with(custom.googleapis.com/)
+   * defined metric descriptors are returned. Otherwise, the filter specifies
+   * which metric descriptors are to be returned. For example, the following
+   * filter matches all custom metrics: metric.type =
+   * starts_with("custom.googleapis.com/")
    * @opt_param string pageToken If this field is not empty then it must contain
    * the nextPageToken value returned by a previous call to this method. Using
    * this field causes the method to return additional results from the previous
    * method call.
+   * @opt_param int pageSize A positive number that is the maximum number of
+   * results to return.
    * @return Google_Service_Monitoring_ListMetricDescriptorsResponse
    */
   public function listProjectsMetricDescriptors($name, $optParams = array())

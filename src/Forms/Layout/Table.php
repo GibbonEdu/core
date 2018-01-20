@@ -39,6 +39,11 @@ class Table implements OutputableInterface, ValidatableInterface
     protected $headers = array();
     protected $rows = array();
 
+    /**
+     * Create an element that holds an internal collection of rows and optional header.
+     * @param  FormFactoryInterface  $factory
+     * @param  string                $id
+     */
     public function __construct(FormFactoryInterface $factory, $id = '')
     {
         $this->factory = $factory;
@@ -46,6 +51,11 @@ class Table implements OutputableInterface, ValidatableInterface
         $this->setClass('fullWidth formTable');
     }
 
+    /**
+     * Add a header to the internal collection and return the resulting Row object.
+     * @param  string  $id
+     * @return object  Row
+     */
     public function addHeaderRow($id = '')
     {
         $row = $this->factory->createRow($id);
@@ -54,6 +64,11 @@ class Table implements OutputableInterface, ValidatableInterface
         return $row;
     }
 
+    /**
+     * Add a row to the internal collection and return the resulting object.
+     * @param  string  $id
+     * @return object  Row
+     */
     public function addRow($id = '')
     {
         $row = $this->factory->createRow($id);
@@ -62,16 +77,28 @@ class Table implements OutputableInterface, ValidatableInterface
         return $row;
     }
 
+    /**
+     * Get all rows defined as headers.
+     * @return  array
+     */
     public function getHeaders()
     {
         return $this->headers;
     }
 
+    /**
+     * Get all rows in the table.
+     * @return  array
+     */
     public function getRows()
     {
         return $this->rows;
     }
 
+    /**
+     * Get the HTML output of the table element. Iterate over headers and rows to build a table.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';
@@ -81,54 +108,71 @@ class Table implements OutputableInterface, ValidatableInterface
         $output .= '<table '.$this->getAttributeString().' cellspacing="0">';
 
         // Output table headers
+        $output .= '<thead>';
         foreach ($this->getHeaders() as $row) {
             $output .= '<tr '.$row->getAttributeString().'>';
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<th>';
+                $output .= '<th '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $output .= $element->getOutput();
                 $output .= '</th>';
             }
             $output .= '</tr>';
         }
+        $output .= '</thead>';
 
         // Output table rows
+        $output .= '<tbody>';
         foreach ($this->getRows() as $row) {
             $output .= '<tr '.$row->getAttributeString().'>';
 
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
-                $output .= '<td class="'.$element->getClass().'">';
-                    $element->removeClass('standardWidth');
+                $output .= '<td '.$element->getAttributeString('class,title,rowspan,colspan,data').'>';
                     $output .= $element->getOutput();
                 $output .= '</td>';
             }
             $output .= '</tr>';
         }
-
+        $output .= '</tbody>';
         $output .= '</table>';
 
         return $output;
     }
 
+    /**
+     * Get the minimum columns required to render this table.
+     * @return  int
+     */
     protected function getColumnCount()
     {
         $count = 0;
+        foreach ($this->getHeaders() as $row) {
+            $count = max($count, $row->getElementCount());
+        }
+
         foreach ($this->getRows() as $row) {
-            if ($row->getElementCount() > $count) {
-                $count = $row->getElementCount();
-            }
+            $count = max($count, $row->getElementCount());
         }
 
         return $count;
     }
 
+    /**
+     * Dead-end stub for interface: columns cannot validate.
+     * @param   string  $name
+     * @return  self
+     */
     public function addValidation($name)
     {
         return $this;
     }
 
+    /**
+     * Iterate over each element in the collection and get the combined validation output.
+     * @return  string
+     */
     public function getValidationOutput()
     {
         $output = '';
@@ -144,6 +188,11 @@ class Table implements OutputableInterface, ValidatableInterface
         return $output;
     }
 
+    /**
+     * Pass an array of $key => $value pairs into each element in the collection.
+     * @param   array  &$data
+     * @return  self
+     */
     public function loadFrom(&$data)
     {
         foreach ($this->getRows() as $row) {

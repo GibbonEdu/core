@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -43,6 +43,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * in Drive.
    * @opt_param string ocrLanguage A language hint for OCR processing during image
    * import (ISO 639-1 code).
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @return Google_Service_Drive_DriveFile
    */
   public function copy($fileId, Google_Service_Drive_DriveFile $postBody, $optParams = array())
@@ -67,6 +69,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * in Drive.
    * @opt_param string ocrLanguage A language hint for OCR processing during image
    * import (ISO 639-1 code).
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @opt_param bool useContentAsIndexableText Whether to use the uploaded content
    * as indexable text.
    * @return Google_Service_Drive_DriveFile
@@ -79,11 +83,15 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
   }
   /**
    * Permanently deletes a file owned by the user without moving it to the trash.
-   * If the target is a folder, all descendants owned by the user are also
+   * If the file belongs to a Team Drive the user must be an organizer on the
+   * parent. If the target is a folder, all descendants owned by the user are also
    * deleted. (files.delete)
    *
    * @param string $fileId The ID of the file.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    */
   public function delete($fileId, $optParams = array())
   {
@@ -104,7 +112,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
   }
   /**
    * Exports a Google Doc to the requested MIME type and returns the exported
-   * content. (files.export)
+   * content. Please note that the exported content is limited to 10MB.
+   * (files.export)
    *
    * @param string $fileId The ID of the file.
    * @param string $mimeType The MIME type of the format requested for this
@@ -143,6 +152,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * @opt_param bool acknowledgeAbuse Whether the user is acknowledging the risk
    * of downloading known malware or other abusive files. This is only applicable
    * when alt=media.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @return Google_Service_Drive_DriveFile
    */
   public function get($fileId, $optParams = array())
@@ -156,7 +167,15 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    *
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string corpus The source of files to list.
+   * @opt_param string corpora Comma-separated list of bodies of items
+   * (files/documents) to which the query applies. Supported bodies are 'user',
+   * 'domain', 'teamDrive' and 'allTeamDrives'. 'allTeamDrives' must be combined
+   * with 'user'; all other values must be used in isolation. Prefer 'user' or
+   * 'teamDrive' to 'allTeamDrives' for efficiency.
+   * @opt_param string corpus The source of files to list. Deprecated: use
+   * 'corpora' instead.
+   * @opt_param bool includeTeamDriveItems Whether Team Drive items should be
+   * included in results.
    * @opt_param string orderBy A comma-separated list of sort keys. Valid keys are
    * 'createdTime', 'folder', 'modifiedByMeTime', 'modifiedTime', 'name',
    * 'quotaBytesUsed', 'recency', 'sharedWithMeTime', 'starred', and
@@ -165,6 +184,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * desc,name. Please note that there is a current limitation for users with
    * approximately one million files in which the requested sort order is ignored.
    * @opt_param int pageSize The maximum number of files to return per page.
+   * Partial or empty result pages are possible even before the end of the files
+   * list has been reached.
    * @opt_param string pageToken The token for continuing a previous list request
    * on the next page. This should be set to the value of 'nextPageToken' from the
    * previous response.
@@ -172,6 +193,9 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * for Files" guide for supported syntax.
    * @opt_param string spaces A comma-separated list of spaces to query within the
    * corpus. Supported values are 'drive', 'appDataFolder' and 'photos'.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
+   * @opt_param string teamDriveId ID of Team Drive to search.
    * @return Google_Service_Drive_FileList
    */
   public function listFiles($optParams = array())
@@ -195,6 +219,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * import (ISO 639-1 code).
    * @opt_param string removeParents A comma-separated list of parent IDs to
    * remove.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @opt_param bool useContentAsIndexableText Whether to use the uploaded content
    * as indexable text.
    * @return Google_Service_Drive_DriveFile
@@ -215,6 +241,8 @@ class Google_Service_Drive_Resource_Files extends Google_Service_Resource
    * @opt_param bool acknowledgeAbuse Whether the user is acknowledging the risk
    * of downloading known malware or other abusive files. This is only applicable
    * when alt=media.
+   * @opt_param bool supportsTeamDrives Whether the requesting application
+   * supports Team Drives.
    * @return Google_Service_Drive_Channel
    */
   public function watch($fileId, Google_Service_Drive_Channel $postBody, $optParams = array())

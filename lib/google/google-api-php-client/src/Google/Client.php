@@ -39,7 +39,7 @@ use Monolog\Handler\SyslogHandler as MonologSyslogHandler;
  */
 class Google_Client
 {
-  const LIBVER = "2.0.0-alpha";
+  const LIBVER = "2.2.0";
   const USER_AGENT_SUFFIX = "google-api-php-client/";
   const OAUTH2_REVOKE_URI = 'https://accounts.google.com/o/oauth2/revoke';
   const OAUTH2_TOKEN_URI = 'https://www.googleapis.com/oauth2/v4/token';
@@ -72,7 +72,7 @@ class Google_Client
   private $config;
 
   /**
-   * @var Google_Logger_Abstract $logger
+   * @var Psr\Log\LoggerInterface $logger
    */
   private $logger;
 
@@ -138,6 +138,10 @@ class Google_Client
           // function to be called when an access token is fetched
           // follows the signature function ($cacheKey, $accessToken)
           'token_callback' => null,
+
+          // Service class used in Google_Client::verifyIdToken.
+          // Explicitly pass this in to avoid setting JWT::$leeway
+          'jwt' => null,
         ],
         $config
     );
@@ -159,6 +163,7 @@ class Google_Client
    *
    * @param $code string code from accounts.google.com
    * @return array access token
+   * @deprecated
    */
   public function authenticate($code)
   {
@@ -197,6 +202,7 @@ class Google_Client
    * alias for fetchAccessTokenWithAssertion
    *
    * @return array access token
+   * @deprecated
    */
   public function refreshTokenWithAssertion()
   {
@@ -228,12 +234,13 @@ class Google_Client
     $credentials = $this->createApplicationDefaultCredentials();
 
     $httpHandler = HttpHandlerFactory::build($authHttp);
-    $accessToken = $credentials->fetchAuthToken($httpHandler);
-    if ($accessToken && isset($accessToken['access_token'])) {
-      $this->setAccessToken($accessToken);
+    $creds = $credentials->fetchAuthToken($httpHandler);
+    if ($creds && isset($creds['access_token'])) {
+      $creds['created'] = time();
+      $this->setAccessToken($creds);
     }
 
-    return $accessToken;
+    return $creds;
   }
 
   /**
@@ -255,7 +262,7 @@ class Google_Client
    */
   public function fetchAccessTokenWithRefreshToken($refreshToken = null)
   {
-    if (is_null($refreshToken)) {
+    if (null === $refreshToken) {
       if (!isset($this->token['refresh_token'])) {
         throw new LogicException(
             'refresh token must be passed in or set as part of setAccessToken'
@@ -271,6 +278,9 @@ class Google_Client
     $creds = $auth->fetchAuthToken($httpHandler);
     if ($creds && isset($creds['access_token'])) {
       $creds['created'] = time();
+      if (!isset($creds['refresh_token'])) {
+        $creds['refresh_token'] = $refreshToken;
+      }
       $this->setAccessToken($creds);
     }
 
@@ -335,15 +345,14 @@ class Google_Client
    * set in the Google API Client object
    *
    * @param GuzzleHttp\ClientInterface $http the http client object.
-   * @param GuzzleHttp\ClientInterface $authHttp an http client for authentication.
    * @return GuzzleHttp\ClientInterface the http client object
    */
-  public function authorize(ClientInterface $http = null, ClientInterface $authHttp = null)
+  public function authorize(ClientInterface $http = null)
   {
     $credentials = null;
     $token = null;
     $scopes = null;
-    if (is_null($http)) {
+    if (null === $http) {
       $http = $this->getHttpClient();
     }
 
@@ -357,7 +366,7 @@ class Google_Client
     } elseif ($token = $this->getAccessToken()) {
       $scopes = $this->prepareScopes();
       // add refresh subscriber to request a new token
-      if ($this->isAccessTokenExpired() && isset($token['refresh_token'])) {
+      if (isset($token['refresh_token']) && $this->isAccessTokenExpired()) {
         $credentials = $this->createUserRefreshCredentials(
             $scopes,
             $token['refresh_token']
@@ -468,10 +477,7 @@ class Google_Client
     }
 
     // If the token is set to expire in the next 30 seconds.
-    $expired = ($created
-      + ($this->token['expires_in'] - 30)) < time();
-
-    return $expired;
+    return ($created + ($this->token['expires_in'] - 30)) < time();
   }
 
   public function getAuth()
@@ -589,7 +595,7 @@ class Google_Client
   public function setRequestVisibleActions($requestVisibleActions)
   {
     if (is_array($requestVisibleActions)) {
-      $requestVisibleActions = join(" ", $requestVisibleActions);
+      $requestVisibleActions = implode(" ", $requestVisibleActions);
     }
     $this->config['request_visible_actions'] = $requestVisibleActions;
   }
@@ -686,10 +692,11 @@ class Google_Client
   {
     $tokenVerifier = new Google_AccessToken_Verify(
         $this->getHttpClient(),
-        $this->getCache()
+        $this->getCache(),
+        $this->config['jwt']
     );
 
-    if (is_null($idToken)) {
+    if (null === $idToken) {
       $token = $this->getAccessToken();
       if (!isset($token['id_token'])) {
         throw new LogicException(
@@ -754,8 +761,8 @@ class Google_Client
     if (empty($this->requestedScopes)) {
       return null;
     }
-    $scopes = implode(' ', $this->requestedScopes);
-    return $scopes;
+
+    return implode(' ', $this->requestedScopes);
   }
 
   /**
@@ -820,6 +827,7 @@ class Google_Client
    *
    * @param string $file the configuration file
    * @throws Google_Exception
+   * @deprecated
    */
   public function setAuthConfigFile($file)
   {
@@ -831,7 +839,7 @@ class Google_Client
    * This structure should match the file downloaded from
    * the "Download JSON" button on in the Google Developer
    * Console.
-   * @param string|array $json the configuration json
+   * @param string|array $config the configuration json
    * @throws Google_Exception
    */
   public function setAuthConfig($config)
@@ -1020,7 +1028,7 @@ class Google_Client
    */
   public function getHttpClient()
   {
-    if (is_null($this->http)) {
+    if (null === $this->http) {
       $this->http = $this->createDefaultHttpClient();
     }
 

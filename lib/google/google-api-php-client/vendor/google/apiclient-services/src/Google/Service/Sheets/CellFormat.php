@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,21 +30,35 @@ class Google_Service_Sheets_CellFormat extends Google_Model
   public $textDirection;
   protected $textFormatType = 'Google_Service_Sheets_TextFormat';
   protected $textFormatDataType = '';
+  protected $textRotationType = 'Google_Service_Sheets_TextRotation';
+  protected $textRotationDataType = '';
   public $verticalAlignment;
   public $wrapStrategy;
 
+  /**
+   * @param Google_Service_Sheets_Color
+   */
   public function setBackgroundColor(Google_Service_Sheets_Color $backgroundColor)
   {
     $this->backgroundColor = $backgroundColor;
   }
+  /**
+   * @return Google_Service_Sheets_Color
+   */
   public function getBackgroundColor()
   {
     return $this->backgroundColor;
   }
+  /**
+   * @param Google_Service_Sheets_Borders
+   */
   public function setBorders(Google_Service_Sheets_Borders $borders)
   {
     $this->borders = $borders;
   }
+  /**
+   * @return Google_Service_Sheets_Borders
+   */
   public function getBorders()
   {
     return $this->borders;
@@ -65,18 +79,30 @@ class Google_Service_Sheets_CellFormat extends Google_Model
   {
     return $this->hyperlinkDisplayType;
   }
+  /**
+   * @param Google_Service_Sheets_NumberFormat
+   */
   public function setNumberFormat(Google_Service_Sheets_NumberFormat $numberFormat)
   {
     $this->numberFormat = $numberFormat;
   }
+  /**
+   * @return Google_Service_Sheets_NumberFormat
+   */
   public function getNumberFormat()
   {
     return $this->numberFormat;
   }
+  /**
+   * @param Google_Service_Sheets_Padding
+   */
   public function setPadding(Google_Service_Sheets_Padding $padding)
   {
     $this->padding = $padding;
   }
+  /**
+   * @return Google_Service_Sheets_Padding
+   */
   public function getPadding()
   {
     return $this->padding;
@@ -89,13 +115,33 @@ class Google_Service_Sheets_CellFormat extends Google_Model
   {
     return $this->textDirection;
   }
+  /**
+   * @param Google_Service_Sheets_TextFormat
+   */
   public function setTextFormat(Google_Service_Sheets_TextFormat $textFormat)
   {
     $this->textFormat = $textFormat;
   }
+  /**
+   * @return Google_Service_Sheets_TextFormat
+   */
   public function getTextFormat()
   {
     return $this->textFormat;
+  }
+  /**
+   * @param Google_Service_Sheets_TextRotation
+   */
+  public function setTextRotation(Google_Service_Sheets_TextRotation $textRotation)
+  {
+    $this->textRotation = $textRotation;
+  }
+  /**
+   * @return Google_Service_Sheets_TextRotation
+   */
+  public function getTextRotation()
+  {
+    return $this->textRotation;
   }
   public function setVerticalAlignment($verticalAlignment)
   {

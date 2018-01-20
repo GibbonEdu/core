@@ -61,7 +61,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $timeOut = $_POST['timeOut'];
+            $timeOut = null;
+            if ($_POST['timeOut'] != '')
+                $timeOut = $_POST['timeOut'];
             $followUp = $_POST['followUp'];
 
             try {

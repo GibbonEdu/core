@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,6 +18,7 @@
 class Google_Service_Proximitybeacon_BeaconAttachment extends Google_Model
 {
   public $attachmentName;
+  public $creationTimeMs;
   public $data;
   public $namespacedType;
 
@@ -28,6 +29,14 @@ class Google_Service_Proximitybeacon_BeaconAttachment extends Google_Model
   public function getAttachmentName()
   {
     return $this->attachmentName;
+  }
+  public function setCreationTimeMs($creationTimeMs)
+  {
+    $this->creationTimeMs = $creationTimeMs;
+  }
+  public function getCreationTimeMs()
+  {
+    return $this->creationTimeMs;
   }
   public function setData($data)
   {

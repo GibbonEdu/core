@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,6 +21,8 @@ class Google_Service_Compute_BackendService extends Google_Collection
   public $affinityCookieTtlSec;
   protected $backendsType = 'Google_Service_Compute_Backend';
   protected $backendsDataType = 'array';
+  protected $cdnPolicyType = 'Google_Service_Compute_BackendServiceCdnPolicy';
+  protected $cdnPolicyDataType = '';
   protected $connectionDrainingType = 'Google_Service_Compute_ConnectionDraining';
   protected $connectionDrainingDataType = '';
   public $creationTimestamp;
@@ -28,8 +30,11 @@ class Google_Service_Compute_BackendService extends Google_Collection
   public $enableCDN;
   public $fingerprint;
   public $healthChecks;
+  protected $iapType = 'Google_Service_Compute_BackendServiceIAP';
+  protected $iapDataType = '';
   public $id;
   public $kind;
+  public $loadBalancingScheme;
   public $name;
   public $port;
   public $portName;
@@ -47,18 +52,44 @@ class Google_Service_Compute_BackendService extends Google_Collection
   {
     return $this->affinityCookieTtlSec;
   }
+  /**
+   * @param Google_Service_Compute_Backend
+   */
   public function setBackends($backends)
   {
     $this->backends = $backends;
   }
+  /**
+   * @return Google_Service_Compute_Backend
+   */
   public function getBackends()
   {
     return $this->backends;
   }
+  /**
+   * @param Google_Service_Compute_BackendServiceCdnPolicy
+   */
+  public function setCdnPolicy(Google_Service_Compute_BackendServiceCdnPolicy $cdnPolicy)
+  {
+    $this->cdnPolicy = $cdnPolicy;
+  }
+  /**
+   * @return Google_Service_Compute_BackendServiceCdnPolicy
+   */
+  public function getCdnPolicy()
+  {
+    return $this->cdnPolicy;
+  }
+  /**
+   * @param Google_Service_Compute_ConnectionDraining
+   */
   public function setConnectionDraining(Google_Service_Compute_ConnectionDraining $connectionDraining)
   {
     $this->connectionDraining = $connectionDraining;
   }
+  /**
+   * @return Google_Service_Compute_ConnectionDraining
+   */
   public function getConnectionDraining()
   {
     return $this->connectionDraining;
@@ -103,6 +134,20 @@ class Google_Service_Compute_BackendService extends Google_Collection
   {
     return $this->healthChecks;
   }
+  /**
+   * @param Google_Service_Compute_BackendServiceIAP
+   */
+  public function setIap(Google_Service_Compute_BackendServiceIAP $iap)
+  {
+    $this->iap = $iap;
+  }
+  /**
+   * @return Google_Service_Compute_BackendServiceIAP
+   */
+  public function getIap()
+  {
+    return $this->iap;
+  }
   public function setId($id)
   {
     $this->id = $id;
@@ -118,6 +163,14 @@ class Google_Service_Compute_BackendService extends Google_Collection
   public function getKind()
   {
     return $this->kind;
+  }
+  public function setLoadBalancingScheme($loadBalancingScheme)
+  {
+    $this->loadBalancingScheme = $loadBalancingScheme;
+  }
+  public function getLoadBalancingScheme()
+  {
+    return $this->loadBalancingScheme;
   }
   public function setName($name)
   {

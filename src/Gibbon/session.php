@@ -90,7 +90,20 @@ class Session
 	 */
 	public function get($name, $default = null)
 	{
-		return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
+        if (is_array($name)) {
+            // Fetch a value from multi-dimensional array with an array of keys
+            $retrieve = function($array, $keys, $default) {
+                foreach($keys as $key) {
+                    if (!isset($array[$key])) return $default;
+                    $array = $array[$key];
+                }
+                return $array;
+            };
+
+            return $retrieve($_SESSION[$this->guid], $name, $default);
+        }
+
+        return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
 	}
 
 	/**
@@ -124,6 +137,28 @@ class Session
 		return $this;
 	}
 
+	public function loadSystemSettings($pdo)
+	{
+		// System settings from gibbonSetting
+		$sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
+	    $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set($row['name'], $row['value']);
+        }
+	}
+
+    public function loadLanguageSettings($pdo)
+    {
+        // Language settings from gibboni18n
+        $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
+        $result = $pdo->executeQuery(array(), $sql);
+
+        while ($row = $result->fetch()) {
+            $this->set('i18n', $row);
+        }
+    }
+
 	public function createUserSession($username, $userData) {
 
 		$this->set('username', $username);
@@ -137,7 +172,7 @@ class Session
 		$this->set('officialName', $userData['officialName']);
 		$this->set('email', $userData['email']);
 		$this->set('emailAlternate', $userData['emailAlternate']);
-		$this->set('website', $userData['website']);
+		$this->set('website', filter_var($userData['website'], FILTER_VALIDATE_URL));
 		$this->set('gender', $userData['gender']);
 		$this->set('status', $userData['status']);
 		$this->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
@@ -146,7 +181,7 @@ class Session
 		$this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
 		$this->set('image_240', $userData['image_240']);
 		$this->set('lastTimestamp', $userData['lastTimestamp']);
-		$this->set('calendarFeedPersonal', $userData['calendarFeedPersonal']);
+		$this->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
 		$this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
 		$this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
 		$this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);

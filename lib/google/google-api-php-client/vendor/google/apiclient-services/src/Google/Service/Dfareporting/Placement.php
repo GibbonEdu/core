@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,6 +19,7 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
 {
   protected $collection_key = 'tagFormats';
   public $accountId;
+  public $adBlockingOptOut;
   public $advertiserId;
   protected $advertiserIdDimensionValueType = 'Google_Service_Dfareporting_DimensionValue';
   protected $advertiserIdDimensionValueDataType = '';
@@ -67,6 +68,10 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   public $tagFormats;
   protected $tagSettingType = 'Google_Service_Dfareporting_TagSetting';
   protected $tagSettingDataType = '';
+  public $videoActiveViewOptOut;
+  protected $videoSettingsType = 'Google_Service_Dfareporting_VideoSettings';
+  protected $videoSettingsDataType = '';
+  public $vpaidAdapterChoice;
 
   public function setAccountId($accountId)
   {
@@ -76,6 +81,14 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->accountId;
   }
+  public function setAdBlockingOptOut($adBlockingOptOut)
+  {
+    $this->adBlockingOptOut = $adBlockingOptOut;
+  }
+  public function getAdBlockingOptOut()
+  {
+    return $this->adBlockingOptOut;
+  }
   public function setAdvertiserId($advertiserId)
   {
     $this->advertiserId = $advertiserId;
@@ -84,10 +97,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->advertiserId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setAdvertiserIdDimensionValue(Google_Service_Dfareporting_DimensionValue $advertiserIdDimensionValue)
   {
     $this->advertiserIdDimensionValue = $advertiserIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getAdvertiserIdDimensionValue()
   {
     return $this->advertiserIdDimensionValue;
@@ -108,10 +127,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->campaignId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setCampaignIdDimensionValue(Google_Service_Dfareporting_DimensionValue $campaignIdDimensionValue)
   {
     $this->campaignIdDimensionValue = $campaignIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getCampaignIdDimensionValue()
   {
     return $this->campaignIdDimensionValue;
@@ -140,10 +165,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->contentCategoryId;
   }
+  /**
+   * @param Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function setCreateInfo(Google_Service_Dfareporting_LastModifiedInfo $createInfo)
   {
     $this->createInfo = $createInfo;
   }
+  /**
+   * @return Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function getCreateInfo()
   {
     return $this->createInfo;
@@ -156,10 +187,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->directorySiteId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setDirectorySiteIdDimensionValue(Google_Service_Dfareporting_DimensionValue $directorySiteIdDimensionValue)
   {
     $this->directorySiteIdDimensionValue = $directorySiteIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getDirectorySiteIdDimensionValue()
   {
     return $this->directorySiteIdDimensionValue;
@@ -180,10 +217,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->id;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setIdDimensionValue(Google_Service_Dfareporting_DimensionValue $idDimensionValue)
   {
     $this->idDimensionValue = $idDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getIdDimensionValue()
   {
     return $this->idDimensionValue;
@@ -204,18 +247,30 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->kind;
   }
+  /**
+   * @param Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function setLastModifiedInfo(Google_Service_Dfareporting_LastModifiedInfo $lastModifiedInfo)
   {
     $this->lastModifiedInfo = $lastModifiedInfo;
   }
+  /**
+   * @return Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function getLastModifiedInfo()
   {
     return $this->lastModifiedInfo;
   }
+  /**
+   * @param Google_Service_Dfareporting_LookbackConfiguration
+   */
   public function setLookbackConfiguration(Google_Service_Dfareporting_LookbackConfiguration $lookbackConfiguration)
   {
     $this->lookbackConfiguration = $lookbackConfiguration;
   }
+  /**
+   * @return Google_Service_Dfareporting_LookbackConfiguration
+   */
   public function getLookbackConfiguration()
   {
     return $this->lookbackConfiguration;
@@ -252,10 +307,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->placementGroupId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setPlacementGroupIdDimensionValue(Google_Service_Dfareporting_DimensionValue $placementGroupIdDimensionValue)
   {
     $this->placementGroupIdDimensionValue = $placementGroupIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getPlacementGroupIdDimensionValue()
   {
     return $this->placementGroupIdDimensionValue;
@@ -268,10 +329,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->placementStrategyId;
   }
+  /**
+   * @param Google_Service_Dfareporting_PricingSchedule
+   */
   public function setPricingSchedule(Google_Service_Dfareporting_PricingSchedule $pricingSchedule)
   {
     $this->pricingSchedule = $pricingSchedule;
   }
+  /**
+   * @return Google_Service_Dfareporting_PricingSchedule
+   */
   public function getPricingSchedule()
   {
     return $this->pricingSchedule;
@@ -284,10 +351,16 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->primary;
   }
+  /**
+   * @param Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function setPublisherUpdateInfo(Google_Service_Dfareporting_LastModifiedInfo $publisherUpdateInfo)
   {
     $this->publisherUpdateInfo = $publisherUpdateInfo;
   }
+  /**
+   * @return Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function getPublisherUpdateInfo()
   {
     return $this->publisherUpdateInfo;
@@ -300,18 +373,30 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->siteId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setSiteIdDimensionValue(Google_Service_Dfareporting_DimensionValue $siteIdDimensionValue)
   {
     $this->siteIdDimensionValue = $siteIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getSiteIdDimensionValue()
   {
     return $this->siteIdDimensionValue;
   }
+  /**
+   * @param Google_Service_Dfareporting_Size
+   */
   public function setSize(Google_Service_Dfareporting_Size $size)
   {
     $this->size = $size;
   }
+  /**
+   * @return Google_Service_Dfareporting_Size
+   */
   public function getSize()
   {
     return $this->size;
@@ -348,12 +433,48 @@ class Google_Service_Dfareporting_Placement extends Google_Collection
   {
     return $this->tagFormats;
   }
+  /**
+   * @param Google_Service_Dfareporting_TagSetting
+   */
   public function setTagSetting(Google_Service_Dfareporting_TagSetting $tagSetting)
   {
     $this->tagSetting = $tagSetting;
   }
+  /**
+   * @return Google_Service_Dfareporting_TagSetting
+   */
   public function getTagSetting()
   {
     return $this->tagSetting;
+  }
+  public function setVideoActiveViewOptOut($videoActiveViewOptOut)
+  {
+    $this->videoActiveViewOptOut = $videoActiveViewOptOut;
+  }
+  public function getVideoActiveViewOptOut()
+  {
+    return $this->videoActiveViewOptOut;
+  }
+  /**
+   * @param Google_Service_Dfareporting_VideoSettings
+   */
+  public function setVideoSettings(Google_Service_Dfareporting_VideoSettings $videoSettings)
+  {
+    $this->videoSettings = $videoSettings;
+  }
+  /**
+   * @return Google_Service_Dfareporting_VideoSettings
+   */
+  public function getVideoSettings()
+  {
+    return $this->videoSettings;
+  }
+  public function setVpaidAdapterChoice($vpaidAdapterChoice)
+  {
+    $this->vpaidAdapterChoice = $vpaidAdapterChoice;
+  }
+  public function getVpaidAdapterChoice()
+  {
+    return $this->vpaidAdapterChoice;
   }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,8 +19,8 @@
  * Service definition for Cloudbilling (v1).
  *
  * <p>
- * Retrieves Google Developers Console billing accounts and associates them with
- * projects.</p>
+ * Allows developers to manage billing for their Google Cloud Platform projects
+ * programmatically.</p>
  *
  * <p>
  * For more information about this service, see the API

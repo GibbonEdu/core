@@ -1433,13 +1433,13 @@ else {
 								<?php
 								try {
 									$dataSelect=array();
-									$sqlSelect="SELECT gibbonPersonID, preferredName, surname FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
+									$sqlSelect="SELECT gibbonPersonID, preferredName, surname, username FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName" ;
 									$resultSelect=$connection2->prepare($sqlSelect);
 									$resultSelect->execute($dataSelect);
 								}
 								catch(PDOException $e) { }
 								while ($rowSelect=$resultSelect->fetch()) {
-									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", true) . "</option>" ;
+									print "<option value='" . $rowSelect["gibbonPersonID"] . "'>" . formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Student", true) . " (".$rowSelect['username'].")</option>" ;
 								}
 								?>
 							</select>

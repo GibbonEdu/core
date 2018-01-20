@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -76,142 +79,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_editProcess.php?gibbonCourseID='.$row['gibbonCourseID'] ?>">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-					</td>
-					<td class="right">
-						<input readonly name="gibbonSchoolYearID" id="gibbonSchoolYearID" maxlength=20 value="<?php echo $row['yearName'] ?>" type="text" class="standardWidth">
-						<script type="text/javascript">
-							var schoolYearName=new LiveValidation('schoolYearName');
-							schoolYearname2.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Learning Area') ?></b><br/>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonDepartmentID">
-							<?php
-                            echo "<option value=''></option>";
-							try {
-								$dataSelect = array();
-								$sqlSelect = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-								$resultSelect = $connection2->prepare($sqlSelect);
-								$resultSelect->execute($dataSelect);
-							} catch (PDOException $e) {
-							}
-							while ($rowSelect = $resultSelect->fetch()) {
-								if ($row['gibbonDepartmentID'] == $rowSelect['gibbonDepartmentID']) {
-									echo "<option selected value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-								} else {
-									echo "<option value='".$rowSelect['gibbonDepartmentID']."'>".htmlPrep($rowSelect['name']).'</option>';
-								}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Name') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Must be unique for this school year.') ?></span>
-					</td>
-					<td class="right">
-						<input name="name" id="name" maxlength=45 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-						<script type="text/javascript">
-							var name2=new LiveValidation('name');
-							name2.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input name="nameShort" id="nameShort" maxlength=6 value="<?php echo htmlPrep($row['nameShort']) ?>" type="text" class="standardWidth">
-						<script type="text/javascript">
-							var nameShort=new LiveValidation('nameShort');
-							nameShort.add(Validate.Presence);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Order') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'May be used to adjust arrangement of courses in reports.') ?></span>
-					</td>
-					<td class="right">
-						<input name="orderBy" id="orderBy" maxlength=6 value="<?php echo $row['orderBy']; ?>" type="text" class="standardWidth">
-						<script type="text/javascript">
-							var orderBy=new LiveValidation('orderBy');
-							orderBy.add(Validate.Numericality);
-						</script>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2>
-						<b><?php echo __($guid, 'Blurb') ?></b>
-						<?php echo getEditor($guid,  true, 'description', $row['description'], 20) ?>
-					</td>
-				</tr>
-                <tr>
-                    <td>
-                        <b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
-                        <span class="emphasis small"></span>
-                    </td>
-                    <td class="right">
-                        <select name="map" id="map" class="standardWidth">
-                            <option <?php if ($row['map'] == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-                            <option <?php if ($row['map'] == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
-                        </select>
-                    </td>
-                </tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Year Groups') ?></b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Enrolable year groups.') ?></span>
-					</td>
-					<td class="right">
-						<?php
-                        $yearGroups = getYearGroups($connection2);
-						if ($yearGroups == '') {
-							echo '<i>'.__($guid, 'No year groups available.').'</i>';
-						} else {
-							for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-								$checked = '';
-								if (is_numeric(strpos($row['gibbonYearGroupIDList'], $yearGroups[$i]))) {
-									$checked = 'checked ';
-								}
-								echo __($guid, $yearGroups[($i + 1)])." <input $checked type='checkbox' name='gibbonYearGroupIDCheck".($i) / 2 ."'><br/>";
-								echo "<input type='hidden' name='gibbonYearGroupID".($i) / 2 ."' value='".$yearGroups[$i]."'>";
-							}
-						}
-						?>
-						<input type="hidden" name="count" value="<?php echo(count($yearGroups)) / 2 ?>">
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-					</td>
-					<td class="right">
-						<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-			</form>
-			<?php
+            $values = $result->fetch();
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_editProcess.php?gibbonCourseID='.$gibbonCourseID);
+			$form->setFactory(DatabaseFormFactory::create($pdo));
+
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonSchoolYearID', $values['gibbonSchoolYearID']);
+
+			$row = $form->addRow();
+				$row->addLabel('schoolYearName', __('School Year'));
+				$row->addTextField('schoolYearName')->isRequired()->readonly()->setValue($values['yearName']);
+
+			$sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+			$row = $form->addRow();
+				$row->addLabel('gibbonDepartmentID', __('Learning Area'));
+				$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql)->placeholder();
+
+			$row = $form->addRow();
+				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
+				$row->addTextField('name')->isRequired()->maxLength(45);
+
+			$row = $form->addRow();
+				$row->addLabel('nameShort', __('Short Name'));
+				$row->addTextField('nameShort')->isRequired()->maxLength(6);
+
+			$row = $form->addRow();
+				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
+				$row->addNumber('orderBy')->maxLength(6);
+
+			$row = $form->addRow();
+				$column = $row->addColumn('blurb');
+				$column->addLabel('description', __('Blurb'));
+				$column->addEditor('description', $guid)->setRows(20);
+
+			$row = $form->addRow();
+				$row->addLabel('map', __('Include In Curriculum Map'));
+                $row->addYesNo('map')->isRequired();
+
+			$row = $form->addRow();
+				$row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Enrolable year groups.'));
+				$row->addCheckboxYearGroup('gibbonYearGroupIDList')->loadFromCSV($values);
+
+			$row = $form->addRow();
+				$row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
 
             echo '<h2>';
             echo __($guid, 'Edit Classes');
@@ -275,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     echo '<td>';
                     try {
                         $dataClasses = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID';
+                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID AND NOT role LIKE \'% - Left\'';
                         $resultClasses = $connection2->prepare($sqlClasses);
                         $resultClasses->execute($dataClasses);
                     } catch (PDOException $e) {
@@ -290,7 +206,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                     echo '</td>';
                     echo '<td>';
                     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
 

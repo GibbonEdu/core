@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -73,24 +73,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
             } else {
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=2' ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
-						<tr>
-							<td colspan=2 style='text-align: justify'> 
-								<?php
-                                echo sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'); ?>
-							</td>
-						</tr>
-						<tr>
-							<td class="right" colspan=2>
-								<input type="hidden" name="nextYear" value="<?php echo $nextYear ?>">
-								<input type="submit" value="Proceed">
-							</td>
-						</tr>
-					</table>
-				<?php
 
+                $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=2');
+
+                $form->addHiddenValue('nextYear', $nextYear);
+
+                $row = $form->addRow();
+                    $row->addContent(sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+
+                $row = $form->addRow();
+                    $row->addSubmit(__('Proceed'));
+
+                echo $form->getOutput();
             }
         }
     } elseif ($step == 2) {
@@ -126,144 +120,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 echo sprintf(__($guid, 'In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
                 echo '</p>';
 
-                echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/course_rollover.php&step=3'>";
-                echo '<h4>';
-                echo sprintf(__($guid, 'Options'), $nameNext);
-                echo '</h4>'; ?>
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
-						<tr>
-							<td style='width: 275px'> 
-								<b><?php echo __($guid, 'Include Students') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input checked type='checkbox' name='rollStudents'>
-							</td>
-						</tr>
-						<tr>
-							<td style='width: 275px'> 
-								<b><?php echo __($guid, 'Include Teachers') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input type='checkbox' name='rollTeachers'>
-							</td>
-						</tr>
-					</table>
-					<?php
+                // Get the current courses/classes
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sql = "SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class";
+                $result = $pdo->executeQuery($data, $sql);
+                $currentCourses = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 
-                    echo '<h4>';
-                echo __($guid, 'Map Classess');
-                echo '</h4>';
-                echo '<p>';
-                echo __($guid, 'Determine which classes from this year roll to which classes in next year, and which not to rollover at all.');
-                echo '</p>';
+                // Get the next year's courses/classes
+                $data = array('gibbonSchoolYearID' => $nextYear);
+                $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+                $result = $pdo->executeQuery($data, $sql);
+                $nextCourses = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-                $students = array();
-                $count = 0;
-                    //Get current courses/classes
-                    try {
-                        $dataEnrol = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlEnrol = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                        $resultEnrol = $connection2->prepare($sqlEnrol);
-                        $resultEnrol->execute($dataEnrol);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+                // Increment numbers in each course name and try to find a matching next-year course
+                $currentCourses = array_map(function($currentCourse) use ($nextCourses) {
+                    $findNextCourse = preg_replace_callback("/(\d+)/", function ($matches) {
+                        return str_pad((1 + $matches[1]), strlen($matches[1]), '0', STR_PAD_LEFT);
+                    }, $currentCourse['course']);
+
+                    if ($currentCourse['course'] != $findNextCourse) {
+                        $courseClassName = $findNextCourse.'.'.$currentCourse['class'];
+                        $currentCourse['gibbonCourseClassIDNext'] = array_search($courseClassName, $nextCourses);
                     }
+                    return $currentCourse;
+                }, $currentCourses);
 
-                    //Store next years courses/classes in an array
-                    $coursesNext = array();
-                $coursesNextCount = 0;
-                try {
-                    $dataNext = array('gibbonSchoolYearID' => $nextYear);
-                    $sqlNext = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                    $resultNext = $connection2->prepare($sqlNext);
-                    $resultNext->execute($dataNext);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                while ($rowNext = $resultNext->fetch()) {
-                    $coursesNext[$coursesNextCount][0] = $rowNext['gibbonCourseClassID'];
-                    $coursesNext[$coursesNextCount][1] = $rowNext['course'];
-                    $coursesNext[$coursesNextCount][2] = $rowNext['class'];
-                    $coursesNext[$coursesNextCount][3] = null;
-                        //Prep for matching
-                        $matches = array();
-                    preg_match_all('!\d+!', $rowNext['course'], $matches);
-                    if (count($matches) == 1) {
-                        if (isset($matches[0][0])) {
-                            $coursesNext[$coursesNextCount][3] = str_replace($matches[0][0], str_pad(($matches[0][0] - 1), strlen($matches[0][0]), '0', STR_PAD_LEFT), $rowNext['course']);
-                        }
-                    }
+                $form = Form::create('courseRollover', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_rollover.php&step=3');
 
-                    ++$coursesNextCount;
+                $form->getRenderer()->setWrapper('form', 'div');
+                $form->getRenderer()->setWrapper('row', 'div');
+                $form->getRenderer()->setWrapper('cell', 'div');
+
+                $form->addHiddenValue('nextYear', $nextYear);
+
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $row = $table->addRow();
+                    $row->addLabel('rollStudents', __('Include Students'));
+                    $row->addCheckbox('rollStudents')->checked('on');
+
+                $row = $table->addRow();
+                    $row->addLabel('rollTeachers', __('Include Teachers'));
+                    $row->addCheckbox('rollTeachers')->checked('on');
+
+                $form->addRow()->addSubheading(__('Map Classes'));
+                $form->addRow()->addContent(__('Determine which classes from this year roll to which classes in next year, and which not to rollover at all.'))->wrap('<p>', '<p>');
+
+                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth rowHighlight');
+
+                $header = $table->addHeaderRow();
+                    $header->addContent(__('Class'));
+                    $header->addContent(__('New Class'));
+
+                foreach ($currentCourses as $gibbonCourseClassID => $course) {
+                    $row = $table->addRow();
+                        $row->addContent($course['course'].'.'.$course['class']);
+                        $row->addSelect('gibbonCourseClassIDNext['.$gibbonCourseClassID.']')
+                            ->fromArray($nextCourses)
+                            ->selected($course['gibbonCourseClassIDNext'])
+                            ->placeholder()
+                            ->setClass('mediumWidth');
                 }
 
-                if ($resultEnrol->rowCount() < 1) {
-                    echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
-                    echo '</div>';
-                } else {
-                    echo "<table cellspacing='0' style='width: 100%'>";
-                    echo "<tr class='head'>";
-                    echo '<th>';
-                    echo __($guid, 'Class');
-                    echo '</th>';
-                    echo '<th>';
-                    echo __($guid, 'New Class');
-                    echo '</th>';
-                    echo '</tr>';
+                $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
+                $row = $table->addRow();
+                    $row->addFooter();
+                    $row->addSubmit(__('Proceed'));
 
-                    $count = 0;
-                    $rowNum = 'odd';
-                    while ($rowEnrol = $resultEnrol->fetch()) {
-                        if ($count % 2 == 0) {
-                            $rowNum = 'even';
-                        } else {
-                            $rowNum = 'odd';
-                        }
-                        ++$count;
-
-                                //COLOR ROW BY STATUS!
-                                echo "<tr class=$rowNum>";
-                        echo '<td>';
-                        echo "<input type='hidden' name='$count-gibbonCourseClassID' value='".$rowEnrol['gibbonCourseClassID']."'>";
-                        echo $rowEnrol['course'].'.'.$rowEnrol['class'];
-                        echo '</td>';
-                        echo '<td>';
-                        echo "<select name='$count-gibbonCourseClassIDNext' id='$count-gibbonCourseClassIDNext' style='float: left; width:110px'>";
-                        echo "<option value=''></option>";
-                        foreach ($coursesNext as $courseNext) {
-                            $selected = '';
-                                                //Attempt to select...may not be 100%
-                                                if ($courseNext[3] != null) {
-                                                    if ($courseNext[3] == $rowEnrol['course']) {
-                                                        if ($courseNext[2] == $rowEnrol['class']) {
-                                                            $selected = 'selected';
-                                                        }
-                                                    }
-                                                }
-                            echo "<option $selected value='".$courseNext[0]."'>".htmlPrep($courseNext[1]).'.'.htmlPrep($courseNext[2]).'</option>';
-                        }
-                        echo '</select>';
-                        echo '</td>';
-                        echo '</tr>';
-                    }
-                    echo '</table>';
-
-                    echo "<input type='hidden' name='count' value='$count'>";
-                }
-
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo '<tr>';
-                echo '<td>';
-                echo "<span style='font-size: 90%'><i>* ".__($guid, 'denotes a required field').'</span>';
-                echo '</td>';
-                echo "<td class='right'>";
-                echo "<input type='hidden' name='nextYear' value='$nextYear'>";
-                echo "<input type='submit' value='Proceed'>";
-                echo '</td>';
-                echo '</tr>';
-                echo '</table>';
-                echo '</form>';
+                echo $form->getOutput();
             }
         }
     } elseif ($step == 3) {
@@ -297,55 +220,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 $partialFail = false;
 
-                $count = $_POST['count'];
-                $rollStudents = '';
-                if (isset($_POST['rollStudents'])) {
-                    $rollStudents = $_POST['rollStudents'];
-                }
-                $rollTeachers = '';
-                if (isset($_POST['rollTeachers'])) {
-                    $rollTeachers = $_POST['rollTeachers'];
-                }
+                $count = isset($_POST['count'])? $_POST['count'] : '';
+                $rollStudents = isset($_POST['rollStudents'])? $_POST['rollStudents'] : '';
+                $rollTeachers = isset($_POST['rollTeachers'])? $_POST['rollTeachers'] : '';
 
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
                     echo "<div class='error'>";
                     echo __($guid, 'Your request failed because your inputs were invalid.');
                     echo '</div>';
                 } else {
-                    for ($i = 1; $i <= $count; ++$i) {
-                        if (isset($_POST[$i.'-gibbonCourseClassID'])) {
-                            $gibbonCourseClassID = $_POST[$i.'-gibbonCourseClassID'];
-                            if (isset($_POST[$i.'-gibbonCourseClassIDNext'])) {
-                                $gibbonCourseClassIDNext = $_POST[$i.'-gibbonCourseClassIDNext'];
+                    $classes = isset($_POST['gibbonCourseClassIDNext'])? $_POST['gibbonCourseClassIDNext'] : array();
+                    $classes = array_filter($classes);
 
-                                //Get staff and students and copy them over
-                                if ($rollStudents == 'on' and $rollTeachers == 'on') {
-                                    $sqlWhere = " AND (role='Student' OR role='Teacher')";
-                                } elseif ($rollStudents == 'on' and $rollTeachers == '') {
-                                    $sqlWhere = " AND role='Student'";
-                                } else {
-                                    $sqlWhere = " AND role='Teacher'";
-                                }
-                                //Get current enrolment
+                    foreach ($classes as $gibbonCourseClassID => $gibbonCourseClassIDNext) {
+                        //Get staff and students and copy them over
+                        if ($rollStudents == 'on' and $rollTeachers == 'on') {
+                            $sqlWhere = " AND (gibbonCourseClassPerson.role='Student' OR gibbonCourseClassPerson.role='Teacher')";
+                        } elseif ($rollStudents == 'on' and $rollTeachers == '') {
+                            $sqlWhere = " AND gibbonCourseClassPerson.role='Student'";
+                        } else {
+                            $sqlWhere = " AND gibbonCourseClassPerson.role='Teacher'";
+                        }
+                        //Get current enrolment, exclude people already enrolled or their status is not Full
+                        try {
+                            $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonCourseClassIDNext' => $gibbonCourseClassIDNext);
+                            $sqlCurrent = "SELECT gibbonCourseClassPerson.gibbonPersonID, gibbonCourseClassPerson.role
+                            FROM gibbonCourseClassPerson
+                            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                            LEFT JOIN gibbonCourseClassPerson as gibbonCourseClassPersonNext ON (gibbonCourseClassPersonNext.gibbonCourseClassID=:gibbonCourseClassIDNext AND gibbonCourseClassPersonNext.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                            WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                            AND gibbonCourseClassPersonNext.gibbonCourseClassPersonID IS NULL
+                            AND gibbonPerson.status='Full'
+                            $sqlWhere";
+                            $resultCurrent = $connection2->prepare($sqlCurrent);
+                            $resultCurrent->execute($dataCurrent);
+                        } catch (PDOException $e) {
+                            $partialFail = true;
+                        }
+                        if ($resultCurrent->rowCount() > 0) {
+                            while ($rowCurrent = $resultCurrent->fetch()) {
                                 try {
-                                    $dataCurrent = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlCurrent = "SELECT gibbonPersonID, role FROM gibbonCourseClassPerson WHERE gibbonCourseClassID=:gibbonCourseClassID $sqlWhere";
-                                    $resultCurrent = $connection2->prepare($sqlCurrent);
-                                    $resultCurrent->execute($dataCurrent);
+                                    $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role']);
+                                    $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role';
+                                    $resultInsert = $connection2->prepare($sqlInsert);
+                                    $resultInsert->execute($dataInsert);
                                 } catch (PDOException $e) {
                                     $partialFail = true;
-                                }
-                                if ($resultCurrent->rowCount() > 0) {
-                                    while ($rowCurrent = $resultCurrent->fetch()) {
-                                        try {
-                                            $dataInsert = array('gibbonCourseClassID' => $gibbonCourseClassIDNext, 'gibbonPersonID' => $rowCurrent['gibbonPersonID'], 'role' => $rowCurrent['role']);
-                                            $sqlInsert = 'INSERT INTO gibbonCourseClassPerson SET gibbonCourseClassID=:gibbonCourseClassID, gibbonPersonID=:gibbonPersonID, role=:role';
-                                            $resultInsert = $connection2->prepare($sqlInsert);
-                                            $resultInsert->execute($dataInsert);
-                                        } catch (PDOException $e) {
-                                            $partialFail = true;
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -366,4 +286,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         }
     }
 }
-?>

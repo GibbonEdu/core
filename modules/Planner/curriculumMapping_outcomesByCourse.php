@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -40,58 +42,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
     echo __($guid, 'Choose Course');
     echo '</h2>';
 
-    $gibbonCourseID = null;
-    if (isset($_GET['gibbonCourseID'])) {
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-    }
-    ?>
+    $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : null;
+
+	$form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+	$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/curriculumMapping_outcomesByCourse.php');
+
 	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Course') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonCourseID">
-						<?php
-                        echo "<option value=''></option>";
-						$currentDepartment = '';
-						$lastDepartment = '';
+	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+	$sql = "SELECT gibbonCourse.gibbonCourseID, gibbonCourse.name, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, gibbonCourse.nameShort";
+	$result = $pdo->executeQuery($data, $sql);
 
-						try {
-							$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-							$sqlSelect = "SELECT gibbonCourse.*, gibbonDepartment.name AS department FROM gibbonCourse LEFT JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonYearGroupIDList='' ORDER BY department, nameShort";
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							$currentDepartment = $rowSelect['department'];
-							if (($currentDepartment != $lastDepartment) and $currentDepartment != '') {
-								echo "<optgroup label='--".$currentDepartment."--'>";
-							}
+	$courses = ($result->rowCount() > 0)? $result->fetchAll() : array();
+	$courses = array_reduce($courses, function($group, $item) {
+		$group['--'.$item['department'].'--'][$item['gibbonCourseID']] = $item['name'];
+		return $group;
+	}, array());
 
-							if ($gibbonCourseID == $rowSelect['gibbonCourseID']) {
-								echo "<option selected value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							} else {
-								echo "<option value='".$rowSelect['gibbonCourseID']."'>".htmlPrep($rowSelect['name']).'</option>';
-							}
-							$lastDepartment = $rowSelect['department'];
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/curriculumMapping_outcomesByCourse.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+	$row = $form->addRow();
+		$row->addLabel('gibbonCourseID', __('Course'));
+		$row->addSelect('gibbonCourseID')->fromArray($courses)->isRequired()->selected($gibbonCourseID)->placeholder();
+
+	$row = $form->addRow();
+		$row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+	echo $form->getOutput();
 
     if ($gibbonCourseID != '') {
         echo '<h2>';

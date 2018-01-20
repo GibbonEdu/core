@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance by Activity').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Attendance by Date').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -50,6 +50,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     // Options & Filters
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_attendance_byDate.php');
 
+    $form->setClass('noIntBorder fullWidth');
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
@@ -63,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
 
     $row = $form->addRow();
         $row->addFooter();
-        $row->addSubmit();
+        $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 

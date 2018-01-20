@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,8 +29,8 @@ class Google_Service_Sheets_Resource_SpreadsheetsValues extends Google_Service_R
    * Appends values to a spreadsheet. The input range is used to search for
    * existing data and find a "table" within that range. Values will be appended
    * to the next row of the table, starting with the first column of the table.
-   * See the [guide](/sheets/guides/values#appending_values) and [sample
-   * code](/sheets/samples/writing#append_values) for specific details of how
+   * See the [guide](/sheets/api/guides/values#appending_values) and [sample
+   * code](/sheets/api/samples/writing#append_values) for specific details of how
    * tables are detected and data is appended.
    *
    * The caller must specify the spreadsheet ID, range, and a valueInputOption.
@@ -44,8 +44,18 @@ class Google_Service_Sheets_Resource_SpreadsheetsValues extends Google_Service_R
    * @param Google_Service_Sheets_ValueRange $postBody
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string valueInputOption How the input data should be interpreted.
+   * @opt_param bool includeValuesInResponse Determines if the update response
+   * should include the values of the cells that were appended. By default,
+   * responses do not include the updated values.
+   * @opt_param string responseValueRenderOption Determines how values in the
+   * response should be rendered. The default render option is
+   * ValueRenderOption.FORMATTED_VALUE.
    * @opt_param string insertDataOption How the input data should be inserted.
+   * @opt_param string valueInputOption How the input data should be interpreted.
+   * @opt_param string responseDateTimeRenderOption Determines how dates, times,
+   * and durations in the response should be rendered. This is ignored if
+   * response_value_render_option is FORMATTED_VALUE. The default dateTime render
+   * option is [DateTimeRenderOption.SERIAL_NUMBER].
    * @return Google_Service_Sheets_AppendValuesResponse
    */
   public function append($spreadsheetId, $range, Google_Service_Sheets_ValueRange $postBody, $optParams = array())
@@ -78,12 +88,13 @@ class Google_Service_Sheets_Resource_SpreadsheetsValues extends Google_Service_R
    * @param string $spreadsheetId The ID of the spreadsheet to retrieve data from.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string ranges The A1 notation of the values to retrieve.
    * @opt_param string valueRenderOption How values should be represented in the
-   * output.
+   * output. The default render option is ValueRenderOption.FORMATTED_VALUE.
    * @opt_param string dateTimeRenderOption How dates, times, and durations should
    * be represented in the output. This is ignored if value_render_option is
-   * FORMATTED_VALUE.
+   * FORMATTED_VALUE. The default dateTime render option is
+   * [DateTimeRenderOption.SERIAL_NUMBER].
+   * @opt_param string ranges The A1 notation of the values to retrieve.
    * @opt_param string majorDimension The major dimension that results should use.
    *
    * For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then
@@ -140,10 +151,11 @@ class Google_Service_Sheets_Resource_SpreadsheetsValues extends Google_Service_R
    * @param array $optParams Optional parameters.
    *
    * @opt_param string valueRenderOption How values should be represented in the
-   * output.
+   * output. The default render option is ValueRenderOption.FORMATTED_VALUE.
    * @opt_param string dateTimeRenderOption How dates, times, and durations should
    * be represented in the output. This is ignored if value_render_option is
-   * FORMATTED_VALUE.
+   * FORMATTED_VALUE. The default dateTime render option is
+   * [DateTimeRenderOption.SERIAL_NUMBER].
    * @opt_param string majorDimension The major dimension that results should use.
    *
    * For example, if the spreadsheet data is: `A1=1,B1=2,A2=3,B2=4`, then
@@ -167,6 +179,18 @@ class Google_Service_Sheets_Resource_SpreadsheetsValues extends Google_Service_R
    * @param Google_Service_Sheets_ValueRange $postBody
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string responseDateTimeRenderOption Determines how dates, times,
+   * and durations in the response should be rendered. This is ignored if
+   * response_value_render_option is FORMATTED_VALUE. The default dateTime render
+   * option is [DateTimeRenderOption.SERIAL_NUMBER].
+   * @opt_param bool includeValuesInResponse Determines if the update response
+   * should include the values of the cells that were updated. By default,
+   * responses do not include the updated values. If the range to write was larger
+   * than than the range actually written, the response will include all values in
+   * the requested range (excluding trailing empty rows and columns).
+   * @opt_param string responseValueRenderOption Determines how values in the
+   * response should be rendered. The default render option is
+   * ValueRenderOption.FORMATTED_VALUE.
    * @opt_param string valueInputOption How the input data should be interpreted.
    * @return Google_Service_Sheets_UpdateValuesResponse
    */

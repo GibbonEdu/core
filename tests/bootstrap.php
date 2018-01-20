@@ -17,9 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-require_once '../gibbon.php';
+global $gibbon, $guid;
 
-$installType = getSettingByScope($connection2, 'System', 'installType');
-if ($installType == 'Production') {
-    die('ERROR: Test suite cannot run on a production system.'."\n");
+// Prevent installer redirect
+if (!file_exists(__DIR__ . '/../config.php')) {
+    $_SERVER['PHP_SELF'] = 'installer/install.php';
+}
+
+require_once __DIR__ . '/../gibbon.php';
+
+if ($gibbon->isInstalled()) {
+    $installType = getSettingByScope($connection2, 'System', 'installType');
+    if ($installType == 'Production') {
+        die('ERROR: Test suite cannot run on a production system.'."\n");
+    }
 }

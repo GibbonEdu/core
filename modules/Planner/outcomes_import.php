@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.php') == false) {
@@ -59,66 +61,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
 
         //STEP 1, SELECT TERM
         if ($step == 1) {
+
+            echo '<h2>';
+            echo __('Step 1 - Select CSV Files');
+            echo '</h2>';
+            echo '<p>';
+            echo __('This page allows you to import outcomes from a CSV file, based on your access level in Manage Outcomes.');
+            echo '</p>';
+
+
+            $form = Form::create('importOutcomes', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/outcomes_import.php&step=2');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+                $row->addFileUpload('file')->isRequired()->accepts('.csv');
+
+            $row = $form->addRow();
+                $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+                $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+            $row = $form->addRow();
+                $row->addLabel('stringEnclosure', __('String Enclosure'));
+                $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
             ?>
-			<h2>
-				<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-			</h2>
-			<p>
-				<?php echo __($guid, 'This page allows you to import outcomes from a CSV file, based on your access level in Manage Outcomes.') ?><br/>
-			</p>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/outcomes_import.php&step=2' ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-						</td>
-						<td class="right">
-							<input type="file" name="file" id="file" size="chars">
-							<script type="text/javascript">
-								var file=new LiveValidation('file');
-								file.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-							<script type="text/javascript">
-								var fieldDelimiter=new LiveValidation('fieldDelimiter');
-								fieldDelimiter.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-							<script type="text/javascript">
-								var stringEnclosure=new LiveValidation('stringEnclosure');
-								stringEnclosure.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-		
-		
 		
 			<h4>
 				<?php echo __($guid, 'Notes') ?>

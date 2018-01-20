@@ -30,7 +30,7 @@ use Gibbon\Forms\OutputableInterface;
 class Trigger implements OutputableInterface
 {
     protected $elementType;
-    protected $elementValue;
+    protected $elementValue = array();
 
     protected $targetSelector;
     protected $sourceSelector;
@@ -38,11 +38,20 @@ class Trigger implements OutputableInterface
 
     protected $negate;
 
+    /**
+     * Create a trigger to toggle visibility of the specified CSS/jQuery selector.
+     * @param  string  $selector
+     */
     public function __construct($selector)
     {
         $this->targetSelector = $selector;
     }
 
+    /**
+     * Link this trigger to a select input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onSelect($name)
     {
         $this->elementType = 'select';
@@ -52,6 +61,11 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Link this trigger to a checkbox input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onCheckbox($name)
     {
         $this->elementType = 'checkbox';
@@ -61,6 +75,11 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Link this trigger to a radio input by name.
+     * @param   string  $name
+     * @return  self
+     */
     public function onRadio($name)
     {
         $this->elementType = 'radio';
@@ -70,34 +89,55 @@ class Trigger implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Set which value the trigger should respond to.
+     * @param   string  $value
+     * @return  self
+     */
     public function when($value)
     {
         if ($this->elementType == 'checkbox') {
             $this->sourceValueSelector .= '[value="'.$value.'"]';
         }
 
-        $this->elementValue = $value;
+        $this->elementValue = (is_array($value))? $value : array($value);
         return $this;
     }
 
+    /**
+     * Set the trigger to respond to all values except the specified one.
+     * @param   string  $value
+     * @return  self
+     */
     public function whenNot($value)
     {
         $this->negate = true;
         return $this->when($value);
     }
 
+    /**
+     * Get the javascript output of the trigger.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';
+        
+        // Build a set of value comparisons for the source input
+        $comparisons = array();
+        foreach ($this->elementValue as $value) {
+            $comparisons[] = "$('{$this->sourceValueSelector}').val() == '{$value}'";
+        }
 
-        $opSame = ($this->negate)? '!=' : '==';
-        $opDiff = ($this->negate)? '==' : '!=';
+        // Join into a string, and negate the comparison for use with whenNot()
+        $comparisons = implode('||', $comparisons);
+        $comparisons = ($this->negate)? "!($comparisons)" : "($comparisons)";
 
         // Change target visibility if source value equals trigger value
         // Handles LiveValidation by also disabling/enabling inputs
         // The change() call activates any nested triggers
         $output .= "$('{$this->sourceSelector}').change(function(){ \n";
-            $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && $('{$this->sourceValueSelector}').val() {$opSame} '{$this->elementValue}' ) { \n";
+            $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
                 $output .= "$('{$this->targetSelector} :input').prop('disabled', false).change(); \n";
             $output .= "} else { \n";
@@ -107,7 +147,7 @@ class Trigger implements OutputableInterface
         $output .= "}); \n";
 
         // Hide all initial targets if the source value does not equal the trigger value
-        $output .= "if ( $('{$this->sourceValueSelector}').val() {$opDiff} '{$this->elementValue}') { \n";
+        $output .= "if ( !({$comparisons}) ) { \n";
             $output .= "$('{$this->targetSelector}').hide(); \n";
             $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
         $output .= "} \n\n";

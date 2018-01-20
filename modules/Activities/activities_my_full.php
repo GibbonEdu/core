@@ -110,7 +110,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my_f
                 echo '</tr>';
                 echo '<tr>';
                 echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Payment').'</span><br/>';
+                if ($row['paymentFirmness'] == 'Finalised') {
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Cost (%1$s)'), $row['paymentType']).'</span><br/>';
+                }
+                else {
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, '%1$s Cost (%2$s)'), $row['paymentFirmness'], $row['paymentType']).'</span><br/>';
+                }
                 if ($row['payment'] == 0) {
                     echo '<i>'.__($guid, 'None').'</i>';
                 } else {

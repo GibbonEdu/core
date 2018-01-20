@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,6 +23,7 @@ class Google_Service_Genomics_OperationMetadata extends Google_Collection
   public $endTime;
   protected $eventsType = 'Google_Service_Genomics_OperationEvent';
   protected $eventsDataType = 'array';
+  public $labels;
   public $projectId;
   public $request;
   public $runtimeMetadata;
@@ -52,13 +53,27 @@ class Google_Service_Genomics_OperationMetadata extends Google_Collection
   {
     return $this->endTime;
   }
+  /**
+   * @param Google_Service_Genomics_OperationEvent
+   */
   public function setEvents($events)
   {
     $this->events = $events;
   }
+  /**
+   * @return Google_Service_Genomics_OperationEvent
+   */
   public function getEvents()
   {
     return $this->events;
+  }
+  public function setLabels($labels)
+  {
+    $this->labels = $labels;
+  }
+  public function getLabels()
+  {
+    return $this->labels;
   }
   public function setProjectId($projectId)
   {

@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -66,130 +69,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo '<h3>';
         echo __($guid, 'Filter');
         echo '</h3>';
-        echo "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>";
-        echo "<table class='noIntBorder' cellspacing='0' style='width: 100%'>";
-        ?>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Student') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="gibbonPersonID" id="gibbonPersonID" class="standardWidth">
-							<option value=""></option>
-							<?php
-                            try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-                                $resultSelect = $connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            } catch (PDOException $e) {
-                            }
-							while ($rowSelect = $resultSelect->fetch()) {
-								if ($gibbonPersonID == $rowSelect['gibbonPersonID']) {
-									echo "<option selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-								} else {
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['nameShort']).')</option>';
-								}
-							}
-							?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Roll Group') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<?php
-                        try {
-                            $dataPurpose = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlPurpose = 'SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-                            $resultPurpose = $connection2->prepare($sqlPurpose);
-                            $resultPurpose->execute($dataPurpose);
-                        } catch (PDOException $e) {
-                        }
 
-						echo "<select name='gibbonRollGroupID' id='gibbonRollGroupID' style='width: 302px'>";
-						echo "<option value=''></option>";
-						while ($rowPurpose = $resultPurpose->fetch()) {
-							$selected = '';
-							if ($rowPurpose['gibbonRollGroupID'] == $gibbonRollGroupID) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowPurpose['gibbonRollGroupID']."'>".$rowPurpose['name'].'</option>';
-						}
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Year Group') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<?php
-                        try {
-                            $dataPurpose = array();
-                            $sqlPurpose = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-                            $resultPurpose = $connection2->prepare($sqlPurpose);
-                            $resultPurpose->execute($dataPurpose);
-                        } catch (PDOException $e) {
-                        }
+        $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form->setClass('noIntBorder fullWidth');
+            $form->setFactory(DatabaseFormFactory::create($pdo));
 
-						echo "<select name='gibbonYearGroupID' id='gibbonYearGroupID' style='width: 302px'>";
-						echo "<option value=''></option>";
-						while ($rowPurpose = $resultPurpose->fetch()) {
-							$selected = '';
-							if ($rowPurpose['gibbonYearGroupID'] == $gibbonYearGroupID) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowPurpose['gibbonYearGroupID']."'>".__($guid, $rowPurpose['name']).'</option>';
-						}
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<tr>
-					<td>
-						<b><?php echo __($guid, 'Type') ?></b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<?php
-                        echo "<select name='type' id='type' style='width: 302px'>";
-						echo "<option value=''></option>";
-						$selected = '';
-						if ($type == 'Positive') {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='Positive'>".__($guid, 'Positive').'</option>';
-						$selected = '';
-						if ($type == 'Negative') {
-							$selected = 'selected';
-						}
-						echo "<option $selected value='Negative'>".__($guid, 'Negative').'</option>';
-						echo '</select>';
-						?>
-					</td>
-				</tr>
-				<?php
+            $form->addHiddenValue('q', "/modules/Behaviour/behaviour_manage.php");
 
-                echo '<tr>';
-				echo "<td class='right' colspan=2>";
-				echo "<input type='hidden' name='q' value='".$_GET['q']."'>";
-				echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Clear Filters').'</a> ';
-				echo "<input type='submit' value='".__($guid, 'Go')."'>";
-				echo '</td>';
-			echo '</tr>';
-        echo '</table>';
-        echo '</form>';
+        //Students
+        $students = array();
 
-        echo '<h3>';
-        echo __($guid, 'Behaviour Records');
-        echo '</h3>';
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonID',__('Student'));
+            $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonPersonID)->placeholder();
+
+        //Roll Group
+        $row = $form->addRow();
+            $row->addLabel('gibbonRollGroupID',__('Roll Group'));
+            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder();
+
+        //Year Group
+        $row = $form->addRow();
+            $row->addLabel('gibbonYearGroupID',__('Year Group'));
+            $row->addSelectYearGroup('gibbonYearGroupID')->placeholder()->selected($gibbonYearGroupID);
+
+        //Type
+        $row = $form->addRow();
+            $row->addLabel('type',__('Type'));
+            $row->addSelect('type')->fromArray(array('Positive', 'Negative'))->selected($type)->placeholder();
+
+
+        $row = $form->addRow();
+            $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
+
+        echo $form->getOutput();
+
+
         //Set pagination variable
         $page = 1;
         if (isset($_GET['page'])) {
@@ -338,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 echo '</td>';
                 echo '<td>';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_edit.php&gibbonBehaviourID='.$row['gibbonBehaviourID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_delete.php&gibbonBehaviourID='.$row['gibbonBehaviourID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/behaviour_manage_delete.php&gibbonBehaviourID='.$row['gibbonBehaviourID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID&type=$type&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count\").hide();";

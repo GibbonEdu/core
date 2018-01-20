@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -67,192 +70,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     $gibbonAttendanceCodeID = (isset($_REQUEST["gibbonAttendanceCodeID"]))? $_REQUEST["gibbonAttendanceCodeID"] : 0;
     $reportType = (empty($gibbonAttendanceCodeID))? 'types' : 'reasons';
 
-    ?>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_summary_byDate.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>
-			<tr>
-				<td style='width: 275px'>
-					<b><?php echo __($guid, 'Start Date') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Format:').' ';
-					if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-						echo 'dd/mm/yyyy';
-					} else {
-						echo $_SESSION[$guid]['i18n']['dateFormat'];
-					}
-					?></span>
-				</td>
-				<td class="right">
-                    <input name="dateStart" id="dateStart" maxlength=10 value="<?php echo dateConvertBack($guid, $dateStart) ?>" type="text" class="standardWidth">
-                    <script type="text/javascript">
-                        var dateStart=new LiveValidation('dateStart');
-                        dateStart.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                        }
-                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                            echo 'dd/mm/yyyy';
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                        }
-                        ?>." } );
-                        dateStart.add(Validate.Presence);
-                    </script>
-                     <script type="text/javascript">
-                        $(function() {
-                            $( "#dateStart" ).datepicker();
-                        });
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <td style='width: 275px'>
-                    <b><?php echo __($guid, 'End Date') ?> *</b><br/>
-                    <span class="emphasis small"><?php echo __($guid, 'Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']  ?></span>
-                </td>
-                <td class="right">
-                    <input name="dateEnd" id="dateEnd" maxlength=10 value="<?php echo dateConvertBack($guid, $dateEnd) ?>" type="text" class="standardWidth">
-                    <script type="text/javascript">
-                        var dateEnd=new LiveValidation('dateEnd');
-                        dateEnd.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                        }
-                            ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                            echo 'dd/mm/yyyy';
-                        } else {
-                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                        }
-                        ?>." } );
-                        dateEnd.add(Validate.Presence);
-                    </script>
-                     <script type="text/javascript">
-                        $(function() {
-                            $( "#dateEnd" ).datepicker();
-                        });
-                    </script>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <b><?php echo __($guid, 'Group By') ?></b><br/>
-                </td>
-                <td class="right">
-                    <select id="group" name="group" class="standardWidth">
-                    <option value="" <?php if ($group == '') { echo 'selected'; } ?>><?php echo __($guid, 'Please select...'); ?></option>
-                        <option value="all" <?php if ($group == 'all') { echo 'selected'; } ?>><?php echo __($guid, 'All Students'); ?></option>
-                        <?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
-                            <option value="class" <?php if ($group == 'class') { echo 'selected'; } ?>><?php echo __($guid, 'Class'); ?></option>
-                        <?php endif; ?>
-                        <option value="rollGroup" <?php if ($group == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
-                    </select>
-                </td>
-            </tr>
-            <script type="text/javascript">
-                /* Show/Hide Control */
-                $(document).ready(function(){
-                     $("#group").change(function(){
-                        if ($('#group').val()=='class' ) {
-                            $("#groupByClass").slideDown("fast", $("#groupByClass").css("display","table-row"));
-                        } else {
-                            $("#groupByClass").css("display","none");
-                        }
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
-                        if ($('#group').val()=='rollGroup' ) {
-                            $("#groupByRollGroup").slideDown("fast", $("#groupByRollGroup").css("display","table-row"));
-                        } else {
-                            $("#groupByRollGroup").css("display","none");
-                        }
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_summary_byDate.php");
 
-                     });
-                });
-            </script>
-            <tr id="groupByClass" <?php if ($group != 'class') { echo "style='display: none'"; } ?>>
-                <td>
-                    <b><?php echo __($guid, 'Class') ?> *</b><br/>
-                    <span class="emphasis small"></span>
-                </td>
-                <td class="right">
-                    <select style="width: 302px" name="gibbonCourseClassID">
-                        <?php
-                        echo "<option value=''>" . __($guid, 'Please select...') . "</option>" ;
+    $row = $form->addRow();
+        $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
 
-                        try {
-                            $dataSelect=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
-                            $sqlSelect="SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.attendance='Y' ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort" ;
-                            $resultSelect=$connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        }
-                        catch(PDOException $e) {
-                            print "<div class='error'>" . $e->getMessage() . "</div>" ;
-                        }
+    $row = $form->addRow();
+        $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
 
+    $options = array("all" => "All Students");
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+        $options["class"] = "Class";
+    }
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
+        $options["rollGroup"] = "Roll Group";
+    }
+    $row = $form->addRow();
+        $row->addLabel('group', __('Group By'));
+        $row->addSelect('group')->fromArray($options)->selected($group)->isRequired();
 
-                        while ($rowSelect=$resultSelect->fetch()) {
-                            if ($gibbonCourseClassID==$rowSelect["gibbonCourseClassID"]) {
-                                print "<option selected value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
-                            }
-                            else {
-                                print "<option value='" . $rowSelect["gibbonCourseClassID"] . "'>" . htmlPrep($rowSelect["course"]) . "." . htmlPrep($rowSelect["class"]) . "</option>" ;
-                            }
-                        }
+    $form->toggleVisibilityByClass('class')->onSelect('group')->when('class');
+    $row = $form->addRow()->addClass('class');
+        $row->addLabel('gibbonCourseClassID', __('Class'));
+        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->isRequired();
 
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            <tr id="groupByRollGroup" <?php if ($group != 'rollGroup') { echo "style='display: none'"; } ?>>
-                <td>
-                    <b><?php echo __($guid, 'Roll Group') ?> *</b><br/>
-                    <span class="emphasis small"></span>
-                </td>
-                <td class="right">
-                    <select class="standardWidth" name="gibbonRollGroupID">
-                        <?php
-                        echo "<option value=''>" . __($guid, 'Please select...') . "</option>" ;
-                        try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = "SELECT * FROM gibbonRollGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y' ORDER BY LENGTH(name), name";
-                            $resultSelect = $connection2->prepare($sqlSelect);
-                            $resultSelect->execute($dataSelect);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
+    $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
+    $row = $form->addRow()->addClass('rollGroup');
+        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->isRequired();
 
-                        while ($rowSelect = $resultSelect->fetch()) {
-                            if ($gibbonRollGroupID == $rowSelect['gibbonRollGroupID']) {
-                                echo "<option selected value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            } else {
-                                echo "<option value='".$rowSelect['gibbonRollGroupID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                            }
-                        }
-                        ?>
-                    </select>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <b><?php echo __($guid, 'Sort By') ?></b><br/>
-                </td>
-                <td class="right">
-                    <select name="sort" class="standardWidth">
-                        <option value="surname" <?php if ($sort == 'surname') { echo 'selected'; } ?>><?php echo __($guid, 'Surname'); ?></option>
-                        <option value="preferredName" <?php if ($sort == 'preferredName') { echo 'selected'; } ?>><?php echo __($guid, 'Given Name'); ?></option>
-                        <option value="rollGroup" <?php if ($sort == 'rollGroup') { echo 'selected'; } ?>><?php echo __($guid, 'Roll Group'); ?></option>
-                    </select>
-                </td>
-            </tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="address" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_graph_byType.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $row = $form->addRow();
+        $row->addLabel('sort', __('Sort By'));
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
+
     // Get attendance codes
     try {
         if (!empty($gibbonAttendanceCodeID)) {

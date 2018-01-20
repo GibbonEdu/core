@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     //Acess denied
@@ -59,10 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
-            if ($_GET['search'] != '') {
+            $values = $result->fetch();
+
+            $search = (isset($_GET['search']))? $_GET['search'] : '';
+            if (!empty($search)) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -72,110 +74,39 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                 echo $policy;
                 echo '</div>';
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$_GET['search'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Username') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input readonly name="username" id="username" maxlength=20 value="<?php echo htmlPrep($row['username']) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var username=new LiveValidation('username');
-								username.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Password') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input type='button' class="generatePassword" value="<?php echo __($guid, 'Generate Password') ?>"/>
-							<input name="passwordNew" id="passwordNew" maxlength=30 value="" type="password" class="standardWidth"><br/>
 
-							<script type="text/javascript">
-								var passwordNew=new LiveValidation('passwordNew');
-								passwordNew.add(Validate.Presence);
-								<?php
-                                $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
-								$numeric = getSettingByScope($connection2, 'System', 'passwordPolicyNumeric');
-								$punctuation = getSettingByScope($connection2, 'System', 'passwordPolicyNonAlphaNumeric');
-								$minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
-								if ($alpha == 'Y') {
-									echo 'passwordNew.add( Validate.Format, { pattern: /.*(?=.*[a-z])(?=.*[A-Z]).*/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-								}
-								if ($numeric == 'Y') {
-									echo 'passwordNew.add( Validate.Format, { pattern: /.*[0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-								}
-								if ($punctuation == 'Y') {
-									echo 'passwordNew.add( Validate.Format, { pattern: /[^a-zA-Z0-9]/, failureMessage: "'.__($guid, 'Does not meet password policy.').'" } );';
-								}
-								if (is_numeric($minLength)) {
-									echo 'passwordNew.add( Validate.Length, { minimum: '.$minLength.'} );';
-								}
-								?>
+            $form = Form::create('resetUserPassword', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/user_manage_passwordProcess.php?gibbonPersonID='.$gibbonPersonID.'&search='.$search);
 
-								$(".generatePassword").click(function(){
-									var chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789![]{}()%&*$#^<>~@|';
-									var text = '';
-									for(var i=0; i < <?php echo $minLength + 4 ?>; i++) {
-										if (i==0) { text += chars.charAt(Math.floor(Math.random() * 26)); }
-										else if (i==1) { text += chars.charAt(Math.floor(Math.random() * 26)+26); }
-										else if (i==2) { text += chars.charAt(Math.floor(Math.random() * 10)+52); }
-										else if (i==3) { text += chars.charAt(Math.floor(Math.random() * 19)+62); }
-										else { text += chars.charAt(Math.floor(Math.random() * chars.length)); }
-									}
-									$('input[name="passwordNew"]').val(text);
-									$('input[name="passwordConfirm"]').val(text);
-									alert('<?php echo __($guid, 'Copy this password if required:') ?>' + '\r\n\r\n' + text) ;
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Confirm Password') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="passwordConfirm" id="passwordConfirm" maxlength=30 value="" type="password" class="standardWidth">
-							<script type="text/javascript">
-								var passwordConfirm=new LiveValidation('passwordConfirm');
-								passwordConfirm.add(Validate.Presence);
-								passwordConfirm.add(Validate.Confirmation, { match: 'passwordNew' } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Force Reset Password?') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'User will be prompted on next login.') ?></span>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="passwordForceReset">
-								<option <?php if ($row['passwordForceReset'] == 'Y') { echo 'selected '; } ?>value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option <?php if ($row['passwordForceReset'] == 'N') { echo 'selected '; } ?>value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'));
+                $row->addTextField('username')->isRequired()->readOnly()->setValue($values['username']);
+
+            $row = $form->addRow();
+                $row->addLabel('passwordNew', __('Password'));
+                $row->addPassword('passwordNew')
+                    ->addPasswordPolicy($pdo)
+                    ->addGeneratePasswordButton($form)
+                    ->isRequired()
+                    ->maxLength(30);
+
+            $row = $form->addRow();
+                $row->addLabel('passwordConfirm', __('Confirm Password'));
+                $row->addPassword('passwordConfirm')
+                    ->addConfirmation('passwordNew')
+                    ->isRequired()
+                    ->maxLength(30);
+
+            $row = $form->addRow();
+                $row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
+                $row->addYesNo('passwordForceReset')->isRequired()->selected('N');
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>

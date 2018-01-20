@@ -33,7 +33,13 @@ class Checkbox extends Input
 
     protected $description;
     protected $checked = array();
+    protected $checkall = false;
+    protected $inline = false;
 
+    /**
+     * Create a checkpox input with a default value of on when checked.
+     * @param  string  $name
+     */
     public function __construct($name)
     {
         $this->setName($name);
@@ -41,12 +47,22 @@ class Checkbox extends Input
         $this->setValue('on');
     }
 
+    /**
+     * Sets an inline label next to the checkbox input.
+     * @param   string  $value
+     * @return  self
+     */
     public function description($value = '')
     {
         $this->description = $value;
         return $this;
     }
 
+    /**
+     * Set a value or array of values that are currently checked.
+     * @param   string  $values
+     * @return  self
+     */
     public function checked($values)
     {
         if ($values === 1 || $values === true) $values = 'on';
@@ -62,6 +78,48 @@ class Checkbox extends Input
         return $this;
     }
 
+    /**
+     * Set the checked element(s) to include all available options.
+     * @return  self
+     */
+    public function checkAll()
+    {
+        if (!empty($this->options)) {
+            $this->checked = array_keys($this->options);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a checkall box to the top of the checkbox list, pass a label in otherwise defaults to All / None.
+     * @param   string  $label
+     * @return  self
+     */
+    public function addCheckAllNone($label = '')
+    {
+        if (empty($label)) $label = __('All').' / '.__('None');
+
+        $this->checkall = $label;
+        return $this;
+    }
+
+    /**
+     * Sets multiple checkbox elements to display horizontally.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function inline($value = true)
+    {
+        $this->inline = $value;
+        return $this;
+    }
+
+    /**
+     * Return true if the passed value matches the current checkbox element value(s).
+     * @param   mixed  $value
+     * @return  bool
+     */
     protected function getIsChecked($value)
     {
         if (empty($value) || empty($this->checked)) {
@@ -71,21 +129,59 @@ class Checkbox extends Input
         return (in_array($value, $this->checked))? 'checked' : '';
     }
 
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         $output = '';
 
-        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->getValue() => $this->description);
-        $name = (count($this->options)>1 && stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
+        if (!empty($this->getOptions())) {
+            // Multiple checkboxes - ensure the form values are returned as an array
+            $name = (stripos($this->getName(), '[') === false)? $this->getName().'[]' : $this->getName();
+        } else {
+            // Single checkbox - build an options array
+            $this->options = array($this->getValue() => $this->description);
+            $name = $this->getName();
+        }
 
         if (!empty($this->options) && is_array($this->options)) {
+            $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
+            $hasMultiple = count($this->options) > 1;
+
+            if ($hasMultiple) {
+                $output .= '<fieldset id="'.$this->getID().'" style="border: 0px;">';
+            }
+            
+            if (!empty($this->checkall)) {
+                $checked = (count($this->options) == count($this->checked))? 'checked' : '';
+                $output .= '<label for="checkall'.$identifier.'">'.$this->checkall.'</label> ';
+                $output .= '<input id="checkall'.$identifier.'" class="checkall" type="checkbox" '.$checked.'><br/>';
+            }
+
+            $count = 0;
             foreach ($this->options as $value => $label) {
+                if ($hasMultiple) {
+                    $this->setID($identifier.$count);
+                }
                 $this->setName($name);
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
-                $output .= '<label title="'.$label.'">'.$label.'</label> ';
-                $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                if ($this->inline) {
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                } else {
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                }
+
+                $count++;
+            }
+
+            if ($hasMultiple) {
+                $output .= '</fieldset>';
             }
         }
 

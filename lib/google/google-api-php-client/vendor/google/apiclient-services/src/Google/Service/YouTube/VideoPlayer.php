@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,8 +17,18 @@
 
 class Google_Service_YouTube_VideoPlayer extends Google_Model
 {
+  public $embedHeight;
   public $embedHtml;
+  public $embedWidth;
 
+  public function setEmbedHeight($embedHeight)
+  {
+    $this->embedHeight = $embedHeight;
+  }
+  public function getEmbedHeight()
+  {
+    return $this->embedHeight;
+  }
   public function setEmbedHtml($embedHtml)
   {
     $this->embedHtml = $embedHtml;
@@ -26,5 +36,13 @@ class Google_Service_YouTube_VideoPlayer extends Google_Model
   public function getEmbedHtml()
   {
     return $this->embedHtml;
+  }
+  public function setEmbedWidth($embedWidth)
+  {
+    $this->embedWidth = $embedWidth;
+  }
+  public function getEmbedWidth()
+  {
+    return $this->embedWidth;
   }
 }

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,15 +27,19 @@ class Google_Service_YouTube_VideoFileDetails extends Google_Collection
   public $fileName;
   public $fileSize;
   public $fileType;
-  protected $recordingLocationType = 'Google_Service_YouTube_GeoPoint';
-  protected $recordingLocationDataType = '';
   protected $videoStreamsType = 'Google_Service_YouTube_VideoFileDetailsVideoStream';
   protected $videoStreamsDataType = 'array';
 
+  /**
+   * @param Google_Service_YouTube_VideoFileDetailsAudioStream
+   */
   public function setAudioStreams($audioStreams)
   {
     $this->audioStreams = $audioStreams;
   }
+  /**
+   * @return Google_Service_YouTube_VideoFileDetailsAudioStream
+   */
   public function getAudioStreams()
   {
     return $this->audioStreams;
@@ -96,18 +100,16 @@ class Google_Service_YouTube_VideoFileDetails extends Google_Collection
   {
     return $this->fileType;
   }
-  public function setRecordingLocation(Google_Service_YouTube_GeoPoint $recordingLocation)
-  {
-    $this->recordingLocation = $recordingLocation;
-  }
-  public function getRecordingLocation()
-  {
-    return $this->recordingLocation;
-  }
+  /**
+   * @param Google_Service_YouTube_VideoFileDetailsVideoStream
+   */
   public function setVideoStreams($videoStreams)
   {
     $this->videoStreams = $videoStreams;
   }
+  /**
+   * @return Google_Service_YouTube_VideoFileDetailsVideoStream
+   */
   public function getVideoStreams()
   {
     return $this->videoStreams;

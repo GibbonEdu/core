@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -85,7 +85,9 @@ class Google_Service_Gmail_Resource_UsersSettings extends Google_Service_Resourc
   /**
    * Updates the auto-forwarding setting for the specified account. A verified
    * forwarding address must be specified when auto-forwarding is enabled.
-   * (settings.updateAutoForwarding)
+   *
+   * This method is only available to service account clients that have been
+   * delegated domain-wide authority. (settings.updateAutoForwarding)
    *
    * @param string $userId User's email address. The special value "me" can be
    * used to indicate the authenticated user.

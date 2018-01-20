@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -54,7 +54,8 @@ class Google_Service_Dfareporting_Resource_Sites extends Google_Service_Resource
     return $this->call('insert', array($params), "Google_Service_Dfareporting_Site");
   }
   /**
-   * Retrieves a list of sites, possibly filtered. (sites.listSites)
+   * Retrieves a list of sites, possibly filtered. This method supports paging.
+   * (sites.listSites)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.
@@ -81,7 +82,7 @@ class Google_Service_Dfareporting_Resource_Sites extends Google_Service_Resource
    * the end of the search string. For example, a search string of "site" will
    * match objects with name "my site", "site 2015", or simply "site".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @opt_param string subaccountId Select only sites with this subaccount ID.
    * @opt_param bool unmappedSite Select only sites that have not been mapped to a
    * directory site.

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -51,7 +51,8 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
    * subscriptions. Existing subscriptions to this topic are not deleted, but
    * their `topic` field is set to `_deleted-topic_`. (topics.delete)
    *
-   * @param string $topic Name of the topic to delete.
+   * @param string $topic Name of the topic to delete. Format is
+   * `projects/{project}/topics/{topic}`.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_PubsubEmpty
    */
@@ -64,7 +65,8 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
   /**
    * Gets the configuration of a topic. (topics.get)
    *
-   * @param string $topic The name of the topic to get.
+   * @param string $topic The name of the topic to get. Format is
+   * `projects/{project}/topics/{topic}`.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_Topic
    */
@@ -79,8 +81,8 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
    * resource exists and does not have a policy set. (topics.getIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * requested. `resource` is usually specified as a path. For example, a Project
-   * resource is specified as `projects/{project}`.
+   * requested. See the operation documentation for the appropriate value for this
+   * field.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_Policy
    */
@@ -94,12 +96,13 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
    * Lists matching topics. (topics.listProjectsTopics)
    *
    * @param string $project The name of the cloud project that topics belong to.
+   * Format is `projects/{project}`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize Maximum number of topics to return.
    * @opt_param string pageToken The value returned by the last
    * `ListTopicsResponse`; indicates that this is a continuation of a prior
    * `ListTopics` call, and that the system should return the next page of data.
+   * @opt_param int pageSize Maximum number of topics to return.
    * @return Google_Service_Pubsub_ListTopicsResponse
    */
   public function listProjectsTopics($project, $optParams = array())
@@ -110,11 +113,11 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
   }
   /**
    * Adds one or more messages to the topic. Returns `NOT_FOUND` if the topic does
-   * not exist. The message payload must not be empty; it must contain either a
+   * not exist. The message payload must not be empty; it must contain  either a
    * non-empty data field, or at least one attribute. (topics.publish)
    *
    * @param string $topic The messages in the request will be published on this
-   * topic.
+   * topic. Format is `projects/{project}/topics/{topic}`.
    * @param Google_Service_Pubsub_PublishRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_PublishResponse
@@ -130,8 +133,8 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
    * existing policy. (topics.setIamPolicy)
    *
    * @param string $resource REQUIRED: The resource for which the policy is being
-   * specified. `resource` is usually specified as a path. For example, a Project
-   * resource is specified as `projects/{project}`.
+   * specified. See the operation documentation for the appropriate value for this
+   * field.
    * @param Google_Service_Pubsub_SetIamPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_Policy
@@ -143,12 +146,17 @@ class Google_Service_Pubsub_Resource_ProjectsTopics extends Google_Service_Resou
     return $this->call('setIamPolicy', array($params), "Google_Service_Pubsub_Policy");
   }
   /**
-   * Returns permissions that a caller has on the specified resource.
-   * (topics.testIamPermissions)
+   * Returns permissions that a caller has on the specified resource. If the
+   * resource does not exist, this will return an empty set of permissions, not a
+   * NOT_FOUND error.
+   *
+   * Note: This operation is designed to be used for building permission-aware UIs
+   * and command-line tools, not for authorization checking. This operation may
+   * "fail open" without warning. (topics.testIamPermissions)
    *
    * @param string $resource REQUIRED: The resource for which the policy detail is
-   * being requested. `resource` is usually specified as a path. For example, a
-   * Project resource is specified as `projects/{project}`.
+   * being requested. See the operation documentation for the appropriate value
+   * for this field.
    * @param Google_Service_Pubsub_TestIamPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Pubsub_TestIamPermissionsResponse

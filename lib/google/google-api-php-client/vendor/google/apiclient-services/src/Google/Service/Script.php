@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,7 +30,7 @@
  */
 class Google_Service_Script extends Google_Service
 {
-  /** View and manage your mail. */
+  /** Read, send, delete, and manage your email. */
   const MAIL_GOOGLE_COM =
       "https://mail.google.com/";
   /** Manage your calendars. */

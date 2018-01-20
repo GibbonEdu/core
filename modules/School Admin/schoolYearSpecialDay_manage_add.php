@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -59,214 +61,74 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
             echo __($guid, 'The specified date is outside of the allowed range.');
             echo '</div>';
         } else {
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Date') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?> <?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, date('Y-m-d', $dateStamp)) ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var date=new LiveValidation('date');
-								date.add(Validate.Presence);
-								date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-								?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } );
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Type') ?> *</b>
-						</td>
-						<td class="right">
-							<select name="type" id="type" class="standardWidth">
-								<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-								<option value="School Closure"><?php echo __($guid, 'School Closure') ?></option>
-								<option value="Timing Change"><?php echo __($guid, 'Timing Change') ?></option>
-							</select>
-							<script type="text/javascript">
-								var type=new LiveValidation('type');
-								type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=20 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Description') ?></b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input name="description" id="description" maxlength=255 value="" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'School Opens') ?></b>
-						</td>
-						<td class="right">
-							<select style="width:100px" name="schoolOpenM" id="schoolOpenM">
-								<?php
-                                echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-								for ($i = 0;$i < 60;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-									echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-							<select style="width:100px" name="schoolOpenH" id="schoolOpenH">
-								<?php
-                                echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-								for ($i = 0;$i < 24;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'School Starts') ?></b>
-						</td>
-						<td class="right">
-							<select style="width:100px" name="schoolStartM" id="schoolStartM">
-								<?php
-                                echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-								for ($i = 0;$i < 60;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-							<select style="width:100px" name="schoolStartH" id="schoolStartH">
-								<?php
-                                echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-								for ($i = 0;$i < 24;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'School Ends') ?></b>
-						</td>
-						<td class="right">
-							<select style="width:100px" name="schoolEndM" id="schoolEndM">
-								<?php
-                                echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-								for ($i = 0;$i < 60;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-							<select style="width:100px" name="schoolEndH" id="schoolEndH">
-								<?php
-                                echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-								for ($i = 0;$i < 24;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'School Closes') ?></b>
-						</td>
-						<td class="right">
-							<select style="width:100px" name="schoolCloseM" id="schoolCloseM">
-								<?php
-                                echo "<option value='Minutes'>".__($guid, 'Minutes').'</option>';
-								for ($i = 0;$i < 60;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-							<select style="width:100px" name="schoolCloseH" id="schoolCloseH">
-								<?php
-                                echo "<option value='Hours'>".__($guid, 'Hours').'</option>';
-								for ($i = 0;$i < 24;++$i) {
-									$iPrint = $i;
-									if (strlen($i) == 1) {
-										$iPrint = '0'.$i;
-									}
-                                    echo "<option value='".$iPrint."'>".$iPrint.'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input name="dateStamp" id="dateStamp" value="<?php echo $dateStamp ?>" type="hidden">
-							<input name="firstDay" id="firstDay" value="<?php echo $firstDay ?>" type="hidden">
-							<input name="lastDay" id="lastDay" value="<?php echo $lastDay ?>" type="hidden">
-							<input name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" value="<?php echo $gibbonSchoolYearTermID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
 
+            $form = Form::create('specialDayAdd', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_addProcess.php');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            $form->addHiddenValue('gibbonSchoolYearTermID', $gibbonSchoolYearTermID);
+            $form->addHiddenValue('dateStamp', $dateStamp);
+            $form->addHiddenValue('firstDay', $firstDay);
+            $form->addHiddenValue('lastDay', $lastDay);
+
+            $row = $form->addRow();
+                $row->addLabel('date', __('Date'))->description(__('Must be unique.'));
+                $row->addTextField('date')->readonly()->setValue(dateConvertBack($guid, date('Y-m-d', $dateStamp)));
+
+            $types = array(
+                'School Closure' => __('School Closure'),
+                'Timing Change' => __('Timing Change'),
+            );
+
+            $row = $form->addRow();
+                $row->addLabel('type', __('Type'));
+                $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Name'));
+                $row->addTextField('name')->isRequired()->maxLength(20);
+
+            $row = $form->addRow();
+                $row->addLabel('description', __('Description'));
+                $row->addTextField('description')->maxLength(255);
+
+            $form->toggleVisibilityByClass('timingChange')->onSelect('type')->when('Timing Change');
+
+            $hoursArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 23));
+            $hours = implode(',', $hoursArray);
+
+            $minutesArray = array_map(function($num) { return str_pad($num, 2, '0', STR_PAD_LEFT); }, range(0, 59));
+            $minutes = implode(',', $minutesArray);
+
+            $row = $form->addRow()->addClass('timingChange');
+                $row->addLabel('schoolOpen', __('School Opens'));
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect('schoolOpenH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+                $col->addSelect('schoolOpenM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+            $row = $form->addRow()->addClass('timingChange');
+                $row->addLabel('schoolStart', __('School Starts'));
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect('schoolStartH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+                $col->addSelect('schoolStartM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+            $row = $form->addRow()->addClass('timingChange');
+                $row->addLabel('schoolEnd', __('School Ends'));
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect('schoolEndH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+                $col->addSelect('schoolEndM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+            $row = $form->addRow()->addClass('timingChange');
+                $row->addLabel('schoolClose', __('School Closes'));
+                $col = $row->addColumn()->addClass('right inline');
+                $col->addSelect('schoolCloseH')->fromString($hours)->setClass('shortWidth')->placeholder(__('Hours'));
+                $col->addSelect('schoolCloseM')->fromString($minutes)->setClass('shortWidth')->placeholder(__('Minutes'));
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }
-?>

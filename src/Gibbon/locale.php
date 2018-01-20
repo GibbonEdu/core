@@ -36,8 +36,6 @@ namespace Gibbon;
  */
 class Locale
 {
-	protected $i18n;
-
 	protected $i18ncode;
 
 	protected $session;
@@ -50,13 +48,6 @@ class Locale
 	public function __construct( core $gibbon )
 	{
 		$this->session = $gibbon->session;
-
-		// Setup the Internationalization code from session
-		$this->i18n = $this->session->get('i18n');
-		$this->setLocale($this->i18n['code']);
-
-		// Set timezone from session variable
-		date_default_timezone_set($this->session->get('timezone', 'UTC'));
 	}
 
 	/**
@@ -82,6 +73,16 @@ class Locale
 	 */
 	public function getLocale() {
 		return $this->i18ncode;
+	}
+
+	public function setTimezone($timezone)
+	{
+		date_default_timezone_set($timezone);
+	}
+
+	public function getTimezone()
+	{
+		return date_default_timezone_get();
 	}
 
 	/**

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -44,152 +47,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         echo __($guid, 'Filter');
         echo '</h2>';
 
-        $gibbonPersonIDs = null;
-        if (isset($_POST['gibbonPersonIDs'])) {
-            $gibbonPersonIDs = $_POST['gibbonPersonIDs'];
-        }
+        $gibbonPersonIDs = (isset($_POST['gibbonPersonIDs']))? $_POST['gibbonPersonIDs'] : null;
+        $gibbonDepartmentIDs = (isset($_POST['gibbonDepartmentIDs']))? $_POST['gibbonDepartmentIDs'] : null;
+        $dataType = (isset($_POST['dataType']))? $_POST['dataType'] : null;
 
-        $gibbonDepartmentIDs = null;
-        if (isset($_POST['gibbonDepartmentIDs'])) {
-            $gibbonDepartmentIDs = $_POST['gibbonDepartmentIDs'];
-        }
+        $attainmentAlt = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+        $effortAlt = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+        $dataTypes = array(
+            'attainment' => (!empty($attainmentAlt))? $attainmentAlt : __('Attainment'),
+            'effort' => (!empty($effortAlt))? $effortAlt : __('Effort'),
+        );
 
-        $dataType = null;
-        if (isset($_POST['dataType'])) {
-            $dataType = $_POST['dataType'];
-        }
-        ?>
-	
-		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php?q=/modules/Tracking/graphing.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
-				<tr>
-					<td style='width: 275px'> 
-						<b><?php echo __($guid, 'Student') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-					</td>
-					<td class="right">
-						<select name="gibbonPersonIDs[]" id="gibbonPersonIDs[]" multiple class='standardWidth' style="height: 150px">
-							<optgroup label='--<?php echo __($guid, 'Students by Roll Group') ?>--'>
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name, surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if (is_array($gibbonPersonIDs)) {
-										foreach ($gibbonPersonIDs as $gibbonPersonID) {
-											if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
-												$selected = 'selected';
-											}
-										}
-									}
-									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".htmlPrep($rowSelect['name']).' - '.formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).'</option>';
-								}
-								?>
-							</optgroup>
-							<optgroup label='--<?php echo __($guid, 'Students by Name') ?>--'>
-								<?php
-                                try {
-                                    $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                    $sqlSelect = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS name FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									$selected = '';
-									if (is_array($gibbonPersonIDs)) {
-										foreach ($gibbonPersonIDs as $gibbonPersonID) {
-											if ($rowSelect['gibbonPersonID'] == $gibbonPersonID) {
-												$selected = 'selected';
-											}
-										}
-									}
-									echo "<option $selected value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.htmlPrep($rowSelect['name']).')</option>';
-								}
-								?>
-							</optgroup>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Data Type') ?> *</b><br/>
-					</td>
-					<td class="right">
-						<?php
-                        $attainmentTitle = 'Attainment';
-						$attainmentAlt = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-						if ($attainmentAlt != '') {
-							$attainmentTitle = $attainmentAlt;
-						}
-						$effortTitle = 'Effort';
-						$effortAlt = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-						if ($effortAlt != '') {
-							$effortTitle = $effortAlt;
-						}
-						?>
-						<select name="dataType" id="dataType" class="standardWidth">
-							<option <?php if ($dataType == 'attainment') { echo 'selected'; } ?> value="attainment"><?php echo __($guid, $attainmentTitle) ?></option>
-							<option <?php if ($dataType == 'effort') { echo 'selected'; } ?> value="effort"><?php echo __($guid, $effortTitle) ?></option>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Learning Areas') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Only Learning Areas for which the student has data will be displayed.') ?></span>
-					</td>
-					<td class="right">
-						<?php 
-                        try {
-                            $dataLA = array();
-                            $sqlLA = "SELECT * FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
-                            $resultLA = $connection2->prepare($sqlLA);
-                            $resultLA->execute($dataLA);
-                        } catch (PDOException $e) {
-                        }
-						if ($resultLA->rowCount() < 1) {
-							echo '<i>'.__($guid, 'No Learning Areas available.').'</i>';
-						} else {
-							echo "<fieldset style='border: none'>"; ?>
-							<script type="text/javascript">
-								$(function () {
-									$('.checkall').click(function () {
-										$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-									});
-								});
-							</script>
-							<?php
-                            echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-							while ($rowLA = $resultLA->fetch()) {
-								$checked = '';
-								if ($gibbonDepartmentIDs != null) {
-									foreach ($gibbonDepartmentIDs as $gibbonDepartmentID) {
-										if ($gibbonDepartmentID == $rowLA['gibbonDepartmentID']) {
-											$checked = 'checked ';
-										}
-									}
-								}
-								echo __($guid, $rowLA['name'])." <input $checked type='checkbox' name='gibbonDepartmentIDs[]' value='".$rowLA['gibbonDepartmentID']."'><br/>";
-							}
-						}
-						echo '</fieldset>'; ?>
-						<input type="hidden" name="count" value="<?php echo(count($learningAreas)) / 2 ?>">
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Tracking/graphing.php');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonPersonIDs', __('Student'));
+            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->isRequired();
+        $row = $form->addRow();
+            $row->addLabel('dataType', __('Data Type'));
+            $row->addSelect('dataType')->fromArray($dataTypes)->isRequired();
+
+        $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
+        $results = $pdo->executeQuery(array(), $sql);
+
+        $row = $form->addRow();
+        $row->addLabel('gibbonDepartmentIDs', __('Learning Areas'))
+            ->description(__('Only Learning Areas for which the student has data will be displayed.'));
+            if ($results->rowCount() == 0) {
+                $row->addContent(__('No Learning Areas available.'))->wrap('<i>', '</i>');
+            } else {
+                $row->addCheckbox('gibbonDepartmentIDs')->fromResults($results)->addCheckAllNone();
+            }
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        $form->loadAllValuesFrom($_POST);
+
+        echo $form->getOutput();
+
         if (count($_POST) > 0) {
             if ($gibbonPersonIDs == null or $gibbonDepartmentIDs == null or ($dataType != 'attainment' and $dataType != 'effort')) {
                 echo "<div class='error'>";
@@ -240,23 +140,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                     }
 
                     $sqlDepartments = '(SELECT DISTINCT gibbonDepartment.name AS department
-						FROM gibbonMarkbookEntry 
+						FROM gibbonMarkbookEntry
 						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
 						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
 						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID) 
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
 						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
 						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
 						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
 						UNION
 						(SELECT DISTINCT gibbonDepartment.name AS department
-						FROM gibbonInternalAssessmentEntry 
+						FROM gibbonInternalAssessmentEntry
 						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
 						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
 						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID".ucfirst($dataType)."=gibbonScale.gibbonScaleID) 
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID".ucfirst($dataType)."=gibbonScale.gibbonScaleID)
 						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
 						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
 						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
@@ -304,23 +204,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         $personExtra_IA = 'AND ('.substr($personExtra_IA, 0, -4).')';
                     }
                     $sqlGrades = '(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonMarkbookColumn.name AS markbook, completeDate, '.$dataType.', gibbonScaleID'.ucfirst($dataType).', '.$dataType.'Value, '.$dataType.'Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonMarkbookEntry.'.$dataType.'Value) ORDER BY sequenceNumber DESC) AS gradePosition
-						FROM gibbonMarkbookEntry 
+						FROM gibbonMarkbookEntry
 						JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID)
 						JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
 						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID) 
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+						JOIN gibbonScale ON (gibbonMarkbookColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
 						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
 						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
 						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_MB $personExtra_MB)
 						UNION
 						(SELECT gibbonSchoolYearTerm.sequenceNumber AS termSequence, gibbonSchoolYear.sequenceNumber AS yearSequence, gibbonSchoolYear.name AS year, gibbonSchoolYearTerm.name AS term, gibbonSchoolYearTerm.gibbonSchoolYearTermID AS termID, gibbonDepartment.name AS department, gibbonInternalAssessmentColumn.name AS markbook, completeDate, ".$dataType.', gibbonScaleID'.ucfirst($dataType).', '.$dataType.'Value, '.$dataType.'Descriptor, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID) AS totalGrades, (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND sequenceNumber>=(SELECT sequenceNumber FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID AND value=gibbonInternalAssessmentEntry.'.$dataType.'Value) ORDER BY sequenceNumber DESC) AS gradePosition
-						FROM gibbonInternalAssessmentEntry 
+						FROM gibbonInternalAssessmentEntry
 						JOIN gibbonInternalAssessmentColumn ON (gibbonInternalAssessmentEntry.gibbonInternalAssessmentColumnID=gibbonInternalAssessmentColumn.gibbonInternalAssessmentColumnID)
 						JOIN gibbonCourseClass ON (gibbonInternalAssessmentColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
 						JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
-						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
-						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID) 
+						JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID)
+						JOIN gibbonScale ON (gibbonInternalAssessmentColumn.gibbonScaleID'.ucfirst($dataType)."=gibbonScale.gibbonScaleID)
 						JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.firstDay<=completeDate AND gibbonSchoolYearTerm.lastDay>=completeDate)
 						JOIN gibbonSchoolYear ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
 						WHERE complete='Y' AND completeDate<='".date('Y-m-d')."' AND (SELECT count(*) FROM gibbonScaleGrade WHERE gibbonScaleID=gibbonScale.gibbonScaleID)>3 AND ".$dataType."Value!='' AND ".$dataType."Value IS NOT NULL $departmentExtra_IA $personExtra_IA)
@@ -487,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 									<?php
 
 									}
-								?>								
+								?>
 							]
 							}
 

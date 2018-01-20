@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,10 +20,10 @@ class Google_Service_IdentityToolkit_UserInfoProviderUserInfo extends Google_Mod
   public $displayName;
   public $email;
   public $federatedId;
+  public $phoneNumber;
   public $photoUrl;
   public $providerId;
   public $rawId;
-  public $rawUserInfo;
   public $screenName;
 
   public function setDisplayName($displayName)
@@ -50,6 +50,14 @@ class Google_Service_IdentityToolkit_UserInfoProviderUserInfo extends Google_Mod
   {
     return $this->federatedId;
   }
+  public function setPhoneNumber($phoneNumber)
+  {
+    $this->phoneNumber = $phoneNumber;
+  }
+  public function getPhoneNumber()
+  {
+    return $this->phoneNumber;
+  }
   public function setPhotoUrl($photoUrl)
   {
     $this->photoUrl = $photoUrl;
@@ -73,14 +81,6 @@ class Google_Service_IdentityToolkit_UserInfoProviderUserInfo extends Google_Mod
   public function getRawId()
   {
     return $this->rawId;
-  }
-  public function setRawUserInfo($rawUserInfo)
-  {
-    $this->rawUserInfo = $rawUserInfo;
-  }
-  public function getRawUserInfo()
-  {
-    return $this->rawUserInfo;
   }
   public function setScreenName($screenName)
   {

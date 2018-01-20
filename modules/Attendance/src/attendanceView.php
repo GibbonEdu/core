@@ -135,7 +135,7 @@ class attendanceView
 
 	public function isTypeAbsent( $type ) {
 	    if ( isset($this->attendanceTypes[$type]) == false ) return false;
-	    return ($this->attendanceTypes[$type]['direction'] == 'Out' && $this->attendanceTypes[$type]['scope'] == 'Offsite');
+	    return ($this->attendanceTypes[$type]['direction'] == 'Out' && $this->isTypeOffsite($type));
 	}
 
     public function isTypeOnsite( $type ) {
@@ -148,53 +148,58 @@ class attendanceView
         return ( stristr($this->attendanceTypes[$type]['scope'], 'Offsite') !== false );
     }
 
-	public function renderMiniHistory( $gibbonPersonID, $width = '134px' ) {
+	public function renderMiniHistory( $gibbonPersonID, $cssClass = '' ) {
 
-		echo "<table cellspacing='0' class='historyCalendarMini' style='width:$width;' >";
-        echo '<tr>';
+        $schoolDays = (is_array($this->last5SchoolDays))? implode(',', $this->last5SchoolDays) : '';
+
+        // Grab all 5 days on one query to improve page load performance
+        $data = array('gibbonPersonID' => $gibbonPersonID, 'schoolDays' => $schoolDays);
+        $sql = "SELECT date, type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND FIND_IN_SET(date, :schoolDays) ORDER BY gibbonAttendanceLogPerson.timestampTaken";
+        $result = $this->pdo->executeQuery($data, $sql);
+
+        $logs = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP) : array();
+        $logs = array_reduce(array_keys($logs), function ($group, $date) use ($logs) {
+            $group[$date] = end($logs[$date]);
+            return $group;
+        }, array());
+
+        $dateFormat = $_SESSION[$this->guid]['i18n']['dateFormatPHP'];
+
+        $output = '';
+		$output .= '<table cellspacing="0" class="historyCalendarMini '. $cssClass .'">';
+        $output .= '<tr>';
         for ($i = 4; $i >= 0; --$i) {
-            $link = '';
-            if ($i > ( count($this->last5SchoolDays) - 1)) {
-                echo "<td class='highlightNoData'>";
-                echo '<i>'.__($this->guid, 'NA').'</i>';
-                echo '</td>';
+            if (!isset($this->last5SchoolDays[$i])) {
+                $output .= '<td class="highlightNoData">';
+                $output .= '<i>'.__('NA').'</i>';
+                $output .= '</td>';
             } else {
-            	$currentDayTimestamp = dateConvertToTimestamp($this->last5SchoolDays[$i]);
-                try {
-                    $dataLast5SchoolDays = array('gibbonPersonID' => $gibbonPersonID, 'date' => date('Y-m-d', $currentDayTimestamp).'%');
-                    $sqlLast5SchoolDays = 'SELECT type, reason FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND date LIKE :date ORDER BY gibbonCourseClassID DESC, gibbonAttendanceLogPersonID DESC LIMIT 1';
-                    $resultLast5SchoolDays = $this->pdo->executeQuery($dataLast5SchoolDays, $sqlLast5SchoolDays);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultLast5SchoolDays->rowCount() == 0) {
-                    $class = 'highlightNoData';
+                $date = $this->last5SchoolDays[$i];
+                $currentDay = new \DateTime($date);
+                $link = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=' . $gibbonPersonID . '&currentDate=' . $currentDay->format($dateFormat);
+
+                if (isset($logs[$date])) {
+                    $log = $logs[$date];
+
+                    $class = ($this->isTypeAbsent($log['type']))? 'highlightAbsent' : 'highlightPresent';
+                    $linkTitle = (!empty($log['reason'])) ? $log['type'] . ': ' . $log['reason'] : $log['type'];
                 } else {
-                    $link = './index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.date('d/m/Y', $currentDayTimestamp);
-                    $rowLast5SchoolDays = $resultLast5SchoolDays->fetch();
-                    if ($this->isTypeAbsent($rowLast5SchoolDays['type'])) {
-                        $class = 'highlightAbsent';
-                    } else {
-                    	$class = 'highlightPresent';
-                    }
+                    $class = 'highlightNoData';
+                    $linkTitle = '';
                 }
 
-                echo "<td class='$class'>";
-                if ($link != '') {
-                	$title = (!empty($rowLast5SchoolDays['reason']))? $rowLast5SchoolDays['type'].': '.$rowLast5SchoolDays['reason'] : $rowLast5SchoolDays['type'];
-                    echo "<a href='$link' title='".$title."'>";
-                    echo date('d', $currentDayTimestamp).'<br/>';
-                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                    echo '</a>';
-                } else {
-                    echo date('d', $currentDayTimestamp).'<br/>';
-                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
-                }
-                echo '</td>';
+                $output .= '<td class="'.$class.'">';
+                    $output .= '<a href="'.$link.'" title="'.$linkTitle.'">';
+                        $output .= $currentDay->format('d') .'<br/>';
+                        $output .= '<span>'.$currentDay->format('M').'</span>';
+                    $output .= '</a>';
+                $output .= '</td>';
             }
         }
-        echo '</tr>';
-        echo '</table>';
+        $output .= '</tr>';
+        $output .= '</table>';
+
+        return $output;
 	}
 
 	public function renderAttendanceTypeSelect( $lastType = '', $name='type', $width='302px', $future = false ) {

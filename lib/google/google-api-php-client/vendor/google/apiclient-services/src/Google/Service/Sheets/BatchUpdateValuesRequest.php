@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,15 +20,48 @@ class Google_Service_Sheets_BatchUpdateValuesRequest extends Google_Collection
   protected $collection_key = 'data';
   protected $dataType = 'Google_Service_Sheets_ValueRange';
   protected $dataDataType = 'array';
+  public $includeValuesInResponse;
+  public $responseDateTimeRenderOption;
+  public $responseValueRenderOption;
   public $valueInputOption;
 
+  /**
+   * @param Google_Service_Sheets_ValueRange
+   */
   public function setData($data)
   {
     $this->data = $data;
   }
+  /**
+   * @return Google_Service_Sheets_ValueRange
+   */
   public function getData()
   {
     return $this->data;
+  }
+  public function setIncludeValuesInResponse($includeValuesInResponse)
+  {
+    $this->includeValuesInResponse = $includeValuesInResponse;
+  }
+  public function getIncludeValuesInResponse()
+  {
+    return $this->includeValuesInResponse;
+  }
+  public function setResponseDateTimeRenderOption($responseDateTimeRenderOption)
+  {
+    $this->responseDateTimeRenderOption = $responseDateTimeRenderOption;
+  }
+  public function getResponseDateTimeRenderOption()
+  {
+    return $this->responseDateTimeRenderOption;
+  }
+  public function setResponseValueRenderOption($responseValueRenderOption)
+  {
+    $this->responseValueRenderOption = $responseValueRenderOption;
+  }
+  public function getResponseValueRenderOption()
+  {
+    return $this->responseValueRenderOption;
   }
   public function setValueInputOption($valueInputOption)
   {

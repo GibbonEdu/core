@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -29,7 +29,10 @@ class Google_Service_Gmail_Resource_UsersSettingsForwardingAddresses extends Goo
    * Creates a forwarding address. If ownership verification is required, a
    * message will be sent to the recipient and the resource's verification status
    * will be set to pending; otherwise, the resource will be created with
-   * verification status set to accepted. (forwardingAddresses.create)
+   * verification status set to accepted.
+   *
+   * This method is only available to service account clients that have been
+   * delegated domain-wide authority. (forwardingAddresses.create)
    *
    * @param string $userId User's email address. The special value "me" can be
    * used to indicate the authenticated user.
@@ -45,7 +48,10 @@ class Google_Service_Gmail_Resource_UsersSettingsForwardingAddresses extends Goo
   }
   /**
    * Deletes the specified forwarding address and revokes any verification that
-   * may have been required. (forwardingAddresses.delete)
+   * may have been required.
+   *
+   * This method is only available to service account clients that have been
+   * delegated domain-wide authority. (forwardingAddresses.delete)
    *
    * @param string $userId User's email address. The special value "me" can be
    * used to indicate the authenticated user.

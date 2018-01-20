@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,16 +20,31 @@ class Google_Service_Drive_FileList extends Google_Collection
   protected $collection_key = 'files';
   protected $filesType = 'Google_Service_Drive_DriveFile';
   protected $filesDataType = 'array';
+  public $incompleteSearch;
   public $kind;
   public $nextPageToken;
 
+  /**
+   * @param Google_Service_Drive_DriveFile
+   */
   public function setFiles($files)
   {
     $this->files = $files;
   }
+  /**
+   * @return Google_Service_Drive_DriveFile
+   */
   public function getFiles()
   {
     return $this->files;
+  }
+  public function setIncompleteSearch($incompleteSearch)
+  {
+    $this->incompleteSearch = $incompleteSearch;
+  }
+  public function getIncompleteSearch()
+  {
+    return $this->incompleteSearch;
   }
   public function setKind($kind)
   {

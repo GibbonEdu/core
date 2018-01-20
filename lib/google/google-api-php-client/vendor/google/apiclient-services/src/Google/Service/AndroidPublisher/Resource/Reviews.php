@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -32,6 +32,8 @@ class Google_Service_AndroidPublisher_Resource_Reviews extends Google_Service_Re
    * want reviews; for example, "com.spiffygame".
    * @param string $reviewId
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param string translationLanguage
    * @return Google_Service_AndroidPublisher_Review
    */
   public function get($packageName, $reviewId, $optParams = array())
@@ -41,7 +43,8 @@ class Google_Service_AndroidPublisher_Resource_Reviews extends Google_Service_Re
     return $this->call('get', array($params), "Google_Service_AndroidPublisher_Review");
   }
   /**
-   * Returns a list of reviews. (reviews.listReviews)
+   * Returns a list of reviews. Only reviews from last week will be returned.
+   * (reviews.listReviews)
    *
    * @param string $packageName Unique identifier for the Android app for which we
    * want reviews; for example, "com.spiffygame".
@@ -50,6 +53,7 @@ class Google_Service_AndroidPublisher_Resource_Reviews extends Google_Service_Re
    * @opt_param string maxResults
    * @opt_param string startIndex
    * @opt_param string token
+   * @opt_param string translationLanguage
    * @return Google_Service_AndroidPublisher_ReviewsListResponse
    */
   public function listReviews($packageName, $optParams = array())

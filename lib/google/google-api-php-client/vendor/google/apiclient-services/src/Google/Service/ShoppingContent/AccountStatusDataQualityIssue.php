@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -19,11 +19,13 @@ class Google_Service_ShoppingContent_AccountStatusDataQualityIssue extends Googl
 {
   protected $collection_key = 'exampleItems';
   public $country;
+  public $detail;
   public $displayedValue;
   protected $exampleItemsType = 'Google_Service_ShoppingContent_AccountStatusExampleItem';
   protected $exampleItemsDataType = 'array';
   public $id;
   public $lastChecked;
+  public $location;
   public $numItems;
   public $severity;
   public $submittedValue;
@@ -36,6 +38,14 @@ class Google_Service_ShoppingContent_AccountStatusDataQualityIssue extends Googl
   {
     return $this->country;
   }
+  public function setDetail($detail)
+  {
+    $this->detail = $detail;
+  }
+  public function getDetail()
+  {
+    return $this->detail;
+  }
   public function setDisplayedValue($displayedValue)
   {
     $this->displayedValue = $displayedValue;
@@ -44,10 +54,16 @@ class Google_Service_ShoppingContent_AccountStatusDataQualityIssue extends Googl
   {
     return $this->displayedValue;
   }
+  /**
+   * @param Google_Service_ShoppingContent_AccountStatusExampleItem
+   */
   public function setExampleItems($exampleItems)
   {
     $this->exampleItems = $exampleItems;
   }
+  /**
+   * @return Google_Service_ShoppingContent_AccountStatusExampleItem
+   */
   public function getExampleItems()
   {
     return $this->exampleItems;
@@ -67,6 +83,14 @@ class Google_Service_ShoppingContent_AccountStatusDataQualityIssue extends Googl
   public function getLastChecked()
   {
     return $this->lastChecked;
+  }
+  public function setLocation($location)
+  {
+    $this->location = $location;
+  }
+  public function getLocation()
+  {
+    return $this->location;
   }
   public function setNumItems($numItems)
   {

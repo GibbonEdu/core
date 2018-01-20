@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -21,11 +21,18 @@ class Google_Service_Clouderrorreporting_ListGroupStatsResponse extends Google_C
   protected $errorGroupStatsType = 'Google_Service_Clouderrorreporting_ErrorGroupStats';
   protected $errorGroupStatsDataType = 'array';
   public $nextPageToken;
+  public $timeRangeBegin;
 
+  /**
+   * @param Google_Service_Clouderrorreporting_ErrorGroupStats
+   */
   public function setErrorGroupStats($errorGroupStats)
   {
     $this->errorGroupStats = $errorGroupStats;
   }
+  /**
+   * @return Google_Service_Clouderrorreporting_ErrorGroupStats
+   */
   public function getErrorGroupStats()
   {
     return $this->errorGroupStats;
@@ -37,5 +44,13 @@ class Google_Service_Clouderrorreporting_ListGroupStatsResponse extends Google_C
   public function getNextPageToken()
   {
     return $this->nextPageToken;
+  }
+  public function setTimeRangeBegin($timeRangeBegin)
+  {
+    $this->timeRangeBegin = $timeRangeBegin;
+  }
+  public function getTimeRangeBegin()
+  {
+    return $this->timeRangeBegin;
   }
 }

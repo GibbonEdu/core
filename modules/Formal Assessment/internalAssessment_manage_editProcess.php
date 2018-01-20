@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $partialFail = true;
                     }
                 } else {
-                    $attachment = $row['attachment'];
+                    $attachment = isset($_POST['attachment'])? $_POST['attachment'] : '';
                 }
 
                 if ($name == '' or $description == '' or $type == '' or $viewableStudents == '' or $viewableParents == '') {

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_edit.php') == false) {
@@ -72,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 echo __($guid, 'The specified record cannot be found.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $values = $result->fetch();
 
                 echo "<div class='trail'>";
                 echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > ... > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Edit Timetable Day')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>".__($guid, 'Classes in Period')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Class in Period').'</div>';
@@ -82,104 +84,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                     returnProcess($guid, $_GET['return'], null, null);
                 }
 
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID" ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Timetable') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="ttName" id="ttName" maxlength=20 value="<?php echo $row['ttName'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var courseName=new LiveValidation('courseName');
-									coursename2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Day') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="dayName" id="dayName" maxlength=20 value="<?php echo $row['dayName'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var courseName=new LiveValidation('courseName');
-									coursename2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Period') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="rowName" id="rowName" maxlength=20 value="<?php echo $row['rowName'] ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var courseName=new LiveValidation('courseName');
-									coursename2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Class') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="class" id="class" maxlength=20 value="<?php echo $course.'.'.$class ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Location') ?></b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
-									<?php
-                                    echo "<option value=''></option>";
-									try {
-										$dataSelect = array();
-										$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-										$resultSelect = $connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									} catch (PDOException $e) {
-									}
-									while ($rowSelect = $resultSelect->fetch()) {
-										try {
-											$dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
-											$sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID';
-											$resultUnique = $connection2->prepare($sqlUnique);
-											$resultUnique->execute($dataUnique);
-										} catch (PDOException $e) {
-										}
-										if ($resultUnique->rowCount() < 1) {
-											echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										} elseif ($rowSelect['gibbonSpaceID'] == $gibbonSpaceID) {
-											echo "<option selected value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										}
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class="right">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_editProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID");
 
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonTTID', $gibbonTTID);
+                $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+                $row = $form->addRow();
+                    $row->addLabel('ttName', __('Timetable'));
+                    $row->addTextField('ttName')->maxLength(20)->isRequired()->readonly()->setValue($values['ttName']);
+
+                $row = $form->addRow();
+                    $row->addLabel('dayName', __('Day'));
+                    $row->addTextField('dayName')->maxLength(20)->isRequired()->readonly()->setValue($values['dayName']);
+
+                $row = $form->addRow();
+                    $row->addLabel('rowName', __('Period'));
+                    $row->addTextField('rowName')->maxLength(20)->isRequired()->readonly()->setValue($values['rowName']);
+
+                $row = $form->addRow();
+                    $row->addLabel('class', __('Class'));
+                    $row->addTextField('class')->maxLength(20)->isRequired()->readonly()->setValue($course.'.'.$class);
+
+                $locations = array() ;
+                try {
+                    $dataSelect = array();
+                    $sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
+                    $resultSelect = $connection2->prepare($sqlSelect);
+                    $resultSelect->execute($dataSelect);
+                } catch (PDOException $e) {
+                }
+                while ($rowSelect = $resultSelect->fetch()) {
+                    try {
+                        $dataUnique = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonSpaceID' => $rowSelect['gibbonSpaceID']);
+                        $sqlUnique = 'SELECT * FROM gibbonTTDayRowClass WHERE gibbonTTDayID=:gibbonTTDayID AND gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonSpaceID=:gibbonSpaceID';
+                        $resultUnique = $connection2->prepare($sqlUnique);
+                        $resultUnique->execute($dataUnique);
+                    } catch (PDOException $e) {
+                    }
+                    if ($resultUnique->rowCount() < 1 || $rowSelect['gibbonSpaceID'] == $gibbonSpaceID) {
+                        $locations[$rowSelect['gibbonSpaceID']] = htmlPrep($rowSelect['name']);
+                    }
+                }
+                $row = $form->addRow();
+                    $row->addLabel('gibbonSpaceID', __('Location'));
+                    $row->addSelect('gibbonSpaceID')->fromArray($locations)->placeholder()->selected($gibbonSpaceID);
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
             }
         }
     }

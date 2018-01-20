@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 //Module includes
@@ -41,147 +44,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add
         returnProcess($guid, $_GET['return'], $editLink, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'warning1' => 'Your request was successful, but some data was not properly saved.'));
     }
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php' ?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'General Settings') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="name" id="name" maxlength=100 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var name2=new LiveValidation('name');
-						name2.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Must be unique.') ?></span>
-				</td>
-				<td class="right">
-					<input name="nameShort" id="nameShort" maxlength=14 value="" type="text" class="standardWidth">
-					<script type="text/javascript">
-						var nameShort=new LiveValidation('nameShort');
-						nameShort.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Active') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select name="active" id="active" class="standardWidth">
-						<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-						<option value="N"><?php echo __($guid, 'No') ?></option>
-					</select>
-				</td>
-			</tr>
-			<?php
-            $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
-			if ($categories != false) {
-				$categories = explode(',', $categories);
-				?>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Category') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<select name="category" id="category" class="standardWidth">
-							<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-							<?php
-                            for ($i = 0; $i < count($categories); ++$i) {
-                                ?>
-								<option value="<?php echo trim($categories[$i]) ?>"><?php echo trim($categories[$i]) ?></option>
-							<?php
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgets_manage_addProcess.php');
 
-                            }
-        					?>	
-						</select>
-						<script type="text/javascript">
-							var category=new LiveValidation('category');
-							category.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						</script>
-					</td>
-				</tr>
-			<?php
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('smallIntBorder fullWidth');
 
-			} else {
-				?>
-				<tr>
-					<td> 
-						<b><?php echo __($guid, 'Category') ?> *</b><br/>
-						<span class="emphasis small"></span>
-					</td>
-					<td class="right">
-						<input readonly name="category" id="category" value="Other" type="text" class="standardWidth">
-					</td>
-				</tr>
-				<?php
-			}
-			?>
-			<tr class='break'>
-				<td colspan=2> 
-					<h3><?php echo __($guid, 'Staff') ?></h3>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Staff') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
-				</td>
-				<td class="right">
-					<select name="staff[]" id="staff[]" multiple class='standardWidth' style="height: 150px">
-						<?php
-						try {
-							$dataSelect = array();
-							$sqlSelect = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Staff', true, true).'</option>';
-						}
-						?>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Access') ?></b><br/>
-				</td>
-				<td class="right">
-					<select name="access" id="access" class="standardWidth">
-						<option value="Full"><?php echo __($guid, 'Full') ?></option>
-						<option value="Write"><?php echo __($guid, 'Write') ?></option>
-						<option value="Read"><?php echo __($guid, 'Read') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $form->addRow()->addHeading(__('General Settings'));
+
+    $row = $form->addRow();
+        $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
+        $row->addTextField('name')->maxLength(100)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
+        $row->addTextField('nameShort')->maxLength(14)->isRequired();
+
+    $row = $form->addRow();
+        $row->addLabel('active', __('Active'));
+        $row->addYesNo('active')->isRequired();
+
+    $categories = getSettingByScope($connection2, 'Finance', 'budgetCategories');
+    if (empty($categories)) {
+        $categories = 'Other';
+    }
+    $row = $form->addRow();
+        $row->addLabel('category', __('Category'));
+        $row->addSelect('category')->fromString($categories)->placeholder()->isRequired();
+
+    $form->addRow()->addHeading(__('Staff'));
+
+    $row = $form->addRow();
+        $row->addLabel('staff', __('Staff'));
+        $row->addSelectStaff('staff')->selectMultiple();
+
+    $access = array(
+        "Full" => __("Full"),
+        "Write" => __("Write"),
+        "Read" => __("Read")
+    );
+    $row = $form->addRow();
+        $row->addLabel('access', 'Access');
+        $row->addSelect('access')->fromArray($access);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+
+    echo $form->getOutput();
 }
 ?>

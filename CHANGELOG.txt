@@ -16,6 +16,98 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v15.0.00
+--------
+	Headlines
+		Code base refactoring of all interface forms
+		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
+		Activated Brazilian Portuguese as complete languages
+
+	Changes With Important Notices
+		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
+
+    Security
+		System: fixed security vulnerability in the installer
+        System: added validation and output escaping to Personal Background URL in Preferences
+
+	Tweaks & Bug Fixes
+		System: fixed erroneous Georgian language code
+		System: added Greek and Amharic as development languages
+		System: added South African Rand, Trinidad & Tobago Dollar, Swedish Krona, Chinese Renminbi and Russian Ruble as currencies
+		System: fixed missing form validation for dropdowns created with User Custom Fields
+		System: updated Google OAuth library to latest version (v2.2.0)
+		System: fixed Sign In With Google to fix missing token refresh issue
+        System: fixed timezone not being set in CLI scripts
+		System: fixed bug preventing activity day from being correctly shown in Parent Dashboard
+        System: added login options to Login with Google button
+        System: added mbstring extension to the system requirements list
+		System: fixed text alginment in module menu
+		System: fixed long-string and large image issue causing content to bleed under sidebar
+		System: fixed bug causing two entries in a module menu to be highlighted as active in some cases
+		System: added Enable Smart Workflow Help option to Preferences
+		System: removed personal settings form from Preferences when force reset in effect
+		System: adjusted Today's Classes in Student and Parent dashboard to show on non-school days
+		System: shortened abbreviation of core system roles
+		Activities: added new payment fields to activities (cost type and cost status)
+		Activities: fixed database field length issue in gibbonActivityStaff
+		Activities: fixed minor display issue in Terms column in View Activities
+		Activities: fixed term display bug in Manage Activities
+		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
+		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
+		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
+		Attendance: added count column to Students Not Present and Students Not Onsite reports
+		Attendance: granted like to those students who successfully self register
+		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
+		Attendance: added a warning to Attendance by Class when not currently timetabled for the selected date
+		Behaviour: fixed typo in three settings
+		Behaviour: fixed broken link to Edit in Step 2 of adding a behaviour record in Manage Behaviour
+		Departments: fixed bug preventing students from seeing other students in a class
+		Departments: fixed sidebar heading size issue
+		Finance: set name of outgoing email to school name, not user's name
+		Finance: fixed missing email address issue in Company invoices and receipts
+		Individual Needs: added ability to record educational assistants for a student
+		Library: added Optical Media as item type
+		Library: added replacement fields to import
+		Markbook: fixed multibyte character error in comment summary
+		Messenger: fixed multibyte substring issue in homepage widget
+		Messenger: added username to Individual select, to distinguish people with the same name
+		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
+		Planner: added optional Markbook section (off by default) to weekly planner summary email
+		Planner: fixed bug preventing Add icon from appearing for teachers under date view in Lesson Planner
+		Roll Groups: fixed bug preventing alerts from showing
+		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
+		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
+        School Admin: added an Assign Houses tool to bulk assign students to houses by Year Group
+		Staff: fixed entryURL for full version of View Staff
+		Students: fixed School History section in Student Profile to exclude upcoming years
+		Students: fixed Application Form for logged in users not selecting a family by default (if one exists)
+		Students: fixed interface string issue in student details screen
+		Students: fixed display of Other Fields heading for parents in Application Form
+        Students: added a notification event for Application Form Accepted
+        Students: added an option for logged-in users to link new Application Forms to an existing user or family
+		Students: added ability to delete files and upload multiple files in Edit Application Form
+		Students: amended Academic alert to account only for data in the last 60 days
+		Students: when Timetable is disabled, View Student Details now displays list of classes in Overview
+		Students: adjusted Application Form acceptance emails to students and parents to come from admissions administrator, not system administrator
+		System Admin: increased length of Absolute URL and Absolute Path to 100 characters
+        System Admin: updated version check to handle semantic version numbers
+		Timetable: added ability to set and display text and background colour for timetable day headers
+		Timetable: adjusted font size for shorter lessons to allow display or facility name
+		Timetable: adjusted timetable on homepage to show next week if today is a Sunday with no school
+		Timetable: fixed rendering issue when week starts Sunday but Sunday is not a school day (and similar cases)
+		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
+		Timetable Admin: updated Course Enrolment Rollover to prevent duplicates and not copy users set to Left
+        Timetable Admin: fixed Course Enrolment by Person to allow staff category without All Users checked
+		Timetable Admin: removed Left users from class participant count in edit view in Manage Courses
+		User Admin: improved usability of feedback in Step 3 of the rollover
+		User Admin: made Pending Approval option in Status in edit User appear only if Public Registration is enabled
+        User Admin: updated Add User and Edit User to allow PDF files for ID documents
+        User Admin: added ability to set username formats by role in User Settings
+        User Admin: added a button to generate usernames in Add User
+        User Admin: added an Available Years of Entry setting to select which years are available in the student application
+		User Admin: added a setting to require a user's primary email address to be unique
+		User Admin: added a settings to adjust the formatting of staff names in Manage Staff Settings
+
 v14.0.01
 --------
 	Security

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -59,7 +59,7 @@ class Google_Service_AndroidEnterprise_Resource_Users extends Google_Service_Res
   }
   /**
    * Generates a token (activation code) to allow this user to configure their
-   * work account in the Android Setup Wizard. Revokes any previously generated
+   * managed account in the Android Setup Wizard. Revokes any previously generated
    * token.
    *
    * This call only works with Google managed accounts. (users.generateToken)
@@ -175,7 +175,9 @@ class Google_Service_AndroidEnterprise_Resource_Users extends Google_Service_Res
     return $this->call('revokeToken', array($params));
   }
   /**
-   * Modifies the set of products a user is entitled to access.
+   * Modifies the set of products that a user is entitled to access (referred to
+   * as whitelisted products). Only products that are approved or products that
+   * were previously approved (products with revoked approval) can be whitelisted.
    * (users.setAvailableProductSet)
    *
    * @param string $enterpriseId The ID of the enterprise.

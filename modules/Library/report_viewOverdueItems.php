@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -42,38 +45,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         $ignoreStatus = $_GET['ignoreStatus'];
     }
 
-    ?>
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Ignore Status') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Include all users, regardless of status and current enrolment.') ?></span>
-				</td>
-				<td class="right">
-					<?php
-                        $checked = '';
-					if ($ignoreStatus == 'on') {
-						$checked = 'checked';
-					}
-					echo "<input $checked name=\"ignoreStatus\" id=\"ignoreStatus\" type=\"checkbox\">"; ?>
-				</td>
-			</tr>
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/report_viewOverdueItems.php">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<?php
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/report_viewOverdueItems.php'>".__($guid, 'Clear Search').'</a>';?>
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
 
-	<?php
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_viewOverdueItems.php");
+
+    $row = $form->addRow();
+        $row->addLabel('ignoreStatus', __('Ignore Status'))->description('Include all users, regardless of status and current enrolment.');
+        $row->addCheckbox('ignoreStatus')->checked($ignoreStatus);
+
+    $row = $form->addRow();
+        $row->addFooter(false);
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
+
     echo '<h2>';
     echo __($guid, 'Report Data');
     echo '</h2>';

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -30,14 +30,14 @@ class Google_Service_Pubsub_Resource_ProjectsTopicsSubscriptions extends Google_
    * (subscriptions.listProjectsTopicsSubscriptions)
    *
    * @param string $topic The name of the topic that subscriptions are attached
-   * to.
+   * to. Format is `projects/{project}/topics/{topic}`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int pageSize Maximum number of subscription names to return.
    * @opt_param string pageToken The value returned by the last
    * `ListTopicSubscriptionsResponse`; indicates that this is a continuation of a
    * prior `ListTopicSubscriptions` call, and that the system should return the
    * next page of data.
+   * @opt_param int pageSize Maximum number of subscription names to return.
    * @return Google_Service_Pubsub_ListTopicSubscriptionsResponse
    */
   public function listProjectsTopicsSubscriptions($topic, $optParams = array())

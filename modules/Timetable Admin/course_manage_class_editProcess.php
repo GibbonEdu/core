@@ -26,9 +26,9 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-$gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$gibbonCourseID = $_GET['gibbonCourseID'];
-$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+$gibbonCourseClassID = $_POST['gibbonCourseClassID'];
+$gibbonCourseID = $_POST['gibbonCourseID'];
+$gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 
 if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
 } else {
@@ -63,7 +63,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo 'Fatal error load
                 $name = $_POST['name'];
                 $nameShort = $_POST['nameShort'];
                 $reportable = $_POST['reportable'];
-                $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : NULL;
+                $attendance = (isset($_POST['attendance']))? $_POST['attendance'] : 'N';
 
                 if ($name == '' or $nameShort == '') {
                     $URL .= '&return=error3';

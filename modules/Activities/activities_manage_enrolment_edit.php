@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -83,71 +85,69 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
+            $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+
             if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."&gibbonActivityID=$gibbonActivityID'>".__($guid, 'Back').'</a>';
                 echo '</div>';
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Activity') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Student') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student') ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Status') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="status">
-								<option <?php if ($row['status'] == 'Accepted') { echo 'selected '; } ?>value="Accepted"><?php echo __($guid, 'Accepted') ?></option>
-								<?php
-                                $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
-								if ($enrolment == 'Competitive') {
-									?>
-									<option <?php if ($row['status'] == 'Waiting List') { echo 'selected '; } ?>value="Waiting List"><?php echo __($guid, 'Waiting List') ?></option>
-									<?php
-									} else {
-										?>
-									<option <?php if ($row['status'] == 'Pending') { echo 'selected '; } ?>value="Pending"><?php echo __($guid, 'Pending') ?></option>
-									<?php
-									}
-									?>
-									<option <?php if ($row['status'] == 'Not Accepted') { echo 'selected '; } ?>value="Not Accepted"><?php echo __($guid, 'Not Accepted') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $gibbonPersonID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
 
+            $form = Form::create('activityEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_enrolment_editProcess.php?gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+			
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
+
+            $row = $form->addRow();
+                $row->addLabel('nameLabel', __('Name'));
+                $row->addTextField('name')->readOnly()->setValue($values['name']);
+
+            if ($dateType == 'Date') {
+                $row = $form->addRow();
+                $row->addLabel('listingDatesLabel', __('Listing Dates'));
+                $row->addTextField('listingDates')->readOnly()->setValue(dateConvertBack($guid, $values['listingStart']).'-'.dateConvertBack($guid, $values['listingEnd']));
+
+                $row = $form->addRow();
+                $row->addLabel('programDatesLabel', __('Program Dates'));
+                $row->addTextField('programDates')->readOnly()->setValue(dateConvertBack($guid, $values['programStart']).'-'.dateConvertBack($guid, $values['programEnd']));
+            } else {
+                $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                $termList = array_filter(array_map(function ($item) use ($schoolTerms) {
+                    $index = array_search($item, $schoolTerms);
+                    return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                }, explode(',', $values['gibbonSchoolYearTermIDList'])));
+                $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
+                                            
+                $row = $form->addRow();
+                $row->addLabel('termsLabel', __('Terms'));
+                $row->addTextField('terms')->readOnly()->setValue($termList);
+			}
+
+			$row = $form->addRow();
+                $row->addLabel('student', __('Student'));
+				$row->addTextField('student')->readOnly()->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'));
+				
+			$statuses = array('Accepted' => __('Accepted'));
+			$enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+			if ($enrolment == 'Competitive') {
+				$statuses['Waiting List'] = __('Waiting List');
+			} else {
+				$statuses['Pending'] = __('Pending');
+            }
+            $statuses['Not Accepted'] = __('Not Accepted');
+
+			$row = $form->addRow();
+                $row->addLabel('status', __('Status'));
+                $row->addSelect('status')->fromArray($statuses)->isRequired();
+			
+			$row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+                
+            $form->loadAllValuesFrom($values);
+				
+            echo $form->getOutput();
         }
     }
 }
-?>

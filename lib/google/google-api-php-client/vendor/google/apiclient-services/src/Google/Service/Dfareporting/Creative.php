@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,9 +18,6 @@
 class Google_Service_Dfareporting_Creative extends Google_Collection
 {
   protected $collection_key = 'timerCustomEvents';
-  protected $internal_gapi_mappings = array(
-        "autoAdvanceImages" => "auto_advance_images",
-  );
   public $accountId;
   public $active;
   public $adParameters;
@@ -69,6 +66,8 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   public $latestTraffickedCreativeId;
   public $name;
   public $overrideCss;
+  protected $progressOffsetType = 'Google_Service_Dfareporting_VideoOffset';
+  protected $progressOffsetDataType = '';
   public $redirectUrl;
   public $renderingId;
   protected $renderingIdDimensionValueType = 'Google_Service_Dfareporting_DimensionValue';
@@ -77,6 +76,8 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   public $requiredFlashVersion;
   protected $sizeType = 'Google_Service_Dfareporting_Size';
   protected $sizeDataType = '';
+  protected $skipOffsetType = 'Google_Service_Dfareporting_VideoOffset';
+  protected $skipOffsetDataType = '';
   public $skippable;
   public $sslCompliant;
   public $sslOverride;
@@ -92,6 +93,8 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   protected $timerCustomEventsDataType = 'array';
   public $totalFileSize;
   public $type;
+  protected $universalAdIdType = 'Google_Service_Dfareporting_UniversalAdId';
+  protected $universalAdIdDataType = '';
   public $version;
   public $videoDescription;
   public $videoDuration;
@@ -216,18 +219,30 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->backupImageReportingLabel;
   }
+  /**
+   * @param Google_Service_Dfareporting_TargetWindow
+   */
   public function setBackupImageTargetWindow(Google_Service_Dfareporting_TargetWindow $backupImageTargetWindow)
   {
     $this->backupImageTargetWindow = $backupImageTargetWindow;
   }
+  /**
+   * @return Google_Service_Dfareporting_TargetWindow
+   */
   public function getBackupImageTargetWindow()
   {
     return $this->backupImageTargetWindow;
   }
+  /**
+   * @param Google_Service_Dfareporting_ClickTag
+   */
   public function setClickTags($clickTags)
   {
     $this->clickTags = $clickTags;
   }
+  /**
+   * @return Google_Service_Dfareporting_ClickTag
+   */
   public function getClickTags()
   {
     return $this->clickTags;
@@ -264,34 +279,58 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->convertFlashToHtml5;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function setCounterCustomEvents($counterCustomEvents)
   {
     $this->counterCustomEvents = $counterCustomEvents;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function getCounterCustomEvents()
   {
     return $this->counterCustomEvents;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeAssetSelection
+   */
   public function setCreativeAssetSelection(Google_Service_Dfareporting_CreativeAssetSelection $creativeAssetSelection)
   {
     $this->creativeAssetSelection = $creativeAssetSelection;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeAssetSelection
+   */
   public function getCreativeAssetSelection()
   {
     return $this->creativeAssetSelection;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeAsset
+   */
   public function setCreativeAssets($creativeAssets)
   {
     $this->creativeAssets = $creativeAssets;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeAsset
+   */
   public function getCreativeAssets()
   {
     return $this->creativeAssets;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeFieldAssignment
+   */
   public function setCreativeFieldAssignments($creativeFieldAssignments)
   {
     $this->creativeFieldAssignments = $creativeFieldAssignments;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeFieldAssignment
+   */
   public function getCreativeFieldAssignments()
   {
     return $this->creativeFieldAssignments;
@@ -312,18 +351,30 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->dynamicAssetSelection;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function setExitCustomEvents($exitCustomEvents)
   {
     $this->exitCustomEvents = $exitCustomEvents;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function getExitCustomEvents()
   {
     return $this->exitCustomEvents;
   }
+  /**
+   * @param Google_Service_Dfareporting_FsCommand
+   */
   public function setFsCommand(Google_Service_Dfareporting_FsCommand $fsCommand)
   {
     $this->fsCommand = $fsCommand;
   }
+  /**
+   * @return Google_Service_Dfareporting_FsCommand
+   */
   public function getFsCommand()
   {
     return $this->fsCommand;
@@ -352,10 +403,16 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->id;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setIdDimensionValue(Google_Service_Dfareporting_DimensionValue $idDimensionValue)
   {
     $this->idDimensionValue = $idDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getIdDimensionValue()
   {
     return $this->idDimensionValue;
@@ -368,10 +425,16 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->kind;
   }
+  /**
+   * @param Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function setLastModifiedInfo(Google_Service_Dfareporting_LastModifiedInfo $lastModifiedInfo)
   {
     $this->lastModifiedInfo = $lastModifiedInfo;
   }
+  /**
+   * @return Google_Service_Dfareporting_LastModifiedInfo
+   */
   public function getLastModifiedInfo()
   {
     return $this->lastModifiedInfo;
@@ -400,6 +463,20 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->overrideCss;
   }
+  /**
+   * @param Google_Service_Dfareporting_VideoOffset
+   */
+  public function setProgressOffset(Google_Service_Dfareporting_VideoOffset $progressOffset)
+  {
+    $this->progressOffset = $progressOffset;
+  }
+  /**
+   * @return Google_Service_Dfareporting_VideoOffset
+   */
+  public function getProgressOffset()
+  {
+    return $this->progressOffset;
+  }
   public function setRedirectUrl($redirectUrl)
   {
     $this->redirectUrl = $redirectUrl;
@@ -416,10 +493,16 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->renderingId;
   }
+  /**
+   * @param Google_Service_Dfareporting_DimensionValue
+   */
   public function setRenderingIdDimensionValue(Google_Service_Dfareporting_DimensionValue $renderingIdDimensionValue)
   {
     $this->renderingIdDimensionValue = $renderingIdDimensionValue;
   }
+  /**
+   * @return Google_Service_Dfareporting_DimensionValue
+   */
   public function getRenderingIdDimensionValue()
   {
     return $this->renderingIdDimensionValue;
@@ -440,13 +523,33 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->requiredFlashVersion;
   }
+  /**
+   * @param Google_Service_Dfareporting_Size
+   */
   public function setSize(Google_Service_Dfareporting_Size $size)
   {
     $this->size = $size;
   }
+  /**
+   * @return Google_Service_Dfareporting_Size
+   */
   public function getSize()
   {
     return $this->size;
+  }
+  /**
+   * @param Google_Service_Dfareporting_VideoOffset
+   */
+  public function setSkipOffset(Google_Service_Dfareporting_VideoOffset $skipOffset)
+  {
+    $this->skipOffset = $skipOffset;
+  }
+  /**
+   * @return Google_Service_Dfareporting_VideoOffset
+   */
+  public function getSkipOffset()
+  {
+    return $this->skipOffset;
   }
   public function setSkippable($skippable)
   {
@@ -520,18 +623,30 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   {
     return $this->thirdPartyRichMediaImpressionsUrl;
   }
+  /**
+   * @param Google_Service_Dfareporting_ThirdPartyTrackingUrl
+   */
   public function setThirdPartyUrls($thirdPartyUrls)
   {
     $this->thirdPartyUrls = $thirdPartyUrls;
   }
+  /**
+   * @return Google_Service_Dfareporting_ThirdPartyTrackingUrl
+   */
   public function getThirdPartyUrls()
   {
     return $this->thirdPartyUrls;
   }
+  /**
+   * @param Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function setTimerCustomEvents($timerCustomEvents)
   {
     $this->timerCustomEvents = $timerCustomEvents;
   }
+  /**
+   * @return Google_Service_Dfareporting_CreativeCustomEvent
+   */
   public function getTimerCustomEvents()
   {
     return $this->timerCustomEvents;
@@ -551,6 +666,20 @@ class Google_Service_Dfareporting_Creative extends Google_Collection
   public function getType()
   {
     return $this->type;
+  }
+  /**
+   * @param Google_Service_Dfareporting_UniversalAdId
+   */
+  public function setUniversalAdId(Google_Service_Dfareporting_UniversalAdId $universalAdId)
+  {
+    $this->universalAdId = $universalAdId;
+  }
+  /**
+   * @return Google_Service_Dfareporting_UniversalAdId
+   */
+  public function getUniversalAdId()
+  {
+    return $this->universalAdId;
   }
   public function setVersion($version)
   {

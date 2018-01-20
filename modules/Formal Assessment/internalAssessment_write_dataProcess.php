@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 header("Location: {$URL}");
             } else {
                 $row = $result->fetch();
-                $attachmentCurrent = $row['attachment'];
+                $attachmentCurrent = isset($_POST['attachment'])? $_POST['attachment'] : '';
                 $name = $row['name'];
                 $count = $_POST['count'];
                 $partialFail = false;
@@ -157,6 +157,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     }
 
                     $time = time();
+
+                    $attachment = isset($_POST["attachment$i"])? $_POST["attachment$i"] : '';
+
                     //Move attached file, if there is one
                     if ($uploadedResponse == 'Y') {
                         if (!empty($_FILES["response$i"]['tmp_name'])) {
@@ -170,14 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             if (empty($attachment)) {
                                 $partialFail = true;
                             }
-                        } else {
-                            $attachment = null;
-                            if (isset($_POST["response$i"])) {
-                                $attachment = $_POST["response$i"];
-                            }
                         }
-                    } else {
-                        $attachment = null;
                     }
 
                     $selectFail = false;

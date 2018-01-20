@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -18,10 +18,26 @@
 class Google_Service_Vision_ImageContext extends Google_Collection
 {
   protected $collection_key = 'languageHints';
+  protected $cropHintsParamsType = 'Google_Service_Vision_CropHintsParams';
+  protected $cropHintsParamsDataType = '';
   public $languageHints;
   protected $latLongRectType = 'Google_Service_Vision_LatLongRect';
   protected $latLongRectDataType = '';
 
+  /**
+   * @param Google_Service_Vision_CropHintsParams
+   */
+  public function setCropHintsParams(Google_Service_Vision_CropHintsParams $cropHintsParams)
+  {
+    $this->cropHintsParams = $cropHintsParams;
+  }
+  /**
+   * @return Google_Service_Vision_CropHintsParams
+   */
+  public function getCropHintsParams()
+  {
+    return $this->cropHintsParams;
+  }
   public function setLanguageHints($languageHints)
   {
     $this->languageHints = $languageHints;
@@ -30,10 +46,16 @@ class Google_Service_Vision_ImageContext extends Google_Collection
   {
     return $this->languageHints;
   }
+  /**
+   * @param Google_Service_Vision_LatLongRect
+   */
   public function setLatLongRect(Google_Service_Vision_LatLongRect $latLongRect)
   {
     $this->latLongRect = $latLongRect;
   }
+  /**
+   * @return Google_Service_Vision_LatLongRect
+   */
   public function getLatLongRect()
   {
     return $this->latLongRect;

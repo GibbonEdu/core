@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -60,6 +60,7 @@ class Google_Service_YouTube_ContentRating extends Google_Collection
   public $lsfRating;
   public $mccaaRating;
   public $mccypRating;
+  public $mcstRating;
   public $mdaRating;
   public $medietilsynetRating;
   public $mekuRating;
@@ -421,6 +422,14 @@ class Google_Service_YouTube_ContentRating extends Google_Collection
   public function getMccypRating()
   {
     return $this->mccypRating;
+  }
+  public function setMcstRating($mcstRating)
+  {
+    $this->mcstRating = $mcstRating;
+  }
+  public function getMcstRating()
+  {
+    return $this->mcstRating;
   }
   public function setMdaRating($mdaRating)
   {

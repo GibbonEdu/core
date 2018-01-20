@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -85,27 +87,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                 } else {
                     $rowList = $resultList->fetch();
 
-                    ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
-							<tr>
-								<td colspan=2> 
-									<b><?php echo __($guid, 'Write your comment below:') ?></b> 
-									<?php echo getEditor($guid,  true, 'comment') ?>
-								</td>
-							</tr>
-							<tr>
-								<td class="right" colspan=2>
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+                    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_postProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&address=".$_GET['q']."&gibbonPersonID=$gibbonPersonID&replyTo=$replyTo");
+                
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+                    $column = $form->addRow()->addColumn();
+                        $column->addLabel('commentLabel', __('Write your comment below:'));
+                        $column->addEditor('comment', $guid)->setRows(10)->isRequired();
+
+                    $form->addRow()->addSubmit();
+
+                    echo $form->getOutput();
                 }
             }
         }
     }
 }
-?>

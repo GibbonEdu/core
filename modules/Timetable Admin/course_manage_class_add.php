@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 @session_start();
 
+use Gibbon\Forms\Form;
+
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,12 +32,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Courses & Classes')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage_edit.php&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Course & Classes')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Class').'</div>';
     echo '</div>';
 
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $gibbonCourseID = $_GET['gibbonCourseID'];
+
+	$editLink = '';
+    if (isset($_GET['editID'])) {
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
+	}
+	
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], $editLink, null);
+    }
 
     if ($gibbonSchoolYearID == '' or $gibbonCourseID == '') {
         echo "<div class='error'>";
@@ -56,102 +63,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
         } else {
-            $row = $result->fetch(); ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_addProcess.php' ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>	
-					<tr>
-						<td style='width: 275px'> 
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $row['yearName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var yearName=new LiveValidation('yearName');
-								yearname2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Course') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo $row['courseName'] ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var courseName=new LiveValidation('courseName');
-								coursename2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this course.') ?></span>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=10 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Short Name') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Must be unique for this course.') ?></span>
-						</td>
-						<td class="right">
-							<input name="nameShort" id="nameShort" maxlength=5 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var nameShort=new LiveValidation('nameShort');
-								nameShort.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Reportable?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Should this class show in reports?') ?></span>
-						</td>
-						<td class="right">
-							<select name="reportable" id="reportable" class="standardWidth">
-								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<?php if ( isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") ) : ?>
-					<tr>
-						<td> 
-							<b><?php echo __($guid, 'Track Attendance?') ?></b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'Should this class allow attendance to be taken?') ?></span>
-						</td>
-						<td class="right">
-							<select name="attendance" id="attendance" class="standardWidth">
-								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-								<option value="N"><?php echo __($guid, 'No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<?php endif; ?>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonCourseID" id="gibbonCourseID" value="<?php echo $gibbonCourseID ?>" type="hidden">
-							<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+			$values = $result->fetch(); 
 
+			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_addProcess.php');
+
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+			$form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+			$form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
+			
+			$row = $form->addRow();
+				$row->addLabel('schoolYearName', __('School Year'));
+				$row->addTextField('schoolYearName')->isRequired()->readonly()->setValue($values['yearName']);
+			
+			$row = $form->addRow();
+				$row->addLabel('courseName', __('Course'));
+				$row->addTextField('courseName')->isRequired()->readonly()->setValue($values['courseName']);
+
+			$row = $form->addRow();
+				$row->addLabel('name', __('Name'))->description(__('Must be unique for this course.'));
+				$row->addTextField('name')->isRequired()->maxLength(10);
+			
+			$row = $form->addRow();
+				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
+				$row->addTextField('nameShort')->isRequired()->maxLength(5);
+
+			$row = $form->addRow();
+				$row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));
+				$row->addYesNo('reportable');
+
+			if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
+				$row = $form->addRow();
+				$row->addLabel('attendance', __('Track Attendance?'))->description(__('Should this class allow attendance to be taken?'));
+				$row->addYesNo('attendance');
+			}
+
+			$row = $form->addRow();
+				$row->addFooter();
+				$row->addSubmit();
+		
+			echo $form->getOutput();
         }
     }
 }

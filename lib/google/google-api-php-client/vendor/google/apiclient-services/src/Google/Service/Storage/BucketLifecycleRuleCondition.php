@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -15,11 +15,13 @@
  * the License.
  */
 
-class Google_Service_Storage_BucketLifecycleRuleCondition extends Google_Model
+class Google_Service_Storage_BucketLifecycleRuleCondition extends Google_Collection
 {
+  protected $collection_key = 'matchesStorageClass';
   public $age;
   public $createdBefore;
   public $isLive;
+  public $matchesStorageClass;
   public $numNewerVersions;
 
   public function setAge($age)
@@ -45,6 +47,14 @@ class Google_Service_Storage_BucketLifecycleRuleCondition extends Google_Model
   public function getIsLive()
   {
     return $this->isLive;
+  }
+  public function setMatchesStorageClass($matchesStorageClass)
+  {
+    $this->matchesStorageClass = $matchesStorageClass;
+  }
+  public function getMatchesStorageClass()
+  {
+    return $this->matchesStorageClass;
   }
   public function setNumNewerVersions($numNewerVersions)
   {

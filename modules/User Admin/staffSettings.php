@@ -57,6 +57,39 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $row = $form->addRow()->addHeading(__('Name Formats'))->append(__('How should staff names be formatted?').' '.__('Choose from [title], [preferredName], [surname].').' '.__('Use a colon to limit the number of letters, for example [preferredName:1] will use the first initial.'));
+
+    $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+    $sql = "SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+    $result = $pdo->executeQuery($data, $sql);
+    if ($result->rowCount() > 0) {
+        list($title, $preferredName, $surname) = array_values($result->fetch());
+    }
+
+    $setting = getSettingByScope($connection2, 'System', 'nameFormatStaffFormal', true);
+    $settingRev = getSettingByScope($connection2, 'System', 'nameFormatStaffFormalReversed', true);
+
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(
+            __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, false).'<br/>'.
+            __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, false));
+        $col = $row->addColumn($setting['name'])->addClass('stacked');
+        $col->addTextField($setting['name'])->isRequired()->maxLength(60)->setValue($setting['value']);
+        $col->addTextField($settingRev['name'])->isRequired()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
+
+    $setting = getSettingByScope($connection2, 'System', 'nameFormatStaffInformal', true);
+    $settingRev = getSettingByScope($connection2, 'System', 'nameFormatStaffInformalReversed', true);
+
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']))->description(
+            __('Example').': '.formatName($title, $preferredName, $surname, 'Staff', false, true).'<br/>'.
+            __('Reversed').': '.formatName($title, $preferredName, $surname, 'Staff', true, true));
+        $col = $row->addColumn($setting['name'])->addClass('stacked right');
+        $col->addTextField($setting['name'])->isRequired()->maxLength(60)->setValue($setting['value']);
+        $col->addTextField($settingRev['name'])->isRequired()->maxLength(60)->setTitle(__('Reversed'))->setValue($settingRev['value']);
+
+    $form->loadAllValuesFrom($formats);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

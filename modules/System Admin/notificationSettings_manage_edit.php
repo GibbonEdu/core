@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 $row->addLabel('event', __('Event'));
                 $row->addTextField('event')->setValue($event['moduleName'].': '.$event['event'])->readOnly();
 
-                $row = $form->addRow();
+            $row = $form->addRow();
                 $row->addLabel('permission', __('Permission Required'));
                 $row->addTextField('permission')->setValue($event['actionName'])->readOnly();
 
@@ -165,10 +165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
             $data=array( 'action' => $event['actionName']);
             $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.preferredName, gibbonPerson.surname, gibbonRole.name as roleName
                     FROM gibbonPerson
-                    JOIN gibbonPermission ON (gibbonPerson.gibbonRoleIDPrimary=gibbonPermission.gibbonRoleID OR gibbonPerson.gibbonRoleIDAll LIKE CONCAT('%', gibbonPermission.gibbonRoleID, '%'))
+                    JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID OR FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                    JOIN gibbonPermission ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     JOIN gibbonAction ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
-                    WHERE status='Full'
+                    WHERE gibbonPerson.status='Full'
                     AND (gibbonAction.name=:action)
                     GROUP BY gibbonPerson.gibbonPersonID
                     ORDER BY gibbonRole.gibbonRoleID, surname, preferredName" ;
@@ -209,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                     $form->toggleVisibilityByClass('scopeTypeStudent')->onSelect('scopeType')->when('gibbonPersonIDStudent');
                     $row = $form->addRow()->addClass('scopeTypeStudent');
                         $row->addLabel('gibbonPersonIDStudent', __('Student'));
-                        $row->addSelectStudent('gibbonPersonIDStudent')->isRequired()->placeholder();
+                        $row->addSelectStudent('gibbonPersonIDStudent', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->placeholder();
 
                     $form->toggleVisibilityByClass('scopeTypeStaff')->onSelect('scopeType')->when('gibbonPersonIDStaff');
                     $row = $form->addRow()->addClass('scopeTypeStaff');

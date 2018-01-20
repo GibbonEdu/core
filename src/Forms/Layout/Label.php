@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Layout;
 
+use Gibbon\Forms\RowDependancyInterface;
+
 /**
  * Label
  *
@@ -33,45 +35,124 @@ class Label extends Element implements RowDependancyInterface
     protected $description;
     protected $for = '';
 
+    /**
+     * Create a label element with a for attribute linking to an input.
+     * @param  string  $for
+     * @param  string  $label
+     */
     public function __construct($for, $label)
     {
         $this->label = $label;
         $this->for = $for;
     }
 
-    public function setRow(Row $row)
+    /**
+     * Method for RowDependancyInterface to automatically set a reference to the parent Row object.
+     * @param  object  $row
+     */
+    public function setRow($row)
     {
         $this->row = $row;
     }
 
+    /**
+     * Overload the getName method to prepend a label- prefix.
+     * @return  string
+     */
+    public function getName()
+    {
+        return 'label'.$this->for;
+    }
+
+    /**
+     * Overload the getID method to prepend a label prefix.
+     * @return  string
+     */
+    public function getID()
+    {
+        return 'label'.$this->for;
+    }
+
+    /**
+     * Set the smaller description text to be output with the label.
+     * @param   string  $value
+     * @return  self
+     */
     public function description($value = '')
     {
-        $this->description = $value;
+        $this->description = (!empty($this->description))? $this->description.'<br>'.$value : $value;
         return $this;
     }
 
+    /**
+     * Gets the current label description.
+     * @return string
+     */
+    public function getDescription()
+    {
+        $output = '';
+
+        $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
+        $output .= $this->description;
+        $output .= (!empty($this->appended))? ' '.$this->appended : '';
+
+        return $output;
+    }
+
+    /**
+     * Get the required status of the input this label is linked to.
+     * @return  bool
+     */
     protected function getRequired()
+    {
+        if ($element = $this->getLinkedElement())
+        {
+            return method_exists($element, 'getRequired')? $element->getRequired() : false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get the readonly status of the input this label is linked to.
+     * @return  bool
+     */
+    protected function getReadOnly()
+    {
+        if ($element = $this->getLinkedElement())
+        {
+            return method_exists($element, 'getReadonly')? $element->getReadonly() : false;
+        }
+
+        return false;
+    }
+
+    /**
+     * Allows an element to define a string that is appended to the current label description.
+     * @return bool|string
+     */
+    protected function getLabelContext()
+    {
+        if ($element = $this->getLinkedElement()) {
+            return method_exists($element, 'getLabelContext')? $element->getLabelContext($this) : false;
+        }
+
+        return false;
+    }
+
+    protected function getLinkedElement()
     {
         if (empty($this->for) || empty($this->row)) {
             return false;
         }
 
-        $element = $this->row->getElement($this->for);
-
-        return (!empty($element) && method_exists($element, 'getRequired'))? $element->getRequired() : false;
+        return $this->row->getElement($this->for);
     }
 
-    protected function getReadOnly()
-    {
-        if (empty($this->for)) {
-            return false;
-        }
-
-        $element = $this->row->getElement($this->for);
-
-        return (!empty($element) && method_exists($element, 'getReadonly'))? $element->getReadonly() : false;
-    }
-
+    /**
+     * Get the HTML output of the label element.
+     * @return  string
+     */
     public function getOutput()
     {
         $output = '';
@@ -88,13 +169,14 @@ class Label extends Element implements RowDependancyInterface
             $this->description .= __('This value cannot be changed.');
         }
 
+        if ($context = $this->getLabelContext())
+        {
+            $this->description($context);
+        }
+
         if (!empty($this->description)) {
             $output .= '<span class="emphasis small">';
-
-            $output .= (!empty($this->prepended))? $this->prepended.' ' : '';
-            $output .= $this->description;
-            $output .= (!empty($this->appended))? ' '.$this->appended : '';
-
+            $output .= $this->getDescription();
             $output .= '</span><br/>';
         }
 

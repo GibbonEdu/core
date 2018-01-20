@@ -26,8 +26,8 @@ $connection2 = $pdo->getConnection();
 
 @session_start();
 
-$gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-$gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+$gibbonTTColumnRowID = $_POST['gibbonTTColumnRowID'];
+$gibbonTTColumnID = $_POST['gibbonTTColumnID'];
 
 if ($gibbonTTColumnID == '') { echo 'Fatal error loading this page!';
 } else {

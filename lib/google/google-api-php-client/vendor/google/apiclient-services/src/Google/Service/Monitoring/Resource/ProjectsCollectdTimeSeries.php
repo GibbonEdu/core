@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -31,7 +31,7 @@ class Google_Service_Monitoring_Resource_ProjectsCollectdTimeSeries extends Goog
    * projects.timeSeries.create instead. (collectdTimeSeries.create)
    *
    * @param string $name The project in which to create the time series. The
-   * format is projects/PROJECT_ID_OR_NUMBER.
+   * format is "projects/PROJECT_ID_OR_NUMBER".
    * @param Google_Service_Monitoring_CreateCollectdTimeSeriesRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Monitoring_MonitoringEmpty

@@ -27,6 +27,11 @@ namespace Gibbon\Forms\Input;
  */
 class Date extends TextField
 {
+    /**
+     * Overload the base loadFrom method to handle converting date formats.
+     * @param   array  &$data
+     * @return  self
+     */
     public function loadFrom(&$data)
     {
         $name = str_replace('[]', '', $this->getName());
@@ -38,6 +43,11 @@ class Date extends TextField
         return $this;
     }
 
+    /**
+     * Set the input value by converting a YYYY-MM-DD format back to localized value.
+     * @param  string  $value
+     * @return  self
+     */
     public function setDateFromValue($value)
     {
         global $guid;
@@ -47,6 +57,25 @@ class Date extends TextField
         return $this;
     }
 
+    /**
+     * Adds date format to the label description (if not already present)
+     * @return string|bool
+     */
+    public function getLabelContext($label)
+    {
+        global $guid;
+
+        if (stristr($label->getDescription(), 'Format') === false) {
+            return __('Format').': '.$_SESSION[$guid]['i18n']['dateFormat'];
+        }
+
+        return false;
+    }
+
+    /**
+     * Gets the HTML output for this form element.
+     * @return  string
+     */
     protected function getElement()
     {
         global $guid;
@@ -72,7 +101,7 @@ class Date extends TextField
         $output = '<input type="text" '.$this->getAttributeString().' maxlength="10">';
 
         $output .= '<script type="text/javascript">';
-        $output .= '$(function() {  $( "#'.$this->getID().'" ).datepicker({onSelect: function(){$(this).blur();} });  })';
+        $output .= '$(function() { $("#'.$this->getID().'").datepicker({onSelect: function(){$(this).blur();}, onClose: function(){$(this).change();} }); })';
         $output .= '</script>';
 
         return $output;

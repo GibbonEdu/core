@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -27,10 +27,14 @@ class Google_Service_Proximitybeacon_Resource_BeaconsAttachments extends Google_
 {
   /**
    * Deletes multiple attachments on a given beacon. This operation is permanent
-   * and cannot be undone. You can optionally specify `namespacedType` to choose
-   * which attachments should be deleted. If you do not specify `namespacedType`,
-   * all your attachments on the given beacon will be deleted. You also may
-   * explicitly specify `*` to delete all. Authenticate using an [OAuth access
+   * and cannot be undone.
+   *
+   * You can optionally specify `namespacedType` to choose which attachments
+   * should be deleted. If you do not specify `namespacedType`,  all your
+   * attachments on the given beacon will be deleted. You also may explicitly
+   * specify `*` to delete all.
+   *
+   * Authenticate using an [OAuth access
    * token](https://developers.google.com/identity/protocols/OAuth2) from a
    * signed-in user with **Is owner** or **Can edit** permissions in the Google
    * Developers Console project. (attachments.batchDelete)
@@ -61,12 +65,18 @@ class Google_Service_Proximitybeacon_Resource_BeaconsAttachments extends Google_
   }
   /**
    * Associates the given data with the specified beacon. Attachment data must
-   * contain two parts: - A namespaced type.  - The actual attachment data itself.
+   * contain two parts:
+   *
+   * A namespaced type. The actual attachment data itself.
+   *
    * The namespaced type consists of two parts, the namespace and the type. The
    * namespace must be one of the values returned by the `namespaces` endpoint,
    * while the type can be a string of any characters except for the forward slash
-   * (`/`) up to 100 characters in length. Attachment data can be up to 1024 bytes
-   * long. Authenticate using an [OAuth access
+   * (`/`) up to 100 characters in length.
+   *
+   * Attachment data can be up to 1024 bytes long.
+   *
+   * Authenticate using an [OAuth access
    * token](https://developers.google.com/identity/protocols/OAuth2) from a
    * signed-in user with **Is owner** or **Can edit** permissions in the Google
    * Developers Console project. (attachments.create)
@@ -96,6 +106,7 @@ class Google_Service_Proximitybeacon_Resource_BeaconsAttachments extends Google_
    * unique attachment name (`attachmentName`) which is returned when you fetch
    * the attachment data via this API. You specify this with the delete request to
    * control which attachment is removed. This operation cannot be undone.
+   *
    * Authenticate using an [OAuth access
    * token](https://developers.google.com/identity/protocols/OAuth2) from a
    * signed-in user with **Is owner** or **Can edit** permissions in the Google
@@ -120,10 +131,14 @@ class Google_Service_Proximitybeacon_Resource_BeaconsAttachments extends Google_
   }
   /**
    * Returns the attachments for the specified beacon that match the specified
-   * namespaced-type pattern. To control which namespaced types are returned, you
-   * add the `namespacedType` query parameter to the request. You must either use
-   * `*`, to return all attachments, or the namespace must be one of the ones
-   * returned from the `namespaces` endpoint. Authenticate using an [OAuth access
+   * namespaced-type pattern.
+   *
+   * To control which namespaced types are returned, you add the `namespacedType`
+   * query parameter to the request. You must either use `*`, to return all
+   * attachments, or the namespace must be one of the ones returned from the
+   * `namespaces` endpoint.
+   *
+   * Authenticate using an [OAuth access
    * token](https://developers.google.com/identity/protocols/OAuth2) from a
    * signed-in user with **viewer**, **Is owner** or **Can edit** permissions in
    * the Google Developers Console project. (attachments.listBeaconsAttachments)

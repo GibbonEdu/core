@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -26,9 +26,10 @@
 class Google_Service_Dataflow_Resource_ProjectsTemplates extends Google_Service_Resource
 {
   /**
-   * Creates a dataflow job from a template. (templates.create)
+   * Creates a Cloud Dataflow job from a template. (templates.create)
    *
-   * @param string $projectId The project which owns the job.
+   * @param string $projectId Required. The ID of the Cloud Platform project that
+   * the job belongs to.
    * @param Google_Service_Dataflow_CreateJobFromTemplateRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Dataflow_Job
@@ -38,5 +39,47 @@ class Google_Service_Dataflow_Resource_ProjectsTemplates extends Google_Service_
     $params = array('projectId' => $projectId, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('create', array($params), "Google_Service_Dataflow_Job");
+  }
+  /**
+   * Get the template associated with a template. (templates.get)
+   *
+   * @param string $projectId Required. The ID of the Cloud Platform project that
+   * the job belongs to.
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string view The view to retrieve. Defaults to METADATA_ONLY.
+   * @opt_param string gcsPath Required. A Cloud Storage path to the template from
+   * which to create the job. Must be a valid Cloud Storage URL, beginning with
+   * `gs://`.
+   * @opt_param string location The location to which to direct the request.
+   * @return Google_Service_Dataflow_GetTemplateResponse
+   */
+  public function get($projectId, $optParams = array())
+  {
+    $params = array('projectId' => $projectId);
+    $params = array_merge($params, $optParams);
+    return $this->call('get', array($params), "Google_Service_Dataflow_GetTemplateResponse");
+  }
+  /**
+   * Launch a template. (templates.launch)
+   *
+   * @param string $projectId Required. The ID of the Cloud Platform project that
+   * the job belongs to.
+   * @param Google_Service_Dataflow_LaunchTemplateParameters $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string location The location to which to direct the request.
+   * @opt_param bool validateOnly If true, the request is validated but not
+   * actually executed. Defaults to false.
+   * @opt_param string gcsPath Required. A Cloud Storage path to the template from
+   * which to create the job. Must be valid Cloud Storage URL, beginning with
+   * 'gs://'.
+   * @return Google_Service_Dataflow_LaunchTemplateResponse
+   */
+  public function launch($projectId, Google_Service_Dataflow_LaunchTemplateParameters $postBody, $optParams = array())
+  {
+    $params = array('projectId' => $projectId, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('launch', array($params), "Google_Service_Dataflow_LaunchTemplateResponse");
   }
 }

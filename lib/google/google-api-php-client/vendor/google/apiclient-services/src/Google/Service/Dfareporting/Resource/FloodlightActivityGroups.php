@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -54,7 +54,8 @@ class Google_Service_Dfareporting_Resource_FloodlightActivityGroups extends Goog
     return $this->call('insert', array($params), "Google_Service_Dfareporting_FloodlightActivityGroup");
   }
   /**
-   * Retrieves a list of floodlight activity groups, possibly filtered.
+   * Retrieves a list of floodlight activity groups, possibly filtered. This
+   * method supports paging.
    * (floodlightActivityGroups.listFloodlightActivityGroups)
    *
    * @param string $profileId User profile ID associated with this request.
@@ -82,7 +83,7 @@ class Google_Service_Dfareporting_Resource_FloodlightActivityGroups extends Goog
    * floodlightactivitygroup activity", "floodlightactivitygroup 2015", or simply
    * "floodlightactivitygroup".
    * @opt_param string sortField Field by which to sort the list.
-   * @opt_param string sortOrder Order of sorted results, default is ASCENDING.
+   * @opt_param string sortOrder Order of sorted results.
    * @opt_param string type Select only floodlight activity groups with the
    * specified floodlight activity group type.
    * @return Google_Service_Dfareporting_FloodlightActivityGroupsListResponse

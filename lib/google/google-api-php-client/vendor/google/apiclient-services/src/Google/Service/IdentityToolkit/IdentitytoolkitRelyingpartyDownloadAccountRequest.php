@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -20,6 +20,7 @@ class Google_Service_IdentityToolkit_IdentitytoolkitRelyingpartyDownloadAccountR
   public $delegatedProjectNumber;
   public $maxResults;
   public $nextPageToken;
+  public $targetProjectId;
 
   public function setDelegatedProjectNumber($delegatedProjectNumber)
   {
@@ -44,5 +45,13 @@ class Google_Service_IdentityToolkit_IdentitytoolkitRelyingpartyDownloadAccountR
   public function getNextPageToken()
   {
     return $this->nextPageToken;
+  }
+  public function setTargetProjectId($targetProjectId)
+  {
+    $this->targetProjectId = $targetProjectId;
+  }
+  public function getTargetProjectId()
+  {
+    return $this->targetProjectId;
   }
 }

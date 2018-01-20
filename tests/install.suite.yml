@@ -1,0 +1,8 @@
+class_name: InstallTester
+params:
+    - env
+modules:
+    enabled:
+        - PhpBrowser:
+            url: "%ABSOLUTE_URL%"
+        - \Helper\Install

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_edit.php') == false) {
@@ -56,11 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $student = $result->fetch();
 
                 //Proceed!
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $row['preferredName'], $row['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Student Note').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $student['preferredName'], $student['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Student Note').'</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {
@@ -89,86 +91,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '</div>';
                     } else {
                         //Let's go!
-                        $row = $result->fetch();
+                        $values = $result->fetch();
 
                         if ($_GET['search'] != '') {
                             echo "<div class='linkTop'>";
                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__($guid, 'Back to Search Results').'</a>';
                             echo '</div>';
                         }
-                        ?>
-						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents" ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
-								<tr>
-									<td style='width: 275px'> 
-										<b><?php echo __($guid, 'Title') ?> *</b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<input name="title" id="title" maxlength=100 value="<?php echo htmlprep($row['title']) ?>" type="text" class="standardWidth">
-										<script type="text/javascript">
-											var title=new LiveValidation('title');
-											title.add(Validate.Presence);
-										</script>
-									</td>
-								</tr>
-								<?php
-                                try {
-                                    $dataCategories = array();
-                                    $sqlCategories = "SELECT * FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
-                                    $resultCategories = $connection2->prepare($sqlCategories);
-                                    $resultCategories->execute($dataCategories);
-                                } catch (PDOException $e) {
-                                }
-								if ($resultCategories->rowCount() > 0) {
-									?>
-									<tr>
-										<td style='width: 275px'> 
-											<b><?php echo __($guid, 'Category') ?> *</b><br/>
-											<span class="emphasis small"></span>
-										</td>
-										<td class="right">
-											<select name="gibbonStudentNoteCategoryID" id="gibbonStudentNoteCategoryID" class="standardWidth">
-												<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
-												<?php
-                                                while ($rowCategories = $resultCategories->fetch()) {
-                                                    $selected = '';
-                                                    if ($rowCategories['gibbonStudentNoteCategoryID'] == $row['gibbonStudentNoteCategoryID']) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='".$rowCategories['gibbonStudentNoteCategoryID']."'>".$rowCategories['name'].'</option>';
-                                                }
-                            					?>
-											</select>
-											<script type="text/javascript">
-												var gibbonStudentNoteCategoryID=new LiveValidation('gibbonStudentNoteCategoryID');
-												gibbonStudentNoteCategoryID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-											</script>
-										</td>
-									</tr>
-									<?php
 
-								}
-								?>
-								<tr>
-									<td colspan=2 style='padding-top: 15px;'> 
-										<b><?php echo __($guid, 'Note') ?> *</b><br/>
-										<?php echo getEditor($guid,  true, 'note', $row['note'], 25, true, true, false) ?>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-									</td>
-									<td class="right">
-										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-									</td>
-								</tr>
-							</table>
-						</form>
-						<?php
+                        $form = Form::create('notes', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_editProcess.php?gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&gibbonStudentNoteID=$gibbonStudentNoteID&category=".$_GET['category']."&allStudents=$allStudents");
 
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                        $row = $form->addRow();
+                            $row->addLabel('title', __('Title'));
+                            $row->addTextField('title')->isRequired()->maxLength(100);
+
+                        $sql = "SELECT gibbonStudentNoteCategoryID as value, name FROM gibbonStudentNoteCategory WHERE active='Y' ORDER BY name";
+                        $row = $form->addRow();
+                            $row->addLabel('gibbonStudentNoteCategoryID', __('Category'));
+                            $row->addSelect('gibbonStudentNoteCategoryID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+
+                        $row = $form->addRow();
+                            $column = $row->addColumn();
+                            $column->addLabel('note', __('Note'));
+                            $column->addEditor('note', $guid)->isRequired()->setRows(25)->showMedia();
+                                        
+                        $row = $form->addRow();
+                            $row->addFooter();
+                            $row->addSubmit();
+
+                        $form->loadAllValuesFrom($values);
+                        
+                        echo $form->getOutput();
                     }
                 }
             }

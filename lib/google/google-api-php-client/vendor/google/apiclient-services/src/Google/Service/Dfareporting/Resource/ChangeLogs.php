@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -40,7 +40,8 @@ class Google_Service_Dfareporting_Resource_ChangeLogs extends Google_Service_Res
     return $this->call('get', array($params), "Google_Service_Dfareporting_ChangeLog");
   }
   /**
-   * Retrieves a list of change logs. (changeLogs.listChangeLogs)
+   * Retrieves a list of change logs. This method supports paging.
+   * (changeLogs.listChangeLogs)
    *
    * @param string $profileId User profile ID associated with this request.
    * @param array $optParams Optional parameters.

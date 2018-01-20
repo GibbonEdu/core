@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         exit();
                     }
 
-                    $URL .= "&return=success0&editID=$AI";
+                    $URL .= "&return=success0&editID=$gibbonBehaviourID";
                     header("Location: {$URL}");
                 }
             }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Prefab\DeleteForm;
+
 @session_start();
 
 //Module includes
@@ -58,41 +60,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                //Let's go!
-                $row = $result->fetch();
-                if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
-                    echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
-                    echo '</div>';
-                }
-                ?>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID'] ?>">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Are you sure you want to delete this record?'); ?></b><br/>
-								<span style="font-size: 90%; color: #cc0000"><i><?php echo __($guid, 'This operation cannot be undone, and may lead to loss of vital data in your system. PROCEED WITH CAUTION!'); ?></span>
-							</td>
-							<td class="right">
-
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
-								<input name="date" id="date" value="<?php echo $date ?>" type="hidden">
-								<input name="gibbonActivityID" id="gibbonActivityID" value="<?php echo $gibbonActivityID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Yes'); ?>">
-							</td>
-							<td class="right">
-
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+                $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manage_deleteProcess.php?gibbonActivityID=$gibbonActivityID&search=".$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']);
+                echo $form->getOutput();
             }
         }
     }

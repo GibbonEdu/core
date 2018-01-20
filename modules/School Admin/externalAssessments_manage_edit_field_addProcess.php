@@ -40,14 +40,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     $order = $_POST['order'];
     $gibbonScaleID = $_POST['gibbonScaleID'];
     $gibbonYearGroupIDList = '';
-    for ($i = 0; $i < $_POST['count']; ++$i) {
-        if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-            if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-                $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-            }
-        }
+    if (!empty($_POST['gibbonYearGroupIDList']) && is_array($_POST['gibbonYearGroupIDList'])) {
+        $gibbonYearGroupIDList = implode(',', $_POST['gibbonYearGroupIDList']);
     }
-    $gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
 
     if ($gibbonExternalAssessmentID == '' or $name == '' or $category == '' or $order == '' or $gibbonScaleID == '') {
         $URL .= '&return=error1';

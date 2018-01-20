@@ -37,27 +37,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
     $active = $_POST['active'];
     $description = $_POST['description'];
     $type = $_POST['type'];
-    $options = '';
-    if (isset($_POST['options'])) {
-        $options = $_POST['options'];
-    }
+    $options = (isset($_POST['options']))? $_POST['options'] : '';
+    if ($type == 'varchar') $options = min(max(0, intval($options)), 255);
+    if ($type == 'text') $options = max(0, intval($options));
     $required = $_POST['required'];
-    $activePersonStudent = '';
-    if (isset($_POST['activePersonStudent'])) {
-        $activePersonStudent = $_POST['activePersonStudent'];
-    }
-    $activePersonStaff = '';
-    if (isset($_POST['activePersonStaff'])) {
-        $activePersonStaff = $_POST['activePersonStaff'];
-    }
-    $activePersonParent = '';
-    if (isset($_POST['activePersonParent'])) {
-        $activePersonParent = $_POST['activePersonParent'];
-    }
-    $activePersonOther = '';
-    if (isset($_POST['activePersonOther'])) {
-        $activePersonOther = $_POST['activePersonOther'];
-    }
+    
+    $roleCategories = (isset($_POST['roleCategories']))? $_POST['roleCategories'] : array();
+    $activePersonStudent = in_array('activePersonStudent', $roleCategories);
+    $activePersonStaff = in_array('activePersonStaff', $roleCategories);
+    $activePersonParent = in_array('activePersonParent', $roleCategories);
+    $activePersonOther = in_array('activePersonOther', $roleCategories);
+    
     $activeDataUpdater = $_POST['activeDataUpdater'];
     $activeApplicationForm = $_POST['activeApplicationForm'];
 

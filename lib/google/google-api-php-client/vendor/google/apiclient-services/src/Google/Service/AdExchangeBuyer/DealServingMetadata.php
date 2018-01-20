@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -17,13 +17,28 @@
 
 class Google_Service_AdExchangeBuyer_DealServingMetadata extends Google_Model
 {
+  public $alcoholAdsAllowed;
   protected $dealPauseStatusType = 'Google_Service_AdExchangeBuyer_DealServingMetadataDealPauseStatus';
   protected $dealPauseStatusDataType = '';
 
+  public function setAlcoholAdsAllowed($alcoholAdsAllowed)
+  {
+    $this->alcoholAdsAllowed = $alcoholAdsAllowed;
+  }
+  public function getAlcoholAdsAllowed()
+  {
+    return $this->alcoholAdsAllowed;
+  }
+  /**
+   * @param Google_Service_AdExchangeBuyer_DealServingMetadataDealPauseStatus
+   */
   public function setDealPauseStatus(Google_Service_AdExchangeBuyer_DealServingMetadataDealPauseStatus $dealPauseStatus)
   {
     $this->dealPauseStatus = $dealPauseStatus;
   }
+  /**
+   * @return Google_Service_AdExchangeBuyer_DealServingMetadataDealPauseStatus
+   */
   public function getDealPauseStatus()
   {
     return $this->dealPauseStatus;

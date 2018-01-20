@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2016 Google Inc.
+ * Copyright 2014 Google Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
@@ -23,6 +23,7 @@ class Google_Service_AdExchangeBuyer_CreativeNativeAd extends Google_Collection
   protected $appIconDataType = '';
   public $body;
   public $callToAction;
+  public $clickLinkUrl;
   public $clickTrackingUrl;
   public $headline;
   protected $imageType = 'Google_Service_AdExchangeBuyer_CreativeNativeAdImage';
@@ -43,10 +44,16 @@ class Google_Service_AdExchangeBuyer_CreativeNativeAd extends Google_Collection
   {
     return $this->advertiser;
   }
+  /**
+   * @param Google_Service_AdExchangeBuyer_CreativeNativeAdAppIcon
+   */
   public function setAppIcon(Google_Service_AdExchangeBuyer_CreativeNativeAdAppIcon $appIcon)
   {
     $this->appIcon = $appIcon;
   }
+  /**
+   * @return Google_Service_AdExchangeBuyer_CreativeNativeAdAppIcon
+   */
   public function getAppIcon()
   {
     return $this->appIcon;
@@ -67,6 +74,14 @@ class Google_Service_AdExchangeBuyer_CreativeNativeAd extends Google_Collection
   {
     return $this->callToAction;
   }
+  public function setClickLinkUrl($clickLinkUrl)
+  {
+    $this->clickLinkUrl = $clickLinkUrl;
+  }
+  public function getClickLinkUrl()
+  {
+    return $this->clickLinkUrl;
+  }
   public function setClickTrackingUrl($clickTrackingUrl)
   {
     $this->clickTrackingUrl = $clickTrackingUrl;
@@ -83,10 +98,16 @@ class Google_Service_AdExchangeBuyer_CreativeNativeAd extends Google_Collection
   {
     return $this->headline;
   }
+  /**
+   * @param Google_Service_AdExchangeBuyer_CreativeNativeAdImage
+   */
   public function setImage(Google_Service_AdExchangeBuyer_CreativeNativeAdImage $image)
   {
     $this->image = $image;
   }
+  /**
+   * @return Google_Service_AdExchangeBuyer_CreativeNativeAdImage
+   */
   public function getImage()
   {
     return $this->image;
@@ -99,10 +120,16 @@ class Google_Service_AdExchangeBuyer_CreativeNativeAd extends Google_Collection
   {
     return $this->impressionTrackingUrl;
   }
+  /**
+   * @param Google_Service_AdExchangeBuyer_CreativeNativeAdLogo
+   */
   public function setLogo(Google_Service_AdExchangeBuyer_CreativeNativeAdLogo $logo)
   {
     $this->logo = $logo;
   }
+  /**
+   * @return Google_Service_AdExchangeBuyer_CreativeNativeAdLogo
+   */
   public function getLogo()
   {
     return $this->logo;

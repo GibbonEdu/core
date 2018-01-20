@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -70,78 +72,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
         echo '<h2>';
         echo __($guid, 'Choose User');
         echo '</h2>';
+		
+		$gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : null;
 
-        $gibbonFinanceInvoiceeID = null;
-        if (isset($_GET['gibbonFinanceInvoiceeID'])) {
-            $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-        }
-        ?>
+        $form = Form::create('selectInvoicee', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_finance.php');
+    
+        if ($highestAction == 'Update Finance Data_any') {
+            $data = array();
+            $sql = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+        } else {
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+            $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID, gibbonFinanceInvoicee.gibbonFinanceInvoiceeID
+					FROM gibbonFamilyAdult 
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+					JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+					JOIN gibbonPerson as child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID) 
+					JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=child.gibbonPersonID)
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
+					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full'
+					ORDER BY gibbonFamily.name, child.surname, child.preferredName";
+		}
+		$result = $pdo->executeQuery($data, $sql);
+		$resultSet = ($result && $result->rowCount() > 0)? $result->fetchAll() : array();
 
-		<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-			<table class='smallIntBorder fullWidth' cellspacing='0'>
-				<tr>
-					<td style='width: 275px'>
-						<b><?php echo __($guid, 'Invoicee') ?> *</b><br/>
-						<span class="emphasis small"><?php echo __($guid, 'Individual for whom invoices are generated.') ?></span>
-					</td>
-					<td class="right">
-						<select class="standardWidth" name="gibbonFinanceInvoiceeID">
-							<?php
-                            if ($highestAction == 'Update Finance Data_any') {
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT username, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    if ($gibbonFinanceInvoiceeID == $rowSelect['gibbonFinanceInvoiceeID']) {
-                                        echo "<option selected value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-                                    } else {
-                                        echo "<option value='".$rowSelect['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true).' ('.$rowSelect['username'].')</option>';
-                                    }
-                                }
-                            } else {
-                                try {
-                                    $dataSelect = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                    $sqlSelect = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                echo "<option value=''></option>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    try {
-                                        $dataSelect2 = array('gibbonFamilyID' => $rowSelect['gibbonFamilyID']);
-                                        $sqlSelect2 = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonFamilyID, gibbonFinanceInvoiceeID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND gibbonFamilyID=:gibbonFamilyID";
-                                        $resultSelect2 = $connection2->prepare($sqlSelect2);
-                                        $resultSelect2->execute($dataSelect2);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowSelect2 = $resultSelect2->fetch()) {
-                                        if ($gibbonFinanceInvoiceeID == $rowSelect2['gibbonFinanceInvoiceeID']) {
-                                            echo "<option selected value='".$rowSelect2['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-                                        } else {
-                                            echo "<option value='".$rowSelect2['gibbonFinanceInvoiceeID']."'>".formatName('', htmlPrep($rowSelect2['preferredName']), htmlPrep($rowSelect2['surname']), 'Student', true).'</option>';
-                                        }
-                                    }
-                                }
-                            }
-        					?>
-						</select>
-					</td>
-				</tr>
-				<tr>
-					<td colspan=2 class="right">
-						<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/data_finance.php">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-		</form>
-		<?php
+		$invoicees = array_reduce($resultSet, function($carry, $person) use ($highestAction) {
+			$id = $person['gibbonFinanceInvoiceeID'];
+			$carry[$id] = formatName('', htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Student', true);
+			if ($highestAction == 'Update Finance Data_any') {
+				$carry[$id] .= ' ('.$person['username'].')';
+			}
+			return $carry;
+		}, array());
+		
+        $row = $form->addRow();
+            $row->addLabel('gibbonFinanceInvoiceeID', __('Invoicee'))->description(__('Individual for whom invoices are generated.'));
+            $row->addSelect('gibbonFinanceInvoiceeID')
+                ->fromArray($invoicees)
+                ->isRequired()
+                ->selected($gibbonFinanceInvoiceeID)
+                ->placeholder();
+        
+        $row = $form->addRow();
+            $row->addSubmit();
+        
+		echo $form->getOutput();    
+		
 
         if ($gibbonFinanceInvoiceeID != '') {
             echo '<h2>';
@@ -230,233 +206,83 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.
                 }
 
                 if ($proceed == true) {
+
                     //Let's go!
-                    $row = $result->fetch(); ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>
-							<tr class='break'>
-								<td colspan=2>
-									<h4><?php echo __($guid, 'Invoice To') ?></h4>
-								</td>
-							</tr>
+					$values = $result->fetch(); 
 
-							<script type="text/javascript">
-								/* Resource 1 Option Control */
-								$(document).ready(function(){
-									if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
-										$("#companyNameRow").css("display","none");
-										$("#companyContactRow").css("display","none");
-										$("#companyAddressRow").css("display","none");
-										$("#companyEmailRow").css("display","none");
-										$("#companyCCFamilyRow").css("display","none");
-										$("#companyPhoneRow").css("display","none");
-										$("#companyAllRow").css("display","none");
-										$("#companyCategoriesRow").css("display","none");
-										companyEmail.disable() ;
-										companyAddress.disable() ;
-										companyContact.disable() ;
-										companyName.disable() ;
-									}
-									else {
-										if ($('input[name=companyAll]:checked').val()=="Y" ) {
-											$("#companyCategoriesRow").css("display","none");
-										}
-									}
+					$required = ($highestAction != 'Update Finance Data_any');
 
-									$(".invoiceTo").click(function(){
-										if ($('input[name=invoiceTo]:checked').val()=="Family" ) {
-											$("#companyNameRow").css("display","none");
-											$("#companyContactRow").css("display","none");
-											$("#companyAddressRow").css("display","none");
-											$("#companyEmailRow").css("display","none");
-											$("#companyCCFamilyRow").css("display","none");
-											$("#companyPhoneRow").css("display","none");
-											$("#companyAllRow").css("display","none");
-											$("#companyCategoriesRow").css("display","none");
-											companyEmail.disable() ;
-											companyAddress.disable() ;
-											companyContact.disable() ;
-											companyName.disable() ;
-										} else {
-											$("#companyNameRow").slideDown("fast", $("#companyNameRow").css("display","table-row"));
-											$("#companyContactRow").slideDown("fast", $("#companyContactRow").css("display","table-row"));
-											$("#companyAddressRow").slideDown("fast", $("#companyAddressRow").css("display","table-row"));
-											$("#companyEmailRow").slideDown("fast", $("#companyEmailRow").css("display","table-row"));
-											$("#companyCCFamilyRow").slideDown("fast", $("#companyCCFamilyRow").css("display","table-row"));
-											$("#companyPhoneRow").slideDown("fast", $("#companyPhoneRow").css("display","table-row"));
-											$("#companyAllRow").slideDown("fast", $("#companyAllRow").css("display","table-row"));
-											if ($('input[name=companyAll]:checked').val()=="Y" ) {
-												$("#companyCategoriesRow").css("display","none");
-											} else {
-												$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
-											}
-											companyEmail.enable() ;
-											companyAddress.enable() ;
-											companyContact.enable() ;
-											companyName.enable() ;
-										}
-									 });
+					$form = Form::create('updateFinance', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_financeProcess.php?gibbonFinanceInvoiceeID='.$gibbonFinanceInvoiceeID);
 
-									 $(".companyAll").click(function(){
-										if ($('input[name=companyAll]:checked').val()=="Y" ) {
-											$("#companyCategoriesRow").css("display","none");
-										} else {
-											$("#companyCategoriesRow").slideDown("fast", $("#companyCategoriesRow").css("display","table-row"));
-										}
-									 });
-								});
-							</script>
-							<tr id="familyRow">
-								<td colspan=2'>
-									<p><?php echo __($guid, 'If you choose family, future invoices will be sent according to family contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.') ?></p>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Send Invoices To') ?></b><br/>
-								</td>
-								<td class="right">
-									<input <?php if ($row['invoiceTo'] == 'Family' or $row['invoiceTo'] == '') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Family" class="invoiceTo" /> <?php echo __($guid, 'Family') ?>
-									<input <?php if ($row['invoiceTo'] == 'Company') { echo 'checked'; } ?> type="radio" name="invoiceTo" value="Company" class="invoiceTo" /> <?php echo __($guid, 'Company') ?>
-								</td>
-							</tr>
-							<tr id="companyNameRow">
-								<td>
-									<b><?php echo __($guid, 'Company Name') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input name="companyName" id="companyName" maxlength=100 value="<?php echo $row['companyName'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var companyName=new LiveValidation('companyName');
-										companyName.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr id="companyContactRow">
-								<td>
-									<b><?php echo __($guid, 'Company Contact Person') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input name="companyContact" id="companyContact" maxlength=100 value="<?php echo $row['companyContact'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var companyContact=new LiveValidation('companyContact');
-										companyContact.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr id="companyAddressRow">
-								<td>
-									<b><?php echo __($guid, 'Company Address') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input name="companyAddress" id="companyAddress" maxlength=255 value="<?php echo $row['companyAddress'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var companyAddress=new LiveValidation('companyAddress');
-										companyAddress.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr id="companyEmailRow">
-								<td>
-									<b><?php echo __($guid, 'Company Emails') ?> *</b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Comma-separated list of email address.') ?></span>
-								</td>
-								<td class="right">
-									<input name="companyEmail" id="companyEmail" value="<?php echo $row['companyEmail'] ?>" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var companyEmail=new LiveValidation('companyEmail');
-										companyEmail.add(Validate.Presence);
-									</script>
-								</td>
-							</tr>
-							<tr id="companyCCFamilyRow">
-								<td>
-									<b><?php echo __($guid, 'CC Family?') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Should the family be sent a copy of billing emails?') ?></span>
-								</td>
-								<td class="right">
-									<select name="companyCCFamily" id="companyCCFamily" class="standardWidth">
-										<option <?php if ($row['companyCCFamily'] == 'N') { echo 'selected'; } ?> value="N" /> <?php echo __($guid, 'No') ?>
-										<option <?php if ($row['companyCCFamily'] == 'Y') { echo 'selected'; } ?> value="Y" /> <?php echo __($guid, 'Yes') ?>
-									</select>
-								</td>
-							</tr>
-							<tr id="companyPhoneRow">
-								<td>
-									<b><?php echo __($guid, 'Company Phone') ?></b><br/>
-								</td>
-								<td class="right">
-									<input name="companyPhone" id="companyPhone" maxlength=20 value="<?php echo $row['companyPhone'] ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							<?php
-                            try {
-                                $dataCat = array();
-                                $sqlCat = "SELECT * FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
-                                $resultCat = $connection2->prepare($sqlCat);
-                                $resultCat->execute($dataCat);
-                            } catch (PDOException $e) {
-                            }
-							if ($resultCat->rowCount() < 1) {
-								echo '<input type="hidden" name="companyAll" value="Y" class="companyAll"/>';
-							} else {
-								?>
-								<tr id="companyAllRow">
-									<td>
-										<b><?php echo __($guid, 'Company All?') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Should all items be billed to the specified company, or just some?') ?></span>
-									</td>
-									<td class="right">
-										<input type="radio" name="companyAll" value="Y" class="companyAll" <?php if ($row['companyAll'] == 'Y' or $row['companyAll'] == '') { echo 'checked'; } ?> /> <?php echo __($guid, 'All') ?>
-										<input type="radio" name="companyAll" value="N" class="companyAll" <?php if ($row['companyAll'] == 'N') { echo 'checked'; } ?> /> <?php echo __($guid, 'Selected') ?>
-									</td>
-								</tr>
-								<tr id="companyCategoriesRow">
-									<td>
-										<b><?php echo __($guid, 'Company Fee Categories') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'If the specified company is not paying all fees, which categories are they paying?') ?></span>
-									</td>
-									<td class="right">
-										<?php
-                                        while ($rowCat = $resultCat->fetch()) {
-                                            $checked = '';
-                                            if (strpos($row['gibbonFinanceFeeCategoryIDList'], $rowCat['gibbonFinanceFeeCategoryID']) !== false) {
-                                                $checked = 'checked';
-                                            }
-                                            echo $rowCat['name']." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='".$rowCat['gibbonFinanceFeeCategoryID']."'/><br/>";
-                                        }
-										$checked = '';
-										if (strpos($row['gibbonFinanceFeeCategoryIDList'], '0001') !== false) {
-											$checked = 'checked';
-										}
-										echo __($guid, 'Other')." <input $checked type='checkbox' name='gibbonFinanceFeeCategoryIDList[]' value='0001'/><br/>";
-										?>
-									</td>
-								</tr>
-								<?php
-							}
-							?>
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+					$form->addHiddenValue('existing', isset($values['gibbonFinanceInvoiceeUpdateID'])? $values['gibbonFinanceInvoiceeUpdateID'] : 'N');
+					
+					$form->addRow()->addHeading(__('Invoice To'));
 
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<?php
-                                    if ($existing) {
-                                        echo "<input type='hidden' name='existing' value='".$row['gibbonFinanceInvoiceeUpdateID']."'>";
-                                    } else {
-                                        echo "<input type='hidden' name='existing' value='N'>";
-                                    }
-                   		 			?>
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-					<?php
+					$form->addRow()->addContent(__('If you choose family, future invoices will be sent according to your family\'s contact preferences, which can be changed at a later date by contacting the school. For example you may wish both parents to receive the invoice, or only one. Alternatively, if you choose Company, you can choose for all or only some fees to be covered by the specified company.'))->wrap('<p>', '</p>');
 
+					$row = $form->addRow();
+						$row->addLabel('invoiceTo', __('Send Invoices To'));
+						$row->addRadio('invoiceTo')
+							->fromArray(array('Family' => __('Family'), 'Company' => __('Company')))
+							->inline();
+
+					$form->toggleVisibilityByClass('paymentCompany')->onRadio('invoiceTo')->when('Company');
+
+					// COMPANY DETAILS
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyName', __('Company Name'));
+						$row->addTextField('companyName')->setRequired($required)->maxLength(100);
+
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyContact', __('Company Contact Person'));
+						$row->addTextField('companyContact')->setRequired($required)->maxLength(100);
+
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyAddress', __('Company Address'));
+						$row->addTextField('companyAddress')->setRequired($required)->maxLength(255);
+
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
+						$row->addTextField('companyEmail')->setRequired($required);
+
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
+						$row->addYesNo('companyCCFamily')->selected('N');
+
+					$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyPhone', __('Company Phone'));
+						$row->addTextField('companyPhone')->maxLength(20);
+
+					// COMPANY FEE CATEGORIES
+					$sqlFees = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
+					$resultFees = $pdo->executeQuery(array(), $sqlFees);
+
+					if (!$resultFees || $resultFees->rowCount() == 0) {
+						$form->addHiddenValue('companyAll', 'Y');
+					} else {
+						$row = $form->addRow()->addClass('paymentCompany');
+						$row->addLabel('companyAll', __('Company All?'))->description(__('Should all items be billed to the specified company, or just some?'));
+						$row->addRadio('companyAll')->fromArray(array('Y' => __('All'), 'N' => __('Selected')))->checked('Y')->inline();
+
+						$form->toggleVisibilityByClass('paymentCompanyCategories')->onRadio('companyAll')->when('N');
+
+						$row = $form->addRow()->addClass('paymentCompany')->addClass('paymentCompanyCategories');
+						$row->addLabel('gibbonFinanceFeeCategoryIDList[]', __('Company Fee Categories'))
+							->description(__('If the specified company is not paying all fees, which categories are they paying?'));
+						$row->addCheckbox('gibbonFinanceFeeCategoryIDList[]')
+							->fromResults($resultFees)
+							->fromArray(array('0001' => __('Other')))
+							->loadFromCSV($values);
+					}
+
+					$row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+
+                    $form->loadAllValuesFrom($values);
+
+					echo $form->getOutput();
                 }
             }
         }

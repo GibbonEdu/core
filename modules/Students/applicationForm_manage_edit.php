@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $name = 'milestone_'.preg_replace('/\s+/', '', $milestone);
             $checked = in_array($milestone, $milestonesChecked);
 
-            $column->addCheckbox($name)->fromArray(array('on' => $milestone))->checked($checked);
+            $column->addCheckbox($name)->setValue('on')->description($milestone)->checked($checked);
         }
     }
 
@@ -441,7 +441,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $table->addRow();
-        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(20);
+        $row->addTextField('schoolName'.$i)->maxLength(50)->setSize(18);
         $row->addTextField('schoolAddress'.$i)->maxLength(255)->setSize(20);
         $row->addTextField('schoolGrades'.$i)->maxLength(20)->setSize(8);
         $row->addTextField('schoolLanguage'.$i)->autocomplete($languages)->setSize(10);
@@ -452,7 +452,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $existingFields = (isset($application["fields"]))? unserialize($application["fields"]) : null;
     $resultFields = getCustomFields($connection2, $guid, true, false, false, false, true, null);
     if ($resultFields->rowCount() > 0) {
-        $heading = $form->addRow()->addSubheading('Other Information');
+        $heading = $form->addRow()->addSubheading(__('Other Information'));
 
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
@@ -476,13 +476,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
             $row->addTextField('homeAddress')->isRequired()->maxLength(255);
 
-        // Grab some languages, for auto-complete
-        $results = $pdo->executeQuery(array(), "SELECT DISTINCT name FROM gibbonDistrict ORDER BY name");
-        $districts = ($results && $results->rowCount() > 0)? $results->fetchAll(PDO::FETCH_COLUMN) : array();
-
         $row = $form->addRow();
             $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-            $row->addTextField('homeAddressDistrict')->isRequired()->autocomplete($districts)->maxLength(30);
+            $row->addTextFieldDistrict('homeAddressDistrict')->isRequired();
 
         $row = $form->addRow();
             $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
@@ -513,8 +509,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow();
+                $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
+
                 while ($rowFields = $resultFields->fetch()) {
-                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
+                    $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
@@ -644,12 +643,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $row->addTextField("parent{$i}employer")->maxLength(30);
 
             // CUSTOM FIELDS FOR PARENTS
-            $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Fields'));
-
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
             $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
             if ($resultFields->rowCount() > 0) {
+                $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
+
                 while ($rowFields = $resultFields->fetch()) {
                     $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
@@ -718,7 +717,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // Add additional sibling rows up to 3
     for ($i = 1; $i <= 3; ++$i) {
         $row = $table->addRow();
-        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(30);
+        $nameField = $row->addTextField('siblingName'.$i)->maxLength(50)->setSize(26);
         $dobField = $row->addDate('siblingDOB'.$i)->setSize(10);
         $row->addTextField('siblingSchool'.$i)->maxLength(50)->setSize(30);
         $row->addDate('siblingSchoolJoiningDate'.$i)->setSize(10);
@@ -726,17 +725,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     // LANGUAGE OPTIONS
     $languageOptionsActive = getSettingByScope($connection2, 'Application Form', 'languageOptionsActive');
+    $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
+    $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
 
-    if ($languageOptionsActive == 'Y') {
+    if ($languageOptionsActive == 'Y' && $languageOptionsLanguageList != '') {
 
         $heading = $form->addRow()->addHeading(__('Language Selection'));
 
-        $languageOptionsBlurb = getSettingByScope($connection2, 'Application Form', 'languageOptionsBlurb');
         if (!empty($languageOptionsBlurb)) {
             $heading->append($languageOptionsBlurb)->wrap('<p>','</p>');
         }
 
-        $languageOptionsLanguageList = getSettingByScope($connection2, 'Application Form', 'languageOptionsLanguageList');
         $languages = array_map(function($item) { return trim($item); }, explode(',', $languageOptionsLanguageList));
 
         $row = $form->addRow();
@@ -871,22 +870,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         for ($i = 0; $i < count($requiredDocumentsList); $i++) {
 
             $dataFile = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'name' => $requiredDocumentsList[$i]);
-            $sqlFile = 'SELECT path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY name';
+            $sqlFile = "SELECT CONCAT('attachment[', gibbonApplicationFormFileID, ']') as id, path FROM gibbonApplicationFormFile WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND name=:name ORDER BY gibbonApplicationFormFileID DESC";
             $resultFile = $pdo->executeQuery($dataFile, $sqlFile);
 
-            $attachment = ($resultFile->rowCount() == 1)? $resultFile->fetchColumn(0) : '';
+            $attachments = ($resultFile && $resultFile->rowCount() > 0)? $resultFile->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
             $form->addHiddenValue('fileName'.$i, $requiredDocumentsList[$i]);
 
             $row = $form->addRow();
-                $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
+            $row->addLabel('file'.$i, $requiredDocumentsList[$i]);
                 $row->addFileUpload('file'.$i)
                     ->accepts($fileUploader->getFileExtensions())
+                    ->setAttachments($_SESSION[$guid]['absoluteURL'], $attachments)
                     ->setRequired($requiredDocumentsCompulsory == 'Y')
-                    ->setAttachment($_SESSION[$guid]['absoluteURL'], $attachment);
+                    ->uploadMultiple(true)
+                    ->canDelete(true);
         }
 
-        $row = $form->addRow()->addContent(getMaxUpload($guid));
         $form->addHiddenValue('fileCount', count($requiredDocumentsList));
     }
 

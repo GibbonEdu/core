@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
@@ -88,97 +90,59 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
             //STEP 1, SELECT TERM
             if ($step == 1) {
-                ?>
-				<h2>
-					<?php echo __($guid, 'Step 1 - Select CSV Files') ?>
-				</h2>
-				<p>
-					<?php echo __($guid, 'This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.') ?><br/>
-				</p>
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2" ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>	
-						<tr>
-							<td style='width: 275px'> 
-								<b><?php echo __($guid, 'CSV File') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'See Notes below for specification.') ?></span>
-							</td>
-							<td class="right">
-								<input type="file" name="file" id="file" size="chars">
-								<script type="text/javascript">
-									var file=new LiveValidation('file');
-									file.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'Field Delimiter') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input type="text" class="standardWidth" name="fieldDelimiter" value="," maxlength=1>
-								<script type="text/javascript">
-									var fieldDelimiter=new LiveValidation('fieldDelimiter');
-									fieldDelimiter.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td> 
-								<b><?php echo __($guid, 'String Enclosure') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<input type="text" class="standardWidth" name="stringEnclosure" value='"' maxlength=1>
-								<script type="text/javascript">
-									var stringEnclosure=new LiveValidation('stringEnclosure');
-									stringEnclosure.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-							</td>
-							<td class='right'>
-								<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>" type="hidden">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				
-				
-				
-				<h4>
-					<?php echo __($guid, 'Notes') ?>
-				</h4>
-				<ol>
-					<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-					<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-					<li><?php echo __($guid, 'The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.') ?></li>
-					<li><?php echo __($guid, 'The import does not include student lists.') ?></li>
-					<li><?php echo __($guid, 'The submitted file must have the following fields in the following order:') ?></li> 
-						<ol>
-							<li><b><?php echo __($guid, 'Course Short Name</b> - e.g. DR10 for Year 10 Drama') ?></li>
-							<li><b><?php echo __($guid, 'Class Short Name</b> - e.g 1 for DR10.1') ?></li>
-							<li><b><?php echo __($guid, 'Day Name</b> - as used in the target timetable') ?></li>
-							<li><b><?php echo __($guid, 'Row Long Name</b> - as used in the target timetable') ?></li>
-							<li><b><?php echo __($guid, 'Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.') ?></li>
-							<li><b><?php echo __($guid, 'Space Name</b> - the Gibbon name for the room the lesson takes place in.') ?></li>
-						</ol>
-					</li>
-					<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
-				</ol>
-			<?php
+                echo '<h2>';
+					echo __($guid, 'Step 1 - Select CSV Files');
+				echo '</h2>';
+				echo '<p>';
+					echo __($guid, 'This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
+				echo '</p>';
 
+                $form = Form::create('importTimetable', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2");
+
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                $row = $form->addRow();
+                    $row->addLabel('file', __('CSV File'))->description(__('See Notes below for specification.'));
+                    $row->addFileUpload('file')->isRequired();
+
+                $row = $form->addRow();
+                    $row->addLabel('fieldDelimiter', __('Field Delimiter'));
+                    $row->addTextField('fieldDelimiter')->isRequired()->maxLength(1)->setValue(',');
+
+                $row = $form->addRow();
+                    $row->addLabel('stringEnclosure', __('String Enclosure'));
+                    $row->addTextField('stringEnclosure')->isRequired()->maxLength(1)->setValue('"');
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
+
+                echo $form->getOutput();
+
+                echo '<h4>';
+				echo __($guid, 'Notes');
+				echo '</h4>';
+				echo '<ol>';
+					echo '<li>'.__($guid, 'You may only submit CSV files.').'</li>';
+					echo '<li>'.__($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).').'</li>';
+					echo '<li>'.__($guid, 'The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.').'</li>';
+					echo '<li>'.__($guid, 'The import does not include student lists.').'</li>';
+					echo '<li>'.__($guid, 'The submitted file must have the following fields in the following order:').'</li>';
+						echo '<ol>';
+							echo '<li><b>'.__($guid, 'Course Short Name</b> - e.g. DR10 for Year 10 Drama').'</li>';
+							echo '<li><b>'.__($guid, 'Class Short Name</b> - e.g 1 for DR10.1').'</li>';
+							echo '<li><b>'.__($guid, 'Day Name</b> - as used in the target timetable').'</li>';
+							echo '<li><b>'.__($guid, 'Row Long Name</b> - as used in the target timetable').'</li>';
+							echo '<li><b>'.__($guid, 'Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
+							echo '<li><b>'.__($guid, 'Space Name</b> - the Gibbon name for the room the lesson takes place in.').'</li>';
+						echo '</ol>';
+					echo '</li>';
+					echo '<li>'.__($guid, 'Do not include a header row in the CSV files.').'</li>';
+				echo '</ol>';
             } elseif ($step == 2) {
-                ?>
-				<h2>
-					<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
-				</h2>
-				<?php
+                echo '<h2>';
+					echo __($guid, 'Step 2 - Data Check & Confirm');
+				echo '</h2>';
 
                 //Check file type
                 if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
@@ -684,7 +648,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                                             sort($staffs);
                                             $staffs = array_unique($staffs);
 
-                                            //Add teachers 
+                                            //Add teachers
                                             foreach ($staffs as $staff) {
                                                 //Convert username into ID
                                                 try {
@@ -758,7 +722,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 				<h2>
 					<?php echo __($guid, 'Step 3 - Import') ?>
 				</h2>
-				<?php	
+				<?php
 
                 $proceed = true;
 

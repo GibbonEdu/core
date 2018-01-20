@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -34,85 +36,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
-    }
+	}
+	
+	$form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php');
+                
+	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    ?>
-	<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php'?>">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Delete Current Plans?') ?> *</b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Deletes Individual Education Plan fields only, not Individual Needs Status fields.') ?></span>
-				</td>
-				<td class="right">
-					<select name="deleteCurrentPlans" id="deleteCurrentPlans" class="standardWidth">
-						<option value="N"><?php echo ynExpander($guid, 'N') ?></option>
-						<option value="Y"><?php echo ynExpander($guid, 'Y') ?></option>
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td> 
-					<b><?php echo __($guid, 'Archive Title') ?> *</b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<input type='text' maxlength=50 name="title" id="title" class="standardWidth" value=''/>
-					<script type="text/javascript">
-						var title=new LiveValidation('title');
-						title.add(Validate.Presence);
-					</script>
-				</td>
-			</tr>
-			<tr>
-				<td style='width: 275px; vertical-align: top'> 
-					<b><?php echo __($guid, 'Students') ?> *</b><br/>
-				</td>
-				<td class="right">
-					<?php
-                    echo "<fieldset style='border: none'>"; ?>
-					<script type="text/javascript">
-						$(function () {
-							$('.checkall').click(function () {
-								$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-							});
-						});
-					</script>
-					<?php
-                    try {
-                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlSelect = "SELECT surname, preferredName, gibbonIN.* FROM gibbonPerson JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
-                        $resultSelect = $connection2->prepare($sqlSelect);
-                        $resultSelect->execute($dataSelect);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>";
-                        echo $e->getMessage();
-                        echo '</div>';
-                    }
-					echo __($guid, 'All/None')." <input type='checkbox' class='checkall'><br/>";
-					if ($resultSelect->rowCount() < 1) {
-						echo '<i>'.__($guid, 'No year groups available.').'</i>';
-					} else {
-						while ($rowSelect = $resultSelect->fetch()) {
-							echo formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Student', true)." <input type='checkbox' value='".$rowSelect['gibbonPersonID']."' name='gibbonPersonID[]'><br/>";
-						}
-					}
-					echo '</fieldset>';?>
-				</td>
-			</tr>
-			
-			<tr>
-				<td>
-					<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-				</td>
-				<td class="right">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+	$row = $form->addRow();
+		$row->addLabel('deleteCurrentPlans', __('Delete Current Plans?'))->description(__('Deletes Individual Education Plan fields only, not Individual Needs Status fields.'));
+		$row->addYesNo('deleteCurrentPlans')->isRequired()->selected('N');
 
+	$row = $form->addRow();
+		$row->addLabel('title', __('Archive Title'));
+		$row->addTextField('title')->isRequired()->maxLength(50);
+
+	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+	$sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort as rollGroup
+			FROM gibbonPerson 
+			JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+			JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+			JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+			WHERE status='Full' ORDER BY surname, preferredName";
+	$result = $pdo->executeQuery($data, $sql);
+
+	$students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+	$students = array_map(function($item) {
+		return formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
+	}, $students);
+						
+	$row = $form->addRow();
+		$row->addLabel('gibbonPersonID', __('Students'));
+		$row->addCheckbox('gibbonPersonID')->fromArray($students)->addCheckAllNone();
+
+	$row = $form->addRow();
+		$row->addSubmit();
+
+	echo $form->getOutput();
 }
-?>

@@ -6,7 +6,7 @@ $I->amOnModulePage('School Admin', 'rollGroup_manage.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
-$I->seeBreadcrumb('Add Form Group');
+$I->seeBreadcrumb('Add');
 
 $addFormValues = array(
     'name'       => 'Test 1',
@@ -33,7 +33,7 @@ $gibbonRollGroupID = $I->grabEditIDFromURL();
 
 // Edit ------------------------------------------------
 $I->amOnModulePage('School Admin', 'rollGroup_manage_edit.php', array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
-$I->seeBreadcrumb('Edit Form Group');
+$I->seeBreadcrumb('Edit');
 
 $I->seeInFormFields('#content form', $addFormValues);
 
@@ -49,7 +49,7 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'rollGroup_manage_delete.php', array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
-$I->seeBreadcrumb('Delete Form Group');
+$I->seeBreadcrumb('Delete');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

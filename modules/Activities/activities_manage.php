@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
+
 @session_start();
 
 //Module includes
@@ -41,16 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo __($guid, 'Search & Filter');
     echo '</h2>';
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-
-    $gibbonSchoolYearTermID = null;
-    if (isset($_GET['gibbonSchoolYearTermID'])) {
-        $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
-    }
-
+    $search = isset($_GET['search'])? $_GET['search'] : null;
+    $gibbonSchoolYearTermID = isset($_GET['gibbonSchoolYearTermID'])? $_GET['gibbonSchoolYearTermID'] : null;
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 
     $paymentOn = true;
@@ -58,73 +53,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $paymentOn = false;
     }
 
-    ?>
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">
-			<tr><td style="width: 30%"></td><td></td></tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Search') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Activity name.') ?></span>
-				</td>
-				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-				</td>
-			</tr>
-            <?php
-                if ($dateType != 'Date') {
-                ?>
-    			<tr>
-    				<td>
-    					<b><?php echo __($guid, 'Term') ?></b><br/>
-    				</td>
-    				<td class="right">
-                        <select class="standardWidth" name="gibbonSchoolYearTermID">
-    						<?php
-                            echo "<option value=''></option>";
-    						try {
-                                $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                $sqlSelect = "SELECT gibbonSchoolYearTermID, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
-    							$resultSelect = $connection2->prepare($sqlSelect);
-    							$resultSelect->execute($dataSelect);
-    						} catch (PDOException $e) {
-    						}
-    						while ($rowSelect = $resultSelect->fetch()) {
-    							$selected = '';
-    							if ($gibbonSchoolYearTermID == $rowSelect['gibbonSchoolYearTermID']) {
-    								$selected = 'selected';
-    							}
-    							echo "<option $selected value='".$rowSelect['gibbonSchoolYearTermID']."'>".htmlPrep($rowSelect['name']).'</option>';
-    						}
-    						?>
-    					</select>
-    				</td>
-    			</tr>
-                <?php
-            }
-            ?>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_manage.php">
-                    <input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_manage.php'>".__($guid, 'Clear Search').'</a>';?>
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_manage.php");
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search'))->description('Activity name.');
+        $row->addTextField('search')->setValue($search);
+
+    if ($dateType != 'Date') {
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonSchoolYearTermID as value, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $row = $form->addRow();
+            $row->addLabel('gibbonSchoolYearTermID', __('Term'));
+            $row->addSelect('gibbonSchoolYearTermID')->fromQuery($pdo, $sql, $data)->selected($gibbonSchoolYearTermID)->placeholder();
+    }
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session, __('Clear Search'));
+
+    echo $form->getOutput();
 
     echo '<h2>';
     echo __($guid, 'Activities');
     echo '</h2>';
 
     //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
+    $page = isset($_GET['page'])? $_GET['page'] : 1;
     if ((!is_numeric($page)) or $page < 1) {
         $page = 1;
     }
@@ -171,229 +127,96 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
             }
 
-            echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_manageProcessBulk.php'>";
-            echo "<fieldset style='border: none'>";
-            echo "<div class='linkTop' style='height: 27px'>"; ?>
-                    <input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-
-                    <div id="optionRow" style="display: none;">
-                        <select style="width: 182px" name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo">
-                            <?php
-                            print "<option value='Please select...'>" . _('Please select...') . "</option>" ;
-
-                            try {
-                                $dataSelect = array();
-                                $sqlSelect = "SELECT gibbonSchoolYear.name AS year, gibbonSchoolYearID FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
-                                $resultSelect=$connection2->prepare($sqlSelect);
-                                $resultSelect->execute($dataSelect);
-                            }
-                            catch(PDOException $e) {
-                                print "<div class='error'>" . $e->getMessage() . "</div>" ;
-                            }
-                            $yearCurrent = '';
-                            $yearLast = '';
-                            while ($rowSelect=$resultSelect->fetch()) {
-                                print "<option value='" . $rowSelect["gibbonSchoolYearID"] . "'>" . htmlPrep($rowSelect["year"]) . "</option>" ;
-                            }
-                            ?>
-                        </select>
-                        <script type="text/javascript">
-                            var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-                            gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Please select...') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-                        </script>
-                    </div>
-
-                    <select name="action" id="action" style='width:220px; float: right; margin-right: 1px;'>
-                        <option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-                        <option value="Duplicate"><?php echo __($guid, 'Duplicate') ?></option>
-                        <option value="DuplicateParticipants"><?php echo __($guid, 'Duplicate With Participants') ?></option>
-                        <option value="Delete"><?php echo __($guid, 'Delete') ?></option>
-                    </select>
-                    <script type="text/javascript">
-                        var action=new LiveValidation('action');
-                        action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-
-                        $(document).ready(function(){
-                            $('#action').change(function () {
-                                if ($(this).val() == 'Duplicate' || $(this).val() == 'DuplicateParticipants') {
-                                    $("#optionRow").slideDown("fast", $("#optionRow").css("display","block"));
-                                    gibbonSchoolYearIDCopyTo.enable();
-                                } else {
-                                    $("#optionRow").css("display","none");
-                                    gibbonSchoolYearIDCopyTo.disable();
-                                }
-                            });
-                        });
-
-                    </script>
-                    <?php
-            echo '</div>';
-
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Activity');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Days');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Years');
-            echo '</th>';
-            echo '<th>';
-            if ($dateType != 'Date') {
-                echo __($guid, 'Term');
-            } else {
-                echo __($guid, 'Dates');
-            }
-            echo '</th>';
-            if ($paymentOn) {
-                echo '<th>';
-                echo __($guid, 'Cost').'<br/>';
-                echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
-                echo '</th>';
-            }
-            echo '<th>';
-            echo __($guid, 'Provider');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Waiting');
-            echo '</th>';
-            echo "<th style='width: 100px'>";
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '<th style=\'text-align: center\'>'; ?>
-            <script type="text/javascript">
-                $(function () {
-                    $('.checkall').click(function () {
-                        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-                    });
-                });
-            </script>
-            <?php
-            echo "<input type='checkbox' class='checkall'>";
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-
             try {
                 $resultPage = $connection2->prepare($sqlPage);
                 $resultPage->execute($data);
             } catch (PDOException $e) {
-                echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
-                echo '</div>';
             }
 
-            if ($result) {
-                while ($row = $resultPage->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
+            $form->addHiddenValue('search', $search);
 
-                    if ($row['active'] == 'N') {
-                        $rowNum = 'error';
-                    }
+            $bulkActions = array(
+                'Duplicate' => __('Duplicate'),
+                'DuplicateParticipants' => __('Duplicate With Participants'),
+                'Delete' => __('Delete'),
+            );
+            $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['name'].'<br/>';
-                    echo '<i>'.trim($row['type']).'</i>';
-                    echo '</td>';
-                    echo '<td>';
-                    try {
-                        $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
-                        $sqlSlots = 'SELECT DISTINCT nameShort, sequenceNumber FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
-                        $resultSlots = $connection2->prepare($sqlSlots);
-                        $resultSlots->execute($dataSlots);
-                    } catch (PDOException $e) {
-                    }
+            $row = $form->addBulkActionRow($bulkActions);
+                $row->addSelect('gibbonSchoolYearIDCopyTo')
+                    ->fromQuery($pdo, $sql)
+                    ->setClass('shortWidth schoolYear');
+                $row->addSubmit(__('Go'));
 
-                    $count2 = 0;
-                    while ($rowSlots = $resultSlots->fetch()) {
-                        if ($count2 > 0) {
-                            echo ', ';
-                        }
-                        echo __($guid, $rowSlots['nameShort']);
-                        ++$count2;
-                    }
-                    if ($count2 == 0) {
-                        echo '<i>'.__($guid, 'None').'</i>';
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo getYearGroupsFromIDList($guid, $connection2, $row['gibbonYearGroupIDList']);
-                    echo '</td>';
-                    echo '<td>';
-                    if ($dateType != 'Date') {
-                        $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID'], true);
-                        $termList = '';
-                        for ($i = 0; $i < count($terms); $i = $i + 2) {
-                            if (is_numeric(strpos($row['gibbonSchoolYearTermIDList'], $terms[$i]))) {
-                                $termList .= $terms[($i + 1)].'<br/>';
-                            }
-                        }
-                        echo $termList;
-                    } else {
-                        if (substr($row['programStart'], 0, 4) == substr($row['programEnd'], 0, 4)) {
-                            if (substr($row['programStart'], 5, 2) == substr($row['programEnd'], 5, 2)) {
-                                echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                            } else {
-                                echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' - '.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programStart'], 0, 4);
-                            }
-                        } else {
-                            echo date('F', mktime(0, 0, 0, substr($row['programStart'], 5, 2))).' '.substr($row['programStart'], 0, 4).' - '.date('F', mktime(0, 0, 0, substr($row['programEnd'], 5, 2))).' '.substr($row['programEnd'], 0, 4);
-                        }
-                    }
-                    echo '</td>';
-                    if ($paymentOn) {
-                        echo '<td>';
-                        if ($row['payment'] == 0) {
-                            echo '<i>'.__($guid, 'None').'</i>';
-                        } else {
-                            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                                echo substr($_SESSION[$guid]['currency'], 4);
-                            }
-                            echo number_format($row['payment'], 2);
-                        }
-                        echo '</td>';
-                    }
-                    echo '<td>';
-                    if ($row['provider'] == 'School') {
-                        echo $_SESSION[$guid]['organisationNameShort'];
-                    } else {
-                        echo __($guid, 'External');
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['waiting'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<input name='gibbonActivityID-$count' value='".$row['gibbonActivityID']."' type='hidden'>";
-                    echo "<input type='checkbox' name='check-$count' id='check-$count'>";
-                    echo '</td>';
-                    echo '</tr>';
+            $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
 
-                    ++$count;
+            $table = $form->addRow()->addTable()->addClass('colorOddEven');
+
+            $header = $table->addHeaderRow();
+            $header->addContent(__('Activity'));
+            $header->addContent(__('Days'));
+            $header->addContent(__('Years'));
+            $header->addContent(($dateType != 'Date')? __('Term') : __('Dates'));
+            if ($paymentOn) {
+                $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$_SESSION[$guid]['currency'].'</span>');
+            }
+            $header->addContent(__('Provider'));
+            $header->addContent(__('Waiting'));
+            $header->addContent(__('Actions'));
+            $header->addCheckAll();
+
+            while ($activity = $resultPage->fetch()) {
+                $rowClass = ($activity['active'] == 'N')? 'error' : '';
+
+                $dataSlots = array('gibbonActivityID' => $activity['gibbonActivityID']);
+                $sqlSlots = "SELECT DISTINCT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber";
+                $resultSlots = $pdo->executeQuery($dataSlots, $sqlSlots);
+                $timeSlots = ($resultSlots->rowCount() > 0)? $resultSlots->fetchAll(\PDO::FETCH_COLUMN, 0) : array('<i>'.__('None').'</i>');
+
+                if ($dateType != 'Date') {
+                    $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $dateRange = '';
+                    if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
+                        $termList = array_map(function ($item) use ($schoolTerms) {
+                            $index = array_search($item, $schoolTerms);
+                            return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                        }, explode(',', $activity['gibbonSchoolYearTermIDList']));
+                        $dateRange = implode('<br/>', $termList);
+                    }
+                } else {
+                    $dateRange = formatDateRange($activity['programStart'], $activity['programEnd']);
                 }
-            }
-            echo '</table>';
-            echo '</fieldset>';
 
-            echo "<input name='count' value='$count' type='hidden'>";
-            echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-            echo "<input name='search' value='$search' type='hidden'>";
-            echo '</form>';
+                $row = $table->addRow()->addClass($rowClass);
+                $row->addContent($activity['name'])->append('<br/><span class="small emphasis">'.$activity['type'].'</span>');
+                $row->addContent(implode(', ', $timeSlots));
+                $row->addContent(getYearGroupsFromIDList($guid, $connection2, $activity['gibbonYearGroupIDList']));
+                $row->addContent($dateRange);
+                if ($paymentOn) {
+                    if ($activity['payment'] == 0) {
+                        $row->addContent('<i>'.__('None').'</i>');
+                    } else {
+                        $payment = $row->addContent(number_format($activity['payment'], 2))->append('<br/>'.__($activity['paymentType']));
+                        if (substr($_SESSION[$guid]['currency'], 4) != '') {
+                            $payment->prepend(substr($_SESSION[$guid]['currency'], 4));
+                        }
+                        if ($activity['paymentFirmness'] != 'Finalised') {
+                            $payment->append('<br/>'.__($activity['paymentFirmness']));
+                        }
+                    }
+                }
+                $row->addContent(($activity['provider'] == 'School')? $_SESSION[$guid]['organisationNameShort'] : __('External'));
+                $row->addContent($activity['waiting']);
+                $column = $row->addColumn('actions')->addClass('inline');
+                    $column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ");
+                    $column->addContent("<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ");
+                    $column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ");
+
+                $row->addCheckbox('gibbonActivityID[]')->setValue($activity['gibbonActivityID'])->setClass('');
+            }
+
+            echo $form->getOutput();
 
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
                 printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search");

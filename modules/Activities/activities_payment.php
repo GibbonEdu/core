@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -45,8 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo '</p>';
 
     try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+        $sql = "SELECT gibbonActivityStudentID, gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, paymentType, gibbonActivity.name, programStart, programEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='N' ORDER BY surname, preferredName, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -60,110 +62,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     } else {
         $lastPerson = '';
 
-        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_paymentProcessBulk.php'>";
-        echo "<fieldset style='border: none'>";
-        echo "<div class='linkTop' style='height: 27px'>";
-        ?>
-		<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-		<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-			<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-				<?php
-				try {
-					$dataSchedule = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-					$sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-					$resultSchedule = $connection2->prepare($sqlSchedule);
-					$resultSchedule->execute($dataSchedule);
-				} catch (PDOException $e) {
-				}
-				while ($rowSchedule = $resultSchedule->fetch()) {
-					echo "<option value='".$rowSchedule['gibbonFinanceBillingScheduleID']."'>".sprintf(__($guid, 'Generate Invoices To %1$s'), $rowSchedule['name']).'</option>';
-				}
-				?>
-			<option value="Generate Invoice - Simulate"><?php echo __($guid, 'Generate Invoice - Simulate') ?></option>
-		</select>
-		<script type="text/javascript">
-			var action=new LiveValidation('action');
-			action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-		</script>
-		<?php
-		echo '</div>';
+        $form = Form::create('generateInvoices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_paymentProcessBulk.php');
+        $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
 
-		echo "<table cellspacing='0' style='width: 100%'>";
-		echo "<tr class='head'>";
-		echo '<th>';
-		echo __($guid, 'Roll Group');
-		echo '</th>';
-		echo '<th>';
-		echo __($guid, 'Student');
-		echo '</th>';
-		echo '<th>';
-		echo __($guid, 'Activity');
-		echo '</th>';
-		echo '<th>';
-		echo __($guid, 'Cost').'<br/>';
-		echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
-		echo '</th>';
-		echo '<th>';
-		?>
-		<script type="text/javascript">
-			$(function () {
-				$('.checkall').click(function () {
-					$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-				});
-			});
-		</script>
-		<?php
-		echo "<input type='checkbox' class='checkall'>";
-			echo '</th>';
-        echo '</tr>';
+        $form->getRenderer()->setWrapper('form', 'div');
+        $form->getRenderer()->setWrapper('row', 'div');
+        $form->getRenderer()->setWrapper('cell', 'fieldset');
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $resultSchedule = $pdo->executeQuery($data, $sql);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+        $billingSchedules = ($resultSchedule->rowCount() > 0)? $resultSchedule->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+        $billingSchedules = array_map(function($item) {
+            return sprintf(__('Generate Invoices To %1$s'), $item);
+        }, $billingSchedules);
+        $defaultActions = array('Generate Invoice - Simulate' => __('Generate Invoice - Simulate'));
 
-			//COLOR ROW BY STATUS!
-			echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['rollGroup'];
-            echo '</td>';
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-            echo '</td>';
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo "<td style='text-align: left'>";
-            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                echo substr($_SESSION[$guid]['currency'], 4);
-            }
-            echo number_format($row['payment']);
-            echo '</td>';
-            echo '<td>';
-            echo "<input type='checkbox' name='gibbonActivityStudentID-$count' id='gibbonActivityStudentID-$count' value='".$row['gibbonActivityStudentID']."'>";
-            echo '</td>';
-            echo '</tr>';
+        $row = $form->addRow()->setClass('right');
+            $bulkAction = $row->addColumn()->addClass('inline right');
+            $bulkAction->addSelect('action')
+                ->fromArray($billingSchedules)
+                ->fromArray($defaultActions)
+                ->isRequired()
+                ->setClass('mediumWidth floatNone')
+                ->placeholder(__('Select action'));
+            $bulkAction->addSubmit(__('Go'));
+        
+        $table = $form->addRow()->addTable()->addClass('colorOddEven');
 
-            $lastPerson = $row['gibbonPersonID'];
+        $header = $table->addHeaderRow();
+        $header->addContent(__('Roll Group'));
+        $header->addContent(__('Student'));
+        $header->addContent(__('Activity'));
+        $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$_SESSION[$guid]['currency'].'</span>');
+        $header->addCheckbox('checkall')->setClass('floatNone textCenter checkall');
+
+        while ($student = $result->fetch()) {
+            $gibbonActivityStudentID = $student['gibbonActivityStudentID'];
+
+            $row = $table->addRow();
+            $row->addContent($student['rollGroup']);
+            $row->addContent(formatName('', $student['preferredName'], $student['surname'], 'Student', true));
+            $row->addContent($student['name']);
+            $row->addCurrency("payment[$gibbonActivityStudentID]")->isRequired()->setValue($student['payment']);
+            $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
         }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=4>';
-            echo __($guid, 'There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        echo "<input name='count' value='$count' type='hidden'>";
-        echo "<input name='address' value='".$_GET['q']."' type='hidden'>";
-        echo '</fieldset>';
-        echo '</form>';
+        
+        echo $form->getOutput();
     }
 
     echo '<h2>';
@@ -171,8 +118,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo '</h2>';
 
     try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd, gibbonFinanceInvoiceID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='Y' ORDER BY surname, preferredName, name";
+        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+        $sql = "SELECT gibbonPerson.gibbonPersonID, studentID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonActivityStudent.status, payment, gibbonActivity.name, programStart, programEnd, gibbonFinanceInvoiceID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonActivityStudent.status='Accepted' AND payment>0 AND invoiceGenerated='Y' ORDER BY surname, preferredName, name";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -196,10 +143,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Activity');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Cost').'<br/>';
-        echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
         echo '</th>';
         echo '<th>';
         echo __($guid, 'Invoice Number').'<br/>';
@@ -226,12 +169,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             echo '</td>';
             echo '<td>';
             echo $row['name'];
-            echo '</td>';
-            echo "<td style='text-align: left'>";
-            if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                echo substr($_SESSION[$guid]['currency'], 4);
-            }
-            echo number_format($row['payment']);
             echo '</td>';
             echo '<td>';
             $invoiceNumber = getSettingByScope($connection2, 'Finance', 'invoiceNumber');

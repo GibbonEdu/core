@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         } else {
             $bloodType = $_POST['bloodType'];
             $longTermMedication = $_POST['longTermMedication'];
-            $longTermMedicationDetails = $_POST['longTermMedicationDetails'];
+            $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
             $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
 
             //Write to database

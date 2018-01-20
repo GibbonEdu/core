@@ -84,34 +84,41 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
                     //Check for other currents
                     $currentFail = false;
                     if ($status == 'Current') {
+                        // Enforces a single current school year by updating the status of other years
                         try {
-                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = "SELECT * FROM gibbonSchoolYear WHERE status='Current' AND NOT gibbonSchoolYearID=:gibbonSchoolYearID";
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
+                            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'sequenceNumber' => $sequenceNumber);
+                            $sql = "UPDATE gibbonSchoolYear SET status = (CASE
+                                WHEN sequenceNumber < :sequenceNumber THEN 'Past' ELSE 'Upcoming'
+                            END) WHERE gibbonSchoolYearID <> :gibbonSchoolYearID";
+                            $resultUpdate = $connection2->prepare($sql);
+                            $resultUpdate->execute($data);
                         } catch (PDOException $e) {
-                            $URL .= '&return=error2';
-                            header("Location: {$URL}");
-                            exit();
-                        }
-                        if ($result->rowCount() > 0) {
-                            $URL .= '&return=error3';
-                            header("Location: {$URL}");
-                            exit();
+                            $currentFail = true;
                         }
                     }
 
-                    if ($currentFail == false) {
+                    if ($currentFail) {
+                        $URL .= '&return=error2';
+                        header("Location: {$URL}");
+                        exit();
+                    } else {
                         //Write to database
                         try {
                             $data = array('name' => $name, 'status' => $status, 'sequenceNumber' => $sequenceNumber, 'firstDay' => $firstDay, 'lastDay' => $lastDay, 'gibbonSchoolYearID' => $gibbonSchoolYearID);
-                            $sql = 'UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+                            $sql = "UPDATE gibbonSchoolYear SET name=:name, status=:status, sequenceNumber=:sequenceNumber, firstDay=:firstDay, lastDay=:lastDay WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {
                             $URL .= '&return=error2';
                             header("Location: {$URL}");
                             exit();
+                        }
+
+                        // Update session vars so the user is warned if they're logged into a different year
+                        if ($status == 'Current') {
+                            $_SESSION[$guid]['gibbonSchoolYearIDCurrent'] = $gibbonSchoolYearID;
+                            $_SESSION[$guid]['gibbonSchoolYearNameCurrent'] = $name;
+                            $_SESSION[$guid]['gibbonSchoolYearSequenceNumberCurrent'] = $sequenceNumber;
                         }
 
                         $URL .= '&return=success0';

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 //Module includes
@@ -87,304 +89,138 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
                     echo '</div>';
                 } else {
                     //Let's go!
-                    $row = $result->fetch(); ?>
-					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID=$gibbonRubricID&search=$search&filter2=$filter2" ?>">
-						<table class='smallIntBorder' cellspacing='0' style="width: 760px">	
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Rubric Basics') ?></h3>
-								</td>
-							</tr>
-							<tr>
-								<td style='width: 275px'> 
-									<b><?php echo __($guid, 'Scope') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<input readonly name="scope" id="scope" value="<?php echo $row['scope'] ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							
-							<?php
-                            if ($row['scope'] == 'Learning Area') {
-                                try {
-                                    $dataLearningArea = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                    $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                                    $resultLearningArea = $connection2->prepare($sqlLearningArea);
-                                    $resultLearningArea->execute($dataLearningArea);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
+					$values = $result->fetch(); 
+					
+					$form = Form::create('addRubric', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/rubrics_edit_editRowsColumnsProcess.php?gibbonRubricID='.$gibbonRubricID.'&search='.$search.'&filter2='.$filter2);
 
-                                if ($resultLearningArea->rowCount() == 1) {
-                                    $rowLearningAreas = $resultLearningArea->fetch();
-                                }
-                                ?>
-								<tr>
-									<td> 
-										<b><?php echo __($guid, 'Learning Area') ?> *</b><br/>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<input readonly name="department" id="department" value="<?php echo $rowLearningAreas['name'] ?>" type="text" class="standardWidth" maxlength=20>
-										<input name="gibbonDepartmentID" id="gibbonDepartmentID" value="<?php echo $row['gibbonDepartmentID'] ?>" type="hidden" class="standardWidth">
-									</td>
-								</tr>
-								<?php
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    
+                    $form->addRow()->addHeading(__('Rubric Basics'));
 
-                            }
-                    		?>
-							<tr>
-								<td> 
-									<b><?php echo __($guid, 'Name') ?> *</b><br/>
-								</td>
-								<td class="right">
-									<input readonly name="name" id="name" maxlength=50 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
-								</td>
-							</tr>
-							
-							<?php //ROWS!?>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Rows') ?></h3>
-								</td>
-							</tr>
-							<?php
-                            try {
-                                $dataRows = array('gibbonRubricID' => $gibbonRubricID);
-                                $sqlRows = 'SELECT * FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber';
-                                $resultRows = $connection2->prepare($sqlRows);
-                                $resultRows->execute($dataRows);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+                    $row = $form->addRow();
+                        $row->addLabel('scope', 'Scope');
+                        $row->addTextField('scope')->isRequired()->readOnly();
 
-							if ($resultRows->rowCount() < 1) {
-								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
-								echo '</div>';
+                    if ($values['scope'] == 'Learning Area') {
+                        $sql = "SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID";
+                        $result = $pdo->executeQuery(array('gibbonDepartmentID' => $values['gibbonDepartmentID']), $sql);
+                        $learningArea = ($result->rowCount() > 0)? $result->fetchColumn(0) : $values['gibbonDepartmentID'];
+
+                        $form->addHiddenValue('gibbonDepartmentID', $values['gibbonDepartmentID']);
+                        $row = $form->addRow();
+                            $row->addLabel('departmentName', __('Learning Area'));
+                            $row->addTextField('departmentName')->isRequired()->readOnly()->setValue($learningArea);
+					}
+
+					$row = $form->addRow();
+                        $row->addLabel('name', __('Name'));
+						$row->addTextField('name')->maxLength(50)->isRequired()->readOnly();
+						
+					$form->addRow()->addHeading(__('Rows'));
+
+					// Get outcomes by year group
+					$data = array('gibbonYearGroupIDList' => $values['gibbonYearGroupIDList']);
+					$sql = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.scope, gibbonOutcome.category, gibbonOutcome.name 
+							FROM gibbonOutcome 
+							LEFT JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
+							WHERE gibbonOutcome.active='Y' 
+							AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)
+							GROUP BY gibbonOutcome.gibbonOutcomeID
+							ORDER BY gibbonOutcome.category, gibbonOutcome.name";
+					$result = $pdo->executeQuery($data, $sql);
+					
+					// Build a set of outcomes grouped by scope
+					$outcomes = ($result->rowCount() > 0)? $result->fetchAll() : array();
+					$outcomes = array_reduce($outcomes, function($group, $item) {
+						$name = !empty($item['category'])? $item['category'].' - '.$item['name'] : $item['name'];
+ 						$group[$item['scope'].' '.__('Outcomes')][$item['gibbonOutcomeID']] = $name;
+						return $group;
+					}, array());
+
+					$typeOptions = array('Standalone' => __('Standalone'), 'Outcome Based' => __('Outcome Based'));
+					
+					$data = array('gibbonRubricID' => $gibbonRubricID);
+					$sql = "SELECT gibbonRubricRowID, title, gibbonOutcomeID FROM gibbonRubricRow WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+                    $result = $pdo->executeQuery($data, $sql);
+					
+					if ($result->rowCount() <= 0) {
+						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
+					} else {
+						$count = 0;
+						while ($rubricRow = $result->fetch()) {
+							$type = ($rubricRow['gibbonOutcomeID'] != '')? 'Outcome Based' : 'Standalone';
+
+							$row = $form->addRow();
+								$row->addLabel('rowName'.$count, sprintf(__('Row %1$s Title'), ($count + 1)) );
+								$column = $row->addColumn()->addClass('right');
+								$column->addRadio('type'.$count)->fromArray($typeOptions)->inline()->checked($type);
+								$column->addTextField('rowTitle['.$count.']')
+									->setID('rowTitle'.$count)
+									->addClass('rowTitle'.$count)
+									->maxLength(40)
+									->isRequired()
+									->setValue($rubricRow['title']);
+								$column->addSelect('gibbonOutcomeID['.$count.']')
+									->setID('gibbonOutcomeID'.$count)
+									->addClass('gibbonOutcomeID'.$count)
+									->fromArray($outcomes)
+									->isRequired()
+									->placeholder()
+									->selected($rubricRow['gibbonOutcomeID']);
+
+							$form->toggleVisibilityByClass('rowTitle'.$count)->onRadio('type'.$count)->when('Standalone');
+							$form->toggleVisibilityByClass('gibbonOutcomeID'.$count)->onRadio('type'.$count)->when('Outcome Based');
+							$form->addHiddenValue('gibbonRubricRowID['.$count.']', $rubricRow['gibbonRubricRowID']);
+								
+							$count++;
+						}
+					}
+
+					$form->addRow()->addHeading(__('Columns'));
+
+					$data = array('gibbonRubricID' => $gibbonRubricID);
+					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+                    $result = $pdo->executeQuery($data, $sql);
+					
+					if ($result->rowCount() <= 0) {
+						$form->addRow()->addAlert(__('There are no records to display.'), 'error');
+					} else {
+						$count = 0;
+						while ($rubricColumn = $result->fetch()) {
+							$row = $form->addRow();
+							$row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
+
+							// Handle non-grade scale columns as a text field, otherwise a dropdown
+							if ($values['gibbonScaleID'] == '') {
+								$row->addTextField('columnTitle['.$count.']')
+									->setID('columnTitle'.$count)
+									->maxLength(20)
+									->isRequired()
+									->setValue($rubricColumn['title']);
 							} else {
-								$count = 0;
-								while ($rowRows = $resultRows->fetch()) {
-									?>
-									<tr>
-										<td> 
-											<b><?php echo sprintf(__($guid, 'Row %1$s Title'), ($count + 1)) ?></b><br/>
-											<span class="emphasis small"></span>
-										</td>
-										<td class="right">
-											<?php
-                                            $outcomeBased = false;
-											if ($rowRows['gibbonOutcomeID'] != '') {
-												$outcomeBased = true;
-											}
-											?>
-											<script type="text/javascript">
-												$(document).ready(function(){
-													<?php
-                                                    if ($outcomeBased == false) {
-                                                        ?>
-														$("#gibbonOutcomeID-<?php echo $count ?>").css("display","none");
-														<?php
-
-                                                    } else {
-                                                        ?>
-														$("#rowTitle-<?php echo $count ?>").css("display","none");
-														<?php
-
-                                                    }
-                            					?>
-													
-												$(".type-<?php echo $count ?>").click(function(){
-													if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Standalone" ) {
-														$("#gibbonOutcomeID-<?php echo $count ?>").css("display","none");
-														$("#rowTitle-<?php echo $count ?>").css("display","block"); 
-													}
-													else if ($('input[name=type-<?php echo $count ?>]:checked').val()=="Outcome Based" ) {
-														$("#rowTitle-<?php echo $count ?>").css("display","none");
-														$("#gibbonOutcomeID-<?php echo $count ?>").css("display","block"); 
-													}
-												});
-												
-											});
-										</script>
-											<?php
-											//Prep filtering base don year groups of rubric
-											$years = explode(',', $row['gibbonYearGroupIDList']);
-											$dataSelect = array();
-											$filterSelect = '';
-											$count2 = 0;
-											foreach ($years as $year) {
-												$filterSelect .= " AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID$count2";
-												$dataSelect["gibbonSchoolYearID$count2"] = '%'.$year.'%';
-												++$count2;
-											}
-											?>
-												
-											<input <?php if ($outcomeBased == false) { echo 'checked'; } ?> type="radio" name="type-<?php echo $count ?>" value="Standalone" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Standalone') ?> 
-											<input <?php if ($outcomeBased == true) { echo 'checked'; } ?> type="radio" name="type-<?php echo $count ?>" value="Outcome Based" class="type-<?php echo $count ?>" /> <?php echo __($guid, 'Outcome Based') ?><br/>
-											<select name='gibbonOutcomeID[]' id='gibbonOutcomeID-<?php echo $count ?>' style='width: 304px'>
-												<option><option>
-												<optgroup label='--<?php echo __($guid, 'School Outcomes') ?>--'>
-													<?php
-                                                    try {
-                                                        $sqlSelect = "SELECT * FROM gibbonOutcome WHERE scope='School' AND active='Y' $filterSelect ORDER BY category, name";
-                                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                                        $resultSelect->execute($dataSelect);
-                                                    } catch (PDOException $e) {
-                                                    }
-													while ($rowSelect = $resultSelect->fetch()) {
-														$label = '';
-														if ($rowSelect['category'] == '') {
-															$label = $rowSelect['name'];
-														} else {
-															$label = $rowSelect['category'].' - '.$rowSelect['name'];
-														}
-														$selected = '';
-														if ($rowSelect['gibbonOutcomeID'] == $rowRows['gibbonOutcomeID']) {
-															$selected = 'selected';
-														}
-														echo "<option $selected value='".$rowSelect['gibbonOutcomeID']."'>$label</option>";
-													}
-													?>
-												</optgroup>
-												<?php
-                                                if ($row['scope'] == 'Learning Area') {
-                                                    ?>
-													<optgroup label='--<?php echo __($guid, 'Learning Area Outcomes') ?>--'>
-														<?php
-                                                        try {
-                                                            $dataSelect['gibbonDepartmentID'] = $row['gibbonDepartmentID'];
-                                                            $sqlSelect = "SELECT * FROM gibbonOutcome WHERE scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID AND active='Y' $filterSelect ORDER BY category, name";
-                                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                                            $resultSelect->execute($dataSelect);
-                                                        } catch (PDOException $e) {
-                                                        }
-                                                    while ($rowSelect = $resultSelect->fetch()) {
-                                                        $label = '';
-                                                        if ($rowSelect['category'] == '') {
-                                                            $label = $rowSelect['name'];
-                                                        } else {
-                                                            $label = $rowSelect['category'].' - '.$rowSelect['name'];
-                                                        }
-                                                        $selected = '';
-                                                        if ($rowSelect['gibbonOutcomeID'] == $rowRows['gibbonOutcomeID']) {
-                                                            $selected = 'selected';
-                                                        }
-                                                        echo "<option $selected value='".$rowSelect['gibbonOutcomeID']."'>$label</option>";
-                                                    }
-                                                    ?>
-													</optgroup>
-													<?php
-
-                                                }
-                            					?>
-											</select>
-											<input name="rowTitle[]" id="rowTitle-<?php echo $count ?>" value="<?php echo $rowRows['title'] ?>" type="text" class="standardWidth" maxlength=40>
-											<input name="gibbonRubricRowID[]" id="gibbonRubricRowID[]" value="<?php echo $rowRows['gibbonRubricRowID'] ?>" type="hidden">
-										</td>
-									</tr>
-									<?php
-                                    ++$count;
-								}
+								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
+								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
+								$row->addSelect('gibbonScaleGradeID['.$count.']')
+									->setID('gibbonScaleGradeID'.$count)
+									->fromQuery($pdo, $sql, $data)
+									->isRequired()
+									->selected($rubricColumn['gibbonScaleGradeID']);
 							}
-							?>
-							
-							<?php //COLUMNS!?>
-							<tr class='break'>
-								<td colspan=2>
-									<h3><?php echo __($guid, 'Columns') ?></h3>
-								</td>
-							</tr>
-							<?php
-                            try {
-                                $dataColumns = array('gibbonRubricID' => $gibbonRubricID);
-                                $sqlColumns = 'SELECT * FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber';
-                                $resultColumns = $connection2->prepare($sqlColumns);
-                                $resultColumns->execute($dataColumns);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
+							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
-							if ($resultColumns->rowCount() < 1) {
-								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
-								echo '</div>';
-							} else {
-                       			 //If no grade scale specified
-                                if ($row['gibbonScaleID'] == '') {
-                                    $count = 0;
-                                    while ($rowColumns = $resultColumns->fetch()) {
-                                        ?>
-										<tr>
-											<td> 
-												<b><?php echo sprintf(__($guid, 'Column %1$s Title'), ($count + 1)) ?></b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<input name="columnTitle[]" id="columnTitle[]" value="<?php echo $rowColumns['title'] ?>" type="text" class="standardWidth" maxlength=20>
-												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php echo $rowColumns['gibbonRubricColumnID'] ?>" type="hidden">
-											</td>
-										</tr>
-										<?php
-                                        ++$count;
-                                    }
-                                }
-                                //If scale specified	
-                                else {
-                                    $count = 0;
-                                    while ($rowColumns = $resultColumns->fetch()) {
-                                        ?>
-										<tr>
-											<td> 
-												<b><?php echo sprintf(__($guid, 'Column %1$s Grade'), ($count + 1)) ?></b><br/>
-												<span class="emphasis small"></span>
-											</td>
-											<td class="right">
-												<?php
-                                                echo "<select name='gibbonScaleGradeID[]' id='gibbonScaleGradeID[]' style='width:304px'>";
-                                        try {
-                                            $dataSelect = array('gibbonScaleID' => $row['gibbonScaleID']);
-                                            $sqlSelect = "SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-                                        while ($rowSelect = $resultSelect->fetch()) {
-                                            if ($rowColumns['gibbonScaleGradeID'] == $rowSelect['gibbonScaleGradeID']) {
-                                                echo "<option selected value='".$rowSelect['gibbonScaleGradeID']."'>".htmlPrep(__($guid, $rowSelect['value'])).' - '.htmlPrep(__($guid, $rowSelect['descriptor'])).'</option>';
-                                            } else {
-                                                echo "<option value='".$rowSelect['gibbonScaleGradeID']."'>".htmlPrep(__($guid, $rowSelect['value'])).' - '.htmlPrep(__($guid, $rowSelect['descriptor'])).'</option>';
-                                            }
-                                        }
-                                        echo '</select>';
-                                        ?>
-												<input name="gibbonRubricColumnID[]" id="gibbonRubricColumnID[]" value="<?php echo $rowColumns['gibbonRubricColumnID'] ?>" type="hidden">
-											</td>
-										</tr>
-										<?php
-                                        ++$count;
-                                    }
-								}
-							}
-							?>						
-							
-							<tr>
-								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-								</td>
-								<td class="right">
-									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-								</td>
-							</tr>
-						</table>
-					</form>
-				<?php
+							$count++;
+						}
+					}
 
+					$row = $form->addRow();
+                        $row->addFooter();
+                        $row->addSubmit();
+
+                    $form->loadAllValuesFrom($values);
+                    
+					echo $form->getOutput();
                 }
             }
         }
     }
 }
-?>

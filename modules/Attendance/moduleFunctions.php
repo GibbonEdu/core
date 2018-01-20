@@ -32,12 +32,12 @@ function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $date
             $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
                     LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
-                WHERE gibbonPersonID=:gibbonPersonID AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+                WHERE gibbonPersonID=:gibbonPersonID AND context='Class' AND gibbonCourseClassID=:gibbonCourseClassID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
         } else {
             $data = array('gibbonPersonID' => $gibbonPersonID, 'dateStart' => $dateStart, 'dateEnd' => $dateEnd);
             $sql = "SELECT gibbonAttendanceLogPerson.*, gibbonSchoolYearSpecialDay.type AS specialDay FROM gibbonAttendanceLogPerson
                     LEFT JOIN gibbonSchoolYearSpecialDay ON (gibbonSchoolYearSpecialDay.date=gibbonAttendanceLogPerson.date AND gibbonSchoolYearSpecialDay.type='School Closure')
-                WHERE gibbonPersonID=:gibbonPersonID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) GROUP BY gibbonAttendanceLogPerson.date ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
+                WHERE gibbonPersonID=:gibbonPersonID AND (gibbonAttendanceLogPerson.date BETWEEN :dateStart AND :dateEnd) ORDER BY gibbonAttendanceLogPerson.date, timestampTaken";
         }
         $result = $connection2->prepare($sql);
         $result->execute($data);
@@ -429,20 +429,6 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
         echo '<b>'.__($guid, 'Total number of school days to date:')." $countSchoolDays</b><br/>";
         echo __($guid, 'Total number of school days attended:')." $countPresent<br/>";
         echo __($guid, 'Total number of school days absent:')." $countAbsent<br/>";
-
-        if ( count($countTypes) > 0 ) {
-            echo '<br/><b>'.__($guid, 'Type').":</b><br/>";
-            foreach ($countTypes as $typeName => $count ) {
-                echo '<span style="width:180px;display:inline-block;">'.__($guid, $typeName)."</span>$count<br/>";
-            }
-        }
-
-        if ( count($countReasons) > 0 ) {
-            echo '<br/><b>'.__($guid, 'Reason').":</b><br/>";
-            foreach ($countReasons as $reasonName => $count ) {
-                echo '<span style="width:180px;display:inline-block;">'.__($guid, $reasonName)."</span>$count<br/>";
-            }
-        }
     } else {
         echo __($guid, 'NA');
     }

@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_facility_add.php') == false) {
@@ -57,97 +60,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
-            ?>
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search" ?>" enctype="multipart/form-data">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Person') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="person" id="person" maxlength=255 value="<?php echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Staff', false, true) ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-                    <tr>
-						<td>
-							<b><?php echo __($guid, 'Facility') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-                            <?php
-                            //Get array of spaces used by this user
-                            try {
-                                $dataUnique = array('gibbonPersonID' => $gibbonPersonID);
-                                $sqlUnique = 'SELECT * FROM gibbonSpacePerson WHERE gibbonPersonID=:gibbonPersonID';
-                                $resultUnique = $connection2->prepare($sqlUnique);
-                                $resultUnique->execute($dataUnique);
-                            } catch (PDOException $e) {}
-                            $rowUnique = $resultUnique->fetchAll();
-                            ?>
 
-                            <select name="gibbonSpaceID" id="gibbonSpaceID" class="standardWidth">
-								<option value='Please select...'><?php echo __($guid, 'Please select...') ?></option>" ;
-                                <?php
-                                try {
-									$dataSelect = array();
-									$sqlSelect = 'SELECT * FROM gibbonSpace ORDER BY name';
-									$resultSelect = $connection2->prepare($sqlSelect);
-									$resultSelect->execute($dataSelect);
-								} catch (PDOException $e) { }
-								while ($rowSelect = $resultSelect->fetch()) {
-                                    $used = false;
-                                    foreach ($rowUnique as $unique) {
-                                        if ($unique['gibbonSpaceID'] == $rowSelect['gibbonSpaceID']) {
-                                            $used = true;
-                                        }
-                                    }
-									if ($used == false) {
-										echo "<option value='".$rowSelect['gibbonSpaceID']."'>".htmlPrep($rowSelect['name']).'</option>';
-									}
-								}
-								?>
-							</select>
-                            <script type="text/javascript">
-                                var gibbonSpaceID=new LiveValidation('gibbonSpaceID');
-                                gibbonSpaceID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-                            </script>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'Usage Type') ?></b><br/>
-						</td>
-						<td class="right">
-							<select class="standardWidth" name="usageType" id="usageType">
-								<option value=''></option>" ;
-								<option value="Teaching"><?php echo __($guid, 'Teaching') ?></option>
-								<option value="Office"><?php echo __($guid, 'Office') ?></option>
-								<option value="Other"><?php echo __($guid, 'Other') ?></option>
-							</select>
-						</td>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_addProcess.php?gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search");
 
+            $form->setFactory(DatabaseFormFactory::create($pdo));
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addLabel('person', __('Person'));
+                $row->addTextField('person')->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->isRequired();
+
+            $data = array('gibbonPersonID' => $gibbonPersonID);
+            $sql = "SELECT gibbonSpace.gibbonSpaceID AS value, name
+                FROM gibbonSpace
+                    LEFT JOIN gibbonSpacePerson ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID AND (gibbonSpacePersonID IS NULL OR gibbonSpacePerson.gibbonPersonID=:gibbonPersonID))
+                    WHERE gibbonSpacePerson.gibbonPersonID IS NULL
+                ORDER BY gibbonSpace.name";
+            $row = $form->addRow();
+                $row->addLabel('gibbonSpaceID', __('Facility'));
+                $row->addSelect('gibbonSpaceID')->fromQuery($pdo, $sql, $data)->placeholder()->isRequired();
+
+            $row = $form->addRow();
+                $row->addLabel('usageType', __('Usage Type'));
+                $row->addSelect('usageType')->fromArray(array('Teaching' => __('Teaching'), 'Office' => __('Office'), 'Other' => __('Other')))->placeholder();
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
         }
     }
 }

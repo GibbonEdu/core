@@ -237,7 +237,7 @@ class FileUploader
     }
 
     /**
-     * Lazy load an array of the File Extensions from DB. Optionally loads a specific Type of extension.
+     * Lazy load an array of the File Extensions from DB. Optionally loads specific types of extensions (accepts array or CSV list).
      *
      * @version  v14
      * @since    v14
@@ -249,8 +249,10 @@ class FileUploader
             $this->fileExtensions = array();
 
             if (!empty($type)) {
-                $data = array('type' => strtolower($type));
-                $sql = "SELECT LOWER(extension) FROM gibbonFileExtension WHERE LOWER(type)=:type ORDER BY type, name";
+                $type = (is_array($type))? implode(',', $type) : $type;
+
+                $data = array('types' => strtolower($type));
+                $sql = "SELECT LOWER(extension) FROM gibbonFileExtension WHERE FIND_IN_SET(LOWER(type), :types) ORDER BY type, name";
             } else {
                 $data = array();
                 $sql = "SELECT LOWER(extension) FROM gibbonFileExtension ORDER BY type, name";

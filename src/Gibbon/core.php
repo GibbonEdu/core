@@ -108,17 +108,25 @@ class Core {
 
 		if ($this->initialized == true) return;
 
-		// Setup the textdomain based on the current locale  (if any)
-		$this->locale->setTextDomain($pdo);
-
-		// Load the string replacements from db
-		$this->locale->setStringReplacementList($pdo);
-
-		// Provide the session class with a db connection
 		$this->session->setDatabaseConnection($pdo);
 
+		if (empty($this->session->get('systemSettingsSet'))) {
+			$this->session->loadSystemSettings($pdo);
+			$this->session->loadLanguageSettings($pdo);
+        }
+		
+		$installType = $this->session->get('installType');
+        if (empty($installType) || $installType == 'Production') {
+            ini_set('display_errors', 0);
+        }
+
+		$this->locale->setLocale($this->session->get(array('i18n', 'code')));
+		$this->locale->setTimezone($this->session->get('timezone', 'UTC'));
+		$this->locale->setTextDomain($pdo);
+		$this->locale->setStringReplacementList($pdo);
+
 		$this->initialized = true;
-	}
+    }
 
 	/**
 	 * Is Gibbon Installed? Based on existance of config.php file
@@ -247,5 +255,4 @@ class Core {
 		$this->baseURL = $http . $host. $port . dirname($domain);
 		$this->baseURL = rtrim($this->baseURL, '/ ');
 	}
-
 }

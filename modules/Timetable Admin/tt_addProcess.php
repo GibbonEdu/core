@@ -31,15 +31,7 @@ $nameShort = $_POST['nameShort'];
 $nameShortDisplay = $_POST['nameShortDisplay'];
 $active = $_POST['active'];
 $count = $_POST['count'];
-$gibbonYearGroupIDList = '';
-for ($i = 0; $i < $count; ++$i) {
-    if (isset($_POST["gibbonYearGroupIDCheck$i"])) {
-        if ($_POST["gibbonYearGroupIDCheck$i"] == 'on') {
-            $gibbonYearGroupIDList = $gibbonYearGroupIDList.$_POST["gibbonYearGroupID$i"].',';
-        }
-    }
-}
-$gibbonYearGroupIDList = substr($gibbonYearGroupIDList, 0, (strlen($gibbonYearGroupIDList) - 1));
+$gibbonYearGroupIDList = (isset($_POST["gibbonYearGroupID"]) ? implode(',', $_POST["gibbonYearGroupID"]) : '');
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID";
