@@ -25,3 +25,8 @@ For installation instructions, visit https://gibbonedu.org/support/administrator
 As of the latest commit on 26/03/2014 you no longer need to manually update database changes when running Cutting Edge code. Simply go to Admin > System Admin > System Settings and enable Cutting Edge Code. When you want to update, get the latest commit from GitHub, upload it to your server and go to Admin > System Admin > Update to run the new lines. 
 
 For support visit https://gibbonedu.org/support.
+
+
+Contributing to Gibbon
+======================
+Information about contributing, submitting issues, and pull requests can be found in the [Contribution Guidelines](https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md).

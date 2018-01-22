@@ -21,11 +21,13 @@ v15.0.00
 	Headlines
 		Code base refactoring of all interface forms
 		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
+		Activated Brazilian Portuguese as complete languages
 
 	Changes With Important Notices
 		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
     Security
+		System: fixed security vulnerability in the installer
         System: added validation and output escaping to Personal Background URL in Preferences
 
 	Tweaks & Bug Fixes
