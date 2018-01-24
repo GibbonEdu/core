@@ -27,6 +27,7 @@ v16.0.00
 	Security
 
 	Tweaks & Bug Fixes
+		User Admin: fixed Child's Name list in Edit Family to include all students
 
 v15.0.00
 --------
