@@ -4181,13 +4181,8 @@ INSERT INTO `gibbonSetting` (`gibbonSettingID`, `scope`, `name`, `nameDisplay`, 
 (00036, 'Behaviour', 'levels', 'Levels', 'Allowable choices for severity level (from lowest to highest)', ',Stage 1,Stage 1 (Actioned),Stage 2,Stage 2 (Actioned),Stage 3,Stage 3 (Actioned),Actioned'),
 (00037, 'Resources', 'categories', 'Categories', 'Allowable choices for category', 'Article,Book,Document,Graphic,Idea,Music,Object,Painting,Person,Photo,Place,Poetry,Prose,Rubric,Text,Video,Website,Work Sample,Other'),
 (00038, 'Resources', 'purposesGeneral', 'Purposes (General)', 'Allowable choices for purpose when creating a resource', 'Assessment Aid,Concept,Inspiration,Learner Profile,Mass Mailer Attachment,Provocation,Skill,Teaching and Learning Strategy,Other'),
-<<<<<<< HEAD
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '14.0.01'),
-(00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with "Manage All Resources" rights', ''),
-=======
-(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '15.0.00'),
+(00039, 'System', 'version', 'Version', 'The version of the Gibbon database', '16.0.00'),
 (00040, 'Resources', 'purposesRestricted', 'Purposes (Restricted)', 'Additional allowable choices for purpose when creating a resource, for those with \"Manage All Resources\" rights', ''),
->>>>>>> v15.0.00
 (00041, 'System', 'organisationEmail', 'Organisation Email', 'General email address for the school', ''),
 (00042, 'Activities', 'dateType', 'Date Type', 'Should activities be organised around dates (flexible) or terms (easy)?', 'Term'),
 (00043, 'System', 'installType', 'Install Type', 'The purpose of this installation of Gibbon', 'Production'),

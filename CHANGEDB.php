@@ -869,3 +869,10 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');end
 UPDATE gibboni18n SET active='Y' WHERE code='pt_BR';end
 ";
+
+//v16.0.00
+++$count;
+$sql[$count][0] = '16.0.00';
+$sql[$count][1] = "
+
+";
