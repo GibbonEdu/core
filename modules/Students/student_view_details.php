@@ -2109,13 +2109,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo "<div class='error'>".$e->getMessage().'</div>';
                                         }
 
-                                        $teachers = '<p><b>'.__($guid, 'Taught by:').'</b> ';
+                                        $teachers = array();
                                         while ($rowTeachers = $resultTeachers->fetch()) {
-                                            $teachers = $teachers.$rowTeachers['title'].' '.$rowTeachers['surname'].', ';
+                                            $teachers[] = $rowTeachers['title'].' '.$rowTeachers['surname'];
                                         }
-                                        $teachers = substr($teachers, 0, -2);
-                                        $teachers = $teachers.'</p>';
-                                        echo $teachers;
+                                        if (!empty($teachers)) {
+                                            echo '<p><b>'.__($guid, 'Taught by:').'</b> '.implode(', ', $teachers).'</p>';
+                                        }
 
                                         if ($rowList['target'] != '') {
                                             echo "<div style='font-weight: bold' class='linkTop'>";
