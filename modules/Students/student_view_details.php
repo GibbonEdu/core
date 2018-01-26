@@ -1450,11 +1450,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         //User photo
                                         echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
-                                        $allStudents = '';
-                                        if ($rowMember['gibbonStudentEnrolmentID'] == null)
-                                            $allStudents = '&allStudents=on';
                                         if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=$allStudents'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
                                         } else {
                                             echo formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
                                         }
@@ -1822,7 +1819,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
 
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&allStudents=$allStudents&subpage=Notes&category=$category'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/student_view_details_notes_add.php&gibbonPersonID=$gibbonPersonID&search=$search&allStudents=$allStudents&search=$search&subpage=Notes&category=$category'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                                 echo '</div>';
 
                                 if ($result->rowCount() < 1) {
