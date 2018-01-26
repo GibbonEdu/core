@@ -2086,11 +2086,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
 
                                 if ($resultList->rowCount() > 0) {
-                                    renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
 
-                                    // Only visible to teachers and admin for now
-                                    if ($highestAction == 'View Markbook_allClassesAllData') {
-                                        renderStudentCourseAverage($pdo, $guid, $_GET['gibbonPersonID']);
+                                    // Only display for the current year
+                                    if ($filter == $_SESSION[$guid]['gibbonSchoolYearID']) {
+                                        // Only visible to teachers and admin for now
+                                        if ($highestAction == 'View Markbook_allClassesAllData') {
+                                            renderStudentCourseAverage($pdo, $guid, $_GET['gibbonPersonID']);
+                                        }
+
+                                        renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
                                     }
 
                                     while ($rowList = $resultList->fetch()) {

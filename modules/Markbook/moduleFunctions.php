@@ -422,6 +422,10 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
     $guid = $gibbon->guid();
     $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
 
+    $termNames = (intval($gibbonSchoolYearID) >= 12)
+            ? array('Term 1 Mid', 'Term 1 End', 'Term 2 Mid', 'Final')
+            : array('Sem1-Mid', 'Sem1-End', 'Sem2-Mid', 'Sem2-End');
+
     if (intval($gibbonSchoolYearID) < 11) {
         // LEGACY GRADES
         $sem1Mid = getLegacyGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
@@ -433,10 +437,10 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
     } else {
         // Gibbon Reporting Grades
-        $sem1Mid = getReportGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem1End = getReportGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2Mid = getReportGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2End = getReportGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem1Mid = getReportGrade($pdo, $termNames[0], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem1End = getReportGrade($pdo, $termNames[1], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2Mid = getReportGrade($pdo, $termNames[2], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $sem2End = getReportGrade($pdo, $termNames[3], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
         $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
@@ -473,10 +477,10 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         echo '<table class="mini fullWidth" style="margin: 0; border: 0;" cellspacing="0">';
         echo '<tr class="head">';
 
-        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem1-Mid').'</td>';
-        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem1-End').'</td>';
-        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem2-Mid').'</td>';
-        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.__($guid, 'Sem2-End').'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[0].'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[1].'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[2].'</td>';
+        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[3].'</td>';
 
         echo '<td rowspan="2" style="padding: 10px 30px !important;">';
             echo '<span class="small emphasis">'.$message.'</span>';
