@@ -16,6 +16,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v16.0.00
+--------
+	Headlines
+
+	Significant Changes
+
+	Changes With Important Notices
+
+	Security
+
+	Tweaks & Bug Fixes
+		User Admin: fixed Child's Name list in Edit Family to include all students
+
 v15.0.00
 --------
 	Headlines
