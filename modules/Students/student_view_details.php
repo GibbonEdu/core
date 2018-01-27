@@ -2364,7 +2364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                 }
                                                 echo '</tr>';
-                                                if (strlen($rowEntry['comment']) > 200) {
+                                                if (mb_strlen($rowEntry['comment']) > 200) {
                                                     echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                                                     echo '<td colspan=6>';
                                                     echo nl2br($rowEntry['comment']);
