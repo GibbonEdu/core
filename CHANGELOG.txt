@@ -27,6 +27,7 @@ v16.0.00
 	Security
 
 	Tweaks & Bug Fixes
+		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Students: added sibling and family information to Letters Home by Roll Group
 		User Admin: fixed Child's Name list in Edit Family to include all students
