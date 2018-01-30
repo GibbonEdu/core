@@ -62,6 +62,10 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $sql = "UPDATE `gibbonPerson` SET `image_240` = CONCAT( 'uploads/photos/', username, '.jpg') WHERE (image_240 = '' OR image_240 IS NULL) AND `gibbonRoleIDPrimary` <> 003 AND `gibbonRoleIDPrimary` <> 004 AND LEFT(username, 1) = '1'";
         $result = $pdo->executeQuery(array(), $sql);
 
+        // Set canLogin='N' for all students less than grade 7
+        $sql = "UPDATE `gibbonPerson` JOIN `gibbonStudentEnrolment` ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) SET `canLogin`='N' WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1) AND gibbonStudentEnrolment.gibbonYearGroupID<011";
+        $result = $pdo->executeQuery(array(), $sql);
+
 
     } catch (PDOException $e) {
     }
