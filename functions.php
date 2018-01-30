@@ -2437,17 +2437,17 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
     $output = false;
 
     if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
-        
+
         $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
         $format = isset($_SESSION[$guid][$setting])? $_SESSION[$guid][$setting] : '[title] [preferredName:1]. [surname]';
 
-        $output = preg_replace_callback('/\[+([^\]]*)\]+/u', 
+        $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
             function ($matches) use ($title, $preferredName, $surname) {
                 list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
                 return isset($$token)
                     ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
                     : $matches[0];
-            }, 
+            },
         $format);
 
     } elseif ($roleCategory == 'Parent') {
@@ -4501,6 +4501,8 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
     if ((!is_array($array) && $array != null) || $title == null || $gibbonSchoolYearID == null) {
         return;
     }
+
+    $ip = (empty($ip) ? getIPAddress() : $ip);
 
     if ($array != null) {
         $serialisedArray = serialize($array);
