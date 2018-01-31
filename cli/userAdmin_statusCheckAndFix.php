@@ -81,57 +81,40 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
             ++$count;
         }
     }
-    //Scan through every user who is child in a family to correct parent status
+
+    // Look for parents who are set to Full and counts the active children (also catches parents with no children)
     try {
         $data = array();
-        $sql = "SELECT gibbonFamilyID, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE status='Left' ORDER BY gibbonPersonID";
+        $sql = "SELECT adult.gibbonPersonID,
+                COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
+                FROM gibbonPerson as adult
+                JOIN gibbonFamilyAdult ON (adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID)
+                LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+                LEFT JOIN gibbonPerson as child ON (child.gibbonPersonID=gibbonFamilyChild.gibbonPersonID)
+                WHERE adult.status='Full'
+                GROUP BY adult.gibbonPersonID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
     }
 
     while ($row = $result->fetch()) {
-        //Check to see if all siblings are left
+        // Skip parents who have any active children
+        if ($row['activeChildren'] > 0) continue;
+
+        // Mark parents as Left only if they don't have other non-parent roles
         try {
-            $dataCheck1 = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-            $sqlCheck1 = "SELECT gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT status='Left' ORDER BY gibbonPersonID";
-            $resultCheck1 = $connection2->prepare($sqlCheck1);
-            $resultCheck1->execute($dataCheck1);
+            $data = array('gibbonPersonID' => $row['gibbonPersonID']);
+            $sql = "UPDATE gibbonPerson SET gibbonPerson.status='Left' 
+                    WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID 
+                    AND (SELECT COUNT(*) FROM gibbonRole WHERE FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll) AND category<>'Parent') = 0";
+            $resultUpdate = $connection2->prepare($sql);
+            $resultUpdate->execute($data);
         } catch (PDOException $e) {
         }
 
-        if ($resultCheck1->rowCount() == 0) { //There are no active siblings, so let's check parents to see if we can set anyone to left
-            try {
-                $dataCheck2 = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-                $sqlCheck2 = "SELECT gibbonPerson.gibbonPersonID, status, gibbonRoleIDAll FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID AND NOT status='Left' ORDER BY gibbonPersonID";
-                $resultCheck2 = $connection2->prepare($sqlCheck2);
-                $resultCheck2->execute($dataCheck2);
-            } catch (PDOException $e) {
-            }
-
-            while ($rowCheck2 = $resultCheck2->fetch()) {
-                //Check to see if parent has any non-staff roles. If not, mark as 'Left'
-                $nonParentRole = false;
-                $roles = explode(',', $rowCheck2['gibbonRoleIDAll']);
-                foreach ($roles as $role) {
-                    if (getRoleCategory($role, $connection2) != 'Parent') {
-                        $nonParentRole = true;
-                    }
-                }
-
-                if ($nonParentRole == false) {
-                    //Update status to 'Left'
-                    try {
-                        $dataUpdate = array('gibbonPersonID' => $rowCheck2['gibbonPersonID']);
-                        $sqlUpdate = "UPDATE gibbonPerson SET status='Left' WHERE gibbonPersonID=:gibbonPersonID";
-                        $resultUpdate = $connection2->prepare($sqlUpdate);
-                        $resultUpdate->execute($dataUpdate);
-                    } catch (PDOException $e) {
-                    }
-                    ++$count;
-                }
-            }
-        }
+        // Add the number of updated rows to the count
+        $count += $resultUpdate->rowCount();
     }
 
     // Raise a new notification event
