@@ -34,6 +34,7 @@ v16.0.00
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
+		User Admin: tweaked user CLI to better handle parents in multiple families
 
 v15.0.00
 --------
