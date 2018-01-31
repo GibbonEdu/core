@@ -379,14 +379,17 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                         $output .= '<a href="index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$formattedDate.'">';
                                     }
                                     $output .= $formattedDate.'<br/>';
-                                    if (count($log) > 0) {
+                                    if (count($log) > 0 && isset($log[0][0])) {
                                         $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
 
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {
+                                                $code = $attendance->getAttendanceCodeByType($log[$x][0]);
+                                                if (empty($code)) continue;
+                                                
                                                 $textClass = $attendance->isTypeAbsent($log[$x][0])? 'highlightAbsent' : 'highlightPresent';
                                                 $output .= '<span class="'.$textClass.'">';
-                                                $output .= $attendance->getAttendanceCodeByType( $log[$x][0] )['nameShort'];
+                                                $output .= $code['nameShort'];
                                                 $output .= '</span>';
                                             }
                                             if ($x != 0 and $x != count($log)) {
