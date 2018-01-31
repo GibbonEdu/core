@@ -82,24 +82,26 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
         }
     }
 
-    // Look for parents who are set to Full who have no active children (also catches parents with no children)
+    // Look for parents who are set to Full and counts the active children (also catches parents with no children)
     try {
         $data = array();
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, adult.gibbonPersonID, adult.gibbonRoleIDAll, 
+        $sql = "SELECT adult.gibbonPersonID,
                 COUNT(DISTINCT CASE WHEN NOT child.status='Left' THEN child.gibbonPersonID END) as activeChildren
                 FROM gibbonPerson as adult
                 JOIN gibbonFamilyAdult ON (adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID)
                 LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
                 LEFT JOIN gibbonPerson as child ON (child.gibbonPersonID=gibbonFamilyChild.gibbonPersonID)
                 WHERE adult.status='Full'
-                GROUP BY adult.gibbonPersonID
-                HAVING activeChildren = 0";
+                GROUP BY adult.gibbonPersonID";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
     }
 
     while ($row = $result->fetch()) {
+        // Skip parents who have any active children
+        if ($row['activeChildren'] > 0) continue;
+
         // Mark parents as Left only if they don't have other non-parent roles
         try {
             $data = array('gibbonPersonID' => $row['gibbonPersonID']);
