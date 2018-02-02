@@ -40,7 +40,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-
     if (isset($_GET['redirect']) && $_GET['redirect'] == 'true') {
         echo '<div class=\'warning\'>';
             echo __('Please self register!');
@@ -72,8 +71,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-
-
 
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();

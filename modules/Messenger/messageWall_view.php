@@ -34,14 +34,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     } else {
         $extra = __($guid, 'View Messages').' ('.$date.')';
 	}
-	
+
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>$extra</div>";
 	echo '</div>';
-	
+
+    if (isset($_GET['return'])) {
+        $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
+        $emailLink = getSettingByScope($connection2, 'System', 'emailLink');
+        if (empty($emailLink)) {
+            $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), '', '');
+        }
+        else {
+            $suggest = sprintf(__('Why not read the messages below, or %1$scheck your email%2$s?'), "<a target='_blank' href='$emailLink'>", '</a>');
+        }
+        $suggest = '<b>'.$suggest.'</b>';
+        returnProcess($guid, $_GET['return'], null, array('message0' => sprintf(__('Attendance has been taken for you today. Your current status is: %1$s.'), "<b>".$status."</b>").'<br/><br/>'.$suggest));
+    }
+
 	$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php');
 	$form->setClass('blank fullWidth');
-	
+
 	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
 	$row = $form->addRow();
@@ -49,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
 	$link = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/messageWall_view.php';
 	$prevDay = DateTime::createFromFormat($dateFormat, $date)->modify('-1 day')->format($dateFormat);
 	$nextDay = DateTime::createFromFormat($dateFormat, $date)->modify('+1 day')->format($dateFormat);
-	
+
 	$col = $row->addColumn()->addClass('inline');
 		$col->addButton(__('Previous Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$prevDay}'");
 		$col->addButton(__('Next Day'))->addClass('buttonLink')->onClick("window.location.href='{$link}&date={$nextDay}'");
