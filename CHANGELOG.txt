@@ -28,9 +28,12 @@ v16.0.00
 
 	Tweaks & Bug Fixes
 		System: improved IP address handling in setLog function
+		Attendance: added option for redirect to message wall after self registration has been taken
 		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
+		Messenger: added the ability to resend in By Roll Group view in View Send Report
 		Students: added sibling and family information to Letters Home by Roll Group
+		Students: added Comment field to medical form, linked to student application form.
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families

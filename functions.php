@@ -4914,6 +4914,8 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
                     $class = 'warning';
                 } elseif (stripos($return, 'success') !== false) {
                     $class = 'success';
+                } elseif (stripos($return, 'message') !== false) {
+                    $class = 'message';
                 }
                 break;
             }
