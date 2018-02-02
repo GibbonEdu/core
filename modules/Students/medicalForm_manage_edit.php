@@ -97,13 +97,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $form->toggleVisibilityByClass('longTermMedicationDetails')->onSelect('longTermMedication')->when('Y');
 
-            $row = $form->addRow()->addClass('longTermMedicationDetails');;
+            $row = $form->addRow()->addClass('longTermMedicationDetails');
                 $row->addLabel('longTermMedicationDetails', __('Medication Details'));
                 $row->addTextArea('longTermMedicationDetails')->setRows(5);
 
             $row = $form->addRow();
                 $row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
                 $row->addYesNo('tetanusWithin10Years')->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('comment', __('Comment'));
+                $row->addTextArea('comment')->setRows(6);
 
             $row = $form->addRow();
                 $row->addFooter();

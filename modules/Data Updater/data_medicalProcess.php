@@ -133,6 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 $longTermMedication = $_POST['longTermMedication'];
                 $longTermMedicationDetails = isset($_POST['longTermMedicationDetails'])? $_POST['longTermMedicationDetails'] : '';
                 $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
+                $comment = $_POST['comment'];
 
                 //Update existing medical conditions
                 $partialFail = false;
@@ -247,11 +248,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 //Write to database
                 try {
                     if ($existing != 'N') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalUpdateID' => $existing);
+                        $sql = 'UPDATE gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID';
                     } else {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'gibbonPersonID' => $gibbonPersonID, 'bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                        $sql = 'INSERT INTO gibbonPersonMedicalUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonPersonMedicalID=:gibbonPersonMedicalID, gibbonPersonID=:gibbonPersonID, bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);

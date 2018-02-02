@@ -81,6 +81,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         $row->addYesNo('tetanusWithin10Years')->placeholder();
 
     $row = $form->addRow();
+        $row->addLabel('comment', __('Comment'));
+        $row->addTextArea('comment')->setRows(6);
+
+    $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 

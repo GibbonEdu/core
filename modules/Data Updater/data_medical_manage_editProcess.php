@@ -111,6 +111,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                     $sqlSet .= 'tetanusWithin10Years=:tetanusWithin10Years, ';
                 }
             }
+            if (isset($_POST['commentOn'])) {
+                if ($_POST['commentOn'] == 'on') {
+                    $data['comment'] = $_POST['comment'];
+                    $sqlSet .= 'comment=:comment, ';
+                }
+            }
 
             $partialFail = false;
 
