@@ -101,16 +101,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($search != '') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 }
-                echo '</div>'; 
+                echo '</div>';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID='.$gibbonApplicationFormID.'&gibbonSchoolYearID='.$gibbonSchoolYearID.'&search='.$search);
-                
+
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonApplicationFormID', $gibbonApplicationFormID);
                 $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
-                
+
                 $applicantName = formatName('', $values['preferredName'], $values['surname'], 'Student');
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
                 $list = $col->addContent()->wrap('<ol>', '</ol>');
-                
+
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
                 if (!empty($values['gibbonRollGroupID'])) {
@@ -474,6 +474,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
+                    }
+
+                    //Create medical record if possible
+                    try {
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
                     }
 
                     //Enrol student

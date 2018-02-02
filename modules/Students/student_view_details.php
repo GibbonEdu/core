@@ -1696,6 +1696,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             echo '</td>';
                             echo '</tr>';
+                            if (!empty($rowMedical['comment'])) {
+                                echo '<tr>';
+                                echo "<td padding-top: 15px; vertical-align: top' colspan=3>";
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Comment').'</span><br/>';
+                                echo $rowMedical['comment'];
+                                echo '</td>';
+                                echo '</tr>';
+                            }
                             echo '</table>';
 
                             while ($rowCondition = $resultCondition->fetch()) {
