@@ -45,8 +45,9 @@ if ($gibbonMessengerID == '' or $action == '') { echo 'Fatal error loading this 
         header("Location: {$URL}");
     } else {
         $gibbonMessengerReceiptIDs = array();
-        if (isset($_POST['gibbonMessengerReceiptIDs']))
+        if (isset($_POST['gibbonMessengerReceiptIDs'])) {
             $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'];
+        }
 
         if (count($gibbonMessengerReceiptIDs) < 1) {
             $URL .= '&return=error1';
