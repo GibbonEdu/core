@@ -32,7 +32,7 @@ ini_set('max_execution_time', 600);
 //Module includes
 include "./moduleFunctions.php" ;
 
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/messenger_post.php" ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_post.php" ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
