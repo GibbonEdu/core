@@ -1101,7 +1101,7 @@ div.ui-datepicker-header {
 	border: none ;
 }
 
-td.hiddenReveal, div.hiddenReveal {
+td.hiddenReveal, div.hiddenReveal, tr.hiddenReveal td {
 	background: none;
 	background-color: #EDF7FF!important;
 }
