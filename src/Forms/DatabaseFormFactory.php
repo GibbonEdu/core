@@ -397,17 +397,21 @@ class DatabaseFormFactory extends FormFactory
         $default = array_search('Y', array_column($grades, 'isDefault'));
         $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
 
-        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder();
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect');
     }
 
     public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')
     {
         $data = array('gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID, 'rubrics' => __('Rubrics'));
-        $sql = "SELECT CONCAT(scope, ' ', :rubrics) as groupBy, gibbonRubricID as value, (CASE WHEN category <> '' THEN CONCAT(category, ' - ', name) ELSE name END) as name 
+        $sql = "SELECT CONCAT(scope, ' ', :rubrics) as groupBy, gibbonRubricID as value, 
+                (CASE WHEN category <> '' THEN CONCAT(category, ' - ', gibbonRubric.name) ELSE gibbonRubric.name END) as name 
                 FROM gibbonRubric 
-                WHERE active='Y' AND FIND_IN_SET(:gibbonYearGroupIDList, gibbonYearGroupIDList) 
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonRubric.gibbonYearGroupIDList))
+                WHERE gibbonRubric.active='Y' 
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
                 AND (scope='School' OR (scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID))
-                ORDER BY category, name";
+                GROUP BY gibbonRubric.gibbonRubricID
+                ORDER BY scope, category, name";
 
         return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
