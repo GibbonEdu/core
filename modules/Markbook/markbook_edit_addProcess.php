@@ -73,8 +73,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         // Grab the appropriate term ID if the date is provided and the term ID is not
         if (empty($gibbonSchoolYearTermID) && !empty($date)) {
             try {
-                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sqlTerm = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '$date' BETWEEN firstDay AND lastDay";
+                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date);
+                $sqlTerm = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND :date BETWEEN firstDay AND lastDay";
                 $resultTerm = $connection2->prepare($sqlTerm);
                 $resultTerm->execute($dataTerm);
             } catch (PDOException $e) {
