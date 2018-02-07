@@ -230,7 +230,7 @@ else {
 
 		$row = $form->addRow();
 			$row->addLabel('subject', __('Subject'));
-			$row->addTextField('subject')->maxLength(30)->isRequired();
+			$row->addTextField('subject')->maxLength(60)->isRequired();
 
 		$row = $form->addRow();
 	        $col = $row->addColumn('body');
