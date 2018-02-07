@@ -130,16 +130,11 @@ else {
 			$form->toggleVisibilityByClass('messageWall')->onRadio('messageWall')->when('Y');
 
 			$row = $form->addRow()->addClass('messageWall');
-				$row->addLabel('date1', __('Publication Date 1'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-				$row->addDate('date1')->isRequired();
-
-			$row = $form->addRow()->addClass('messageWall');
-				$row->addLabel('date2', __('Publication Date 2'));
-				$row->addDate('date2');
-
-			$row = $form->addRow()->addClass('messageWall');
-				$row->addLabel('date3', __('Publication Date 3'));
-				$row->addDate('date3');
+		        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
+				$col = $row->addColumn('date1')->addClass('stacked');
+				$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->isRequired();
+				$col->addDate('date2');
+				$col->addDate('date3');
 		}
 
 		//Delivery by SMS
@@ -364,7 +359,7 @@ else {
 					$row->addYesNo('rollGroupsParents')->selected('N');
 			}
         }
-        
+
         // Course
         if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_courses_any")) {
             $row = $form->addRow();
@@ -415,7 +410,7 @@ else {
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                 $sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY name";
             }
-			
+
 			$row = $form->addRow()->addClass('class hiddenReveal');
 				$row->addLabel('classes[]', __('Select Classes'));
 				$row->addSelect('classes[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired();
@@ -563,18 +558,18 @@ else {
 			$row = $form->addRow()->addClass('attendance hiddenReveal');
 				$row->addLabel('attendanceStatus[]', __('Select Attendance Status'));
                 $row->addSelect('attendanceStatus[]')->fromArray($attendanceCodes)->selectMultiple()->setSize(6)->isRequired()->selected('Absent');
-                
+
             $row = $form->addRow()->addClass('attendance hiddenReveal');
                 $row->addLabel('attendanceDate', __('Date'));
-                $row->addDate('attendanceDate')->isRequired();
+                $row->addDate('attendanceDate')->isRequired()->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']));
 
 			$row = $form->addRow()->addClass('attendance hiddenReveal');
 		        $row->addLabel('attendanceStudents', __('Include Students?'));
-				$row->addYesNo('attendanceStudents')->selected('Y');
+				$row->addYesNo('attendanceStudents')->selected('N');
 
 			$row = $form->addRow()->addClass('attendance hiddenReveal');
                 $row->addLabel('attendanceParents', __('Include Parents?'));
-                $row->addYesNo('attendanceParents')->selected('N');
+                $row->addYesNo('attendanceParents')->selected('Y');
         }
 
         // Individuals
