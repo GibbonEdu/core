@@ -191,7 +191,7 @@ class FormFactory implements FormFactoryInterface
         if(!empty($id)) {
             $button->setID($id)->setName($id);
         }
-        
+
         return $button;
     }
 
@@ -391,6 +391,7 @@ class FormFactory implements FormFactoryInterface
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
+                'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)'
             ),
         );

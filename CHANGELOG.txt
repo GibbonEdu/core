@@ -28,6 +28,7 @@ v16.0.00
 
 	Tweaks & Bug Fixes
 		System: improved IP address handling in setLog function
+		System: added United Arab Emirates Dirham as currency
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
