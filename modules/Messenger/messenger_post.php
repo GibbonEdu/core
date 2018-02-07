@@ -271,7 +271,7 @@ else {
 			$form->toggleVisibilityByClass('role')->onRadio('role')->when('Y');
 
 			$data = array();
-			$sql = 'SELECT gibbonRoleID AS value, name FROM gibbonRole ORDER BY name';
+			$sql = 'SELECT gibbonRoleID AS value, CONCAT(name," (",category,")") AS name FROM gibbonRole ORDER BY name';
 			$row = $form->addRow()->addClass('role hiddenReveal');
 		        $row->addLabel('roles[]', __('Select Roles'));
 		        $row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired()->placeholder();
