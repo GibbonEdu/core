@@ -312,3 +312,33 @@ CustomBlocks.prototype.refresh = function() {
 $.prototype.gibbonCustomBlocks = function(settings) {
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
 };
+    
+/**
+ * Gibbon Data Table: a very basic implementation of jQuery + AJAX powered data tables in Gibbon
+ * @param string basePath 
+ * @param Object settings 
+ */
+$.prototype.gibbonDataTable = function(basePath, settings) {
+    var dataTable = this;
+    var path = basePath + " #" + $(dataTable).attr('id') + " .dataTable";
+    // console.log(path);
+
+    $(this).on('click', '.paginate', function() {
+        settings.page = Math.min($(this).data('page'), settings.pageMax);
+        $(dataTable).load(path, settings);
+    });
+
+    $(this).on('change', '.limit', function() {
+        settings.limit = parseInt($(this).val());
+        settings.pageMax = Math.ceil(settings.totalRows / settings.limit);
+        settings.page = Math.min(settings.page, settings.pageMax - 1);
+        $(dataTable).load(path, settings);
+    });
+
+    $(this).on('click', '.column', function() {
+        var column = $(this).data('column');
+        settings.direction = (column == settings.sort && settings.direction == 'ASC')? 'DESC' : 'ASC';
+        settings.sort = column;
+        $(dataTable).load(path, settings);
+    });
+};

@@ -1617,3 +1617,61 @@ table.smallIntBorder td.noPadding {
 	font-weight: bold;
 	font-size: 16px;
 }
+
+/* v16 NEW CLASSES */
+
+/* Gibbon Data Table CSS - Will be moved to core.css */
+.dataTable .column {
+	cursor: pointer;
+	position: relative;
+}
+
+.dataTable .column:not(.sorting):hover:after,
+.dataTable .sortASC:after,
+.dataTable .sortDESC:after {
+	content: '';
+	width: 0px; 
+	height: 0px; 
+	border: 5px solid transparent;
+	position: absolute;
+	top: 20px;
+	right: 10px;
+}
+
+.dataTable .column:not(.sorting):hover:after {
+	border-top: 5px solid #666666;
+	opacity: 0.4;
+}
+
+.dataTable .sortASC:after {
+	border-top: 5px solid #666666;
+}
+
+.dataTable .sortDESC:after {
+	border-bottom: 5px solid #666666;
+	top: 15px;
+}
+
+.dataTable input[type="button"] {
+	font-size: 10px;
+	padding: 6px;
+	height: auto;
+	min-width: auto;
+}
+
+button, input[type="submit"], input[type="button"] {
+	cursor: pointer;
+}
+
+button.active, input[type="submit"].active, input[type="button"].active {
+	background-color: #bbbbbb;
+	/* background-color: #A88EDB; */
+}
+
+button[disabled], input[disabled], textarea[disabled] {
+	cursor: initial;
+	filter: alpha(opacity = 65);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	opacity: .45;
+}

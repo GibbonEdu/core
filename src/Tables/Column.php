@@ -25,7 +25,7 @@ namespace Gibbon\Tables;
  * @version v16
  * @since   v16
  */
-class TableColumn
+class Column
 {
     protected $name;
     protected $label;
