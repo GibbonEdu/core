@@ -40,11 +40,13 @@ class Action
         $this->name = $name;
         $this->setLabel($label);
 
-        if ($this->name == 'delete') {
-            $this->isModal(true);
-            $this->addParam('width', '650');
-            $this->addParam('height', '135');
+        switch ($this->name) {
+            case 'edit':    $this->setIcon('config');
+                            break;
+            case 'delete':  $this->setIcon('garbage')->isModal(true)->addParam('width', '650')->addParam('height', '135');
+                            break;
         }
+
     }
 
     public function setLabel($label)
@@ -93,6 +95,8 @@ class Action
     public function isModal($value = true) 
     {
         $this->modal = $value;
+
+        return $this;
     }
 
     public function getContents(&$data)
@@ -119,7 +123,7 @@ class Action
             $url .= '&'.http_build_query($params);
         }
 
-        return sprintf('&nbsp; <a href="%1$s" class="%2$s"><img title="%3$s" src="./themes/Default/img/%4$s.png"></a>', 
+        return sprintf(' <a href="%1$s" class="%2$s"><img title="%3$s" src="./themes/Default/img/%4$s.png"></a>', 
             $url, 
             $class,
             $this->getLabel(), 
