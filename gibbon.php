@@ -30,17 +30,8 @@ if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config
     }
 }
 
-// Setup the autoloader
-require_once $basePath.'/src/Autoloader.php';
-
-$loader = new Autoloader($basePath);
-
-$loader->addNameSpace('Gibbon\\', 'src');
-$loader->addNameSpace('Gibbon\\', 'src/Gibbon');
-$loader->addNameSpace('Library\\', 'src/Library');
-
-$loader->register();
-
+// Setup the composer autoloader
+$autoloader = require_once 'vendor/autoload.php';
 
 // New configuration object
 $gibbon = new Gibbon\core($basePath, $_SERVER['PHP_SELF']);
@@ -54,7 +45,8 @@ $version = $gibbon->getVersion();
 // Autoload the current module namespace
 if (isset($_SESSION[$guid]['module'])) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $gibbon->session->get('module'));
-    $loader->addNameSpace('Gibbon\\'.$moduleNamespace.'\\', 'modules/'.$gibbon->session->get('module'));
+    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', 'modules/'.$gibbon->session->get('module'));
+    $autoloader->register(true);
 }
 
 // Require the system-wide functions
