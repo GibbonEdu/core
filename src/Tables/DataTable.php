@@ -107,7 +107,7 @@ class DataTable
         $output .= '<thead>';
         $output .= '<tr class="head">';
         foreach ($this->columns as $columnName => $column) {
-            $classes = array('column', $columnName.'Column');
+            $classes = array('column');
 
             if ($filters->sort == $columnName) {
                 $classes[] = 'sorting sort'.$filters->direction;
@@ -115,7 +115,7 @@ class DataTable
             $output .= '<th class="'.implode(' ', $classes).'" data-column="'.$columnName.'">'.$column->getLabel().'</th>';
         }
         if (!empty($this->actions)) {
-            $output .= '<th>'.__('Actions').'</th>';
+            $output .= '<th style="width:'.(count($this->actions) * 36).'px;">'.__('Actions').'</th>';
         }
         $output .= '</tr>';
         $output .= '</thead>';
@@ -132,7 +132,7 @@ class DataTable
             }
 
             if (!empty($this->actions)) {
-                $output .= '<td style="width:'.(count($this->actions) * 45).'px;">';
+                $output .= '<td>';
                 foreach ($this->actions as $actionName => $action) {
                     $output .= $action->getContents($data);
                 }
@@ -174,11 +174,10 @@ class DataTable
     protected function getPageLimit($filters)
     {
         $output = '<div><select class="limit floatNone noMargin" style="width:50px;">';
-            $output .= '<option value="1" '.($filters->limit == 1? 'selected' : '').'>1</option>';
-            $output .= '<option value="2" '.($filters->limit == 2? 'selected' : '').'>2</option>';
-            $output .= '<option value="5" '.($filters->limit == 5? 'selected' : '').'>5</option>';
             $output .= '<option value="10" '.($filters->limit == 10? 'selected' : '').'>10</option>';
             $output .= '<option value="25" '.($filters->limit == 25? 'selected' : '').'>25</option>';
+            $output .= '<option value="50" '.($filters->limit == 50? 'selected' : '').'>50</option>';
+            $output .= '<option value="100" '.($filters->limit == 100? 'selected' : '').'>100</option>';
         $output .= '</select>  <small style="line-height: 30px;">Per Page</small></div>';
 
         return $output;
@@ -186,6 +185,8 @@ class DataTable
 
     protected function getPagination($filters)
     {
+        if ($filters->pageMax == 0) return '';
+
         $output = '<div class="floatRight">';
             // $output .= '<input type="button" class="paginate" data-page="0" value="'.__('First').'">';
             $output .= '<input type="button" class="paginate" data-page="'.($filters->page - 1).'" '.($filters->page <= 0? 'disabled' : '').' value="'.__('Prev').'">';
