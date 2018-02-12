@@ -81,11 +81,36 @@ class DataSet
 DataSet {
     resultRowCount
     tableRowCount
+
+    page
+    pageSize
+    pageCount
+
+    columns
+    searchableColumns (to validate?)
+    sortableColumns (to validate?)
+
+    primaryColumn (for identifiers, default sort)
+
+
     page
     limit
     sort
     filters = [...]
     rows = [...]
+
+
+    Ways to display data:
+    - Data Table
+    - Data Grid (Departments, Days to Dates, Special Days, Attendance History)
+    - Mini Table ()
+    - Data List (see MailChimp)
+    - Timeline List (grouped by day)
+    - Filterable List (see GibHub PRs)
+    - Expandable List (see GitHub dependencies)
+
+    Common interface? Query Parameters + Gateway => Data Collection + Renderer
+
 }
 
 */
