@@ -34,7 +34,7 @@ if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config
 $autoloader = require_once 'vendor/autoload.php';
 
 // New configuration object
-$gibbon = new Gibbon\core($basePath, $_SERVER['PHP_SELF']);
+$gibbon = new Gibbon\Core($basePath, $_SERVER['PHP_SELF']);
 
 
 // Set global config variables, for backwards compatability
