@@ -47,8 +47,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     }
 
     $allStudents = !empty($_GET["allStudents"])? 1 : 0;
-
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
+    $gibbonYearGroupIDList = (!empty($_GET['gibbonYearGroupIDList']) && is_array($_GET['gibbonYearGroupIDList'])) ? $_GET['gibbonYearGroupIDList'] : null ;
 
     require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
     $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
@@ -71,6 +71,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $row = $form->addRow();
         $row->addLabel('allStudents', __('All Students'))->description('Include all students, even those where attendance has not yet been recorded.');
         $row->addCheckbox('allStudents')->checked($allStudents);
+
+    $row = $form->addRow();
+        $row->addLabel('gibbonYearGroupIDList', __('Year Groups'))->description(__('Relevant student year groups'));
+        if (!empty($gibbonYearGroupIDList)) {
+            $values['gibbonYearGroupIDList'] = $gibbonYearGroupIDList;
+            $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->loadFrom($values);
+        }
+        else {
+            $row->addCheckboxYearGroup('gibbonYearGroupIDList')->addCheckAllNone()->checkAll();
+        }
 
     $row = $form->addRow();
         $row->addFooter();
@@ -119,7 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
                 $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 
-                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ";
+                $whereExtra = '';
+                if (is_array($gibbonYearGroupIDList)) {
+                    $data['gibbonYearGroupIDList'] = implode(",", $gibbonYearGroupIDList);
+                    $whereExtra = ' AND FIND_IN_SET (gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)';
+                }
+
+                $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name as rollGroupName, gibbonRollGroup.nameShort AS rollGroup FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $whereExtra";
 
                 $sql .= $orderBy;
 
@@ -135,7 +151,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                 echo '</div>';
             } else {
                 echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "&sort=" . $sort . "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_studentsNotPresent_byDate_print.php&currentDate='.dateConvertBack($guid, $currentDate)."&allStudents=" . $allStudents . "&sort=" . $sort . "&gibbonYearGroupIDList=";
+                if (is_array($gibbonYearGroupIDList)) {
+                    echo implode(",", $gibbonYearGroupIDList);
+                }
+                echo "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                 echo '</div>';
 
                 $lastPerson = '';
@@ -214,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                         $lastPerson = $row['gibbonPersonID'];
                     }
                 }
-                if ($result->rowCount() == 0) {
+                if ($count == 0) {
                     echo "<tr>";
                     echo '<td colspan=5>';
                     echo __($guid, 'All students are present.');
