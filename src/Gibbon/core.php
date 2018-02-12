@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Library\Yaml\Yaml ;
-
 /**
  * Gibbon Core
  *
