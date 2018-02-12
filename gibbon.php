@@ -51,6 +51,11 @@ $guid = $gibbon->guid();
 $caching = $gibbon->getCaching();
 $version = $gibbon->getVersion();
 
+// Autoload the current module namespace
+if (isset($_SESSION[$guid]['module'])) {
+    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $gibbon->session->get('module'));
+    $loader->addNameSpace('Gibbon\\'.$moduleNamespace.'\\', 'modules/'.$gibbon->session->get('module'));
+}
 
 // Require the system-wide functions
 require_once $basePath.'/functions.php';
