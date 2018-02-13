@@ -70,7 +70,7 @@ class attendanceView
      * @param    Gibbon\sqlConnection
      * @return   void
      */
-    public function __construct(\Gibbon\core $gibbon, \Gibbon\sqlConnection $pdo)
+    public function __construct(\Gibbon\Core $gibbon, \Gibbon\sqlConnection $pdo)
     {
         $this->session = $gibbon->session ;
         $this->pdo = $pdo ;
