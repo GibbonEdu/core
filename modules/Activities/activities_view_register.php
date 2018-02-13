@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
                     }
                     //Parent
-                    elseif ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '') {
+                    else if ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '') {
                         try {
                             $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                             $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                         echo '</p>';
 
                                         $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
-                
+
                                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                                         $form->addHiddenValue('mode', $mode);
                                         $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
@@ -345,7 +345,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                     $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_view_registerProcess.php?search='.$search);
                                     $form->removeClass('smallIntBorder');
-                
+
                                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                                     $form->addHiddenValue('mode', $mode);
                                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);

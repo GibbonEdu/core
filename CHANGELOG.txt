@@ -30,6 +30,7 @@ v16.0.00
 		System: improved IP address handling in setLog function
 		System: added United Arab Emirates Dirham as currency
 		System: adjusted notifications icon so it is clickable even when there are no notifications
+		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Attendance: added year group selectors to reports for not present and not onsite
 		Finance: added logging for failed bulk email sends

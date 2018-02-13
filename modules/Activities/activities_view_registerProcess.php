@@ -269,9 +269,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             //Bump up any waiting in competitive selection, to fill spaces available
                             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
                             if ($enrolment == 'Competitive') {
+                                //Check to see who is registering in system
+                                $studentRegistration = false;
+                                $parentRegistration = false ;
+                                try {
+                                    $dataAccess = array();
+                                    $sqlAccess = "SELECT
+                                            gibbonAction.name, gibbonRole.category
+                                        FROM gibbonAction
+                                            JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                                            JOIN gibbonRole ON (gibbonPermission.gibbonRoleID=gibbonRole.gibbonRoleID)
+                                        WHERE
+                                            gibbonAction.name IN ('View Activities_studentRegister', 'View Activities_studentRegisterByParent')
+                                            AND gibbonRole.category IN ('Parent','Student')";
+                                    $resultAccess = $connection2->prepare($sqlAccess);
+                                    $resultAccess->execute($dataAccess);
+                                } catch (PDOException $e) {}
+                                while ($rowAccess = $resultAccess->fetch()) {
+                                    if ($rowAccess['name'] == 'View Activities_studentRegister' && $rowAccess['category'] == 'Student') {
+                                        $studentRegistration = true;
+                                    }
+                                    else if ($rowAccess['name'] == 'View Activities_studentRegisterByParent' && $rowAccess['category'] == 'Parent') {
+                                        $parentRegistration = true;
+                                    }
+                                }
+
                                 //Lock the activityStudent database table
                                 try {
-                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonActivity READ, gibbonPerson READ, gibbonNotificationEvent READ, gibbonModule READ, gibbonAction READ, gibbonPermission READ, gibbonNotificationListener READ, gibbonNotification WRITE, gibbonFamilyChild READ, gibbonFamily READ, gibbonFamilyAdult READ';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
@@ -294,11 +319,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     //Get top of waiting list
                                     try {
                                         $dataBumps = array('gibbonActivityID' => $gibbonActivityID);
-                                        $sqlBumps = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Waiting List' ORDER BY timestamp ASC LIMIT 0, $spaces";
+                                        $sqlBumps = "SELECT gibbonActivityStudentID, name, gibbonPerson.gibbonPersonID, surname, preferredName
+                                            FROM gibbonActivityStudent
+                                            JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID)
+                                            JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                        WHERE gibbonPerson.status='Full'
+                                            AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."')
+                                            AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
+                                            AND gibbonActivityStudent.gibbonActivityID=:gibbonActivityID
+                                            AND gibbonActivityStudent.status='Waiting List'
+                                        ORDER BY timestamp ASC LIMIT 0, $spaces";
                                         $resultBumps = $connection2->prepare($sqlBumps);
                                         $resultBumps->execute($dataBumps);
-                                    } catch (PDOException $e) {
-                                    }
+                                    } catch (PDOException $e) { }
 
                                     //Bump students up
                                     while ($rowBumps = $resultBumps->fetch()) {
@@ -309,6 +342,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $resultBump->execute($dataBump);
                                         } catch (PDOException $e) {
                                         }
+
+                                        //Raise notifications
+                                        $event = new NotificationEvent('Activities', 'Student Bumped');
+
+                                        $studentName = formatName('', $rowBumps['preferredName'], $rowBumps['surname'], 'Student', false);
+                                        $notificationText = sprintf(__('%1$s has been bumped into activity %2$s'), $studentName, $rowBumps['name']);
+
+                                        $event->setNotificationText($notificationText);
+                                        $event->setActionLink('/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID='.$rowBumps['gibbonPersonID']);
+
+                                        //DO WE WANT TO ADD STUDENT/PARENTS HERE, BASED ON ACCESS?
+                                        if ($studentRegistration) { //Notify student
+                                            $event->addRecipient($rowBumps['gibbonPersonID']);
+                                        }
+                                        if ($parentRegistration) { //Notify contact priority 1 parents in associated families
+                                            try {
+                                                $dataAdult = array('gibbonPersonID' => $rowBumps['gibbonPersonID']);
+                                                $sqlAdult = "
+                                                    SELECT
+                                                        gibbonFamilyAdult.gibbonPersonID
+                                                    FROM gibbonFamilyChild
+                                                        JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+                                                        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+                                                        JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                                    WHERE
+                                                        gibbonFamilyChild.gibbonPersonID=:gibbonPersonID
+                                                        AND childDataAccess='Y'
+                                                        AND contactPriority=1
+                                                        AND gibbonPerson.status='Full'";
+                                                $resultAdult = $connection2->prepare($sqlAdult);
+                                                $resultAdult->execute($dataAdult);
+                                            } catch (PDOException $e) { }
+                                            while ($rowAdult = $resultAdult->fetch()) {
+                                                $event->addRecipient($rowAdult['gibbonPersonID']);
+                                            }
+                                        }
+
+                                        $event->sendNotifications($pdo, $gibbon->session);
                                     }
                                 }
                                 //Unlock locked database tables
