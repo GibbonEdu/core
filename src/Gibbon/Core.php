@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Library\Yaml\Yaml ;
-
 /**
  * Gibbon Core
  *
@@ -90,9 +88,9 @@ class Core {
 		}
 
 		// Create the core objects
-		$this->session = new session($this);
-		$this->locale = new locale($this);
-		$this->security = new security($this);
+		$this->session = new Session($this);
+		$this->locale = new Locale($this);
+		$this->security = new Security($this);
 
 		// Set the absolute Gibbon Path and URL from the session if available, otherwise default to basePath and URL
 		$this->absolutePath = $this->session->get('absolutePath', $this->basePath );

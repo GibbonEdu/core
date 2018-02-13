@@ -2902,7 +2902,7 @@ function sidebar($gibbon, $pdo)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule($gibbon, $pdo);
+    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
