@@ -35,6 +35,7 @@ v16.0.00
 		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
+		Planner: fixed module name substitution in links in Lesson Planner
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
 		User Admin: fixed Child's Name list in Edit Family to include all students
