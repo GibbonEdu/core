@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\UserAdmin;
+namespace Gibbon\SchoolAdmin\Domain;
 
 use Gibbon\Domain\Gateway;
 use Gibbon\sqlConnection;
@@ -25,27 +25,24 @@ use Gibbon\Tables\DataFilters;
 use Gibbon\Tables\DataSet;
 
 /**
- * Person Gateway
+ * School Year Gateway
  *
  * Provides a data access layer for the gibbonSchoolYear table
  *
  * @version v16
  * @since   v16
  */
-class PersonGateway extends Gateway
+class SchoolYearGateway extends Gateway
 {
     public function selectAll(array $params)
     {
-        $totalRows = $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonPerson")->fetchColumn(0);
+        $totalRows = $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonSchoolYear")->fetchColumn(0);
         $params['totalRows'] = $totalRows;
 
         $filters = DataFilters::createFromArray($params);
 
         $data = array();
-        // $sql = "SELECT gibbonPerson.*, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonPerson.username, gibbonPerson.image_240, gibbonPerson.status, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
-        $sql = $this->applyDataFilters($sql, $filters);
-
+        $sql = $this->applyDataFilters("SELECT * FROM gibbonSchoolYear", $filters);
         $result = $this->pdo->executeQuery($data, $sql);
 
         return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($totalRows);

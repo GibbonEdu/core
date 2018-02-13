@@ -22,7 +22,7 @@ use Gibbon\Tables\DataFilters;
 use Gibbon\Tables\DataSet;
 use Gibbon\Forms\Form;
 
-use Gibbon\Domain\UserAdmin\PersonGateway;
+use Gibbon\UserAdmin\Domain\PersonGateway;
 
 if (!function_exists('isActionAccessible')) {
     require_once '../../gibbon.php';
