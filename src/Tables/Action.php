@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables;
 
 /**
- * Table
+ * Action
  *
  * @version v16
  * @since   v16

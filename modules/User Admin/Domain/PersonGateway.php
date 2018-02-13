@@ -36,18 +36,25 @@ class PersonGateway extends Gateway
 {
     public function selectAll(array $params)
     {
-        $totalRows = $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonPerson")->fetchColumn(0);
-        $params['totalRows'] = $totalRows;
+        $params['totalRows'] = $this->countAll();
 
         $filters = DataFilters::createFromArray($params);
 
         $data = array();
-        // $sql = "SELECT gibbonPerson.*, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonPerson.username, gibbonPerson.image_240, gibbonPerson.status, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, 
+                CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonPerson.username, 
+                gibbonPerson.image_240, gibbonPerson.status, gibbonRole.name as primaryRole 
+                FROM gibbonPerson 
+                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
         $sql = $this->applyDataFilters($sql, $filters);
 
         $result = $this->pdo->executeQuery($data, $sql);
 
-        return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($totalRows);
+        return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($params['totalRows']);
+    }
+
+    public function countAll()
+    {
+        return $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonPerson")->fetchColumn(0);
     }
 }

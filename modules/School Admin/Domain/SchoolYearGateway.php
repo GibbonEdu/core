@@ -36,15 +36,19 @@ class SchoolYearGateway extends Gateway
 {
     public function selectAll(array $params)
     {
-        $totalRows = $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonSchoolYear")->fetchColumn(0);
-        $params['totalRows'] = $totalRows;
+        $params['totalRows'] = $this->countAll();
 
         $filters = DataFilters::createFromArray($params);
 
         $data = array();
-        $sql = $this->applyDataFilters("SELECT * FROM gibbonSchoolYear", $filters);
+        $sql = $this->applyDataFilters("SELECT gibbonSchoolYearID, name, sequenceNumber, firstDay, lastDay, status FROM gibbonSchoolYear", $filters);
         $result = $this->pdo->executeQuery($data, $sql);
 
-        return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($totalRows);
+        return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($params['totalRows']);
+    }
+
+    public function countAll()
+    {
+        return $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonSchoolYear")->fetchColumn(0);
     }
 }

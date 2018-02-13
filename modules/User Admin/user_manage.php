@@ -140,20 +140,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('status', __('Status'));
     $table->addColumn('primaryRole', __('Primary Role'));
-    $table->addColumn('family', __('Family'));
+    $table->addColumn('family', __('Family'))->setSortable(false);
     $table->addColumn('username', __('Username'));
 
-    $table->addAction('edit', __('Edit'))
+    $col = $table->addActionColumn();
+    $col->addAction('edit', __('Edit'))
         ->setURL('/modules/User Admin/user_manage_edit.php')
         ->addParam('gibbonPersonID')
         ->addParam('search', $search);
 
-    $table->addAction('delete', __('Delete'))
+    $col->addAction('delete', __('Delete'))
         ->setURL('/modules/User Admin/user_manage_delete.php')
         ->addParam('gibbonPersonID')
         ->addParam('search', $search);
 
-    $table->addAction('password', __('Change Password'))
+    $col->addAction('password', __('Change Password'))
         ->setIcon('key')
         ->setURL('/modules/User Admin/user_manage_password.php')
         ->addParam('gibbonPersonID')

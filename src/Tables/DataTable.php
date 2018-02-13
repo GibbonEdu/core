@@ -33,7 +33,6 @@ class DataTable
 {
     protected $id;
     protected $columns = array();
-    protected $actions = array();
     protected $filters;
 
     protected $dataSet;
@@ -68,18 +67,16 @@ class DataTable
 
     public function addColumn($name, $label = '')
     {
-        $column = new Column($name, $label);
-        $this->columns[$name] = $column;
+        $this->columns[$name] = new Column($name, $label);
 
-        return $column;
+        return $this->columns[$name];
     }
 
-    public function addAction($name, $label = '')
+    public function addActionColumn()
     {
-        $action = new Action($name, $label);
-        $this->actions[$name] = $action;
+        $this->columns['actions'] = new ActionColumn();
 
-        return $action;
+        return $this->columns['actions'];
     }
 
     public function getOutput()
@@ -109,13 +106,15 @@ class DataTable
         foreach ($this->columns as $columnName => $column) {
             $classes = array('column');
 
+            if ($column->getSortable()) {
+                $classes[] = 'sortable';
+            }
             if ($filters->sort == $columnName) {
                 $classes[] = 'sorting sort'.$filters->direction;
             }
-            $output .= '<th class="'.implode(' ', $classes).'" data-column="'.$columnName.'">'.$column->getLabel().'</th>';
-        }
-        if (!empty($this->actions)) {
-            $output .= '<th style="width:'.(count($this->actions) * 36).'px;">'.__('Actions').'</th>';
+            $output .= '<th style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
+            $output .=  $column->getLabel();
+            $output .= '</th>';
         }
         $output .= '</tr>';
         $output .= '</thead>';
@@ -127,16 +126,10 @@ class DataTable
 
             if (!empty($this->columns)) {
                 foreach ($this->columns as $columnName => $column) {
-                    $output .= '<td style="width:'.$column->getWidth().'">'.$column->getContents($data).'</td>';
+                    $output .= '<td >';
+                    $output .= $column->getContents($data);
+                    $output .= '</td>';
                 }
-            }
-
-            if (!empty($this->actions)) {
-                $output .= '<td>';
-                foreach ($this->actions as $actionName => $action) {
-                    $output .= $action->getContents($data);
-                }
-                $output .= '</td>';
             }
 
             $output .= '</tr>';
@@ -162,7 +155,7 @@ class DataTable
 
     protected function getPageCount($filters)
     {
-        $from = max(1, $filters->page * $filters->limit);
+        $from = $filters->page * $filters->limit + 1;
         $to = max(1, min( (($filters->page + 1) * $filters->limit), $filters->totalRows));
 
         $output = '<span class="small" style="line-height: 30px;">';
@@ -188,15 +181,16 @@ class DataTable
         if ($filters->pageMax == 0) return '';
 
         $output = '<div class="floatRight">';
-            // $output .= '<input type="button" class="paginate" data-page="0" value="'.__('First').'">';
             $output .= '<input type="button" class="paginate" data-page="'.($filters->page - 1).'" '.($filters->page <= 0? 'disabled' : '').' value="'.__('Prev').'">';
 
             $range = range(0, $filters->pageMax);
 
+            // Collapse the leading page-numbers
             if ($filters->pageMax > 7 && $filters->page > 5) {
                 array_splice($range, 2, $filters->page - 4, '...');
             }
 
+            // Collapse the trailing page-numbers
             if ($filters->pageMax > 7 && ($filters->pageMax - $filters->page) > 5) {
                 array_splice($range, ($filters->pageMax - $filters->page - 2)*-1, ($filters->pageMax - $filters->page)-4, '...');
             }
@@ -211,7 +205,6 @@ class DataTable
             }
 
             $output .= '<input type="button" class="paginate" data-page="'.($filters->page + 1).'" '.($filters->page >= $filters->pageMax? 'disabled' : '').' value="'.__('Next').'">';
-            // $output .= '<input type="button" class="paginate" data-page="'.($filters->pageMax-1).'" value="'.__('Last').'">';
         $output .= '</div>';
 
         return $output;
