@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Tables;
 
 /**
- * Table
+ * Column
  *
  * @version v16
  * @since   v16
@@ -33,6 +33,7 @@ class Column
     protected $description;
     protected $width = 'auto';
 
+    protected $sortable = true;
     protected $formatter;
 
     public function __construct($name, $label = '')
@@ -87,6 +88,18 @@ class Column
     public function getDescription()
     {
         return $this->description;
+    }
+
+    public function setSortable($value = true) 
+    {
+        $this->sortable = $value;
+
+        return $this;
+    }
+
+    public function getSortable() 
+    {
+        return $this->sortable;
     }
 
     public function format(callable $formatter) 

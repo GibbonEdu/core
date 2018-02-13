@@ -335,7 +335,7 @@ $.prototype.gibbonDataTable = function(basePath, settings) {
         $(dataTable).load(path, settings);
     });
 
-    $(this).on('click', '.column', function() {
+    $(this).on('click', '.column.sortable', function() {
         var column = $(this).data('column');
         settings.direction = (column == settings.sort && settings.direction == 'ASC')? 'DESC' : 'ASC';
         settings.sort = column;

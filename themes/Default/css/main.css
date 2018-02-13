@@ -1621,12 +1621,12 @@ table.smallIntBorder td.noPadding {
 /* v16 NEW CLASSES */
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
-.dataTable .column {
+.dataTable .sortable {
 	cursor: pointer;
 	position: relative;
 }
 
-.dataTable .column:not(.sorting):hover:after,
+.dataTable .sortable:not(.sorting):hover:after,
 .dataTable .sortASC:after,
 .dataTable .sortDESC:after {
 	content: '';
@@ -1638,7 +1638,7 @@ table.smallIntBorder td.noPadding {
 	right: 10px;
 }
 
-.dataTable .column:not(.sorting):hover:after {
+.dataTable .sortable:not(.sorting):hover:after {
 	border-top: 5px solid #666666;
 	opacity: 0.4;
 }
