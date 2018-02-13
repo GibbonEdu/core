@@ -59,6 +59,9 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $row = $result->fetch();
+                $statusOld = $row['status'];
+
                 //Write to database
                 try {
                     $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID, 'status' => $status);
@@ -69,6 +72,12 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
+                }
+
+                //Set log
+                if ($statusOld != $status) {
+                    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
                 }
 
                 $URL .= '&return=success0';

@@ -69,6 +69,10 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 exit();
             }
 
+            //Set log
+            $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
+
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");
         }

@@ -37,6 +37,8 @@ $gibbonPersonID = $_POST['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view_register.php&gibbonActivityID=$gibbonActivityID&gibbonPersonID=$gibbonPersonID&mode=$mode&search=".$_GET['search'];
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'];
 
+$gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -139,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                 //Lock the activityStudent database table
                                 try {
-                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonPerson WRITE';
+                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonPerson WRITE, gibbonLog WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
@@ -179,6 +181,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     header("Location: {$URL}");
                                     exit();
                                 }
+
+                                //Set log
+                                setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Registered', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
                                 //Unlock locked database tables
                                 try {
@@ -238,6 +243,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 exit();
                             }
 
+                            //Set log
+                            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Withdrawn', array('gibbonPersonIDStudent' => $gibbonPersonID));
+
                             $reg = $resultReg->fetch();
 
                             // Raise a new notification event
@@ -296,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                 //Lock the activityStudent database table
                                 try {
-                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonActivity READ, gibbonPerson READ, gibbonNotificationEvent READ, gibbonModule READ, gibbonAction READ, gibbonPermission READ, gibbonNotificationListener READ, gibbonNotification WRITE, gibbonFamilyChild READ, gibbonFamily READ, gibbonFamilyAdult READ';
+                                    $sql = 'LOCK TABLES gibbonActivityStudent WRITE, gibbonActivity READ, gibbonPerson READ, gibbonNotificationEvent READ, gibbonModule READ, gibbonAction READ, gibbonPermission READ, gibbonNotificationListener READ, gibbonNotification WRITE, gibbonFamilyChild READ, gibbonFamily READ, gibbonFamilyAdult READ, gibbonLog WRITE';
                                     $result = $connection2->query($sql);
                                 } catch (PDOException $e) {
                                     $URL .= '&return=error2';
@@ -342,6 +350,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                             $resultBump->execute($dataBump);
                                         } catch (PDOException $e) {
                                         }
+
+                                        //Set log
+                                        setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Bump', array('gibbonPersonIDStudent' => $rowBumps['gibbonPersonID']));
 
                                         //Raise notifications
                                         $event = new NotificationEvent('Activities', 'Student Bumped');
