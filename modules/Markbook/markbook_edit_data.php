@@ -125,10 +125,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             try {
                 if ($highestAction == 'Edit Markbook_everything') {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
+                    $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale FROM gibbonCourse, gibbonCourseClass LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget) WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
                 } else {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget) WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
@@ -192,17 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $columns = 1;
 
                     //Get list of acceptable file extensions
-                    try {
-                        $dataExt = array();
-                        $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                        $resultExt = $connection2->prepare($sqlExt);
-                        $resultExt->execute($dataExt);
-                    } catch (PDOException $e) {
-                    }
                     $ext = '';
-                    while ($rowExt = $resultExt->fetch()) {
-                        $ext = $ext."'.".$rowExt['extension']."',";
-                    }
 
                     $hasSubmission = 'Y';
                     $hasAttainment = $values['attainment'] == 'Y';
@@ -210,6 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $hasEffort = $values['effort'] == 'Y';
                     $hasComment = $values['comment'] == 'Y';
                     $hasUpload = $values['uploadedResponse'] == 'Y';
+                    $hasTarget = !empty($course['targetGradeScale']);
 
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
                     $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder 
@@ -240,55 +231,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     } else {
                         $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
-                        $header = $table->addHeaderRow();
-                            $header->addTableCell(__('Student'))->rowSpan(2);
-                            $header->addTableCell(__('Target'))->rowSpan(2)->addClass('textCenter smallColumn dataColumn noPadding')->wrap('<div class="verticalText">', '</div>');
-                            $header->addTableCell($values['name'])
-                                ->setTitle($values['description'])
-                                ->append('<br>Thing')
-                                ->append('<br>Thing')
-                                ->setClass('textCenter')
-                                ->colSpan(5);
+                        $completeText = !empty($values['completeDate'])? __('Marked on').' '.dateConvertBack($guid, $values['completeDate']) : __('Unmarked');
+                        $detailsText = $values['type'];
+                        if ($values['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$values['attachment'])) {
+                            $detailsText .= " | <a title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$values['attachment']."'>".__('More info').'</a>';
+                        }
 
                         $header = $table->addHeaderRow();
+
+                        $header->addTableCell(__('Student'))->rowSpan(2);
+
+                        $header->if($hasTarget)
+                            ->addTableCell(__('Target'))
+                            ->setTitle(__('Personalised target grade').' | '.$course['targetGradeScale'].' '.__('Scale'))
+                            ->rowSpan(2)
+                            ->addClass('textCenter smallColumn dataColumn noPadding')
+                            ->wrap('<div class="verticalText">', '</div>');
                         
-                        if ($hasSubmission) {
-                            $header->addContent(__('Sub'))->setTitle(__('Submitted Work'))->setClass('textCenter');
-                        }
+                        $header->addTableCell($values['name'])
+                            ->setTitle($values['description'])
+                            ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$completeText.'</span>')
+                            ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$detailsText.'</span>')
+                            ->setClass('textCenter')
+                            ->colSpan(5);
 
-                        if ($hasAttainment) {
-                            if ($hasRawAttainment) {
-                                $header->addContent(__('Mark'))->setTitle(__('Raw Attainment Mark'))->setClass('textCenter');
-                            }
+                        $header = $table->addHeaderRow();
 
-                            $scale = '';
-                            if (!empty($values['gibbonScaleIDAttainment'])) {
-                                // $form->addHiddenValue('scaleAttainment', $values['gibbonScaleIDAttainment']);
-                                // $form->addHiddenValue('lowestAcceptableAttainment', $values['lowestAcceptableAttainment']);
-                                // $scale = ' - '.$values['scaleNameAttainment'];
-                                // $scale .= $values['usageAttainment']? ': '.$values['usageAttainment'] : '';
-                            }
-                            $header->addContent($hasAttainmentName? $attainmentAlternativeNameAbrev : __('Att'))
-                                ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$scale)
-                                ->setClass('textCenter');
-                        }
-    
-                        if ($hasEffort) {
-                            $scale = '';
-                            if (!empty($values['gibbonScaleIDEffort'])) {
-                                // $form->addHiddenValue('scaleEffort', $values['gibbonScaleIDEffort']);
-                                // $form->addHiddenValue('lowestAcceptableEffort', $values['lowestAcceptableEffort']);
-                                // $scale = ' - '.$values['scaleNameEffort'];
-                                // $scale .= $values['usageEffort']? ': '.$values['usageEffort'] : '';
-                            }
-                            $header->addContent($hasEffortName? $effortAlternativeNameAbrev : __('Eff'))
-                                ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$scale)
-                                ->setClass('textCenter');
-                        }
-    
-                        if ($hasComment || $hasUpload) {
-                            $header->addContent(__('Com'))->setTitle(__('Comment'))->setClass('textCenter');
-                        }
+                        $header->if($hasSubmission)
+                            ->addContent(__('Sub'))
+                            ->setTitle(__('Submitted Work'))
+                            ->setClass('textCenter');
+                        
+                        $header->if($hasAttainment && $hasRawAttainment)
+                            ->addContent(__('Mark'))
+                            ->setTitle(__('Raw Attainment Mark'))
+                            ->setClass('textCenter');
+                        
+                        $header->if($hasAttainment)
+                            ->addContent($hasAttainmentName? $attainmentAlternativeNameAbrev : __('Att'))
+                            ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$scale)
+                            ->setClass('textCenter');
+                        
+                        $header->if($hasEffort)
+                            ->addContent($hasEffortName? $effortAlternativeNameAbrev : __('Eff'))
+                            ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$scale)
+                            ->setClass('textCenter');
+                        
+                        $header->if($hasComment || $hasUpload)
+                            ->addContent(__('Com'))
+                            ->setTitle(__('Comment'))
+                            ->setClass('textCenter');
                     }
 
                     foreach ($students as $index => $student) {

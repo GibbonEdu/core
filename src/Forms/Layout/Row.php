@@ -80,6 +80,11 @@ class Row
         return $element;
     }
 
+    public function if($conditional)
+    {
+        return $conditional? $this : new NullElement();
+    }
+
     /**
      * Adds an outputtable element to the row's internal collection.
      * @param  OutputableInterface  $element
