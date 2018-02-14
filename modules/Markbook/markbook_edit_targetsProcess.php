@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
         for ($i = 1;$i <= $count;++$i) {
             $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
             $gibbonScaleGradeID = null;
-            if ($_POST["$i-gibbonScaleGradeID"] != '') {
+            if (!empty($_POST["$i-gibbonScaleGradeID"])) {
                 $gibbonScaleGradeID = $_POST["$i-gibbonScaleGradeID"];
             }
 
