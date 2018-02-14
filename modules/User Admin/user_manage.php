@@ -179,17 +179,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             }
             echo '</td>';
             echo '<td>';
-            $childCount = 0;
             foreach ($families as $family) {
+                $childCount = 0;
                 if ($family[1] == $row['gibbonPersonID']) {
                     if ($family[2] == 'child') { //Link child to self
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
                     } else { //Link adult to eldest child in family
 						foreach ($families as $family2) {
-							if ($family[0] == $family2[0] and $family2[2] == 'child' and $childCount == 0) {
-								echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
-								++$childCount;
-							}
+                            if ($family[0] == $family2[0] and $childCount == 0 and $family2[2] == 'child') {
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
+    							++$childCount;
+                            }
 						}
                     }
                 }

@@ -874,5 +874,8 @@ UPDATE gibboni18n SET active='Y' WHERE code='pt_BR';end
 ++$count;
 $sql[$count][0] = '16.0.00';
 $sql[$count][1] = "
-
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Attendance', 'selfRegistrationRedirect', 'Self Registration Redirect', 'Should self registration redirect to Message Wall?', 'N');end
+ALTER TABLE `gibbonPersonMedical` ADD `comment` TEXT NOT NULL AFTER `tetanusWithin10Years`;end
+ALTER TABLE `gibbonPersonMedicalUpdate` ADD `comment` TEXT NOT NULL AFTER `tetanusWithin10Years`;end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Bumped', 'Activities', 'Manage Activities', 'Core', 'All', 'Y');end
 ";

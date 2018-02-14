@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             header("Location: {$URL}");
         } else {
             foreach ($choices as $t) {
-                //Check to see if student is already registered in this class
+                //Check to see if student is already registered in this activity
                 try {
                     $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID);
                     $sql = 'SELECT * FROM gibbonActivityStudent WHERE gibbonPersonID=:gibbonPersonID AND gibbonActivityID=:gibbonActivityID';
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
 
-                //If student not in course, add them
+                //If student not in activity, add them
                 if ($result->rowCount() == 0) {
                     try {
                         $data = array('gibbonPersonID' => $t, 'gibbonActivityID' => $gibbonActivityID, 'status' => $status, 'timestamp' => date('Y-m-d H:i:s', time()));
@@ -77,6 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     } catch (PDOException $e) {
                         $update = false;
                     }
+
+                    //Set log
+                    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Added', array('gibbonPersonIDStudent' => $t));
                 }
             }
             //Write to database

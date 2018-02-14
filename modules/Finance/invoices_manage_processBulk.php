@@ -328,6 +328,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                                 if (!$mail->Send()) {
                                     $emailFail = true;
+                                    //Set log
+                                    $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
+                                    $logArray=array() ;
+                                    $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
+                                    setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
                                 }
                             }
                         }
@@ -474,6 +479,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                         if (!$mail->Send()) {
                             $emailFail = true;
+                            //Set log
+                            $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
+                            $logArray=array() ;
+                            $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
+                            setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
                         }
                     }
                 }

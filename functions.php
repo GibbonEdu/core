@@ -370,7 +370,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
         if ($resultNotifications->rowCount() > 0) {
             $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         } else {
-            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         }
         $return .= '</div>';
     }
@@ -2451,17 +2451,17 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
     $output = false;
 
     if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
-        
+
         $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
         $format = isset($_SESSION[$guid][$setting])? $_SESSION[$guid][$setting] : '[title] [preferredName:1]. [surname]';
 
-        $output = preg_replace_callback('/\[+([^\]]*)\]+/u', 
+        $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
             function ($matches) use ($title, $preferredName, $surname) {
                 list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
                 return isset($$token)
                     ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
                     : $matches[0];
-            }, 
+            },
         $format);
 
     } elseif ($roleCategory == 'Parent') {
@@ -2918,7 +2918,7 @@ function sidebar($gibbon, $pdo)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule($gibbon, $pdo);
+    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
@@ -4587,6 +4587,8 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
         return;
     }
 
+    $ip = (empty($ip) ? getIPAddress() : $ip);
+
     if ($array != null) {
         $serialisedArray = serialize($array);
     } else {
@@ -4997,6 +4999,8 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
                     $class = 'warning';
                 } elseif (stripos($return, 'success') !== false) {
                     $class = 'success';
+                } elseif (stripos($return, 'message') !== false) {
+                    $class = 'message';
                 }
                 break;
             }

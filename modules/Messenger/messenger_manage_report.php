@@ -223,8 +223,9 @@ else {
 			                echo '</td>';
 			                if ($sender == true) {
 								echo '<td style=\'text-align: center\'>';
-								if ($row['confirmed'] == 'N')
+								if ($row['confirmed'] == 'N') {
 									echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$row['gibbonMessengerReceiptID']."'>";
+								}
 								echo '</td>';
 							}
 			                echo '</tr>';
@@ -281,6 +282,24 @@ else {
 						$resultReceipts->execute($dataReceipts);
 					} catch (PDOException $e) {}
 					$receipts = $resultReceipts->fetchAll();
+
+					echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_report_processBulk.php?gibbonMessengerID=$gibbonMessengerID&search=$search'>";
+					echo "<fieldset style='border: none'>";
+					if ($sender == true) {
+						echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
+						?>
+						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
+							<option value="delete"><?php echo __($guid, 'Resend') ?></option>
+						</select>
+						<script type="text/javascript">
+							var action=new LiveValidation('action');
+							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+						</script>
+						<?php
+						echo '</div>';
+					}
 
 					$currentRollGroup = '';
 					$lastRollGroup = '';
@@ -365,45 +384,63 @@ else {
 							$rowParent = $resultParent->fetch();
 							echo "<td style='width: 27%'>";
 								$confirmed = null;
+								$gibbonMessengerReceiptID = null;
 								foreach ($receipts as $receipt) {
 									if ($receipt['gibbonPersonID'] == $rowParent['parent1gibbonPersonID']) {
 										if ($receipt['confirmed'] == 'N') {
 											$confirmed = 'N';
+											$gibbonMessengerReceiptID = $receipt['gibbonMessengerReceiptID'];
 										}
 										if ($receipt['confirmed'] == 'Y') {
 											$confirmed = 'Y';
 										}
 									}
 								}
-								if ($rowParent['parent1preferredName'] != '' and $rowParent['parent1surname'] != '')
+								if ($rowParent['parent1preferredName'] != '' and $rowParent['parent1surname'] != '') {
 									echo formatName('', $rowParent['parent1preferredName'], $rowParent['parent1surname'], 'Student', true)."<br/>";
-								if (is_null($confirmed))
+								}
+								if (is_null($confirmed)) {
 									echo __($guid, 'N/A');
-								else if ($confirmed == 'N')
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-								else if ($confirmed == 'Y')
+								}
+								else if ($confirmed == 'N') {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/><br/>";
+									if ($sender == true) {
+										echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$gibbonMessengerReceiptID."'>";
+									}
+								}
+								else if ($confirmed == 'Y') {
 									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+								}
 							echo '</td>';
 							echo "<td style='width: 27%'>";
 								$confirmed = null;
+								$gibbonMessengerReceiptID = null;
 								foreach ($receipts as $receipt) {
 									if ($receipt['gibbonPersonID'] == $rowParent['parent2gibbonPersonID']) {
 										if ($receipt['confirmed'] == 'N') {
 											$confirmed = 'N';
+											$gibbonMessengerReceiptID = $receipt['gibbonMessengerReceiptID'];
 										}
 										if ($receipt['confirmed'] == 'Y') {
 											$confirmed = 'Y';
 										}
 									}
 								}
-								if ($rowParent['parent2preferredName'] != '' and $rowParent['parent2surname'] !='')
+								if ($rowParent['parent2preferredName'] != '' and $rowParent['parent2surname'] !='') {
 									echo formatName('', $rowParent['parent2preferredName'], $rowParent['parent2surname'], 'Student', true)."<br/>";
-								if (is_null($confirmed))
+								}
+								if (is_null($confirmed)) {
 									echo __($guid, 'N/A');
-								else if ($confirmed == 'N')
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-								else if ($confirmed == 'Y')
+								}
+								else if ($confirmed == 'N') {
+									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/><br/>";
+									if ($sender == true) {
+										echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$gibbonMessengerReceiptID."'>";
+									}
+								}
+								else if ($confirmed == 'Y') {
 									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+								}
 							echo '</td>';
 						}
 						++$count;

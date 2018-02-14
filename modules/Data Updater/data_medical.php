@@ -73,23 +73,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
         if (isset($_GET['gibbonPersonID'])) {
             $gibbonPersonID = $_GET['gibbonPersonID'];
 		}
-		
+
 		$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
 
 		$form = Form::create('selectFamily', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 		$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/data_medical.php');
-			
+
 		if ($highestAction == 'Update Medical Data_any') {
 			$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sql = "SELECT gibbonPerson.gibbonPersonID, username, surname, preferredName FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' ORDER BY surname, preferredName";
 		} else {
 			$data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
             $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamily.name as familyName, child.surname, child.preferredName, child.gibbonPersonID
-					FROM gibbonFamilyAdult 
-					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+					FROM gibbonFamilyAdult
+					JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
 					LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
 					LEFT JOIN gibbonPerson AS child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
-					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
+					WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID
 					AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full'
 					ORDER BY gibbonFamily.name, child.surname, child.preferredName";
 		}
@@ -112,12 +112,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 ->isRequired()
                 ->selected($gibbonPersonID)
 				->placeholder();
-		
+
 		$row = $form->addRow();
             $row->addSubmit();
-        
+
 		echo $form->getOutput();
-	
+
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
@@ -217,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                     if ($proceed == true) {
 						$values = $resultForm->fetch();
-                    
+
 						$form = Form::create('updateFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medicalProcess.php?gibbonPersonID='.$gibbonPersonID);
 						$form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -242,6 +242,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$row = $form->addRow();
 							$row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
 							$row->addYesNo('tetanusWithin10Years')->placeholder();
+
+                        $row = $form->addRow();
+							$row->addLabel('comment', __('Comment'));
+							$row->addTextArea('comment')->setRows(6);
 
 						// EXISTING CONDITIONS
 						$count = 0;
@@ -302,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 								$row = $form->addRow();
 									$row->addLabel('comment'.$count, __('Comment'));
 									$row->addTextArea('comment'.$count)->setValue($rowCond['comment']);
-								
+
 								$count++;
 							}
 
@@ -353,7 +357,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('comment', __('Comment'));
 							$row->addTextArea('comment');
-				
+
 						$row = $form->addRow();
 							$row->addFooter();
 							$row->addSubmit();

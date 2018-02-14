@@ -59,11 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             $longTermMedication = $_POST['longTermMedication'];
             $longTermMedicationDetails = (isset($_POST['longTermMedicationDetails']) ? $_POST['longTermMedicationDetails'] : '');
             $tetanusWithin10Years = $_POST['tetanusWithin10Years'];
+            $comment = $_POST['comment'];
 
             //Write to database
             try {
-                $data = array('bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-                $sql = 'UPDATE gibbonPersonMedical SET bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
+                $data = array('bloodType' => $bloodType, 'longTermMedication' => $longTermMedication, 'longTermMedicationDetails' => $longTermMedicationDetails, 'tetanusWithin10Years' => $tetanusWithin10Years, 'comment' => $comment, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID);
+                $sql = 'UPDATE gibbonPersonMedical SET bloodType=:bloodType, longTermMedication=:longTermMedication, longTermMedicationDetails=:longTermMedicationDetails, tetanusWithin10Years=:tetanusWithin10Years, comment=:comment WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
