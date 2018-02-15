@@ -143,7 +143,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             } else {
                 try {
                     $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
-                    $sql2 = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID';
+                    $sql2 = "SELECT gibbonMarkbookColumn.*, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort 
+                            FROM gibbonMarkbookColumn 
+                            LEFT JOIN gibbonScale as attainmentScale ON (attainmentScale.gibbonScaleID=gibbonMarkbookColumn.gibbonScaleIDAttainment)
+                            LEFT JOIN gibbonScale as effortScale ON (effortScale.gibbonScaleID=gibbonMarkbookColumn.gibbonScaleIDEffort)
+                            WHERE gibbonMarkbookColumnID=:gibbonMarkbookColumnID";
                     $result2 = $connection2->prepare($sql2);
                     $result2->execute($data2);
                 } catch (PDOException $e) {
@@ -194,20 +198,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     //Get list of acceptable file extensions
                     $ext = '';
 
+                    $hasTarget = !empty($course['targetGradeScale']);
                     $hasSubmission = 'Y';
                     $hasAttainment = $values['attainment'] == 'Y';
                     $hasRawAttainment = $values['attainmentRaw'] == 'Y' && !empty($values['attainmentRawMax']) && $enableRawAttainment == 'Y';
                     $hasEffort = $values['effort'] == 'Y';
                     $hasComment = $values['comment'] == 'Y';
                     $hasUpload = $values['uploadedResponse'] == 'Y';
-                    $hasTarget = !empty($course['targetGradeScale']);
 
-                    $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
-                    $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder 
+                    $data = array(
+                        'gibbonCourseClassID' => $gibbonCourseClassID, 
+                        'gibbonMarkbookColumnID' => $values['gibbonMarkbookColumnID'], 
+                        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 
+                        'today' => date('Y-m-d'),
+                    );
+                    $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
                             FROM gibbonCourseClassPerson 
-                            INNER JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-                            LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) 
-                            WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassID=:gibbonCourseClassID 
+                            JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                            LEFT JOIN gibbonMarkbookEntry ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonMarkbookEntry.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
+                            LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID)
+                            LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
                             AND gibbonPerson.status='Full' AND gibbonCourseClassPerson.role='Student'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
                         
@@ -229,6 +242,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $form->addRow()->addHeading(__('Students'));
                         $form->addRow()->addAlert(__('There are no records to display.'), 'error');
                     } else {
+                        $attainmentScale = '';
+                        if (!empty($values['gibbonScaleIDAttainment'])) {
+                            $form->addHiddenValue('scaleAttainment', $values['gibbonScaleIDAttainment']);
+                            $form->addHiddenValue('lowestAcceptableAttainment', $values['lowestAcceptableAttainment']);
+                            $attainmentScale = ' - '.$values['scaleNameAttainment'];
+                            $attainmentScale .= $values['usageAttainment']? ': '.$values['usageAttainment'] : '';
+                        }
+
+                        $effortScale = '';
+                        if (!empty($values['gibbonScaleIDEffort'])) {
+                            $form->addHiddenValue('scaleEffort', $values['gibbonScaleIDEffort']);
+                            $form->addHiddenValue('lowestAcceptableEffort', $values['lowestAcceptableEffort']);
+                            $effortScale = ' - '.$values['scaleNameEffort'];
+                            $effortScale .= $values['usageEffort']? ': '.$values['usageEffort'] : '';
+                        }
+
                         $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
                         $completeText = !empty($values['completeDate'])? __('Marked on').' '.dateConvertBack($guid, $values['completeDate']) : __('Unmarked');
@@ -269,12 +298,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         
                         $header->if($hasAttainment)
                             ->addContent($hasAttainmentName? $attainmentAlternativeNameAbrev : __('Att'))
-                            ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$scale)
+                            ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$attainmentScale)
                             ->setClass('textCenter');
                         
                         $header->if($hasEffort)
                             ->addContent($hasEffortName? $effortAlternativeNameAbrev : __('Eff'))
-                            ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$scale)
+                            ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$effortScale)
                             ->setClass('textCenter');
                         
                         $header->if($hasComment || $hasUpload)
@@ -287,6 +316,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $count = $index+1;
                         $rollOrder = ($studentOrderBy == 'rollOrder')? $student['rollOrder'] : $count;
 
+                        $form->addHiddenValue($count.'-gibbonPersonID', $student['gibbonPersonID']);
+
                         $row = $table->addRow();
             
                         $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
@@ -296,8 +327,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->wrap('<strong>', '</strong>')
                             ->prepend($rollOrder.') ');
 
-                        $row->addContent();
+                        $row->if($hasTarget)
+                            ->addContent($student['targetScaleGrade']);
+
+                        $row->if($hasSubmission)
+                            ->addContent('Sub');
+
+                        $row->if($hasAttainment && $hasRawAttainment)
+                            ->addNumber($count.'-attainmentValueRaw')
+                            ->setClass('smallColumn')
+                            ->setValue($student['attainmentValueRaw'])
+                            ->append(' / '.floatval($values['attainmentRawMax']));
+
+                        $row->if($hasAttainment)
+                            ->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
+                            ->setClass('textCenter gradeSelect')
+                            ->selected($student['attainmentValue']);
+
+                        $row->if($hasEffort)
+                            ->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
+                            ->setClass('textCenter gradeSelect')
+                            ->selected($student['effortValue']);
+
+                        $col = $row->if($hasComment || $hasUpload)->addColumn()->addClass('stacked');
+
+                            $col->if($hasComment)->addTextArea('comment'.$count)->setRows(6)->setValue($student['comment']);
+
+                            $col->if($hasUpload)
+                                ->addFileUpload('response'.$count)
+                                ->setAttachment('attachment'.$count, $_SESSION[$guid]['absoluteURL'], $student['response'])
+                                ->setMaxUpload(false);
                     }
+
+                    $form->addHiddenValue('count', $count);
 
                     $form->addRow()->addHeading(__('Assessment Complete?'));
 
