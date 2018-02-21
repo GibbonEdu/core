@@ -28,7 +28,7 @@ v16.0.00
 
 	Tweaks & Bug Fixes
 		System: improved IP address handling in setLog function
-		System: added United Arab Emirates Dirham as currency
+		System: added United Arab Emirates Dirham and Colombian Peso as currencies
 		System: adjusted notifications icon so it is clickable even when there are no notifications
 		System: fixed error with deleting a record when multiple tabs are open for the same session
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
