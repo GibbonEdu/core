@@ -373,6 +373,7 @@ class FormFactory implements FormFactoryInterface
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
                 'CNY ¥' => 'Chinese Renminbi (¥)',
+                'COP $' => 'Colombian Peso ($)',
                 'EGP £' => 'Egyptian Pound (£)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
