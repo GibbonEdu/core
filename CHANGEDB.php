@@ -878,4 +878,5 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 ALTER TABLE `gibbonPersonMedical` ADD `comment` TEXT NOT NULL AFTER `tetanusWithin10Years`;end
 ALTER TABLE `gibbonPersonMedicalUpdate` ADD `comment` TEXT NOT NULL AFTER `tetanusWithin10Years`;end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Student Bumped', 'Activities', 'Manage Activities', 'Core', 'All', 'Y');end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainerName`, `maintainerWebsite`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('om_ET','Afaan Oromo - Ethiopia', 'N', 'N', 'Ararsa Chelkeba', '', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 ";
