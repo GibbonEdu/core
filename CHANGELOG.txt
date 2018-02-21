@@ -32,6 +32,7 @@ v16.0.00
 		System: adjusted notifications icon so it is clickable even when there are no notifications
 		System: fixed error with deleting a record when multiple tabs are open for the same session
 		System: moved Russian Ruble from PayPal to Other section in currency listing
+		System: added Afaan Oromo as development language
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
 		Attendance: added option for redirect to message wall after self registration has been taken
