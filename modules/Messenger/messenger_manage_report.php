@@ -73,9 +73,6 @@ else {
 					}
 				});
 			});
-			$( "#tabs1").on( "tabsactivate", function( event, ui ) {
-				alert('123');
-			} );
 		</script>
 		<?php
 
