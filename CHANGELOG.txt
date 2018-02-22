@@ -37,6 +37,7 @@ v16.0.00
 		Activities: added logging of student activity changes in order to track sign up history
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Attendance: added year group selectors to reports for not present and not onsite
+		Attendance: added ability for students to view their own attendance data for the current year
 		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
