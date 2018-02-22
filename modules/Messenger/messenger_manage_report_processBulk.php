@@ -32,11 +32,12 @@ require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 //Module includes
 include './moduleFunctions.php';
 
-$action = $_POST['action'];
+$action = (!empty($_POST['action1']) ? $_POST['action1'] : null) ;
+$action = (is_null($action) && !empty($_POST['action2']) ? $_POST['action2'] : $action) ;
 $search = $_GET['search'];
 $gibbonMessengerID = $_GET['gibbonMessengerID'];
 
-if ($gibbonMessengerID == '' or $action == '') { echo 'Fatal error loading this page!';
+if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading this page!';
 } else {
     $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_manage_report.php&search=$search&gibbonMessengerID=$gibbonMessengerID&sidebar=true";
 
