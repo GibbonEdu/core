@@ -51,6 +51,20 @@ else {
 		<script type='text/javascript'>
 			$(function() {
 				$( "#tabs" ).tabs({
+					create: function( event, ui ) {
+						action1.enable();
+						action2.disable();
+					},
+					activate: function( event, ui ) {
+						if (ui.newPanel.attr('id') == 'tabs1') {
+							action1.enable();
+							action2.disable();
+						}
+						else if (ui.newPanel.attr('id') == 'tabs2') {
+							action1.disable();
+							action2.enable();
+						}
+					},
 					ajaxOptions: {
 						error: function( xhr, status, index, anchor ) {
 							$( anchor.hash ).html(
@@ -126,13 +140,13 @@ else {
 							echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
 							?>
 							<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-							<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+							<select name="action1" id="action1" style='width:120px; float: right; margin-right: 1px;'>
 								<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-								<option value="delete"><?php echo __($guid, 'Resend') ?></option>
+								<option value="resend"><?php echo __($guid, 'Resend') ?></option>
 							</select>
 							<script type="text/javascript">
-								var action=new LiveValidation('action');
-								action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+								var action1=new LiveValidation('action1');
+								action1.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 							</script>
 							<?php
 							echo '</div>';
@@ -289,13 +303,13 @@ else {
 						echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
 						?>
 						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
+						<select name="action2" id="action2" style='width:120px; float: right; margin-right: 1px;'>
 							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-							<option value="delete"><?php echo __($guid, 'Resend') ?></option>
+							<option value="resend"><?php echo __($guid, 'Resend') ?></option>
 						</select>
 						<script type="text/javascript">
-							var action=new LiveValidation('action');
-							action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+							var action2=new LiveValidation('action2');
+							action2.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
 						</script>
 						<?php
 						echo '</div>';

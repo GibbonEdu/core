@@ -93,7 +93,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                     report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
                 }
             }
-        } elseif ($highestAction == 'Student History_myChildren') {
+        }
+        else if ($highestAction == 'Student History_myChildren') {
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
                 $gibbonPersonID = $_GET['gibbonPersonID'];
@@ -212,11 +213,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                                 echo '</div>';
                             } else {
                                 $row = $result->fetch();
-                                report_studentHistory($guid, $gibbonPersonID, true, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);
+                                report_studentHistory($guid, $gibbonPersonID, false, '', $connection2, $row['dateStart'], $row['dateEnd']);
                             }
                         }
                     }
                 }
+            }
+        }
+        else if ($highestAction == 'Student History_my') {
+            $output = '';
+            echo '<h2>';
+            echo __($guid, 'Report Data');
+            echo '</h2>';
+
+            try {
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            if ($result->rowCount() != 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'The specified record does not exist.');
+                echo '</div>';
+            } else {
+                $row = $result->fetch();
+                report_studentHistory($guid, $_SESSION[$guid]['gibbonPersonID'], false, '', $connection2, $row['dateStart'], $row['dateEnd']);
             }
         }
     }

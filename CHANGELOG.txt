@@ -28,13 +28,16 @@ v16.0.00
 
 	Tweaks & Bug Fixes
 		System: improved IP address handling in setLog function
-		System: added United Arab Emirates Dirham as currency
+		System: added United Arab Emirates Dirham and Colombian Peso as currencies
 		System: adjusted notifications icon so it is clickable even when there are no notifications
 		System: fixed error with deleting a record when multiple tabs are open for the same session
+		System: moved Russian Ruble from PayPal to Other section in currency listing
+		System: added Afaan Oromo as development language
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Attendance: added year group selectors to reports for not present and not onsite
+		Attendance: added ability for students to view their own attendance data for the current year
 		Finance: added logging for failed bulk email sends
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
