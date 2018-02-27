@@ -116,8 +116,9 @@ else {
 						$row = $result->fetch();
 
 						$sender = false;
-						if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'])
+						if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID'] || $highestAction == 'Manage Messages_all') {
 							$sender = true;
+						}
 
 						if ($row['emailReceiptText'] != '') {
 							echo '<p>';
