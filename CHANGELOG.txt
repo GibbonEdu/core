@@ -45,6 +45,7 @@ v16.0.00
 		Planner: fixed module name substitution in links in Lesson Planner
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
+		Students: added View option to Students by Roll Group report, allowing Basic or Extended view
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
