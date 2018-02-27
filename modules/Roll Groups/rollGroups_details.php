@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             echo '<h3>';
             echo __($guid, 'Students');
             echo '</h3>';
-            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, true, $sortBy);
+            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, true, $sortBy, true);
 
             //Set sidebar
             $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);
