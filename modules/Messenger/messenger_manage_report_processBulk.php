@@ -46,6 +46,13 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
         header("Location: {$URL}");
         exit;
     } else {
+        $highestAction=getHighestGroupedAction($guid, '/modules/Messenger/messenger_manage_report.php', $connection2) ;
+        if ($highestAction==FALSE) {
+            $URL.="&updateReturn=error0" ;
+            header("Location: {$URL}");
+            exit;
+        }
+
         $gibbonMessengerReceiptIDs = array();
         if (isset($_POST['gibbonMessengerReceiptIDs'])) {
             $gibbonMessengerReceiptIDs = $_POST['gibbonMessengerReceiptIDs'];
