@@ -110,9 +110,10 @@ else {
 					echo '<b><u>'.__($guid, 'Note').'</u></b>: '.__($guid, 'Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
 				echo '</div>';
 
-				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_postProcess.php');
+				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_manage_editProcess.php');
 
 				$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+				$form->addHiddenValue('gibbonMessengerID', $values['gibbonMessengerID']);
 
 				$form->addRow()->addHeading(__('Delivery Mode'));
 				//Delivery by email
@@ -138,9 +139,9 @@ else {
 					$row = $form->addRow()->addClass('messageWall');
 				        $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 						$col = $row->addColumn('date1')->addClass('stacked');
-						$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->isRequired();
-						$col->addDate('date2');
-						$col->addDate('date3');
+						$col->addDate('date1')->setValue(dateConvertBack($guid, $values['messageWall_date1']))->isRequired();
+						$col->addDate('date2')->setValue(dateConvertBack($guid, $values['messageWall_date2']));
+						$col->addDate('date3')->setValue(dateConvertBack($guid, $values['messageWall_date3']));
 				}
 
 				//Delivery by SMS
@@ -248,8 +249,8 @@ else {
 					$data = array();
 					$sql = 'SELECT DISTINCT category AS value, category AS name FROM gibbonRole ORDER BY category';
 					$row = $form->addRow()->addClass('roleCategory hiddenReveal');
-						$row->addLabel('roles[]', __('Select Role Categories'));
-						$row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder()->selected($selected);
+						$row->addLabel('roleCategories[]', __('Select Role Categories'));
+						$row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder()->selected($selected);
 				}
 
 				//Year group
