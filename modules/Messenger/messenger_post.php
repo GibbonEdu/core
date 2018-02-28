@@ -286,8 +286,8 @@ else {
 			$data = array();
 			$sql = 'SELECT DISTINCT category AS value, category AS name FROM gibbonRole ORDER BY category';
 			$row = $form->addRow()->addClass('roleCategory hiddenReveal');
-		        $row->addLabel('roles[]', __('Select Role Categories'));
-		        $row->addSelect('roles[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder();
+		        $row->addLabel('roleCategories[]', __('Select Role Categories'));
+		        $row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder();
 		}
 
 		//Year group

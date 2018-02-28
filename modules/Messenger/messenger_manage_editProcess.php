@@ -26,12 +26,12 @@ $connection2 = $pdo->getConnection();
 
 @session_start() ;
 
-$gibbonMessengerID=$_GET["gibbonMessengerID"] ;
+$gibbonMessengerID=$_POST["gibbonMessengerID"] ;
 $search=NULL ;
 if (isset($_GET["search"])) {
 	$search=$_GET["search"] ;
 }
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
@@ -46,7 +46,7 @@ else {
 		header("Location: {$URL}");
 	}
 	else {
-		$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
+		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
 			//FgibbonMessengerIDl 0
 			$URL.="&updateReturn=fgibbonMessengerIDl0$params" ;
