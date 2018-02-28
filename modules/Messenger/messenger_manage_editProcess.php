@@ -35,21 +35,19 @@ $URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName(
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
-	//FgibbonMessengerIDl 0
-	$URL.="&updateReturn=fgibbonMessengerIDl0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		//FgibbonMessengerIDl 5
-		$URL.="&updateReturn=fgibbonMessengerIDl5" ;
+		//fail 5
+		$URL.="&updateReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
 		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//FgibbonMessengerIDl 0
-			$URL.="&updateReturn=fgibbonMessengerIDl0$params" ;
+			$URL.="&updateReturn=fail0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,8 +76,8 @@ else {
 			$body=$_POST["body"] ;
 
 			if ($subject=="" OR $body=="") {
-				//FgibbonMessengerIDl 3
-				$URL.="&updateReturn=fgibbonMessengerIDl3" ;
+				//fail 3
+				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -91,14 +89,14 @@ else {
 					$resultUpdate->execute($dataUpdate);
 				}
 				catch(PDOException $e) {
-					//FgibbonMessengerIDl 2
-					$URL.="&updateReturn=fgibbonMessengerIDl2" ;
+					//fail 2
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 
 				//TARGETS
-				$partialFgibbonMessengerIDl=FALSE ;
+				$partialfail=FALSE ;
 
 				try {
 					$dataRemove=array("gibbonMessengerID"=>$gibbonMessengerID);
@@ -107,7 +105,7 @@ else {
 					$resultRemove->execute($dataRemove);
 				}
 				catch(PDOException $e) {
-					$partialFgibbonMessengerIDl=TRUE;
+					$partialfail=TRUE;
 				}
 
 				//Roles
@@ -124,7 +122,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -145,7 +143,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -171,7 +169,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -197,7 +195,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -223,7 +221,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -249,7 +247,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -275,7 +273,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -295,7 +293,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -315,7 +313,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -341,7 +339,7 @@ else {
                           $result->execute($data);
                         }
                         catch(PDOException $e) {
-                          $partialFgibbonMessengerIDl=TRUE;
+                          $partialfail=TRUE;
                         }
                       }
                     }
@@ -363,7 +361,7 @@ else {
                           $result->execute($data);
                         }
                         catch(PDOException $e) {
-                          $partialFgibbonMessengerIDl=TRUE;
+                          $partialfail=TRUE;
                         }
                       }
                     }
@@ -383,7 +381,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -391,9 +389,9 @@ else {
 				}
 
 
-				if ($partialFgibbonMessengerIDl==TRUE) {
-					//FgibbonMessengerIDl 4
-					$URL.="&updateReturn=fgibbonMessengerIDl4" ;
+				if ($partialfail==TRUE) {
+					//fail 4
+					$URL.="&updateReturn=fail4" ;
 					header("Location: {$URL}");
 				}
 				else {
