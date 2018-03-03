@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                 if ($result2->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo 'The selected column does not exist, or you do not have access to it.';
+                    echo __('The selected column does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     //Let's go!
@@ -199,10 +199,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $ext = '';
 
                     $hasTarget = !empty($course['targetGradeScale']);
-                    $hasSubmission = 'Y';
+                    $hasSubmission = false;
                     $hasAttainment = $values['attainment'] == 'Y';
                     $hasRawAttainment = $values['attainmentRaw'] == 'Y' && !empty($values['attainmentRawMax']) && $enableRawAttainment == 'Y';
+                    $hasAttainmentRubric = $values['gibbonRubricIDAttainment'] != '' && $enableRubrics =='Y';
                     $hasEffort = $values['effort'] == 'Y';
+                    $hasEffortRubric = $values['gibbonRubricIDEffort'] != '' && $enableRubrics =='Y';
                     $hasComment = $values['comment'] == 'Y';
                     $hasUpload = $values['uploadedResponse'] == 'Y';
 
@@ -212,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 
                         'today' => date('Y-m-d'),
                     );
-                    $sql = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
+                    $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
                             FROM gibbonCourseClassPerson 
                             JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                             JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
@@ -232,7 +234,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $sql .= " ORDER BY surname, preferredName";
                     }
                     $result = $pdo->executeQuery($data, $sql);
-                    $students = ($result->rowCount() > 0)? $result->fetchAll() : array();
+                    $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+
+                    // WORK OUT IF THERE IS SUBMISSION
+                    if (is_null($values['gibbonPlannerEntryID']) == false) {
+                        try {
+                            $dataSub = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
+                            $sqlSub = "SELECT * FROM gibbonPlannerEntry WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND homeworkSubmission='Y'";
+                            $resultSub = $connection2->prepare($sqlSub);
+                            $resultSub->execute($dataSub);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+
+                        if ($resultSub->rowCount() == 1) {
+                            $hasSubmission = true;
+                            $rowSub = $resultSub->fetch();
+                            $homeworkDueDateTime = $rowSub['homeworkDueDateTime'];
+                            $lessonDate = $rowSub['date'];
+                        }
+                    }
+
+                    // Grab student submissions
+                    if ($hasSubmission) {
+                        $data = array('gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
+
+                        foreach ($students as &$student) {
+                            $data['gibbonPersonID'] = $student['gibbonPersonID'];
+                            $sql = "SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC LIMIT 1";
+                            $result = $pdo->executeQuery($data, $sql);
+                            $submission = '';
+                            if ($result->rowCount() > 0) {
+                                $submission = $result->fetch();
+                                
+                            }
+
+                            $student['submission'] = renderStudentSubmission($submission, $homeworkDueDateTime, $lessonDate);
+
+                            // WordpressCommentPush
+                            if ($wordpressCommentPush == 'On' && $submission['type'] == 'Link') {
+                                $output = "<div id='wordpressCommentPush$count' style='float: right'>";
+                                $output .= '</div>';
+                                $output .= '<script type="text/javascript">';
+                                $output .= "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$submission['location'].'", count: "'.$count.'" } );';
+                                $output .= '</script>';
+
+                                $student['submission'] .= $output;
+                            }
+                            
+                        }
+                    }
+
 
                     $form = Form::create('markbookEditData', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$_SESSION[$guid]['address']);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -257,6 +309,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $effortScale = ' - '.$values['scaleNameEffort'];
                             $effortScale .= $values['usageEffort']? ': '.$values['usageEffort'] : '';
                         }
+
+                        // Create a rubric link object (for reusabilty)
+                        $rubricLink = $form->getFactory()
+                            ->createWebLink('<img title="'.__('Mark Rubric').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/rubric.png" style="margin-left:4px;"/>')
+                            ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Markbook/markbook_view_rubric.php')
+                            ->setClass('thickbox')
+                            ->addParam('gibbonCourseClassID', $gibbonCourseClassID)
+                            ->addParam('gibbonMarkbookColumnID', $gibbonMarkbookColumnID)
+                            ->addParam('width', '1100')
+                            ->addParam('height', '550');
 
                         $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth colorOddEven noMargin noPadding noBorder');
 
@@ -312,11 +374,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->setClass('textCenter');
                     }
 
-                    foreach ($students as $index => $student) {
-                        $count = $index+1;
+                    $count = 0;
+                    foreach ($students as $gibbonPersonID => $student) {
+                        $count = $count+1;
                         $rollOrder = ($studentOrderBy == 'rollOrder')? $student['rollOrder'] : $count;
 
                         $form->addHiddenValue($count.'-gibbonPersonID', $student['gibbonPersonID']);
+                        
+                        if (!$hasRawAttainment) {
+                            $form->addHiddenValue($count.'-attainmentValueRaw', $student['gibbonPersonID']);
+                        }
 
                         $row = $table->addRow();
             
@@ -331,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->addContent($student['targetScaleGrade']);
 
                         $row->if($hasSubmission)
-                            ->addContent('Sub');
+                            ->addContent($student['submission']);
 
                         $row->if($hasAttainment && $hasRawAttainment)
                             ->addNumber($count.'-attainmentValueRaw')
@@ -339,15 +406,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->setValue($student['attainmentValueRaw'])
                             ->append(' / '.floatval($values['attainmentRawMax']));
 
-                        $row->if($hasAttainment)
+                        $attainment = $row->if($hasAttainment)
                             ->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
                             ->setClass('textCenter gradeSelect')
                             ->selected($student['attainmentValue']);
 
-                        $row->if($hasEffort)
+                        if ($hasAttainment && $hasAttainmentRubric) {
+                            $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
+                            $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDAttainment']);
+                            $rubricLink->addParam('type', 'attainment');
+                            $attainment->append($rubricLink->getOutput());
+                        }
+
+                        $effort = $row->if($hasEffort)
                             ->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
                             ->setClass('textCenter gradeSelect')
                             ->selected($student['effortValue']);
+
+                        if ($hasEffort && $hasEffortRubric) {
+                            $rubricLink->addParam('gibbonPersonID', $student['gibbonPersonID']);
+                            $rubricLink->addParam('gibbonRubricID', $values['gibbonRubricIDEffort']);
+                            $rubricLink->addParam('type', 'effort');
+                            $effort->append($rubricLink->getOutput());
+                        }
 
                         $col = $row->if($hasComment || $hasUpload)->addColumn()->addClass('stacked');
 
@@ -677,55 +758,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
 
-                                    if ($resultWork->rowCount() > 0) {
-                                        $rowWork = $resultWork->fetch();
-
-                                        if ($rowWork['status'] == 'Exemption') {
-                                            $linkText = __($guid, 'Exe');
-                                        } elseif ($rowWork['version'] == 'Final') {
-                                            $linkText = __($guid, 'Fin');
-                                        } else {
-                                            $linkText = __($guid, 'Dra').$rowWork['count'];
-                                        }
-
-                                        $style = '';
-                                        $status = __($guid, 'On Time');
-                                        if ($rowWork['status'] == 'Exemption') {
-                                            $status = __($guid, 'Exemption');
-                                        } elseif ($rowWork['status'] == 'Late') {
-                                            $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                                            $status = __($guid, 'Late');
-                                        }
-
-                                        if ($rowWork['type'] == 'File') {
-                                            echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
-                                        } elseif ($rowWork['type'] == 'Link') {
-                                            echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
-                                            if ($wordpressCommentPush == 'On') {
-                                                echo "<div id='wordpressCommentPush$count' style='float: right'>";
-                                                echo '</div>';
-                                                echo '<script type="text/javascript">';
-                                                echo "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$rowWork['location'].'", count: "'.$count.'" } );';
-                                                echo '</script>';
-                                            }
-                                        } else {
-                                            echo "<span title='$status. ".__($guid, 'Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
-                                        }
-                                    } else {
-                                        if (date('Y-m-d H:i:s') < $homeworkDueDateTime) {
-                                            echo "<span title='".__($guid, 'Pending')."'>".__($guid, 'Pen').'</span>';
-                                        } else {
-                                            if ($rowStudents['dateStart'] > $lessonDate[$i]) {
-                                                echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
-                                            } else {
-                                                if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                    echo "<span title='".__($guid, 'Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Inc').'</span>';
-                                                } else {
-                                                    echo "<span title='".__($guid, 'Not submitted online')."'>".__($guid, 'NA').'</span>';
-                                                }
-                                            }
-                                        }
-                                    }
+                                    
                                     echo '</td>';
                                 }
                                 if ($values['attainment'] == 'Y') {
@@ -798,10 +831,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                         } else {
                                             echo "<input style='max-width: 228px; margin-top: 5px' type='file' name='response$count' id='response$count'>";
                                             ?>
-											<script type="text/javascript">
-												var <?php echo "response$count" ?>=new LiveValidation('<?php echo "response$count" ?>');
-												<?php echo "response$count" ?>.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-											</script>
+
 											<?php
                                         }
                                     }

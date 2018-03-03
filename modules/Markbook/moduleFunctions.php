@@ -280,3 +280,54 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCou
          echo '</tr>';
     }
 }
+
+function renderStudentSubmission($submission, $homeworkDueDateTime, $lessonDate)
+{
+    global $guid;
+
+    $output = '';
+
+    if (!empty($submission)) {
+        if ($submission['status'] == 'Exemption') {
+            $linkText = __('Exe');
+        } elseif ($submission['version'] == 'Final') {
+            $linkText = __('Fin');
+        } else {
+            $linkText = __('Dra').$submission['count'];
+        }
+
+        $style = '';
+        $status = __('On Time');
+        if ($submission['status'] == 'Exemption') {
+            $status = __('Exemption');
+        } elseif ($submission['status'] == 'Late') {
+            $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
+            $status = __('Late');
+        }
+
+        if ($submission['type'] == 'File') {
+            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
+        } elseif ($submission['type'] == 'Link') {
+            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
+            
+        } else {
+            $output .= "<span title='$status. ".__('Recorded at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style>$linkText</span>";
+        }
+    } else {
+        if (date('Y-m-d H:i:s') < $homeworkDueDateTime) {
+            $output .= "<span title='".__('Pending')."'>".__('Pen').'</span>';
+        } else {
+            if ($rowStudents['dateStart'] > $lessonDate) {
+                $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
+            } else {
+                if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
+                    $output .= "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
+                } else {
+                    $output .= "<span title='".__('Not submitted online')."'>".__('NA').'</span>';
+                }
+            }
+        }
+    }
+
+    return $output;
+}

@@ -197,6 +197,7 @@ select[id$="effortValue"] {
 
 .gradeSelect {
     width: 60px;
+    white-space: nowrap;
 }
 
 
