@@ -3574,12 +3574,15 @@ function getUserPhoto($guid, $path, $size)
 
 //Gets Members of a roll group and prints them as a table.
 //Three modes: normal (roll order, surname, firstName), surname (surname, preferredName), preferredName (preferredNam, surname)
-function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal')
+function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal', $print = false)
 {
     $return = false;
 
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
+    }
+    if ($print && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php')) {
+        $print = true ;
     }
 
     try {
@@ -3594,6 +3597,12 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
         $resultRollGroup = $connection2->prepare($sqlRollGroup);
         $resultRollGroup->execute($dataRollGroup);
     } catch (PDOException $e) {
+    }
+
+    if ($print) {
+        echo "<div class='linkTop'>";
+        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Students/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID&view=Basic'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo '</div>';
     }
 
     $return .= "<table class='noIntBorder' cellspacing='0' style='width:100%'>";
