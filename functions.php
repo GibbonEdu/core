@@ -3985,8 +3985,6 @@ function setLanguageSession($guid, $row)
     $_SESSION[$guid]['i18n']['dateFormat'] = $row['dateFormat'];
     $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
     $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
-    $_SESSION[$guid]['i18n']['maintainerName'] = $row['maintainerName'];
-    $_SESSION[$guid]['i18n']['maintainerWebsite'] = $row['maintainerWebsite'];
     $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
 }
 

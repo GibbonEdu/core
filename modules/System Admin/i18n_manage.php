@@ -41,10 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     echo '</p>';
 
     $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
-    
+
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    
+
     $row = $form->addRow()->setClass('heading head');
         $row->addContent(__('Name'));
         $row->addContent(__('Code'));
@@ -72,11 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             $row->addContent($i18n['code']);
             $row->addContent(ynExpander($guid, $i18n['active']));
 
-            $maintainer = $row->addContent($i18n['maintainerName']);
-            if (!empty($i18n['maintainerWebsite'])) {
-                $maintainer->wrap("<a href='".$i18n['maintainerWebsite']."'>", '</a>');
-            }
-
             if ($i18n['active'] == 'Y') {
                 $checked = ($i18n['systemDefault'] == 'Y')? $i18n['gibboni18nID'] : '';
 
@@ -89,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             }
         }
     }
-    
+
     $form->addRow()->addSubmit();
-    
+
     echo $form->getOutput();
 }
