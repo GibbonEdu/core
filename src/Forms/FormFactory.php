@@ -374,6 +374,7 @@ class FormFactory implements FormFactoryInterface
                 'CNY ¥' => 'Chinese Renminbi (¥)',
                 'COP $' => 'Colombian Peso ($)',
                 'EGP £' => 'Egyptian Pound (£)',
+                'FJD $' => 'Fijian Dollar ($)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
