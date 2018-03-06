@@ -53,22 +53,23 @@ class DatabaseFormFactory extends FormFactory
         return new DatabaseFormFactory($pdo);
     }
 
-    public function createSelectSchoolYear($name, $status = 'All')
+    public function createSelectSchoolYear($name, $status = 'All', $orderBy = 'ASC')
     {
+        $orderBy = ($orderBy == 'ASC' || $orderBy == 'DESC') ? $orderBy : 'ASC';
         switch ($status) {
             case 'Active':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' OR status='Upcoming' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' OR status='Upcoming' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'Upcoming':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Upcoming' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Upcoming' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'Past':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'All':
             case 'Any':
             default:
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber $orderBy"; break;
         }
         $results = $this->pdo->executeQuery(array(), $sql);
 
