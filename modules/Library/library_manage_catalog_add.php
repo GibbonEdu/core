@@ -48,7 +48,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']."'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
-    }
+	}
+	
+	$type = isset($_GET['gibbonLibraryTypeID'])? $_GET['gibbonLibraryTypeID'] : '';
 
     $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -60,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
         $row->addLabel('gibbonLibraryTypeID', __('Type'));
-        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->placeholder()->isRequired();
+        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->placeholder()->isRequired()->selected($type);
 
     $form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
 
@@ -191,10 +193,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->addRow()->addHeading(__('Type-Specific Details'))->addClass('general');
 
-    $details = "<div id='details' name='details' style='min-height: 100px; text-align: center'>";
-        $details .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/".$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading";
-    $details .= "</div>";
-    $form->addRow()->addContent($details)->addClass('general');;
+	$table = $form->addRow('detailsWrapper')->addTable('detailsTable')->setClass('fullWidth');
+
+	$gibbonLibraryTypeID = isset($_REQUEST['gibbonLibraryTypeID'])? $_REQUEST['gibbonLibraryTypeID'] : '';
+
+	if (!empty($gibbonLibraryTypeID) && $gibbonLibraryTypeID != __('Please select...')) {
+		$data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
+        $sql = "SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
+		$result = $pdo->executeQuery($data, $sql);
+
+		if ($result->rowCount() != 1) {
+			$table->addRow()->addAlert(__('The specified record cannot be found.'), 'error');
+		} else {
+			$values = $result->fetch();
+
+			// Transform the library field types to custom-field compatable types
+			$fields = array_map(function($item){
+				switch($item['type']) {
+					case 'Text':        $item['type'] = 'varchar'; break;
+					case 'Textarea':    $item['type'] = 'text'; break;
+					default:            $item['type'] = strtolower($item['type']); break;
+				}
+				return $item;
+			}, unserialize($values['fields']));
+
+			foreach ($fields as $field) {
+				$fieldName = preg_replace('/ /', '', $field['name']);
+				$row = $table->addRow();
+					$row->addLabel($fieldName, $field['name'])->description($field['description']);
+					$customField = $row->addCustomField($fieldName, $field);
+					
+					// Scripts get stripped out on .load(), this appends as text and evals when ajax completes
+					$customField->append('<div class="appendScript" style="display:none;">'.$customField->getValidationOutput().'</div>');
+			}
+		}
+	} else {
+		// $details = "<div id='details' name='details' style='min-height: 100px; text-align: center'>";
+		// 	$details .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/".$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading";
+		// $details .= "</div>";
+		$table->addRow()->addContent('Test');
+	}
+    
 
     $row = $form->addRow();
         $row->addSubmit();
@@ -202,3 +241,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo $form->getOutput();
 }
 ?>
+<script type='text/javascript'>
+	$(document).ready(function(){
+		$('#gibbonLibraryTypeID').change(function(){
+			var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog_add.php'; ?>';
+
+			$('#detailsWrapper td').load(path + " #detailsTable", { 'gibbonLibraryTypeID': $(this).val() }, function() {
+				$('.appendScript').each(function() { 
+					$.globalEval($(this).html()); 
+					$(this).detach().remove();  
+				});
+			});
+		});
+	});
+</script>
