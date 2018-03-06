@@ -24,7 +24,7 @@ $newFormValues = array(
     'behaviourLettersLetter2Text'   => 'Letter Test 2',
     'behaviourLettersLetter3Count'  => '12',
     'behaviourLettersLetter3Text'   => 'Letter Test 3',
-    'policyLink'                    => 'http://test',
+    'policyLink'                    => 'http://test.test',
 );
 
 $I->submitForm('#content form', $newFormValues, 'Submit');
