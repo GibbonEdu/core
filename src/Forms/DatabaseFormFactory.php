@@ -189,6 +189,15 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($departments)->placeholder();
     }
 
+    public function createSelectSchoolYearTerm($name, $gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
