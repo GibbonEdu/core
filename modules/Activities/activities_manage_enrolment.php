@@ -165,6 +165,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo '</th>';
                 echo '</tr>';
 
+                $canViewStudentDetails = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php');
+
                 $count = 0;
                 $rowNum = 'odd';
                 while ($values = $result->fetch()) {
@@ -178,7 +180,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    if ($canViewStudentDetails) {
+                        echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
+                    } else {
+                        echo $studentName;
+                    }
                     echo '</td>';
                     echo '<td>';
                     echo $values['rollGroupNameShort'];
