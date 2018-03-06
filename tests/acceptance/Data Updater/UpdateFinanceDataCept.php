@@ -28,7 +28,7 @@ $editFormValues = array(
     'companyName'     => 'McTest Ltd.',
     'companyContact'  => 'Testing McTest',
     'companyAddress'  => '123 Ficticious Lane',
-    'companyEmail'    => 'test@testing.local',
+    'companyEmail'    => 'test@testing.test',
     'companyCCFamily' => 'Y',
     'companyPhone'    => '12345678',
     'companyAll'      => 'Y',
@@ -49,7 +49,7 @@ $I->seeBreadcrumb('Edit Request');
 $I->see('McTest Ltd.', 'td');
 $I->see('Testing McTest', 'td');
 $I->see('123 Ficticious Lane', 'td');
-$I->see('test@testing.local', 'td');
+$I->see('test@testing.test', 'td');
 $I->see('Y', 'td');
 $I->see('12345678', 'td');
 

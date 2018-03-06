@@ -12,7 +12,7 @@ $addFormValues = array(
     'name'       => 'Test 1',
     'nameShort'  => 'TR1',
     'attendance' => 'Y',
-    'website'    => 'http://testing.com',
+    'website'    => 'http://testing.test',
 );
 
 $I->selectFromDropdown('gibbonPersonIDTutor', 2);
