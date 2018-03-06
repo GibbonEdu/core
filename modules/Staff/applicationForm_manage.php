@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 @session_start();
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage.php') == false) {
@@ -50,32 +52,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     echo '<h4>';
     echo __($guid, 'Search');
-    echo '</h2>';?>
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='noIntBorder' cellspacing='0' style="width: 100%">
-			<tr><td style="width: 40%"></td><td></td></tr>
-			<tr>
-				<td>
-					<b><?php echo __($guid, 'Search For') ?></b><br/>
-					<span class="emphasis small"><?php echo __($guid, 'Application ID, preferred, surname') ?></span>
-				</td>
-				<td class="right">
-					<input name="search" id="search" maxlength=20 value="<?php echo $search ?>" type="text" class="standardWidth">
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/applicationForm_manage.php">
-					<input type="hidden" name="gibbonSchoolYearID" value="<?php echo $gibbonSchoolYearID ?>">
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<?php
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage.php'>".__($guid, 'Clear Search').'</a>';?>
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    echo '</h2>';
+
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/applicationForm_manage.php");
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Application ID, preferred, surname'));
+        $row->addTextField('search')->setValue($search)->maxLength(20);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
 
     echo '<h4>';
     echo __($guid, 'View');

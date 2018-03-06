@@ -319,7 +319,6 @@ if ($proceed == false) {
                             $bodyPlain = emailBodyConvert($body);
 
                             $mail = getGibbonMailer($guid);
-                            $mail->IsSMTP();
                             $mail->SetFrom($_SESSION[$guid]['organisationHREmail'], $_SESSION[$guid]['organisationHRName']);
                             if ($referenceEmail1 != '') {
                                 $mail->AddBCC($referenceEmail1);

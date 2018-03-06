@@ -16,20 +16,58 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v16.0.00
+--------
+	Headlines
+		Activated Simplified Chinese as an available language
+
+	Significant Changes
+
+	Changes With Important Notices
+
+	Security
+
+	Tweaks & Bug Fixes
+		System: improved IP address handling in setLog function
+		System: added United Arab Emirates Dirham, Colombian Peso and Fijian Dollar as currencies
+		System: adjusted notifications icon so it is clickable even when there are no notifications
+		System: fixed error with deleting a record when multiple tabs are open for the same session
+		System: moved Russian Ruble from PayPal to Other section in currency listing
+		System: added Afaan Oromo as development language
+		System: made translation credits in footer fairer
+		Activities: added notifications when students are bumped up into an activity on self unenrolment
+		Activities: added logging of student activity changes in order to track sign up history
+		Attendance: added option for redirect to message wall after self registration has been taken
+		Attendance: added year group selectors to reports for not present and not onsite
+		Attendance: added ability for students to view their own attendance data for the current year
+		Finance: added logging for failed bulk email sends
+		Form Group: added link to print listing of students in form group detail view
+		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
+		Messenger: added the ability to resend in By Roll Group view in View Send Report
+		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
+		Planner: fixed module name substitution in links in Lesson Planner
+		Students: added sibling and family information to Letters Home by Roll Group
+		Students: added Comment field to medical form, linked to student application form.
+		Students: added View option to Students by Form Group report, allowing Basic or Extended view
+		System Admin: fixed bug causing theme names with spaces to break the theme installer
+		User Admin: fixed Child's Name list in Edit Family to include all students
+		User Admin: fixed bug preventing some family links from showing up in Manage Users
+		User Admin: removed Back link from child and adult delete modals in Manage Families
+		User Admin: tweaked user CLI to better handle parents in multiple families
+
 v15.0.00
 --------
 	Headlines
-		...
+		Code base refactoring of all interface forms
+		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
+		Activated Brazilian Portuguese as complete languages
 
 	Changes With Important Notices
-		...
+		Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
-	Significant Changes
-		Planner: integrated Resources into the Planner module
-		Timetable Admin: added ability to map classes to Roll Group, sync enrolments, and auto-enrol new students
-
-	Security
-		...
+    Security
+		System: fixed security vulnerability in the installer
+        System: added validation and output escaping to Personal Background URL in Preferences
 
 	Tweaks & Bug Fixes
 		System: fixed erroneous Georgian language code
@@ -51,6 +89,8 @@ v15.0.00
 		System: shortened abbreviation of core system roles
 		Activities: added new payment fields to activities (cost type and cost status)
 		Activities: fixed database field length issue in gibbonActivityStaff
+		Activities: fixed minor display issue in Terms column in View Activities
+		Activities: fixed term display bug in Manage Activities
 		Attendance: fixed GROUP BY issue in moduleFunctions.php when MySQL is using only_full_group_by
 		Attendance: adjusted attendance checking CLI script to only include lessons whose start time has already passed
 		Attendance: show staff dashboard link to attendance only if user has access to Form Group attendance
@@ -59,8 +99,11 @@ v15.0.00
 		Attendance: added selective auto-redirect to move students to self-registration page under certain conditions
 		Attendance: added a warning to Attendance by Class when not currently timetabled for the selected date
 		Behaviour: fixed typo in three settings
+		Behaviour: fixed broken link to Edit in Step 2 of adding a behaviour record in Manage Behaviour
 		Departments: fixed bug preventing students from seeing other students in a class
+		Departments: fixed sidebar heading size issue
 		Finance: set name of outgoing email to school name, not user's name
+		Finance: fixed missing email address issue in Company invoices and receipts
 		Individual Needs: added ability to record educational assistants for a student
 		Library: added Optical Media as item type
 		Library: added replacement fields to import
@@ -69,6 +112,7 @@ v15.0.00
 		Messenger: added username to Individual select, to distinguish people with the same name
 		Planner: updated attendance to only hide the reason and comment fields if Present is the default attendance
 		Planner: added optional Markbook section (off by default) to weekly planner summary email
+		Planner: fixed bug preventing Add icon from appearing for teachers under date view in Lesson Planner
 		Roll Groups: fixed bug preventing alerts from showing
 		Rubrics: reduced wait time on rubric load for schools with lots of rubric data
 		School Admin: updated Manage School Years to prevent removing or unsetting the current School Year
@@ -93,6 +137,7 @@ v15.0.00
 		Timetable Admin: added link from course view in Manage Courses & Classes to edit class enrolment
 		Timetable Admin: updated Course Enrolment Rollover to prevent duplicates and not copy users set to Left
         Timetable Admin: fixed Course Enrolment by Person to allow staff category without All Users checked
+		Timetable Admin: removed Left users from class participant count in edit view in Manage Courses
 		User Admin: improved usability of feedback in Step 3 of the rollover
 		User Admin: made Pending Approval option in Status in edit User appear only if Public Registration is enabled
         User Admin: updated Add User and Edit User to allow PDF files for ID documents
@@ -100,6 +145,7 @@ v15.0.00
         User Admin: added a button to generate usernames in Add User
         User Admin: added an Available Years of Entry setting to select which years are available in the student application
 		User Admin: added a setting to require a user's primary email address to be unique
+		User Admin: added a settings to adjust the formatting of staff names in Manage Staff Settings
 
 v14.0.01
 --------

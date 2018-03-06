@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $form->toggleVisibilityByClass('resourceFile')->onSelect('type')->when('File');
         $row = $form->addRow()->addClass('resourceFile');
             $row->addLabel('file', __('File'));
-            $row->addFileUpload('file')->isRequired()->addClass('right');
+            $row->addFileUpload('file')->isRequired();
 
         // HTML
         $form->toggleVisibilityByClass('resourceHTML')->onSelect('type')->when('HTML');
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addSelect('category')->fromString($categories)->isRequired()->placeholder();
 
         $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
-        $purposesRestricted = getSettingByScope($connection2, 'Resources', 'purposesRestricted');
+        $purposesRestricted = ($highestAction == 'Manage Resources_all')? getSettingByScope($connection2, 'Resources', 'purposesRestricted') : '';
         $row = $form->addRow();
             $row->addLabel('purpose', __('Purpose'));
             $row->addSelect('purpose')->fromString($purposesGeneral)->fromString($purposesRestricted)->placeholder();

@@ -693,6 +693,11 @@ input[readonly], textarea[readonly], select[readonly] {
 	background: none;
 }
 
+textarea[readonly] {
+    font-family: inherit;
+    resize: none;
+}
+
 textarea {
 	border: 1px solid #BFBFBF;
 	background-color: #ffffff ;
@@ -762,7 +767,8 @@ input[type="submit"]:hover {
 	color: #eeeeee;
 }
 
-input[type="submit"].buttonLink {
+input[type="submit"].buttonLink,
+input[type="button"].buttonLink {
 	background: none;
 	color: #c00;
 	border: none;
@@ -772,7 +778,9 @@ input[type="submit"].buttonLink {
 	height: 28px;
 }
 
-input[type="submit"].buttonLink:hover {
+input[type="submit"].buttonLink:hover,
+input[type="button"].buttonLink:hover {
+	cursor: pointer;
 	background: none;
 	color: #069;
 	border: none;
@@ -825,6 +833,7 @@ div.success {
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
+
 div.paginationTop {
 	text-align: right;
 	font-size: 12px;
@@ -1092,7 +1101,7 @@ div.ui-datepicker-header {
 	border: none ;
 }
 
-td.hiddenReveal, div.hiddenReveal {
+td.hiddenReveal, div.hiddenReveal, tr.hiddenReveal td {
 	background: none;
 	background-color: #EDF7FF!important;
 }
@@ -1323,11 +1332,15 @@ select[multiple] {
     margin-bottom: 10px;
 }
 
+.formTable .standardWidth {
+    width: auto;
+}
+
 .formTable input,
 .formTable select,
 .formTable textarea {
 	float: left;
-	margin-left: 0px;
+    margin-left: 0px;
 }
 
 
@@ -1439,6 +1452,10 @@ input[name*="phone"] ~ .LV_invalid {
   max-width: 1052px;
 }
 
+.matchHighlight table {
+    float: right;
+}
+
 .matchHighlight > td {
 	border-top: 1px dashed #c00;
 	border-bottom: 1px dashed #c00;
@@ -1491,4 +1508,27 @@ input[type="button"].alignRight {
 
 fieldset {
 	border: 0;
+}
+
+.displayInlineBlock {
+    display: inline-block;
+}
+
+/* Fixes an odd colspan-related width bug in Chrome */
+td.fullWidth[colspan] {
+    width: auto;
+}
+
+/* Utility classes - will be part of the larger css refactor soon */
+.noMargin {
+    margin: 0 !important; 
+}
+
+.noPadding,
+table.smallIntBorder td.noPadding {
+    padding: 0!important; 
+}
+
+.noBorder {
+    border: 0!important; 
 }

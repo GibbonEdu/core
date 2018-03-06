@@ -39,6 +39,7 @@ class MultiSelect implements OutputableInterface
     protected $addButton;
     protected $removeButton;
     protected $sortBySelect;
+    protected $searchBox;
 
     public function __construct(FormFactoryInterface &$factory, $name) {
         $this->name = $name;
@@ -59,11 +60,16 @@ class MultiSelect implements OutputableInterface
             ->addClass("floatNone");
 
         $this->addButton = $factory->createButton(__("Add"))
-            ->onClick('optionTransfer(\'' . $this->sourceSelect->getID() . '\',\'' . $this->destinationSelect->getID() . '\')')
+            ->onClick('optionTransfer(\'' . $this->name . '\', true)')
             ->setClass("shortWidth");
         $this->removeButton = $factory->createButton(__("Remove"))
-            ->onClick('optionTransfer(\'' . $this->destinationSelect->getID() . '\',\'' . $this->sourceSelect->getID() . '\')')
+            ->onClick('optionTransfer(\'' . $this->name . '\', false)')
             ->setClass("shortWidth");
+
+        $this->searchBox = $factory->createTextField($name . "Search")
+            ->placeholder(__("Search"))
+            ->setClass("smallWidth")
+            ->addClass("floatNone");
     }
 
     public function addSortableAttribute($attribute, $values)
@@ -90,24 +96,20 @@ class MultiSelect implements OutputableInterface
     public function getOutput() {
         $output = '';
 
-        // TODO: Validate merge keys from both selects, throw exception if key conflict
-
-
         // TODO: Move javascript to somewhere more sensible
 
         $output .= '<script type="text/javascript">';
+        $output .= 'var '.$this->name.'sortBy = null;';
+        $output .= 'function optionTransfer(name, add) {
+            var select0 = $(\'#\'+name+(add ? \'Source\' : \'Destination\'));
+            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'Destination\'));
 
-        $output .= 'function optionTransfer(select0Name, select1Name) {
-            var select0 = $(\'#\'+select0Name);
-            var select1 = $(\'#\'+select1Name);
-
-            select0.find(\'option:selected\').each(function() {
+            select0.find(\'option:selected\').each(function(){
                 select1.append($(this).clone());
                 $(this).detach().remove();
             });
 
-            sortSelect(select0, null);
-            sortSelect(select1, null);
+            sortSelects(name);
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -130,7 +132,6 @@ class MultiSelect implements OutputableInterface
                 var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
-                var sortables = $(\'#'. $this->name .'\').data(\'sortable\');
 
                 form.submit(function(){
                     var options = $(\'option\', destinationSelect);
@@ -144,19 +145,33 @@ class MultiSelect implements OutputableInterface
                 });
 
                 $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
-                    var sortBy = $(this).val();
+                    '.$this->name.'sortBy = $(this).val();
+                    sortSelects("'.$this->name.'");
+                });
 
-                    var values = null;
-
-                    if (sortBy != \'Sort by Name\') {
-                        values = sortables[sortBy];
-                    }
-
-                    sortSelect(sourceSelect, values);
-                    sortSelect(destinationSelect, values);
-
+                $(\'#'. $this->searchBox->getID() .'\').keyup(function(){
+                    var search = $(this).val().toLowerCase();
+                    $(\'option\', sourceSelect).each(function(){
+                        var option = $(this);
+                        if (option.text().toLowerCase().includes(search)) {
+                            option.show();
+                        } else {
+                            option.hide();
+                        }
+                    });
                 });
             });
+
+            function sortSelects(name) {
+                var values = null;
+
+                if (window[name+"sortBy"] != \'Sort by Name\' && window[name+"sortBy"] != null) {
+                    values = $(\'#\' + name).data(\'sortable\')[window[name+"sortBy"]];
+                }
+
+                sortSelect($(\'#\' + name + "Source"), values);
+                sortSelect($(\'#\' + name + "Destination"), values);
+            }
 
         ';
         $output .= '</script>';
@@ -173,6 +188,7 @@ class MultiSelect implements OutputableInterface
             if (!empty($this->sortableAttributes)) {
                 $output .= '<br/>' . $this->sortBySelect->getOutput();
             }
+            $output .= '<br/>' . $this->searchBox->getOutput();
         $output .= '</td>';
 
         $output .= '<td style="width:35%; vertical-align:top;">';

@@ -57,6 +57,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
+    public function createTableCell($content = '')
+    {
+        return new Layout\TableCell($content);
+    }
+
     public function createGrid($id = '', $columns = 1)
     {
         return new Layout\Grid($this, $id, $columns);
@@ -186,7 +191,7 @@ class FormFactory implements FormFactoryInterface
         if(!empty($id)) {
             $button->setID($id)->setName($id);
         }
-        
+
         return $button;
     }
 
@@ -244,6 +249,11 @@ class FormFactory implements FormFactoryInterface
     public function createYesNo($name)
     {
         return $this->createSelect($name)->fromArray(array( 'Y' => __('Yes'), 'N' => __('No') ));
+    }
+
+    public function createYesNoRadio($name)
+    {
+        return $this->createRadio($name)->fromArray(array('Y' => __('Yes'), 'N' => __('No') ))->inline(true);
     }
 
     public function createCheckAll($name = 'checkall')
@@ -350,7 +360,6 @@ class FormFactory implements FormFactoryInterface
                 'NOK kr' => 'Norwegian Krone (kr)',
                 'PHP ₱' => 'Philippine Peso (₱)',
                 'PLN zł' => 'Polish Zloty (zł)',
-                'RUB ₽' => 'Russian Ruble (₽)',
                 'SGD $' => 'Singapore Dollar ($)',
                 'SEK kr‎' => 'Swedish Krona (kr)',
                 'CHF' => 'Swiss Franc (CHF)',
@@ -363,7 +372,9 @@ class FormFactory implements FormFactoryInterface
                 'BGN лв.' => 'Bulgarian Lev (лв.)',
                 'XAF FCFA' => 'Central African Francs (FCFA)',
                 'CNY ¥' => 'Chinese Renminbi (¥)',
+                'COP $' => 'Colombian Peso ($)',
                 'EGP £' => 'Egyptian Pound (£)',
+                'FJD $' => 'Fijian Dollar ($)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
@@ -376,11 +387,13 @@ class FormFactory implements FormFactoryInterface
                 'NPR ₨' => 'Nepalese Rupee (₨)',
                 'NGN ₦' => 'Nigerian Naira (₦)',
                 'PKR ₨' => 'Pakistani Rupee (₨)',
+                'RUB ₽' => 'Russian Ruble (₽)',
                 'SAR ﷼‎' => 'Saudi Riyal (﷼‎)',
                 'ZAR R‎' => 'South African Rand (R‎)',
                 'TZS TSh' => 'Tanzania Shilling (TSh)',
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
+                'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)'
             ),
         );

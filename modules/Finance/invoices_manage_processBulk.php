@@ -315,7 +315,6 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->IsSMTP();
                                 $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
@@ -329,6 +328,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                                 if (!$mail->Send()) {
                                     $emailFail = true;
+                                    //Set log
+                                    $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
+                                    $logArray=array() ;
+                                    $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
+                                    setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Issue Email Failure', $logArray) ;
                                 }
                             }
                         }
@@ -462,7 +466,6 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         }
 
                         $mail = getGibbonMailer($guid);
-                        $mail->IsSMTP();
                         $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
                         foreach ($emails as $address) {
                             $mail->AddBCC($address);
@@ -476,6 +479,11 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
 
                         if (!$mail->Send()) {
                             $emailFail = true;
+                            //Set log
+                            $gibbonModuleID=getModuleIDFromName($connection2, 'Finance') ;
+                            $logArray=array() ;
+                            $logArray['recipients'] = is_array($emails) ? implode(',', $emails) : '' ;
+                            setLog($connection2, $_SESSION[$guid]["gibbonSchoolYearID"], $gibbonModuleID, $_SESSION[$guid]["gibbonPersonID"], 'Finance - Bulk Invoice Reminder Email Failure', $logArray) ;
                         }
                     }
                 }

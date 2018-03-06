@@ -52,17 +52,8 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $action == '') { echo
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
-            $people = array();
-            $count = 0;
-            for ($i = 1; $i <= $_POST['count']; ++$i) {
-                if (isset($_POST["check-$i"])) {
-                    if ($_POST["check-$i"] == 'on') {
-                        $people[$count][0] = $_POST["gibbonPersonID-$i"];
-                        $people[$count][1] = $_POST["role-$i"];
-                        ++$count;
-                    }
-                }
-            }
+            $people = isset($_POST['gibbonPersonID']) ? $_POST['gibbonPersonID'] : array();
+
             //Proceed!
             //Check if person specified
             if (count($people) < 1) {
@@ -71,18 +62,14 @@ if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $action == '') { echo
             } else {
                 $partialFail = false;
                 if ($action == 'Mark as left') {
-                    for ($i = 0; $i < count($people); ++$i) {
-                        if ($people[$i][1] == 'Student' or $people[$i][1] == 'Teacher') {
-                            try {
-                                $data = array('role' => $people[$i][1].' - Left', 'gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $people[$i][0]);
-                                $sql = 'UPDATE gibbonCourseClassPerson SET role=:role WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $partialFail == true;
-                            }
-                        } else {
-                            $partialFail = true;
+                    foreach ($people as $gibbonPersonID) {
+                        try {
+                            $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonID' => $gibbonPersonID);
+                            $sql = "UPDATE gibbonCourseClassPerson SET role=CONCAT(role, ' - Left ') WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonID=:gibbonPersonID  AND (role = 'Student' OR role = 'Teacher')";
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            $partialFail == true;
                         }
                     }
                 }

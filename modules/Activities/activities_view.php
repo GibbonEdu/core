@@ -224,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             if ($continue == false) {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 //Should we show date as term or date?

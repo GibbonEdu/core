@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -46,52 +46,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     if (isset($_GET['gibbonActivityID'])) {
         $gibbonActivityID = $_GET['gibbonActivityID'];
     }
-    ?>
-	
-	<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-		<table class='smallIntBorder fullWidth' cellspacing='0'>	
-			<tr>
-				<td style='width: 275px'> 
-					<b><?php echo __($guid, 'Activity')  ?></b><br/>
-					<span class="emphasis small"></span>
-				</td>
-				<td class="right">
-					<select class="standardWidth" name="gibbonActivityID">
-						<?php
-                        echo "<option value=''></option>";
-						try {
-                            $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                            $sqlSelect = "";
-                            if($highestAction == "Enter Activity Attendance") {
-    							$sqlSelect = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
-                            } elseif($highestAction == "Enter Activity Attendance_leader") {
-                                $dataSelect["gibbonPersonID"] = $_SESSION[$guid]["gibbonPersonID"];
-                                $sqlSelect = "SELECT gibbonActivity.gibbonActivityID, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
-                            }
-							$resultSelect = $connection2->prepare($sqlSelect);
-							$resultSelect->execute($dataSelect);
-						} catch (PDOException $e) {
-						}
-						while ($rowSelect = $resultSelect->fetch()) {
-							$selected = '';
-							if ($gibbonActivityID == $rowSelect['gibbonActivityID']) {
-								$selected = 'selected';
-							}
-							echo "<option $selected value='".$rowSelect['gibbonActivityID']."'>".htmlPrep($rowSelect['name']).'</option>';
-						}
-						?>				
-					</select>
-				</td>
-			</tr>
-			<tr>
-				<td colspan=2 class="right">
-					<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/activities_attendance.php">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-				</td>
-			</tr>
-		</table>
-	</form>
-	<?php
+    
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    
+    $sql = "";
+    if($highestAction == "Enter Activity Attendance") {
+        $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name, programStart  FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name, programStart";
+    } elseif($highestAction == "Enter Activity Attendance_leader") {
+        $data["gibbonPersonID"] = $_SESSION[$guid]["gibbonPersonID"];
+        $sql = "SELECT gibbonActivity.gibbonActivityID AS value, name, programStart FROM gibbonActivityStaff JOIN gibbonActivity ON (gibbonActivityStaff.gibbonActivityID = gibbonActivity.gibbonActivityID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' AND gibbonActivityStaff.gibbonPersonID=:gibbonPersonID AND (gibbonActivityStaff.role='Organiser' OR gibbonActivityStaff.role='Assistant' OR gibbonActivityStaff.role='Coach') ORDER BY name, programStart";
+    }
+                                                         
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_attendance.php");
+    
+    $row = $form->addRow();
+        $row->addLabel('gibbonActivityID', __('Activity'));
+        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->isRequired()->placeholder();
+    
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session);
+        
+    echo $form->getOutput();
 
     // Cancel out early if we have no gibbonActivityID
     if (empty($gibbonActivityID)) {
@@ -123,6 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         return;
     }
+
+    $students = $studentResult->fetchAll();
 
     try {
         $data = array('gibbonActivityID' => $gibbonActivityID);
@@ -216,132 +196,108 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo '</div>';
         }
 
-        echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/activities_attendanceProcess.php?gibbonActivityID=$gibbonActivityID' >";
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID)->setClass('');
+        $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+        
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
 
-        echo "<div class='doublescroll-wrapper'>";
-        echo "<table class='mini' cellspacing='0' style='width:100%; border: 0; margin:0;'>";
-        echo "<tr class='head' style='height:60px; '>";
-        echo "<th style='width:175px;'>";
-        echo __($guid, 'Student');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Attendance');
-        echo '</th>';
-        echo "<th class='emphasis subdued' style='text-align:right'>";
-        printf(__($guid, 'Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions));
-        echo '</th>';
-        echo '</tr>';
-        echo '</table>';
+        $row = $form->addRow()->addClass('doublescroll-wrapper');
+        
+        // Headings as a separate table (for double-scroll)
+        $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');
+        $header = $table->addHeaderRow();
+            $header->addContent(__('Student'))->addClass('attendanceRowHeader');
+            $header->addContent(__('Attendance'));
+            $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
+                ->addClass('emphasis subdued right');
 
-        echo "<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>";
+        $row->addContent("<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>");
 
-        $columnCount = count($activitySessions);
+        // Wrap the attendance table in a double-scroll container
+        $table = $row->addColumn()->addClass('doublescroll-container')
+            ->addTable()->setClass('mini colorOddEven fullWidth noMargin noBorder');
 
-        echo "<div class='doublescroll-container'>";
-        echo "<table class='mini colorOddEven' cellspacing='0' style='width: ".($columnCount * 56)."px'>";
+        $row = $table->addRow();
+            $row->addContent(__('Date'))->addClass('attendanceDateHeader attendanceRowHeader');
 
-        echo "<tr style='height: 75px'>";
-        echo "<td style='vertical-align:top;height:75px;'>".__($guid, 'Date').'</td>';
+        $icon = '<img style="margin-top: 3px" title="%1$s" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%2$s"/>';
 
+        // Display the date and action buttons for each session
         $i = 0;
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            if (isset($sessionAttendanceData[$sessionDate]['data'])) {
-                // Handle instances where the time slot has been deleted after creating an attendance record
-                        if (!in_array(date('D', $sessionTimestamp), $activityWeekDays) || ($sessionTimestamp < $activityTimespan['start']) || ($sessionTimestamp > $activityTimespan['end'])) {
-                            echo "<td style='vertical-align:top; width: 45px;' class='warning' title='".__($guid, 'Does not match the time slots for this activity.')."'>";
-                        } else {
-                            echo "<td style='vertical-align:top; width: 45px;'>";
-                        }
+            $col = $row->addColumn()->addClass('attendanceDateHeader');
+            $dateLabel = $col->addContent(date('D<\b\r>M j', $sessionTimestamp))->addClass('attendanceDate');
 
-                printf("<span title='%s'>%s</span><br/>&nbsp;<br/>", $sessionAttendanceData[$sessionDate]['info'], date('D<\b\r>M j', $sessionTimestamp));
-                echo "<a class='editColumn' data-checked='' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            if (isset($sessionAttendanceData[$sessionDate]['data'])) {
+                $col->addWebLink(sprintf($icon, __('Edit'), 'config.png'))
+                    ->setURL('')
+                    ->addClass('editColumn')
+                    ->addData('checked', '')
+                    ->addData('column', strval($i))
+                    ->addData('date', $sessionTimestamp);
             } else {
-                echo "<td style='color: #bbb; vertical-align:top; width: 45px;'>";
-                echo date('D<\b\r>M j', $sessionTimestamp).'<br/>&nbsp;<br/>';
-                echo "<a class='editColumn' data-checked='checked' data-column='$i' data-date='".$sessionTimestamp."'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                $col->addWebLink(sprintf($icon, __('Add'), 'page_new.png'))
+                    ->setURL('')
+                    ->addClass('editColumn')
+                    ->addData('checked', 'checked')
+                    ->addData('column', strval($i))
+                    ->addData('date', $sessionTimestamp);
+                $dateLabel->addClass('subdued');
             }
-            echo "<a class='clearColumn hidden' data-column='$i'><img style='margin-top: 3px' title='".__('Clear')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            ++$i;
+
+            $col->addWebLink(sprintf($icon, __('Clear'), 'garbage.png'))
+                ->setURL('')
+                ->addClass('clearColumn hidden')
+                ->addData('column', strval($i));
+
+            $i++;
         }
 
-        echo '</tr>';
-
-        $count = 0;
         // Build an empty array of attendance count data for each session
         $attendanceCount = array_combine(array_keys($activitySessions), array_fill(0, count($activitySessions), 0));
 
-        while ($row = $studentResult->fetch()) {
-            ++$count;
-            $student = $row['gibbonPersonID'];
+        // Display student attendance data per session
+        foreach ($students as $index => $student) {
+            $row = $table->addRow()->addData('student', $student['gibbonPersonID']);
 
-            echo "<tr data-student='$student'>";
-            echo '<td>';
-            echo $count.'. '.formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-            echo '</td>';
+            $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+                ->setURl($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
+                ->addParam('gibbonPersonID', $student['gibbonPersonID'])
+                ->setClass('colName')
+                ->prepend(($index+1).') ');
 
             $i = 0;
             foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-                echo "<td class='col$i'>";
-                if (isset($sessionAttendanceData[$sessionDate]['data'])) {
-                    if (isset($sessionAttendanceData[$sessionDate]['data'][$student])) {
-                        echo '✓';
-                        $attendanceCount[$sessionDate]++;
-                    }
+                $content = '';
+                if (isset($sessionAttendanceData[$sessionDate]['data'][$student['gibbonPersonID']])) {
+                    $content = '✓';
+                    $attendanceCount[$sessionDate]++;
                 }
-                echo '</td>';
+                $row->addContent($content)->setClass("col$i");
                 ++$i;
             }
-
-            echo '</tr>';
-
-            $lastPerson = $row['gibbonPersonID'];
         }
 
-            // Output a total attendance per column
-            echo '<tr>';
-        echo "<td class='right'>";
-        echo __($guid, 'Total students:');
-        echo '</td>';
+        // Total students per date
+        $row = $table->addRow();
+        $row->addContent(__('Total students:'))->addClass('right');
 
         foreach ($activitySessions as $sessionDate => $sessionTimestamp) {
-            echo '<td>';
-            if (!empty($attendanceCount[$sessionDate])) {
-                echo $attendanceCount[$sessionDate].' / '.$activity['participants'];
-            }
-            echo '</td>';
+            $row->addContent(!empty($attendanceCount[$sessionDate])
+                ? $attendanceCount[$sessionDate].' / '.$activity['participants']
+                : ''
+            );
         }
 
-        echo '</tr>';
+        $row = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth')->addRow();
+            $row->addContent(__('All highlighted columns will be updated when you press submit.'))
+                ->wrap('<span class="small emphasis">', '</span>');
+            $row->addSubmit();
 
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=16>';
-            echo __($guid, 'There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
+        echo $form->getOutput();
 
-        echo '</table>';
-        echo '</div>';
-        echo '</div>'; ?>
-			<table class='smallIntBorder fullWidth' cellspacing='0'>	
-				<tr>
-					<td>
-						<em><?php echo __($guid, 'All highlighted columns will be updated when you press submit.'); ?></em>
-					</td>
-					<td class="right">
-						<input name="gibbonPersonID" id="gibbonPersonID" value="<?php echo $_SESSION[$guid]['gibbonPersonID']; ?>" type="hidden">
-						<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-						<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					</td>
-				</tr>
-			</table>
-
-		</form>
-		<?php
         echo '<br/>';
     }
 }
 
-?>

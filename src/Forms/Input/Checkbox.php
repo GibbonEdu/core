@@ -34,6 +34,7 @@ class Checkbox extends Input
     protected $description;
     protected $checked = array();
     protected $checkall = false;
+    protected $inline = false;
 
     /**
      * Create a checkpox input with a default value of on when checked.
@@ -104,6 +105,17 @@ class Checkbox extends Input
     }
 
     /**
+     * Sets multiple checkbox elements to display horizontally.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function inline($value = true)
+    {
+        $this->inline = $value;
+        return $this;
+    }
+
+    /**
      * Return true if the passed value matches the current checkbox element value(s).
      * @param   mixed  $value
      * @return  bool
@@ -125,8 +137,14 @@ class Checkbox extends Input
     {
         $output = '';
 
-        $this->options = (!empty($this->getOptions()))? $this->getOptions() : array($this->getValue() => $this->description);
-        $name = (count($this->options)>1 && stripos($this->getName(), '[]') === false)? $this->getName().'[]' : $this->getName();
+        if (!empty($this->getOptions())) {
+            // Multiple checkboxes - ensure the form values are returned as an array
+            $name = (stripos($this->getName(), '[') === false)? $this->getName().'[]' : $this->getName();
+        } else {
+            // Single checkbox - build an options array
+            $this->options = array($this->getValue() => $this->description);
+            $name = $this->getName();
+        }
 
         if (!empty($this->options) && is_array($this->options)) {
             $identifier = preg_replace('/[^a-zA-Z0-9]/', '', $this->getID());
@@ -151,8 +169,13 @@ class Checkbox extends Input
                 $this->setAttribute('checked', $this->getIsChecked($value));
                 if ($value != 'on') $this->setValue($value);
 
-                $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
-                $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                if ($this->inline) {
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'>&nbsp;';
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label>&nbsp;&nbsp;';
+                } else {
+                    $output .= '<label for="'.$this->getID().'">'.$label.'</label> ';
+                    $output .= '<input type="checkbox" '.$this->getAttributeString().'><br/>';
+                }
 
                 $count++;
             }

@@ -92,14 +92,14 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 $I->seeSuccessMessage();
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
+$gibbonPersonUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
+
 $I->click('Logout', 'a');
 $I->loginAsAdmin();
 
 // // Accept ------------------------------------------------
-$I->amOnModulePage('Data Updater', 'data_personal_manage.php');
-$I->seeBreadcrumb('Personal Data Updates');
-
-$I->click('', 'a[title="Edit"]');
+$I->amOnModulePage('Data Updater', 'data_personal_manage_edit.php', array('gibbonPersonUpdateID' => $gibbonPersonUpdateID));
+$I->seeBreadcrumb('Edit Request');
 
 $I->see('McTest', 'td');
 $I->see('Test E. McTest', 'td');

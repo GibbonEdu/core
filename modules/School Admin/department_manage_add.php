@@ -90,10 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
        $column->addEditor('blurb', $guid);
 
     $row = $form->addRow();
-        $row->addLabel('file', __('Logo'))->description('125x125px jpg/png/gif');
+        $row->addLabel('file', __('Logo'))->description(__('125x125px jpg/png/gif'));
         $row->addFileUpload('file')
-            ->accepts('.jpg,.jpeg,.gif,.png')
-            ->addClass('right');
+            ->accepts('.jpg,.jpeg,.gif,.png');
 
     $row = $form->addRow();
         $row->addLabel('staff', __('Staff'));

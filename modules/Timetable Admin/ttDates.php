@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                                 $column->addContent(__('School Day'));
                             }
 
-                            $column->addCheckbox('dates[]')->setValue($i)->addClass($dayOfWeek.$values['nameShort']);
+                            $column->addCheckbox('dates[]')->setValue($i)->setClass($dayOfWeek.$values['nameShort']);
 
                             $column->addContent("<br/><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i."'><img style='margin-top: 3px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a><br/>");
 
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
             $sql = "SELECT gibbonTTDay.gibbonTTDayID as value, CONCAT(gibbonTT.name, ': ', gibbonTTDay.nameShort) as name
                     FROM gibbonTTDay 
                     JOIN gibbonTT ON (gibbonTTDay.gibbonTTID=gibbonTT.gibbonTTID) 
-                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibboNTT.name, gibbonTTDay.name";
+                    WHERE gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY gibbonTT.name, gibbonTTDay.name";
 
             $table = $form->addRow()->addTable()->setClass('fullWidth smallIntBorder');
             $row = $table->addRow();

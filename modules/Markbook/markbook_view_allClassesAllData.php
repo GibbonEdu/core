@@ -753,7 +753,7 @@
                             echo "<td class='largeColumn'>";
                             $style = '';
                             if ($rowEntry['comment'] != '') {
-                                if (strlen($rowEntry['comment']) < 11) {
+                                if (mb_strlen($rowEntry['comment']) < 11) {
                                     echo htmlPrep($rowEntry['comment']);
                                 } else {
                                     echo "<span $style title='".htmlPrep($rowEntry['comment'])."'>".mb_substr($rowEntry['comment'], 0, 10).'...</span>';

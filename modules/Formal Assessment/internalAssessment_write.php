@@ -296,8 +296,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 $submission[$i] = false;
                             }
 
-                                    //Column count
-                                    $span = 0;
+                            //Column count
+                            $span = 0;
                             $contents = true;
                             if ($attainmentOn[$i] == 'Y' and $attainmentID[$i] != '') {
                                 ++$span;

@@ -16,6 +16,9 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
+
+use Gibbon\Forms\Form;
+
 require_once dirname(__FILE__).'/gibbon.php';
 
 function getIPAddress() {
@@ -367,7 +370,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
         if ($resultNotifications->rowCount() > 0) {
             $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         } else {
-            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         }
         $return .= '</div>';
     }
@@ -1901,7 +1904,6 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
         $bodyPlain = emailBodyConvert($body);
 
         $mail = getGibbonMailer($guid);
-        $mail->IsSMTP();
         if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
             $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
         }
@@ -2171,56 +2173,42 @@ function getFastFinder($connection2, $guid)
     }
 
     $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 310px; float: right; height: 25px!important; margin-right: -5px }';
-    $output .= 'div.token-input-dropdown-facebook { width: 320px; z-index: 99999999 }';
+    $output .= 'ul.token-input-list-facebook { width: 300px; float: right; height: 25px!important; margin-right: -5px; background: #fff; }';
+    $output .= 'div.token-input-dropdown-facebook { width: 298px !important; z-index: 99999999 }';
+    $output .= 'table.fastFinder { margin: 0px 0px; opacity: 0.8; }';
     $output .= 'table.fastFinder td { border-top: none }';
+    $output .= '.fastFinderTotal { font-size: 9.6px; font-weight: normal; font-style: italic; line-height: 80%; color: #888; }';
+    $output .= '.fastFinderRow td { border-bottom: 0; }';
+    $output .= '#header-finder h2 { padding: 0;}';
     $output .= '</style>';
     $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
-    $output .= "<form method='get' action='".$_SESSION[$guid]['absoluteURL']."/indexFindRedirect.php'>";
-    $output .= "<table class='smallIntBorder fastFinder' cellspacing='0' style='width: 100%; margin: 0px 0px; opacity: 0.8'>";
-    $output .= '<tr>';
-    $output .= "<td style='vertical-align: top; padding: 0px' colspan=2>";
-    $output .= "<h2 style='padding-bottom: 0px'>";
-    $output .= __($guid, 'Fast Finder').': Actions';
-    if ($classIsAccessible == true) {
-        $output .= ', '.__($guid, 'Classes');
-    }
-    if ($studentIsAccessible == true) {
-        $output .= ', '.__($guid, 'Students');
-    }
-    if ($staffIsAccessible == true) {
-        $output .= ', '.__($guid, 'Staff');
-    }
-    $output .= '<br/>';
-    $output .= '</h2>';
-    $output .= '</td>';
-    $output .= '</tr>';
-    $output .= '<tr style=\'max-height: 38px!important\'>';
-    $output .= "<td style='vertical-align: top; border: none; padding-left: 0'>";
-    $output .= "<input class='topFinder' style='width: 275px' type='text' id='id' name='id' />";
-    $output .= '<script type="text/javascript">';
-        $output .= '$(document).ready(function() {';
-        $output .= '$("#id").tokenInput("'.$_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php",';
-        $output .= '{theme: "facebook",';
-        $output .= 'hintText: "'.__($guid, 'Start typing a name...').'",';
-        $output .= 'noResultsText: "'.__($guid, 'No results').'",';
-        $output .= 'searchingText: "'.__($guid, 'Searching...').'",';
-        $output .= 'allowCreation: false,';
-        $output .= 'preventDuplicates: true,';
-        $output .= 'tokenLimit: 1});';
-        $output .= '});';
-    $output .= '</script>';
-    $output .= "<script type='text/javascript'>";
-    $output .= "var id=new LiveValidation('id');";
-    $output .= 'id.add(Validate.Presence, { failureMessage: " " } );';
-    $output .= '</script>';
-    $output .= '</td>';
-    $output .= "<td class='right' style='vertical-align: top; border: none; padding-right: 0'>";
-    $output .= "<input style='height: 27px; width: 50px!important; margin-top: 0;' type='submit' value='".__($guid, 'Go')."'>";
-    $output .= '</td>';
-    $output .= '</tr>';
-    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
 
+    $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
+    $form->setClass('smallIntBorder fastFinder fullWidth');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $scopes = array(__('Actions'));
+    if ($classIsAccessible) $scopes[] = __('Classes');
+    if ($studentIsAccessible) $scopes[] = __('Students');
+    if ($staffIsAccessible) $scopes[] = __('Staff');
+
+    $row = $form->addRow()->setClass('right');
+        $row->addContent(__('Fast Finder').': ')
+            ->append(implode(', ', $scopes))
+            ->wrap('<h2>', '</h2>');
+
+    $row = $form->addRow()->addClass('fastFinderRow');
+        $row->addFinder('fastFinderSearch')
+            ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
+            ->setParameter('hintText', __('Start typing a name...'))
+            ->setParameter('noResultsText', __('No results'))
+            ->setParameter('searchingText', __('Searching...'))
+            ->setParameter('tokenLimit', 1)
+            ->addValidation('Validate.Presence', 'failureMessage: " "');
+        $row->addSubmit(__('Go'));
+
+    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
         try {
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
             $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID) FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
@@ -2229,19 +2217,16 @@ function getFastFinder($connection2, $guid)
         } catch (PDOException $e) {}
 
         if ($resultStudentCount->rowCount() > 0) {
-            $studentCount = $resultStudentCount->fetchColumn(0);
-
-            $output .= '<tr>';
-            $output .= "<td style='vertical-align: top' colspan=2>";
-            $output .= "<div style='padding-bottom: 0px; font-size: 80%; font-weight: normal; font-style: italic; line-height: 80%; padding: 1em,1em,1em,1em; width: 99%; text-align: right; color: #888;' >".__($guid, 'Total Student Enrolment:').' '.$studentCount.'</div>';
-            $output .= '</td>';
-            $output .= '</tr>';
+            $form->addRow()->addContent(__('Total Student Enrolment:').' ')
+                ->append($resultStudentCount->fetchColumn(0))
+                ->addClass('right')
+                ->wrap('<span class="fastFinderTotal">', '</span>');
+            }
         }
-    }
-    $output .= '</table>';
-    $output .= '</form>';
-    $output .= '</div>';
-    $output .= '</div>';
+
+    $output .= $form->getOutput();
+
+    $output .= '</div></div>';
 
     return $output;
 }
@@ -2260,22 +2245,16 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '<p>';
             $output .= __($guid, 'Please upload a passport photo to use as a profile picture.').' '.__($guid, '240px by 320px').'.';
             $output .= '</p>';
-            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."' enctype='multipart/form-data'>";
-            $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%; margin: 0px 0px'>";
-            $output .= '<tr>';
-            $output .= "<td style='vertical-align: top'>";
-            $output .= "<input type=\"file\" name=\"file1\" id=\"file1\" style='width: 165px'><br/><br/>";
-            $output .= '<script type="text/javascript">';
-            $output .= "var file1=new LiveValidation('file1');";
-            $output .= "file1.add( Validate.Inclusion, { within: ['gif','jpg','jpeg','png'], failureMessage: \"Illegal file type!\", partialMatch: true, caseSensitive: false } );";
-            $output .= '</script>';
-            $output .= '</td>';
-            $output .= "<td class='right' style='vertical-align: top'>";
-            $output .= "<input style='height: 27px; width: 20px!important; margin-top: 0px;' type='submit' value='".__($guid, 'Go')."'>";
-            $output .= '</td>';
-            $output .= '</tr>';
-            $output .= '</table>';
-            $output .= '</form>';
+
+            $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']);
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            $row = $form->addRow();
+                $row->addFileUpload('file1')->accepts('.jpg,.jpeg,.gif,.png')->setMaxUpload(false)->setClass('fullWidth');
+                $row->addSubmit(__('Go'));
+
+            $output .= $form->getOutput();
+
         } else { //Photo, so show image and removal link
             $output .= '<p>';
             $output .= getUserPhoto($guid, $_SESSION[$guid]['image_240'], 240);
@@ -2454,22 +2433,23 @@ function getModuleEntry($address, $connection2, $guid)
 
 function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
 {
+    global $guid;
     $output = false;
 
     if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
-        if ($informal == false) {
-            if ($reverse == true) {
-                $output = $title.' '.$surname.', '.strtoupper(mb_substr($preferredName, 0, 1)).'.';
-            } else {
-                $output = $title.' '.strtoupper(mb_substr($preferredName, 0, 1)).'. '.$surname;
-            }
-        } else {
-            if ($reverse == true) {
-                $output = $surname.', '.$preferredName;
-            } else {
-                $output = $preferredName.' '.$surname;
-            }
-        }
+
+        $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
+        $format = isset($_SESSION[$guid][$setting])? $_SESSION[$guid][$setting] : '[title] [preferredName:1]. [surname]';
+
+        $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
+            function ($matches) use ($title, $preferredName, $surname) {
+                list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
+                return isset($$token)
+                    ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
+                    : $matches[0];
+            },
+        $format);
+
     } elseif ($roleCategory == 'Parent') {
         if ($informal == false) {
             if ($reverse == true) {
@@ -2492,7 +2472,7 @@ function formatName($title, $preferredName, $surname, $roleCategory, $reverse = 
         }
     }
 
-    return $output;
+    return trim($output);
 }
 
 //$tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
@@ -2922,7 +2902,7 @@ function sidebar($gibbon, $pdo)
     }
 
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\menuModule($gibbon, $pdo);
+    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
     echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
@@ -3578,12 +3558,15 @@ function getUserPhoto($guid, $path, $size)
 
 //Gets Members of a roll group and prints them as a table.
 //Three modes: normal (roll order, surname, firstName), surname (surname, preferredName), preferredName (preferredNam, surname)
-function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal')
+function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $confidential = true, $orderBy = 'Normal', $print = false)
 {
     $return = false;
 
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
+    }
+    if ($print && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php')) {
+        $print = true ;
     }
 
     try {
@@ -3598,6 +3581,12 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
         $resultRollGroup = $connection2->prepare($sqlRollGroup);
         $resultRollGroup->execute($dataRollGroup);
     } catch (PDOException $e) {
+    }
+
+    if ($print) {
+        echo "<div class='linkTop'>";
+        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Students/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID&view=Basic'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo '</div>';
     }
 
     $return .= "<table class='noIntBorder' cellspacing='0' style='width:100%'>";
@@ -3996,8 +3985,6 @@ function setLanguageSession($guid, $row)
     $_SESSION[$guid]['i18n']['dateFormat'] = $row['dateFormat'];
     $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
     $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
-    $_SESSION[$guid]['i18n']['maintainerName'] = $row['maintainerName'];
-    $_SESSION[$guid]['i18n']['maintainerWebsite'] = $row['maintainerWebsite'];
     $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
 }
 
@@ -4522,6 +4509,8 @@ function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPerso
         return;
     }
 
+    $ip = (empty($ip) ? getIPAddress() : $ip);
+
     if ($array != null) {
         $serialisedArray = serialize($array);
     } else {
@@ -4932,6 +4921,8 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
                     $class = 'warning';
                 } elseif (stripos($return, 'success') !== false) {
                     $class = 'success';
+                } elseif (stripos($return, 'message') !== false) {
+                    $class = 'message';
                 }
                 break;
             }

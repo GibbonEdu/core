@@ -390,8 +390,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					if ($values['address1'] != '') {
 						try {
-							$dataAddress = array('gibbonPersonID' => $values['gibbonPersonID'], 'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%');
-							$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' AND address1 LIKE :addressMatch AND NOT gibbonPersonID=:gibbonPersonID ORDER BY surname, preferredName";
+                            $dataAddress = array(
+                                'gibbonPersonID' => $values['gibbonPersonID'], 
+                                'addressMatch' => '%'.strtolower(preg_replace('/ /', '%', preg_replace('/,/', '%', $values['address1']))).'%',
+                                'gibbonFamilyPeople' => implode(',', array_keys($people)),
+                            );
+							$sqlAddress = "SELECT gibbonPersonID, title, preferredName, surname, category 
+                                FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+                                WHERE status='Full' AND address1 LIKE :addressMatch 
+                                AND FIND_IN_SET(gibbonPersonID, :gibbonFamilyPeople) AND NOT gibbonPersonID=:gibbonPersonID 
+                                ORDER BY surname, preferredName";
 							$resultAddress = $connection2->prepare($sqlAddress);
 							$resultAddress->execute($dataAddress);
 						} catch (PDOException $e) {
@@ -403,13 +411,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 							$row = $form->addRow()->addClass('address  matchHighlight');
 							$row->addLabel('matchAddress', __('Matching Address 1'))->description(__('These users have similar Address 1. Do you want to change them too?'));
-							$table = $row->addTable()->setClass('formTable standardWidth floatRight');
+							$table = $row->addTable()->setClass('standardWidth');
 
 							while ($rowAddress = $resultAddress->fetch()) {
 								$adressee = formatName($rowAddress['title'], $rowAddress['preferredName'], $rowAddress['surname'], $rowAddress['category']).' ('.$rowAddress['category'].')';
 
 								$row = $table->addRow()->addClass('address');
-								$row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee);
+								$row->addTextField($addressCount.'-matchAddressLabel')->readOnly()->setValue($adressee)->setClass('fullWidth');
 								$row->addCheckbox($addressCount.'-matchAddress')->setValue($rowAddress['gibbonPersonID']);
 
 								$addressCount++;

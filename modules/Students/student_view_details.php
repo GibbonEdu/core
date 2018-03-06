@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonPersonID = $_GET['gibbonPersonID'];
+        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = null;
         if (isset($_GET['search'])) {
             $search = $_GET['search'];
@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             $sort = $_GET['sort'];
         }
 
-        if ($gibbonPersonID == false) {
+        if (empty($gibbonPersonID)) {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';
@@ -1696,6 +1696,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             echo '</td>';
                             echo '</tr>';
+                            if (!empty($rowMedical['comment'])) {
+                                echo '<tr>';
+                                echo "<td padding-top: 15px; vertical-align: top' colspan=3>";
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Comment').'</span><br/>';
+                                echo $rowMedical['comment'];
+                                echo '</td>';
+                                echo '</tr>';
+                            }
                             echo '</table>';
 
                             while ($rowCondition = $resultCondition->fetch()) {
@@ -1803,7 +1811,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                     $rowFilter = $form->addRow();
                                         $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'));
-                                    
+
                                     echo $form->getOutput();
                                 }
 
@@ -2013,26 +2021,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         ->placeholder();
                                 }
 
-                                $showHideLink = "  &nbsp; <input checked type='checkbox' name='details' class='details' value='Yes' />";
-                                $showHideLink .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show/Hide Details').'</span> &nbsp;';
+                                $details = isset($_GET['details'])? $_GET['details'] : 'Yes';
+                                $form->addHiddenValue('details', 'No');
+                                $showHide = $form->getFactory()->createCheckbox('details')->addClass('details')->setValue('Yes')->checked($details)->inline(true)
+                                    ->description(__('Show/Hide Details'))->wrap('&nbsp;<span class="small emphasis displayInlineBlock">', '</span>');
 
                                 $rowFilter = $form->addRow();
-                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHideLink);
-                                
+                                    $rowFilter->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonPersonID', 'allStudents', 'search', 'subpage'))->prepend($showHide->getOutput());
+
                                 echo $form->getOutput();
                                 ?>
 
                                 <script type="text/javascript">
                                     /* Show/Hide detail control */
                                     $(document).ready(function(){
-                                        $(".details").click(function(){
+                                        var updateDetails = function (){
                                             if ($('input[name=details]:checked').val()=="Yes" ) {
-                                                $(".detailItem").slideDown("fast", $("#detailItem").css("{'display' : 'table-row'}"));
+                                                $(".detailItem").slideDown("fast", $(".detailItem").css("{'display' : 'table-row'}"));
                                             }
                                             else {
                                                 $(".detailItem").slideUp("fast");
                                             }
-                                            });
+                                        }
+                                        $(".details").click(updateDetails);
+                                        updateDetails();
                                     });
                                 </script>
 
@@ -2360,7 +2372,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                     }
                                                 }
                                                 echo '</tr>';
-                                                if (strlen($rowEntry['comment']) > 50) {
+                                                if (mb_strlen($rowEntry['comment']) > 200) {
                                                     echo "<tr class='comment-$entryCount' id='comment-$entryCount'>";
                                                     echo '<td colspan=6>';
                                                     echo nl2br($rowEntry['comment']);
@@ -2406,6 +2418,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
                                 } elseif ($highestAction == 'View Internal Assessments_myChildrens') {
                                     echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, 'parent');
+                                } elseif ($highestAction == 'View Internal Assessments_mine') {
+                                    echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');
                                 }
                             }
                         }

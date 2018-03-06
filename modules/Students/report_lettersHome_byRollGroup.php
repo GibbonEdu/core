@@ -35,7 +35,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonFamily.gibbonFamilyID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY rollGroup, surname, preferredName";
+        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonFamily.gibbonFamilyID, gibbonFamily.name AS familyName
+            FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND gibbonPerson.status='Full'
+            ORDER BY rollGroup, surname, preferredName";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -46,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     } else {
+        $siblings = array();
         $currentRollGroup = '';
         $lastRollGroup = '';
         $count = 0;
@@ -74,6 +83,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo __($guid, 'Student');
                 echo '</th>';
                 echo '<th>';
+                echo __($guid, 'Younger Siblings');
+                echo '</th>';
+                echo '<th>';
+                echo __($guid, 'Family');
+                echo '</th>';
+                echo '<th>';
                 echo __($guid, 'Sibling Count');
                 echo '</th>';
                 echo '</tr>';
@@ -85,7 +100,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             $proceed = false;
             try {
                 $dataSibling = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
-                $sqlSibling = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFamily.name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID ORDER BY gibbonFamily.gibbonFamilyID, dob";
+                $sqlSibling = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonFamily.name, gibbonFamily.gibbonFamilyID
+                    FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full'
+                        AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID
+                    ORDER BY gibbonFamily.gibbonFamilyID, dob";
                 $resultSibling = $connection2->prepare($sqlSibling);
                 $resultSibling->execute($dataSibling);
             } catch (PDOException $e) {
@@ -98,6 +121,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 $rowSibling = $resultSibling->fetch();
                 if ($rowSibling['gibbonPersonID'] == $row['gibbonPersonID']) {
                     $proceed = true;
+                }
+                else { //Store sibling away for later use
+                    $siblings[$rowSibling['gibbonFamilyID']][$row['gibbonPersonID']] = formatName('', $row['preferredName'], $row['surname'], 'Student', true);
                 }
             }
 
@@ -116,6 +142,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo '</td>';
                 echo '<td>';
                 echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo '</td>';
+                echo '<td>';
+                if (!empty($siblings[$row['gibbonFamilyID']]) && is_array($siblings[$row['gibbonFamilyID']])) {
+                    foreach ($siblings[$row['gibbonFamilyID']] AS $sibling) {
+                        echo $sibling."</br>";
+                    }
+                }
+                echo '</td>';
+                echo '<td>';
+                echo $row['familyName'];
                 echo '</td>';
                 echo "<td style='width: 20%'>";
                 echo $resultSibling->rowCount() - 1;

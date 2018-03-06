@@ -17,22 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Gibbon system-wide includes
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
+include '../../gibbon.php';
 
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
 //Setup variables
 $output = '';
-$id = $_GET['id'];
+$id = isset($_GET['id'])? $_GET['id'] : '';
+$id = preg_replace('/[^a-zA-Z0-9-_]/', '', $id);
 
 $output .= "<script type='text/javascript'>";
     $output .= '$(document).ready(function() {';
@@ -56,68 +52,29 @@ $output .= "<script type='text/javascript'>";
     $output .= '};';
 $output .= '</script>';
 
-$output .= "<table cellspacing='0' style='width: 100%'>";
-    $output .= "<tr id='".$id."resourceQuick'>";
-        $output .= "<td colspan=2 style='border: none; padding-top: 0px'>";
-            $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();'><img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
-            $output .= "<form id='".$id."ajaxForm'>";
-                $output .= "<table cellspacing='0' style='border: none; width: 100%'>";
-                    //Get list of acceptable file extensions
-                    try {
-                        $dataExt = array();
-                        $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                        $resultExt = $connection2->prepare($sqlExt);
-                        $resultExt->execute($dataExt);
-                    } catch (PDOException $e) {
-                    }
-                    $ext = '';
-                    while ($rowExt = $resultExt->fetch()) {
-                        $ext = $ext."'.".$rowExt['extension']."',";
-                    }
+$form = Form::create($id.'ajaxForm', '')->addClass('resourceQuick');
 
-                    //Produce 4 file input boxes
-                    for ($i = 1; $i < 5; ++$i) {
-                        $output .= "<tr id='".$id."resourceFile'>";
-                        $output .= '<td>';
-                        $output .= '<b>'.sprintf(__($guid, 'File %1$s'), $i).'</b><br/>';
-                        $output .= '</td>';
-                        $output .= "<td class='right'>";
-                        $output .= "<input type='file' name='".$id.'file'.$i."' id='".$id.'file'.$i."' style='max-width: 235px'><br/><br/>";
-                        $output .= "<script type='text/javascript'>";
-                        $output .= 'var '.$id.'file'.$i."=new LiveValidation('".$id.'file'.$i."');";
-                        $output .= $id.'file'.$i.'.add( Validate.Inclusion, { within: ['.$ext."], failureMessage: 'Illegal file type!', partialMatch: true, caseSensitive: false } );";
-                        $output .= '</script>';
-                        $output .= '</td>';
-                        $output .= '</tr>';
-                    }
+$form->addHiddenValue('id', $id);
+$form->addHiddenValue($id.'address', $_SESSION[$guid]['address']);
 
-                    $output .= '<tr>';
-                        $output .= '<td>';
-                            $output .= '<b>'.__($guid, 'Insert Images As').'*</b><br/>';
-                        $output .= '</td>';
-                        $output .= '<td class="right">';
-                            $output .= '<select name="imagesAsLinks" id="imagesAsLinks" style="width: 302px">';
-                                $output .= "<option value='N'>".__($guid, 'Image').'</option>';
-                                $output .= "<option value='Y'>".__($guid, 'Link').'</option>';
-                            $output .= '</select>';
-                        $output .= '</td>';
-                    $output .= '</tr>';
+$row = $form->addRow();
+    $row->addWebLink("<img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
+        ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")->addClass('right');
 
-                    $output .= '<tr>';
-                        $output .= '<td>';
-                            $output .= getMaxUpload($guid, true);
-                        $output .= '</td>';
-                        $output .= "<td class='right'>";
-                            $output .= "<input type='hidden' name='id' value='".$id."'>";
-                            $output .= "<input type='hidden' name='".$id."address' value='".$_SESSION[$guid]['address']."'>";
-                            $output .= "<input type='submit' value='Submit'>";
-                        $output .= '</td>';
-                    $output .= '</tr>';
+for ($i = 1; $i < 5; ++$i) {
+    $row = $form->addRow();
+        $row->addLabel($id.'file'.$i, sprintf(__('File %1$s'), $i));
+        $row->addFileUpload($id.'file'.$i)->setMaxUpload(false);
+}
 
-                $output .= '</table>';
-            $output .= '</form>';
-        $output .= '</td>';
-    $output .= '</tr>';
-$output .= '</table>';
+$row = $form->addRow();
+    $row->addLabel('imagesAsLinks', __('Insert Images As'));
+    $row->addSelect('imagesAsLinks')->fromArray(array('N' => __('Image'), 'Y' => __('Link')))->isRequired();
+
+$row = $form->addRow();
+    $row->addContent(getMaxUpload($guid, true));
+    $row->addSubmit();
+
+$output .= $form->getOutput();
 
 echo $output;

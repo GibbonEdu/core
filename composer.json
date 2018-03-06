@@ -1,0 +1,24 @@
+{
+    "name": "gibbonedu/core",
+    "description": "Gibbon is a flexible, open source school management platform designed to make life better for teachers, students, parents and leaders. https://gibbonedu.org",
+    "type": "project",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Ross Parker",
+            "email": "ross@rossparker.org"
+        }
+    ],
+    "require": {
+        "php" : "^5.5 || ^7.0",
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "ext-gettext": "*",
+        "ext-PDO": "*"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": { "Gibbon\\": ["src/", "src/Gibbon"] }
+    }
+}
