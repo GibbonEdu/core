@@ -50,15 +50,16 @@ jQuery(function($){
 	$('input[id$="attainmentValueRaw"]').change( function() {
 
 		// This value wont exist if not using a percent scale
-		if ($('#attainmentRawMax').length == false) return;
+		if ($('[name="attainmentRawMax"]').length == false) return;
 
 		$(this).removeClass('highlight');
         $(this).prop('title', '' );
 
 		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-'));
 		var thisValue = parseFloat( $(this).val() );
-		var maxValue = parseFloat( $('#attainmentRawMax').val() );
-		var attainment = $( '#' + index + '-attainmentValue');
+		var maxValue = parseFloat( $('[name="attainmentRawMax"]').val() );
+        var attainment = $( '#' + index + '-attainmentValue');
+        var scaleType = $('[name="attainmentScaleType"]').val();
 
 		if ( $(this).val() == '' || maxValue == 0 || maxValue == '') {
 			return;
@@ -67,9 +68,9 @@ jQuery(function($){
 			attainment.find('option[value=""]').prop('selected', true);
 			$(this).val('');
 			return;
-		}
-
-		if ($('#attainmentRawMax').data('scale') == '%') {
+        }
+        
+		if (scaleType == '%') {
 			if ( thisValue > maxValue ) {
 				thisValue = maxValue;
 				$(this).val(thisValue);
@@ -86,7 +87,6 @@ jQuery(function($){
 				}
 			}
 		}
-
 	});
 
 	// Highlight a raw value if it doesnt match the percent, but don't change it
