@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/tt_space.php');
 
         $row = $form->addRow();
-            $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
+            $row->addLabel('search', __('Search For'));
             $row->addTextField('search')->setValue($search);
 
         $row = $form->addRow();
