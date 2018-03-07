@@ -214,6 +214,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     'vi_VN' => 'Tiếng Việt - Việt Nam',
                                     'ar_SA' => 'العربية - المملكة العربية السعودية',
                                     'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+                                    'zh_CN' => '汉语 - 中国',
                                     'zh_HK' => '體字 - 香港');
 
                                 $row = $form->addRow();
