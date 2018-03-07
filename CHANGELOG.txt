@@ -35,6 +35,7 @@ v16.0.00
 		System: moved Russian Ruble from PayPal to Other section in currency listing
 		System: added Afaan Oromo as development language
 		System: made translation credits in footer fairer
+		System: simplified UI text in Parent Dashboard
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
 		Attendance: added option for redirect to message wall after self registration has been taken
