@@ -81,6 +81,16 @@ class Row
     }
 
     /**
+     * Allows a conditional to be chained into the form row elements, rather than wrapping the whole section in an if statement.
+     * @param bool $conditional
+     * @return object OutputableInterface   
+     */
+    public function if($conditional)
+    {
+        return $conditional? $this : new NullElement();
+    }
+
+    /**
      * Adds an outputtable element to the row's internal collection.
      * @param  OutputableInterface  $element
      */
