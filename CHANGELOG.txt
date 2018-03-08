@@ -51,6 +51,7 @@ v16.0.00
 		Students: added Comment field to medical form, linked to student application form.
 		Students: added View option to Students by Form Group report, allowing Basic or Extended view
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
+		System Admin: fixed spelling error in Department settings
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
