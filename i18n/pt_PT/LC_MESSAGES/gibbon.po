@@ -87077,7 +87077,8 @@ msgstr "Caminho relativo para o logo do site (400 x 100px)"
 #: i18n/dbStringsForTranslation.php:2081 .git/i18n/dbStringsForTranslation.php:2081
 #: i18n/dbStringsForTranslation.php:2150 i18n/dbStringsForTranslation.php:2198
 #: i18n/dbStringsForTranslation.php:2221
-msgid "Should department information be made available to the public, via the Gibbon homeoage?"
+#, fuzzy
+msgid "Should department information be made available to the public, via the Gibbon homepage?"
 msgstr "Departamento informação estarão disponível ao público, através da homeoage Gibbon?"
 
 #: i18n/dbStringsForTranslation.php:1938 i18n/dbStringsForTranslation.php:1995
