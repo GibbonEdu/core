@@ -2218,7 +2218,7 @@ __($guid, 'Should columns and total scores be grouped by term?') ;
 __($guid, 'Should columns have Rubrics section enabled?') ;
 __($guid, 'Should columns have the Effort section enabled?') ;
 __($guid, 'Should cumulative marks be displayed on the View Markbook page for Students and Parents and in Student Profiles?') ;
-__($guid, 'Should department information be made available to the public, via the Gibbon homeoage?') ;
+__($guid, 'Should department information be made available to the public, via the Gibbon homepage?') ;
 __($guid, 'Should invoices be payable online, via an encrypted link in the invoice? Requires correctly configured payment gateway in System Settings.') ;
 __($guid, 'Should Markbook information be included in the weekly planner email summary that goes out to parents?') ;
 __($guid, 'Should markbook warnings be based on personal targets, if they are available?') ;
