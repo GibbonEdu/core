@@ -27,6 +27,7 @@ include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].
 
 //Setup variables
 $gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';
+$gibbonLibraryItemID = isset($_POST['gibbonLibraryItemID'])? $_POST['gibbonLibraryItemID'] : '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_add.php') == false) {
     //Acess denied
@@ -46,6 +47,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $table->addRow()->addAlert(__('The specified record cannot be found.'), 'error');
     } else {
         $values = $result->fetch();
+        $fieldsValues = array();
+
+        // Load any data for an existing library item
+        if (!empty($gibbonLibraryItemID)) {
+            $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID);
+            $sql = "SELECT fields FROM gibbonLibraryItem WHERE gibbonLibraryItemID=:gibbonLibraryItemID";
+            $result = $pdo->executeQuery($data, $sql);
+            $fieldsValues = ($result->rowCount() == 1)? unserialize($result->fetchColumn(0)) : array();
+        }
 
         // Transform the library field types to CustomField compatable types
         $fields = array_map(function($item){
@@ -59,9 +69,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
         foreach ($fields as $field) {
             $fieldName = 'field'.preg_replace('/ |\(|\)/', '', $field['name']);
+            $fieldValue = isset($fieldsValues[$field['name']])? $fieldsValues[$field['name']] : '';
+
             $row = $table->addRow();
                 $row->addLabel($fieldName, $field['name'])->description($field['description']);
-                $row->addCustomField($fieldName, $field);
+                $row->addCustomField($fieldName, $field)->setValue($fieldValue);
         }
 
         // Add Google Books data grabber
