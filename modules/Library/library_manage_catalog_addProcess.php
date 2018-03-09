@@ -110,11 +110,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     if ($gibbonLibraryTypeID == '' or $name == '' or $id == '' or $producer == '' or $bookable == '' or $borrowable == ''  or $status == '' or $replacement == '') {
-
-        echo '<pre>';
-        print_r($_POST);
-        echo '</pre>';
-        
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
