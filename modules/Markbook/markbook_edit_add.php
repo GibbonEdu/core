@@ -96,7 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $form = Form::create('markbook', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-                $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
 
                 $form->addRow()->addHeading(__('Basic Information'));
 
@@ -110,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonUnitID', __('Unit'));
-                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->fromArray($hookedUnits)->placeholder();
+                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->fromArray($hookedUnits)->placeholder()->selected($gibbonUnitID);
 
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = "SELECT (CASE WHEN gibbonHookID IS NOT NULL THEN CONCAT(gibbonHookID, '-', gibbonUnitID) ELSE gibbonUnitID END) as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
