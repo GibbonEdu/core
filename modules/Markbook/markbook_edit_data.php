@@ -260,8 +260,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         if ($resultSub->rowCount() == 1) {
                             $hasSubmission = true;
                             $rowSub = $resultSub->fetch();
-                            $homeworkDueDateTime = $rowSub['homeworkDueDateTime'];
-                            $lessonDate = $rowSub['date'];
+                            $values['homeworkDueDateTime'] = $rowSub['homeworkDueDateTime'];
+                            $values['homeworkSubmissionRequired'] = $rowSub['homeworkSubmissionRequired'];
+                            $values['lessonDate'] = $rowSub['date'];
                         }
                     }
 
@@ -275,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $result = $pdo->executeQuery($data, $sql);
                             $submission = ($result->rowCount() > 0)? $result->fetch() : '';
 
-                            $student['submission'] = renderStudentSubmission($submission, $homeworkDueDateTime, $lessonDate);
+                            $student['submission'] = renderStudentSubmission($student, $submission, $values);
 
                             // Hook into WordpressCommentPush
                             if ($wordpressCommentPush == 'On' && $submission['type'] == 'Link') {

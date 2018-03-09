@@ -161,13 +161,16 @@ class DatabaseFormFactory extends FormFactory
         return $this->createCheckbox($name)->fromArray($yearGroups);
     }
 
-    public function createSelectSchoolYearTerm($name, $gibbonSchoolYearID)
+    public function createCheckboxSchoolYearTerm($name, $gibbonSchoolYearID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery($data, $sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        // Get the terms in a $key => $value array
+        $terms = ($results && $results->rowCount() > 0)? $results->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
+
+        return $this->createCheckbox($name)->fromArray($terms);
     }
 
     public function createSelectDepartment($name)
@@ -185,7 +188,16 @@ class DatabaseFormFactory extends FormFactory
 
         return $this->createSelect($name)->fromArray($departments)->placeholder();
     }
-    
+
+    public function createSelectSchoolYearTerm($name, $gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";
@@ -410,7 +422,7 @@ class DatabaseFormFactory extends FormFactory
                 GROUP BY gibbonRubric.gibbonRubricID
                 ORDER BY scope, category, name";
 
-        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
+        return $this->createSelect($name)->fromQuery($pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
     public function createPhoneNumber($name)
