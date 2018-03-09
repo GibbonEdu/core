@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
 
                         $row = $form->addRow();
                             $row->addLabel('file', __('Attachment'));
-                            $row->addFileUpload('file');
+                            $row->addFileUpload('file')->setAttachment('attachment', $_SESSION[$guid]['absoluteURL'], $values['attachment']);
 
                         // DATE
                         if ($enableGroupByTerm == 'Y') {
