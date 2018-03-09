@@ -1738,7 +1738,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= '<ul>';
         $tabCountExtraReset = 0;
         if ($classes != false or $grades != false or $deadlines != false) {
-            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning Overview').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning').'</a></li>';
             $tabCountExtraReset++;
             if ($parentDashboardDefaultTab == 'Planner')
                 $parentDashboardDefaultTabCount = $tabCountExtraReset;
