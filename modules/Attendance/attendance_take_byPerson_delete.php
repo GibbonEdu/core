@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\PrefabFormFactory;
+use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
 	    } else {
-			$form = PrefabFormFactory::createDeleteForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byPerson_deleteProcess.php?gibbonAttendanceLogPersonID='.$gibbonAttendanceLogPersonID.'&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$currentDate);
+			$form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byPerson_deleteProcess.php?gibbonAttendanceLogPersonID='.$gibbonAttendanceLogPersonID.'&gibbonPersonID='.$gibbonPersonID.'&currentDate='.$currentDate);
 			echo $form->getOutput();
 	    }
 	}
