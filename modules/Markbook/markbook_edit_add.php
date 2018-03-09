@@ -96,6 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $form = Form::create('markbook', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('gibbonPlannerEntryID', $gibbonPlannerEntryID);
 
                 $form->addRow()->addHeading(__('Basic Information'));
 

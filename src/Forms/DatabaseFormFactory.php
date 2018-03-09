@@ -422,7 +422,7 @@ class DatabaseFormFactory extends FormFactory
                 GROUP BY gibbonRubric.gibbonRubricID
                 ORDER BY scope, category, name";
 
-        return $this->createSelect($name)->fromQuery($pdo, $sql, $data, 'groupBy')->placeholder();
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
     public function createPhoneNumber($name)
