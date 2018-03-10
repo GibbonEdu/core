@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //New PDO DB connection
 $pdo = new Gibbon\sqlConnection();
@@ -260,49 +261,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo __($guid, 'Copy Markbook Columns');
                     echo '</h1>';
 
-                    echo "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
-                    echo '<tr>';
-                    echo "<td style='vertical-align: top'>";
+                    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
+                    $form->setFactory(DatabaseFormFactory::create($pdo));
+                    $form->setClass('noIntBorder fullWidth');
 
-                    echo '</td>';
-                    echo "<td style='vertical-align: top; text-align: right'>";
-                    echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID=$gibbonCourseClassID'>";
+                    $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php');
 
-                    echo "&nbsp;&nbsp;&nbsp;<span>".__($guid, 'Copy from')." ".__($guid, 'Class').": </span>";
-                    echo "<select name='gibbonMarkbookCopyClassID' id='gibbonMarkbookCopyClassID' style='width:193px; float: none;'>";
-                    echo "<option value=''></option>";
-                    try {
-                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                        $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-                        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-                    } catch (PDOException $e) {
-                    }
-                    $selectCount = 0;
+                    $col = $form->addRow()->addColumn()->addClass('inline right');
+                        $col->addContent(__('Copy from').' '.__('Class').': &nbsp;');
+                        $col->addSelectClass('gibbonMarkbookCopyClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->setClass('mediumWidth');
+                        $col->addSubmit(__('Go'));
 
-                    echo "<optgroup label='--".__($guid, 'My Classes')."--'>";
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
-                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                    }
-                    echo '</optgroup>';
-                    try {
-                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                        $sqlSelect = 'SELECT DISTINCT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonMarkbookColumn ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                        $resultSelect = $pdo->executeQuery($dataSelect, $sqlSelect);
-                    } catch (PDOException $e) {
-                    }
-                    echo "<optgroup label='--".__($guid, 'All Classes')."--'>";
-                    while ($rowSelect = $resultSelect->fetch()) {
-                        if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) continue; // Skip the current class
-                        echo "<option value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                    }
-                    echo '</optgroup>';
-                    echo '</select>';
-                    echo "<input type='submit' value='".__($guid, 'Go')."'>";
-                    echo '</form>';
-                    echo '</td>';
-                    echo '</tr>';
-                    echo '</table>';
+                    echo $form->getOutput();
                 }
             }
         }

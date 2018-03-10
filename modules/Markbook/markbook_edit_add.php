@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -28,27 +29,17 @@ $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableColumnWeighting = getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting');
 $enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
 $enableGroupByTerm = getSettingByScope($connection2, 'Markbook', 'enableGroupByTerm');
-$attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
-$attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
-$effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
-$effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+$attainmentAltName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
+$attainmentAltNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
+$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
+$effortAltNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
 
 //Get variables from Planner
-$gibbonUnitID = null;
-if (isset($_GET['gibbonUnitID']))
-    $gibbonUnitID = $_GET['gibbonUnitID'];
-
-$gibbonPlannerEntryID = null;
-if (isset($_GET['gibbonPlannerEntryID']))
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-
-$name = null;
-if (isset($_GET['name']))
-    $name = $_GET['name'];
-
-$summary = null;
-if (isset($_GET['summary']))
-    $summary = $_GET['summary'];
+$gibbonUnitID = isset($_GET['gibbonUnitID'])? $_GET['gibbonUnitID'] : null;
+$gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : null;
+$name = isset($_GET['name'])? $_GET['name'] : null;
+$summary = isset($_GET['summary'])? $_GET['summary'] : null;
+$date = isset($_GET['date'])? $_GET['date'] : date('Y-m-d');
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     //Acess denied
@@ -86,9 +77,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $course = $result->fetch();
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column').'</div>';
                 echo '</div>';
 
                 $returns = array();
@@ -102,759 +93,167 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     returnProcess($guid, $_GET['return'], $editLink, $returns);
                 }
 
-                ?>
+                $form = Form::create('markbook', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_addProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&address='.$_SESSION[$guid]['address']);
+                $form->setFactory(DatabaseFormFactory::create($pdo));
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-				<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
-					<table class='smallIntBorder fullWidth' cellspacing='0'>
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Basic Information') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td style='width: 275px'>
-								<b><?php echo __($guid, 'Class') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['course'].'.'.$row['class'] ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Unit') ?></b><br/>
-							</td>
-							<td class="right">
-								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
-									<?php
-									//List basic and smart units
-									try {
-										$dataSelect = array('gibbonCourseClassID' => $gibbonCourseClassID);
-										$sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
-										$resultSelect = $connection2->prepare($sqlSelect);
-										$resultSelect->execute($dataSelect);
-									} catch (PDOException $e) {
-										echo "<div class='error'>".$e->getMessage().'</div>';
-									}
+                $form->addRow()->addHeading(__('Basic Information'));
 
-									$lastType = '';
-									$currentType = '';
-									echo "<option value=''></option>";
-									while ($rowSelect = $resultSelect->fetch()) {
-										$currentType = (isset($rowSelect['type']))? $rowSelect['type'] : '';
-										if ($currentType != $lastType) {
-											echo "<optgroup label='--".$currentType."--'>";
-										}
-                                        $selected = '';
-                                        if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
-                                            $selected = 'selected';
-                                        echo "<option $selected class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
- 										$lastType = $currentType;
-									}
+                $row = $form->addRow();
+                    $row->addLabel('courseName', __('Class'));
+                    $row->addTextField('courseName')->isRequired()->readOnly()->setValue($course['course'].'.'.$course['class']);
 
-									//List any hooked units
-									$lastType = '';
-									$currentType = '';
-									try {
-										$dataHooks = array();
-										$sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
-										$resultHooks = $connection2->prepare($sqlHooks);
-										$resultHooks->execute($dataHooks);
-									} catch (PDOException $e) {
-									}
-									while ($rowHooks = $resultHooks->fetch()) {
-										$hookOptions = unserialize($rowHooks['options']);
-										if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-											try {
-												$dataHookUnits = array('gibbonCourseClassID' => $gibbonCourseClassID);
-												$sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-												$resultHookUnits = $connection2->prepare($sqlHookUnits);
-												$resultHookUnits->execute($dataHookUnits);
-											} catch (PDOException $e) {
-											}
-											while ($rowHookUnits = $resultHookUnits->fetch()) {
-												$currentType = $rowHooks['name'];
-												if ($currentType != $lastType) {
-													echo "<optgroup label='--".$currentType."--'>";
-												}
-                                                $selected = '';
-                                                if ($rowSelect['gibbonUnitID'] == $gibbonUnitID)
-                                                    $selected = 'selected';
-                                                echo "<option class='".$rowHookUnits[$hookOptions['classLinkIDField']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-                                                $lastType = $currentType;
-											}
-										}
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Lesson') ?></b><br/>
-							</td>
-							<td class="right">
-								<select name="gibbonPlannerEntryID" id="gibbonPlannerEntryID" class="standardWidth">
-									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID='.$row['gibbonCourseClassID'].' ORDER BY name';
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                                    echo "<option value=''></option>";
-									while ($rowSelect = $resultSelect->fetch()) {
-                                        $selected = '';
-                                        if ($rowSelect['gibbonPlannerEntryID'] == $gibbonPlannerEntryID)
-                                            $selected = 'selected';
-                                        if ($rowSelect['gibbonHookID'] == '') {
-											echo "<option $selected class='".$rowSelect['gibbonUnitID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										} else {
-											echo "<option $selected class='".$rowSelect['gibbonUnitID'].'-'.$rowSelect['gibbonHookID']."' value='".$rowSelect['gibbonPlannerEntryID']."'>".htmlPrep($rowSelect['name']).'</option>';
-										}
-									}
-									?>
-                                </select>
-								<script type="text/javascript">
-									$("#gibbonPlannerEntryID").chainedTo("#gibbonUnitID");
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Name') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input name="name" id="name" maxlength=20 value="<?php echo $name?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var name2=new LiveValidation('name');
-									name2.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Description') ?> *</b><br/>
-							</td>
-							<td class="right">
-                                <input name="description" id="description" maxlength=1000 value="<?php echo $summary?>" type="text" class="standardWidth">
- 								<script type="text/javascript">
-									var description=new LiveValidation('description');
-									description.add(Validate.Presence);
-								</script>
-							</td>
-						</tr>
-						<?php
-						$types = getSettingByScope($connection2, 'Markbook', 'markbookType');
-						if ($types != false) {
-							$types = explode(',', $types);
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = "SELECT gibbonUnit.gibbonUnitID as value, gibbonUnit.name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                $hookedUnits = getHookedUnits($pdo, $gibbonCourseClassID);
 
-							$weightedTypes = array();
-							if ($enableColumnWeighting == 'Y') {
-								try {
-				                    $dataWeights = array('gibbonCourseClassID' => $gibbonCourseClassID);
-				                    $sqlWeights = 'SELECT type, description, calculate FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type';
-				                    $resultWeights = $connection2->prepare($sqlWeights);
-				                    $resultWeights->execute($dataWeights);
-				                } catch (PDOException $e) {}
+                $row = $form->addRow();
+                    $row->addLabel('gibbonUnitID', __('Unit'));
+                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->fromArray($hookedUnits)->placeholder()->selected($gibbonUnitID);
 
-				                if ($resultWeights->rowCount() > 0) {
-				                	$weightedTypes = $resultWeights->fetchAll();
-				            	}
-							}
-							?>
-							<tr>
-								<td>
-									<b><?php echo __($guid, 'Type') ?> *</b><br/>
-									<span class="emphasis small"></span>
-								</td>
-								<td class="right">
-									<select name="type" id="type" class="standardWidth">
-										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                $sql = "SELECT (CASE WHEN gibbonHookID IS NOT NULL THEN CONCAT(gibbonHookID, '-', gibbonUnitID) ELSE gibbonUnitID END) as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonPlannerEntryID', __('Lesson'));
+                    $row->addSelect('gibbonPlannerEntryID')->fromQueryChained($pdo, $sql, $data, 'gibbonUnitID')->placeholder()->selected($gibbonPlannerEntryID);
 
-										<?php
-										if (count($weightedTypes) > 0) {
+                $row = $form->addRow();
+                    $row->addLabel('name', __('Name'));
+                    $row->addTextField('name')->isRequired()->maxLength(20)->setValue($name);
 
-											$lastCalculateType  = '';
-											foreach ($weightedTypes as $type) {
-												if ($lastCalculateType != $type['calculate']) {
+                $row = $form->addRow();
+                    $row->addLabel('description', __('Description'));
+                    $row->addTextField('description')->isRequired()->maxLength(1000)->setValue($summary);
 
-													if ($lastCalculateType != '') echo '</optgroup>';
-													echo '<optgroup label="';
-													echo ($type['calculate'] == 'term')? __($guid, 'Per Term') : __($guid, 'Whole Year');
-													echo '">';
-												}
+                // TYPE
+                $types = getSettingByScope($connection2, 'Markbook', 'markbookType');
+                if (!empty($types)) {
+                    $row = $form->addRow();
+                        $row->addLabel('type', __('Type'));
+                        $typesSelect = $row->addSelect('type')->isRequired()->placeholder();
 
-												printf('<option value="%s">%s</option>', $type['type'], $type['description'] );
+                    if ($enableColumnWeighting == 'Y') {
+                        $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'perTerm' => __('Per Term'), 'wholeYear' => __('Whole Year'));
+                        $sql = "SELECT (CASE WHEN calculate='term' THEN :perTerm ELSE :wholeYear END) as groupBy, type as value, description as name FROM gibbonMarkbookWeight WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY calculate, type";
+                        $typesSelect->fromQuery($pdo, $sql, $data, 'groupBy');
+                    }
 
-												$lastCalculateType = $type['calculate'];
-											}
-											echo '</optgroup>';
-										} else {
+                    if ($typesSelect->getOptionCount() == 0) {
+                        $typesSelect->fromString($types);
+                    }
+                }
 
-                                            for ($i = 0; $i < count($types); ++$i) {
-                                                printf('<option value="%1$s">%1$s</option>', trim($types[$i]) );
-                                            }
-                                        }
-                    					?>
-									</select>
-									<script type="text/javascript">
-										var type=new LiveValidation('type');
-										type.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-								</td>
-							</tr>
-						<?php
-                        }
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Attachment') ?></b><br/>
-							</td>
-							<td class="right">
-								<input type="file" name="file" id="file"><br/><br/>
-								<?php
-                                //Get list of acceptable file extensions
-                                try {
-                                    $dataExt = array();
-                                    $sqlExt = 'SELECT * FROM gibbonFileExtension';
-                                    $resultExt = $connection2->prepare($sqlExt);
-                                    $resultExt->execute($dataExt);
-                                } catch (PDOException $e) {
-                                }
-								$ext = '';
-								while ($rowExt = $resultExt->fetch()) {
-									$ext = $ext."'.".$rowExt['extension']."',";
-								}
-								?>
+                $row = $form->addRow();
+                    $row->addLabel('file', __('Attachment'));
+                    $row->addFileUpload('file');
 
-								<script type="text/javascript">
-									var file=new LiveValidation('file');
-									file.add( Validate.Inclusion, { within: [<?php echo $ext; ?>], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false } );
-								</script>
-							</td>
-						</tr>
+                // DATE
+                if ($enableGroupByTerm == 'Y') {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date);
+                    $sql = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND :date BETWEEN firstDay AND lastDay ORDER BY sequenceNumber";
+                    $result = $pdo->executeQuery($data, $sql);
+                    $currentTerm = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
+                    
+                    $form->addRow()->addHeading(__('Term Date'));
 
-						<?php if ($enableGroupByTerm == 'Y') : ?>
+                    $row = $form->addRow();
+                        $row->addLabel('gibbonSchoolYearTermID', __('Term'));
+                        $row->addSelectSchoolYearTerm('gibbonSchoolYearTermID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($currentTerm);
 
-							<tr class='break'>
-								<td colspan=2>
-									<h3>
-										<?php echo __($guid, 'Term Date')  ?>
-									</h3>
-								</td>
-							</tr>
+                    $row = $form->addRow();
+                        $row->addLabel('date', __('Date'));
+                        $row->addDate('date')->setValue(dateConvertBack($guid, $date))->isRequired();
+                } else {
+                    $form->addHiddenValue('date', dateConvertBack($guid, $date));
+                }
 
-							<?php
-								// Test to see if any of our school terms overlap. If so, we'll explicitly select a term. If not, it'll be calculated based on the date.
-								try {
-							        $dataOverlap = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-							        $sqlOverlap = 'SELECT t1.gibbonSchoolYearTermID, t2.gibbonSchoolYearTermID FROM gibbonSchoolYearTerm AS t1, gibbonSchoolYearTerm as t2 WHERE (t1.gibbonSchoolYearID=:gibbonSchoolYearID OR t2.gibbonSchoolYearID=:gibbonSchoolYearID) AND t1.gibbonSchoolYearTermID < t2.gibbonSchoolYearTermID AND (t1.firstDay BETWEEN t2.firstDay AND t2.lastDay OR t1.lastDay BETWEEN t2.firstDay AND t2.lastDay)';
-							        $resultOverlap = $connection2->prepare($sqlOverlap);
-							        $resultOverlap->execute($dataOverlap);
-							    } catch (PDOException $e) {
-							    }
+                $form->addRow()->addHeading(__('Assessment'));
 
-							    if ($resultOverlap->rowCount() > 0) : ?>
-								<tr>
-									<td>
-										<b><?php echo __($guid, 'Term') ?> *</b><br/>
-									</td>
-									<td class="right">
-										<select name="gibbonSchoolYearTermID" id="gibbonSchoolYearTermID" class="standardWidth">
-										<option value="Please select..."><?php echo __($guid, 'Please select...') ?></option>
+                // ATTAINMENT
+                $attainmentLabel = !empty($attainmentAltName)? sprintf(__('Assess %1$s?'), $attainmentAltName) : __('Assess Attainment?');
+                $attainmentScaleLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Scale') : __('Attainment Scale');
+                $attainmentRawMaxLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Total Mark') : __('Attainment Total Mark');
+                $attainmentWeightingLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Weighting') : __('Attainment Weighting');
+                $attainmentRubricLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Rubric') : __('Attainment Rubric'); 
 
-									<?php
-										try {
-									        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-									        $sql = 'SELECT gibbonSchoolYearTermID, name, UNIX_TIMESTAMP(firstDay) AS firstTime, UNIX_TIMESTAMP(lastDay) AS lastTime FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber';
-									        $resultTerms = $connection2->prepare($sql);
-									        $resultTerms->execute($data);
-									    } catch (PDOException $e) {
-									    }
+                $row = $form->addRow();
+                    $row->addLabel('attainment', $attainmentLabel);
+                    $row->addYesNoRadio('attainment')->isRequired();
 
-									    $gibbonSchoolYearTermID = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : '';
+                $form->toggleVisibilityByClass('attainmentRow')->onRadio('attainment')->when('Y');
 
-									    while ($rowTerm = $resultTerms->fetch()) {
+                $row = $form->addRow()->addClass('attainmentRow');
+                    $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
+                    $row->addSelectGradeScale('gibbonScaleIDAttainment')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                    
+                if ($enableRawAttainment == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('attainmentRawMax', $attainmentRawMaxLabel)->description(__('Leave blank to omit raw marks.'));
+                        $row->addNumber('attainmentRawMax')->maxLength(8)->onlyInteger(false);
+                }
 
-									    	if ($gibbonSchoolYearTermID > 0) {
-									    		$selected = ($gibbonSchoolYearTermID == $rowTerm['gibbonSchoolYearTermID'])? 'selected' : '';
-									    	} else {
-								            	$selected = (time() >= $rowTerm['firstTime'] && time() < $rowTerm['lastTime'])? 'selected' : '';
-								        	}
+                if ($enableColumnWeighting == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('attainmentWeighting', $attainmentWeightingLabel);
+                        $row->addNumber('attainmentWeighting')->maxLength(5)->onlyInteger(false)->setValue(1);
+                }
 
-								            print "<option $selected value='".$rowTerm['gibbonSchoolYearTermID']."'>".htmlPrep($rowTerm['name']).'</option>';
-								        }
+                if ($enableRubrics == 'Y') {
+                    $row = $form->addRow()->addClass('attainmentRow');
+                        $row->addLabel('gibbonRubricIDAttainment', $attainmentRubricLabel)->description(__('Choose predefined rubric, if desired.'));
+                        $row->addSelectRubric('gibbonRubricIDAttainment', $course['gibbonYearGroupIDList'], $course['gibbonDepartmentID'])->placeholder();
+                }
 
-									 ?>
-										</select>
-										<script type="text/javascript">
-											var term=new LiveValidation('gibbonSchoolYearTermID');
-											term.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-										</script>
-									</td>
-								</tr>
-							<?php endif; ?>
-							<tr>
-                                <td>
-                                    <b><?php echo __($guid, 'Date') ?>  *</b><br/>
-                                    <span class="emphasis small"><?php echo __($guid, '1. Format') ?>
-                                    <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                                            echo 'dd/mm/yyyy';
-                                        } else {
-                                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                                        }
-                                    ?></span>
-                                </td>
-                                <td class="right">
-                                    <input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, (isset($_GET['date'])? $_GET['date'] : date('Y-m-d')) ); ?>" type="text" class="standardWidth">
-                                    <script type="text/javascript">
-                                        var date=new LiveValidation('date');
-                                        date.add(Validate.Presence);
-                                        date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-                                            echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-                                        } else {
-                                            echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-                                        }
-                                                        ?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-                                            echo 'dd/mm/yyyy';
-                                        } else {
-                                            echo $_SESSION[$guid]['i18n']['dateFormat'];
-                                        }
-                                                        ?>." } );
-                                    </script>
-                                     <script type="text/javascript">
-                                        $(function() {
-                                            $( "#date" ).datepicker();
-                                        });
-                                    </script>
-                                </td>
-                            </tr>
+                // EFFORT
+                if ($enableEffort == 'Y') {
+                    $effortLabel = !empty($effortAltName)? sprintf(__('Assess %1$s?'), $effortAltName) : __('Assess Effort?');
+                    $effortScaleLabel = !empty($effortAltName)? $effortAltName.' '.__('Scale') : __('Effort Scale');
+                    $effortRubricLabel = !empty($effortAltName)? $effortAltName.' '.__('Rubric') : __('Effort Rubric'); 
 
+                    $row = $form->addRow();
+                        $row->addLabel('effort', $effortLabel);
+                        $row->addYesNoRadio('effort')->isRequired();
 
-                        <?php else: ?>
+                    $form->toggleVisibilityByClass('effortRow')->onRadio('effort')->when('Y');
 
-                        	<input type="hidden" name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, (isset($_GET['date'])? $_GET['date'] : date('Y-m-d')) ); ?>" >
+                    $row = $form->addRow()->addClass('effortRow');
+                        $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
+                        $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
 
-						<?php endif; ?>
+                    if ($enableRubrics == 'Y') {
+                        $row = $form->addRow()->addClass('effortRow');
+                            $row->addLabel('gibbonRubricIDEffort', $effortRubricLabel)->description(__('Choose predefined rubric, if desired.'));
+                            $row->addSelectRubric('gibbonRubricIDEffort', $course['gibbonYearGroupIDList'], $course['gibbonDepartmentID'])->placeholder();
+                    } 
+                }
 
-						<tr class='break'>
-							<td colspan=2>
-								<h3>
-									<?php echo __($guid, 'Assessment')  ?>
-								</h3>
-							</td>
-						</tr>
-						<script type="text/javascript">
-							/* Homework Control */
-							$(document).ready(function(){
-								 $(".attainment").click(function(){
-									if ($('input[name=attainment]:checked').val()=="Y" ) {
-										$("#gibbonScaleIDAttainmentRow").slideDown("fast", $("#gibbonScaleIDAttainmentRow").css("display","table-row"));
-                                        <?php if ($enableRubrics == 'Y') { ?>
-                                            $("#gibbonRubricIDAttainmentRow").slideDown("fast", $("#gibbonRubricIDAttainmentRow").css("display","table-row"));
-                                        <?php } ?>
-                                        $("#attainmentWeightingRow").slideDown("fast", $("#attainmentWeightingRow").css("display","table-row"));
-										$("#attainmentRawMaxRow").slideDown("fast", $("#attainmentRawMaxRow").css("display","table-row"));
-									} else {
-										$("#gibbonScaleIDAttainmentRow").css("display","none");
-                                        <?php if ($enableRubrics == 'Y') { ?>
-                                            $("#gibbonRubricIDAttainmentRow").css("display","none");
-										<?php } ?>
-                                        $("#attainmentRawMaxRow").css("display","none");
-										$("#attainmentWeightingRow").css("display","none");
-									}
-								 });
-							});
-						</script>
-						<tr>
-							<td>
-								<b><?php if ($attainmentAlternativeName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $attainmentAlternativeName);
-								} else {
-									echo __($guid, 'Assess Attainment?');
-								}
-                				?> *</b><br/>
-							</td>
-							<td class="right">
-								<input checked type="radio" name="attainment" value="Y" class="attainment" /> <?php echo __($guid, 'Yes') ?>
-								<input type="radio" name="attainment" value="N" class="attainment" /> <?php echo __($guid, 'No') ?>
-							</td>
-						</tr>
-						<tr id="gibbonScaleIDAttainmentRow">
-							<td>
-								<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Scale');
-								} else {
-									echo __($guid, 'Attainment Scale');
-								}
-                				?></b><br/>
-							</td>
-							<td class="right">
-								<select name="gibbonScaleIDAttainment" id="gibbonScaleIDAttainment" class="standardWidth">
-									<?php
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-									echo "<option value=''></option>";
-									while ($rowSelect = $resultSelect->fetch()) {
-										$selected = '';
-										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['defaultAssessmentScale']) {
-											$selected = 'selected';
-										}
-										echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-									}
-									?>
-								</select>
-							</td>
-						</tr>
-						<?php
+                $row = $form->addRow();
+                    $row->addLabel('comment', __('Include Comment?'));
+                    $row->addYesNoRadio('comment')->isRequired();
 
-						if ($enableRawAttainment == 'Y') {
-                            ?>
-							<tr id="attainmentRawMaxRow">
-								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Total Mark');
-									} else {
-										echo __($guid, 'Attainment Total Mark');
-									}
-                            		?></b><br/>
-                            		<span class="emphasis small"><?php echo __($guid, 'Leave blank to omit raw marks.') ?></span>
-								</td>
-								<td class="right">
-									<input name="attainmentRawMax" id="attainmentRawMax" maxlength=4 value="" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var attainmentRawMax=new LiveValidation('attainmentRawMax');
-										attainmentRawMax.add(Validate.Numericality);
-									</script>
-								</td>
-							</tr>
-							<?php
-                        }
+                $row = $form->addRow();
+                    $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
+                    $row->addYesNoRadio('uploadedResponse')->isRequired();
 
-                        if ($enableColumnWeighting == 'Y') {
-                            ?>
-							<tr id="attainmentWeightingRow">
-								<td>
-									<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Weighting');
-									} else {
-										echo __($guid, 'Attainment Weighting');
-									}
-                            		?></b><br/>
-								</td>
-								<td class="right">
-									<input name="attainmentWeighting" id="attainmentWeighting" maxlength=3 value="1" type="text" class="standardWidth">
-									<script type="text/javascript">
-										var attainmentWeighting=new LiveValidation('attainmentWeighting');
-										attainmentWeighting.add(Validate.Numericality);
-									</script>
-								</td>
-							</tr>
-							<?php
+                $form->addRow()->addHeading(__('Access'));
 
-                        }
-                        if ($enableRubrics == 'Y') {
-                    		?>
-    						<tr id="gibbonRubricIDAttainmentRow">
-    							<td>
-    								<b><?php if ($attainmentAlternativeName != '') { echo $attainmentAlternativeName.' '.__($guid, 'Rubric');
-    								} else {
-    									echo __($guid, 'Attainment Rubric');
-    								}
-                    				?></b><br/>
-    								<span class="emphasis small"><?php echo __($guid, 'Choose predefined rubric, if desired.') ?></span>
-    							</td>
-    							<td class="right">
-    								<select name="gibbonRubricIDAttainment" id="gibbonRubricIDAttainment" class="standardWidth">
-    									<option><option>
-    									<optgroup label='--<?php echo __($guid, 'School Rubrics') ?> --'>
-    									<?php
-                                        try {
-                                            $dataSelect = array();
-                                            $sqlSelectWhere = '';
-                                            $years = explode(',', $row['gibbonYearGroupIDList']);
-                                            foreach ($years as $year) {
-                                                $dataSelect[$year] = "%$year%";
-                                                $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
-                                            }
-                                            $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='School' $sqlSelectWhere ORDER BY category, name";
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-    									while ($rowSelect = $resultSelect->fetch()) {
-    										$label = '';
-    										if ($rowSelect['category'] == '') {
-    											$label = $rowSelect['name'];
-    										} else {
-    											$label = $rowSelect['category'].' - '.$rowSelect['name'];
-    										}
-    										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-    									}
-                                        if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
-                                            ?>
-                                            <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
-                                            <?php
-                                            try {
-                                                $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                $sqlSelectWhere = ' AND (';
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
-                                                foreach ($years as $year) {
-                                                    $dataSelect[$year] = "%$year%";
-                                                    $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
-                                                }
-                                                $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
-                                                $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
-                                                $resultSelect = $connection2->prepare($sqlSelect);
-                                                $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) { }
+                $row = $form->addRow();
+                    $row->addLabel('viewableStudents', __('Viewable to Students'));
+                    $row->addYesNo('viewableStudents')->isRequired();
 
-    										while ($rowSelect = $resultSelect->fetch()) {
-    											$label = '';
-    											if ($rowSelect['category'] == '') {
-    												$label = $rowSelect['name'];
-    											} else {
-    												$label = $rowSelect['category'].' - '.$rowSelect['name'];
-    											}
-    											echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-    										}
-    									}
-    									?>
-    								</select>
-    							</td>
-    						</tr>
-                        <?php } ?>
+                $row = $form->addRow();
+                    $row->addLabel('viewableParents', __('Viewable to Parents'));
+                    $row->addYesNo('viewableParents')->isRequired();
 
-                        <?php if ($enableEffort == 'Y') { ?>
-    						<script type="text/javascript">
-    							/* Homework Control */
-    							$(document).ready(function(){
-    								 $(".effort").click(function(){
-    									if ($('input[name=effort]:checked').val()=="Y" ) {
-    										$("#gibbonScaleIDEffortRow").slideDown("fast", $("#gibbonScaleIDEffortRow").css("display","table-row"));
-                                            <?php if ($enableRubrics == 'Y') { ?>
-                                                $("#gibbonRubricIDEffortRow").slideDown("fast", $("#gibbonRubricIDEffortRow").css("display","table-row"));
-                                            <?php } ?>
-    									} else {
-    										$("#gibbonScaleIDEffortRow").css("display","none");
-                                            <?php if ($enableRubrics == 'Y') { ?>
-                                                $("#gibbonRubricIDEffortRow").css("display","none");
-                                            <?php } ?>
-    									}
-    								 });
-    							});
-    						</script>
-    						<tr>
-    							<td>
-    								<b><?php if ($effortAlternativeName != '') { echo sprintf(__($guid, 'Assess %1$s?'), $effortAlternativeName);
-    								} else {
-    									echo __($guid, 'Assess Effort?');
-    								}
-                    				?> *</b><br/>
-    							</td>
-    							<td class="right">
-    								<input checked type="radio" name="effort" value="Y" class="effort" /> <?php echo __($guid, 'Yes') ?>
-    								<input type="radio" name="effort" value="N" class="effort" /> <?php echo __($guid, 'No') ?>
-    							</td>
-    						</tr>
-    						<tr id="gibbonScaleIDEffortRow">
-    							<td>
-    								<b><?php if ($effortAlternativeName != '') { echo $effortAlternativeName.' '.__($guid, 'Scale');
-    								} else {
-    									echo __($guid, 'Effort Scale');
-    								}
-                    				?></b><br/>
-    							</td>
-    							<td class="right">
-    								<select name="gibbonScaleIDEffort" id="gibbonScaleIDEffort" class="standardWidth">
-    									<?php
-                                        try {
-                                            $dataSelect = array();
-                                            $sqlSelect = "SELECT * FROM gibbonScale WHERE (active='Y') ORDER BY name";
-                                            $resultSelect = $connection2->prepare($sqlSelect);
-                                            $resultSelect->execute($dataSelect);
-                                        } catch (PDOException $e) {
-                                        }
-    									echo "<option value=''></option>";
-    									while ($rowSelect = $resultSelect->fetch()) {
-    										$selected = '';
-    										if ($rowSelect['gibbonScaleID'] == $_SESSION[$guid]['defaultAssessmentScale']) {
-    											$selected = 'selected';
-    										}
-    										echo "<option $selected value='".$rowSelect['gibbonScaleID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-    									}
-    									?>
-    								</select>
-    							</td>
-    						</tr>
-                            <?php if ($enableRubrics == 'Y') { ?>
-        						<tr id="gibbonRubricIDEffortRow">
-        							<td>
-        								<b><?php if ($effortAlternativeName != '') { echo $effortAlternativeName.' '.__($guid, 'Rubric');
-        								} else {
-        									echo __($guid, 'Effort Rubric');
-        								}
-                        						?></b><br/>
-        								<span class="emphasis small"><?php echo __($guid, 'Choose predefined rubric, if desired.') ?></span>
-        							</td>
-        							<td class="right">
-        								<select name="gibbonRubricIDEffort" id="gibbonRubricIDEffort" class="standardWidth">
-        									<option><option>
-        									<optgroup label='--<?php echo __($guid, 'School Rubrics') ?> --'>
-        									<?php
-                                            try {
-                                                $dataSelect = array();
-                                                $sqlSelectWhere = '';
-                                                $years = explode(',', $row['gibbonYearGroupIDList']);
-                                                foreach ($years as $year) {
-                                                    $dataSelect[$year] = "%$year%";
-                                                    $sqlSelectWhere .= " AND gibbonYearGroupIDList LIKE :$year";
-                                                }
-                                                $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='School' $sqlSelectWhere ORDER BY category, name";
-                                                $resultSelect = $connection2->prepare($sqlSelect);
-                                                $resultSelect->execute($dataSelect);
-                                            } catch (PDOException $e) {
-                                            }
-        									while ($rowSelect = $resultSelect->fetch()) {
-        										$label = '';
-        										if ($rowSelect['category'] == '') {
-        											$label = $rowSelect['name'];
-        										} else {
-        											$label = $rowSelect['category'].' - '.$rowSelect['name'];
-        										}
-        										echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-        									}
-                                            if ($row['gibbonDepartmentID'] != '' AND $row['gibbonYearGroupIDList'] != '') {
-                                                ?>
-                                                <optgroup label='--<?php echo __($guid, 'Learning Area Rubrics') ?> --'>
-                                                <?php
-                                                try {
-                                                    $dataSelect = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                                                    $sqlSelectWhere = ' AND (';
-                                                    $years = explode(',', $row['gibbonYearGroupIDList']);
-                                                    foreach ($years as $year) {
-                                                        $dataSelect[$year] = "%$year%";
-                                                        $sqlSelectWhere .= "gibbonYearGroupIDList LIKE :$year OR ";
-                                                    }
-                                                    $sqlSelectWhere = substr($sqlSelectWhere, 0, -4).')';
-                                                    $sqlSelect = "SELECT * FROM gibbonRubric WHERE active='Y' AND scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID $sqlSelectWhere ORDER BY category, name";
-                                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                                    $resultSelect->execute($dataSelect);
-                                                } catch (PDOException $e) { }
+                $row = $form->addRow();
+                    $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));
+                    $row->addDate('completeDate');
 
-        										while ($rowSelect = $resultSelect->fetch()) {
-        											$label = '';
-        											if ($rowSelect['category'] == '') {
-        												$label = $rowSelect['name'];
-        											} else {
-        												$label = $rowSelect['category'].' - '.$rowSelect['name'];
-        											}
-        											echo "<option value='".$rowSelect['gibbonRubricID']."'>$label</option>";
-        										}
-        									}
-        									?>
-        								</select>
-        							</td>
-        						</tr>
-                            <?php }
-                        } ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Include Comment?') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input checked type="radio" name="comment" value="Y" class="comment" /> <?php echo __($guid, 'Yes') ?>
-								<input type="radio" name="comment" value="N" class="comment" /> <?php echo __($guid, 'No') ?>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Include Uploaded Response?') ?> *</b><br/>
-							</td>
-							<td class="right">
-								<input checked type="radio" name="uploadedResponse" value="Y" class="uploadedResponse" /> <?php echo __($guid, 'Yes') ?>
-								<input type="radio" name="uploadedResponse" value="N" class="uploadedResponse" /> <?php echo __($guid, 'No') ?>
-							</td>
-						</tr>
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSubmit();
 
-
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __($guid, 'Access') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-									<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-									<option value="N"><?php echo __($guid, 'No') ?></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
-								<span class="emphasis small"></span>
-							</td>
-							<td class="right">
-								<select name="viewableParents" id="viewableParents" class="standardWidth">
-									<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-									<option value="N"><?php echo __($guid, 'No') ?></option>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Go Live Date') ?></b><br/>
-								<span class="emphasis small"><?php echo __($guid, '1. Format') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-                				?><br/><?php echo __($guid, '2. Column is hidden until date is reached.') ?></span>
-							</td>
-							<td class="right">
-								<input name="completeDate" id="completeDate" maxlength=10 value="" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var completeDate=new LiveValidation('completeDate');
-									completeDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-									?>." } );
-								</script>
-								 <script type="text/javascript">
-									$(function() {
-										$( "#completeDate" ).datepicker();
-									});
-								</script>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?><br/>
-								<?php echo getMaxUpload($guid);
-               		 			?>
-								</span>
-							</td>
-							<td class="right">
-								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
-
+                echo $form->getOutput();
             }
         }
     }
@@ -862,4 +261,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
     // Print the sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit_add.php');
 }
-?>
