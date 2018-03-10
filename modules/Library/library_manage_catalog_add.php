@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -36,31 +34,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/library_manage_catalog.php'>".__($guid, 'Manage Catalog')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Item').'</div>';
     echo '</div>';
 
+    $urlParamKeys = array('name' => '', 'gibbonLibraryTypeID' => '', 'gibbonSpaceID' => '', 'status' => '', 'gibbonPersonIDOwnership' => '', 'typeSpecificFields' => '');
+
+    $urlParams = array_intersect_key($_GET, $urlParamKeys);
+    $urlParams = array_merge($urlParamKeys, $urlParams);
+
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID='.$_GET['editID'].'&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog_edit.php&gibbonLibraryItemID='.$_GET['editID'].'&'.http_build_query($urlParams);
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
-
-    if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '' or $_GET['gibbonPersonIDOwnership'] != '' or $_GET['typeSpecificFields'] != '') {
+    
+    if (array_filter($urlParams)) {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
-    }
-
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+	}
+    
+    $form = Form::create('libraryCatalog', $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_addProcess.php?'.http_build_query($urlParams));
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/library_manage_catalog.php");
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $form->addRow()->addHeading(__('Catalog Type'));
 
     $sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
     $row = $form->addRow();
         $row->addLabel('gibbonLibraryTypeID', __('Type'));
-        $row->addSelect('gibbonLibraryTypeID')->fromQuery($pdo, $sql, array())->placeholder()->isRequired();
+        $row->addSelect('gibbonLibraryTypeID')
+            ->fromQuery($pdo, $sql, array())
+            ->placeholder()
+            ->isRequired()
+            ->selected($urlParams['gibbonLibraryTypeID']);
 
     $form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
 
@@ -116,8 +123,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $row->addSelectSpace('gibbonSpaceID')->placeholder();
 
     $row = $form->addRow()->addClass('general');
-        $row->addLabel('invoiceNumber', __('Location Detail'))->description(__('Shelf, cabinet, sector, etc'));
-        $row->addTextField('invoiceNumber')->maxLength(255);
+        $row->addLabel('locationDetail', __('Location Detail'))->description(__('Shelf, cabinet, sector, etc'));
+        $row->addTextField('locationDetail')->maxLength(255);
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('ownershipType', __('Ownership Type'));
@@ -142,11 +149,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('bookable', __('Bookable As Facility?'))->description(__('Can item be booked via Facility Booking in Timetable? Useful for laptop carts, etc.'));
-        $row->addYesNo('bookable')->placeholder();
+        $row->addYesNo('bookable');
 
     $row = $form->addRow()->addClass('general');
         $row->addLabel('borrowable', __('Borrowable?'))->description(__('Is item available for loan?'));
-        $row->addYesNo('borrowable')->placeholder();
+        $row->addYesNo('borrowable');
 
     $statuses = array(
         'Available' => __('Available'),
@@ -167,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $form->toggleVisibilityByClass('replacement')->onSelect('replacement')->when('Y');
 
     $row = $form->addRow()->addClass('general replacement');
-            $row->addLabel('gibbonSchoolYearIDReplacement', __('Replacement Year'))->description('When is this item scheduled for replacement.');
+            $row->addLabel('gibbonSchoolYearIDReplacement', __('Replacement Year'))->description(__('When is this item scheduled for replacement.'));
             $row->addSelectSchoolYear('gibbonSchoolYearIDReplacement', 'All', 'DESC');
 
     $row = $form->addRow()->addClass('general replacement');
@@ -191,10 +198,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
     $form->addRow()->addHeading(__('Type-Specific Details'))->addClass('general');
 
-    $details = "<div id='details' name='details' style='min-height: 100px; text-align: center'>";
-        $details .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/".$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading";
-    $details .= "</div>";
-    $form->addRow()->addContent($details)->addClass('general');;
+    // Type-specific form fields loaded via ajax
+    $row = $form->addRow('detailsRow')->addContent('')->addClass('general');
 
     $row = $form->addRow();
         $row->addSubmit();
@@ -202,3 +207,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo $form->getOutput();
 }
 ?>
+<script type='text/javascript'>
+	$(document).ready(function(){
+		$('#gibbonLibraryTypeID').change(function(){
+			var path = '<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_fields_ajax.php'; ?>';
+
+            $('#detailsRow td').html("<div id='details' name='details' style='min-height: 100px; text-align: center'><img style='margin: 10px 0 5px 0' src='<?php echo $_SESSION[$guid]['absoluteURL']; ?>/themes/<?php echo $_SESSION[$guid]['gibbonThemeName']; ?>/img/loading.gif' alt='Loading' onclick='return false;' /><br/>Loading</div>");
+
+			$('#detailsRow td').load(path, { 'gibbonLibraryTypeID': $(this).val() });
+		});
+	});
+</script>

@@ -297,31 +297,3 @@ class Form implements OutputableInterface
         return $this->renderer->renderForm($this);
     }
 }
-
-/**
- * Define common interfaces for elements. PSR-2 aside, I really hate putting things this small in their own files ...
- *
- * @version v14
- * @since   v14
- */
-interface BasicAttributesInterface
-{
-    public function getID();
-    public function getClass();
-}
-
-interface ValidatableInterface
-{
-    public function addValidation($name);
-    public function getValidationOutput();
-}
-
-interface OutputableInterface
-{
-    public function getOutput();
-}
-
-interface RowDependancyInterface
-{
-    public function setRow($row);
-}

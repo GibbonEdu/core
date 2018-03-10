@@ -35,9 +35,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     header("Location: {$URL}");
 } else {
     //Get general fields
-    $gibbonLibraryTypeID = $_POST['type'];
+    $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
     $id = $_POST['idCheck'];
-    $name = $_POST['name2'];
+    $name = $_POST['name'];
     $producer = $_POST['producer'];
     $vendor = $_POST['vendor'];
     $purchaseDate = null;
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $fieldsIn = unserialize($row['fields']);
         $fieldsOut = array();
         foreach ($fieldsIn as $field) {
-            $fieldName = preg_replace('/ /', '', $field['name']);
+            $fieldName = preg_replace('/ |\(|\)/', '', $field['name']);
             if ($field['type'] == 'Date') {
                 $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName]);
             } else {
