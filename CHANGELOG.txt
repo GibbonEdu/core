@@ -44,6 +44,7 @@ v16.0.00
 		Attendance: added ability to delete attendance with Manage Attendance Logs permission in Attendance by Person
 		Finance: added logging for failed bulk email sends
 		Form Group: added link to print listing of students in form group detail view
+		Library: simplified interface for Duplicate in Manage Catalog
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
