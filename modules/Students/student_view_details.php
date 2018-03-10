@@ -1915,7 +1915,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-                    } elseif ($subpage == 'School Attendance') {
+                    } elseif ($subpage == 'Attendance') {
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
                             echo "<div class='error'>";
                             echo __($guid, 'Your request failed because you do not have access to this action.');
@@ -3173,6 +3173,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuName[$studentMenuCount] = __($guid, 'Timetable');
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Timetable'>".__($guid, 'Timetable').'</a></li>';
                         ++$studentMenuCount;
+                    }if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
+                        $style = '';
+                        if ($subpage == 'Attendance') {
+                            $style = "style='font-weight: bold'";
+                        }
+                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
+                        $studentMenuName[$studentMenuCount] = __($guid, 'Attendance');
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Attendance'>".__($guid, 'Attendance').'</a></li>';
+                        ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php')) {
                         $style = '';
@@ -3184,16 +3193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__($guid, 'Behaviour').'</a></li>';
                         ++$studentMenuCount;
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
-                        $style = '';
-                        if ($subpage == 'School Attendance') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
-                        $studentMenuName[$studentMenuCount] = __($guid, 'School Attendance');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=School Attendance'>".__($guid, 'School Attendance').'</a></li>';
-                        ++$studentMenuCount;
-                    }
+                    
 
                     //Check for hooks, and slot them into array
                     try {
