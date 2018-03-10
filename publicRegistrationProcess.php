@@ -72,7 +72,7 @@ if ($proceed == false) {
         $dob = dateConvert($guid, $dob);
     }
     $email = trim($_POST['email']);
-    $username = trim($_POST['username']);
+    $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'];
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);

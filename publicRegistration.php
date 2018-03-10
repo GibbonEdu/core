@@ -63,7 +63,7 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
+    $form = Form::create('publicRegistration', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
 
     $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -91,11 +91,11 @@ if ($proceed == false) {
         $row->addDate('dob')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'));
-        $row->addTextField('username')
+        $row->addLabel('usernameCheck', __('Username'));
+        $row->addTextField('usernameCheck')
             ->maxLength(20)
             ->isRequired()
-            ->isUnique('./publicRegistrationCheck.php');
+            ->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'username'));
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
