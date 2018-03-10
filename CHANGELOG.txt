@@ -50,6 +50,7 @@ v16.0.00
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
 		Students: added View option to Students by Form Group report, allowing Basic or Extended view
+		Students: changed School Attendance sub page to Attendance to improve UI consistency
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
 		User Admin: fixed Child's Name list in Edit Family to include all students
