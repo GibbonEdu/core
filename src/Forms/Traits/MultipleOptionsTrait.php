@@ -128,7 +128,7 @@ trait MultipleOptionsTrait
      * Gets the internal options collection.
      * @return  array
      */
-    protected function getOptions()
+    public function getOptions()
     {
         return $this->options;
     }
@@ -137,7 +137,7 @@ trait MultipleOptionsTrait
      * Recursivly count the total options in the collection.
      * @return  int
      */
-    protected function getOptionCount()
+    public function getOptionCount()
     {
         return count($this->options, COUNT_RECURSIVE);
     }
