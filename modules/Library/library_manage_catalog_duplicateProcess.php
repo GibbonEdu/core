@@ -57,100 +57,67 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             header("Location: {$URL}");
         } else {
             $row = $result->fetch();
-            //Fields to copy
+
+            $status = 'Available';
             $imageType = $row['imageType'];
             $imageLocation = $row['imageLocation'];
             $gibbonLibraryTypeID = $row['gibbonLibraryTypeID'];
-            $status = 'Available';
-
-            $partialFail = false;
+            $name = $row['name'];
+            $producer = $row['producer'];
+            $vendor = $row['vendor'];
+            $purchaseDate = $row['purchaseDate'];
+            $invoiceNumber = $row['invoiceNumber'];
+            $replacement = $row['replacement'];
+            $gibbonSchoolYearIDReplacement = $row['gibbonSchoolYearIDReplacement'];
+            $replacementCost = $row['replacementCost'];
+            $comment = $row['comment'];
+            $gibbonSpaceID = $row['gibbonSpaceID'];
+            $locationDetail = $row['locationDetail'];
+            $ownershipType = $row['ownershipType'];
+            $gibbonPersonIDOwnership = $row['gibbonPersonIDOwnership'];
+            $gibbonDepartmentID = $row['gibbonDepartmentID'];
+            $borrowable = $row['borrowable'];
+            $bookable = $row['bookable'];
+            $fields = $row['fields'];
             $count = $_POST['count'];
-            for ($i = 1; $i <= $count; ++$i) {
-                //Get general fields
-                $id = $_POST['id'.$i];
-                $name = $_POST['name'.$i];
-                $producer = $_POST['producer'.$i];
-                $vendor = $_POST['vendor'.$i];
-                $purchaseDate = null;
-                if ($_POST['purchaseDate'.$i] != '') {
-                    $purchaseDate = dateConvert($guid, $_POST['purchaseDate'.$i]);
-                }
-                $invoiceNumber = $_POST['invoiceNumber'.$i];
-                $gibbonSchoolYearIDReplacement = null;
-                if ($_POST['gibbonSchoolYearIDReplacement'] != '') {
-                    $gibbonSchoolYearIDReplacement = $_POST['gibbonSchoolYearIDReplacement'];
-                }
-                $replacementCost = null;
-                if ($_POST['replacementCost'] != '') {
-                    $replacementCost = $_POST['replacementCost'];
-                }
-                $comment = $_POST['comment'.$i];
-                $gibbonSpaceID = null;
-                if ($_POST['gibbonSpaceID'.$i] != '') {
-                    $gibbonSpaceID = $_POST['gibbonSpaceID'.$i];
-                }
-                $locationDetail = $_POST['locationDetail'.$i];
-                $ownershipType = $_POST['ownershipType'.$i];
-                $gibbonPersonIDOwnership = null;
-                if ($ownershipType == 'School' and $_POST['gibbonPersonIDOwnershipSchool'.$i] != '') {
-                    $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipSchool'.$i];
-                } elseif ($ownershipType == 'Individual' and $_POST['gibbonPersonIDOwnershipIndividual'.$i] != '') {
-                    $gibbonPersonIDOwnership = $_POST['gibbonPersonIDOwnershipIndividual'.$i];
-                }
-                $gibbonDepartmentID = null;
-                if ($_POST['gibbonDepartmentID'.$i] != '') {
-                    $gibbonDepartmentID = $_POST['gibbonDepartmentID'.$i];
-                }
-                $borrowable = $_POST['borrowable'.$i];
 
-                //Get type-specific fields
-                try {
-                    $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
-                    $sql = "SELECT * FROM gibbonLibraryType WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                }
+            if ($gibbonLibraryTypeID == '' or $name == '' or $producer == '' or $borrowable == '' or $count == '') {
+                $URL .= '&return=error1';
+                header("Location: {$URL}");
+            }
+            else {
+                $partialFail = false;
 
-                if ($result->rowCount() == 1) {
-                    $row = $result->fetch();
-                    $fieldsIn = unserialize($row['fields']);
-                    $fieldsOut = array();
-                    foreach ($fieldsIn as $field) {
-                        $fieldName = preg_replace('/ /', '', $field['name']);
-                        if ($field['type'] == 'Date') {
-                            $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName.$i]);
-                        } else {
-                            $fieldsOut[$field['name']] = $_POST['field'.$fieldName.$i];
-                        }
-                    }
-                }
+                for ($i = 1; $i <= $count; ++$i) {
+                    $id = $_POST['id'.$i];
 
-                if ($gibbonLibraryTypeID == '' or $name == '' or $id == '' or $producer == '' or $borrowable == '') {
-                    $partialFail = true;
-                } else {
-                    //Check unique inputs for uniquness
-                    try {
-                        $dataUnique = array('id' => $id);
-                        $sqlUnique = 'SELECT * FROM gibbonLibraryItem WHERE id=:id';
-                        $resultUnique = $connection2->prepare($sqlUnique);
-                        $resultUnique->execute($dataUnique);
-                    } catch (PDOException $e) {
+                    if ($id == '') {
                         $partialFail = true;
                     }
-
-                    if ($resultUnique->rowCount() > 0) {
-                        $partialFail = true;
-                    } else {
-                        //Write to database
+                    else {
+                        //Check unique inputs for uniquness
                         try {
-                            $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID, 'id' => $id, 'name' => $name, 'producer' => $producer, 'fields' => serialize($fieldsOut), 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'imageType' => $imageType, 'imageLocation' => $imageLocation, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'replacementCost' => $replacementCost, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'status' => $status, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
-                            $sql = 'INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
+                            $dataUnique = array('id' => $id);
+                            $sqlUnique = 'SELECT * FROM gibbonLibraryItem WHERE id=:id';
+                            $resultUnique = $connection2->prepare($sqlUnique);
+                            $resultUnique->execute($dataUnique);
                         } catch (PDOException $e) {
                             $partialFail = true;
-                            $failCode = $e->getMessage();
+                        }
+
+                        if ($resultUnique->rowCount() > 0) {
+                            $partialFail = true;
+                        } else {
+                            //Write to database
+                            try {
+                                $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID, 'id' => $id, 'name' => $name, 'producer' => $producer, 'fields' => $fields, 'vendor' => $vendor, 'purchaseDate' => $purchaseDate, 'invoiceNumber' => $invoiceNumber, 'imageType' => $imageType, 'imageLocation' => $imageLocation, 'replacement' => $replacement, 'gibbonSchoolYearIDReplacement' => $gibbonSchoolYearIDReplacement, 'replacementCost' => $replacementCost, 'comment' => $comment, 'gibbonSpaceID' => $gibbonSpaceID, 'locationDetail' => $locationDetail, 'ownershipType' => $ownershipType, 'gibbonPersonIDOwnership' => $gibbonPersonIDOwnership, 'gibbonDepartmentID' => $gibbonDepartmentID, 'borrowable' => $borrowable, 'bookable' => $bookable, 'status' => $status, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestampCreator' => date('Y-m-d H:i:s', time()));
+                                $sql = 'INSERT INTO gibbonLibraryItem SET gibbonLibraryTypeID=:gibbonLibraryTypeID, id=:id, name=:name, producer=:producer, fields=:fields, vendor=:vendor, purchaseDate=:purchaseDate, invoiceNumber=:invoiceNumber, imageType=:imageType, imageLocation=:imageLocation, replacement=:replacement, gibbonSchoolYearIDReplacement=:gibbonSchoolYearIDReplacement, replacementCost=:replacementCost, comment=:comment, gibbonSpaceID=:gibbonSpaceID, locationDetail=:locationDetail, ownershipType=:ownershipType, gibbonPersonIDOwnership=:gibbonPersonIDOwnership, gibbonDepartmentID=:gibbonDepartmentID, borrowable=:borrowable, bookable=:bookable, status=:status, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestampCreator=:timestampCreator';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                                $failCode = $e->getMessage();
+                            }
                         }
                     }
                 }
