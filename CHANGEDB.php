@@ -884,4 +884,6 @@ UPDATE gibbonAction SET precedence=2 WHERE name='Student History_all' AND gibbon
 UPDATE gibboni18n SET active='Y' WHERE code='zh_CN';end
 ALTER TABLE `gibboni18n` DROP `maintainerName`, DROP `maintainerWebsite`;end
 UPDATE gibbonSetting SET description='Should department information be made available to the public, via the Gibbon homepage?' WHERE scope='Departments' AND name='makeDepartmentsPublic';end
+UPDATE gibbonAction SET URLList='attendance_take_byPerson_edit.php,attendance_take_byPerson_delete.php' WHERE name='Manage Attendance Logs' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance');end
+
 ";

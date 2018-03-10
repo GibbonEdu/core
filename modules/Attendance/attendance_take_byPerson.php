@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo '<th>'.__($guid, 'Recorded By').'</th>';
 
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
-                            echo '<th style="width: 50px;">'.__($guid, 'Actions').'</th>';
+                            echo '<th style="width: 60px;">'.__($guid, 'Actions').'</th>';
                         }
                     echo '</tr>';
                     while ($rowLog = $resultLog->fetch()) {
@@ -158,6 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
                             echo '<td>';
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_edit.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']. '/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_delete.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']. "/img/garbage.png'/></a> ";
                             echo '</td>';
                         }
 
