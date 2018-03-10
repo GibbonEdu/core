@@ -46,13 +46,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
-    
+
     if (array_filter($urlParams)) {
         echo "<div class='linkTop'>";
         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__($guid, 'Back to Search Results').'</a>';
         echo '</div>';
 	}
-    
+
     $form = Form::create('libraryCatalog', $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_addProcess.php?'.http_build_query($urlParams));
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $row = $form->addRow()->addClass('general imageFile');
         $row->addLabel('imageFile', __('Image File'))
             ->description(__('240px x 240px or smaller.'));
-        $row->addFileUpload('file1')
+        $row->addFileUpload('imageFile')
             ->accepts('.jpg,.jpeg,.gif,.png')
             ->setMaxUpload(false)
             ->isRequired();

@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         } else {
             //Let's go!
 			$values = $result->fetch();
-			
+
 			$urlParamKeys = array('name' => '', 'gibbonLibraryTypeID' => '', 'gibbonSpaceID' => '', 'status' => '', 'gibbonPersonIDOwnership' => '', 'typeSpecificFields' => '');
 
 			$urlParams = array_intersect_key($_GET, $urlParamKeys);
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_manage_catalog.php&'.http_build_query($urlParams)."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
 			}
-			
+
 			$form = Form::create('libraryCatalog', $_SESSION[$guid]['absoluteURL'].'/modules/Library/library_manage_catalog_editProcess.php?'.http_build_query($urlParams));
 			$form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$row = $form->addRow()->addClass('general imageFile');
 				$row->addLabel('imageFile', __('Image File'))
 					->description(__('240px x 240px or smaller.'));
-				$row->addFileUpload('file1')
+				$row->addFileUpload('imageFile')
 					->accepts('.jpg,.jpeg,.gif,.png')
 					->setMaxUpload(false)
 					->isRequired();
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				$row->addLabel('borrowable', __('Borrowable?'))->description(__('Is item available for loan?'));
 				$row->addYesNo('borrowable');
 
-			
+
 			$form->toggleVisibilityByClass('statusBorrowable')->onSelect('borrowable')->when('Y');
 			$form->toggleVisibilityByClass('statusNotBorrowable')->onSelect('borrowable')->when('N');
 
