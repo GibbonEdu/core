@@ -30,7 +30,7 @@ use Gibbon\Forms\Element;
 class TextField extends Input
 {
     protected $autocomplete;
-    protected $isUnique = false;
+    protected $unique;
 
     /**
      * Set a max character count for this text field.
@@ -77,13 +77,14 @@ class TextField extends Input
         $label = $this->row->getElement('label'.$this->getName());
         $fieldName = (!empty($label))? $label->getLabel() : ucfirst($this->getName());
 
-        $this->isUnique = true;
-        $this->addClass('checkUniqueness')
-            ->addData('ajax-url', $ajaxURL)
-            ->addData('ajax-data', array_replace(array('fieldName' => $this->getName()), $data), true)
-            ->addData('alert-success', sprintf(__('%1$s available'), $fieldName))
-            ->addData('alert-fail', sprintf(__('%1$s already in use'), $fieldName))
-            ->addData('alert-error', __('An error has occurred.'));
+        $this->unique = array(
+            'fieldName'    => $fieldName,
+            'ajaxURL'      => $ajaxURL,
+            'ajaxData'     => array_replace(array('fieldName' => $this->getName()), $data),
+            'alertSuccess' => sprintf(__('%1$s available'), $fieldName),
+            'alertFailure' => sprintf(__('%1$s already in use'), $fieldName),
+            'alertError'   => __('An error has occurred.'),
+        );
 
         return $this;
     }
@@ -94,7 +95,7 @@ class TextField extends Input
      */
     public function getLabelContext($label)
     {
-        if ($this->isUnique && stristr($label->getDescription(), __('Must be unique.')) === false) {
+        if (!empty($this->unique)) {
             return __('Must be unique.');
         }
 
@@ -114,6 +115,12 @@ class TextField extends Input
             $output .= '<script type="text/javascript">';
             $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
             $output .= '</script>';
+        }
+
+        if (!empty($this->unique)) {
+            $output .= '<script type="text/javascript">
+                $("#'.$this->getID().'").gibbonUniquenessCheck('.json_encode($this->unique).');
+            </script>';
         }
 
         return $output;

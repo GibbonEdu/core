@@ -55,58 +55,55 @@ jQuery(function($){
         prompt($(this).data("alert"), text);
     });
 
-    /**
-     * Generic Uniqueness Check.
-     */
-    $('input.checkUniqueness').each(function () {
-        var ajaxURL = $(this).data("ajax-url");
-        var ajaxData = $(this).data("ajax-data");
-        if (ajaxURL == '' || ajaxData == '') return;
+});
 
-        var validation = window[$(this).attr('id') + "Validate"];
+// Form API Functions
+
+/**
+ * TextField Uniqueness Check
+ */
+$.prototype.gibbonUniquenessCheck = function (settings) {
+    var uniqueField = this;
+    var validation;
+
+    $(uniqueField).ready(function(){
+        // Get the existing LiveValidation object, otherwise create one
+        validation = window[$(uniqueField).attr('id') + "Validate"];
         if (validation == null || typeof validation != "object") {
-            validation = new LiveValidation($(this).attr('id'));
+            validation = new LiveValidation($(uniqueField).attr('id'));
         }
 
-        $(this).removeAttr("data-ajax-url data-ajax-data");
+        validation.onValid = function() {
+            // Pass the current value as POST['value'] (optionally by a defined fieldName)
+            settings.ajaxData[settings.ajaxData.fieldName || "value"] = $(uniqueField).val();
 
-        $(this).on('input', function (event) {
-            // Give the LiveValidation priority - and don't proceed if it fails
-            if (validation.doValidations() != true) {
-                return;
-            }
-    
-            // Pass the current value as POST data (optionally by a defined fieldName)
-            ajaxData[ajaxData.fieldName || "value"] = $(this).val();
-    
-            // Send an AJAX request to check uniqueness
-            // event.stopPropagation();
-            // event.preventDefault();
+            // Send an AJAX request to check uniqueness, and use LiveValidation messages to display response
             $.ajax({
                 type: 'POST',
-                data: ajaxData,
-                url: ajaxURL,
-                context: this,
+                data: settings.ajaxData,
+                url: settings.ajaxURL,
                 success: function (responseText) {
-                    console.log(responseText);
+                    // The response should be the count of matching values, so 0 is unique and -1 is an error
                     if (responseText < 0) {
-                        validation.invalidMessage = $(this).data("alert-error");
-                        validation.onInvalid();
+                        validation.message = validation.invalidMessage = settings.alertError;
+                        validation.validationFailed = true;
                     } else if (responseText == 0) {
-                        validation.validMessage = $(this).data("alert-success");
-                        validation.onValid();
-                    } else if (responseText > 0){
-                        validation.invalidMessage = $(this).data("alert-fail");
-                        validation.onInvalid();
-                        validation.add(Validate.Exclusion, { within: [$(this).val()], failureMessage: $(this).data("alert-fail") });
+                        validation.message = validation.validMessage = settings.alertSuccess;
+                    } else if (responseText > 0) {
+                        validation.message = validation.invalidMessage = settings.alertFailure;
+                        validation.validationFailed = true;
+                        validation.add(Validate.Exclusion, { within: [$(uniqueField).val()], failureMessage: settings.alertFailure });
                     }
                 },
                 error: function() {
-                    validation.invalidMessage = $(this).data("alert-error");
-                    validation.onInvalid();
+                    validation.message = validation.invalidMessage = settings.alertError;
+                    validation.validationFailed = true;
+                },
+                complete: function() {
+                    validation.insertMessage(validation.createMessageSpan());
+                    validation.addFieldClass();
                 }
             });
-        });
+        };
     });
-    
-});
+};
