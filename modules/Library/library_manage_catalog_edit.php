@@ -97,7 +97,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$row = $form->addRow();
 				$row->addLabel('id', __('ID'))->description(__('Must be unique.'));
-				$row->addTextField('id')->isRequired()->maxLength(255);
+				$row->addTextField('id')
+					->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
+					->isRequired()
+					->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('producer', __('Author/Brand'))->description(__('Who created the item?'));
