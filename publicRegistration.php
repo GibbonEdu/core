@@ -79,8 +79,13 @@ if ($proceed == false) {
         $row->addTextField('firstName')->isRequired()->maxLength(30);
 
     $row = $form->addRow();
-        $row->addLabel('email', __('Email'))->description(__('Must be unique.'));
-        $row->addEmail('email')->maxLength(50)->isRequired();
+        $row->addLabel('email', __('Email'));
+        $email = $row->addEmail('email')->maxLength(50)->isRequired();
+
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    if ($uniqueEmailAddress == 'Y') {
+        $email->isUnique('./publicRegistrationCheck.php');
+    }
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));

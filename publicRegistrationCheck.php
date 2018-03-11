@@ -21,9 +21,19 @@ use Gibbon\Data\UsernameGenerator;
 
 include './gibbon.php';
 
-$username = (isset($_POST['username']))? $_POST['username'] : (isset($_POST['value'])? $_POST['value'] : '');
-$generator = new UsernameGenerator($pdo);
+$username = (isset($_POST['username']))? $_POST['username'] : '';
 
-echo $generator->isUsernameUnique($username)? '0' : '1';
+if (!empty($username)) {
+    $generator = new UsernameGenerator($pdo);
+    echo $generator->isUsernameUnique($username)? '0' : '1';
+}
 
-?>
+$email = (isset($_POST['email']))? $_POST['email']: '';
+
+if (!empty($email)) {
+    $data = array('email' => $email);
+    $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email";
+    $result = $pdo->executeQuery($data, $sql);
+
+    echo ($result && $result->rowCount() == 1)? $result->fetchColumn(0) : -1;
+}
