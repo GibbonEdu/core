@@ -21,7 +21,7 @@ namespace Gibbon\Tables;
 
 use Gibbon\Tables\Column;
 use Gibbon\Tables\Action;
-use Gibbon\Tables\DataFilters;
+use Gibbon\Domain\ResultSet;
 
 /**
  * DataTable
@@ -33,37 +33,26 @@ class DataTable
 {
     protected $id;
     protected $columns = array();
-    protected $filters;
 
-    protected $dataSet;
+    protected $resultSet;
 
-    public function __construct($id, $path)
+    public function __construct($id, ResultSet $resultSet)
     {
         $this->id = $id;
+        $this->resultSet = $resultSet;
+    }
+
+    public static function create($id, ResultSet $resultSet)
+    {
+        return new DataTable($id, $resultSet);
+    }
+
+    public function setPath($path = '')
+    {
         $this->path = $path;
-    }
-
-    public static function create($id, $path = '')
-    {
-        $table = new DataTable($id, $path);
-
-        return $table;
-    }
-
-    public function withFilters(DataFilters $filters)
-    {
-        $this->filters = $filters;
 
         return $this;
     }
-
-    public function fromDataSet(DataSet $dataSet)
-    {
-        $this->dataSet = $dataSet;
-
-        return $this;
-    }
-
 
     public function addColumn($name, $label = '')
     {
@@ -83,21 +72,19 @@ class DataTable
     {
         $output = '';
 
-        if ($this->dataSet->count() == 0) {
+        if ($this->resultSet->resultCount == 0) {
             $output .= '<div class="error">';
             $output .= __('There are no records to display.');
             $output .= '</div>';
             return $output;
         }
 
-        $filters = $this->dataSet->getFilters();
-
         $output .= '<div id="'.$this->id.'">';
         $output .= '<div class="dataTable">';
 
-        $output .= $this->getPageCount($filters);
-        $output .= $this->getPageLimit($filters);
-        $output .= $this->getPagination($filters);
+        $output .= $this->renderPageCount($this->resultSet);
+        $output .= $this->renderPageSize($this->resultSet);
+        $output .= $this->renderPagination($this->resultSet);
 
         $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
 
@@ -110,8 +97,8 @@ class DataTable
             if ($column->getSortable()) {
                 $classes[] = 'sortable';
             }
-            if ($filters->sort == $columnName) {
-                $classes[] = 'sorting sort'.$filters->direction;
+            if (isset($this->resultSet->filters->orderBy[$columnName])) {
+                $classes[] = 'sorting sort'.$this->resultSet->filters->orderBy[$columnName];
             }
             $output .= '<th style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
             $output .=  $column->getLabel();
@@ -122,7 +109,7 @@ class DataTable
 
         // ROWS
         $output .= '<tbody>';
-        foreach ($this->dataSet->getData() as $data) {
+        foreach ($this->resultSet->getData() as $data) {
             $output .= '<tr>';
 
             if (!empty($this->columns)) {
@@ -138,10 +125,9 @@ class DataTable
         $output .= '</tbody>';
         $output .= '</table>';
 
-        $output .= $this->getPageCount($filters);
-        $output .= $this->getPageLimit($filters);
-        $output .= $this->getPagination($filters);
-        // $output .= $this->getPageLimit($filters);
+        $output .= $this->renderPageCount($this->resultSet);
+        $output .= $this->renderPageSize($this->resultSet);
+        $output .= $this->renderPagination($this->resultSet);
 
         $output .= '</div></div><br/>';
 
@@ -149,65 +135,67 @@ class DataTable
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('".str_replace(' ', '%20', $this->path)."', ".$filters->toJson().");
+            $('#".$this->id."').gibbonDataTable('".str_replace(' ', '%20', $this->path)."', ".$this->resultSet->filters->toJson().", ".$this->resultSet->totalCount.");
         });
         </script>";
 
         return $output;
     }
 
-    protected function getPageCount($filters)
+    protected function renderPageCount(ResultSet $resultSet)
     {
-        $from = $filters->page * $filters->limit + 1;
-        $to = max(1, min( (($filters->page + 1) * $filters->limit), $filters->totalRows));
-
         $output = '<span class="small" style="line-height: 30px;">';
-        $output .= __('Records').' '.$from.'-'.$to.' '.__('of').' '.$filters->totalRows;
+        $output .= __('Records').' '.$resultSet->rowsFrom.'-'.$resultSet->rowsTo.' '.__('of').' '.$resultSet->totalCount;
         $output .= '</span>';
+
         return $output;
     }
 
-    protected function getPageLimit($filters)
+    protected function renderPageSize(ResultSet $resultSet)
     {
+        $pageSize = $resultSet->filters->pageSize;
+        
         $output = '<span style="padding-left:10px;"><select class="limit floatNone" style="width:50px;height:26px;margin: 2px 0;">';
-            $output .= '<option value="10" '.($filters->limit == 10? 'selected' : '').'>10</option>';
-            $output .= '<option value="25" '.($filters->limit == 25? 'selected' : '').'>25</option>';
-            $output .= '<option value="50" '.($filters->limit == 50? 'selected' : '').'>50</option>';
-            $output .= '<option value="100" '.($filters->limit == 100? 'selected' : '').'>100</option>';
+            $output .= '<option value="10" '.($pageSize == 10? 'selected' : '').'>10</option>';
+            $output .= '<option value="25" '.($pageSize == 25? 'selected' : '').'>25</option>';
+            $output .= '<option value="50" '.($pageSize == 50? 'selected' : '').'>50</option>';
+            $output .= '<option value="100" '.($pageSize == 100? 'selected' : '').'>100</option>';
         $output .= '</select>  <small style="line-height: 30px;">Per Page</small></span>';
 
         return $output;
     }
 
-    protected function getPagination($filters)
+    protected function renderPagination(ResultSet $resultSet)
     {
-        if ($filters->pageMax == 0) return '';
+        $filters = $resultSet->filters;
+
+        if ($resultSet->pageCount <= 1) return '';
 
         $output = '<div class="floatRight">';
-            $output .= '<input type="button" class="paginate" data-page="'.($filters->page - 1).'" '.($filters->page <= 0? 'disabled' : '').' value="'.__('Prev').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($filters->pageIndex - 1).'" '.($filters->pageIndex <= 0? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $range = range(0, $filters->pageMax);
+            $range = range(0, $resultSet->pageCount);
 
             // Collapse the leading page-numbers
-            if ($filters->pageMax > 7 && $filters->page > 5) {
-                array_splice($range, 2, $filters->page - 4, '...');
+            if ($resultSet->pageCount > 7 && $filters->pageIndex > 5) {
+                array_splice($range, 2, $filters->pageIndex - 4, '...');
             }
 
             // Collapse the trailing page-numbers
-            if ($filters->pageMax > 7 && ($filters->pageMax - $filters->page) > 5) {
-                array_splice($range, ($filters->pageMax - $filters->page - 2)*-1, ($filters->pageMax - $filters->page)-4, '...');
+            if ($resultSet->pageCount > 7 && ($resultSet->pageCount - $filters->pageIndex) > 5) {
+                array_splice($range, ($resultSet->pageCount - $filters->pageIndex - 2)*-1, ($resultSet->pageCount - $filters->pageIndex)-4, '...');
             }
 
             foreach ($range as $page) {
                 if ($page === '...') {
                     $output .= '<input type="button" disabled value="...">';
                 } else {
-                    $class = ($page == $filters->page)? 'active paginate' : 'paginate';
+                    $class = ($page == $filters->pageIndex)? 'active paginate' : 'paginate';
                     $output .= '<input type="button" class="'.$class.'" data-page="'.$page.'" value="'.($page + 1).'">';
                 }
             }
 
-            $output .= '<input type="button" class="paginate" data-page="'.($filters->page + 1).'" '.($filters->page >= $filters->pageMax? 'disabled' : '').' value="'.__('Next').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($filters->pageIndex + 1).'" '.($filters->pageIndex >= $resultSet->pageCount? 'disabled' : '').' value="'.__('Next').'">';
         $output .= '</div>';
 
         return $output;

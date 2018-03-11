@@ -105,6 +105,8 @@ class Column
     public function format(callable $formatter) 
     {
         $this->formatter = $formatter;
+
+        return $this;
     }
 
     public function getContents(&$data)

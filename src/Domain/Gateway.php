@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 use Gibbon\sqlConnection;
-use Gibbon\Tables\DataFilters;
+use Gibbon\Domain\ResultFilters;
 
 /**
  * Gateway
@@ -37,15 +37,25 @@ abstract class Gateway
         $this->pdo = $pdo;
     }
 
-    public function applyDataFilters($sql, DataFilters $filters)
+    public function applyFilters($sql, ResultFilters $filters)
     {
-        if (isset($filters->sort)) {
-            $sql .= ' ORDER BY '.$filters->sort.' '.$filters->direction;
+        if (!empty($filters->orderBy)) {
+            $sql .= ' ORDER BY ';
+
+            $order = array();
+            foreach ($filters->orderBy as $column => $direction) {
+                $order[] =  $column.' '.$direction;
+            }
+
+            $sql .= implode(', ', $order);
         }
 
-        if (isset($filters->page)) {
-            $offset = min(max(0, $filters->page * $filters->limit), $filters->pageMax * $filters->limit);
-            $sql .= ' LIMIT '.$filters->limit.' OFFSET '.$offset;
+        if (!empty($filters->pageNumber)) {
+            $page = $filters->pageNumber - 1;
+            $offset = max(0, $page * $filters->pageSize);
+            
+            $sql .= ' LIMIT '.$filters->pageSize;
+            $sql .= ' OFFSET '.$offset;
         }
 
         return $sql;

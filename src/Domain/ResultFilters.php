@@ -17,19 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Tables;
+namespace Gibbon\Domain;
 
 /**
- * Immutable? Data Filters for SQL Queries
+ * Immutable object describing the filters applied to a Gateway query.
  */
-class DataFilters
+class ResultFilters
 {
     protected $filters = array(
-        'page'      => 0,
-        'limit'     => 25,
-        'sort'      => 'name',
-        'direction' => 'ASC',
-        'totalRows' => 0,
+        'pageIndex'  => 0,
+        'pageNumber' => 1,
+        'pageSize'   => 25,
+        'filterBy'   => array(),
+        'orderBy'    => array(),
     );
 
     public function __construct($filters = array())
@@ -49,12 +49,12 @@ class DataFilters
 
     public static function createFromArray($filters)
     {
-        return new DataFilters($filters);
+        return new ResultFilters($filters);
     }
 
     public static function createFromJson($json)
     {
-        return new DataFilters(json_decode($json));
+        return new ResultFilters(json_decode($json));
     }
 
     public function toArray()
@@ -69,14 +69,12 @@ class DataFilters
 
     protected function sanitizeFilters($filters)
     {
-        $filters['limit'] = max(1, intval($filters['limit']));
-
-        $filters['page'] = intval($filters['page']);
-        $filters['pageMax'] = ceil($filters['totalRows'] / $filters['limit']) - 1;
-
-        $filters['direction'] = $filters['direction'] == 'DESC'? 'DESC' : 'ASC';
-
-        return $filters;
+        return array(
+            'pageIndex'  => intval($filters['pageIndex']),
+            'pageNumber' => $filters['pageIndex'] + 1,
+            'pageSize'   => intval($filters['pageSize']),
+            'filterBy'   => is_array($filters['filterBy'])? $filters['filterBy'] : array(),
+            'orderBy'    => isset($filters['sort'], $filters['direction'])? array($filters['sort'] => $filters['direction']) : array(),
+        );
     }
-
 }

@@ -317,27 +317,28 @@ $.prototype.gibbonCustomBlocks = function(settings) {
  * @param string basePath 
  * @param Object settings 
  */
-$.prototype.gibbonDataTable = function(basePath, settings) {
+$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
     var dataTable = this;
     var path = basePath + " #" + $(dataTable).attr('id') + " .dataTable";
     // console.log(path);
 
     $(dataTable).on('click', '.paginate', function() {
-        settings.page = Math.min($(this).data('page'), settings.pageMax);
-        $(dataTable).load(path, settings);
+        filters.pageMax = Math.ceil(totalCount / filters.pageSize);
+        filters.pageIndex = Math.min($(this).data('page'), filters.pageMax);
+        $(dataTable).load(path, filters);
     });
 
     $(dataTable).on('change', '.limit', function() {
-        settings.limit = parseInt($(this).val());
-        settings.pageMax = Math.ceil(settings.totalRows / settings.limit);
-        settings.page = Math.min(settings.page, settings.pageMax - 1);
-        $(dataTable).load(path, settings);
+        filters.pageSize = parseInt($(this).val());
+        filters.pageMax = Math.ceil(totalCount / filters.pageSize);
+        filters.pageIndex = Math.min(filters.pageIndex, filters.pageMax - 1);
+        $(dataTable).load(path, filters);
     });
 
     $(dataTable).on('click', '.column.sortable', function() {
         var column = $(this).data('column');
-        settings.direction = (column == settings.sort && settings.direction == 'ASC')? 'DESC' : 'ASC';
-        settings.sort = column;
-        $(dataTable).load(path, settings);
+        filters.direction = (column == filters.sort && filters.direction == 'ASC')? 'DESC' : 'ASC';
+        filters.sort = column;
+        $(dataTable).load(path, filters);
     });
 };
