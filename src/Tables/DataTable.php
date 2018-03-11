@@ -96,6 +96,7 @@ class DataTable
         $output .= '<div class="dataTable">';
 
         $output .= $this->getPageCount($filters);
+        $output .= $this->getPageLimit($filters);
         $output .= $this->getPagination($filters);
 
         $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
@@ -137,8 +138,10 @@ class DataTable
         $output .= '</tbody>';
         $output .= '</table>';
 
-        $output .= $this->getPagination($filters);
+        $output .= $this->getPageCount($filters);
         $output .= $this->getPageLimit($filters);
+        $output .= $this->getPagination($filters);
+        // $output .= $this->getPageLimit($filters);
 
         $output .= '</div></div><br/>';
 
@@ -166,12 +169,12 @@ class DataTable
 
     protected function getPageLimit($filters)
     {
-        $output = '<div><select class="limit floatNone noMargin" style="width:50px;">';
+        $output = '<span style="padding-left:10px;"><select class="limit floatNone" style="width:50px;height:26px;margin: 2px 0;">';
             $output .= '<option value="10" '.($filters->limit == 10? 'selected' : '').'>10</option>';
             $output .= '<option value="25" '.($filters->limit == 25? 'selected' : '').'>25</option>';
             $output .= '<option value="50" '.($filters->limit == 50? 'selected' : '').'>50</option>';
             $output .= '<option value="100" '.($filters->limit == 100? 'selected' : '').'>100</option>';
-        $output .= '</select>  <small style="line-height: 30px;">Per Page</small></div>';
+        $output .= '</select>  <small style="line-height: 30px;">Per Page</small></span>';
 
         return $output;
     }
