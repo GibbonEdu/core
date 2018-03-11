@@ -54,7 +54,6 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
-
 });
 
 // Form API Functions
@@ -323,19 +322,19 @@ $.prototype.gibbonDataTable = function(basePath, settings) {
     var path = basePath + " #" + $(dataTable).attr('id') + " .dataTable";
     // console.log(path);
 
-    $(this).on('click', '.paginate', function() {
+    $(dataTable).on('click', '.paginate', function() {
         settings.page = Math.min($(this).data('page'), settings.pageMax);
         $(dataTable).load(path, settings);
     });
 
-    $(this).on('change', '.limit', function() {
+    $(dataTable).on('change', '.limit', function() {
         settings.limit = parseInt($(this).val());
         settings.pageMax = Math.ceil(settings.totalRows / settings.limit);
         settings.page = Math.min(settings.page, settings.pageMax - 1);
         $(dataTable).load(path, settings);
     });
 
-    $(this).on('click', '.column.sortable', function() {
+    $(dataTable).on('click', '.column.sortable', function() {
         var column = $(this).data('column');
         settings.direction = (column == settings.sort && settings.direction == 'ASC')? 'DESC' : 'ASC';
         settings.sort = column;
