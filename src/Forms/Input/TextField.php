@@ -75,7 +75,7 @@ class TextField extends Input
     public function isUnique($ajaxURL, $data = array())
     {
         $label = $this->row->getElement('label'.$this->getName());
-        $fieldLabel = (!empty($label))? $label->getLabel() : ucfirst($this->getName());
+        $fieldLabel = (!empty($label))? $label->getLabelText() : ucfirst($this->getName());
 
         $this->unique = array(
             'ajaxURL'      => $ajaxURL,
