@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Tables\DataTable;
-use Gibbon\Tables\DataFilters;
-use Gibbon\Tables\DataSet;
+use Gibbon\Domain\ResultFilters;
+use Gibbon\Domain\ResultSet;
 use Gibbon\Forms\Form;
 
 use Gibbon\UserAdmin\Domain\PersonGateway;
@@ -82,9 +82,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     }
 
     $_POST['sort'] = !empty($_POST['sort'])? $_POST['sort'] : 'surname';
-
+    
     $gateway = new PersonGateway($pdo);
-    $data = $gateway->selectAll($_POST);
+    $resultSet = $gateway->getUsersResultSet(ResultFilters::createFromArray($_POST));
 
     // $data = DataSet::createFromArray(array());
 
@@ -127,12 +127,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage_add.php&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    $table = DataTable::create('userManage', $_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage.php')
-        ->fromDataSet($data);
+    $table = DataTable::create('userManage', $resultSet)->setPath('.'.$_SESSION[$guid]['address']);
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);
-    });
+    })->setSortable(false);
 
     $table->addColumn('fullName', __('Name'))->format(function($item) {
         return formatName('', $item['preferredName'], $item['surname'], 'Student', true);

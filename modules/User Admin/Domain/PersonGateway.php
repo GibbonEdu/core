@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UserAdmin\Domain;
 
-use Gibbon\Domain\Gateway;
 use Gibbon\sqlConnection;
-use Gibbon\Tables\DataFilters;
-use Gibbon\Tables\DataSet;
+use Gibbon\Domain\Gateway;
+use Gibbon\Domain\ResultFilters;
+use Gibbon\Domain\ResultSet;
 
 /**
  * Person Gateway
@@ -34,23 +34,18 @@ use Gibbon\Tables\DataSet;
  */
 class PersonGateway extends Gateway
 {
-    public function selectAll(array $params)
+    public function getUsersResultSet(ResultFilters $filters)
     {
-        $params['totalRows'] = $this->countAll();
-
-        $filters = DataFilters::createFromArray($params);
-
         $data = array();
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, 
-                CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonPerson.username, 
-                gibbonPerson.image_240, gibbonPerson.status, gibbonRole.name as primaryRole 
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.username, 
+                gibbonPerson.image_240, gibbonPerson.status, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonRole.name as primaryRole 
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
-        $sql = $this->applyDataFilters($sql, $filters);
+        $sql = $this->applyFilters($sql, $filters);
 
         $result = $this->pdo->executeQuery($data, $sql);
 
-        return DataSet::createFromResult($result)->setFilters($filters)->setTotalRows($params['totalRows']);
+        return ResultSet::createFromResults($filters, $result, $this->countAll());
     }
 
     public function countAll()

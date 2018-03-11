@@ -25,19 +25,19 @@ use Gibbon\Domain\ResultFilters;
 use Gibbon\Domain\ResultSet;
 
 /**
- * School Year Gateway
+ * House Gateway
  *
- * Provides a data access layer for the gibbonSchoolYear table
+ * Provides a data access layer for the gibbonHouse table
  *
  * @version v16
  * @since   v16
  */
-class SchoolYearGateway extends Gateway
+class HouseGateway extends Gateway
 {
-    public function getSchoolYearList(ResultFilters $filters)
+    public function getHouseList(ResultFilters $filters)
     {
         $data = array();
-        $sql = "SELECT gibbonSchoolYearID, name, sequenceNumber, firstDay, lastDay, status FROM gibbonSchoolYear";
+        $sql = "SELECT gibbonHouseID, name, nameShort, logo FROM gibbonHouse";
         $sql = $this->applyFilters($sql, $filters);
 
         $result = $this->pdo->executeQuery($data, $sql);
@@ -47,6 +47,6 @@ class SchoolYearGateway extends Gateway
 
     public function countAll()
     {
-        return $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonSchoolYear")->fetchColumn(0);
+        return $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonHouse")->fetchColumn(0);
     }
 }
