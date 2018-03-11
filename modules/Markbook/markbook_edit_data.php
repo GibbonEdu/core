@@ -125,21 +125,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             try {
                 if ($highestAction == 'Edit Markbook_everything') {
                     $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale 
-                            FROM gibbonCourse, gibbonCourseClass 
-                            LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget) 
-                            WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID 
-                            AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale
+                            FROM gibbonCourse
+                            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                            LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget)
+                            WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             ORDER BY course, class";
                 } else {
                     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale 
-                            FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson 
-                            LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget) 
-                            WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID 
-                            AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID 
-                            AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' 
-                            AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID 
+                    $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonCourse.gibbonYearGroupIDList, gibbonScale.name as targetGradeScale
+                            FROM gibbonCourse
+                            JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                            JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                            LEFT JOIN gibbonScale ON (gibbonScale.gibbonScaleID=gibbonCourseClass.gibbonScaleIDTarget)
+                            WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher'
+                            AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID
                             ORDER BY course, class";
                 }
                 $result = $connection2->prepare($sql);
@@ -155,8 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
             } else {
                 try {
                     $data2 = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
-                    $sql2 = "SELECT gibbonMarkbookColumn.*, gibbonUnit.name as unitName, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort 
-                            FROM gibbonMarkbookColumn 
+                    $sql2 = "SELECT gibbonMarkbookColumn.*, gibbonUnit.name as unitName, attainmentScale.name as scaleNameAttainment, attainmentScale.usage as usageAttainment, attainmentScale.lowestAcceptable as lowestAcceptableAttainment, effortScale.name as scaleNameEffort, effortScale.usage as usageEffort, effortScale.lowestAcceptable as lowestAcceptableEffort
+                            FROM gibbonMarkbookColumn
                             LEFT JOIN gibbonUnit ON (gibbonMarkbookColumn.gibbonUnitID=gibbonUnit.gibbonUnitID)
                             LEFT JOIN gibbonScale as attainmentScale ON (attainmentScale.gibbonScaleID=gibbonMarkbookColumn.gibbonScaleIDAttainment)
                             LEFT JOIN gibbonScale as effortScale ON (effortScale.gibbonScaleID=gibbonMarkbookColumn.gibbonScaleIDEffort)
@@ -219,23 +219,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $hasUpload = $values['uploadedResponse'] == 'Y';
 
                     $data = array(
-                        'gibbonCourseClassID' => $gibbonCourseClassID, 
-                        'gibbonMarkbookColumnID' => $values['gibbonMarkbookColumnID'], 
-                        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 
+                        'gibbonCourseClassID' => $gibbonCourseClassID,
+                        'gibbonMarkbookColumnID' => $values['gibbonMarkbookColumnID'],
+                        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
                         'today' => date('Y-m-d'),
                     );
                     $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
-                            FROM gibbonCourseClassPerson 
+                            FROM gibbonCourseClassPerson
                             JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
-                            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
                             LEFT JOIN gibbonMarkbookEntry ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=:gibbonMarkbookColumnID AND gibbonMarkbookEntry.gibbonPersonIDStudent=gibbonCourseClassPerson.gibbonPersonID)
                             LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=gibbonPerson.gibbonPersonID)
                             LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID)
-                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
                             AND gibbonPerson.status='Full' AND gibbonCourseClassPerson.role='Student'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                        
+
                     if ($studentOrderBy == 'rollOrder') {
                         $sql .= " ORDER BY ISNULL(rollOrder), rollOrder, surname, preferredName";
                     } else if ($studentOrderBy == 'preferredName') {
@@ -350,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->rowSpan(2)
                             ->addClass('textCenter smallColumn dataColumn noPadding')
                             ->wrap('<div class="verticalText">', '</div>');
-                        
+
                         $header->addTableCell($values['name'])
                             ->setTitle($values['description'])
                             ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$detailsText.'</span>')
@@ -363,22 +363,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->addContent(__('Sub'))
                             ->setTitle(__('Submitted Work'))
                             ->setClass('textCenter');
-                        
+
                         $header->if($hasAttainment && $hasRawAttainment)
                             ->addContent(__('Mark'))
                             ->setTitle(__('Raw Attainment Mark'))
                             ->setClass('textCenter');
-                        
+
                         $header->if($hasAttainment)
                             ->addContent($hasAttainmentName? $attainmentAlternativeNameAbrev : __('Att'))
                             ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$attainmentScale)
                             ->setClass('textCenter');
-                        
+
                         $header->if($hasEffort)
                             ->addContent($hasEffortName? $effortAlternativeNameAbrev : __('Eff'))
                             ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$effortScale)
                             ->setClass('textCenter');
-                        
+
                         $header->if($hasComment || $hasUpload)
                             ->addContent(__('Com'))
                             ->setTitle(__('Comment'))
@@ -391,13 +391,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $rollOrder = ($studentOrderBy == 'rollOrder')? $student['rollOrder'] : $count;
 
                         $form->addHiddenValue($count.'-gibbonPersonID', $student['gibbonPersonID']);
-                        
+
                         if (!$hasRawAttainment) {
                             $form->addHiddenValue($count.'-attainmentValueRaw', $student['attainmentValueRaw']);
                         }
 
                         $row = $table->addRow();
-            
+
                         $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
@@ -464,7 +464,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $row->addSubmit();
 
                     $form->loadAllValuesFrom($values);
-        
+
                     echo $form->getOutput();
                 }
             }
