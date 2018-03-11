@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $generateUsername = $form->getFactory()->createButton(__('Generate'))->addClass('generateUsername alignRight')->setTabIndex(-1);
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+        $row->addLabel('username', __('Username'))->description(__('System login name. Cannot be changed.'));
         $row->addTextField('username')
             ->isRequired()
             ->maxLength(20)

@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				$row->addTextField('name')->isRequired()->maxLength(255);
 
 			$row = $form->addRow();
-				$row->addLabel('id', __('ID'))->description(__('Must be unique.'));
+				$row->addLabel('id', __('ID'));
 				$row->addTextField('id')
 					->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
 					->isRequired()

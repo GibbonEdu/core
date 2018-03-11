@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			$row = $form->addRow();
-				$row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+				$row->addLabel('username', __('Username'));
 				$row->addTextField('username')->readOnly()->maxLength(20);
 
 			$row = $form->addRow();
