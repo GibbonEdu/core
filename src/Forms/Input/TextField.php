@@ -75,14 +75,13 @@ class TextField extends Input
     public function isUnique($ajaxURL, $data = array())
     {
         $label = $this->row->getElement('label'.$this->getName());
-        $fieldName = (!empty($label))? $label->getLabel() : ucfirst($this->getName());
+        $fieldLabel = (!empty($label))? $label->getLabel() : ucfirst($this->getName());
 
         $this->unique = array(
-            'fieldName'    => $fieldName,
             'ajaxURL'      => $ajaxURL,
             'ajaxData'     => array_replace(array('fieldName' => $this->getName()), $data),
-            'alertSuccess' => sprintf(__('%1$s available'), $fieldName),
-            'alertFailure' => sprintf(__('%1$s already in use'), $fieldName),
+            'alertSuccess' => sprintf(__('%1$s available'), $fieldLabel),
+            'alertFailure' => sprintf(__('%1$s already in use'), $fieldLabel),
             'alertError'   => __('An error has occurred.'),
         );
 
