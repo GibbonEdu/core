@@ -374,7 +374,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email')->maxLength(50);
+
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    if ($uniqueEmailAddress == 'Y') {
+        $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+    }
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
@@ -622,7 +627,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $row->addEmail("parent{$i}email")->isRequired()->maxLength(50);
+                $email = $row->addEmail("parent{$i}email")->isRequired()->maxLength(50);
+
+                if ($uniqueEmailAddress == 'Y') {
+                    $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
+                }
 
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");

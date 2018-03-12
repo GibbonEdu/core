@@ -17,22 +17,17 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\UsernameGenerator;
+//Gibbon system-wide include
+include '../../gibbon.php';
 
-include './gibbon.php';
+if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog.php') == false) {
+    die(__('Your request failed because you do not have access to this action.'));
+} else {
+    $gibbonLibraryItemID = isset($_POST['gibbonLibraryItemID'])? $_POST['gibbonLibraryItemID'] : '';
+    $id = isset($_POST['id'])? $_POST['id'] : (isset($_POST['idCheck'])? $_POST['idCheck'] : '');
 
-$username = (isset($_POST['username']))? $_POST['username'] : '';
-
-if (!empty($username)) {
-    $generator = new UsernameGenerator($pdo);
-    echo $generator->isUsernameUnique($username)? '0' : '1';
-}
-
-$email = (isset($_POST['email']))? $_POST['email']: '';
-
-if (!empty($email)) {
-    $data = array('email' => $email);
-    $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email";
+    $data = array('gibbonLibraryItemID' => $gibbonLibraryItemID, 'id' => $id);
+    $sql = "SELECT COUNT(*) FROM gibbonLibraryItem WHERE gibbonLibraryItemID<>:gibbonLibraryItemID AND id=:id";
     $result = $pdo->executeQuery($data, $sql);
 
     echo ($result && $result->rowCount() == 1)? $result->fetchColumn(0) : -1;
