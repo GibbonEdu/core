@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
         $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired();
 
-    // $row = $form->addRow();
-    //     $row->addLabel('status', __('Status'));
-    //     $row->addSelect('status')->fromArray(array('Accepted' => __('Accepted'), 'Registered' => __('Registered')))->selected($status)->isRequired();
-
     $row = $form->addRow();
         $row->addFooter();
         $row->addSearchSubmit($gibbon->session);
@@ -110,7 +106,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                         JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID)
                         JOIN gibbonDaysOfWeek ON (gibbonDaysOfWeek.gibbonDaysOfWeekID=gibbonActivitySlot.gibbonDaysOfWeekID)
                         LEFT JOIN gibbonSpace ON (gibbonSpace.gibbonSpaceID=gibbonActivitySlot.gibbonSpaceID)
-                        
                         WHERE gibbonActivityStudent.gibbonPersonID=:gibbonPersonID 
                         AND gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID 
                         GROUP BY gibbonActivity.gibbonActivityID 
