@@ -30,6 +30,7 @@ use Gibbon\Forms\Element;
 class TextField extends Input
 {
     protected $autocomplete;
+    protected $unique;
 
     /**
      * Set a max character count for this text field.
@@ -71,6 +72,35 @@ class TextField extends Input
         return $this;
     }
 
+    public function isUnique($ajaxURL, $data = array())
+    {
+        $label = $this->row->getElement('label'.$this->getName());
+        $fieldLabel = (!empty($label))? $label->getLabelText() : ucfirst($this->getName());
+
+        $this->unique = array(
+            'ajaxURL'      => $ajaxURL,
+            'ajaxData'     => array_replace(array('fieldName' => $this->getName()), $data),
+            'alertSuccess' => sprintf(__('%1$s available'), $fieldLabel),
+            'alertFailure' => sprintf(__('%1$s already in use'), $fieldLabel),
+            'alertError'   => __('An error has occurred.'),
+        );
+
+        return $this;
+    }
+
+    /**
+     * Adds uniqueness text to the label description (if not already present)
+     * @return string|bool
+     */
+    public function getLabelContext($label)
+    {
+        if (!empty($this->unique)) {
+            return __('Must be unique.');
+        }
+
+        return false;
+    }
+
     /**
      * Gets the HTML output for this form element.
      * @return  string
@@ -84,6 +114,12 @@ class TextField extends Input
             $output .= '<script type="text/javascript">';
             $output .= '$("#'.$this->getID().'").autocomplete({source: ['.$source.']});';
             $output .= '</script>';
+        }
+
+        if (!empty($this->unique)) {
+            $output .= '<script type="text/javascript">
+                $("#'.$this->getID().'").gibbonUniquenessCheck('.json_encode($this->unique).');
+            </script>';
         }
 
         return $output;
