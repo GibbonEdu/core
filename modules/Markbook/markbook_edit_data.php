@@ -267,27 +267,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     }
 
                     // Grab student submissions
-                    foreach ($students as &$student) {
-                        $student['submission'] = '';
+                    foreach ($students as $gibbonPersonID => $student) {
+                        $students[$gibbonPersonID]['submission'] = '';
 
                         if ($hasSubmission) {
-                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryID' => $values['gibbonPlannerEntryID']);
                             $sql = "SELECT * FROM gibbonPlannerEntryHomework WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND gibbonPersonID=:gibbonPersonID ORDER BY count DESC LIMIT 1";
                             $result = $pdo->executeQuery($data, $sql);
                             $submission = ($result->rowCount() > 0)? $result->fetch() : '';
 
-                            $student['submission'] = renderStudentSubmission($student, $submission, $values);
+                            $students[$gibbonPersonID]['submission'] = renderStudentSubmission($gibbonPersonID, $submission, $values);
 
                             // Hook into WordpressCommentPush
                             if ($wordpressCommentPush == 'On' && $submission['type'] == 'Link') {
-                                $student['submission'] .= "<div id='wordpressCommentPush$count' style='float: right'></div>";
-                                $student['submission'] .= '<script type="text/javascript">';
-                                $student['submission'] .= "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$submission['location'].'", count: "'.$count.'" } );';
-                                $student['submission'] .= '</script>';
+                                $students[$gibbonPersonID]['submission'] .= "<div id='wordpressCommentPush$count' style='float: right'></div>";
+                                $students[$gibbonPersonID]['submission'] .= '<script type="text/javascript">';
+                                $students[$gibbonPersonID]['submission'] .= "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$submission['location'].'", count: "'.$count.'" } );';
+                                $students[$gibbonPersonID]['submission'] .= '</script>';
                             }
                         }
                     }
-
 
                     $form = Form::create('markbookEditData', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$_SESSION[$guid]['address']);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
