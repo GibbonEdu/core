@@ -155,8 +155,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             $header->addTableCell(__('Student'))->rowSpan(2);
                             $header->addTableCell($values['name'])
                                 ->setTitle($values['description'])
-                                ->append('<br>'.$completeText)
-                                ->append('<br>'.$detailsText)
+                                ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$completeText.'</span>')
+                                ->append('<br><span class="small emphasis" style="font-weight:normal;">'.$detailsText.'</span>')
                                 ->setClass('textCenter')
                                 ->colSpan(3);
 
@@ -188,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             }
         
                             if ($hasComment || $hasUpload) {
-                                $header->addContent(__('Com'))->setClass('textCenter');
+                                $header->addContent(__('Com'))->setTitle(__('Comment'))->setClass('textCenter');
                             }
                     }
 
@@ -204,12 +204,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             ->prepend($count.') ');
 
                         if ($hasAttainment) {
-                            $attainment = $row->addSelectScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])->setClass('textCenter gradeSelect');
+                            $attainment = $row->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])->setClass('textCenter gradeSelect');
                             if (!empty($student['attainmentValue'])) $attainment->selected($student['attainmentValue']);
                         }
     
                         if ($hasEffort) {
-                            $effort = $row->addSelectScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])->setClass('textCenter gradeSelect');
+                            $effort = $row->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])->setClass('textCenter gradeSelect');
                             if (!empty($student['effortValue'])) $effort->selected($student['effortValue']);
                         }
     

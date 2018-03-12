@@ -27,7 +27,7 @@ $connection2 = $pdo->getConnection();
 @session_start();
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_targets.php') == false) {
     $URL .= '&return=error0';
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
         for ($i = 1;$i <= $count;++$i) {
             $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
             $gibbonScaleGradeID = null;
-            if ($_POST["$i-gibbonScaleGradeID"] != '') {
+            if (!empty($_POST["$i-gibbonScaleGradeID"])) {
                 $gibbonScaleGradeID = $_POST["$i-gibbonScaleGradeID"];
             }
 

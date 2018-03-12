@@ -53,22 +53,23 @@ class DatabaseFormFactory extends FormFactory
         return new DatabaseFormFactory($pdo);
     }
 
-    public function createSelectSchoolYear($name, $status = 'All')
+    public function createSelectSchoolYear($name, $status = 'All', $orderBy = 'ASC')
     {
+        $orderBy = ($orderBy == 'ASC' || $orderBy == 'DESC') ? $orderBy : 'ASC';
         switch ($status) {
             case 'Active':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' OR status='Upcoming' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Current' OR status='Upcoming' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'Upcoming':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Upcoming' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Upcoming' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'Past':
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear WHERE status='Past' ORDER BY sequenceNumber $orderBy"; break;
 
             case 'All':
             case 'Any':
             default:
-                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber"; break;
+                $sql = "SELECT gibbonSchoolYearID as value, name FROM gibbonSchoolYear ORDER BY sequenceNumber $orderBy"; break;
         }
         $results = $this->pdo->executeQuery(array(), $sql);
 
@@ -186,6 +187,15 @@ class DatabaseFormFactory extends FormFactory
         }
 
         return $this->createSelect($name)->fromArray($departments)->placeholder();
+    }
+
+    public function createSelectSchoolYearTerm($name, $gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonSchoolYearTermID as `value`, name FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY sequenceNumber";
+        $results = $this->pdo->executeQuery($data, $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
     public function createSelectLanguage($name)
@@ -369,10 +379,20 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectScaleGrade($name, $gibbonScaleID, $params = array())
+    public function createSelectGradeScale($name)
+    {
+        $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
+
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql)->placeholder();
+    }
+
+    public function createSelectGradeScaleGrade($name, $gibbonScaleID, $params = array())
     {
         // Check params and set defaults if not defined
-        $params = array_replace(array('honourDefault' => true, 'valueMode' => 'value'), $params);
+        $params = array_replace(array(
+            'honourDefault' => true, 
+            'valueMode' => 'value'
+        ), $params);
 
         $valueQuery = ($params['valueMode'] == 'id')? 'gibbonScaleGradeID as value' : 'value';
 
@@ -386,7 +406,23 @@ class DatabaseFormFactory extends FormFactory
         $default = array_search('Y', array_column($grades, 'isDefault'));
         $selected = ($params['honourDefault'] && !empty($default))? $grades[$default]['value'] : '';
 
-        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder();
+        return $this->createSelect($name)->fromArray($gradeOptions)->selected($selected)->placeholder()->addClass('gradeSelect');
+    }
+
+    public function createSelectRubric($name, $gibbonYearGroupIDList = '', $gibbonDepartmentID = '')
+    {
+        $data = array('gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID, 'rubrics' => __('Rubrics'));
+        $sql = "SELECT CONCAT(scope, ' ', :rubrics) as groupBy, gibbonRubricID as value, 
+                (CASE WHEN category <> '' THEN CONCAT(category, ' - ', gibbonRubric.name) ELSE gibbonRubric.name END) as name 
+                FROM gibbonRubric 
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonRubric.gibbonYearGroupIDList))
+                WHERE gibbonRubric.active='Y' 
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                AND (scope='School' OR (scope='Learning Area' AND gibbonDepartmentID=:gibbonDepartmentID))
+                GROUP BY gibbonRubric.gibbonRubricID
+                ORDER BY scope, category, name";
+
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data, 'groupBy')->placeholder();
     }
 
     public function createPhoneNumber($name)

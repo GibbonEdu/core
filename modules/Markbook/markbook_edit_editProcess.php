@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     }
                     $viewableStudents = $_POST['viewableStudents'];
                     $viewableParents = $_POST['viewableParents'];
-                    $attachment = $row['attachment'];
+                    $attachment = $_POST['attachment'];
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
                     $partialFail = false;

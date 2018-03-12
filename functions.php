@@ -1745,7 +1745,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= '<ul>';
         $tabCountExtraReset = 0;
         if ($classes != false or $grades != false or $deadlines != false) {
-            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning Overview').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning').'</a></li>';
             $tabCountExtraReset++;
             if ($parentDashboardDefaultTab == 'Planner')
                 $parentDashboardDefaultTabCount = $tabCountExtraReset;
@@ -4065,8 +4065,6 @@ function setLanguageSession($guid, $row, $defaultLanguage= true)
     $_SESSION[$guid]['i18n']['dateFormat'] = $row['dateFormat'];
     $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
     $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
-    $_SESSION[$guid]['i18n']['maintainerName'] = $row['maintainerName'];
-    $_SESSION[$guid]['i18n']['maintainerWebsite'] = $row['maintainerWebsite'];
     $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
 
     if ($defaultLanguage) {

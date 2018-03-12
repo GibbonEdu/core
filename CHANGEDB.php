@@ -882,4 +882,8 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `maintainer
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `entrySidebar`, `menuShow`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance'), 'Student History_my', 1, 'Reports', 'Allows a student to print a report of their attendance data in the current school year.', 'report_studentHistory.php', 'report_studentHistory.php', 'Y', 'Y', 'N', 'N', 'N', 'N', 'N', 'N', 'Y', 'N', 'N');end
 UPDATE gibbonAction SET precedence=2 WHERE name='Student History_all' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance');end
 UPDATE gibboni18n SET active='Y' WHERE code='zh_CN';end
+ALTER TABLE `gibboni18n` DROP `maintainerName`, DROP `maintainerWebsite`;end
+UPDATE gibbonSetting SET description='Should department information be made available to the public, via the Gibbon homepage?' WHERE scope='Departments' AND name='makeDepartmentsPublic';end
+UPDATE gibbonAction SET URLList='attendance_take_byPerson_edit.php,attendance_take_byPerson_delete.php' WHERE name='Manage Attendance Logs' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Attendance');end
+
 ";

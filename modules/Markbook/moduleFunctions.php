@@ -184,6 +184,35 @@ function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction =
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
 
+function getHookedUnits($pdo, $gibbonCourseClassID)
+{
+    $units = array();
+
+    $dataHooks = array();
+    $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
+    $resultHooks = $pdo->executeQuery($dataHooks, $sqlHooks);
+
+    while ($rowHooks = $resultHooks->fetch()) {
+        $hookOptions = unserialize($rowHooks['options']);
+        $requiredFields = array('unitTable', 'unitIDField', 'unitCourseIDField', 'unitNameField', 'unitDescriptionField', 'classLinkTable', 'classLinkJoinFieldUnit', 'classLinkJoinFieldClass', 'classLinkIDField');
+
+        if (!array_diff_key(array_flip($requiredFields), $hookOptions)) {
+            $dataHookUnits = array('gibbonCourseClassID' => $gibbonCourseClassID);
+            $sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
+            $resultHookUnits = $pdo->executeQuery($dataHookUnits, $sqlHookUnits);
+
+            while ($rowHookUnits = $resultHookUnits->fetch()) {
+                $groupBy = $rowHooks['name'];
+                $gibbonUnitID = $rowHookUnits[$hookOptions['unitIDField']];
+                $gibbonHookID = $rowHooks['gibbonHookID'];
+                $units[$groupBy][$gibbonUnitID.'-'.$gibbonHookID] = htmlPrep($rowHookUnits[$hookOptions['unitNameField']]);
+            }
+        }
+    }
+
+    return $units;
+}
+
 function getTeacherList( $pdo, $gibbonCourseClassID ) {
     try {
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
@@ -533,4 +562,55 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
     } else {
         return false;
     }
+}
+
+function renderStudentSubmission($student, $submission, $markbookColumn)
+{
+    global $guid;
+
+    $output = '';
+
+    if (!empty($submission)) {
+        if ($submission['status'] == 'Exemption') {
+            $linkText = __('Exe');
+        } elseif ($submission['version'] == 'Final') {
+            $linkText = __('Fin');
+        } else {
+            $linkText = __('Dra').$submission['count'];
+        }
+
+        $style = '';
+        $status = __('On Time');
+        if ($submission['status'] == 'Exemption') {
+            $status = __('Exemption');
+        } elseif ($submission['status'] == 'Late') {
+            $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
+            $status = __('Late');
+        }
+
+        if ($submission['type'] == 'File') {
+            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
+        } elseif ($submission['type'] == 'Link') {
+            $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
+            
+        } else {
+            $output .= "<span title='$status. ".__('Recorded at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style>$linkText</span>";
+        }
+    } else {
+        if (date('Y-m-d H:i:s') < $markbookColumn['homeworkDueDateTime']) {
+            $output .= "<span title='".__('Pending')."'>".__('Pen').'</span>';
+        } else {
+            if ($student['dateStart'] > $markbookColumn['lessonDate']) {
+                $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
+            } else {
+                if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {
+                    $output .= "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
+                } else {
+                    $output .= "<span title='".__('Not submitted online')."'>".__('NA').'</span>';
+                }
+            }
+        }
+    }
+
+    return $output;
 }

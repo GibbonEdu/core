@@ -49,16 +49,18 @@ jQuery(function($){
     // But not the other way around, in case teachers need to adjust the value
 	$('input[id$="attainmentValueRaw"]').change( function() {
 
+        var attainmentRawMax = $('[name="attainmentRawMax"]');
 		// This value wont exist if not using a percent scale
-		if ($('#attainmentRawMax').length == false) return;
+		if (attainmentRawMax.length == false) return;
 
 		$(this).removeClass('highlight');
         $(this).prop('title', '' );
 
 		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-'));
 		var thisValue = parseFloat( $(this).val() );
-		var maxValue = parseFloat( $('#attainmentRawMax').val() );
-		var attainment = $( '#' + index + '-attainmentValue');
+		var maxValue = parseFloat( attainmentRawMax.val() );
+        var attainment = $( '#' + index + '-attainmentValue');
+        var scaleType = $('[name="attainmentScaleType"]').val();
 
 		if ( $(this).val() == '' || maxValue == 0 || maxValue == '') {
 			return;
@@ -67,9 +69,9 @@ jQuery(function($){
 			attainment.find('option[value=""]').prop('selected', true);
 			$(this).val('');
 			return;
-		}
-
-		if ($('#attainmentRawMax').data('scale') == '%') {
+        }
+        
+		if (scaleType == '%') {
 			if ( thisValue > maxValue ) {
 				thisValue = maxValue;
 				$(this).val(thisValue);
@@ -86,14 +88,16 @@ jQuery(function($){
 				}
 			}
 		}
-
 	});
 
 	// Highlight a raw value if it doesnt match the percent, but don't change it
 	$('select[id$="attainmentValue"]').change( function() {
 
+        var attainmentRawMax = $('[name="attainmentRawMax"]');
+        var scaleType = $('[name="attainmentScaleType"]').val();
+
 		// This value wont exist if not using a percent scale
-		if ($('#attainmentRawMax').length == false || $('#attainmentRawMax').data('scale') != '%') return;
+		if (attainmentRawMax.length == false || scaleType != '%') return;
 
 		var index = $(this).attr('name').substr(0, $(this).attr('name').indexOf('-'));
 		var attainmentRaw = $( '#' + index + '-attainmentValueRaw');
@@ -103,7 +107,7 @@ jQuery(function($){
 
 			if (attainmentRaw.val() != '' ) {
 				var rawValue = parseFloat( attainmentRaw.val() );
-				var maxValue = parseInt( $('#attainmentRawMax').val() );
+				var maxValue = parseInt( attainmentRawMax.val() );
 
 				var calculatedValue = Math.round( ( rawValue / maxValue ) * 100  ) ;
 				if (calculatedValue >= 0 && calculatedValue <= 100 && calculatedValue+'%' != $(this).val() ) {

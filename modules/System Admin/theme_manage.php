@@ -90,10 +90,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         echo '</div>';
     } else {
         $form = Form::create('themeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
-        
+
         $form->setClass('fullWidth');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-        
+
         $row = $form->addRow()->setClass('heading head');
             $row->addContent(__('Name'));
             $row->addContent(__('Status'));
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
                 if ($theme['manifestOK']) {
                     $row->addWebLink('<img title="'.__('Install').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_new.png"/>')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manage_installProcess.php')
-                        ->addParam('name', urlencode($theme['themeName']));
+                        ->addParam('name', $theme['themeName']);
                 } else {
                     $row->addContent('');
                 }
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         }
 
         $form->addRow()->addSubmit();
-        
+
         echo $form->getOutput();
     }
 
@@ -180,4 +180,3 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         echo '</table>';
     }
 }
-
