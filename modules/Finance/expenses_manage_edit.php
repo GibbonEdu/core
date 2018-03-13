@@ -45,10 +45,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
         }
 
         //Check if params are specified
-        $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
-        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
-        $status2 = $_GET['status2'];
-        $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+        $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
+        $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
+        $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
+        $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
         $gibbonFinanceBudgetID = '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
@@ -296,10 +296,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
 							$row = $form->addRow()->addClass('paymentInfo');
 								$row->addLabel('paymentID', __('Payment ID'))->description(__('Transaction ID to identify this payment.'));
-                                $paymentID = $row->addTextField('paymentID')->maxLength(100)->readonly($isPaid);
+                                $paymentID = $row->addTextField('paymentID')->maxLength(100)->readonly($isPaid && $values['paymentReimbursementStatus'] != 'Requested');
 
                             if ($values['paymentReimbursementReceipt'] != '') {
-                                $paymentID->prepend("<a target='_blank' href=\"./".$values['paymentReimbursementReceipt'].'">'.__('Payment Receipt').'</a><br/>');
+                                $paymentID->prepend("<a target='_blank' class='floatRight' href=\"./".$values['paymentReimbursementReceipt'].'">'.__('Payment Receipt').'</a><br/>');
                             }
                                 
                             if ($values['status'] == 'Paid' and $values['purchaseBy'] == 'Self' and $values['paymentReimbursementStatus'] != '') {
@@ -312,12 +312,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                 } else {
                                     $statuses = array('Requested' => __('Requested'),'Complete' => __('Complete'));
                                     $row->addSelect('paymentReimbursementStatus')->fromArray($statuses)->selected($values['paymentReimbursementStatus']);
+
+                                    $col = $form->addRow()->addColumn();
+                                        $col->addLabel('reimbursementComment', __('Reimbursement Comment'));
+                                        $col->addTextArea('reimbursementComment')->setRows(4)->setClass('fullWidth');
                                 }
-                                    
-                                $row = $form->addRow();
-                                    $column = $row->addColumn();
-                                    $column->addLabel('reimbursementComment', __('Reimbursement Comment'));
-                                    $column->addTextArea('reimbursementComment')->setRows(4)->setClass('fullWidth');
                             }
 
 							$row = $form->addRow();

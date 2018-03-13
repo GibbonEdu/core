@@ -290,7 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 									echo __($guid, 'Staff');
 									echo '</th>';
 									echo "<th style='width: 100px'>";
-									echo __($guid, 'Status');
+									echo __($guid, 'Status')."<br/><span style='font-style: italic; font-size: 75%'>".__($guid, 'Reimbursement').'</span><br/>';
 									echo '</th>';
 									echo "<th style='width: 90px'>";
 									echo __($guid, 'Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
@@ -345,6 +345,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 echo '</td>';
                                 echo '<td>';
                                 echo $row['status'];
+                                if ($row['paymentReimbursementStatus'] != '') {
+                                    echo "<br/><span style='font-style: italic; font-size: 75%'>".$row['paymentReimbursementStatus'].'</span><br/>';
+                                }
                                 echo '</td>';
                                 echo '<td>';
                                 echo number_format($row['cost'], 2, '.', ',');
@@ -356,7 +359,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='Print' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                                 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
-                                    if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered') {
+                                    if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered' or ($row['status'] == 'Paid' && $row['paymentReimbursementStatus'] == 'Requested')) {
                                         echo "<a style='margin-left: 4px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                     }
                                 }
