@@ -243,7 +243,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                             $budgetRemainingLabel = (is_numeric($budgetRemaining))? number_format($budgetRemaining, 2, '.', ',') : $budgetRemaining;
 							$row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetRemaining', __('Budget Remaining For Cycle'))->description(__('Numeric value of the fee.'));
-								$row->addTextField('budgetRemaining')->isRequired()->readonly()->setValue($budgetRemainingLabel);
+                                $row->addTextField('budgetRemaining')
+                                    ->isRequired()
+                                    ->readonly()
+                                    ->setValue($budgetRemainingLabel)
+                                    ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
 
                             $form->addRow()->addHeading(__('Log'));
                             
