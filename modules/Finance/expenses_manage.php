@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 //Module includes
 include './modules/Finance/moduleFunctions.php';
@@ -211,182 +212,139 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
                         echo $form->getOutput();
 
-								try {
-									//Set Up filter wheres
-									$data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-									$whereBudget = '';
-									if ($gibbonFinanceBudgetID2 != '') {
-										$data['gibbonFinanceBudgetID'] = $gibbonFinanceBudgetID2;
-										$whereBudget .= ' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
-									}
-									$approvalRequiredFilter = false;
-									$whereStatus = '';
-									if ($status2 != '') {
-										if ($status2 == 'Requested - Approval Required') {
-											$data['status'] = 'Requested';
-											$approvalRequiredFilter = true;
-										} else {
-											$data['status'] = $status2;
-										}
-										$whereStatus .= ' AND gibbonFinanceExpense.status=:status';
-									}
-									//GET THE DATA ACCORDING TO FILTERS
-									if ($highestAction == 'Manage Expenses_all') { //Access to everything
-										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
-											FROM gibbonFinanceExpense
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus
-											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
-									} else { //Access only to own budgets
-										$data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
-										$sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
-											FROM gibbonFinanceExpense
-											JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-											JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
-											JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
-											WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus
-											ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
-									}
-									$result = $connection2->prepare($sql);
-									$result->execute($data);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-
-								echo '<h3>';
-								echo __($guid, 'View');
-								echo '</h3>';
-
-								$allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
-								if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
-									echo "<div class='linkTop' style='text-align: right'>";
-									echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
-									echo '</div>';
-								}
-
-								echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/expenses_manage_processBulk.php?gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>";
-								echo "<fieldset style='border: none'>";
-								echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
-								?>
-									<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-									<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-										<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-										<option value="export"><?php echo __($guid, 'Export') ?></option>
-									</select>
-									<script type="text/javascript">
-										var action=new LiveValidation('action');
-										action.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-									</script>
-									<?php
-                                	echo '</div>';
-									echo "<table cellspacing='0' style='width: 100%'>";
-									echo "<tr class='head'>";
-									echo "<th style='width: 110px'>";
-									echo __($guid, 'Title').'<br/>';
-									echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Budget').'</span>';
-									echo '</th>';
-									echo "<th style='width: 110px'>";
-									echo __($guid, 'Staff');
-									echo '</th>';
-									echo "<th style='width: 100px'>";
-									echo __($guid, 'Status')."<br/><span style='font-style: italic; font-size: 75%'>".__($guid, 'Reimbursement').'</span><br/>';
-									echo '</th>';
-									echo "<th style='width: 90px'>";
-									echo __($guid, 'Cost')."<br/><span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
-									echo '</th>';
-									echo "<th style='width: 120px'>";
-									echo __($guid, 'Date');
-									echo '</th>';
-									echo "<th style='width: 140px'>";
-									echo __($guid, 'Actions');
-									echo '</th>';
-									echo '<th>';
-									?>
-									<script type="text/javascript">
-										$(function () {
-											$('.checkall').click(function () {
-												$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-											});
-										});
-									</script>
-									<?php
-									echo "<input type='checkbox' class='checkall'>";
-									echo '</th>';
-									echo '</tr>';
-
-									$count = 0;
-									$rowNum = 'odd';
-									while ($row = $result->fetch()) {
-										$approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, false);
-										if ($approvalRequiredFilter == false or ($approvalRequiredFilter and $approvalRequired)) {
-											if ($count % 2 == 0) {
-												$rowNum = 'even';
-											} else {
-												$rowNum = 'odd';
-											}
-											++$count;
-
-                                            //Color row by status
-                                            if ($row['status'] == 'Approved') {
-                                                $rowNum = 'current';
-                                            }
-                                if ($row['status'] == 'Rejected' or $row['status'] == 'Cancelled') {
-                                    $rowNum = 'error';
-                                }
-
-                                echo "<tr class=$rowNum>";
-                                echo '<td>';
-                                echo '<b>'.$row['title'].'</b><br/>';
-                                echo "<span style='font-size: 85%; font-style: italic'>".$row['budget'].'</span>';
-                                echo '</td>';
-                                echo '<td>';
-                                echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
-                                echo '</td>';
-                                echo '<td>';
-                                echo $row['status'];
-                                if ($row['paymentReimbursementStatus'] != '') {
-                                    echo "<br/><span style='font-style: italic; font-size: 75%'>".$row['paymentReimbursementStatus'].'</span><br/>';
-                                }
-                                echo '</td>';
-                                echo '<td>';
-                                echo number_format($row['cost'], 2, '.', ',');
-                                echo '</td>';
-                                echo '<td>';
-                                echo dateConvertBack($guid, substr($row['timestampCreator'], 0, 10));
-                                echo '</td>';
-                                echo '<td>';
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='Print' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
-                                if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
-                                    if ($row['status'] == 'Requested' or $row['status'] == 'Approved' or $row['status'] == 'Ordered' or ($row['status'] == 'Paid' && $row['paymentReimbursementStatus'] == 'Requested')) {
-                                        echo "<a style='margin-left: 4px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                    }
-                                }
-                                if ($row['status'] == 'Requested') {
-                                    if ($approvalRequired == true) {
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approve.php&gibbonFinanceExpenseID='.$row['gibbonFinanceExpenseID']."&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'><img title='".__($guid, 'Approve/Reject')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a> ";
-                                    }
-                                }
-                                echo '</td>';
-                                echo '<td>';
-                                echo "<input style='margin-left: -6px' type='checkbox' name='gibbonFinanceExpenseIDs[]' value='".$row['gibbonFinanceExpenseID']."'>";
-                                echo '</td>';
-                                echo '</tr>';
+                        try {
+                            //Set Up filter wheres
+                            $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
+                            $whereBudget = '';
+                            if ($gibbonFinanceBudgetID2 != '') {
+                                $data['gibbonFinanceBudgetID'] = $gibbonFinanceBudgetID2;
+                                $whereBudget .= ' AND gibbonFinanceBudget.gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
                             }
+                            $approvalRequiredFilter = false;
+                            $whereStatus = '';
+                            if ($status2 != '') {
+                                if ($status2 == 'Requested - Approval Required') {
+                                    $data['status'] = 'Requested';
+                                    $approvalRequiredFilter = true;
+                                } else {
+                                    $data['status'] = $status2;
+                                }
+                                $whereStatus .= ' AND gibbonFinanceExpense.status=:status';
+                            }
+                            //GET THE DATA ACCORDING TO FILTERS
+                            if ($highestAction == 'Manage Expenses_all') { //Access to everything
+                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, 'Full' AS access
+                                    FROM gibbonFinanceExpense
+                                    JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+                                    JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+                                    WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID $whereBudget $whereStatus
+                                    ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
+                            } else { //Access only to own budgets
+                                $data['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
+                                $sql = "SELECT gibbonFinanceExpense.*, gibbonFinanceBudget.name AS budget, surname, preferredName, access
+                                    FROM gibbonFinanceExpense
+                                    JOIN gibbonFinanceBudget ON (gibbonFinanceExpense.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+                                    JOIN gibbonFinanceBudgetPerson ON (gibbonFinanceBudgetPerson.gibbonFinanceBudgetID=gibbonFinanceBudget.gibbonFinanceBudgetID)
+                                    JOIN gibbonPerson ON (gibbonFinanceExpense.gibbonPersonIDCreator=gibbonPerson.gibbonPersonID)
+                                    WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetPerson.gibbonPersonID=:gibbonPersonID $whereBudget $whereStatus
+                                    ORDER BY FIND_IN_SET(gibbonFinanceExpense.status, 'Pending,Issued,Paid,Refunded,Cancelled'), timestampCreator DESC";
+                            }
+                            $result = $connection2->prepare($sql);
+                            $result->execute($data);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
                         }
-                        if ($count < 1) {
-                            echo '<tr>';
-                            echo '<td colspan=7>';
-                            echo __($guid, 'There are no records to display.');
-                            echo '</td>';
-                            echo '</tr>';
-                        }
-                        echo '<input type="hidden" name="address" value="'.$_SESSION[$guid]['address'].'">';
 
-                        echo '</fieldset>';
-                        echo '</table>';
-                        echo '</form>';
+                        echo '<h3>';
+                        echo __($guid, 'View');
+                        echo '</h3>';
+
+                        $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
+                        if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
+                            echo "<div class='linkTop' style='text-align: right'>";
+                            echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
+                            echo '</div>';
+                        }
+                        
+                        $linkParams = array(
+                            'status2'                    => $status2,
+                            'gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID,
+                            'gibbonFinanceBudgetID2'     => $gibbonFinanceBudgetID2,
+                        );
+
+                        $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/expenses_manage_processBulk.php?'.http_build_query($linkParams));
+
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                        $bulkActions = array('export' => __('Export'));
+                        $row = $form->addBulkActionRow($bulkActions);
+                            $row->addSubmit(__('Go'));
+
+                        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+
+                        $header = $table->addHeaderRow();
+                            $header->addContent(__('Title'))->append('<br/><small><i>'.__('Budget').'</i></small>');
+                            $header->addContent(__('Staff'));
+                            $header->addContent(__('Status'))->append('<br/><small><i>'.__('Reimbursement').'</i></small>');
+                            $header->addContent(__('Cost'))->append('<br/><small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
+                            $header->addContent(__('Date'));
+                            $header->addContent(__('Actions'));
+                            $header->addCheckAll();
+
+                        if ($result->rowCount() == 0) {
+                            $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(7);
+                        }
+                        
+                        while ($expense = $result->fetch()) {
+                            $approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $expense['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2, false);
+
+                            if (!empty($approvalRequiredFilter) && $approvalRequired == false) {
+                                continue;
+                            }
+
+                            $rowClass = ($expense['status'] == 'Approved')? 'current' : ( ($expense['status'] == 'Rejected' || $expense['status'] == 'Cancelled')? 'error' : '');
+
+                            $row = $table->addRow()->addClass($rowClass);
+                                $row->addContent($expense['title'])
+                                    ->wrap('<b>', '</b>')
+                                    ->append('<br/><span class="small emphasis">'.$expense['title'].'</span>');
+                                $row->addContent(formatName('', $expense['preferredName'], $expense['surname'], 'Staff', false, true));
+                                $row->addContent($expense['status'])->append('<br/><span class="small emphasis">'.$expense['paymentReimbursementStatus'].'</span>');
+                                $row->addContent(number_format($expense['cost'], 2, '.', ','));
+                                $row->addContent(dateConvertBack($guid, substr($expense['timestampCreator'], 0, 10)));
+
+                            $col = $row->addColumn()->addClass('inline');
+                                $col->addWebLink('<img title="'.__('View').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/plus.png" />')
+                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php')
+                                    ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                    ->addParams($linkParams);
+                                $col->addWebLink('<img title="'.__('Print').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png"  style="margin-left:4px;"/>')
+                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php')
+                                    ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                    ->addParams($linkParams);
+
+                            if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
+                                if ($expense['status'] == 'Requested' or $expense['status'] == 'Approved' or $expense['status'] == 'Ordered' or ($expense['status'] == 'Paid' && $expense['paymentReimbursementStatus'] == 'Requested')) {
+                                    $col->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"  style="margin-left:4px;"/>')
+                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php')
+                                        ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                        ->addParams($linkParams);
+                                }
+                            }
+
+                            if ($expense['status'] == 'Requested') {
+                                if ($approvalRequired == true) {
+                                    $col->addWebLink('<img title="'.__('Approve/Reject').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"  style="margin-left:4px;"/>')
+                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approve.php')
+                                        ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                        ->addParams($linkParams);
+                                }
+                            }
+
+                            $row->addCheckbox('gibbonFinanceExpenseIDs[]')->setValue($expense['gibbonFinanceExpenseID'])->setClass('textCenter');
+                        }
+
+                        echo $form->getOutput();
                     }
                 }
             }
