@@ -1654,4 +1654,30 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
     }
 }
 
-?>
+function getBudgetAllocation($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBudgetID)
+{
+    $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+    $sql = "SELECT value FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
+    $result = $pdo->executeQuery($data, $sql);
+
+    return ($result->rowCount() == 1)? $result->fetchColumn(0) : __('N/A');
+}
+
+function getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBudgetID)
+{
+    $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+    $sql = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+        UNION
+        (SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))";
+    $result = $pdo->executeQuery($data, $sql);
+
+    $budgetAllocated = __('N/A');
+    if ($result->rowCount() > 0) {
+        $budgetAllocated = array_reduce($result->fetchAll(), function($sum, $item) {
+            $sum += $item['cost'];
+            return $sum;
+        }, 0);
+    }
+    return $budgetAllocated;
+}
+

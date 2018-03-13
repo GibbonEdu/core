@@ -128,32 +128,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                                 echo '</div>';
                             }
                             
-                            // Budget allocation
-                            $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $values['gibbonFinanceBudgetID']);
-                            $sqlCheck = "SELECT value FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
-                            $resultCheck = $pdo->executeQuery($dataCheck, $sqlCheck);
-                            $budgetAllocationFail = $resultCheck->rowCount() != 1;
-                            $budgetAllocation = !$budgetAllocationFail? $resultCheck->fetchColumn(0) : __('N/A');
-
-                            // Budget already allocated
-                            $dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $values['gibbonFinanceBudgetID']);
-                            $sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
-                                UNION
-                                (SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))";
-                            
-                            $resultCheck = $pdo->executeQuery($dataCheck, $sqlCheck);
-                            $budgetAllocatedFail = $resultCheck->rowCount() == 0;
-                            $budgetAllocated = 0;
-                            if (!$budgetAllocatedFail) {
-                                $budgetAllocated = array_reduce($resultCheck->fetchAll(), function($sum, $item) {
-                                    $sum += $item['cost'];
-                                    return $sum;
-                                }, 0);
-                            }
-
-                            // Budget remaining
-                            $budgetRemaining = (!$budgetAllocatedFail && !$budgetAllocationFail)? ($budgetAllocation - $budgetAllocated) : __('N/A');
-                            
+                            // Get budget allocation & allocated amounts
+                            $budgetAllocation = getBudgetAllocation($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
+                            $budgetAllocated = getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
+                            $budgetRemaining = (is_numeric($budgetAllocation) && is_numeric($budgetAllocated))? ($budgetAllocation - $budgetAllocated) : __('N/A');
                             
 							$form = Form::create('expenseManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_editProcess.php');
 							$form->setFactory(DatabaseFormFactory::create($pdo));
@@ -222,7 +200,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                             
                             $row = $form->addRow();
                                 $row->addLabel('cost', __('Total Cost'));
-                                $row->addTextField('cost')->isRequired()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
+                                $row->addCurrency('cost')->isRequired()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
 
 							$row = $form->addRow();
 								$row->addLabel('countAgainstBudget', __('Count Against Budget'))->description(__('For tracking purposes, should the item be counted against the budget? If immediately offset by some revenue, perhaps not.'));
@@ -233,17 +211,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                             $budgetAllocationLabel = (is_numeric($budgetAllocation))? number_format($budgetAllocation, 2, '.', ',') : $budgetAllocation;
                             $row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetAllocation', __('Budget For Cycle'))->description(__('Numeric value of the fee.'));
-                                $row->addTextField('budgetAllocation')->isRequired()->readonly()->setValue($budgetAllocationLabel);
+                                $row->addCurrency('budgetAllocation')->isRequired()->readonly()->setValue($budgetAllocationLabel);
                               
                             $budgetAllocatedLabel = (is_numeric($budgetAllocated))? number_format($budgetAllocated, 2, '.', ',') : $budgetAllocated;
 							$row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetForCycle', __('Amount already approved or spent'))->description(__('Numeric value of the fee.'));
-                                $row->addTextField('budgetForCycle')->isRequired()->readonly()->setValue($budgetAllocatedLabel);
+                                $row->addCurrency('budgetForCycle')->isRequired()->readonly()->setValue($budgetAllocatedLabel);
                                 
                             $budgetRemainingLabel = (is_numeric($budgetRemaining))? number_format($budgetRemaining, 2, '.', ',') : $budgetRemaining;
 							$row = $form->addRow()->addClass('budgetInfo');
 								$row->addLabel('budgetRemaining', __('Budget Remaining For Cycle'))->description(__('Numeric value of the fee.'));
-                                $row->addTextField('budgetRemaining')
+                                $row->addCurrency('budgetRemaining')
                                     ->isRequired()
                                     ->readonly()
                                     ->setValue($budgetRemainingLabel)
