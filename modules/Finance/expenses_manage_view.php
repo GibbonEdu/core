@@ -137,7 +137,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                 echo '</div>';
                             }
                             ?>
-							<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_addProcess.php' ?>">
 								<table class='smallIntBorder fullWidth' cellspacing='0'>
 									<tr class='break'>
 										<td colspan=2>
@@ -343,7 +342,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                     }
                             		?>
 								</table>
-							</form>
 							<?php
 
                         }
