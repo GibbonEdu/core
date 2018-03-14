@@ -249,7 +249,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('email', __('Email'));
-                    $row->addEmail('email')->maxLength(50)->isRequired();
+                    $email = $row->addEmail('email')->maxLength(50)->isRequired();
+
+                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+                    if ($uniqueEmailAddress == 'Y') {
+                        $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+                    }
 
                 $row = $form->addRow();
                     $row->addLabel('phone1', __('Phone'))->description(__('Type, country code, number.'));

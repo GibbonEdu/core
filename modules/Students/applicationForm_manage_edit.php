@@ -180,6 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
     $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     $ccPayment = false;
 
     if ($applicationFee > 0 and is_numeric($applicationFee)) {
@@ -375,11 +376,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email')->maxLength(50);
-
-    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
-    if ($uniqueEmailAddress == 'Y') {
-        $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
-    }
+        if ($uniqueEmailAddress == 'Y') {
+            $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+        }
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
@@ -496,7 +495,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $form->addRow()->addHeading(__('Parent/Guardian').' 1');
 
             $form->addHiddenValue('parent1email', $application['parent1email']);
-            $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
+            $email = $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
+            if ($uniqueEmailAddress == 'Y') {
+                $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
+            }
 
             $row = $form->addRow();
                 $row->addLabel('parent1surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
