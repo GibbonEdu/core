@@ -250,10 +250,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 $partialFail = true;
                             }
                         } else {
-                            $attachment = null;
-                            if (isset($_POST["response$i"])) {
-                                $attachment = $_POST["response$i"];
-                            }
+                            $attachment = (isset($_POST["attachment$i"]))? $_POST["attachment$i"] : '';
                         }
                     } else {
                         $attachment = null;
