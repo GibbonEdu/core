@@ -93,6 +93,11 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
             return $output;
         }
 
+        // Don't validate readonly input
+        if ($this->getReadonly() == true) {
+            return $output;
+        }
+
         if ($this->getRequired() == true || !empty($this->validation)) {
             $output .= 'var '.$this->getID().'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
 
