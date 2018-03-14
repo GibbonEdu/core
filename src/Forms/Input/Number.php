@@ -94,7 +94,7 @@ class Number extends TextField
         $this->addValidation('Validate.Numericality', implode(', ', $validateParams));
 
         if (!empty($this->decimalPlaces) && $this->decimalPlaces > 0) {
-            $this->addValidation('Validate.Format', 'pattern: /^[0-9]+\.([0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
+            $this->addValidation('Validate.Format', 'pattern: /^[0-9\-]+\.([0-9]{1,'.$this->decimalPlaces.'})?$/, failureMessage: "'.sprintf(__('Must be in format %1$s'), str_pad('0.', $this->decimalPlaces+2, '0')).'"');
         }
 
         $output = '<input type="text" '.$this->getAttributeString().'>';
