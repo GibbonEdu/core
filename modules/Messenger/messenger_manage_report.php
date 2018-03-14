@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start() ;
+use Gibbon\Forms\Form;
+use Gibbon\Forms\Prefab\BulkActionForm;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
 	//Acess denied
@@ -89,6 +90,8 @@ else {
 			        returnProcess($guid, $_GET['return'], null, array('error2' => 'Some elements of your request failed, but others were successful.'));
 			    }
 
+                $icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';
+                
 				$nonConfirm = 0;
 				$noConfirm = 0;
 				$yesConfirm = 0;
@@ -133,145 +136,68 @@ else {
 				            $result->execute($data);
 				        } catch (PDOException $e) {
 				            echo "<div class='error'>".$e->getMessage().'</div>';
-				        }
+                        }
 
-						echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_report_processBulk.php?gibbonMessengerID=$gibbonMessengerID&search=$search'>";
-						echo "<fieldset style='border: none'>";
-						if ($sender == true) {
-							echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
-							?>
-							<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-							<select name="action1" id="action1" style='width:120px; float: right; margin-right: 1px;'>
-								<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-								<option value="resend"><?php echo __($guid, 'Resend') ?></option>
-							</select>
-							<script type="text/javascript">
-								var action1=new LiveValidation('action1');
-								action1.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-							</script>
-							<?php
-							echo '</div>';
-						}
+                        $form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
 
-						echo "<table cellspacing='0' style='width: 100%'>";
-				        echo "<tr class='head'>";
-				        echo '<th>';
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-				        echo '</th>';
-				        echo '<th>';
-				        echo __($guid, 'Recipient');
-				        echo '</th>';
-				        echo '<th>';
-				        echo __($guid, 'Contact Type');
-				        echo '</th>';
-				        echo '<th>';
-				        echo __($guid, 'Contact Detail');
-				        echo '</th>';
-				        echo '<th>';
-				        echo __($guid, 'Receipt Confirmed');
-				        echo '</th>';
-				        echo '<th>';
-				        echo __($guid, 'Timestamp');
-				        echo '</th>';
-						if ($sender == true) {
-							echo '<th style=\'text-align: center\'>';
-							?>
-								<script type="text/javascript">
-									$(function () {
-										$('.checkall').click(function () {
-											$(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
-										});
-									});
-								</script>
-								<?php
-								echo "<input type='checkbox' class='checkall'>";
-					        echo '</th>';
-						}
-				        echo '</tr>';
+                        $row = $form->addBulkActionRow(array('resend' => __('Resend')));
+                            $row->addSubmit(__('Go'));
 
-				        $count = 0;
-				        $rowNum = 'odd';
-				        while ($row = $result->fetch()) {
-			                if ($count % 2 == 0) {
-			                    $rowNum = 'even';
-			                } else {
-			                    $rowNum = 'odd';
-			                }
-			                ++$count;
+                        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 
-			                //COLOR ROW BY STATUS!
-			                echo "<tr class=$rowNum>";
-			                echo '<td>';
-			                echo $count;
-			                echo '</td>';
-			                echo '<td>';
-							if ($row['preferredName'] == '' or $row['surname'] == '')
-								echo __($guid, 'N/A');
-							else
-			                	echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-			                echo '</td>';
-			                echo '<td>';
-			                echo $row['contactType'];
-			                echo '</td>';
-			                echo '<td>';
-			                echo $row['contactDetail'];
-			                echo '</td>';
-			                echo '<td>';
-			                if (is_null($row['key'])) {
-								echo __($guid, 'N/A');
-								$nonConfirm ++;
-							}
-							else {
-								if ($row['confirmed'] == 'Y') {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-									$yesConfirm ++;
-								}
-								else {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
-									$noConfirm ++;
-								}
-							}
+                        $header = $table->addHeaderRow();
+                            $header->addContent();
+                            $header->addContent(__('Recipient'));
+                            $header->addContent(__('Contact Type'));
+                            $header->addContent(__('Contact Detail'));
+                            $header->addContent(__('Receipt Confirmed'));
+                            $header->addContent(__('Timestamp'));
+                            if ($sender == true) {
+                                $header->addCheckAll();
+                            }
 
-			                echo '</td>';
-							echo '<td>';
-							echo dateConvertBack($guid, substr($row['confirmedTimestamp'],0,10))." ".substr($row['confirmedTimestamp'],11,5)."<br/>" ;
-			                echo '</td>';
-			                if ($sender == true) {
-								echo '<td style=\'text-align: center\'>';
-								if ($row['confirmed'] == 'N') {
-									echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$row['gibbonMessengerReceiptID']."'>";
-								}
-								echo '</td>';
-							}
-			                echo '</tr>';
-			            }
-				        if ($count < 1) {
-				            echo "<tr class=$rowNum>";
-							if ($sender == true)
-								echo '<td colspan=7>';
-							else
-								echo '<td colspan=6>';
-				            echo __($guid, 'There are no records to display.');
-				            echo '</td>';
-				            echo '</tr>';
-				        }
-						else {
-							echo '<tr>';
-							if ($sender == true)
-								echo "<td class='right' colspan=7>";
-							else
-								echo "<td class='right' colspan=6>";
-							echo "<div class='success'>";
-							echo '<b>'.__($guid, 'Total Messages:')." $count</b><br/>";
-							echo "<span>".__($guid, 'Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
-							echo "<span>".__($guid, 'Messages confirmed:').' <b>'.$yesConfirm.'</b><br/>';
-							echo "<span>".__($guid, 'Messages not yet confirmed:').' <b>'.$noConfirm.'</b><br/>';
-							echo '</div>';
-							echo '</td>';
-							echo '</tr>';
-						}
-						echo '</fieldset>';
-				        echo '</table>';
+                        
+                        $recipients = $result->fetchAll();
+                        $recipientIDs = array_column($recipients, 'gibbonPersonID');
+                        
+                        foreach ($recipients as $count => $recipient) {
+                            $row = $table->addRow();
+                                $row->addContent($count+1);
+                                $row->addContent(!empty($recipient['preferredName'])? formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
+                                $row->addContent($recipient['contactType']);
+                                $row->addContent($recipient['contactDetail']);
+                                $row->addContent(!is_null($recipient['key'])? sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick' : 'iconCross') : __('N/A'));
+                                $row->addContent(dateConvertBack($guid, substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
+
+                                if ($sender == true) {
+                                    $row->if($recipient['confirmed'] == 'N')
+                                        ->addCheckbox('gibbonMessengerReceiptIDs[]')
+                                        ->setValue($recipient['gibbonMessengerReceiptID'])
+                                        ->setClass('textCenter')
+                                        ->setTitle(__('N/A'));
+
+                                    $row->if($recipient['confirmed'] != 'N')->addContent();
+                                }
+
+                            if (is_null($recipient['key'])) $nonConfirm++;
+                            else if ($row['confirmed'] == 'Y') $yesConfirm++;
+                            else if ($row['confirmed'] == 'N') $noConfirm++;
+                        }
+
+                        if (count($recipients) == 0) {
+                            $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(7);
+                        } else {
+                            $sendReport = '<b>'.__('Total Messages:')." $count</b><br/>";
+							$sendReport .= "<span>".__('Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
+							$sendReport .= "<span>".__('Messages confirmed:').' <b>'.$yesConfirm.'</b><br/>';
+                            $sendReport .= "<span>".__('Messages not yet confirmed:').' <b>'.$noConfirm.'</b><br/>';
+                            
+                            $form->addRow()->addClass('right')->addAlert($sendReport, 'success');
+                        }
+                        
+                        echo $form->getOutput();
 					}
 				}
 			echo "</div>";
