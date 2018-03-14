@@ -135,6 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
             ->isRequired()
             ->maxLength(20)
             ->append($generateUsername->getOutput())
+            ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_-.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
             ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php');
 
     $policy = getPasswordPolicy($guid, $connection2);
