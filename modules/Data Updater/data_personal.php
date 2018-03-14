@@ -354,7 +354,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'));
-						$row->addEmail('email')->maxLength(50);
+						$email = $row->addEmail('email')->maxLength(50);
+
+					$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+					if ($uniqueEmailAddress == 'Y') {
+						$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
+					}
 
 					$row = $form->addRow();
 						$row->addLabel('emailAlternate', __('Alternate Email'));
