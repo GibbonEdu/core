@@ -164,10 +164,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
                 $isMatching = ($oldValue != $newValue);
+                $isNonUnique = false;
 
                 if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
                     $oldValue = dateConvertBack($guid, $oldValue);
                     $newValue = dateConvertBack($guid, $newValue);
+                }
+
+                if ($fieldName == 'email') {
+                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+                    if ($uniqueEmailAddress == 'Y') {
+                        $data = array('gibbonPersonID' => $oldValues['gibbonPersonID'], 'email' => $newValues['email']);
+                        $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email AND gibbonPersonID<>:gibbonPersonID";
+                        $result = $pdo->executeQuery($data, $sql);
+                        $isNonUnique = ($result && $result->rowCount() == 1)? $result->fetchColumn(0) > 0 : false;
+                    }
                 }
 
                 $row = $form->addRow();
@@ -175,7 +186,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row->addContent($oldValue);
                 $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
                 
-                if ($isMatching) {
+                if ($isNonUnique) {
+                    $row->addContent(__('Must be unique.'));
+                } else if ($isMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
                     $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
                 } else {

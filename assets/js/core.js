@@ -17,9 +17,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 jQuery(function($){
-   /**
-   * Form Class: generic check All/None checkboxes
-   */
+    /**
+     * Form Class: generic check All/None checkboxes
+     */
     $('.checkall').click(function () {
         $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
@@ -35,7 +35,7 @@ jQuery(function($){
       columnHighlight.removeClass("hover");
     });
 
-    /*
+    /**
      * Password Generator. Requires data-source, data-confirm and data-alert attributes.
      */
     $(".generatePassword").click(function(){
@@ -54,4 +54,56 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
+
 });
+
+// Form API Functions
+
+/**
+ * TextField Uniqueness Check
+ */
+$.prototype.gibbonUniquenessCheck = function (settings) {
+    var uniqueField = this;
+    var validation;
+
+    $(uniqueField).ready(function(){
+        // Get the existing LiveValidation object, otherwise create one
+        validation = window[$(uniqueField).attr('id') + "Validate"];
+        if (validation == null || typeof validation != "object") {
+            validation = new LiveValidation($(uniqueField).attr('id'));
+        }
+
+        validation.onValid = function() {
+            // Pass the current value as POST['value'] (optionally by a defined fieldName)
+            settings.ajaxData[settings.ajaxData.fieldName || "value"] = $(uniqueField).val();
+
+            // Send an AJAX request to check uniqueness, and use LiveValidation messages to display response
+            $.ajax({
+                type: 'POST',
+                data: settings.ajaxData,
+                url: settings.ajaxURL,
+                success: function (responseText) {
+                    // The response should be the count of matching values, so 0 is unique and -1 is an error
+                    if (responseText < 0) {
+                        validation.message = validation.invalidMessage = settings.alertError;
+                        validation.validationFailed = true;
+                    } else if (responseText == 0) {
+                        validation.message = validation.validMessage = settings.alertSuccess;
+                    } else if (responseText > 0) {
+                        validation.message = validation.invalidMessage = settings.alertFailure;
+                        validation.validationFailed = true;
+                        validation.add(Validate.Exclusion, { within: [$(uniqueField).val()], failureMessage: settings.alertFailure });
+                    }
+                },
+                error: function() {
+                    validation.message = validation.invalidMessage = settings.alertError;
+                    validation.validationFailed = true;
+                },
+                complete: function() {
+                    validation.insertMessage(validation.createMessageSpan());
+                    validation.addFieldClass();
+                }
+            });
+        };
+    });
+};
