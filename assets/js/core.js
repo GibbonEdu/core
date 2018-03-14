@@ -89,17 +89,12 @@ $.prototype.gibbonUniquenessCheck = function (settings) {
                         validation.validationFailed = true;
                     } else if (responseText == 0) {
                         validation.message = validation.validMessage = settings.alertSuccess;
+                        validation.validationFailed = false;
                     } else if (responseText > 0) {
                         validation.message = validation.invalidMessage = settings.alertFailure;
                         validation.validationFailed = true;
                         validation.add(Validate.Exclusion, { within: [$(uniqueField).val()], failureMessage: settings.alertFailure });
                     }
-                },
-                error: function() {
-                    validation.message = validation.invalidMessage = settings.alertError;
-                    validation.validationFailed = true;
-                },
-                complete: function() {
                     validation.insertMessage(validation.createMessageSpan());
                     validation.addFieldClass();
                 }
