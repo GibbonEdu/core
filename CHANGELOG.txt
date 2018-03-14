@@ -36,6 +36,7 @@ v16.0.00
 		System: added Afaan Oromo as development language
 		System: made translation credits in footer fairer
 		System: simplified UI text in Parent Dashboard
+        System: fixed a user photo upload issue involving usernames with a dot in them
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
         Activities: added Activity Choices by Roll Group for ease of looking up student's activity times
@@ -61,6 +62,7 @@ v16.0.00
 		User Admin: removed Back link from child and adult delete modals in Manage Families
 		User Admin: tweaked user CLI to better handle parents in multiple families
 		User Admin: added staff import feature
+        User Admin: added an alphanumeric requirement for usernames in Add User
 
 v15.0.00
 --------
