@@ -236,9 +236,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							//Tab links
 							echo '<ul>';
                             echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
-                            echo "<li><a href='#tabs2'>".__($guid, 'Outcomes').'</a></li>';
-                            echo "<li><a href='#tabs3'>".__($guid, 'Lessons').'</a></li>';
-                            echo "<li><a href='#tabs4'>".__($guid, 'Resources').'</a></li>';
+                            echo "<li><a href='#tabs2'>".__($guid, 'Smart Blocks').'</a></li>';
+                            echo "<li><a href='#tabs3'>".__($guid, 'Outcomes').'</a></li>';
+                            echo "<li><a href='#tabs4'>".__($guid, 'Lessons').'</a></li>';
+                            echo "<li><a href='#tabs5'>".__($guid, 'Resources').'</a></li>';
                             echo '</ul>';
 
 							//Tab content
@@ -271,8 +272,54 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 }
                             }
                             echo '</div>';
-							//OUTCOMES
-							echo "<div id='tabs2'>";
+                            //SMART BLOCKS
+                            echo "<div id='tabs2'>";
+                            try {
+                                $dataBlocks = array('gibbonUnitID' => $row['gibbonUnitID']);
+                                $sqlBlocks = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitID=:gibbonUnitID ORDER BY sequenceNumber';
+                                $resultBlocks = $connection2->prepare($sqlBlocks);
+                                $resultBlocks->execute($dataBlocks);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+
+                            while ($rowBlocks = $resultBlocks->fetch()) {
+                                if ($rowBlocks['title'] != '' or $rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
+                                    echo "<div class='blockView' style='min-height: 35px'>";
+                                    if ($rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
+                                        $width = '69%';
+                                    } else {
+                                        $width = '100%';
+                                    }
+                                    echo "<div style='padding-left: 3px; width: $width; float: left;'>";
+                                    if ($rowBlocks['title'] != '') {
+                                        echo "<h5 style='padding-bottom: 2px'>".$rowBlocks['title'].'</h5>';
+                                    }
+                                    echo '</div>';
+                                    if ($rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
+                                        echo "<div style='float: right; width: 29%; padding-right: 3px; height: 55px'>";
+                                        echo "<div style='text-align: right; font-size: 85%; font-style: italic; margin-top: 3px; border-bottom: 1px solid #ddd; height: 21px'>";
+                                        if ($rowBlocks['type'] != '') {
+                                            echo $rowBlocks['type'];
+                                            if ($rowBlocks['length'] != '') {
+                                                echo ' | ';
+                                            }
+                                        }
+                                        if ($rowBlocks['length'] != '') {
+                                            echo $rowBlocks['length'].' min';
+                                        }
+                                        echo '</div>';
+                                        echo '</div>';
+                                    }
+                                    echo '</div>';
+                                }
+                                if ($rowBlocks['contents'] != '') {
+                                    echo "<div style='padding: 15px 3px 10px 3px; width: 100%; text-align: justify; border-bottom: 1px solid #ddd'>".$rowBlocks['contents'].'</div>';
+                                }
+                            }
+                            echo '</div>';
+                            //OUTCOMES
+							echo "<div id='tabs3'>";
                             try {
                                 $dataOutcomes = $dataMulti;
                                 $dataOutcomes['gibbonUnitID'] = $row['gibbonUnitID'];
@@ -376,8 +423,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                 echo '</table>';
                             }
                             echo '</div>';
-                                //LESSONS
-                                echo "<div id='tabs3'>";
+                            //LESSONS
+                            echo "<div id='tabs4'>";
                             $resourceContents = '';
                             try {
                                 $dataLessons = $dataMulti;
@@ -444,7 +491,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             }
                             echo '</div>';
                             //RESOURCES
-                            echo "<div id='tabs4'>";
+                            echo "<div id='tabs5'>";
                             $noReosurces = true;
 
 							//Links
