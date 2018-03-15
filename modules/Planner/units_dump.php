@@ -129,8 +129,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
 
-                                //Tab links
-                                echo '<ul>';
+                            //Tab links
+                            echo '<ul>';
                             echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
                             echo "<li><a href='#tabs2'>".__($guid, 'Smart Blocks').'</a></li>';
                             echo "<li><a href='#tabs3'>".__($guid, 'Resources').'</a></li>';
@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                     echo '</div>';
                                     if ($rowBlocks['type'] != '' or $rowBlocks['length'] != '') {
                                         echo "<div style='float: right; width: 29%; padding-right: 3px; height: 55px'>";
-                                        echo "<div style='text-align: right; font-size: 85%; font-style: italic; margin-top: 12px; border-bottom: 1px solid #ddd; height: 21px'>";
+                                        echo "<div style='text-align: right; font-size: 85%; font-style: italic; margin-top: 3px; border-bottom: 1px solid #ddd; height: 21px'>";
                                         if ($rowBlocks['type'] != '') {
                                             echo $rowBlocks['type'];
                                             if ($rowBlocks['length'] != '') {
