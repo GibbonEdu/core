@@ -90,8 +90,13 @@ else {
 			        returnProcess($guid, $_GET['return'], null, array('error2' => 'Some elements of your request failed, but others were successful.'));
 			    }
 
+                // Create a reusable confirmation closure
                 $icon = '<img src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%1$s"/>';
-                
+                $confirmationIndicator = function($recipient) use ($icon) {
+                    if (is_null($recipient['key'])) return __('N/A');
+                    return sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick.png' : 'iconCross.png');
+                };
+
 				$nonConfirm = 0;
 				$noConfirm = 0;
 				$yesConfirm = 0;
@@ -131,7 +136,12 @@ else {
 
 						try {
 				            $data = array('gibbonMessengerID' => $gibbonMessengerID);
-				            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.* FROM gibbonMessengerReceipt LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
+				            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.*, gibbonRole.category as roleCategory
+                                FROM gibbonMessengerReceipt 
+                                JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+                                LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                                LEFT JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                                WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
 				            $result = $connection2->prepare($sql);
 				            $result->execute($data);
 				        } catch (PDOException $e) {
@@ -150,6 +160,7 @@ else {
                         $header = $table->addHeaderRow();
                             $header->addContent();
                             $header->addContent(__('Recipient'));
+                            $header->addContent(__('Role'));
                             $header->addContent(__('Contact Type'));
                             $header->addContent(__('Contact Detail'));
                             $header->addContent(__('Receipt Confirmed'));
@@ -163,33 +174,35 @@ else {
                         $recipientIDs = array_column($recipients, 'gibbonPersonID');
                         
                         foreach ($recipients as $count => $recipient) {
+                            $recipientName = formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
+
                             $row = $table->addRow();
                                 $row->addContent($count+1);
-                                $row->addContent(!empty($recipient['preferredName'])? formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
+                                $row->addContent(!empty($recipientName)? $recipientName : __('N/A'));
+                                $row->addContent($recipient['roleCategory']);
                                 $row->addContent($recipient['contactType']);
                                 $row->addContent($recipient['contactDetail']);
-                                $row->addContent(!is_null($recipient['key'])? sprintf($icon, $recipient['confirmed'] == 'Y'? 'iconTick' : 'iconCross') : __('N/A'));
+                                $row->addContent($confirmationIndicator($recipient));
                                 $row->addContent(dateConvertBack($guid, substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
 
                                 if ($sender == true) {
                                     $row->if($recipient['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($recipient['gibbonMessengerReceiptID'])
-                                        ->setClass('textCenter')
-                                        ->setTitle(__('N/A'));
+                                        ->setClass('textCenter');
 
                                     $row->if($recipient['confirmed'] != 'N')->addContent();
                                 }
 
                             if (is_null($recipient['key'])) $nonConfirm++;
-                            else if ($row['confirmed'] == 'Y') $yesConfirm++;
-                            else if ($row['confirmed'] == 'N') $noConfirm++;
+                            else if ($recipient['confirmed'] == 'Y') $yesConfirm++;
+                            else if ($recipient['confirmed'] == 'N') $noConfirm++;
                         }
 
                         if (count($recipients) == 0) {
-                            $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(7);
+                            $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(8);
                         } else {
-                            $sendReport = '<b>'.__('Total Messages:')." $count</b><br/>";
+                            $sendReport = '<b>'.__('Total Messages:')." ".count($recipients)."</b><br/>";
 							$sendReport .= "<span>".__('Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
 							$sendReport .= "<span>".__('Messages confirmed:').' <b>'.$yesConfirm.'</b><br/>';
                             $sendReport .= "<span>".__('Messages not yet confirmed:').' <b>'.$noConfirm.'</b><br/>';
@@ -203,13 +216,29 @@ else {
 			echo "</div>";
 			echo "<div id='tabs2'>";
 				try {
-					$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-					$sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort AS rollGroup, gibbonFamily.gibbonFamilyID FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY rollGroup, surname, preferredName";
+					$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
+					$sql = "SELECT gibbonRollGroup.nameShort AS rollGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
+                        FROM gibbonPerson 
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+                        LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+						LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID AND parent1Fam.contactPriority=1)
+						LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full')
+						LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID AND parent2Fam.contactPriority=2)
+						LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full')
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
+                        AND gibbonPerson.status='Full' 
+                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
+                        AND NOT (parent2.surname IS NULL AND parent2Fam.contactPriority IS NOT NULL AND parent2Fam.contactEmail='Y') 
+                        AND NOT (parent1.surname IS NULL AND parent1Fam.contactPriority IS NOT NULL)
+                        GROUP BY gibbonPerson.gibbonPersonID
+                        ORDER BY rollGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
 					$result = $connection2->prepare($sql);
 					$result->execute($data);
 				} catch (PDOException $e) {
 					echo "<div class='error'>".$e->getMessage().'</div>';
-				}
+                }
+                
 				if ($result->rowCount() < 1) {
 					echo "<div class='error'>";
 					echo __($guid, 'There are no records to display.');
@@ -218,176 +247,90 @@ else {
 					//Store receipt for this message data in an array
 					try {
 						$dataReceipts = array('gibbonMessengerID' => $gibbonMessengerID);
-						$sqlReceipts = "SELECT * FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
+						$sqlReceipts = "SELECT gibbonPersonID, gibbonMessengerReceiptID, confirmed, `key` FROM gibbonMessengerReceipt WHERE gibbonMessengerID=:gibbonMessengerID";
 						$resultReceipts = $connection2->prepare($sqlReceipts);
 						$resultReceipts->execute($dataReceipts);
 					} catch (PDOException $e) {}
-					$receipts = $resultReceipts->fetchAll();
+                    $receipts = $resultReceipts->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
 
-					echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_report_processBulk.php?gibbonMessengerID=$gibbonMessengerID&search=$search'>";
-					echo "<fieldset style='border: none'>";
-					if ($sender == true) {
-						echo "<div class='linkTop' style='text-align: right; margin-bottom: 40px'>";
-						?>
-						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
-						<select name="action2" id="action2" style='width:120px; float: right; margin-right: 1px;'>
-							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-							<option value="resend"><?php echo __($guid, 'Resend') ?></option>
-						</select>
-						<script type="text/javascript">
-							var action2=new LiveValidation('action2');
-							action2.add(Validate.Exclusion, { within: ['Select action'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-						</script>
-						<?php
-						echo '</div>';
-					}
+                    $form = BulkActionForm::create('resendByRecipient', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/messenger_manage_report_processBulk.php?gibbonMessengerID='.$gibbonMessengerID.'&search='.$search);
+                    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-					$currentRollGroup = '';
-					$lastRollGroup = '';
-					$count = 0;
-					$countTotal = 0;
-					$rowNum = 'odd';
-					while ($row = $result->fetch()) {
-						$currentRollGroup = $row['rollGroup'];
+                    $row = $form->addBulkActionRow(array('resend' => __('Resend')));
+                        $row->addSubmit(__('Go'));
+                    
+                    $rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
+                    $countTotal = 0;
 
-						//SPLIT INTO ROLL GROUPS
-						if ($currentRollGroup != $lastRollGroup) {
-							if ($lastRollGroup != '') {
-								echo '</table>';
-							}
-							echo '<h2>'.$row['rollGroup'].'</h2>';
-							$count = 0;
-							$rowNum = 'odd';
-							echo "<table cellspacing='0' style='width: 100%'>";
-							echo "<tr class='head'>";
-							echo '<th>';
-							echo __($guid, 'Total Count');
-							echo '</th>';
-							echo '<th>';
-							echo __($guid, 'Form Count');
-							echo '</th>';
-							echo '<th>';
-							echo __($guid, 'Student');
-							echo '</th>';
-							echo '<th>';
-							echo __($guid, 'Parent 1');
-							echo '</th>';
-							echo '<th>';
-							echo __($guid, 'Parent 2');
-							echo '</th>';
-							echo '</tr>';
-						}
-						$lastRollGroup = $row['rollGroup'];
+                    foreach ($rollGroups as $rollGroupName => $recipients) {
+                        $count = 0;
 
-						//PUMP OUT STUDENT DATA
-						//Check for older siblings
-						try {
-							$dataParent = array('gibbonPersonID' => $row['gibbonPersonID']);
-							$sqlParent = "SELECT parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
-							FROM gibbonFamilyChild
-							LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-							LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent1Fam.contactPriority=1)
-							LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full')
-							LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent2Fam.contactPriority=2)
-							LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full')
-							WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND NOT (parent2.surname IS NULL AND parent2Fam.contactPriority IS NOT NULL AND parent2Fam.contactEmail='Y') AND NOT (parent1.surname IS NULL AND parent1Fam.contactPriority IS NOT NULL)
-							ORDER BY gibbonFamilyChild.gibbonFamilyID
-							LIMIT 0, 1";
-							$resultParent = $connection2->prepare($sqlParent);
-							$resultParent->execute($dataParent);
-						} catch (PDOException $e) {
-							echo "<div class='error'>".$e->getMessage().'</div>';
-						}
+                        // Filter the array for only those individuals involved in the message (student or parent)
+                        $recipients = array_filter($recipients, function($recipient) use (&$receipts) {
+                            return array_key_exists($recipient['gibbonPersonID'], $receipts) 
+                                || array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
+                                || array_key_exists($recipient['parent2gibbonPersonID'], $receipts);
+                        });
 
-						if ($count % 2 == 0) {
-							$rowNum = 'even';
-						} else {
-							$rowNum = 'odd';
-						}
-						echo "<tr class=$rowNum>";
-						echo "<td style='width: 8%'>";
-						echo $countTotal + 1;
-						echo '</td>';
-						echo "<td style='width: 8%'>";
-						echo $count + 1;
-						echo '</td>';
-						echo "<td style='width: 29%'>";
-						echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-						echo '</td>';
-						if ($resultParent->rowCount() != 1) {
-							echo "<td style='width: 27%'>";
-								echo __($guid, 'N/A');
-							echo '</td>';
-							echo "<td style='width: 27%'>";
-								echo __($guid, 'N/A');
-							echo '</td>';
-						} else {
-							$rowParent = $resultParent->fetch();
-							echo "<td style='width: 27%'>";
-								$confirmed = null;
-								$gibbonMessengerReceiptID = null;
-								foreach ($receipts as $receipt) {
-									if ($receipt['gibbonPersonID'] == $rowParent['parent1gibbonPersonID']) {
-										if ($receipt['confirmed'] == 'N') {
-											$confirmed = 'N';
-											$gibbonMessengerReceiptID = $receipt['gibbonMessengerReceiptID'];
-										}
-										if ($receipt['confirmed'] == 'Y') {
-											$confirmed = 'Y';
-										}
-									}
-								}
-								if ($rowParent['parent1preferredName'] != '' and $rowParent['parent1surname'] != '') {
-									echo formatName('', $rowParent['parent1preferredName'], $rowParent['parent1surname'], 'Student', true)."<br/>";
-								}
-								if (is_null($confirmed)) {
-									echo __($guid, 'N/A');
-								}
-								else if ($confirmed == 'N') {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/><br/>";
-									if ($sender == true) {
-										echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$gibbonMessengerReceiptID."'>";
-									}
-								}
-								else if ($confirmed == 'Y') {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-								}
-							echo '</td>';
-							echo "<td style='width: 27%'>";
-								$confirmed = null;
-								$gibbonMessengerReceiptID = null;
-								foreach ($receipts as $receipt) {
-									if ($receipt['gibbonPersonID'] == $rowParent['parent2gibbonPersonID']) {
-										if ($receipt['confirmed'] == 'N') {
-											$confirmed = 'N';
-											$gibbonMessengerReceiptID = $receipt['gibbonMessengerReceiptID'];
-										}
-										if ($receipt['confirmed'] == 'Y') {
-											$confirmed = 'Y';
-										}
-									}
-								}
-								if ($rowParent['parent2preferredName'] != '' and $rowParent['parent2surname'] !='') {
-									echo formatName('', $rowParent['parent2preferredName'], $rowParent['parent2surname'], 'Student', true)."<br/>";
-								}
-								if (is_null($confirmed)) {
-									echo __($guid, 'N/A');
-								}
-								else if ($confirmed == 'N') {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/><br/>";
-									if ($sender == true) {
-										echo "<input type='checkbox' name='gibbonMessengerReceiptIDs[]' value='".$gibbonMessengerReceiptID."'>";
-									}
-								}
-								else if ($confirmed == 'Y') {
-									echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
-								}
-							echo '</td>';
-						}
-						++$count;
-						++$countTotal;
-					}
-					echo '</table>';
+                        // Skip this roll group if there's no involved individuals
+                        if (empty($recipients)) continue;
+
+                        $form->addRow()->addHeading($rollGroupName);
+                        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+
+                        $header = $table->addHeaderRow();
+                            $header->addContent(__('Total Count'));
+                            $header->addContent(__('Form Count'));
+                            $header->addContent(__('Student'))->addClass('mediumWidth');
+                            $header->addContent(__('Parent 1'))->addClass('mediumWidth');
+                            $header->addContent(__('Parent 2'))->addClass('mediumWidth');
+                    
+                        foreach ($recipients as $recipient) {
+                            $countTotal++;
+                            $count++;
+
+                            $studentName = formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
+                            $parent1Name = formatName('', $recipient['parent1preferredName'], $recipient['parent1surname'], 'Parent', true);
+                            $parent2Name = formatName('', $recipient['parent2preferredName'], $recipient['parent2surname'], 'Parent', true);
+
+                            $row = $table->addRow();
+                                $row->addContent($countTotal);
+                                $row->addContent($count);
+
+                                $studentReceipt = isset($receipts[$recipient['gibbonPersonID']])? $receipts[$recipient['gibbonPersonID']] : null;
+                                $col = $row->addColumn();
+                                    $col->addContent(!empty($studentName)? $studentName : __('N/A'));
+                                    $col->addContent($confirmationIndicator($studentReceipt));
+                                    $col->if($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
+                                        ->addCheckbox('gibbonMessengerReceiptIDs[]')
+                                        ->setValue($studentReceipt['gibbonMessengerReceiptID'])
+                                        ->setClass('textCenter');
+
+                                $parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
+                                $col = $row->addColumn();
+                                    $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'));
+                                    $col->addContent($confirmationIndicator($parent1Receipt));
+                                    $col->if($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
+                                        ->addCheckbox('gibbonMessengerReceiptIDs[]')
+                                        ->setValue($parent1Receipt['gibbonMessengerReceiptID'])
+                                        ->setClass('textCenter');
+
+                                $parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
+                                $col = $row->addColumn();
+                                    $col->addContent(!empty($recipient['parent2surname'])? $parent2Name : __('N/A'));
+                                    $col->addContent($confirmationIndicator($parent2Receipt));
+                                    $col->if($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'])
+                                        ->addCheckbox('gibbonMessengerReceiptIDs[]')
+                                        ->setValue($parent2Receipt['gibbonMessengerReceiptID'])
+                                        ->setClass('textCenter');
+                        }
+                    }
+
+                    if ($countTotal == 0) {
+                        $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(8);
+                    }
+                    
+                    echo $form->getOutput();
 				}
 			echo "</div>";
 		echo "</div>";
