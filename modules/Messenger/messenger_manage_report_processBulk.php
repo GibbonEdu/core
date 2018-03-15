@@ -32,8 +32,7 @@ require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 //Module includes
 include './moduleFunctions.php';
 
-$action = (!empty($_POST['action1']) ? $_POST['action1'] : null) ;
-$action = (is_null($action) && !empty($_POST['action2']) ? $_POST['action2'] : $action) ;
+$action = isset($_POST['action']) ? $_POST['action'] : '';
 $search = $_GET['search'];
 $gibbonMessengerID = $_GET['gibbonMessengerID'];
 
