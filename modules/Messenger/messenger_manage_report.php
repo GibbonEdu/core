@@ -361,10 +361,10 @@ else {
 							FROM gibbonFamilyChild
 							LEFT JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
 							LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent1Fam.contactPriority=1)
-							LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full')
-							LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent2Fam.contactPriority=2)
-							LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full')
-							WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND NOT (parent2.surname IS NULL AND parent2Fam.contactPriority IS NOT NULL AND parent2Fam.contactEmail='Y') AND NOT (parent1.surname IS NULL AND parent1Fam.contactPriority IS NOT NULL)
+							LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full' AND NOT parent1.surname IS NULL)
+							LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND parent2Fam.contactPriority=2 AND parent2Fam.contactEmail='Y')
+							LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full' AND NOT parent2.surname IS NULL)
+							WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID
 							ORDER BY gibbonFamilyChild.gibbonFamilyID
 							LIMIT 0, 1";
 							$resultParent = $connection2->prepare($sqlParent);
