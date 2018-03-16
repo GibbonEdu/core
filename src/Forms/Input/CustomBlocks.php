@@ -30,14 +30,16 @@ use Gibbon\Forms\FormFactoryInterface;
  */
 class CustomBlocks implements OutputableInterface
 {
-
-    protected $name;
-    protected $placeholder;
-    protected $toolInputs;
-    protected $blockButtons;
-    protected $blockTemplate;
     protected $factory;
     protected $session;
+
+    protected $name;
+    protected $settings;
+    protected $placeholder;
+
+    protected $blockTemplate;
+    protected $toolsTable;
+    protected $blockButtons;
 
     /**
      * Create a Blocks input with a given template.
@@ -48,13 +50,20 @@ class CustomBlocks implements OutputableInterface
      */
     public function __construct(FormFactoryInterface &$factory, $name, OutputableInterface $block, \Gibbon\Session $session)
     {
-        $this->session = $session;
         $this->factory = $factory;
+        $this->session = $session;
+
         $this->name = $name;
-        $this->placeholder = __("Blocks will appear here..."); 
-        $this->toolInputs = array($factory->createButton(__("Add Block"), 'add'. $this->name .'Block()'));
-        $this->blockButtons = array();
-        $this->blockTemplate = $block->setClass("blank fullWidth")->getOutput();
+        $this->placeholder = __('Blocks will appear here...'); 
+
+        $this->blockTemplate = $block->setClass('blank fullWidth');
+        $this->toolsTable = $factory->createTable()->setClass('inputTools blank fullWidth');
+        $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth')->setColumns(2);
+        $this->addBlockButton(__('Delete'), 'garbage.png', '', 'deleteButton');
+
+        $this->settings = array(
+            'deleteConfirm' => __('Are you sure you want to delete this record?'),
+        );
     }
 
     /**
@@ -69,13 +78,24 @@ class CustomBlocks implements OutputableInterface
     }
 
     /**
+     * Updates the settings array which is passed as json params to JS.
+     * @param  string  $value
+     * @return self
+     */
+    public function settings($value)
+    {
+        $this->settings = array_replace($this->settings, $value);
+        return $this;
+    }
+
+    /**
      * Adds the given input into the tool bar.
      * @param  OutputableInterface  $value
      * @return self
      */
     public function addToolInput(OutputableInterface $input)
     {
-        $this->toolInputs[] = $input;
+        $this->toolsTable->addRow()->addElement($input)->addClass('floatNone');
         return $this;
     }
 
@@ -87,9 +107,17 @@ class CustomBlocks implements OutputableInterface
      * @param  string  $function
      * @return self
      */
-    public function addBlockButton($name, $icon, $function)
+    public function addBlockButton($name, $icon, $function = '', $class = '')
     {
-        $this->blockButtons[] = array("name" => $name, "icon" => $icon, "function" => $function);
+        $iconSrc = stripos($icon, '/') === false? './themes/'.$this->session->get("gibbonThemeName").'/img/'.$icon : $icon;
+        $button = $this->factory->createWebLink('<img title="'.$name.'" src="'.$iconSrc.'" style="margin-right:4px;" />')
+            ->setURL('#')
+            ->addClass('blockButton');
+
+        if (!empty($function)) $button->addData('function', $function);
+        if (!empty($class)) $button->addClass($class);
+
+        $this->blockButtons->addCell()->addElement($button);
         return $this;
     }
 
@@ -110,96 +138,33 @@ class CustomBlocks implements OutputableInterface
                 #' . $this->name . ' { list-style-type: none; margin: 0; padding: 0; width: 100%; }
                 #' . $this->name . ' div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
                 div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-                html>body #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
+                #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
                 .' . $this->name . '-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
                 .' . $this->name . '-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
             </style>';
 
-        $output .= '<div class="' . $this->name. '" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">
-            <div id="' . $this->name . 'Outer0">
-                <div style="color: #ddd; font-size: 230%; margin: 15px 0 15px 6px">' . $this->placeholder . '</div>
-           </div>
+        $output .= '<div class="customBlocks" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
 
-           <div id="'. $this->name .'Template" class="hiddenReveal" style="display:none; overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">
-                <div style="float:left; width:92%;">'. $this->blockTemplate .'</div>
-                <div style="float:right; width: 8%; ">
-                    <table class="blank">
-                        <tr>
-                            <td>
-                                <img id="' . $this->name . 'deleteTemplate" title="' . __('Delete') . '" src="./themes/' . $this->session->get("gibbonThemeName") . '/img/garbage.png"/>
-                            </td>
-                            ';
-                            $count = 1;
-                            foreach ($this->blockButtons as $blockButton) {
-                                if ($count % 2 == 0) {
-                                    $output.= '</tr><tr>';
-                                }
-                                $output .= '<td>
-                                    <img id="' . $this->name . $count . 'ButtonTemplate" title="' . $blockButton["name"] . '" src="' . $blockButton["icon"] . '"/>
-                                </td>';
-                                $count++;
-                            }
+            $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
+            $output .= '<div class="blockPlaceholder" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->placeholder.'</div>';
 
-                            if ($count % 2 == 1) {
-                                $output .= '<td></td>';
-                            }
+            $output .= '<div class="blockTemplate displayNone hiddenReveal" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
+                $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
+                $output .= $this->blockTemplate->getOutput();
+                $output .= '</div>';
 
-                            $output .= '
-                        </tr>
-                    </table>
-                </div>
-            </div>
+                $output .= '<div class="blockSidebar" style="float:right; width: 8%; ">';
+                    $output .= $this->blockButtons->getOutput();
+                $output .= '</div>';
+            $output .= '</div>';
             
-            <div id="'. $this->name .'Tools" class="ui-state-default_dud" style="width: 100%; padding: 0px; height: 40px; display: table">
-                <table class="blank" cellspacing="0" style="width: 100%">
-                    <tr>';
-                        foreach ($this->toolInputs as $toolInput) {
-                            $output .= '<td style="float: left">' . $toolInput->getOutput() . '</td>';
-                        }
-                    $output .= '</tr>
-                </table>
-            </div>
-        </div>';
+            $output .= $this->toolsTable->getOutput();
+        $output .= '</div>';
 
         $output .= '<script type="text/javascript">
-            var ' . $this->name . 'Count = 1;
-            function add'. $this->name .'Block() {
-                $("#' . $this->name . 'Outer0").css("display", "none");
-                $("#'. $this->name . 'Template").clone().css("display", "block").prop("id", "'. $this->name .'Outer" + ' . $this->name . 'Count).insertBefore($("#'. $this->name .'Tools"));
-                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " input[id], #'. $this->name .'Outer" + ' . $this->name . 'Count + " textarea[id]").each(function () { $(this).prop("name", $(this).prop("id") + "[" + ' . $this->name . 'Count + "]"); });
-                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " label").each(function () { $(this).prop("for", $(this).prop("for") + "[" + ' . $this->name . 'Count + "]"); });
-                $(\'<input>\').attr({
-                            type: \'hidden\',
-                            name: \'' . $this->name . 'Order[]\'
-                        }).val(' . $this->name . 'Count).appendTo($("#'. $this->name .'Outer" + ' . $this->name . 'Count));
-                $("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . 'deleteTemplate]").each(function () {
-                    $(this).prop("id", "' . $this->name . 'Delete" + ' . $this->name . 'Count);
-                    $(this).unbind("click").click(function() {
-                        if (confirm("Are you sure you want to delete this record?")) {
-                            $("#'. $this->name .'Outer" + $(this).attr("id").split("Delete")[1]).fadeOut(600, function(){
-                               $(this).remove();
-                                if ($("#'. $this->name .'").children().length == 3) {
-                                    $("#' . $this->name . 'Outer0").css("display", "block");
-                                }
-                            });
-                        }
-                    });
-                });';
-
-                $count = 1;
-                foreach ($this->blockButtons as $blockButton)
-                {
-                    $output .= '$("#'. $this->name .'Outer" + ' . $this->name . 'Count + " img[id*= '. $this->name . $count . 'ButtonTemplate]").each(function () {
-                        $(this).prop("id", "' . $this->name . $count . 'Button" + ' . $this->name . 'Count);
-                        $(this).unbind("click").click(function() {
-                           ' . $blockButton["function"] . '($(this).attr("id").split("Button")[1]);
-                        });
-                    });';
-                    $count++;
-                }
-
-                $output .= $this->name . 'Count++;
-            }
+            $(function(){
+                $("#'.$this->name.'").gibbonCustomBlocks('.json_encode($this->settings).');
+            });
         </script>';
 
         return $output;

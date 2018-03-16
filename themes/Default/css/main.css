@@ -1514,6 +1514,10 @@ fieldset {
     display: inline-block;
 }
 
+.displayNone {
+    display: none;
+}
+
 /* Fixes an odd colspan-related width bug in Chrome */
 td.fullWidth[colspan] {
     width: auto;

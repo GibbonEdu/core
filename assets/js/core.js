@@ -102,3 +102,101 @@ $.prototype.gibbonUniquenessCheck = function (settings) {
         };
     });
 };
+
+/**
+ * Custom Blocks
+ */
+// Define the CustomBlocks behaviour
+var CustomBlocks = window.CustomBlocks || {};
+
+CustomBlocks = (function(element, settings) {
+    var _ = this;
+
+    _.container = $(element);
+    _.tools = $('.inputTools', element);
+    _.template = $('.blockTemplate', element);
+    _.blockCount = 0;
+    _.defaults = {
+        deleteConfirm: "Delete?",
+        animationSpeed: 600,
+    }
+    _.settings = $.extend({}, _.defaults, settings);
+
+    _.init();
+});
+
+CustomBlocks.prototype.init = function() {
+    var _ = this;
+
+    $(".addBlock", _.container).each(function(){
+        $(this).on($(this).data("event"), function(){
+            _.addBlock($(this).val());
+        });
+    });
+};
+
+CustomBlocks.prototype.addBlock = function(identifier) {
+    var _ = this;
+
+    _.blockCount++;
+
+    var block = $(_.template).clone().css("display", "block").insertBefore($(_.tools));
+    block.blockNumber = _.blockCount;
+    block.identifier = identifier;
+
+    _.initBlock(block);
+    _.refresh();
+};
+
+CustomBlocks.prototype.removeBlock = function(block) {
+    var _ = this;
+
+    _.blockCount--;
+
+    $(block).fadeOut(_.settings.animationSpeed, function(){
+        $(block).detach().remove();
+        _.refresh();
+    });
+};
+
+CustomBlocks.prototype.initBlock = function(block) {
+    var _ = this;
+
+    $("a.deleteButton", block).click(function(event){
+        event.preventDefault();
+        if (confirm(_.settings.deleteConfirm)) {
+            _.removeBlock(block);
+        }
+    });
+
+    $("a.blockButton", block).each(function(index, element) {
+        $(element).click(function(event){
+            event.preventDefault();
+            if (callback = window[$(this).data('function')]) {
+                callback(block);
+            }
+        });
+    });
+
+    $("input, textarea, select", block).each(function(index, element) {
+        $(this).prop("name", $(this).prop("name")+"["+block.blockNumber+"]");
+        $(this).prop("id", $(this).prop("id")+block.blockNumber);
+    });
+
+    $("label", block).each(function(index, element) {
+        $(this).prop("for", $(this).prop("for")+block.blockNumber);
+    });
+};
+
+CustomBlocks.prototype.refresh = function() {
+    var _ = this;
+
+    $(".blockCount", _.container).val(_.blockCount);
+    $(".blockPlaceholder", _.container).css("display", (_.blockCount > 0)? "none" : "block");
+    $("select.addBlock", _.container).val(''); // Deselect after action
+};
+
+// Add the prototype method to jQuery
+$.prototype.gibbonCustomBlocks = function(settings) {
+    this.gibbonCustomBlocks = new CustomBlocks(this, settings);
+};
