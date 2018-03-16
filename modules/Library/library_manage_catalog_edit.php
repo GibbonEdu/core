@@ -207,8 +207,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 					$row->addSelectSchoolYear('gibbonSchoolYearIDReplacement', 'All', 'DESC');
 
 			$row = $form->addRow()->addClass('general replacement');
-				$row->addLabel('payment', __('Replacement Cost'));
-				$row->addCurrency('payment')->maxLength(9);
+				$row->addLabel('replacementCost', __('Replacement Cost'));
+				$row->addCurrency('replacementCost')->maxLength(9);
 
 			$conditions = array(
 				'As New' => __('As New'),
