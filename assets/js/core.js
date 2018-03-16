@@ -114,7 +114,7 @@ CustomBlocks = (function(element, settings) {
 
     _.container = $(element);
     _.tools = $('.inputTools', element);
-    _.template = $('.blockTemplate', element);
+    _.blockTemplate = $('.blockTemplate', element);
     _.blockCount = 0;
     _.defaults = {
         deleteConfirm: "Delete?",
@@ -128,11 +128,20 @@ CustomBlocks = (function(element, settings) {
 CustomBlocks.prototype.init = function() {
     var _ = this;
 
+    // Setup tool actions
     $(".addBlock", _.container).each(function(){
         $(this).on($(this).data("event"), function(){
             _.addBlock($(this).val());
         });
     });
+
+    // Initialize existing blocks
+    $(".blockPrefab", _.container).each(function(){
+        _.blockCount++;
+        _.initBlock($(this), $(this).data('identifier'));
+    });
+
+    _.refresh();
 };
 
 CustomBlocks.prototype.addBlock = function(identifier) {
@@ -140,11 +149,9 @@ CustomBlocks.prototype.addBlock = function(identifier) {
 
     _.blockCount++;
 
-    var block = $(_.template).clone().css("display", "block").insertBefore($(_.tools));
-    block.blockNumber = _.blockCount;
-    block.identifier = identifier;
+    var block = $(_.blockTemplate).clone().css("display", "block").insertBefore($(_.tools));
 
-    _.initBlock(block);
+    _.initBlock(block, block.blockNumber);
     _.refresh();
 };
 
@@ -159,8 +166,13 @@ CustomBlocks.prototype.removeBlock = function(block) {
     });
 };
 
-CustomBlocks.prototype.initBlock = function(block) {
+CustomBlocks.prototype.initBlock = function(block, identifier) {
     var _ = this;
+
+    block.blockNumber = _.blockCount;
+    block.identifier = identifier;
+
+    _.renameBlockFields(block);
 
     $("a.deleteButton", block).click(function(event){
         event.preventDefault();
@@ -177,14 +189,18 @@ CustomBlocks.prototype.initBlock = function(block) {
             }
         });
     });
+};
+
+CustomBlocks.prototype.renameBlockFields = function(block) {
+    var _ = this;
 
     $("input, textarea, select", block).each(function(index, element) {
-        $(this).prop("name", $(this).prop("name")+"["+block.blockNumber+"]");
-        $(this).prop("id", $(this).prop("id")+block.blockNumber);
+        $(this).prop("name", $(this).prop("name")+"["+block.identifier+"]");
+        $(this).prop("id", $(this).prop("id")+block.identifier);
     });
 
     $("label", block).each(function(index, element) {
-        $(this).prop("for", $(this).prop("for")+block.blockNumber);
+        $(this).prop("for", $(this).prop("for")+block.identifier);
     });
 };
 

@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -34,20 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     echo '</div>';
 
     $error3 = __($guid, 'Some aspects of your update failed, effecting the following areas:').'<ul>';
-    if (isset($_GET['studentFailCount'])) {
-        if ($_GET['studentFailCount']) {
-            $error3 .= '<li>'.$_GET['studentFailCount'].' '.__($guid, 'students encountered problems.').'</li>';
-        }
+    if (!empty($_GET['studentFailCount'])) {
+        $error3 .= '<li>'.$_GET['studentFailCount'].' '.__($guid, 'students encountered problems.').'</li>';
     }
-    if (isset($_GET['invoiceFailCount'])) {
-        if ($_GET['invoiceFailCount']) {
-            $error3 .= '<li>'.$_GET['invoiceFailCount'].' '.__($guid, 'invoices encountered problems.').'</li>';
-        }
+    if (!empty($_GET['invoiceFailCount'])) {
+        $error3 .= '<li>'.$_GET['invoiceFailCount'].' '.__($guid, 'invoices encountered problems.').'</li>';
     }
-    if (isset($_GET['invoiceFeeFailCount'])) {
-        if ($_GET['invoiceFeeFailCount']) {
-            $error3 .= '<li>'.$_GET['invoiceFeeFailCount'].' '.__($guid, 'fee entires encountered problems.').'</li>';
-        }
+    if (!empty($_GET['invoiceFeeFailCount'])) {
+        $error3 .= '<li>'.$_GET['invoiceFeeFailCount'].' '.__($guid, 'fee entires encountered problems.').'</li>';
     }
     $error3 .= '</ul>'.__($guid, 'It is recommended that you remove all pending invoices and try to recreate them.');
 
@@ -60,12 +54,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
     echo '</p>';
 
     //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $status = $_GET['status'];
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-    $monthOfIssue = $_GET['monthOfIssue'];
-    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $status = isset($_GET['status'])? $_GET['status'] : '';
+    $gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '';
+    $monthOfIssue = isset($_GET['monthOfIssue'])? $_GET['monthOfIssue'] : '';
+    $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
+    $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
     if ($gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
@@ -76,7 +70,102 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Back to Search Results').'</a>';
             echo '</div>';
         }
+
+        $linkParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
+        
+        $form = Form::create('invoice', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_addProcess.php?'.http_build_query($linkParams));
+                        
+        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+        $data= array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT name AS schoolYear FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+        $result = $pdo->executeQuery($data, $sql);
+        $schoolYearName = $result->rowCount() > 0? $result->fetchColumn(0) : '';
+
+        $form->addRow()->addHeading(__('Basic Information'));
+
+        $row = $form->addRow();
+            $row->addLabel('schoolYear', __('School Year'));
+            $row->addTextField('schoolYear')->isRequired()->readonly()->setValue($schoolYearName);
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonFinanceInvoiceeIDs', __('Invoicees'))->append(sprintf(__('Visit %1$sManage Invoicees%2$s to automatically generate missing students.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage.php'>", '</a>'));
+            $row->addSelect('gibbonFinanceInvoiceeIDs')->isRequired()->selectMultiple();
+
+        $scheduling = array('Scheduled' => __('Scheduled'), 'Ad Hoc' => __('Ad Hoc'));
+        $row = $form->addRow();
+            $row->addLabel('scheduling', __('Scheduling'))->description(__('When using scheduled, invoice due date is linked to and determined by the schedule.'));
+            $row->addRadio('scheduling')->fromArray($scheduling)->isRequired()->inline()->checked('Scheduled');
+
+        $form->toggleVisibilityByClass('schedulingScheduled')->onRadio('scheduling')->when('Scheduled');
+        $form->toggleVisibilityByClass('schedulingAdHoc')->onRadio('scheduling')->when('Ad Hoc');
+
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+        $row = $form->addRow()->addClass('schedulingScheduled');
+            $row->addLabel('gibbonFinanceBillingScheduleID', __('Billing Schedule'));
+            $row->addSelect('gibbonFinanceBillingScheduleID')
+                ->fromQuery($pdo, $sql, $data)
+                ->isRequired()
+                ->placeholder()
+                ->selected($gibbonFinanceBillingScheduleID);
+
+        $row = $form->addRow()->addClass('schedulingAdHoc');
+            $row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('For fees added to existing invoice, specified date will override existing due date.'));
+            $row->addDate('invoiceDueDate')->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
+            $row->addTextArea('notes')->setRows(5);
+
+        $form->addRow()->addHeading(__('Fees'));
+
+        // Fee selector
+        $sql = "SELECT gibbonFinanceFeeCategory.name as groupBy, gibbonFinanceFee.gibbonFinanceFeeID as value, gibbonFinanceFee.name FROM gibbonFinanceFee 
+                JOIN gibbonFinanceFeeCategory ON (gibbonFinanceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) ORDER BY name";
+        $feeSelector = $form->getFactory()->createSelect('addNewFee')->addClass('addBlock')->addData('event', 'change')
+            ->fromArray(array('' => __('Choose a fee to add it')))
+            ->fromArray(array('Ad Hoc Fee' => __('Ad Hoc Fee')))
+            ->fromQuery($pdo, $sql, array(), 'groupBy');
+
+        // Reusable block builder
+        $buildFeesBlock = function($feeName = '', $feeValue = '', $description = '', $readonly = false) use ($form) {
+            $block = $form->getFactory()->createTable()->setClass('blank');
+            $row = $block->addRow();
+                $row->addTextField('name')->setClass('mediumWidth floatNone')->placeholder(__('Fee Name'))->setValue($feeName)->readonly($readonly);
+                
+            $col = $block->addRow()->addColumn()->setClass('inline');
+                $col->addTextField('fee')->setClass('shortWidth floatNone')->placeholder(__('Value'))->setValue($feeValue)->readonly($readonly);
+                
+            $col = $block->addRow()->addClass('showHide displayNone')->addColumn();
+                $col->addLabel('description', __('Description'));
+                $col->addTextArea('description')->setRows(3)->setClass('floatNone')->setValue($description);
+
+            return $block;
+        };
+
+        $row = $form->addRow();
+            $customBlocks = $row->addCustomBlocks('feesBlock', $buildFeesBlock(), $gibbon->session)
+                ->placeholder(__('Fees will be listed here...'))
+                ->addToolInput($feeSelector)
+                ->addBlockButton(__('Show/Hide'), 'plus.png', 'showHide');
+
+        $customBlocks->addBlock( 'foo', $buildFeesBlock('Test', '123', 'This is a test.', true) );
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSubmit();
+
+        echo $form->getOutput();
         ?>
+
+        <script>
+            function showHide(block) {
+                console.log("Show/Hide " + block.blockNumber);
+                block.find('.showHide').toggle('slideDown');
+            }
+        </script>
+
 		<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ?>">
 			<table class='smallIntBorder fullWidth' cellspacing='0'>
 				<tr class='break'>

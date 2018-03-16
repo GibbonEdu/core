@@ -38,6 +38,8 @@ class CustomBlocks implements OutputableInterface
     protected $placeholder;
 
     protected $blockTemplate;
+    protected $blocks;
+
     protected $toolsTable;
     protected $blockButtons;
 
@@ -57,7 +59,9 @@ class CustomBlocks implements OutputableInterface
         $this->placeholder = __('Blocks will appear here...'); 
 
         $this->blockTemplate = $block->setClass('blank fullWidth');
-        $this->toolsTable = $factory->createTable()->setClass('inputTools blank fullWidth');
+        $this->blocks = array();
+
+        $this->toolsTable = $factory->createTable()->setClass('inputTools fullWidth');
         $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth')->setColumns(2);
         $this->addBlockButton(__('Delete'), 'garbage.png', '', 'deleteButton');
 
@@ -121,6 +125,18 @@ class CustomBlocks implements OutputableInterface
         return $this;
     }
 
+    /**
+     * Adds a predefined block.
+     * @param  OutputableInterface  $block
+     * @return self
+     */
+    public function addBlock($id, OutputableInterface $block)
+    {
+        $this->blocks[$id] = $block;
+
+        return $this;
+    }
+
     public function getClass()
     {
         return '';
@@ -146,7 +162,7 @@ class CustomBlocks implements OutputableInterface
         $output .= '<div class="customBlocks" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            $output .= '<div class="blockPlaceholder" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->placeholder.'</div>';
+            $output .= '<div class="blockPlaceholder '.(count($this->blocks) > 0 ? 'displayNone' : '').'" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->placeholder.'</div>';
 
             $output .= '<div class="blockTemplate displayNone hiddenReveal" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
                 $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
@@ -157,6 +173,18 @@ class CustomBlocks implements OutputableInterface
                     $output .= $this->blockButtons->getOutput();
                 $output .= '</div>';
             $output .= '</div>';
+
+            foreach ($this->blocks as $id => $block) {
+                $output .= '<div class="blockPrefab hiddenReveal" data-identifier="'.$id.'" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
+                    $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
+                        $output .= $block->getOutput();
+                    $output .= '</div>';
+
+                    $output .= '<div class="blockSidebar" style="float:right; width: 8%; ">';
+                        $output .= $this->blockButtons->getOutput();
+                    $output .= '</div>';
+                $output .= '</div>';
+            }
             
             $output .= $this->toolsTable->getOutput();
         $output .= '</div>';
