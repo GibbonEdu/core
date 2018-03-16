@@ -302,7 +302,7 @@ else {
                                     $col->if($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($studentReceipt['gibbonMessengerReceiptID'])
-                                        ->setClass('textCenter');
+                                        ->setClass('');
 
                                 $parent1Receipt = isset($receipts[$recipient['parent1gibbonPersonID']])? $receipts[$recipient['parent1gibbonPersonID']] : null;
                                 $col = $row->addColumn();
@@ -311,7 +311,7 @@ else {
                                     $col->if($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($parent1Receipt['gibbonMessengerReceiptID'])
-                                        ->setClass('textCenter');
+                                        ->setClass('');
 
                                 $parent2Receipt = isset($receipts[$recipient['parent2gibbonPersonID']])? $receipts[$recipient['parent2gibbonPersonID']] : null;
                                 $col = $row->addColumn();
@@ -320,7 +320,7 @@ else {
                                     $col->if($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'])
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($parent2Receipt['gibbonMessengerReceiptID'])
-                                        ->setClass('textCenter');
+                                        ->setClass('');
                         }
                     }
 
