@@ -38,8 +38,6 @@ class CustomBlocks implements OutputableInterface
     protected $placeholder;
 
     protected $blockTemplate;
-    protected $blocks;
-
     protected $toolsTable;
     protected $blockButtons;
 
@@ -50,24 +48,33 @@ class CustomBlocks implements OutputableInterface
      * @param  OutputableInterface  $form
      * @param  Session              $session
      */
-    public function __construct(FormFactoryInterface &$factory, $name, OutputableInterface $block, \Gibbon\Session $session)
+    public function __construct(FormFactoryInterface &$factory, $name, \Gibbon\Session $session)
     {
         $this->factory = $factory;
         $this->session = $session;
-
         $this->name = $name;
-        $this->placeholder = __('Blocks will appear here...'); 
-
-        $this->blockTemplate = $block->setClass('blank fullWidth');
-        $this->blocks = array();
 
         $this->toolsTable = $factory->createTable()->setClass('inputTools fullWidth');
         $this->blockButtons = $factory->createGrid()->setClass('blockButtons blank fullWidth')->setColumns(2);
-        $this->addBlockButton(__('Delete'), 'garbage.png', '', 'deleteButton');
+        $this->addBlockButton('delete', __('Delete'), 'garbage.png');
 
         $this->settings = array(
-            'deleteConfirm' => __('Are you sure you want to delete this record?'),
+            'placeholder' => __('Blocks will appear here...'),
+            'deleteMessage' => __('Are you sure you want to delete this record?'),
+            'currentBlocks' => array(),
         );
+    }
+
+    /**
+     * Set a predefined layout using OutputableInterface which will be cloned for each new block.
+     * TODO: add fromAjax option for loading in templates dynamically?
+     * @param OutputableInterface $block
+     * @return void
+     */
+    public function fromTemplate(OutputableInterface $block)
+    {
+        $this->blockTemplate = $block->setClass('blank fullWidth');
+        return $this;
     }
 
     /**
@@ -77,7 +84,7 @@ class CustomBlocks implements OutputableInterface
      */
     public function placeholder($value)
     {
-        $this->placeholder = $value;
+        $this->settings['placeholder'] = $value;
         return $this;
     }
 
@@ -111,35 +118,52 @@ class CustomBlocks implements OutputableInterface
      * @param  string  $function
      * @return self
      */
-    public function addBlockButton($name, $icon, $function = '', $class = '')
+    public function addBlockButton($name, $title, $icon, $class = '')
     {
-        $iconSrc = stripos($icon, '/') === false? './themes/'.$this->session->get("gibbonThemeName").'/img/'.$icon : $icon;
-        $button = $this->factory->createWebLink('<img title="'.$name.'" src="'.$iconSrc.'" style="margin-right:4px;" />')
+        $iconImg = '<img title=%1$s src="%2$s" style="margin-right:4px;" />';
+        $iconPath = './themes/'.$this->session->get("gibbonThemeName").'/img/';
+        $iconSrc = stripos($icon, '/') === false? $iconPath.$icon : $icon;
+        
+        $button = $this->factory->createWebLink(sprintf($iconImg, $title, $iconSrc))
             ->setURL('#')
             ->addClass('blockButton');
 
-        if (!empty($function)) $button->addData('function', $function);
+        if (!empty($name)) $button->addData('event', $name."Clicked");
         if (!empty($class)) $button->addClass($class);
+
+        if ($name == 'showHide') {
+            $button->addData('on', $iconPath.'minus.png');
+            $button->addData('off', $iconPath.'plus.png');
+        }
 
         $this->blockButtons->addCell()->addElement($button);
         return $this;
     }
 
     /**
-     * Adds a predefined block.
-     * @param  OutputableInterface  $block
+     * Adds a block from an array of data.
+     * @param  string  $id
+     * @param  array   $data
      * @return self
      */
-    public function addBlock($id, OutputableInterface $block)
+    public function addBlock($id, array $data = array())
     {
-        $this->blocks[$id] = $block;
+        $this->settings['currentBlocks'][$id] = $data;
 
         return $this;
     }
 
-    public function getClass()
+    /**
+     * Add a set of data that a new block can be created from via identifier.
+     * @param string  $id
+     * @param array   $data
+     * @return self
+     */
+    public function addPredefinedBlock($id, array $data = array())
     {
-        return '';
+        $this->settings['predefinedBlocks'][$id] = $data;
+
+        return $this;
     }
 
     /**
@@ -162,29 +186,17 @@ class CustomBlocks implements OutputableInterface
         $output .= '<div class="customBlocks" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            $output .= '<div class="blockPlaceholder '.(count($this->blocks) > 0 ? 'displayNone' : '').'" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->placeholder.'</div>';
+            $output .= '<div class="blockPlaceholder '.(count($this->settings['currentBlocks']) > 0 ? 'displayNone' : '').'" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->settings['placeholder'].'</div>';
 
             $output .= '<div class="blockTemplate displayNone hiddenReveal" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
                 $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
-                $output .= $this->blockTemplate->getOutput();
+                $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 
                 $output .= '<div class="blockSidebar" style="float:right; width: 8%; ">';
                     $output .= $this->blockButtons->getOutput();
                 $output .= '</div>';
             $output .= '</div>';
-
-            foreach ($this->blocks as $id => $block) {
-                $output .= '<div class="blockPrefab hiddenReveal" data-identifier="'.$id.'" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
-                    $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
-                        $output .= $block->getOutput();
-                    $output .= '</div>';
-
-                    $output .= '<div class="blockSidebar" style="float:right; width: 8%; ">';
-                        $output .= $this->blockButtons->getOutput();
-                    $output .= '</div>';
-                $output .= '</div>';
-            }
             
             $output .= $this->toolsTable->getOutput();
         $output .= '</div>';
@@ -196,5 +208,34 @@ class CustomBlocks implements OutputableInterface
         </script>';
 
         return $output;
+    }
+
+    /**
+     * Adds the validation settings for each input as JSON data attributes so they can be added dynamically for each block.
+     * @param  OutputableInterface $template
+     * @return string 
+     */
+    protected function getTemplateOutput(OutputableInterface $template)
+    {
+        // Trigger the output before adding validations: some Inputs add these on getOutput();
+        $output = 
+
+        // Look for and jsonify the validations recursivly
+        $addValidation = function($element) use (&$addValidation) {
+            if (method_exists($element, 'getElements')) {
+                foreach ($element->getElements() as $innerElement) {
+                    $addValidation($innerElement);
+                }
+            }
+
+            if ($element instanceof Input && $element->hasValidation()) {
+                $elementOutput = $element->getOutput();
+                $element->addData('validation', $element->getValidationAsJSON());
+            }
+        };
+
+        $addValidation($template);
+
+        return $template->getOutput();
     }
 }
