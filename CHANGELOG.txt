@@ -19,7 +19,7 @@ CHANGELOG
 v16.0.00
 --------
 	Headlines
-		Activated Simplified Chinese as an available language
+		Activated Simplified Chinese and Polish as available languages
 
 	Significant Changes
 
