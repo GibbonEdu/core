@@ -83,8 +83,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($linkParams)."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
             }
-
-            $linkParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
         
             $form = Form::create('invoice', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_editProcess.php?'.http_build_query($linkParams));
             $form->setFactory(FinanceFormFactory::create($pdo));
@@ -111,15 +109,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                     $row->addLabel('billingScheduleName', __('Billing Schedule'));
                     $row->addTextField('billingScheduleName')->isRequired()->readonly();
             } else {
-
                 if ($values['status'] == 'Pending' || $values['status'] == 'Issued') {
                     $row = $form->addRow();
                         $row->addLabel('invoiceDueDate', __('Invoice Due Date'));
                         $row->addDate('invoiceDueDate')->isRequired();
                 } else {
                     $row = $form->addRow();
-                        $row->addLabel('invoiceDueDateLabel', __('Invoice Due Date'));
-                        $row->addTextField('invoiceDueDateLabel')->isRequired()->readonly()->setValue(dateConvertBack($guid, $values['invoiceDueDate']));
+                        $row->addLabel('invoiceDueDate', __('Invoice Due Date'));
+                        $row->addDate('invoiceDueDate')->isRequired()->readonly();
                 }
             }
 
@@ -153,16 +150,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paidAmount', __('Amount Paid'))->description(__('Amount in current payment.'));
-                    $row->addCurrency('paidAmount')->maxLength(14)->isRequired()->setValue(number_format($remainingFee, 2));
+                    $row->addCurrency('paidAmount')->maxLength(14)->isRequired()->setValue(number_format($remainingFee, 2, '.', ''));
+
+                unset($values['paidDate']);
+                unset($values['paidAmount']);
             }
 
             $row = $form->addRow();
                 $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
                 $row->addTextArea('notes')->setRows(5);
 
+            // FEES
             $form->addRow()->addHeading(__('Fees'));
 
-            // GET FEES
             // Ad Hoc OR Issued (Fixed Fees)
             $dataFees = array('gibbonFinanceInvoiceID' => $values['gibbonFinanceInvoiceID']);
             $sqlFees = "SELECT gibbonFinanceInvoiceFee.gibbonFinanceInvoiceFeeID, gibbonFinanceInvoiceFee.feeType, gibbonFinanceFeeCategory.name AS category, gibbonFinanceInvoiceFee.name AS name, gibbonFinanceInvoiceFee.fee, gibbonFinanceInvoiceFee.description AS description, NULL AS gibbonFinanceFeeID, gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID AS gibbonFinanceFeeCategoryID, sequenceNumber FROM gibbonFinanceInvoiceFee JOIN gibbonFinanceFeeCategory ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=gibbonFinanceFeeCategory.gibbonFinanceFeeCategoryID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
@@ -269,28 +269,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 $form->addRow()->addHeading(__('Email Receipt'))->addClass('emailReceipts');
 
                 $row = $form->addRow()->addClass('emailReceipts');
-                    $row->addYesNoRadio('emailReceipt')->checked($values['status'] == 'Issued'? 'Y' : 'N');
+                    $row->addYesNoRadio('emailReceipt')->checked('Y');
 
                 $form->toggleVisibilityByClass('emailReceiptsTable')->onRadio('emailReceipt')->when(array('Y'));
-
-                $row = $form->addRow()->addClass('emailReceipts emailReceiptsTable');
 
                 $email = getSettingByScope($connection2, 'Finance', 'email');
                 $form->addHiddenValue('email', $email);
                 if (empty($email)) {
+                    $row = $form->addRow()->addClass('emailReceipts emailReceiptsTable');
                     $row->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
                 } else {
-                    if ($values['invoiceTo'] == 'Company') {
-                        // EMAIL COMPANY
-                        if (empty($values['companyEmail']) || empty($values['companyContact']) || empty($values['companyName'])) {
-                            $row->addAlert(__('There is no company contact available to send this invoice to.'), 'warning');
-                        } else {
-                            $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
-                        }
-                    } else {
-                        // EMAIL FAMILY
-                        $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
-                    }
+                    $row = $form->addRow()->addClass('emailReceipts emailReceiptsTable');
+                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
                 }
             }
 
@@ -301,28 +291,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 $form->addRow()->addHeading(sprintf(__('Email Reminder %1$s'), ($values['reminderCount'])+1))->addClass('emailReminders');
 
                 $row = $form->addRow()->addClass('emailReminders');
-                    $row->addYesNoRadio('emailReminder')->checked($values['status'] == 'Issued'? 'Y' : 'N');
+                    $row->addYesNoRadio('emailReminder')->checked('Y');
 
                 $form->toggleVisibilityByClass('emailRemindersTable')->onRadio('emailReminder')->when(array('Y'));
-
-                $row = $form->addRow()->addClass('emailReminders emailRemindersTable');
 
                 $email = getSettingByScope($connection2, 'Finance', 'email');
                 $form->addHiddenValue('email', $email);
                 if (empty($email)) {
+                    $row = $form->addRow()->addClass('emailReminders emailRemindersTable');
                     $row->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
                 } else {
-                    if ($values['invoiceTo'] == 'Company') {
-                        // EMAIL COMPANY
-                        if (empty($values['companyEmail']) || empty($values['companyContact']) || empty($values['companyName'])) {
-                            $row->addAlert(__('There is no company contact available to send this invoice to.'), 'warning');
-                        } else {
-                            $row->addInvoiceEmailCheckboxes('emails2[]', 'names[]', $values, $gibbon->session);
-                        }
-                    } else {
-                        // EMAIL FAMILY
-                        $row->addInvoiceEmailCheckboxes('emails2[]', 'names[]', $values, $gibbon->session);
-                    }
+                    $row = $form->addRow()->addClass('emailReminders emailRemindersTable');
+                    $row->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
                 }
             }
 

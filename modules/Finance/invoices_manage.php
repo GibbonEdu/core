@@ -126,11 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceBillingScheduleID', __('Billing Schedule'));
-            $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)->selected($gibbonFinanceBillingScheduleID);
+            $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)
+                ->fromArray(array('Ad Hoc' => __('Ad Hoc')))
+                ->selected($gibbonFinanceBillingScheduleID);
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceFeeCategoryID', __('Fee Category'));
-            $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->selected($gibbonFinanceFeeCategoryID);
+            $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder()->selected($gibbonFinanceFeeCategoryID);
         
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
@@ -341,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 if (!is_null($totalFee)) {
                     $fee = $row->addContent(number_format($totalFee, 2, '.', ','));
                     if (!empty($invoice['paidAmount'])) {
-                        $fee->setClass($invoice['paidAmount'] != $totalFee ? 'textOverBudget' : '')
+                        $fee->setClass(number_format($invoice['paidAmount']) != number_format($totalFee)? 'textOverBudget' : '')
                             ->append('<br/><span class="small emphasis">'.number_format($invoice['paidAmount'], 2, '.', ',').'</span>');
                     }
                 } else {

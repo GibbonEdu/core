@@ -109,7 +109,7 @@ class FinanceFormFactory extends DatabaseFormFactory
             );
         }
 
-        return $this->createSelect($name)->fromArray($statuses)->placeholder();
+        return $this->createSelect($name)->fromArray($statuses);
     }
 
     public function createSelectBillingSchedule($name, $gibbonSchoolYearID)
@@ -118,7 +118,7 @@ class FinanceFormFactory extends DatabaseFormFactory
         $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule 
                 WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 
-        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data)->fromArray(array('Ad Hoc' => __('Ad Hoc')))->placeholder();
+        return $this->createSelect($name)->fromQuery($this->pdo, $sql, $data)->placeholder();
     }
 
     public function createSelectFee($name, $gibbonSchoolYearID)
@@ -174,12 +174,16 @@ class FinanceFormFactory extends DatabaseFormFactory
 
         // Company Emails
         if ($values['invoiceTo'] == 'Company') {
-            $row = $table->addRow();
-                $row->addLabel($checkboxName, $values['companyContact'])->description($values['companyName']);
-                $row->addCheckbox($checkboxName)
-                    ->description($values['companyEmail'])
-                    ->setValue($values['companyEmail'])
-                    ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$values['companyContact'].'">');
+            if (empty($values['companyEmail']) || empty($values['companyContact']) || empty($values['companyName'])) {
+                $table->addRow()->addTableCell(__('There is no company contact available to send this invoice to.'))->colSpan(2)->wrap('<div class="warning">', '</div>');
+            } else {
+                $row = $table->addRow();
+                    $row->addLabel($checkboxName, $values['companyContact'])->description($values['companyName']);
+                    $row->addCheckbox($checkboxName)
+                        ->description($values['companyEmail'])
+                        ->setValue($values['companyEmail'])
+                        ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$values['companyContact'].'">');
+            }
         }
 
         // Family Emails
@@ -200,17 +204,22 @@ class FinanceFormFactory extends DatabaseFormFactory
             $result = $this->pdo->executeQuery($data, $sql);
 
             if ($result->rowCount() == 0) {
-                $table->addRow()->addAlert(__('There are no family members available to send this receipt to.'), 'warning');
+                $table->addRow()->addTableCell(__('There are no family members available to send this receipt to.'))->colSpan(2)->wrap('<div class="warning">', '</div>');
             } else {
                 while ($person = $result->fetch()) {
                     $name = formatName(htmlPrep($person['title']), htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Parent', false);
                     $row = $table->addRow();
                         $row->addLabel($checkboxName, $name)->description($values['invoiceTo'] == 'Company'? __('(Family CC)') : '')->description($person['relationship']);
-                        $row->addCheckbox($checkboxName)
+                        $row->if(!empty($person['email']))
+                            ->addCheckbox($checkboxName)
                             ->description($person['email'])
                             ->setValue($person['email'])
                             ->checked($person['email'])
                             ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$name.'">');
+                        $row->if(empty($person['email']))
+                            ->addContent(__('No email address.'))
+                            ->addClass('right')
+                            ->wrap('<span class="small emphasis">', '</span>');
                 }
             }
         }
