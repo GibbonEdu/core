@@ -181,7 +181,6 @@ CustomBlocks.prototype.init = function() {
         })
         .on('hideAll', function(event, block, button) {
             $('.showHide').hide();
-            $(".blocks .blockTemplate").css('height', '80px');
             $('a.blockButton[data-event="showHide"]').each(function(index, element){
                 $(element).removeClass('showHidden');
                 $('img', element).prop('src', $(element).data('off'));

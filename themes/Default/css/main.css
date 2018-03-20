@@ -1575,6 +1575,10 @@ table.smallIntBorder td.noPadding {
     margin: 0 0 5px;
 }
 
+.blockTemplate.ui-sortable-helper {
+	max-height: 80px !important;
+}
+
 .blockSidebar {
     width: 8%;
 }
