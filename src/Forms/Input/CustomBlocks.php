@@ -174,28 +174,29 @@ class CustomBlocks implements OutputableInterface
     {
         $output = '';
 
-        $output .= '<style>
-                #' . $this->name . ' { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-                #' . $this->name . ' div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-                div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-                #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
-                .' . $this->name . '-ui-state-highlight { margin-bottom: 5px; min-height: 58px; line-height: 1.2em; width: 100%; }
-                .' . $this->name . '-ui-state-highlight {border: 1px solid #fcd3a1; background: #fbf8ee url(images/ui-bg_glass_55_fbf8ee_1x400.png) 50% 50% repeat-x; color: #444444; }
-            </style>';
+        // $output .= '<style>
+        //         #' . $this->name . ' { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+        //         #' . $this->name . ' div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+        //         div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
+        //         #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
+        //     </style>';
 
-        $output .= '<div class="customBlocks" id="' . $this->name. '" style="width: 100%; padding: 5px 0px 0px 0px; min-height: 66px">';
+        $output .= '<div class="customBlocks" id="' . $this->name. '">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            $output .= '<div class="blockPlaceholder '.(count($this->settings['currentBlocks']) > 0 ? 'displayNone' : '').'" style="color: #ddd; font-size: 230%; padding: 15px 0 15px 6px">'.$this->settings['placeholder'].'</div>';
-
-            $output .= '<div class="blockTemplate displayNone hiddenReveal" style="overflow:hidden; border: 1px solid #d8dcdf; margin: 0 0 5px">';
-                $output .= '<div class="blockInputs" style="float:left; width:92%; padding: 5px; box-sizing: border-box;">';
+            $output .= '<div class="blockPlaceholder '.(count($this->settings['currentBlocks']) > 0 ? 'displayNone' : '').'">'.$this->settings['placeholder'].'</div>';
+   
+            $output .= '<div class="blockTemplate displayNone">';
+                $output .= '<div class="blockInputs floatLeft">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';
 
-                $output .= '<div class="blockSidebar" style="float:right; width: 8%; ">';
+                $output .= '<div class="blockSidebar floatRight">';
                     $output .= $this->blockButtons->getOutput();
                 $output .= '</div>';
+            $output .= '</div>';
+
+            $output .= '<div class="blocks">';
             $output .= '</div>';
             
             $output .= $this->toolsTable->getOutput();

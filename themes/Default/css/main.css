@@ -1432,11 +1432,11 @@ input[name*="phone"] ~ .LV_invalid {
 }
 
 .floatLeft {
-	float: left!important;
+	float: left;
 }
 
 .floatRight {
-	float: right!important;
+	float: right;
 }
 
 .floatNone {
@@ -1539,6 +1539,50 @@ table.smallIntBorder td.noPadding {
 
 .noBorder {
     border: 0!important; 
+}
+
+/* CUSTOM BLOCKS v16 */
+.customBlocks .sortHighlight {
+    margin-bottom: 5px; 
+    min-height: 80px; 
+    line-height: 1.2em; 
+    width: 100%;
+    border: 1px solid #fcd3a1; 
+    background: #fbf8ee;
+    color: #444444;
+}
+
+.customBlocks .sortHandle {
+    width: 2px;
+    height: 70px;
+    margin: 5px;
+    border-color: #c7dae9;
+    border-style: dotted;
+    border-width: 0px 3px 0px 3px;
+    cursor: move;
+}
+
+.blockPlaceholder {
+    color: #ddd;
+    font-size: 230%;
+    padding: 15px 0 15px 6px;
+}
+
+.blockTemplate {
+    overflow:hidden;
+    background: #EDF7FF;
+    border: 1px solid #d8dcdf;
+    margin: 0 0 5px;
+}
+
+.blockSidebar {
+    width: 8%;
+}
+
+.blockInputs {
+    width:88%;
+    padding: 5px;
+    box-sizing: border-box;
 }
 
 .blockInputs input, .blockInputs textarea, .blockInputs select {

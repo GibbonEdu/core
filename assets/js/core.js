@@ -113,7 +113,6 @@ CustomBlocks = (function(element, settings) {
     var _ = this;
 
     _.container = $(element);
-    _.tools = $('.inputTools', element);
     _.blockTemplate = $('.blockTemplate', element);
     _.blockCount = 0;
     _.validation = [];
@@ -125,6 +124,7 @@ CustomBlocks = (function(element, settings) {
         animationSpeed: 600,            // The speed for block animations
         currentBlocks: [],              // Blocks that should be initialized when creating is object
         predefinedBlocks: [],           // Data to add for new blocks if the identifier matches a key.
+        sortable: false,                // Enable jQuery-ui drag-drop sorting
     }
     _.settings = $.extend({}, _.defaults, settings);
 
@@ -170,6 +170,15 @@ CustomBlocks.prototype.init = function() {
             
         });
 
+    // Enable sortable
+    if (_.settings.sortable) {
+        $(".blocks", _.container).sortable({
+            placeholder: "sortHighlight",
+            handle: ".sortHandle",
+        });
+        $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
+    }
+
     _.refresh();
 };
 
@@ -178,8 +187,8 @@ CustomBlocks.prototype.addBlock = function(data = {}) {
 
     _.blockCount++;
 
-    var block = $(_.blockTemplate).clone().css("display", "block").insertBefore($(_.tools));
-    $(_.container).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+    var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
+    $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
 
     _.initBlock(block, data);
     _.refresh();
@@ -189,6 +198,8 @@ CustomBlocks.prototype.removeBlock = function(block) {
     var _ = this;
 
     _.blockCount--;
+
+    _.removeBlockValidation(block);
 
     $(block).fadeOut(_.settings.animationSpeed, function(){
         $(block).detach().remove();
@@ -225,6 +236,8 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
     var _ = this;
 
     $("input, textarea, select", block).each(function(index, element) {
+        if ($(this).prop("name") == 'order[]') return;
+
         var name;
         switch(_.settings.inputNameStrategy) {
             case 'object':  name = $(_.container).prop("id")+"["+block.blockNumber+"]["+$(this).prop("name")+"]"; break;
@@ -246,10 +259,22 @@ CustomBlocks.prototype.addBlockValidation = function(block) {
     
     $("input, textarea, select", block).each(function(index, element) {
         if ($(this).data('validation') && !$(this).prop('readonly')) {
-            var validate = new LiveValidation($(this).prop("id"), {});
+            var id = $(this).prop("id");
+            eval("block."+id+"Validate = new LiveValidation('"+id+"', {});");
             $(this).data('validation').forEach(function(item) {
-                eval("validate.add("+item.type+", {"+item.params+"});");
+                eval("block."+id+"Validate.add("+item.type+", {"+item.params+"});");
             });
+        }
+    });
+};
+
+CustomBlocks.prototype.removeBlockValidation = function(block) {
+    var _ = this;
+    
+    $("input, textarea, select", block).each(function(index, element) {
+        if ($(this).data('validation') && !$(this).prop('readonly')) {
+            var id = $(this).prop("id");
+            eval("block."+id+"Validate.destroy();");
         }
     });
 };

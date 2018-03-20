@@ -165,21 +165,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
                 
             $col = $blockTemplate->addRow()->addClass('showHide displayNone fullWidth')->addColumn();
                 $col->addLabel('description', __('Description'));
-                $col->addTextArea('description')->setRows(3)->setClass('fullWidth floatNone noMargin');
+                $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
 
         // Custom Blocks for Fees
         $row = $form->addRow();
             $customBlocks = $row->addCustomBlocks('feesBlock', $gibbon->session)
                 ->fromTemplate($blockTemplate)
-                ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change'))
+                ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change', 'sortable' => true))
                 ->placeholder(__('Fees will be listed here...'))
                 ->addToolInput($feeSelector)
                 ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
-        // Add predefined block data (for templating new blocks)
+        // Add predefined block data (for templating new blocks, triggered with the feeSelector)
         $customBlocks->addPredefinedBlock('Ad Hoc Fee', array('feeType' => 'Ad Hoc', 'gibbonFinanceFeeID' => 0));
         foreach ($feeData as $gibbonFinanceFeeID => $data) {
-            $customBlocks->addPredefinedBlock($gibbonFinanceFeeID, $data + array('feeType' => 'Standard', 'readonly' => ['name', 'fee', 'gibbonFinanceFeeCategoryID']) );
+            $customBlocks->addPredefinedBlock($gibbonFinanceFeeID, $data + array('feeType' => 'Standard', 'readonly' => ['name', 'fee', 'description', 'gibbonFinanceFeeCategoryID']) );
         }
 
         $row = $form->addRow();
