@@ -145,6 +145,17 @@ CustomBlocks.prototype.init = function() {
         });
     });
 
+    // Enable sortable drag-drop
+    if (_.settings.sortable) {
+        $(".blocks", _.container).sortable({
+            placeholder: "sortHighlight",
+            handle: ".sortHandle",
+        }).bind('sortstart', function(event, ui) {
+            $(_.container).trigger('hideAll');
+        });
+        $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
+    }
+
     // Initialize existing blocks from JSON data
     for (var index in _.settings.currentBlocks) {
         _.addBlock(_.settings.currentBlocks[index]);
@@ -167,17 +178,15 @@ CustomBlocks.prototype.init = function() {
                 $('img', button).prop('src', $(button).data('on'));
                 block.find('.showHide').show();
             }
-            
+        })
+        .on('hideAll', function(event, block, button) {
+            $('.showHide').hide();
+            $(".blocks .blockTemplate").css('height', '80px');
+            $('a.blockButton[data-event="showHide"]').each(function(index, element){
+                $(element).removeClass('showHidden');
+                $('img', element).prop('src', $(element).data('off'));
+            });
         });
-
-    // Enable sortable
-    if (_.settings.sortable) {
-        $(".blocks", _.container).sortable({
-            placeholder: "sortHighlight",
-            handle: ".sortHandle",
-        });
-        $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
-    }
 
     _.refresh();
 };

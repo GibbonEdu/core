@@ -1432,11 +1432,11 @@ input[name*="phone"] ~ .LV_invalid {
 }
 
 .floatLeft {
-	float: left;
+	float: left!important;
 }
 
 .floatRight {
-	float: right;
+	float: right!important;
 }
 
 .floatNone {
