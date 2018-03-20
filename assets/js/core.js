@@ -152,12 +152,12 @@ CustomBlocks.prototype.init = function() {
 
     // Built-in Button Events
     $(_.container)
-        .on('deleteClicked', function(event, block) {
+        .on('delete', function(event, block) {
             if (confirm(_.settings.deleteMessage)) {
                 _.removeBlock(block);
             }
         })
-        .on('showHideClicked', function(event, block, button) {
+        .on('showHide', function(event, block, button) {
             if ($(button).hasClass('showHidden')) {
                 $(button).removeClass('showHidden');
                 $('img', button).prop('src', $(button).data('off'));

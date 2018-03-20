@@ -100,7 +100,7 @@ class CustomBlocks implements OutputableInterface
     }
 
     /**
-     * Adds the given input into the tool bar.
+     * Adds the given input into the tool bar at the bottom.
      * @param  OutputableInterface  $value
      * @return self
      */
@@ -111,8 +111,8 @@ class CustomBlocks implements OutputableInterface
     }
 
     /**
-     * Adds the given button to each block. 
-     * Note: $function must be the name of the function (i.e. "func" not "func()"). The function must only take in one input (the id of the block).
+     * Adds the given button to the sidebar of each block.
+     * Note: The name of the button is triggered as an event on the Block element when clicked, as function(event, block, button)
      * @param  string  $name
      * @param  string  $icon
      * @param  string  $function
@@ -120,15 +120,14 @@ class CustomBlocks implements OutputableInterface
      */
     public function addBlockButton($name, $title, $icon, $class = '')
     {
-        $iconImg = '<img title=%1$s src="%2$s" style="margin-right:4px;" />';
         $iconPath = './themes/'.$this->session->get("gibbonThemeName").'/img/';
         $iconSrc = stripos($icon, '/') === false? $iconPath.$icon : $icon;
         
-        $button = $this->factory->createWebLink(sprintf($iconImg, $title, $iconSrc))
+        $button = $this->factory->createWebLink(sprintf('<img title=%1$s src="%2$s" style="margin-right:4px;" />', $title, $iconSrc))
             ->setURL('#')
             ->addClass('blockButton');
 
-        if (!empty($name)) $button->addData('event', $name."Clicked");
+        if (!empty($name)) $button->addData('event', $name);
         if (!empty($class)) $button->addClass($class);
 
         if ($name == 'showHide') {
@@ -154,7 +153,7 @@ class CustomBlocks implements OutputableInterface
     }
 
     /**
-     * Add a set of data that a new block can be created from via identifier.
+     * Add a set of data that a new block can be created from via an identifier + add block trigger.
      * @param string  $id
      * @param array   $data
      * @return self
@@ -173,13 +172,6 @@ class CustomBlocks implements OutputableInterface
     public function getOutput()
     {
         $output = '';
-
-        // $output .= '<style>
-        //         #' . $this->name . ' { list-style-type: none; margin: 0; padding: 0; width: 100%; }
-        //         #' . $this->name . ' div.ui-state-default { margin: 0 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-        //         div.ui-state-default_dud { margin: 5px 0px 5px 0px; padding: 5px; font-size: 100%; min-height: 58px; }
-        //         #' . $this->name . ' li { min-height: 58px; line-height: 1.2em; }
-        //     </style>';
 
         $output .= '<div class="customBlocks" id="' . $this->name. '">';
 
@@ -218,10 +210,7 @@ class CustomBlocks implements OutputableInterface
      */
     protected function getTemplateOutput(OutputableInterface $template)
     {
-        // Trigger the output before adding validations: some Inputs add these on getOutput();
-        $output = 
-
-        // Look for and jsonify the validations recursivly
+        // Look for and jsonify all nested validations recursivly
         $addValidation = function($element) use (&$addValidation) {
             if (method_exists($element, 'getElements')) {
                 foreach ($element->getElements() as $innerElement) {
@@ -230,6 +219,7 @@ class CustomBlocks implements OutputableInterface
             }
 
             if ($element instanceof Input && $element->hasValidation()) {
+                // Trigger the output before getting validations: some Inputs add these on getOutput();
                 $elementOutput = $element->getOutput();
                 $element->addData('validation', $element->getValidationAsJSON());
             }
