@@ -114,6 +114,7 @@ class CustomBlocks implements OutputableInterface
      * Adds the given button to the sidebar of each block.
      * Note: The name of the button is triggered as an event on the Block element when clicked, as function(event, block, button)
      * @param  string  $name
+     * @param  string  $title
      * @param  string  $icon
      * @param  string  $function
      * @return self
@@ -176,9 +177,9 @@ class CustomBlocks implements OutputableInterface
         $output .= '<div class="customBlocks" id="' . $this->name. '">';
 
             $output .= '<input type="hidden" class="blockCount" name="'.$this->name.'Count" value="0" />';
-            $output .= '<div class="blockPlaceholder '.(count($this->settings['currentBlocks']) > 0 ? 'displayNone' : '').'">'.$this->settings['placeholder'].'</div>';
+            $output .= '<div class="blockPlaceholder" style="'.(count($this->settings['currentBlocks']) > 0 ? 'display: none;' : '').'">'.$this->settings['placeholder'].'</div>';
    
-            $output .= '<div class="blockTemplate displayNone">';
+            $output .= '<div class="blockTemplate" style="display: none;">';
                 $output .= '<div class="blockInputs floatLeft">';
                 $output .= $this->getTemplateOutput($this->blockTemplate);
                 $output .= '</div>';

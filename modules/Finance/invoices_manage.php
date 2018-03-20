@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Finance\Forms\FinanceFormFactory;
 
 //Module includes
 include './modules/Finance/moduleFunctions.php';
@@ -106,70 +107,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo '</h3>';
 
         $form = Form::create('manageInvoices', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setFactory(FinanceFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/Finance/invoices_manage.php');
 
-        $statuses = array(
-            '%' => __('All'),
-            'Pending' => __('Pending'),
-            'Issued' => __('Issued'),
-            'Issued - Overdue' => __('Issued - Overdue'),
-            'Paid' => __('Paid'),
-            'Paid - Partial' => __('Paid - Partial'),
-            'Paid - Late' => __('Paid - Late'),
-            'Cancelled' => __('Cancelled'),
-            'Refunded' => __('Refunded'),
-        );
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelect('status')->fromArray($statuses)->selected($status);
-
-        $sql = "SELECT surname, preferredName, gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY surname, preferredName";
-        $result = $pdo->executeQuery(array(), $sql);
-
-        $students = $result->rowCount() > 0? $result->fetchAll() : array();
-        $students = array_reduce($students, function($group, $item){
-            $group[$item['gibbonFinanceInvoiceeID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true);
-            return $group;
-        }, array());
+            $row->addSelectInvoiceStatus('status')->selected($status, 'All');
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeID', __('Student'));
-            $row->addSelect('gibbonFinanceInvoiceeID')
-                ->fromArray($students)
-                ->placeholder()
-                ->selected($gibbonFinanceInvoiceeID);
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeID')->selected($gibbonFinanceInvoiceeID);
 
-        $months = array_reduce(range(1,12), function($group, $item){
-            $month = date('m', mktime(0, 0, 0, $item, 1, 0));
-            $group[$month] = $month.' - '.date('F', mktime(0, 0, 0, $item, 1, 0));
-            return $group;
-        }, array());
         $row = $form->addRow();
             $row->addLabel('monthOfIssue', __('Month of Issue'));
-            $row->addSelect('monthOfIssue')
-                ->fromArray($months)
-                ->placeholder()
-                ->selected($monthOfIssue);
+            $row->addSelectMonth('monthOfIssue')->selected($monthOfIssue);
 
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFinanceBillingScheduleID as value, name FROM gibbonFinanceBillingSchedule WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceBillingScheduleID', __('Billing Schedule'));
-            $row->addSelect('gibbonFinanceBillingScheduleID')
-                ->fromQuery($pdo, $sql, $data)
-                ->fromArray(array('Ad Hoc' => __('Ad Hoc')))
-                ->placeholder()
-                ->selected($gibbonFinanceBillingScheduleID);
+            $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)->selected($gibbonFinanceBillingScheduleID);
 
-        $sql = "SELECT gibbonFinanceFeeCategoryID as value, name FROM gibbonFinanceFeeCategory ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceFeeCategoryID', __('Fee Category'));
-            $row->addSelect('gibbonFinanceFeeCategoryID')
-                ->fromQuery($pdo, $sql)
-                ->placeholder()
-                ->selected($gibbonFinanceFeeCategoryID);
+            $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->selected($gibbonFinanceFeeCategoryID);
         
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));

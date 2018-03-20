@@ -379,34 +379,6 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectFinanceInvoicee($name, $gibbonSchoolYearID, $params = array())
-    {
-        $values = array();
-
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
-                FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee
-                WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
-                AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
-                AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID 
-                AND status='FULL' 
-                AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
-                ORDER BY rollGroupName, surname, preferredName";
-
-        $results = $this->pdo->executeQuery($data, $sql);
-
-        $byRollGroup = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($student = $results->fetch()) {
-                $byRollGroup[$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.formatName('', $student['preferredName'], $student['surname'], 'Student', true);
-            }
-        }
-
-        $values[__('All Enrolled Students by Roll Group')] = $byRollGroup;
-                
-        return $this->createSelect($name)->fromArray($values);
-    }
-
     public function createSelectGradeScale($name)
     {
         $sql = "SELECT gibbonScaleID as value, name FROM gibbonScale WHERE (active='Y') ORDER BY name";
