@@ -198,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                         ->isRequired()
                         ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
                     
-                $col = $blockTemplate->addRow()->addClass('showHide displayNone fullWidth')->addColumn();
+                $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
                     $col->addLabel('description', __('Description'));
                     $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
 

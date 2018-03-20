@@ -156,6 +156,8 @@ CustomBlocks.prototype.init = function() {
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
+    $('.showHide', _.blockTemplate).hide();
+
     // Initialize existing blocks from JSON data
     for (var index in _.settings.currentBlocks) {
         _.addBlock(_.settings.currentBlocks[index]);
