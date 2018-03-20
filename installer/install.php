@@ -208,6 +208,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     'es_ES' => 'Español',
                                     'fr_FR' => 'Français - France',
                                     'it_IT' => 'Italiano - Italia',
+                                    'pl_PL' => 'Język polski - Polska',
                                     'pt_BR' => 'Português - Brasil',
                                     'ro_RO' => 'Română',
                                     'sq_AL' => 'Shqip - Shqipëri',
