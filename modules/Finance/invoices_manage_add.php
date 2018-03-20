@@ -117,6 +117,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ad
 
         $form->addRow()->addHeading(__('Fees'));
 
+        // CUSTOM BLOCKS
+        
         // Fee selector
         $feeSelector = $form->getFactory()->createSelectFee('addNewFee', $gibbonSchoolYearID)->addClass('addBlock');
 

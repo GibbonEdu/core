@@ -168,8 +168,64 @@ class FinanceFormFactory extends DatabaseFormFactory
         return $this->createSelect($name)->fromArray($months)->placeholder();
     }
 
-    public function createRowEmail($name)
+    public function createInvoiceEmailCheckboxes($checkboxName, $hiddenValueName, $values, $session) 
     {
-        return $this->createRow();
+        $table = $this->createTable()->setClass('fullWidth');
+
+        // Company Emails
+        if ($values['invoiceTo'] == 'Company') {
+            $row = $table->addRow();
+                $row->addLabel($checkboxName, $values['companyContact'])->description($values['companyName']);
+                $row->addCheckbox($checkboxName)
+                    ->description($values['companyEmail'])
+                    ->setValue($values['companyEmail'])
+                    ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$values['companyContact'].'">');
+        }
+
+        // Family Emails
+        if ($values['invoiceTo'] == 'Family' || ($values['invoiceTo'] == 'Company' && $values['companyCCFamily'] == 'Y')) {
+            $data = array('gibbonFinanceInvoiceeID' => $values['gibbonFinanceInvoiceeID']);
+            $sql = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, gibbonFamilyRelationship.relationship
+                    FROM gibbonFinanceInvoicee 
+                    JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) 
+                    JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) 
+                    JOIN gibbonFamilyAdult ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) 
+                    JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) 
+                    LEFT JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID && gibbonFamilyRelationship.gibbonPersonID1=parent.gibbonPersonID && gibbonFamilyRelationship.gibbonPersonID2=student.gibbonPersonID)
+                    WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID 
+                    AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) 
+                    GROUP BY parent.gibbonPersonID
+                    ORDER BY contactPriority, surname, preferredName";
+
+            $result = $this->pdo->executeQuery($data, $sql);
+
+            if ($result->rowCount() == 0) {
+                $table->addRow()->addAlert(__('There are no family members available to send this receipt to.'), 'warning');
+            } else {
+                while ($person = $result->fetch()) {
+                    $name = formatName(htmlPrep($person['title']), htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Parent', false);
+                    $row = $table->addRow();
+                        $row->addLabel($checkboxName, $name)->description($values['invoiceTo'] == 'Company'? __('(Family CC)') : '')->description($person['relationship']);
+                        $row->addCheckbox($checkboxName)
+                            ->description($person['email'])
+                            ->setValue($person['email'])
+                            ->checked($person['email'])
+                            ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$name.'">');
+                }
+            }
+        }
+
+        // CC Self
+        if (!empty($session->get('email'))) {
+            $name = formatName('', htmlPrep($session->get('preferredName')), htmlPrep($session->get('surname')), 'Parent', false);
+            $row = $table->addRow()->addClass('emailReceiptSection');
+                $row->addLabel($checkboxName, $name)->description(__('(CC Self?)'));
+                $row->addCheckbox($checkboxName)
+                    ->description($session->get('email'))
+                    ->setValue($session->get('email'))
+                    ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$name.'">');
+        }
+
+        return $table;
     }
 }
