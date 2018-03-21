@@ -374,8 +374,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                         ->addWebLink('<img title="'.__('Preview Invoice').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
-                        ->addParams($linkParams)
-                        ->addParams('preview', 'true');
+                        ->addParam('preview', 'true')
+                        ->addParams($linkParams);
 
                     $col->if($invoice['status'] != 'Pending')
                         ->addWebLink('<img title="'.__('Print Invoices, Receipts & Reminders').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
