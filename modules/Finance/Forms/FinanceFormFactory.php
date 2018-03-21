@@ -42,30 +42,48 @@ class FinanceFormFactory extends DatabaseFormFactory
     {
         $values = array();
 
-        $data = array();
-        $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
-                FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup, gibbonFinanceInvoicee
-                WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
-                AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID 
-                AND gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID";
-        
-        if (!empty($gibbonSchoolYearID)) {
-            $data['gibbonSchoolYearID'] = $gibbonSchoolYearID;
-            $sql .= " AND status='Full' AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
-        }
+        // Opt Groups
+        $byRollGroup = __('All Enrolled Students by Roll Group');
+        $byName = __('All Enrolled Students by Alphabet');
 
-        $sql .= " ORDER BY rollGroupName, surname, preferredName";
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonPerson.status='Full' 
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name, surname, preferredName";
 
         $results = $this->pdo->executeQuery($data, $sql);
+        $students = ($results->rowCount() > 0)? $results->fetchAll() : array();
 
-        $byRollGroup = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($student = $results->fetch()) {
-                $byRollGroup[$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.formatName('', $student['preferredName'], $student['surname'], 'Student', true);
-            }
+        // Add students by Roll Group and Name
+        foreach ($students as $student) {
+            $fullName = formatName('', $student['preferredName'], $student['surname'], 'Student', true);
+
+            $values[$byRollGroup][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
+            $values[$byName][$student['gibbonFinanceInvoiceeID']] = $fullName.' - '.$student['rollGroupName'];
         }
 
-        $values[__('All Enrolled Students by Roll Group')] = $byRollGroup;
+        // Sort the byName list so it's not byRollGroup
+        asort($values[$byName]);
+
+        // Add students by Day Type (optionally)
+        $dayTypeOptions = getSettingByScope($this->pdo->getConnection(), 'User Admin', 'dayTypeOptions');
+        if (!empty($dayTypeOptions)) {
+            $dayTypes = explode(',', $dayTypeOptions);
+
+            foreach ($students as $student) {
+                if (empty($student['dayType']) || !in_array($student['dayType'], $dayTypes)) continue;
+
+                $byDayType = $student['dayType'].' '.__('Students by Roll Groups');
+                $fullName = formatName('', $student['preferredName'], $student['surname'], 'Student', true);
+    
+                $values[$byDayType][$student['gibbonFinanceInvoiceeID']] = $student['rollGroupName'].' - '.$fullName;
+            }
+        }
                 
         return $this->createSelect($name)->fromArray($values)->placeholder();
     }
