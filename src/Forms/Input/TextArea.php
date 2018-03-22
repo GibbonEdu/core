@@ -53,6 +53,18 @@ class TextArea extends Input
     }
 
     /**
+     * Set the textarea cols attribute to control the width of the input box.
+     * @param  int  $count
+     * @return self
+     */
+    public function setCols($count)
+    {
+        $this->setAttribute('cols', $count);
+
+        return $this;
+    }
+
+    /**
      * Set a max character count for this textarea.
      * @param   string  $value
      * @return  self
