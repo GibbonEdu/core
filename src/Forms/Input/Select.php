@@ -190,7 +190,7 @@ class Select extends Input
 
         if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
             // Add a placeholder only if the first option is not already blank
-            if (count($this->getOptions()) == 0 || key($this->getOptions()) != '') {
+            if (count($this->getOptions()) == 0 || key($this->getOptions()) !== '') {
                 $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
             }
 
