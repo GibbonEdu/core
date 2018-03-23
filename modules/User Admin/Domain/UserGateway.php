@@ -21,35 +21,33 @@ namespace Gibbon\UserAdmin\Domain;
 
 use Gibbon\sqlConnection;
 use Gibbon\Domain\Gateway;
-use Gibbon\Domain\ResultFilters;
-use Gibbon\Domain\ResultSet;
 
 /**
- * Person Gateway
+ * User Gateway
  *
  * Provides a data access layer for the gibbonSchoolYear table
  *
  * @version v16
  * @since   v16
  */
-class PersonGateway extends Gateway
+class UserGateway extends Gateway
 {
-    public function getUsersResultSet(ResultFilters $filters)
+    protected static $tableName = 'gibbonPerson';
+
+    public function queryAllUsers($filters)
     {
-        $data = array();
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.username, 
                 gibbonPerson.image_240, gibbonPerson.status, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonRole.name as primaryRole 
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
-        $sql = $this->applyFilters($sql, $filters);
 
-        $result = $this->pdo->executeQuery($data, $sql);
-
-        return ResultSet::createFromResults($filters, $result, $this->countAll());
+        return $this->doFilteredSelect($filters, $sql);
     }
 
-    public function countAll()
+    public function getUser($gibbonPersonID)
     {
-        return $this->pdo->executeQuery(array(), "SELECT COUNT(*) FROM gibbonPerson")->fetchColumn(0);
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
+        return $this->doGet($sql, $data);
     }
 }

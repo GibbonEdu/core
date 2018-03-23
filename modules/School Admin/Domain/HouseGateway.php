@@ -21,7 +21,7 @@ namespace Gibbon\SchoolAdmin\Domain;
 
 use Gibbon\sqlConnection;
 use Gibbon\Domain\Gateway;
-use Gibbon\Domain\ResultFilters;
+use Gibbon\Domain\QueryFilters;
 use Gibbon\Domain\ResultSet;
 
 /**
@@ -34,11 +34,13 @@ use Gibbon\Domain\ResultSet;
  */
 class HouseGateway extends Gateway
 {
-    public function getHouseList(ResultFilters $filters)
+    protected static $tableName = 'gibbonHouse';
+
+    public function getHouseList(QueryFilters $filters)
     {
         $data = array();
         $sql = "SELECT gibbonHouseID, name, nameShort, logo FROM gibbonHouse";
-        $sql = $this->applyFilters($sql, $filters);
+        $sql = $filters->applyFilters($sql);
 
         $result = $this->pdo->executeQuery($data, $sql);
 

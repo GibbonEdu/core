@@ -18,11 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\ResultFilters;
-use Gibbon\Domain\ResultSet;
+use Gibbon\Domain\QueryFilters;
 use Gibbon\Forms\Form;
 
-use Gibbon\UserAdmin\Domain\PersonGateway;
+use Gibbon\UserAdmin\Domain\UserGateway;
 
 if (!function_exists('isActionAccessible')) {
     require_once '../../gibbon.php';
@@ -83,8 +82,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $_POST['sort'] = !empty($_POST['sort'])? $_POST['sort'] : 'surname';
     
-    $gateway = new PersonGateway($pdo);
-    $resultSet = $gateway->getUsersResultSet(ResultFilters::createFromArray($_POST));
+    $gateway = new UserGateway($pdo);
+    $resultSet = $gateway->queryAllUsers(QueryFilters::createFromArray($_POST));
+
+
+    $user = $gateway->getUser(1);
+
+    echo '<pre>';
+    echo $user->officialName;
+    // print_r($user);
+    echo '</pre>';
 
     // $data = DataSet::createFromArray(array());
 
