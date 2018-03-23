@@ -351,39 +351,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                     ->append('<br/><span class="small emphasis">'.dateConvertBack($guid, $invoice['invoiceDueDate']).'</span>');
 
                 $col = $row->addColumn()->addClass('inline');
-                    $col->if($invoice['status'] != 'Cancelled' && $invoice['status'] != 'Refunded')
+                    $col->onlyIf($invoice['status'] != 'Cancelled' && $invoice['status'] != 'Refunded')
                         ->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_edit.php')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
                         ->addParams($linkParams);
 
-                    $col->if($invoice['status'] == 'Pending')
+                    $col->onlyIf($invoice['status'] == 'Pending')
                         ->addWebLink('<img title="'.__('Issue').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_right.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_issue.php')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
                         ->addParams($linkParams);
 
-                    $col->if($invoice['status'] == 'Pending')
+                    $col->onlyIf($invoice['status'] == 'Pending')
                         ->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_delete.php&width=650&height=135')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
                         ->addParams($linkParams)
                         ->addClass('thickbox');
 
-                    $col->if($invoice['status'] == 'Pending')
+                    $col->onlyIf($invoice['status'] == 'Pending')
                         ->addWebLink('<img title="'.__('Preview Invoice').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
                         ->addParam('preview', 'true')
                         ->addParams($linkParams);
 
-                    $col->if($invoice['status'] != 'Pending')
+                    $col->onlyIf($invoice['status'] != 'Pending')
                         ->addWebLink('<img title="'.__('Print Invoices, Receipts & Reminders').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
                         ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print.php')
                         ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
                         ->addParams($linkParams);
 
-                    $col->if(!empty($invoice['notes']))
+                    $col->onlyIf(!empty($invoice['notes']))
                         ->addWebLink('<img title="'.__('View Notes').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_down.png" style="margin-right:4px;"/>')
                         ->setURL('#')->onClick('return false;')->addClass('invoiceNotesView');
 

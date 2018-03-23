@@ -228,13 +228,13 @@ class FinanceFormFactory extends DatabaseFormFactory
                     $name = formatName(htmlPrep($person['title']), htmlPrep($person['preferredName']), htmlPrep($person['surname']), 'Parent', false);
                     $row = $table->addRow();
                         $row->addLabel($checkboxName, $name)->description($values['invoiceTo'] == 'Company'? __('(Family CC)') : '')->description($person['relationship']);
-                        $row->if(!empty($person['email']))
+                        $row->onlyIf(!empty($person['email']))
                             ->addCheckbox($checkboxName)
                             ->description($person['email'])
                             ->setValue($person['email'])
                             ->checked($person['email'])
                             ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$name.'">');
-                        $row->if(empty($person['email']))
+                        $row->onlyIf(empty($person['email']))
                             ->addContent(__('No email address.'))
                             ->addClass('right')
                             ->wrap('<span class="small emphasis">', '</span>');
