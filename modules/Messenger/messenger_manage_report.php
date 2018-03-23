@@ -186,12 +186,12 @@ else {
                                 $row->addContent(dateConvertBack($guid, substr($recipient['confirmedTimestamp'],0,10)).' '.substr($recipient['confirmedTimestamp'],11,5));
 
                                 if ($sender == true) {
-                                    $row->if($recipient['confirmed'] == 'N')
+                                    $row->onlyIf($recipient['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($recipient['gibbonMessengerReceiptID'])
                                         ->setClass('textCenter');
 
-                                    $row->if($recipient['confirmed'] != 'N')->addContent();
+                                    $row->onlyIf($recipient['confirmed'] != 'N')->addContent();
                                 }
 
                             if (is_null($recipient['key'])) $nonConfirm++;
@@ -299,7 +299,7 @@ else {
                                 $col = $row->addColumn();
                                     $col->addContent(!empty($studentName)? $studentName : __('N/A'));
                                     $col->addContent($confirmationIndicator($studentReceipt));
-                                    $col->if($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
+                                    $col->onlyIf($sender == true && !empty($studentReceipt) && $studentReceipt['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($studentReceipt['gibbonMessengerReceiptID'])
                                         ->setClass('');
@@ -308,7 +308,7 @@ else {
                                 $col = $row->addColumn();
                                     $col->addContent(!empty($recipient['parent1surname'])? $parent1Name : __('N/A'));
                                     $col->addContent($confirmationIndicator($parent1Receipt));
-                                    $col->if($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
+                                    $col->onlyIf($sender == true && !empty($parent1Receipt) && $parent1Receipt['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($parent1Receipt['gibbonMessengerReceiptID'])
                                         ->setClass('');
@@ -317,7 +317,7 @@ else {
                                 $col = $row->addColumn();
                                     $col->addContent(!empty($recipient['parent2surname'])? $parent2Name : __('N/A'));
                                     $col->addContent($confirmationIndicator($parent2Receipt));
-                                    $col->if($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'])
+                                    $col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'])
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($parent2Receipt['gibbonMessengerReceiptID'])
                                         ->setClass('');
