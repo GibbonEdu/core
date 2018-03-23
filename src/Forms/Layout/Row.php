@@ -85,7 +85,7 @@ class Row
      * @param bool $conditional
      * @return object OutputableInterface   
      */
-    public function if($conditional)
+    public function onlyIf($conditional)
     {
         return $conditional? $this : new NullElement();
     }
