@@ -20,7 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 use Gibbon\sqlConnection;
-use Gibbon\Domain\ResultFilters;
+use Gibbon\Domain\Model;
+use Gibbon\Domain\Result;
+use Gibbon\Domain\ResultSet;
+use Gibbon\Domain\QueryFilters;
 
 /**
  * Gateway
@@ -32,32 +35,87 @@ abstract class Gateway
 {
     protected $pdo;
 
+    protected static $tableName = 'gibbonPerson';
+    protected static $columns = array();
+
     public function __construct(sqlConnection $pdo)
     {
+        if (empty(static::$tableName)) {
+            throw new \Exception(get_called_class().' must define a $tableName');
+        }
+
         $this->pdo = $pdo;
+
+        $result = $this->doSelect("SELECT DISTINCT(column_name) FROM information_schema.columns WHERE table_name='".static::$tableName."'");
+        static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
+
+        echo '<pre>';
+        print_r(static::$columns);
+        echo '</pre>';            
     }
 
-    public function applyFilters($sql, ResultFilters $filters)
+    public function countAll()
     {
-        if (!empty($filters->orderBy)) {
-            $sql .= ' ORDER BY ';
+        return $this->doCount("SELECT COUNT(*) FROM `".static::$tableName."`");
+    }
 
-            $order = array();
-            foreach ($filters->orderBy as $column => $direction) {
-                $order[] =  $column.' '.$direction;
-            }
+    // DATA MANIPULATION
+    protected function doInsert($sql, $data = array())
+    {
+        $result = $this->pdo->executeQuery($data, $sql);
 
-            $sql .= implode(', ', $order);
-        }
+        return $this->pdo->getConnection()->lastInsertID();
+    }
 
-        if (!empty($filters->pageNumber)) {
-            $page = $filters->pageNumber - 1;
-            $offset = max(0, $page * $filters->pageSize);
-            
-            $sql .= ' LIMIT '.$filters->pageSize;
-            $sql .= ' OFFSET '.$offset;
-        }
+    protected function doUpdate($sql, $data = array())
+    {
+        $result = $this->pdo->executeQuery($data, $sql);
 
-        return $sql;
+        return $result->rowCount();
+    }
+
+    protected function doDelete($sql, $data = array())
+    {
+        $result = $this->pdo->executeQuery($data, $sql);
+        
+        return $result->rowCount();
+    }
+
+    protected function doCopy($sql, $data = array())
+    {
+        $result = $this->pdo->executeQuery($data, $sql);
+        
+        return $result->rowCount();
+    }
+
+    // DATA QUERYING
+    protected function doFetch($sql, $data = array())
+    {
+        return $this->pdo->executeQuery($data, $sql)->fetch();
+    }
+
+    protected function doCount($sql, $data = array())
+    {
+        return $this->pdo->executeQuery($data, $sql)->fetchColumn(0);
+    }
+
+    protected function doSelect($sql, $data = array())
+    {
+        return $this->pdo->executeQuery($data, $sql);
+    }
+
+    protected function doFilteredSelect($filters, $sql, $data = array())
+    {
+        $sql = $filters->applyFilters($sql);
+
+        $result = $this->pdo->executeQuery($data, $sql);
+
+        return ResultSet::createFromResults($filters, $result, $this->countAll());
+    }
+
+    // DATA OBJECT CREATION
+    protected function doGet($sql, $data = array(), $model = Model::class, $args = array())
+    {
+        return $this->pdo->executeQuery($data, $sql)->fetchObject($model, $args);
     }
 }

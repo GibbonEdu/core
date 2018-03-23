@@ -34,7 +34,7 @@ class ResultSet
     protected $rowsFrom; 
     protected $rowsTo; 
 
-    public function __construct(ResultFilters $filters, array $data, $totalCount)
+    public function __construct(QueryFilters $filters, array $data, $totalCount)
     {
         $this->filters = $filters;
         $this->data = $data;
@@ -53,17 +53,17 @@ class ResultSet
         return isset($this->$name)? $this->$name : '';
     }
 
-    public static function createFromArray(ResultFilters $filters, array $data, $totalCount)
+    public static function createFromArray(QueryFilters $filters, array $data, $totalCount)
     {
         return new ResultSet($filters, $data, $totalCount);
     }
 
-    public static function createFromResults(ResultFilters $filters, \PDOStatement $results, $totalCount)
+    public static function createFromResults(QueryFilters $filters, \PDOStatement $results, $totalCount)
     {
         return new ResultSet($filters, $results->fetchAll(), $totalCount);
     }
 
-    public static function createEmpty(ResultFilters $filters)
+    public static function createEmpty(QueryFilters $filters)
     {
         return new ResultSet($filters, array(), 0);
     }

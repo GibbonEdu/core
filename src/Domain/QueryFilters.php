@@ -22,7 +22,7 @@ namespace Gibbon\Domain;
 /**
  * Immutable object describing the filters applied to a Gateway query.
  */
-class ResultFilters
+class QueryFilters
 {
     protected $filters = array(
         'pageIndex'  => 0,
@@ -49,12 +49,12 @@ class ResultFilters
 
     public static function createFromArray($filters)
     {
-        return new ResultFilters($filters);
+        return new QueryFilters($filters);
     }
 
     public static function createFromJson($json)
     {
-        return new ResultFilters(json_decode($json));
+        return new QueryFilters(json_decode($json));
     }
 
     public function toArray()
@@ -67,6 +67,30 @@ class ResultFilters
         return json_encode($this->filters);
     }
 
+    public function applyFilters($sql)
+    {
+        if (!empty($this->orderBy)) {
+            $sql .= ' ORDER BY ';
+
+            $order = array();
+            foreach ($this->orderBy as $column => $direction) {
+                $order[] =  $column.' '.$direction;
+            }
+
+            $sql .= implode(', ', $order);
+        }
+
+        if (!empty($this->pageNumber)) {
+            $page = $this->pageNumber - 1;
+            $offset = max(0, $page * $this->pageSize);
+            
+            $sql .= ' LIMIT '.$this->pageSize;
+            $sql .= ' OFFSET '.$offset;
+        }
+
+        return $sql;
+    }
+
     protected function sanitizeFilters($filters)
     {
         return array(
@@ -77,4 +101,5 @@ class ResultFilters
             'orderBy'    => isset($filters['sort'], $filters['direction'])? array($filters['sort'] => $filters['direction']) : array(),
         );
     }
+    
 }
