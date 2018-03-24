@@ -891,6 +891,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '1', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Activity Choices by Roll Group'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Activity Choices by Roll Group'));end
 UPDATE gibboni18n SET active='Y' WHERE code='pl_PL';end
+UPDATE gibbonSetting set description='The timezone where the school is located' WHERE name='timezone' AND scope='System';end
 UPDATE gibbonSetting SET value='' WHERE scope='Finance' AND name='email' AND value='finance@ichk.edu.hk';end
 
 ";

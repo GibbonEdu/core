@@ -343,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $header->addTableCell(__('Student'))->rowSpan(2);
 
-                        $header->if($hasTarget)
+                        $header->onlyIf($hasTarget)
                             ->addTableCell(__('Target'))
                             ->setTitle(__('Personalised target grade').' | '.$course['targetGradeScale'].' '.__('Scale'))
                             ->rowSpan(2)
@@ -358,27 +358,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $header = $table->addHeaderRow();
 
-                        $header->if($hasSubmission)
+                        $header->onlyIf($hasSubmission)
                             ->addContent(__('Sub'))
                             ->setTitle(__('Submitted Work'))
                             ->setClass('textCenter');
 
-                        $header->if($hasAttainment && $hasRawAttainment)
+                        $header->onlyIf($hasAttainment && $hasRawAttainment)
                             ->addContent(__('Mark'))
                             ->setTitle(__('Raw Attainment Mark'))
                             ->setClass('textCenter');
 
-                        $header->if($hasAttainment)
+                        $header->onlyIf($hasAttainment)
                             ->addContent($hasAttainmentName? $attainmentAlternativeNameAbrev : __('Att'))
                             ->setTitle(($hasAttainmentName? $attainmentAlternativeName : __('Attainment')).$attainmentScale)
                             ->setClass('textCenter');
 
-                        $header->if($hasEffort)
+                        $header->onlyIf($hasEffort)
                             ->addContent($hasEffortName? $effortAlternativeNameAbrev : __('Eff'))
                             ->setTitle(($hasEffortName? $effortAlternativeName : __('Effort')).$effortScale)
                             ->setClass('textCenter');
 
-                        $header->if($hasComment || $hasUpload)
+                        $header->onlyIf($hasComment || $hasUpload)
                             ->addContent(__('Com'))
                             ->setTitle(__('Comment'))
                             ->setClass('textCenter');
@@ -404,19 +404,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             ->wrap('<strong>', '</strong>')
                             ->prepend($rollOrder.') ');
 
-                        $row->if($hasTarget)
+                        $row->onlyIf($hasTarget)
                             ->addContent($student['targetScaleGrade']);
 
-                        $row->if($hasSubmission)
+                        $row->onlyIf($hasSubmission)
                             ->addContent($student['submission']);
 
-                        $row->if($hasAttainment && $hasRawAttainment)
+                        $row->onlyIf($hasAttainment && $hasRawAttainment)
                             ->addNumber($count.'-attainmentValueRaw')
                             ->setClass('smallColumn')
                             ->setValue($student['attainmentValueRaw'])
                             ->append(' / '.floatval($values['attainmentRawMax']));
 
-                        $attainment = $row->if($hasAttainment)
+                        $attainment = $row->onlyIf($hasAttainment)
                             ->addSelectGradeScaleGrade($count.'-attainmentValue', $values['gibbonScaleIDAttainment'])
                             ->setClass('textCenter gradeSelect')
                             ->selected($student['attainmentValue']);
@@ -428,7 +428,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $attainment->append($rubricLink->getOutput());
                         }
 
-                        $effort = $row->if($hasEffort)
+                        $effort = $row->onlyIf($hasEffort)
                             ->addSelectGradeScaleGrade($count.'-effortValue', $values['gibbonScaleIDEffort'])
                             ->setClass('textCenter gradeSelect')
                             ->selected($student['effortValue']);
@@ -440,11 +440,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $effort->append($rubricLink->getOutput());
                         }
 
-                        $col = $row->if($hasComment || $hasUpload)->addColumn()->addClass('stacked');
+                        $col = $row->onlyIf($hasComment || $hasUpload)->addColumn()->addClass('stacked');
 
-                            $col->if($hasComment)->addTextArea('comment'.$count)->setRows(6)->setValue($student['comment']);
+                            $col->onlyIf($hasComment)->addTextArea('comment'.$count)->setRows(6)->setValue($student['comment']);
 
-                            $col->if($hasUpload)
+                            $col->onlyIf($hasUpload)
                                 ->addFileUpload('response'.$count)
                                 ->setAttachment('attachment'.$count, $_SESSION[$guid]['absoluteURL'], $student['response'])
                                 ->setMaxUpload(false);
