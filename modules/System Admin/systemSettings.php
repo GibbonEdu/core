@@ -216,10 +216,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Monday, Sunday')->selected($setting['value'])->isRequired();
 
+    $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
     $setting = getSettingByScope($connection2, 'System', 'timezone', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($tzlist)->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'currency', true);
     $row = $form->addRow();

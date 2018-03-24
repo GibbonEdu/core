@@ -577,10 +577,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelectCurrency($setting['name'])->isRequired();
 
+                                                $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue('Asia/Hong_Kong')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($tzlist)->isRequired()->placeholder();
 
                                                 $row = $form->addRow();
                                                     $row->addFooter();
