@@ -50,22 +50,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	}
 
 	$search = isset($_GET['search'])? $_GET['search'] : null;
-	
+
 	$form = Form::create('activity', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
 	$form->setFactory(DatabaseFormFactory::create($pdo));
-	
+
 	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
-	
+
 	$form->addRow()->addHeading(__('Basic Information'));
 
 	$row = $form->addRow();
         $row->addLabel('name', __('Name'));
 		$row->addTextField('name')->isRequired()->maxLength(40);
-		
+
 	$row = $form->addRow();
         $row->addLabel('provider', __('Provider'));
         $row->addSelect('provider')->isRequired()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
-	
+
 	$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
 	if (!empty($activityTypes)) {
 		$row = $form->addRow();
@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	$row = $form->addRow();
         $row->addLabel('active', __('Active'));
 		$row->addYesNo('active')->isRequired();
-		
+
 	$row = $form->addRow();
         $row->addLabel('registration', __('Registration'))->description(__('Assuming system-wide registration is open, should this activity be open for registration?'));
 		$row->addYesNo('registration')->isRequired();
-		
+
 	$dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 	$form->addHiddenValue('dateType', $dateType);
 	if ($dateType != 'Date') {
@@ -108,15 +108,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		$row = $form->addRow();
         	$row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
 			$row->addDate('listingStart')->isRequired()->setValue($listingStart->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
-			
+
 		$row = $form->addRow();
         	$row->addLabel('listingEnd', __('Listing End Date'))->description(__('Default: 2 weeks after the start of next term.'));
 			$row->addDate('listingEnd')->isRequired()->setValue($listingEnd->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
-			
+
 		$row = $form->addRow();
         	$row->addLabel('programStart', __('Program Start Date'))->description(__('Default: first day of next term.'));
 			$row->addDate('programStart')->isRequired()->setValue($programStart->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
-			
+
 		$row = $form->addRow();
         	$row->addLabel('programEnd', __('Program End Date'))->description(__('Default: last day of the next term.'));
 			$row->addDate('programEnd')->isRequired()->setValue($programEnd->format($_SESSION[$guid]['i18n']['dateFormatPHP']));
@@ -125,15 +125,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	$row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDList', __('Year Groups'));
         $row->addCheckboxYearGroup('gibbonYearGroupIDList')->checkAll()->addCheckAllNone();
-	
+
 	$row = $form->addRow();
         $row->addLabel('maxParticipants', __('Max Participants'));
 		$row->addNumber('maxParticipants')->isRequired()->maxLength(4)->setValue('0');
-		
+
 	$column = $form->addRow()->addColumn();
         $column->addLabel('description', __('Description'));
-        $column->addEditor('description', $guid)->setRows(10);
-	
+        $column->addEditor('description', $guid)->setRows(10)->showMedia();
+
 	$payment = getSettingByScope($connection2, 'Activities', 'payment');
 	if ($payment != 'None' && $payment != 'Single') {
 		$form->addRow()->addHeading(__('Cost'));
@@ -141,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		$row = $form->addRow();
         	$row->addLabel('payment', __('Cost'));
 			$row->addCurrency('payment')->isRequired()->maxLength(9)->setValue('0.00');
-			
+
 		$costTypes = array(
 			'Entire Programme' => __('Entire Programme'),
 			'Per Session'      => __('Per Session'),
@@ -152,12 +152,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		$row = $form->addRow();
         	$row->addLabel('paymentType', __('Cost Type'));
 			$row->addSelect('paymentType')->isRequired()->fromArray($costTypes);
-			
+
 		$costStatuses = array(
             'Finalised' => __('Finalised'),
             'Estimated' => __('Estimated'),
 		);
-		
+
 		$row = $form->addRow();
         	$row->addLabel('paymentFirmness', __('Cost Status'));
         	$row->addSelect('paymentFirmness')->isRequired()->fromArray($costStatuses);
@@ -174,11 +174,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     for ($i = 1; $i <= 2; ++$i) {
 		$form->addRow()->addSubheading(__('Slot').' '.$i)->addClass("slotRow{$i}");
-		
+
 		$row = $form->addRow()->addClass("slotRow{$i}");
         	$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__($guid, 'Slot %1$s Day'), $i));
 			$row->addSelect("gibbonDaysOfWeekID{$i}")->fromQuery($pdo, $sqlWeekdays)->placeholder();
-			
+
 		$row = $form->addRow()->addClass("slotRow{$i}");
             $row->addLabel('timeStart'.$i, sprintf(__($guid, 'Slot %1$s Start Time'), $i));
             $row->addTime('timeStart'.$i);
@@ -192,13 +192,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			$row->addRadio("slot{$i}Location")->fromArray($locations)->inline();
 
 		$form->toggleVisibilityByClass("slotRow{$i}Internal")->onRadio("slot{$i}Location")->when('Internal');
-		$row = $form->addRow()->addClass("slotRow{$i}Internal");	
+		$row = $form->addRow()->addClass("slotRow{$i}Internal");
 			$row->addSelect("gibbonSpaceID{$i}")->fromQuery($pdo, $sqlSpaces)->placeholder();
-		
+
 		$form->toggleVisibilityByClass("slotRow{$i}External")->onRadio("slot{$i}Location")->when('External');
-		$row = $form->addRow()->addClass("slotRow{$i}External");	
+		$row = $form->addRow()->addClass("slotRow{$i}External");
 			$row->addTextField("location{$i}External")->maxLength(50);
-			
+
 		if ($i == 1) {
 			$form->toggleVisibilityByClass("slot{$i}ButtonRow")->onRadio("slot{$i}Location")->when(array('Internal', 'External'));
 			$row = $form->addRow()->addClass("slotRow{$i} slot{$i}ButtonRow");
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				->addClass('right buttonAsLink');
 		}
 	}
-	
+
 
 	$form->addRow()->addHeading(__('Staff'));
 
@@ -229,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	$row = $form->addRow();
 		$row->addFooter();
 		$row->addSubmit();
-	
+
 	echo $form->getOutput();
 	?>
 
@@ -238,6 +238,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		$('.slotRow2').hide();
 	});
 	</script>
-	
+
 	<?php
 }
