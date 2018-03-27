@@ -114,9 +114,9 @@ trait MultipleOptionsTrait
                 $option = array_map('trim', $option);
 
                 if ($groupBy !== false) {
-                    $this->options[$option[$groupBy]][$option['value']] = $option['name'];
+                    $this->options[$option[$groupBy]][$option['value']] = __($option['name']);
                 } else {
-                    $this->options[$option['value']] = $option['name'];
+                    $this->options[$option['value']] = __($option['name']);
                 }
             }
         }
