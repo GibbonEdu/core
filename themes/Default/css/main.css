@@ -1652,7 +1652,8 @@ table.smallIntBorder td.noPadding {
 	top: 15px;
 }
 
-.dataTable input[type="button"] {
+.dataTable input[type="button"],
+.dataTable input[type="button"]:hover {
 	font-size: 10px;
 	padding: 6px;
 	height: auto;

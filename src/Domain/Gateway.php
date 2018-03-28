@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 use Gibbon\sqlConnection;
-use Gibbon\Domain\Model;
 use Gibbon\Domain\Result;
 use Gibbon\Domain\ResultSet;
 use Gibbon\Domain\QueryFilters;
@@ -33,10 +32,12 @@ use Gibbon\Domain\QueryFilters;
  */
 abstract class Gateway
 {
-    protected $pdo;
+    private $pdo;
 
-    protected static $tableName = 'gibbonPerson';
-    protected static $columns = array();
+    protected static $tableName;
+    protected static $primaryKey;
+
+    protected static $columns;
 
     public function __construct(sqlConnection $pdo)
     {
@@ -45,18 +46,17 @@ abstract class Gateway
         }
 
         $this->pdo = $pdo;
-
-        $result = $this->doSelect("SELECT DISTINCT(column_name) FROM information_schema.columns WHERE table_name='".static::$tableName."'");
-        static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_COLUMN, 0) : array();
-
-        echo '<pre>';
-        print_r(static::$columns);
-        echo '</pre>';            
     }
 
+    // BUILT-IN QUERIES
     public function countAll()
     {
         return $this->doCount("SELECT COUNT(*) FROM `".static::$tableName."`");
+    }
+
+    public function foundRows()
+    {
+        return $this->doCount("SELECT FOUND_ROWS()");
     }
 
     // DATA MANIPULATION
@@ -71,24 +71,29 @@ abstract class Gateway
     {
         $result = $this->pdo->executeQuery($data, $sql);
 
-        return $result->rowCount();
+        return $result->rowCount() > 0;
     }
 
     protected function doDelete($sql, $data = array())
     {
         $result = $this->pdo->executeQuery($data, $sql);
         
-        return $result->rowCount();
+        return $result->rowCount() > 0;
     }
 
     protected function doCopy($sql, $data = array())
     {
         $result = $this->pdo->executeQuery($data, $sql);
         
-        return $result->rowCount();
+        return $result->rowCount() > 0;
     }
 
     // DATA QUERYING
+    protected function doSelect($sql, $data = array())
+    {
+        return $this->pdo->executeQuery($data, $sql);
+    }
+    
     protected function doFetch($sql, $data = array())
     {
         return $this->pdo->executeQuery($data, $sql)->fetch();
@@ -99,23 +104,28 @@ abstract class Gateway
         return $this->pdo->executeQuery($data, $sql)->fetchColumn(0);
     }
 
-    protected function doSelect($sql, $data = array())
+    protected function doFilteredQuery($filters, $sql, $data = array())
     {
-        return $this->pdo->executeQuery($data, $sql);
-    }
-
-    protected function doFilteredSelect($filters, $sql, $data = array())
-    {
-        $sql = $filters->applyFilters($sql);
+        $sql = $filters->applyFilters($sql, $data);
 
         $result = $this->pdo->executeQuery($data, $sql);
 
-        return ResultSet::createFromResults($filters, $result, $this->countAll());
+        if ($this->pdo->getQuerySuccess()) {
+            return ResultSet::createFromArray($filters, $result->fetchAll(), $this->foundRows(), $this->countAll());
+        } else {
+            return ResultSet::createEmpty($filters);
+        }
     }
 
-    // DATA OBJECT CREATION
-    protected function doGet($sql, $data = array(), $model = Model::class, $args = array())
+    // SCHEMA-RELATED
+
+    protected function getColumns()
     {
-        return $this->pdo->executeQuery($data, $sql)->fetchObject($model, $args);
+        if (!isset(static::$columns)) {
+            $result = $this->doSelect("SELECT DISTINCT(column_name), data_type FROM information_schema.columns WHERE table_name='".static::$tableName."'");
+            static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();       
+        }
+
+        return static::$columns;
     }
 }

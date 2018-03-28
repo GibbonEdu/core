@@ -19,13 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UserAdmin\Domain;
 
-use Gibbon\sqlConnection;
 use Gibbon\Domain\Gateway;
 
 /**
  * User Gateway
  *
- * Provides a data access layer for the gibbonSchoolYear table
+ * Provides a data access layer for the gibbonPerson table.
  *
  * @version v16
  * @since   v16
@@ -33,6 +32,7 @@ use Gibbon\Domain\Gateway;
 class UserGateway extends Gateway
 {
     protected static $tableName = 'gibbonPerson';
+    protected static $primaryKey = 'gibbonPersonID';
 
     public function queryAllUsers($filters)
     {
@@ -41,13 +41,15 @@ class UserGateway extends Gateway
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
 
-        return $this->doFilteredSelect($filters, $sql);
-    }
+        $filters->defineFilter('role:student',  __('Role').': '.__('Student'),      "gibbonRole.category = 'Student'")
+                ->defineFilter('role:parent',   __('Role').': '.__('Parent'),       "gibbonRole.category = 'Parent'")
+                ->defineFilter('role:staff',    __('Role').': '.__('Staff'),        "gibbonRole.category = 'Staff'")
+                ->defineFilter('is:full',       __('Status').': '.__('Full'),       "gibbonPerson.status = 'Full'")
+                ->defineFilter('is:left',       __('Status').': '.__('Left'),       "gibbonPerson.status = 'Left'")
+                ->defineFilter('is:expected',   __('Status').': '.__('Expected'),   "gibbonPerson.status = 'Expected'")
+                ->defineFilter('date:starting', __('Before Start Date'),            "(dateStart IS NOT NULL AND dateStart >= :today)", ['today' => date('Y-m-d')])
+                ->defineFilter('date:ended',    __('Past End Date'),                "(dateEnd IS NOT NULL AND dateEnd <= :today)", ['today' => date('Y-m-d')]);
 
-    public function getUser($gibbonPersonID)
-    {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID";
-        return $this->doGet($sql, $data);
+        return $this->doFilteredQuery($filters, $sql);
     }
 }

@@ -75,66 +75,46 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo __($guid, 'View');
     echo '</h2>';
 
-    $search = '';
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
-    $_POST['sort'] = !empty($_POST['sort'])? $_POST['sort'] : 'surname';
+    $filters = QueryFilters::createFromPost()->addSearch($search, $searchColumns)->defaultSort('fullName');
     
     $gateway = new UserGateway($pdo);
-    $resultSet = $gateway->queryAllUsers(QueryFilters::createFromArray($_POST));
+    $resultSet = $gateway->queryAllUsers($filters);
 
+    // Build a set of family data
+    $people = array_column($resultSet->data, 'gibbonPersonID');
 
-    $user = $gateway->getUser(1);
+    $dataFamily = array('people' => implode(',', $people));
+    $sqlFamily = "(
+        SELECT gibbonFamilyAdult.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, dob, (SELECT gibbonPersonID FROM gibbonFamilyChild WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID LIMIT 1) as gibbonPersonIDStudent
+        FROM gibbonFamily 
+        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+        JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :people)
+    ) UNION (
+        SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamilyChild.gibbonFamilyID, 'child' AS role, gibbonFamily.name, dob, gibbonPerson.gibbonPersonID as gibbonPersonIDStudent
+        FROM gibbonFamily 
+        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+        JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :people)
+    ) ORDER BY gibbonFamilyID, role, dob DESC, gibbonPersonID";
+    
+    $resultFamily = $pdo->executeQuery($dataFamily, $sqlFamily);
+    $familyData = $resultFamily->rowCount() > 0 ? $resultFamily->fetchAll(\PDO::FETCH_GROUP) : array();
 
-    echo '<pre>';
-    echo $user->officialName;
-    // print_r($user);
-    echo '</pre>';
-
-    // $data = DataSet::createFromArray(array());
-
-    // try {
-    //     $data = array();
-
-    //     if ($search != '') {
-    //         $data = array('search' => "%$search%" );
-
-    //         $sql = 'SELECT gibbonPerson.*, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE (preferredName LIKE :search OR surname LIKE :search OR username LIKE :search OR studentID LIKE :search OR email LIKE :search OR emailAlternate LIKE :search OR phone1 LIKE :search OR phone2 LIKE :search OR phone3 LIKE :search OR phone4 LIKE :search OR vehicleRegistration LIKE :search OR gibbonRole.name LIKE :search) ORDER BY surname, preferredName';
-    //     } else {
-    //         $sql = 'SELECT gibbonPerson.*, gibbonRole.name as primaryRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) ORDER BY surname, preferredName';
-    //     }
-    //     $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-    //     $result = $connection2->prepare($sql);
-    //     $result->execute($data);
-    // } catch (PDOException $e) {
-    //     echo "<div class='error'>".$e->getMessage().'</div>';
-    // }
-
-    //Build cache of families for use below
-    // $families = array();
-    // try {
-    //     $dataFamily = array();
-    //     $sqlFamily = "(SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonFamilyAdult.gibbonPersonID, 'adult' AS role, gibbonFamily.name, dob FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)) UNION (SELECT gibbonFamilyChild.gibbonFamilyID, gibbonFamilyChild.gibbonPersonID, 'child' AS role, gibbonFamily.name, dob FROM gibbonFamily JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)) ORDER BY gibbonFamilyID, role, dob DESC, gibbonPersonID";
-    //     $resultFamily = $connection2->prepare($sqlFamily);
-    //     $resultFamily->execute($dataFamily);
-    // } catch (PDOException $e) {
-    // }
-    // $countFamily = 0;
-    // while ($rowFamily = $resultFamily->fetch()) {
-    //     $families[$countFamily][0] = $rowFamily['gibbonFamilyID'];
-    //     $families[$countFamily][1] = $rowFamily['gibbonPersonID'];
-    //     $families[$countFamily][2] = $rowFamily['role'];
-    //     $families[$countFamily][3] = $rowFamily['name'];
-    //     ++$countFamily;
-    // }
+    $resultSet->updateResults(function(&$item) use (&$familyData){
+        $id = intval($item['gibbonPersonID']);
+        $item['families'] = isset($familyData[$id])? $familyData[$id] : array();
+        return $item;
+    });
 
     echo "<div class='linkTop'>";
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage_add.php&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    $table = DataTable::create('userManage', $resultSet)->setPath('.'.$_SESSION[$guid]['address']);
+    $table = DataTable::createFromResultSet('userManage', $resultSet)->setPath('.'.$_SESSION[$guid]['address']);
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);
@@ -146,113 +126,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('status', __('Status'));
     $table->addColumn('primaryRole', __('Primary Role'));
-    $table->addColumn('family', __('Family'))->setSortable(false);
+
+    $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
+        $output = '';
+        foreach ($item['families'] as $family) {
+            $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
+        }
+        return $output;
+    })->setSortable(false);
+
     $table->addColumn('username', __('Username'));
 
     $col = $table->addActionColumn();
-    $col->addAction('edit', __('Edit'))
-        ->setURL('/modules/User Admin/user_manage_edit.php')
-        ->addParam('gibbonPersonID')
-        ->addParam('search', $search);
+        $col->addAction('edit', __('Edit'))
+            ->setURL('/modules/User Admin/user_manage_edit.php')
+            ->addParam('gibbonPersonID')
+            ->addParam('search', $search);
 
-    $col->addAction('delete', __('Delete'))
-        ->setURL('/modules/User Admin/user_manage_delete.php')
-        ->addParam('gibbonPersonID')
-        ->addParam('search', $search);
+        $col->addAction('delete', __('Delete'))
+            ->setURL('/modules/User Admin/user_manage_delete.php')
+            ->addParam('gibbonPersonID')
+            ->addParam('search', $search);
 
-    $col->addAction('password', __('Change Password'))
-        ->setIcon('key')
-        ->setURL('/modules/User Admin/user_manage_password.php')
-        ->addParam('gibbonPersonID')
-        ->addParam('search', $search);
+        $col->addAction('password', __('Change Password'))
+            ->setIcon('key')
+            ->setURL('/modules/User Admin/user_manage_password.php')
+            ->addParam('gibbonPersonID')
+            ->addParam('search', $search);
 
     echo $table->getOutput();
-
-    // echo "<table cellspacing='0' style='width: 100%'>";
-    // echo "<tr class='head'>";
-    // echo '<th>';
-    // echo __($guid, 'Photo');
-    // echo '</th>';
-    // echo '<th>';
-    // echo __($guid, 'Name');
-    // echo '</th>';
-    // echo '<th>';
-    // echo __($guid, 'Status');
-    // echo '</th>';
-    // echo '<th>';
-    // echo __($guid, 'Primary Role');
-    // echo '</th>';
-    // echo '<th>';
-    // echo __($guid, 'Family');
-    // echo '</th>';
-    // echo '<th>';
-    // echo __($guid, 'Username');
-    // echo '</th>';
-    // echo "<th style='width: 100px'>";
-    // echo __($guid, 'Actions');
-    // echo '</th>';
-    // echo '</tr>';
-
-    // $count = 0;
-    // $rowNum = 'odd';
-    // try {
-    //     $resultPage = $connection2->prepare($sqlPage);
-    //     $resultPage->execute($data);
-    // } catch (PDOException $e) {
-    //     echo "<div class='error'>".$e->getMessage().'</div>';
-    // }
-    // while ($row = $resultPage->fetch()) {
-    //     if ($count % 2 == 0) {
-    //         $rowNum = 'even';
-    //     } else {
-    //         $rowNum = 'odd';
-    //     }
-    //     ++$count;
-
-    //     //COLOR ROW BY STATUS!
-    //     echo "<tr class=$rowNum>";
-    //     echo '<td>';
-    //     echo getUserPhoto($guid, $row['image_240'], 75);
-    //     echo '</td>';
-    //     echo '<td>';
-    //     echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-    //     echo '</td>';
-    //     echo '<td>';
-    //     echo $row['status'];
-    //     echo '</td>';
-    //     echo '<td>';
-    //     if ($row['name'] != '') {
-    //         echo __($guid, $row['name']);
-    //     }
-    //     echo '</td>';
-    //     echo '<td>';
-    //     foreach ($families as $family) {
-    //         $childCount = 0;
-    //         if ($family[1] == $row['gibbonPersonID']) {
-    //             if ($family[2] == 'child') { //Link child to self
-    //                  echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
-    //             } else { //Link adult to eldest child in family
-    // 				foreach ($families as $family2) {
-    //                     if ($family[0] == $family2[0] and $childCount == 0 and $family2[2] == 'child') {
-    //                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family2[1]."&search=&allStudents=on&sort=surname, preferredName&subpage=Family'>".$family[3].'</a><br/>';
-    // 						++$childCount;
-    //                     }
-    // 				}
-    //             }
-    //         }
-    //     }
-    //     echo '</td>';
-    //     echo '<td>';
-    //     echo $row['username'];
-    //     echo '</td>';
-    //     echo '<td>';
-    //     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_edit.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-    //     echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_delete.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-    //     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
-    //     echo '</td>';
-    //     echo '</tr>';
-    // }
-    // echo '</table>';
-
 }
-?>

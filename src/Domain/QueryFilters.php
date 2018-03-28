@@ -20,17 +20,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 /**
- * Immutable object describing the filters applied to a Gateway query.
+ * Object describing the filters applied to a Gateway query.
  */
 class QueryFilters
 {
     protected $filters = array(
         'pageIndex'  => 0,
-        'pageNumber' => 1,
         'pageSize'   => 25,
+        'searchBy'   => array(),
         'filterBy'   => array(),
         'orderBy'    => array(),
     );
+
+    protected $definitions = array();
 
     public function __construct($filters = array())
     {
@@ -47,19 +49,9 @@ class QueryFilters
         return isset($this->filters[$name]);
     }
 
-    public static function createFromArray($filters)
+    public static function createFromPost()
     {
-        return new QueryFilters($filters);
-    }
-
-    public static function createFromJson($json)
-    {
-        return new QueryFilters(json_decode($json));
-    }
-
-    public function toArray()
-    {
-        return $this->filters;
+        return new QueryFilters($_POST);
     }
 
     public function toJson()
@@ -67,39 +59,130 @@ class QueryFilters
         return json_encode($this->filters);
     }
 
-    public function applyFilters($sql)
+    public function defineFilter($name, $label, $query, $data = array())
     {
+        $this->definitions[$name] = array(
+            'label' => $label,
+            'query' => $query,
+            'data' => $data,
+        );
+
+        return $this;
+    }
+
+    public function getDefinitions()
+    {
+        return $this->definitions;
+    }
+
+    public function addSearch($search, $column)
+    {
+        if (trim($search) == '') return $this;
+
+        $columns = is_array($column)? $column : array($column);
+        foreach ($columns as $column) {
+            $this->filters['searchBy'][$column] = $search;
+        }
+
+        return $this;
+    }
+
+    public function addFilter($name)
+    {
+        if (empty($name)) return $this;
+
+        if (!in_array($name, $this->filters['filterBy'])) {
+            $this->filters['filterBy'][] = $name;
+        }
+
+        return $this;
+    }
+
+    public function defaultSort($column, $direction = 'ASC') 
+    {
+        if (empty($column) || !empty($this->filters['orderBy'])) return $this;
+
+        $this->filters['orderBy'][$column] = ($direction == 'DESC')? 'DESC' : 'ASC';
+
+        return $this;
+    }
+
+    public function applyFilters($sql, &$data = array())
+    {
+        if (mb_stripos($sql, 'SQL_CALC_FOUND_ROWS') === false) {
+            $sql = str_ireplace('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $sql);
+        }
+
+        if (!empty($this->searchBy)) {
+            $sql .= (mb_stripos($sql, 'WHERE') !== false)? ' AND ' : ' WHERE ';
+
+            $where = array();
+            $count = 0;
+            foreach ($this->searchBy as $column => $search) {
+                $data['search'.$count] = "%{$search}%";
+                $where[] = $this->escapeIdentifier($column)." LIKE :search{$count}";
+                $count++;
+            }
+
+            $sql .= '('.implode(' OR ', $where).')';
+        }
+
+        if (!empty($this->filterBy)) {
+            $sql .= (mb_stripos($sql, 'WHERE') !== false)? ' AND ' : ' WHERE ';
+
+            $where = array();
+            $filters = array_intersect_key($this->definitions, array_flip($this->filterBy));
+
+            foreach ($filters as $filterName => $filter) {
+                $where[] = $filter['query'];
+                if (!empty($filter['data'])) {
+                    $data = array_replace($data, $filter['data']);
+                }
+            }
+
+            $sql .= '('.implode(' AND ', $where).')';
+        }
+
         if (!empty($this->orderBy)) {
             $sql .= ' ORDER BY ';
 
             $order = array();
             foreach ($this->orderBy as $column => $direction) {
-                $order[] =  $column.' '.$direction;
+                $direction = ($direction == 'DESC')? 'DESC' : 'ASC';
+                $order[] =  $this->escapeIdentifier($column).' '.$direction;
             }
 
             $sql .= implode(', ', $order);
         }
 
-        if (!empty($this->pageNumber)) {
-            $page = $this->pageNumber - 1;
-            $offset = max(0, $page * $this->pageSize);
+        if (!empty($this->pageSize)) {
+            $offset = max(0, $this->pageIndex * $this->pageSize);
             
-            $sql .= ' LIMIT '.$this->pageSize;
-            $sql .= ' OFFSET '.$offset;
+            $sql .= ' LIMIT '.intval($this->pageSize);
+            $sql .= ' OFFSET '.intval($offset);
         }
 
+        // echo $sql;
+
         return $sql;
+    }
+
+    protected function escapeIdentifier($value)
+    {
+        return implode('.', array_map(function($piece) {
+            return '`'.str_replace('`','``',$piece).'`';
+        }, explode('.', $value)));
     }
 
     protected function sanitizeFilters($filters)
     {
         return array(
             'pageIndex'  => intval($filters['pageIndex']),
-            'pageNumber' => $filters['pageIndex'] + 1,
             'pageSize'   => intval($filters['pageSize']),
+            'searchBy'   => is_array($filters['searchBy'])? $filters['searchBy'] : array(),
             'filterBy'   => is_array($filters['filterBy'])? $filters['filterBy'] : array(),
-            'orderBy'    => isset($filters['sort'], $filters['direction'])? array($filters['sort'] => $filters['direction']) : array(),
+            'orderBy'   => is_array($filters['orderBy'])? $filters['orderBy'] : array(),
+            // 'orderBy'    => isset($filters['sort'], $filters['direction'])? array($filters['sort'] => $filters['direction']) : array(),
         );
     }
-    
 }

@@ -317,28 +317,79 @@ $.prototype.gibbonCustomBlocks = function(settings) {
  * @param string basePath 
  * @param Object settings 
  */
-$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
-    var dataTable = this;
-    var path = basePath + " #" + $(dataTable).attr('id') + " .dataTable";
-    // console.log(path);
+var DataTable = window.DataTable || {};
 
-    $(dataTable).on('click', '.paginate', function() {
-        filters.pageMax = Math.ceil(totalCount / filters.pageSize);
-        filters.pageIndex = Math.min($(this).data('page'), filters.pageMax);
-        $(dataTable).load(path, filters);
+DataTable = (function(element, basePath, filters, totalCount) {
+    var _ = this;
+
+    _.table = $(element);
+    _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
+    _.filters = filters;
+    _.totalCount = totalCount;
+    
+    if (_.filters.orderBy.length == 0) _.filters.orderBy = {};
+
+    _.init();
+});
+
+DataTable.prototype.init = function() {
+    var _ = this;
+
+    // Pagination
+    $(_.table).on('click', '.paginate', function() {
+        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.pageIndex = Math.min($(this).data('page'), _.filters.pageMax);
+        _.refresh();
     });
 
-    $(dataTable).on('change', '.limit', function() {
-        filters.pageSize = parseInt($(this).val());
-        filters.pageMax = Math.ceil(totalCount / filters.pageSize);
-        filters.pageIndex = Math.min(filters.pageIndex, filters.pageMax - 1);
-        $(dataTable).load(path, filters);
-    });
-
-    $(dataTable).on('click', '.column.sortable', function() {
+    // Sortable Columns
+    $(_.table).on('click', '.column.sortable', function(event) {
         var column = $(this).data('column');
-        filters.direction = (column == filters.sort && filters.direction == 'ASC')? 'DESC' : 'ASC';
-        filters.sort = column;
-        $(dataTable).load(path, filters);
+        var direction = (_.filters.orderBy[column] == 'ASC')? 'DESC' : 'ASC';
+
+        if (!(column in _.filters.orderBy) && !event.shiftKey) _.filters.orderBy = {};
+        _.filters.orderBy[column] = direction;
+        _.refresh();
     });
+
+    // Remove Filter
+    $(_.table).on('click', '.filter', function() {
+        var index = _.filters.filterBy.indexOf($(this).data('filter'));
+        if ($(this).hasClass('clear')) {
+            _.filters.filterBy = [];
+        } else if (index !== -1) {
+            _.filters.filterBy.splice(index, 1);
+        }
+        _.filters.pageIndex = 0;
+        _.refresh();
+    });
+
+    // Add Filter
+    $(_.table).on('change', '.filters', function() {
+        if (!_.filters.filterBy.includes($(this).val())) {
+            _.filters.filterBy.push( $(this).val() );
+            _.filters.pageIndex = 0;
+        }
+        _.refresh();
+    });
+
+    // Page Size
+    $(_.table).on('change', '.limit', function() {
+        _.filters.pageSize = parseInt($(this).val());
+        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.pageIndex = Math.min(_.filters.pageIndex, _.filters.pageMax - 1);
+        _.refresh();
+    });
+};
+
+DataTable.prototype.refresh = function() {
+    var _ = this;
+
+    $(_.table).load(_.path, _.filters, function(responseText, textStatus, jqXHR) { 
+        tb_init('a.thickbox'); 
+    });
+};
+
+$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
+    this.gibbonDataTable = new DataTable(this, basePath, filters, totalCount);
 };

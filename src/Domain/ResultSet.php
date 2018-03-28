@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 /**
- * Immutable object representing the results of a filtered Gateway query.
+ * Object representing the results of a filtered Gateway query.
  */
 class ResultSet
 {
@@ -34,18 +34,19 @@ class ResultSet
     protected $rowsFrom; 
     protected $rowsTo; 
 
-    public function __construct(QueryFilters $filters, array $data, $totalCount)
+    public function __construct(QueryFilters $filters, array $data, $resultCount, $totalCount)
     {
         $this->filters = $filters;
         $this->data = $data;
 
         $this->totalCount = $totalCount;
-        $this->resultCount = count($this->data);
-        $this->pageCount = ceil($totalCount / $filters->pageSize) - 1;
+        $this->resultCount = $resultCount;
+        $this->pageCount = ceil($resultCount / $filters->pageSize);
+
+        // echo $resultCount.' / '.$filters->pageSize.' = '.$this->pageCount;
 
         $this->rowsFrom = ($filters->pageIndex * $filters->pageSize + 1);
-        $this->rowsTo = max(1, min( (($filters->pageIndex + 1) * $filters->pageSize), $totalCount));
-        
+        $this->rowsTo = max(1, min( (($filters->pageIndex + 1) * $filters->pageSize), $resultCount));
     }
 
     public function __get($name)
@@ -53,19 +54,14 @@ class ResultSet
         return isset($this->$name)? $this->$name : '';
     }
 
-    public static function createFromArray(QueryFilters $filters, array $data, $totalCount)
+    public static function createFromArray(QueryFilters $filters, array $data, $resultCount, $totalCount)
     {
-        return new ResultSet($filters, $data, $totalCount);
-    }
-
-    public static function createFromResults(QueryFilters $filters, \PDOStatement $results, $totalCount)
-    {
-        return new ResultSet($filters, $results->fetchAll(), $totalCount);
+        return new self($filters, $data, $resultCount, $totalCount);
     }
 
     public static function createEmpty(QueryFilters $filters)
     {
-        return new ResultSet($filters, array(), 0);
+        return new self($filters, array(), 0, 0);
     }
 
     public function getFilters()
@@ -76,5 +72,25 @@ class ResultSet
     public function getData()
     {
         return $this->data;
+    }
+
+    public function hasResults()
+    {
+        return !empty($this->data);
+    }
+
+    public function isFiltered()
+    {
+        return count($this->filters->filterBy) > 0;
+    }
+
+    public function isSubset()
+    {
+        return $this->totalCount > 0 && ($this->totalCount != $this->resultCount);
+    }
+
+    public function updateResults(callable $callable)
+    {
+        array_walk($this->data, $callable);
     }
 }
