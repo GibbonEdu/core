@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo "<div style='width: 1050px; border: 1px solid #444; margin-bottom: 30px; background-repeat: no-repeat; min-height: 450px; $browseBGColorStyle $browseBGImageStyle'>";
     echo "<div style='width: 762px; margin: 0 auto'>";
     //Display filters
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";
+    echo "<table class='noIntBorder borderGrey' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); margin-top: 30px'>";
     echo '<tr>';
     echo "<td style='width: 10px'></td>";
     echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
@@ -135,151 +135,76 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</table>';
 
     //Get current filter values
-	$name = null;
-    if (isset($_POST['name'])) {
-        $name = trim($_POST['name']);
-    }
-    if ($name == '') {
-        if (isset($_GET['name'])) {
-            $name = trim($_GET['name']);
-        }
-    }
-    $producer = null;
-    if (isset($_POST['producer'])) {
-        $producer = trim($_POST['producer']);
-    }
-    if ($producer == '') {
-        if (isset($_GET['producer'])) {
-            $producer = trim($_GET['producer']);
-        }
-    }
-    $category = null;
-    if (isset($_POST['category'])) {
-        $category = trim($_POST['category']);
-    }
-    if ($category == '') {
-        if (isset($_GET['category'])) {
-            $category = trim($_GET['category']);
-        }
-    }
-    $collection = null;
-    if (isset($_POST['collection'])) {
-        $collection = trim($_POST['collection']);
-    }
-    if ($collection == '') {
-        if (isset($_GET['collection'])) {
-            $collection = trim($_GET['collection']);
-        }
-    }
-    $everything = null;
-    if (isset($_POST['everything'])) {
-        $everything = trim($_POST['everything']);
-    }
-    if ($everything == '') {
-        if (isset($_GET['everything'])) {
-            $everything = trim($_GET['everything']);
-        }
-    }
-    $gibbonLibraryItemID = null;
-    if (isset($_GET['gibbonLibraryItemID'])) {
-        $gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']);
-    }
+    $name = isset($_REQUEST['name'])? trim($_REQUEST['name']) : null;
+    $producer = isset($_REQUEST['producer'])? trim($_REQUEST['producer']) : null;
+    $category = isset($_REQUEST['category'])? trim($_REQUEST['category']) : null;
+    $collection = isset($_REQUEST['collection'])? trim($_REQUEST['collection']) : null;
+    $everything = isset($_REQUEST['everything'])? trim($_REQUEST['everything']) : null;
+    
+    $gibbonLibraryItemID = isset($_GET['gibbonLibraryItemID'])? trim($_GET['gibbonLibraryItemID']) : null;
 
-	//Display filters
-	echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_browse.php'>";
-    echo "<table class='noIntBorder' cellspacing='0' style='width: 100%; background-color: rgba(255,255,255,0.8); border: 1px solid #444; margin-top: 30px'>";
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='padding-top: 10px'>";
-    echo '<b>'.__($guid, 'Title').'</b>';
-    echo '</td>';
-    echo "<td style='padding-top: 10px'>";
-    echo '<b>'.__($guid, 'Author/Producer').'</b>';
-    echo '</td>';
-    echo "<td style='padding-top: 10px'>";
-    echo '<b>'.__($guid, 'Category').'</b>';
-    echo '</td>';
-    echo "<td style='padding-top: 10px'>";
-    echo '<b>'.__($guid, 'Collection').'</b>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='padding: 0px 2px 3px 0px'>";
-    echo "<input type='text' name='name' id='name' value='".htmlPrep($name)."' style='width:165px; height: 27px; margin-left: 0px; float: left'/>";
-    echo '</td>';
-    echo "<td style='padding: 0px 2px 3px 0px'>";
-    echo "<input type='text' name='producer' id='producer' value='".htmlPrep($producer)."' style='width:165px; height: 27px; margin-left: 0px; float: left'/>";
-    echo '</td>';
-    echo "<td style='padding: 0px 0px 3px 2px'>";
-    $collections = array();
-    $count = 0;
-    echo "<select name='category' id='category' style='width:170px; height: 29px; margin-left: -2px; float: left'>";
-    echo "<option value=''></option>";
-    try {
-        $dataSelect = array();
-        $sqlSelect = "SELECT gibbonLibraryTypeID, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
-        $resultSelect = $connection2->prepare($sqlSelect);
-        $resultSelect->execute($dataSelect);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    while ($rowSelect = $resultSelect->fetch()) {
-        $selected = '';
-        if ($rowSelect['gibbonLibraryTypeID'] == $category) {
-            $selected = 'selected';
-        }
-        echo "<option $selected value='".$rowSelect['gibbonLibraryTypeID']."'>".htmlPrep(__($guid, $rowSelect['name'])).'</option>';
-        $fields = unserialize($rowSelect['fields']);
-        foreach ($fields as $field) {
+    // Build the category/collection arrays
+    $sql = "SELECT gibbonLibraryTypeID as value, name, fields FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
+    $result = $pdo->executeQuery(array(), $sql);
+
+    $categoryList = ($result->rowCount() > 0)? $result->fetchAll() : array();
+    $collections = $collectionsChained = array();
+    $categories = array_reduce($categoryList, function($group, $item) use (&$collections, &$collectionsChained) {
+        $group[$item['value']] = $item['name'];
+        foreach (unserialize($item['fields']) as $field) {
             if ($field['name'] == 'Collection' and $field['type'] == 'Select') {
-                $collectionTemps = explode(',', $field['options']);
-                foreach ($collectionTemps as $collectionTemp) {
-                    $collections[$count][0] = $rowSelect['gibbonLibraryTypeID'];
-                    $collections[$count][1] = $collectionTemp;
-                    ++$count;
+                foreach (explode(',', $field['options']) as $collectionItem) {
+                    $collectionItem = trim($collectionItem);
+                    $collections[$collectionItem] = $collectionItem;
+                    $collectionsChained[$collectionItem] = $item['value'];
                 }
             }
         }
-    }
-    echo '</select>';
-    echo '</td>';
-    echo "<td style='padding: 0px 0px 3px 2px'>";
-    echo "<select name='collection' id='collection' style='width:190px; height: 29px; margin-left: 0px; float: left'>";
-    for ($i = 0; $i < count($collections); ++$i) {
-        $selected = '';
-        if ($collections[$i][0] == $category and trim($collections[$i][1]) == $collection) {
-            $selected = 'selected';
-        }
-        echo "<option $selected class='".$collections[$i][0]."' value='".trim($collections[$i][1])."'>".trim($collections[$i][1]).'</option>';
-    }
-    echo '</select>';
-    echo '<script type="text/javascript">';
-    echo '$("#collection").chainedTo("#category");';
-    echo '</script>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='padding-top: 10px' colspan=4>";
-    echo '<b>'.__($guid, 'All Fields').'</b>';
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo "<td style='width: 10px'></td>";
-    echo "<td style='padding: 0px 2px 3px 0px' colspan=4>";
-    echo "<input type='text' name='everything' id='everything' value='".htmlPrep($everything)."' style='width:728px; height: 27px; margin-left: 0px; float: left'/>";
-    echo '</td>';
-    echo '</tr>';
-    echo '<tr>';
-    echo "<td style='padding: 0px 2px 10px 0px; text-align: right' colspan=5>";
-    echo "<input type='hidden' name='q' value='/modules/Library/library_lending.php'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Library/library_browse.php'>".__($guid, 'Clear Filters').'</a> ';
-    echo "<input style='height: 27px; width: 20px!important; margin: 0px;' type='submit' value='".__($guid, 'Go')."'>";
-    echo '</td>';
-    echo '</tr>';
-    echo '</table>';
-    echo '</form>';
+        return $group;
+    }, array());
+
+
+    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form->setClass('noIntBorder fullWidth borderGrey');
+
+    $form->addHiddenValue('q', '/modules/Library/library_browse.php');
+
+    $row = $form->addRow();
+
+    $col = $row->addColumn()->setClass('quarterWidth');
+        $col->addLabel('name', __('Title'));
+        $col->addTextField('name')->setClass('fullWidth')->setValue($name);
+        
+    $col = $row->addColumn()->setClass('quarterWidth');
+        $col->addLabel('producer', __('Author/Producer'));
+        $col->addTextField('producer')->setClass('fullWidth')->setValue($producer);
+
+    $col = $row->addColumn()->setClass('quarterWidth');
+        $col->addLabel('category', __('Category'));
+        $col->addSelect('category')
+            ->fromArray($categories)
+            ->setClass('fullWidth')
+            ->selected($category)
+            ->placeholder();
+
+    $col = $row->addColumn()->setClass('quarterWidth');
+        $col->addLabel('collection', __('Collection'));
+        $col->addSelect('collection')
+            ->fromArray($collections)
+            ->chainedTo('category', $collectionsChained)
+            ->setClass('fullWidth')
+            ->selected($collection)
+            ->placeholder();
+
+    $col = $form->addRow()->addColumn();
+        $col->addLabel('everything', __('All Fields'));
+        $col->addTextField('everything')->setClass('fullWidth')->setValue($everything);
+
+    $row = $form->addRow();
+        $row->addSearchSubmit($gibbon->session);
+
+    echo $form->getOutput();
+
 
 	//Set pagination variable
 	$page = 1;
@@ -401,7 +326,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "name=$name&producer=$producer&category=$category&collection=$collection&everything=$everything");
         }
 
-        echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%; border: 1px solid #444'>";
+        echo "<table class='smallIntBorder borderGrey' cellspacing='0' style='width: 100%;'>";
         echo "<tr class='head' style='opacity: 0.7'>";
         echo "<th style='text-align: center'>";
 

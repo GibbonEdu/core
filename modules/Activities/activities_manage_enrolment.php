@@ -129,7 +129,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                         JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) 
                         JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
                         JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
-                        WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Pending' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) 
+                        WHERE gibbonActivityID=:gibbonActivityID 
+                        AND NOT gibbonActivityStudent.status=:statusCheck 
+                        AND gibbonPerson.status='Full' 
+                        AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today) 
                         AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current')
                         ORDER BY gibbonActivityStudent.status, timestamp";
 
@@ -167,6 +170,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo '</th>';
                 echo '</tr>';
 
+                $canViewStudentDetails = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php');
+
                 $count = 0;
                 $rowNum = 'odd';
                 while ($values = $result->fetch()) {
@@ -180,7 +185,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    if ($canViewStudentDetails) {
+                        echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
+                    } else {
+                        echo $studentName;
+                    }
+                    echo '</td>';
+                    echo '<td>';
+                    echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
                     echo $values['rollGroupNameShort'];

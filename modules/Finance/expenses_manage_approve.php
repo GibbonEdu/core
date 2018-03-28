@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -44,11 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
         }
 
         //Check if params are specified
-        $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
-        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+        $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
+        $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
         $status = '';
-        $status2 = $_GET['status2'];
-        $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+        $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
+        $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
@@ -132,376 +132,133 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                             echo '</div>';
                         } else {
                             //Let's go!
-                            $row = $result->fetch();
+                            $values = $result->fetch();
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                                 echo "<div class='linkTop'>";
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a>';
                                 echo '</div>';
                             }
-                            ?>
-							<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approveProcess.php' ?>">
-								<table class='smallIntBorder fullWidth' cellspacing='0'>
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __($guid, 'Basic Information') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td style='width: 275px'>
-											<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<?php
-                                            $yearName = '';
-											try {
-												$dataYear = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
-												$sqlYear = 'SELECT * FROM gibbonFinanceBudgetCycle WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID';
-												$resultYear = $connection2->prepare($sqlYear);
-												$resultYear->execute($dataYear);
-											} catch (PDOException $e) {
-												echo "<div class='error'>".$e->getMessage().'</div>';
-											}
-											if ($resultYear->rowCount() == 1) {
-												$rowYear = $resultYear->fetch();
-												$yearName = $rowYear['name'];
-											}
-											?>
-											<input readonly name="name" id="name" maxlength=20 value="<?php echo $yearName ?>" type="text" class="standardWidth">
-											<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" maxlength=20 value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden" class="standardWidth">
-											<script type="text/javascript">
-												var gibbonFinanceBudgetCycleID=new LiveValidation('gibbonFinanceBudgetCycleID');
-												gibbonFinanceBudgetCycleID.add(Validate.Presence);
-											</script>
-										</td>
-									</tr>
-									<tr>
-										<td style='width: 275px'>
-											<b><?php echo __($guid, 'Budget') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<?php
-                                            if ($highestAction == 'Manage Expenses_all' and $row['statusApprovalBudgetCleared'] == 'Y') { //Can change budgets only if budget level approval is passed (e.g. you are a school approver.
-                                                try {
-                                                    $dataBudget = array();
-                                                    $sqlBudget = "SELECT * FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
-                                                    $resultBudget = $connection2->prepare($sqlBudget);
-                                                    $resultBudget->execute($dataBudget);
-                                                } catch (PDOException $e) {
-                                                }
 
-                                                echo "<select name='gibbonFinanceBudgetID' id='gibbonFinanceBudgetID' style='width:302px'>";
-                                                $selected = '';
-                                                if (empty($gibbonFinanceBudgetID)) {
-                                                    $selected = 'selected';
-                                                }
-                                                echo "<option $selected value='Please select...'>".__($guid, 'Please select...').'</option>';
-                                                while ($rowBudget = $resultBudget->fetch()) {
-                                                    $selected = '';
-                                                    if ($row['gibbonFinanceBudgetID'] == $rowBudget['gibbonFinanceBudgetID']) {
-                                                        $selected = 'selected';
-                                                    }
-                                                    echo "<option $selected value='".$rowBudget['gibbonFinanceBudgetID']."'>".$rowBudget['name'].'</option>';
-                                                }
-                                                echo '</select>';
-                                                ?>
-												<script type="text/javascript">
-													var gibbonFinanceBudgetID=new LiveValidation('gibbonFinanceBudgetID');
-													gibbonFinanceBudgetID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>
-												<?php
+                            // Get budget allocation & allocated amounts
+                            $budgetAllocation = getBudgetAllocation($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
+                            $budgetAllocated = getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $values['gibbonFinanceBudgetID']);
+                            $budgetRemaining = (is_numeric($budgetAllocation) && is_numeric($budgetAllocated))? ($budgetAllocation - $budgetAllocated) : __('N/A');
 
-                                            } else { //Cannot change budget
-                                                ?>
-												<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget'];
-                                                ?>" type="text" class="standardWidth">
-												<input type='hidden' name='gibbonFinanceBudgetID' value='<?php echo $row['gibbonFinanceBudgetID'] ?>'/>
-												<?php
+                            $form = Form::create('expenseManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approveProcess.php');
 
-                                            }
-                            			?>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Title') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Status') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<b><?php echo __($guid, 'Description') ?></b>
-											<?php
-                                                echo '<p>';
-												echo $row['body'];
-												echo '</p>'
-                                            ?>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<b><?php echo __($guid, 'Purchase Details') ?></b>
-											<?php
-                                                echo '<p>';
-												echo $row['purchaseDetails'];
-												echo '</p>'
-                                            ?>
-										</td>
-									</tr>
+							$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+							$form->addHiddenValue('status2', $status2);
+							$form->addHiddenValue('gibbonFinanceExpenseID', $gibbonFinanceExpenseID);
+							$form->addHiddenValue('gibbonFinanceBudgetID2', $gibbonFinanceBudgetID2);
+							$form->addHiddenValue('gibbonFinanceBudgetCycleID', $gibbonFinanceBudgetCycleID);
 
+							$form->addRow()->addHeading(__('Basic Information'));
+							
+							$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
+							$row = $form->addRow();
+								$row->addLabel('name', __('Budget Cycle'));
+								$row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
 
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __($guid, 'Budget Tracking') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Total Cost') ?> *</b><br/>
-											<span style="font-size: 90%">
-												<i>
-												<?php
-                                                if ($_SESSION[$guid]['currency'] != '') {
-                                                    echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
-                                                } else {
-                                                    echo __($guid, 'Numeric value of the fee.');
-                                                }
-                            					?>
-												</i>
-											</span>
-										</td>
-										<td class="right">
-											<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($row['cost'], 2, '.', ','); ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
-										</td>
-										<td class="right">
-											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
-										</td>
-									</tr>
-									<?php
-                                    if ($row['countAgainstBudget'] == 'Y') {
-                                        ?>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Budget For Cycle') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
-													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
-                                                    } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
-                                                    }
-                                        			?>
-													</i>
-												</span>
-											</td>
-											<td class="right">
-												<?php
-                                                $budgetAllocation = null;
-												$budgetAllocationFail = false;
-												try {
-													$dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-													$sqlCheck = 'SELECT * FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID';
-													$resultCheck = $connection2->prepare($sqlCheck);
-													$resultCheck->execute($dataCheck);
-												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
-													$budgetAllocationFail = true;
-												}
-												if ($resultCheck->rowCount() != 1) {
-													echo '<input readonly name="name" id="name" maxlength=60 value="'.__($guid, 'NA').'" type="text" style="width: 300px">';
-													$budgetAllocationFail = true;
-												} else {
-													$rowCheck = $resultCheck->fetch();
-													$budgetAllocation = $rowCheck['value'];
-													?>
-															<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocation, 2, '.', ',');
-													?>" type="text" class="standardWidth">
-												<?php
+                            //Can change budgets only if budget level approval is passed (e.g. you are a school approver.
+                            if ($highestAction == 'Manage Expenses_all' and $values['statusApprovalBudgetCleared'] == 'Y') 
+                            { 
+                                $sql = "SELECT gibbonFinanceBudgetID as value, name FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
+                                $row = $form->addRow();
+                                    $row->addLabel('gibbonFinanceBudgetID', __('Budget'));
+                                    $row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($values['gibbonFinanceBudgetID']);
+                            } else {
+                                $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
 
-												}
-												?>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<b><?php echo __($guid, 'Amount already approved or spent') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
-													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
-                                                    } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
-                                                    }
-                                        			?>
-													</i>
-												</span>
-											</td>
-											<td class="right">
-												<?php
-                                                $budgetAllocated = 0;
-												$budgetAllocatedFail = false;
-												try {
-													$dataCheck = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $row['gibbonFinanceBudgetID']);
-													$sqlCheck = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
-															UNION
-															(SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))
-															";
-													$resultCheck = $connection2->prepare($sqlCheck);
-													$resultCheck->execute($dataCheck);
-												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
-													$budgetAllocatedFail = true;
-												}
-												if ($budgetAllocatedFail == false) {
-													while ($rowCheck = $resultCheck->fetch()) {
-														$budgetAllocated = $budgetAllocated + $rowCheck['cost'];
-													}
-													?>
-															<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format($budgetAllocated, 2, '.', ',');
-													?>" type="text" class="standardWidth">
-												<?php
-												}
+                                $row = $form->addRow();
+								    $row->addLabel('budgetName', __('Budget'));
+								    $row->addTextField('budgetName')->setValue($values['budget'])->isRequired()->readonly();
+                            }
 
-												?>
-											</td>
-										</tr>
-										<?php
-                                        if ($budgetAllocationFail == false and $budgetAllocatedFail == false) {
-                                            ?>
-											<tr>
-											<td>
-												<b><?php echo __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
-												<span style="font-size: 90%">
-													<i>
-													<?php
-                                                    if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
-                                                    } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
-                                                    }
-                                            		?>
-													</i>
-												</span>
-											</td>
-											<td class="right">
-												<?php
-                                                $color = 'red';
-												if (($budgetAllocation - $budgetAllocated) - $row['cost'] > 0) {
-													$color = 'green';
-												}
-												?>
-												<input readonly name="name" id="name" maxlength=60 value="<?php echo number_format(($budgetAllocation - $budgetAllocated), 2, '.', ','); ?>" type="text" style="width: 300px; font-weight: bold; color: <?php echo $color ?>">
-											</td>
-										</tr>
-										<?php
+							$row = $form->addRow();
+								$row->addLabel('title', __('Title'));
+								$row->addTextField('title')->isRequired()->readonly();
 
-                                        }
-                                    }
-                            		?>
+							$row = $form->addRow();
+								$row->addLabel('status', __('Status'));
+								$row->addTextField('status')->isRequired()->readonly();
 
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __($guid, 'Log') ?></h3>
-										</td>
-									</tr>
-									<tr>
-										<td colspan=2>
-											<?php
-                                            echo getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2);
-                            				?>
-										</td>
-									</tr>
+							$row = $form->addRow();
+								$col = $row->addColumn();
+								$col->addLabel('body', __('Description'));
+								$col->addContent($values['body']);
 
+							$row = $form->addRow();
+								$row->addLabel('purchaseBy', __('Purchase By'));
+								$row->addTextField('purchaseBy')->isRequired()->readonly();
 
-									<tr class='break'>
-										<td colspan=2>
-											<h3><?php echo __($guid, 'Action') ?></h3>
-										</td>
-									</tr>
-									<?php
-                                    $approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $row['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2);
-                            		if ($approvalRequired != true) { //Approval not required
-                                        ?>
-										<tr>
-											<td colspan=2>
-												<div class='error'><?php echo __($guid, 'Your approval is not currently required: it is possible someone beat you to it, or you have already approved it.') ?></div>
-											</td>
-										</tr>
-										<?php
+							$row = $form->addRow();
+								$col = $row->addColumn();
+								$col->addLabel('purchaseDetails', __('Purchase Details'));
+								$col->addContent($values['purchaseDetails']);
 
-									} else {
-										?>
-										<tr>
-											<td style='width: 275px'>
-												<b><?php echo __($guid, 'Approval') ?> *</b><br/>
-											</td>
-											<td class="right">
-												<?php
-                                                echo "<select name='approval' id='approval' style='width:302px'>";
-												echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
-												echo "<option value='Approval - Partial'>".__($guid, 'Approve').'</option>';
-												echo "<option value='Rejection'>".__($guid, 'Reject').'</option>';
-												echo "<option value='Comment'>".__($guid, 'Comment').'</option>';
-												echo '</select>';
-												?>
-												<script type="text/javascript">
-													var approval=new LiveValidation('approval');
-													approval.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
-												</script>
-											</td>
-										</tr>
-										<tr>
-											<td colspan=2>
-												<b><?php echo __($guid, 'Comment') ?></b><br/>
-												<textarea name="comment" id="comment" rows=8 style="width: 100%"></textarea>
-											</td>
-										</tr>
-										<tr>
-											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
-											</td>
-											<td class="right">
-												<input name="gibbonFinanceExpenseID" id="gibbonFinanceExpenseID" value="<?php echo $gibbonFinanceExpenseID ?>" type="hidden">
-												<input name="gibbonFinanceBudgetCycleID" id="gibbonFinanceBudgetCycleID" value="<?php echo $gibbonFinanceBudgetCycleID ?>" type="hidden">
-												<input name="status2" id="status2" value="<?php echo $status2 ?>" type="hidden">
-												<input name="gibbonFinanceBudgetID2" id="gibbonFinanceBudgetID2" value="<?php echo $gibbonFinanceBudgetID2 ?>" type="hidden">
-												<input name="status" id="status" value="<?php echo $status ?>" type="hidden">
-												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-											</td>
-										</tr>
-										<?php
-									}
-									?>
-								</table>
-							</form>
-							<?php
+                            $form->addRow()->addHeading(__('Budget Tracking'));
+                            
+                            $row = $form->addRow();
+                                $row->addLabel('costLabel', __('Total Cost'));
+                                $row->addTextField('costLabel')->isRequired()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
 
+							$row = $form->addRow();
+								$row->addLabel('countAgainstBudgetLabel', __('Count Against Budget'));
+                                $row->addTextField('countAgainstBudgetLabel')->setValue(ynExpander($guid, $values['countAgainstBudget']))->isRequired()->readonly();
+                                
+                            if ($values['countAgainstBudget'] == 'Y') {
+                                $budgetAllocationLabel = (is_numeric($budgetAllocation))? number_format($budgetAllocation, 2, '.', ',') : $budgetAllocation;
+                                $row = $form->addRow();
+                                    $row->addLabel('budgetAllocation', __('Budget For Cycle'))->description(__('Numeric value of the fee.'));
+                                    $row->addTextField('budgetAllocation')->isRequired()->readonly()->setValue($budgetAllocationLabel);
+                                
+                                $budgetAllocatedLabel = (is_numeric($budgetAllocated))? number_format($budgetAllocated, 2, '.', ',') : $budgetAllocated;
+                                $row = $form->addRow();
+                                    $row->addLabel('budgetForCycle', __('Amount already approved or spent'))->description(__('Numeric value of the fee.'));
+                                    $row->addTextField('budgetForCycle')->isRequired()->readonly()->setValue($budgetAllocatedLabel);
+                                    
+                                $budgetRemainingLabel = (is_numeric($budgetRemaining))? number_format($budgetRemaining, 2, '.', ',') : $budgetRemaining;
+                                $row = $form->addRow();
+                                    $row->addLabel('budgetRemaining', __('Budget Remaining For Cycle'))->description(__('Numeric value of the fee.'));
+                                    $row->addTextField('budgetRemaining')
+                                        ->isRequired()
+                                        ->readonly()
+                                        ->setValue($budgetRemainingLabel)
+                                        ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
+                            }
+
+                            $form->addRow()->addHeading(__('Log'));
+                            
+                            $form->addRow()->addContent(getExpenseLog($guid, $gibbonFinanceExpenseID, $connection2));
+
+                            $form->addRow()->addHeading(__('Action'));
+
+                            $approvalRequired = approvalRequired($guid, $_SESSION[$guid]['gibbonPersonID'], $values['gibbonFinanceExpenseID'], $gibbonFinanceBudgetCycleID, $connection2);
+                            if ($approvalRequired != true) {
+                                $form->addRow()->addAlert(__('Your approval is not currently required: it is possible someone beat you to it, or you have already approved it.'), 'error');
+                            } else {
+                                $approvalStatuses = array(
+                                    'Approval - Partial' => __('Approve'),
+                                    'Rejection' => __('Reject'),
+                                    'Comment' => __('Comment'),
+                                );
+                                $row = $form->addRow();
+                                    $row->addLabel('approval', __('Approval'));
+                                    $row->addSelect('approval')->fromArray($approvalStatuses)->isRequired()->placeholder();
+
+                                $col = $form->addRow()->addColumn();
+                                    $col->addLabel('comment', __('Comment'));
+                                    $col->addTextArea('comment')->setRows(8)->setClass('fullWidth');
+                            }
+
+                            $row = $form->addRow();
+								$row->addFooter();
+								$row->addSubmit();
+
+							$form->loadAllValuesFrom($values);
+
+                            echo $form->getOutput();
                         }
                     }
                 }
@@ -509,4 +266,4 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
         }
     }
 }
-?>
+

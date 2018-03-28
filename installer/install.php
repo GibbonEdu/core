@@ -208,6 +208,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     'es_ES' => 'Español',
                                     'fr_FR' => 'Français - France',
                                     'it_IT' => 'Italiano - Italia',
+                                    'pl_PL' => 'Język polski - Polska',
                                     'pt_BR' => 'Português - Brasil',
                                     'ro_RO' => 'Română',
                                     'sq_AL' => 'Shqip - Shqipëri',
@@ -576,10 +577,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelectCurrency($setting['name'])->isRequired();
 
+                                                $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue('Asia/Hong_Kong')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($tzlist)->isRequired()->placeholder();
 
                                                 $row = $form->addRow();
                                                     $row->addFooter();

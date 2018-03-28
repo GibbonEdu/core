@@ -20,9 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Gibbon system-wide include
 include '../../gibbon.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false 
-    || isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false
-    || isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
+if (empty($_SESSION[$guid]['gibbonPersonID']) || empty($_SESSION[$guid]['gibbonRoleIDPrimary'])) {
     die(__('Your request failed because you do not have access to this action.'));
 } else {
     $gibbonPersonID = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : '';
