@@ -79,42 +79,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
     $filters = QueryFilters::createFromPost()->addSearch($search, $searchColumns)->defaultSort('fullName');
-    
+
     $gateway = new UserGateway($pdo);
     $resultSet = $gateway->queryAllUsers($filters);
 
-    // Build a set of family data
-    $people = array_column($resultSet->data, 'gibbonPersonID');
+    // Grab a set of family data per user
+    $people = $resultSet->getColumn('gibbonPersonID');
+    $familyData = $gateway->selectFamilyDetailsPerUser($people)->fetchGrouped();
 
-    $dataFamily = array('people' => implode(',', $people));
-    $sqlFamily = "(
-        SELECT gibbonFamilyAdult.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, dob, (SELECT gibbonPersonID FROM gibbonFamilyChild WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID LIMIT 1) as gibbonPersonIDStudent
-        FROM gibbonFamily 
-        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
-        JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-        WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :people)
-    ) UNION (
-        SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamilyChild.gibbonFamilyID, 'child' AS role, gibbonFamily.name, dob, gibbonPerson.gibbonPersonID as gibbonPersonIDStudent
-        FROM gibbonFamily 
-        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
-        JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-        WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :people)
-    ) ORDER BY gibbonFamilyID, role, dob DESC, gibbonPersonID";
-    
-    $resultFamily = $pdo->executeQuery($dataFamily, $sqlFamily);
-    $familyData = $resultFamily->rowCount() > 0 ? $resultFamily->fetchAll(\PDO::FETCH_GROUP) : array();
+    $resultSet->joinResults('gibbonPersonID', 'families', $familyData);
 
-    $resultSet->updateResults(function(&$item) use (&$familyData){
-        $id = intval($item['gibbonPersonID']);
-        $item['families'] = isset($familyData[$id])? $familyData[$id] : array();
-        return $item;
-    });
+    // echo '<pre>';
+    // print_r($resultSet);
+    // echo '</pre>';
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/user_manage_add.php&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
 
-    $table = DataTable::createFromResultSet('userManage', $resultSet)->setPath('.'.$_SESSION[$guid]['address']);
+    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath('.'.$_SESSION[$guid]['address']);
+
+    $table->addActionLink('add', __('Add'))
+        ->setURL('/modules/User Admin/user_manage_add.php')
+        ->addParam('search', $search)
+        ->displayLabel();
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);
@@ -137,22 +122,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('username', __('Username'));
 
-    $col = $table->addActionColumn();
+    $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $search);
+
         $col->addAction('edit', __('Edit'))
-            ->setURL('/modules/User Admin/user_manage_edit.php')
-            ->addParam('gibbonPersonID')
-            ->addParam('search', $search);
+            ->setURL('/modules/User Admin/user_manage_edit.php');
 
         $col->addAction('delete', __('Delete'))
-            ->setURL('/modules/User Admin/user_manage_delete.php')
-            ->addParam('gibbonPersonID')
-            ->addParam('search', $search);
+            ->setURL('/modules/User Admin/user_manage_delete.php');
 
         $col->addAction('password', __('Change Password'))
-            ->setIcon('key')
             ->setURL('/modules/User Admin/user_manage_password.php')
-            ->addParam('gibbonPersonID')
-            ->addParam('search', $search);
+            ->setIcon('key');
 
     echo $table->getOutput();
 }

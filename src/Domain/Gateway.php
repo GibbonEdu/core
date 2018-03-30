@@ -20,9 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 use Gibbon\sqlConnection;
-use Gibbon\Domain\Result;
-use Gibbon\Domain\ResultSet;
-use Gibbon\Domain\QueryFilters;
 
 /**
  * Gateway
@@ -32,32 +29,12 @@ use Gibbon\Domain\QueryFilters;
  */
 abstract class Gateway
 {
-    private $pdo;
-
-    protected static $tableName;
-    protected static $primaryKey;
-
-    protected static $columns;
+    protected $pdo;
 
     public function __construct(sqlConnection $pdo)
     {
-        if (empty(static::$tableName)) {
-            throw new \Exception(get_called_class().' must define a $tableName');
-        }
-
         $this->pdo = $pdo;
-    }
-
-    // BUILT-IN QUERIES
-    public function countAll()
-    {
-        return $this->doCount("SELECT COUNT(*) FROM `".static::$tableName."`");
-    }
-
-    public function foundRows()
-    {
-        return $this->doCount("SELECT FOUND_ROWS()");
-    }
+    }    
 
     // DATA MANIPULATION
     protected function doInsert($sql, $data = array())
@@ -88,7 +65,7 @@ abstract class Gateway
         return $result->rowCount() > 0;
     }
 
-    // DATA QUERYING
+    // DATA SELECT
     protected function doSelect($sql, $data = array())
     {
         return $this->pdo->executeQuery($data, $sql);
@@ -102,30 +79,5 @@ abstract class Gateway
     protected function doCount($sql, $data = array())
     {
         return $this->pdo->executeQuery($data, $sql)->fetchColumn(0);
-    }
-
-    protected function doFilteredQuery($filters, $sql, $data = array())
-    {
-        $sql = $filters->applyFilters($sql, $data);
-
-        $result = $this->pdo->executeQuery($data, $sql);
-
-        if ($this->pdo->getQuerySuccess()) {
-            return ResultSet::createFromArray($filters, $result->fetchAll(), $this->foundRows(), $this->countAll());
-        } else {
-            return ResultSet::createEmpty($filters);
-        }
-    }
-
-    // SCHEMA-RELATED
-
-    protected function getColumns()
-    {
-        if (!isset(static::$columns)) {
-            $result = $this->doSelect("SELECT DISTINCT(column_name), data_type FROM information_schema.columns WHERE table_name='".static::$tableName."'");
-            static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();       
-        }
-
-        return static::$columns;
     }
 }

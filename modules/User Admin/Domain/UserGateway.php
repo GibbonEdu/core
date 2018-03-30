@@ -19,28 +19,27 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\UserAdmin\Domain;
 
-use Gibbon\Domain\Gateway;
+use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\QueryFilters;
 
 /**
  * User Gateway
  *
- * Provides a data access layer for the gibbonPerson table.
- *
  * @version v16
  * @since   v16
  */
-class UserGateway extends Gateway
+class UserGateway extends QueryableGateway
 {
     protected static $tableName = 'gibbonPerson';
-    protected static $primaryKey = 'gibbonPersonID';
 
-    public function queryAllUsers($filters)
+    public function queryAllUsers($filters = null)
     {
         $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.username, 
                 gibbonPerson.image_240, gibbonPerson.status, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonRole.name as primaryRole 
                 FROM gibbonPerson 
                 LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
 
+        $filters = !($filters instanceof QueryFilters)? QueryFilters::createEmpty() : $filters;
         $filters->defineFilter('role:student',  __('Role').': '.__('Student'),      "gibbonRole.category = 'Student'")
                 ->defineFilter('role:parent',   __('Role').': '.__('Parent'),       "gibbonRole.category = 'Parent'")
                 ->defineFilter('role:staff',    __('Role').': '.__('Staff'),        "gibbonRole.category = 'Staff'")
@@ -51,5 +50,23 @@ class UserGateway extends Gateway
                 ->defineFilter('date:ended',    __('Past End Date'),                "(dateEnd IS NOT NULL AND dateEnd <= :today)", ['today' => date('Y-m-d')]);
 
         return $this->doFilteredQuery($filters, $sql);
+    }
+
+    public function selectFamilyDetailsPerUser($people)
+    {
+        $data = array('people' => is_array($people)? implode(',', $people) : $people);
+        $sql = "(
+            SELECT LPAD(gibbonFamilyAdult.gibbonPersonID, 10, '0'), gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, (SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID ORDER BY gibbonPerson.dob DESC LIMIT 1) as gibbonPersonIDStudent
+            FROM gibbonFamily 
+            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+            WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :people)
+        ) UNION (
+            SELECT LPAD(gibbonFamilyChild.gibbonPersonID, 10, '0'), gibbonFamilyChild.gibbonFamilyID, 'child' AS role, gibbonFamily.name, gibbonFamilyChild.gibbonPersonID as gibbonPersonIDStudent
+            FROM gibbonFamily 
+            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :people)
+        ) ORDER BY gibbonFamilyID";
+
+        return $this->doSelect($sql, $data);
     }
 }
