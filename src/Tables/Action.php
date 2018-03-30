@@ -34,6 +34,7 @@ class Action
     protected $params = array();
 
     protected $modal = false;
+    protected $displayLabel = false;
 
     public function __construct($name, $label = '')
     {
@@ -41,6 +42,8 @@ class Action
         $this->setLabel($label);
 
         switch ($this->name) {
+            case 'add':     $this->setIcon('page_new');
+                            break;
             case 'edit':    $this->setIcon('config');
                             break;
             case 'delete':  $this->setIcon('garbage')->isModal(true)->addParam('width', '650')->addParam('height', '135');
@@ -59,6 +62,13 @@ class Action
     public function getLabel()
     {
         return $this->label;
+    }
+
+    public function displayLabel($value = true)
+    {
+        $this->displayLabel = $value;
+
+        return $this;
     }
 
     public function setURL($url)
@@ -99,17 +109,17 @@ class Action
         return $this;
     }
 
-    public function getContents(&$data)
+    public function getOutput(&$data = array(), $params = array())
     {
         global $guid;
 
         $class = '';
         $path = $_SESSION[$guid]['absoluteURL'].'/index.php';
-        $params = array();
+        $queryParams = array();
 
-        if (!empty($this->params)) {
-            foreach ($this->params as $key => $value) {
-                $params[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
+        if (!empty($data)) {
+            foreach (array_merge($params, $this->params) as $key => $value) {
+                $queryParams[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
             }
         }
 
@@ -119,13 +129,14 @@ class Action
         }
 
         $url = $path.'?q='.$this->getURL();
-        if (!empty($params)) {
-            $url .= '&'.http_build_query($params);
+        if (!empty($queryParams)) {
+            $url .= '&'.http_build_query($queryParams);
         }
 
-        return sprintf(' <a href="%1$s" class="%2$s"><img title="%3$s" src="./themes/Default/img/%4$s.png"></a>', 
+        return sprintf('<a href="%1$s" class="%2$s">%3$s<img title="%4$s" src="./themes/Default/img/%5$s.png" style="margin-left: 5px"></a>', 
             $url, 
             $class,
+            ($this->displayLabel? $this->getLabel() : ''),
             $this->getLabel(), 
             $this->getIcon()
         );

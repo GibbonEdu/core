@@ -1660,6 +1660,18 @@ table.smallIntBorder td.noPadding {
 	min-width: auto;
 }
 
+.dataTable .filters {
+    width: 70px;
+    height: 26px;
+    margin: 0 5px 0 0;
+}
+
+.dataTable .limit {
+    width: 50px;
+    height: 26px;
+    margin: 0;
+}
+
 button, input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }

@@ -28,6 +28,7 @@ namespace Gibbon\Tables;
 class ActionColumn extends Column
 {
     protected $actions = array();
+    protected $params = array();
 
     public function __construct()
     {
@@ -44,16 +45,23 @@ class ActionColumn extends Column
         return $action;
     }
 
+    public function addParam($name, $value = '')
+    {
+        $this->params[$name] = $value;
+
+        return $this;
+    }
+
     public function getWidth()
     {
         return (count($this->actions) * 36).'px';
     }
 
-    public function getContents(&$data)
+    public function getOutput(&$data = array())
     {
         $output = '';
         foreach ($this->actions as $actionName => $action) {
-            $output .= $action->getContents($data);
+            $output .= $action->getOutput($data, $this->params);
         }
 
         return $output;

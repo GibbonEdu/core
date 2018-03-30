@@ -19,9 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
-use Gibbon\Tables\Column;
 use Gibbon\Tables\Action;
+use Gibbon\Tables\Column;
 use Gibbon\Domain\ResultSet;
+use Gibbon\Domain\QueryFilters;
+use Gibbon\Forms\FormFactory;
 
 /**
  * DataTable
@@ -33,13 +35,18 @@ class DataTable
 {
     protected $id;
     protected $columns = array();
+    protected $actionLinks = array();
 
     protected $resultSet;
+    protected $filters;
+    protected $factory;
 
     public function __construct($id, ResultSet $resultSet)
     {
         $this->id = $id;
         $this->resultSet = $resultSet;
+        $this->filters = QueryFilters::createEmpty();
+        $this->factory = FormFactory::create();
     }
 
     public static function createFromResultSet($id, ResultSet $resultSet)
@@ -54,11 +61,25 @@ class DataTable
         return $this;
     }
 
+    public function withFilters(QueryFilters $filters)
+    {
+        $this->filters = $filters;
+
+        return $this;
+    }
+
     public function addColumn($name, $label = '')
     {
         $this->columns[$name] = new Column($name, $label);
 
         return $this->columns[$name];
+    }
+
+    public function addActionLink($name, $label = '')
+    {
+        $this->actionLinks[$name] = new Action($name, $label);
+
+        return $this->actionLinks[$name];
     }
 
     public function addActionColumn()
@@ -72,26 +93,25 @@ class DataTable
     {
         $output = '';
 
+        $output .= '<div class="linkTop">';
+        foreach ($this->actionLinks as $action) {
+            $output .= $action->getOutput();
+        }
+        $output .= '</div>';
+
+
         $output .= '<div id="'.$this->id.'">';
         $output .= '<div class="dataTable">';
 
-        if ($this->resultSet->totalCount == 0) {
-            $output .= '<div class="error">';
-            $output .= __('There are no records to display.');
-            $output .= '</div>';
-            $output .= '</div></div>';
-            return $output;
-        }
-
         // Debug the AJAX $POST => Filters
         // $output .= json_encode($_POST).'<br/>';
-        // $output .= $this->resultSet->filters->toJson();
+        // $output .= json_encode($this->filters->getFilters());
 
         $output .= '<div>';
         $output .= $this->renderPageCount($this->resultSet);
-        $output .= $this->renderPageFilters($this->resultSet);
+        $output .= $this->renderPageFilters($this->filters);
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($this->resultSet);
+        $output .= $this->renderSelectFilters($this->filters);
         $output .= $this->renderPageSize($this->resultSet);
         $output .= $this->renderPagination($this->resultSet);
 
@@ -107,8 +127,8 @@ class DataTable
                 if ($column->getSortable()) {
                     $classes[] = 'sortable';
                 }
-                if (isset($this->resultSet->filters->orderBy[$columnName])) {
-                    $classes[] = 'sorting sort'.$this->resultSet->filters->orderBy[$columnName];
+                if (isset($this->filters->orderBy[$columnName])) {
+                    $classes[] = 'sorting sort'.$this->filters->orderBy[$columnName];
                 }
                 $output .= '<th style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
                 $output .=  $column->getLabel();
@@ -120,43 +140,45 @@ class DataTable
             // ROWS
             $output .= '<tbody>';
 
-            foreach ($this->resultSet->getData() as $data) {
+            foreach ($this->resultSet as $data) {
                 $output .= '<tr>';
 
                 if (!empty($this->columns)) {
                     foreach ($this->columns as $columnName => $column) {
-                        $output .= '<td >';
-                        $output .= $column->getContents($data);
+                        $output .= '<td>';
+                        $output .= $column->getOutput($data);
                         $output .= '</td>';
                     }
                 }
 
                 $output .= '</tr>';
             }
+
+            $output .= '</tbody>';
+            $output .= '</table>';
+
+            $output .= $this->renderPageCount($this->resultSet);
+            $output .= $this->renderPagination($this->resultSet);
         } else {
-            if ($this->resultSet->resultCount == 0) {
+            if ($this->resultSet->isSubset()) {
                 $output .= '<div class="warning">';
                 $output .= __('No results matched your search.');
                 $output .= '</div>';
+            } else {
+                $output .= '<div class="error">';
+                $output .= __('There are no records to display.');
+                $output .= '</div>';
             }
-        }
-
-
-        $output .= '</tbody>';
-        $output .= '</table>';
-
-        if ($this->resultSet->hasResults()) {
-            $output .= $this->renderPageCount($this->resultSet);
-            $output .= $this->renderPagination($this->resultSet);
         }
 
         $output .= '</div></div><br/>';
 
         // Initialize the jQuery Data Table functionality
+        $filterData = !empty($this->filters)? json_encode($this->filters->getFilters()) : '{}';
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('".str_replace(' ', '%20', $this->path)."', ".$this->resultSet->filters->toJson().", ".$this->resultSet->resultCount.");
+            $('#".$this->id."').gibbonDataTable('".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->resultSet->getResultCount().");
         });
         </script>";
 
@@ -169,10 +191,8 @@ class DataTable
 
         if ($resultSet->hasResults()) {
             $output .= $resultSet->isSubset()? __('Results') : __('Records');
-            
-            $output .= ' '.$resultSet->rowsFrom.'-'.$resultSet->rowsTo.' '.__('of').' ';
-            
-            $output .= $resultSet->isSubset()? $resultSet->resultCount : $resultSet->totalCount;
+            $output .= ' '.$resultSet->getPageLowerBounds().'-'.$resultSet->getPageUpperBounds().' '.__('of').' ';
+            $output .= $resultSet->isSubset()? $resultSet->getResultCount() : $resultSet->getTotalCount();
         } else {
             $output .= __('No Results');
         }
@@ -182,16 +202,20 @@ class DataTable
         return $output;
     }
 
-    protected function renderPageFilters(ResultSet $resultSet)
+    protected function renderPageFilters(QueryFilters $filters)
     {
+        if (empty($filters)) return '';
+
         $output = '<span class="small" style="line-height: 32px;">';
 
-        if ($resultSet->isFiltered()) {
+        if (!empty($filters->filterBy)) {
             $output .= '&nbsp;&nbsp; '.__('Filtered by').' ';
 
-            $definitions = $resultSet->filters->getDefinitions();
-            foreach ($resultSet->filters->filterBy as $filter) {
-                $output .= '<input type="button" class="filter" value="'.$definitions[$filter]['label'].'" data-filter="'.$filter.'"> ';
+            $definitions = $filters->getDefinitionLabels();
+            $filters = array_intersect_key($filters->getDefinitionLabels(), array_flip($this->filters->filterBy));
+
+            foreach ($filters as $value => $label) {
+                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
             }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
@@ -200,70 +224,66 @@ class DataTable
         return $output;
     }
 
-    protected function renderSelectFilters(ResultSet $resultSet)
+    protected function renderSelectFilters(QueryFilters $filters)
     {
-        $output = '';
+        if (empty($filters)) return '';
 
-        $definitions = $resultSet->filters->getDefinitions();
-
-        if (empty($definitions)) return $output;
+        $definitions = $filters->getDefinitionLabels();
+        if (empty($definitions)) return '';
         
-        $output .= '<span style="padding-right:5px;"><select name="filter" class="filters floatNone noMargin" style="width:65px;height:26px;">';
-        $output .= '<option value="">'.__('Filters').'</option>';
-        foreach ($definitions as $name => $filter) {
-            $output .= '<option value="'.$name.'">'.$filter['label'].'</option>';
-        }
-        $output .= '</select></span>';
-
-        return $output;
+        return $this->factory->createSelect('filter')
+            ->fromArray($definitions)
+            ->setClass('filters floatNone')
+            ->placeholder(__('Filters'))
+            ->getOutput();
     }
 
     protected function renderPageSize(ResultSet $resultSet)
     {
-        $pageSize = $resultSet->filters->pageSize;
-        
-        $output = '<select class="limit floatNone" style="width:50px;height:26px;margin: 2px 0;">';
-            $output .= '<option value="10" '.($pageSize == 10? 'selected' : '').'>10</option>';
-            $output .= '<option value="25" '.($pageSize == 25? 'selected' : '').'>25</option>';
-            $output .= '<option value="50" '.($pageSize == 50? 'selected' : '').'>50</option>';
-            $output .= '<option value="100" '.($pageSize == 100? 'selected' : '').'>100</option>';
-        $output .= '</select>  <small style="line-height: 30px;">Per Page</small>';
+        $pageSize = $resultSet->getPageSize();
 
-        return $output;
+        if ($pageSize <= 0) return '';
+
+        return $this->factory->createSelect('limit')
+            ->fromArray(array(10, 25, 50, 100))
+            ->setClass('limit floatNone')
+            ->selected($pageSize)
+            ->append('<small style="line-height: 30px;margin-left:5px;">'.__('Per Page').'</small>')
+            ->getOutput();
     }
 
     protected function renderPagination(ResultSet $resultSet)
     {
-        $filters = $resultSet->filters;
+        if ($resultSet->getPageCount() <= 1) return '';
 
-        if ($resultSet->pageCount <= 1) return '';
+        $pageIndex = $resultSet->getPageIndex();
 
         $output = '<div class="floatRight">';
-            $output .= '<input type="button" class="paginate" data-page="'.($filters->pageIndex - 1).'" '.($filters->pageIndex <= 0? 'disabled' : '').' value="'.__('Prev').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($pageIndex - 1).'" '.($pageIndex <= 0? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $pageCount = $resultSet->pageCount-1;
+            $pageCount = $resultSet->getPageCount()-1;
             $range = range(0, $pageCount);
 
             // Collapse the leading page-numbers
-            if ($pageCount > 7 && $filters->pageIndex > 5) {
-                array_splice($range, 2, $filters->pageIndex - 4, '...');
+            if ($pageCount > 7 && $pageIndex > 5) {
+                array_splice($range, 2, $pageIndex - 4, '...');
             }
 
             // Collapse the trailing page-numbers
-            if ($pageCount > 7 && ($pageCount - $filters->pageIndex) > 5) {
-                array_splice($range, ($pageCount - $filters->pageIndex - 2)*-1, ($pageCount - $filters->pageIndex)-4, '...');
+            if ($pageCount > 7 && ($pageCount - $pageIndex) > 5) {
+                array_splice($range, ($pageCount - $pageIndex - 2)*-1, ($pageCount - $pageIndex)-4, '...');
             }
 
             foreach ($range as $page) {
                 if ($page === '...') {
                     $output .= '<input type="button" disabled value="...">';
                 } else {
-                    $class = ($page == $filters->pageIndex)? 'active paginate' : 'paginate';
+                    $class = ($page == $pageIndex)? 'active paginate' : 'paginate';
                     $output .= '<input type="button" class="'.$class.'" data-page="'.$page.'" value="'.($page + 1).'">';
                 }
             }
 
-            $output .= '<input type="button" class="paginate" data-page="'.($filters->pageIndex + 1).'" '.($filters->pageIndex >= $pageCount? 'disabled' : '').' value="'.__('Next').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($pageIndex + 1).'" '.($pageIndex >= $pageCount? 'disabled' : '').' value="'.__('Next').'">';
         $output .= '</div>';
 
         return $output;

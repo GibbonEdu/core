@@ -109,7 +109,7 @@ class Column
         return $this;
     }
 
-    public function getContents(&$data)
+    public function getOutput(&$data = array())
     {
         if (!empty($this->formatter) && is_callable($this->formatter)) {
             return call_user_func($this->formatter, $data);
