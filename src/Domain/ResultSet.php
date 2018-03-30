@@ -20,58 +20,49 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain;
 
 /**
- * Object representing the results of a filtered Gateway query.
+ * Object representing the paginated results of a Gateway query.
  */
-class ResultSet
+class ResultSet implements \Countable, \IteratorAggregate
 {
-    protected $filters;
     protected $data;
 
     protected $totalCount; 
     protected $resultCount; 
-    protected $pageCount; 
+    protected $pageIndex; 
+    protected $pageSize; 
 
-    protected $rowsFrom; 
-    protected $rowsTo; 
-
-    public function __construct(QueryFilters $filters, array $data, $resultCount, $totalCount)
+    public function __construct(array $data, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
     {
-        $this->filters = $filters;
         $this->data = $data;
-
-        $this->totalCount = $totalCount;
         $this->resultCount = $resultCount;
-        $this->pageCount = ceil($resultCount / $filters->pageSize);
-
-        // echo $resultCount.' / '.$filters->pageSize.' = '.$this->pageCount;
-
-        $this->rowsFrom = ($filters->pageIndex * $filters->pageSize + 1);
-        $this->rowsTo = max(1, min( (($filters->pageIndex + 1) * $filters->pageSize), $resultCount));
+        $this->totalCount = $totalCount;
+        $this->pageIndex = $pageIndex;
+        $this->pageSize = $pageSize;
     }
 
-    public function __get($name)
+    public static function createFromArray(array $data, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
     {
-        return isset($this->$name)? $this->$name : '';
+        return new self($data, $resultCount, $totalCount, $pageIndex, $pageSize);
     }
 
-    public static function createFromArray(QueryFilters $filters, array $data, $resultCount, $totalCount)
+    public static function createEmpty()
     {
-        return new self($filters, $data, $resultCount, $totalCount);
+        return new self(array(), 0, 0);
     }
 
-    public static function createEmpty(QueryFilters $filters)
+    public function count()
     {
-        return new self($filters, array(), 0, 0);
+        return count($this->data);
     }
 
-    public function getFilters()
+    public function getIterator()
     {
-        return $this->filters;
+        return new \ArrayIterator($this->data);
     }
 
-    public function getData()
+    public function getColumn($column)
     {
-        return $this->data;
+        return array_column($this->data, $column);
     }
 
     public function hasResults()
@@ -79,18 +70,52 @@ class ResultSet
         return !empty($this->data);
     }
 
-    public function isFiltered()
-    {
-        return count($this->filters->filterBy) > 0;
-    }
-
     public function isSubset()
     {
         return $this->totalCount > 0 && ($this->totalCount != $this->resultCount);
     }
 
-    public function updateResults(callable $callable)
+    public function getTotalCount()
     {
-        array_walk($this->data, $callable);
+        return $this->totalCount;
+    }
+
+    public function getResultCount()
+    {
+        return $this->resultCount;
+    }
+
+    public function getPageIndex()
+    {
+        return $this->pageIndex;
+    }
+
+    public function getPageSize()
+    {
+        return $this->pageSize;
+    }
+
+    public function getPageCount()
+    {
+        return ceil($this->resultCount / $this->pageSize);
+    }
+
+    public function getPageLowerBounds()
+    {
+        return ($this->pageIndex * $this->pageSize + 1);
+    }
+
+    public function getPageUpperBounds()
+    {
+        return max(1, min( (($this->pageIndex + 1) * $this->pageSize), $this->resultCount));
+    }
+
+    public function joinResults($keyField, $joinField, &$joinData)
+    {
+        array_walk($this->data, function(&$item) use ($keyField, $joinField, &$joinData){
+            $key = $item[$keyField];
+            $item[$joinField] = isset($joinData[$key])? $joinData[$key] : array();
+            return $item;
+        });
     }
 }

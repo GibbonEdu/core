@@ -41,11 +41,11 @@ class Result extends \PDOStatement
 
     public function fetchGrouped()
     {
-        return $this->fetchAll(\PDO::FETCH_GROUP);
+        return $this->hasRows()? $this->fetchAll(\PDO::FETCH_GROUP) : array();
     }
 
-    public function fetchGroupedByID()
+    public function fetchGroupedByUnique()
     {
-        return $this->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE);
+        return $this->hasRows()? $this->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
     }
 }

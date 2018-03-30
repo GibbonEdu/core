@@ -38,7 +38,7 @@ class QueryFilters
     {
         $this->filters = $this->sanitizeFilters(array_replace($this->filters, $filters));
     }
-
+    
     public function __get($name)
     {
         return isset($this->filters[$name])? $this->filters[$name] : null;
@@ -51,12 +51,12 @@ class QueryFilters
 
     public static function createFromPost()
     {
-        return new QueryFilters($_POST);
+        return new self($_POST);
     }
 
-    public function toJson()
+    public static function createEmpty()
     {
-        return json_encode($this->filters);
+        return new self();
     }
 
     public function defineFilter($name, $label, $query, $data = array())
@@ -70,9 +70,14 @@ class QueryFilters
         return $this;
     }
 
-    public function getDefinitions()
+    public function getFilters()
     {
-        return $this->definitions;
+        return $this->filters;
+    }
+
+    public function getDefinitionLabels()
+    {
+        return array_combine(array_keys($this->definitions), array_column($this->definitions, 'label'));
     }
 
     public function addSearch($search, $column)
@@ -182,7 +187,6 @@ class QueryFilters
             'searchBy'   => is_array($filters['searchBy'])? $filters['searchBy'] : array(),
             'filterBy'   => is_array($filters['filterBy'])? $filters['filterBy'] : array(),
             'orderBy'   => is_array($filters['orderBy'])? $filters['orderBy'] : array(),
-            // 'orderBy'    => isset($filters['sort'], $filters['direction'])? array($filters['sort'] => $filters['direction']) : array(),
         );
     }
 }
