@@ -827,6 +827,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $settingsFail = true;
                                                 }
 
+                                                try {
+                                                    $data = array('email' => $email); //Use organisation email as finance email, initially
+                                                    $sql = "UPDATE gibbonSetting SET value=:email WHERE scope='Finance' AND name='email'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                } catch (PDOException $e) {
+                                                    $settingsFail = true;
+                                                }
+
                                                 if ($statsCollection == 'Y') {
                                                     $absolutePathProtocol = '';
                                                     $absolutePath = '';
