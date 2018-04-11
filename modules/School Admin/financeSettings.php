@@ -45,10 +45,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
     $row = $form->addRow()->addHeading(__('General Settings'));
 
     $setting = getSettingByScope($connection2, 'Finance', 'email', true);
-    $financeEmail = !empty($setting['value'])? $setting['value'] : $_SESSION[$guid]['organisationEmail'];
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addEmail($setting['name'])->setValue($financeEmail)->isRequired();
+        $row->addEmail($setting['name'])->setValue($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled', true);
     $row = $form->addRow();
