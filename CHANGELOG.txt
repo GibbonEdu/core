@@ -20,6 +20,7 @@ v16.0.00
 --------
 	Headlines
 		Activated Simplified Chinese and Polish as available languages
+		Added Croatian as development language
 
 	Significant Changes
 
