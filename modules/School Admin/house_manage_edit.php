@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->isRequired()->maxLength(10)->setValue($values['name']);
+                $row->addTextField('name')->isRequired()->maxLength(30)->setValue($values['name']);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
