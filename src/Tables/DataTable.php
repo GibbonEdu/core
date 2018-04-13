@@ -75,19 +75,20 @@ class DataTable
         return $this->columns[$name];
     }
 
-    public function addActionLink($name, $label = '')
-    {
-        $this->actionLinks[$name] = new Action($name, $label);
-
-        return $this->actionLinks[$name];
-    }
-
     public function addActionColumn()
     {
         $this->columns['actions'] = new ActionColumn();
 
         return $this->columns['actions'];
     }
+
+    public function addHeaderAction($name, $label = '')
+    {
+        $this->actionLinks[$name] = new Action($name, $label);
+
+        return $this->actionLinks[$name];
+    }
+
 
     public function getOutput()
     {
@@ -123,6 +124,7 @@ class DataTable
             $output .= '<tr class="head">';
             foreach ($this->columns as $columnName => $column) {
                 $classes = array('column');
+                $style = array('width:' . $column->getWidth());
 
                 if ($column->getSortable()) {
                     $classes[] = 'sortable';
@@ -130,7 +132,11 @@ class DataTable
                 if (isset($this->filters->orderBy[$columnName])) {
                     $classes[] = 'sorting sort'.$this->filters->orderBy[$columnName];
                 }
-                $output .= '<th style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
+
+                if ($column instanceOf ActionColumn) {
+                    $style[] = 'min-width: '.$column->getWidth();
+                }
+                $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
                 $output .=  $column->getLabel();
                 $output .= '</th>';
             }
@@ -178,7 +184,7 @@ class DataTable
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->resultSet->getResultCount().");
+            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->resultSet->getResultCount().");
         });
         </script>";
 

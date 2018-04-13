@@ -48,6 +48,9 @@ class Action
                             break;
             case 'delete':  $this->setIcon('garbage')->isModal(true)->addParam('width', '650')->addParam('height', '135');
                             break;
+            default:
+            case 'view':    $this->setIcon('zoom');
+                            break;
         }
 
     }
@@ -133,7 +136,7 @@ class Action
             $url .= '&'.http_build_query($queryParams);
         }
 
-        return sprintf('<a href="%1$s" class="%2$s">%3$s<img title="%4$s" src="./themes/Default/img/%5$s.png" style="margin-left: 5px"></a>', 
+        return sprintf('<a href="%1$s" class="%2$s">%3$s<img title="%4$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/Default/img/%5$s.png" style="margin-left: 5px"></a>', 
             $url, 
             $class,
             ($this->displayLabel? $this->getLabel() : ''),

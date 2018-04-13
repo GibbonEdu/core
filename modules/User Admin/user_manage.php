@@ -42,15 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
     echo '<h2>';
     echo __($guid, 'Search');
     echo '</h2>';
@@ -94,23 +85,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     // echo '</pre>';
 
 
-    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath('.'.$_SESSION[$guid]['address']);
+    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath($_SESSION[$guid]['address']);
 
-    $table->addActionLink('add', __('Add'))
+    $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);
-    })->setSortable(false);
+    })->setSortable(false)->setWidth('10%');
 
     $table->addColumn('fullName', __('Name'))->format(function($item) {
         return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
-    });
+    })->setWidth('30%');
 
-    $table->addColumn('status', __('Status'));
-    $table->addColumn('primaryRole', __('Primary Role'));
+    $table->addColumn('status', __('Status'))->setWidth('10%');
+    $table->addColumn('primaryRole', __('Primary Role'))->setWidth('16%');
 
     $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
         $output = '';
