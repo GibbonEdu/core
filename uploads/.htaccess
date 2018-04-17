@@ -1,4 +1,14 @@
-<FilesMatch "\.(js|htm|html|css|php|php3|php4|php5|php7|phtml|asp|jsp|py|svg)$">
+<FilesMatch "\.(js|htm|html|css|php|php3|php4|php5|php7|phtml|asp|jsp|py)$">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
+
+<IfModule mod_headers.c>
+    SetEnvIf Origin "http(s)?://(www\.)?(tis.edu.mo|gibbon.tis.edu.mo)$" AccessControlAllowOrigin=$0
+    Header set Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
+</IfModule>
+
+RewriteEngine on
+RewriteCond %{HTTP_REFERER} !^https://(www\.)?tis\.edu\.mo.*$ [NC]
+RewriteCond %{HTTP_REFERER} !^https://gibbon\.tis\.edu\.mo.*$ [NC]
+RewriteRule .*\.(wav|swf|jpg|jpeg|gif|png|bmp)$ - [F,NC,L]
