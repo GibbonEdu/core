@@ -7,6 +7,18 @@ namespace Composer\Autoload;
 class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
 {
     public static $prefixLengthsPsr4 = array (
+        'P' => 
+        array (
+            'Psr\\Container\\' => 14,
+        ),
+        'L' => 
+        array (
+            'League\\Container\\' => 17,
+        ),
+        'I' => 
+        array (
+            'Interop\\Container\\' => 18,
+        ),
         'G' => 
         array (
             'Gibbon\\' => 7,
@@ -14,6 +26,18 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     );
 
     public static $prefixDirsPsr4 = array (
+        'Psr\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/container/src',
+        ),
+        'League\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/container/src',
+        ),
+        'Interop\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
+        ),
         'Gibbon\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',

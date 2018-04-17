@@ -14,7 +14,8 @@
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
-        "ext-PDO": "*"
+        "ext-PDO": "*",
+        "league/container": "^2.4"
     },
     "require-dev": {
     },
