@@ -104197,7 +104197,7 @@ msgstr "تكامل جوجل"
 #, php-format
 msgid ""
 "If your school uses Google Apps, you can enable single sign on and calendar "
-"integreation with Gibbon. This process makes use of Google's APIs, and "
+"integration with Gibbon. This process makes use of Google's APIs, and "
 "allows a user to access Gibbon without a username and password, provided "
 "that their listed email address is a Google account to which they have "
 "access. For configuration instructions, %1$sclick here%2$s."

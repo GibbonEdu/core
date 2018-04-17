@@ -66,12 +66,14 @@ v16.0.00
 		School Admin: extend length of name field in Manage Houses to 30 chars
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
+		System Admin: fixed typo in Third Party Settings
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
 		User Admin: tweaked user CLI to better handle parents in multiple families
 		User Admin: added staff import feature
         User Admin: added an alphanumeric requirement for usernames in Add User
+		User Admin: added fix to prevent the logged in user from deleting themselves.
 
 v15.0.00
 --------

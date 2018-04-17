@@ -86571,7 +86571,7 @@ msgstr "Logar com Google"
 #: modules/System Admin/systemSettings.php:762 Admin/systemSettings.php:789
 #: Admin/thirdPartySettings.php:68 Admin/thirdPartySettings.php:46
 #: .git/modules/System Admin/thirdPartySettings.php:47
-msgid "If your school uses Google Apps, you can enable single sign on and calendar integreation with Gibbon. This process makes use of Google's APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s."
+msgid "If your school uses Google Apps, you can enable single sign on and calendar integration with Gibbon. This process makes use of Google's APIs, and allows a user to access Gibbon without a username and password, provided that their listed email address is a Google account to which they have access. For configuration instructions, %1$sclick here%2$s."
 msgstr "Se sua escola usa o Google Apps, você pode habilitar o logon único e integreation calendário com gibão. Este processo faz uso de APIs do Google e permite que um usuário acesse o gibão sem um nome de usuário e senha, desde que o seu endereço de e-mail listado é uma conta do Google ao qual têm acesso. Para obter instruções de configuração, %1$sclique aqui%2$s."
 
 #: modules/System Admin/theme_manage.php:117 Admin/theme_manage.php:122

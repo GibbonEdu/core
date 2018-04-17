@@ -234,6 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             }
         }
 
+        echo count($sessions); exit;
         // Build an empty array of attendance count data for each session
         $attendanceCount = array_fill(0, count($sessions), 0);
 
