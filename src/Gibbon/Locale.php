@@ -55,8 +55,14 @@ class Locale
 
 		$this->i18ncode = $i18ncode;
 
-		putenv('LC_ALL='.$this->i18ncode);
-	    setlocale(LC_ALL, $this->i18ncode);
+		putenv('LC_ALL='.$this->i18ncode.'.utf8');
+		putenv('LANG='.$this->i18ncode.'.utf8');
+		putenv('LANGUAGE='.$this->i18ncode.'.utf8');
+	    $localeSet = setlocale(LC_ALL, $this->i18ncode.'.utf8',
+                                       $this->i18ncode.'.UTF8',
+                                       $this->i18ncode.'.utf-8',
+                                       $this->i18ncode.'.UTF-8',
+                                       $this->i18ncode);
 	}
 
 	/**
