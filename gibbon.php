@@ -39,7 +39,6 @@ require_once $basePath.'/functions.php';
 
 // Core Services
 $container = new League\Container\Container();
-
 $container->add('config', new Gibbon\Core($basePath));
 $container->add('session', new Gibbon\Session($container));
 $container->add('locale', new Gibbon\Locale($container));
@@ -51,12 +50,20 @@ $guid = $gibbon->guid();
 $caching = $gibbon->getCaching();
 $version = $gibbon->getVersion();
 
+
+// Detect the current module - TODO: replace this logic when switching to routing.
+$_SESSION[$guid]['address'] = isset($_GET['q'])? $_GET['q'] : '';
+$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
+$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
+
+
 // Autoload the current module namespace
-if (isset($_SESSION[$guid]['module'])) {
+if (!empty($_SESSION[$guid]['module'])) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION[$guid]['module']);
     $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', $basePath.'/modules/'.$_SESSION[$guid]['module']);
     $autoloader->register(true);
 }
+
 
 if ($gibbon->isInstalled() == true) {
 
