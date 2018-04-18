@@ -33,11 +33,20 @@ if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config
 // Setup the composer autoloader
 $autoloader = require_once $basePath.'/vendor/autoload.php';
 
-// New configuration object
-$gibbon = new Gibbon\Core($basePath, $_SERVER['PHP_SELF']);
+// Require the system-wide functions
+require_once $basePath.'/functions.php';
+
+
+// Core Services
+$container = new League\Container\Container();
+
+$container->add('config', new Gibbon\Core($basePath));
+$container->add('session', new Gibbon\Session($container));
+$container->add('locale', new Gibbon\Locale($container));
 
 
 // Set global config variables, for backwards compatability
+$gibbon = $container->get('config');
 $guid = $gibbon->guid();
 $caching = $gibbon->getCaching();
 $version = $gibbon->getVersion();
@@ -49,16 +58,14 @@ if (isset($_SESSION[$guid]['module'])) {
     $autoloader->register(true);
 }
 
-// Require the system-wide functions
-require_once $basePath.'/functions.php';
-
-
 if ($gibbon->isInstalled() == true) {
 
-	// New PDO DB connection
-	$pdo = new Gibbon\sqlConnection();
+    // New PDO DB connection
+    $container->add('db', new Gibbon\sqlConnection());
+
+	$pdo = $container->get('db');
 	$connection2 = $pdo->getConnection();
 
 	// Initialize using the database connection
-	$gibbon->initializeCore($pdo);
+	$gibbon->initializeCore($container);
 }
