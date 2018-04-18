@@ -19,17 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Localization & Internationalization Class
- *
- * Responsibilities:
- * 		- Locale
- * 		- Translation
- * 		- Timezones
- * 		- Languages
- * 		- Currency
- * 		- Character set
- * 		- RTL support
  *
  * @version	v13
  * @since	v13
@@ -45,9 +38,9 @@ class Locale
 	/**
 	 * Construct
 	 */
-	public function __construct( core $gibbon )
+	public function __construct(ContainerInterface $container)
 	{
-		$this->session = $gibbon->session;
+		$this->session = $container->get('session');
 	}
 
 	/**

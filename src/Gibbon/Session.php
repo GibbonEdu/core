@@ -19,13 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Session Class
- *
- * Responsibilities:
- * 		- User session
- * 		- Persistance ($_SESSION)
- * 		- Caching
  *
  * @version	v13
  * @since	v12
@@ -45,19 +42,21 @@ class Session
 	/**
 	 * Construct
 	 */
-	public function __construct( core $gibbon = null )
+	public function __construct(ContainerInterface $container)
 	{
 		global $guid;
 
-		//Prevent breakage of back button on POST pages
-		ini_set('session.cache_limiter', 'private');
-		session_cache_limiter(false);
-
 		// Start the session (this should be the first time called)
-		if (PHP_SESSION_ACTIVE !== session_status())
-			session_start();
+		if (session_status() !== PHP_SESSION_ACTIVE) {
+            //Prevent breakage of back button on POST pages
+		    ini_set('session.cache_limiter', 'private');
+            session_cache_limiter(false);
+        
+            session_start();
+        }
 
-		$this->guid = (isset($gibbon))? $gibbon->guid() : $guid; // Backwards compatability for external modules
+        $config = $container->get('config');
+		$this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
 	}
 
 	/**
