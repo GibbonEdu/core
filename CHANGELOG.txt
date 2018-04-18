@@ -57,6 +57,7 @@ v16.0.00
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
 		Planner: fixed module name substitution in links in Lesson Planner
 		Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
+		Staff: fixed bug in paramater passing in Add in Manage Staff
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
 		Students: added View option to Students by Form Group report, allowing Basic or Extended view
