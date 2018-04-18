@@ -56,7 +56,13 @@ class Session
         }
 
         $config = $container->get('config');
-		$this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
+        $this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
+        
+        // Detect the current module - TODO: replace this logic when switching to routing.
+        $address = isset($_GET['q'])? $_GET['q'] : '';
+        $this->set('address', $address);
+        $this->set('module',  getModuleName($address));
+        $this->set('action', getActionName($address));
 	}
 
 	/**

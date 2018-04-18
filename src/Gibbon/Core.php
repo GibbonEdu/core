@@ -41,7 +41,7 @@ class Core
 	 * @var  object
 	 */
 	public $session;
-    public $trans;
+    public $locale;
     
     /**
      * Configuration variables
@@ -63,7 +63,7 @@ class Core
      */
     public function __construct($directory)
     {
-        $this->basePath = $directory;
+        $this->basePath = realpath($directory);
 		
 		// Set the current version
         $this->loadVersionFromFile($this->basePath . '/version.php');
@@ -84,8 +84,6 @@ class Core
         if ($this->initialized == true) return;
 
         $db = $container->get('db');
-        $this->session = $container->get('session');
-        $this->locale = $container->get('locale');
 
         $this->session->setDatabaseConnection($db);
 
@@ -103,6 +101,15 @@ class Core
         $this->locale->setTimezone($this->session->get('timezone', 'UTC'));
         $this->locale->setTextDomain($db);
         $this->locale->setStringReplacementList($db);
+
+        // Set global variables here for backwards compatibility
+        global $guid, $version, $caching, $pdo, $connection2;
+
+        $guid = $this->guid;
+        $caching = $this->caching;
+        $version = $this->version;
+        $pdo = $db;
+        $connection2 = $db->getConnection();
 
         $this->initialized = true;
     }
