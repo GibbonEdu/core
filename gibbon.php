@@ -51,5 +51,5 @@ if (!empty($gibbon->session->get('module'))) {
 // Initialize using the database connection
 if ($gibbon->isInstalled() == true) {
     $container->add('db', new Gibbon\sqlConnection());
-	$gibbon->initializeCore($container);
+    $gibbon->initializeCore($container);
 }

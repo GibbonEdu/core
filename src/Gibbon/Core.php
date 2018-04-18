@@ -36,11 +36,11 @@ class Core
     protected $basePath;
 
     /**
-	 * Core classes available to all Gibbon scripts 
+     * Core classes available to all Gibbon scripts 
      * TODO: These need removed & replaced with DI
-	 * @var  object
-	 */
-	public $session;
+     * @var  object
+     */
+    public $session;
     public $locale;
     
     /**
@@ -64,11 +64,11 @@ class Core
     public function __construct($directory)
     {
         $this->basePath = realpath($directory);
-		
-		// Set the current version
+        
+        // Set the current version
         $this->loadVersionFromFile($this->basePath . '/version.php');
 
-		// Load the configuration, if installed
+        // Load the configuration, if installed
         if ($this->isInstalled()) {
             $this->loadConfigFromFile($this->basePath . '/config.php');
         }
@@ -192,10 +192,10 @@ class Core
     {
         include $configFilePath;
 
-		//Sets globally unique id, to allow multiple installs on the server.
+        //Sets globally unique id, to allow multiple installs on the server.
         $this->guid = $guid;
 
-		//Sets system-wide caching factor, used to balance performance and freshness.
+        //Sets system-wide caching factor, used to balance performance and freshness.
         $this->caching = $caching;
     }
 }
