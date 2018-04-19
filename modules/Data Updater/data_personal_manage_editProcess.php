@@ -21,8 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes
 include '../User Admin/moduleFunctions.php';

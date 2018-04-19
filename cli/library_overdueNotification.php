@@ -21,8 +21,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
-require getcwd().'/../config.php';
-require getcwd().'/../functions.php';
+require getcwd().'/../gibbon.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);

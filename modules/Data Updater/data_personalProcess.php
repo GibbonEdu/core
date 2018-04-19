@@ -19,8 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes for User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';

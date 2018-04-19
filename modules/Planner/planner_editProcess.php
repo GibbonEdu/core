@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $viewBy = $_GET['viewBy'];
