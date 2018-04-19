@@ -102,3 +102,213 @@ $.prototype.gibbonUniquenessCheck = function (settings) {
         };
     });
 };
+
+/**
+ * Custom Blocks
+ */
+// Define the CustomBlocks behaviour
+var CustomBlocks = window.CustomBlocks || {};
+
+CustomBlocks = (function(element, settings) {
+    var _ = this;
+
+    _.container = $(element);
+    _.blockTemplate = $('.blockTemplate', element);
+    _.blockCount = 0;
+    _.validation = [];
+    _.defaults = {
+        inputNameStrategy: "object",    // array | object | string
+        addSelector: ".addBlock",       // The selector to trigger an add block action on
+        addOnEvent: "click",            // The event type to trigger an add block action on
+        deleteMessage: "Delete?",       // The confirmation message when deleting a block
+        animationSpeed: 600,            // The speed for block animations
+        currentBlocks: [],              // Blocks that should be initialized when creating is object
+        predefinedBlocks: [],           // Data to add for new blocks if the identifier matches a key.
+        sortable: false,                // Enable jQuery-ui drag-drop sorting
+    }
+    _.settings = $.extend({}, _.defaults, settings);
+
+    _.init();
+});
+
+CustomBlocks.prototype.init = function() {
+    var _ = this;
+
+    // Setup tool actions
+    $(_.settings.addSelector, _.container).each(function(){
+        $(this).on(_.settings.addOnEvent, function(){
+            var identifier = $(this).val();
+            if (!identifier) return;
+
+            var data = _.settings.predefinedBlocks[identifier] || {};
+            _.addBlock(data);
+        });
+    });
+
+    // Enable sortable drag-drop
+    if (_.settings.sortable) {
+        $(".blocks", _.container).sortable({
+            placeholder: "sortHighlight",
+            handle: ".sortHandle",
+        }).bind('sortstart', function(event, ui) {
+            $(_.container).trigger('hideAll');
+        });
+        $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
+    }
+
+    $('.showHide', _.blockTemplate).hide();
+
+    // Initialize existing blocks from JSON data
+    for (var index in _.settings.currentBlocks) {
+        _.addBlock(_.settings.currentBlocks[index]);
+    }
+
+    // Built-in Button Events
+    $(_.container)
+        .on('delete', function(event, block) {
+            if (confirm(_.settings.deleteMessage)) {
+                _.removeBlock(block);
+            }
+        })
+        .on('showHide', function(event, block, button) {
+            if ($(button).hasClass('showHidden')) {
+                $(button).removeClass('showHidden');
+                $('img', button).prop('src', $(button).data('off'));
+                block.find('.showHide').hide();
+            } else {
+                $(button).addClass('showHidden');
+                $('img', button).prop('src', $(button).data('on'));
+                block.find('.showHide').show();
+            }
+        })
+        .on('hideAll', function(event, block, button) {
+            $('.showHide').hide();
+            $('a.blockButton[data-event="showHide"]').each(function(index, element){
+                $(element).removeClass('showHidden');
+                $('img', element).prop('src', $(element).data('off'));
+            });
+        });
+
+    _.refresh();
+};
+
+CustomBlocks.prototype.addBlock = function(data = {}) {
+    var _ = this;
+
+    _.blockCount++;
+
+    var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
+    $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+
+    _.initBlock(block, data);
+    _.refresh();
+};
+
+CustomBlocks.prototype.removeBlock = function(block) {
+    var _ = this;
+
+    _.blockCount--;
+
+    _.removeBlockValidation(block);
+
+    $(block).fadeOut(_.settings.animationSpeed, function(){
+        $(block).detach().remove();
+        _.refresh();
+    });
+};
+
+CustomBlocks.prototype.initBlock = function(block, data = {}) {
+    var _ = this;
+
+    block.blockNumber = _.blockCount;
+
+    _.loadBlockInputData(block, data);
+    _.renameBlockFields(block);
+    _.addBlockValidation(block);
+    _.addBlockEvents(block);
+};
+
+CustomBlocks.prototype.loadBlockInputData = function(block, data = {}) {
+    var _ = this;
+
+    for (key in data) {
+        $("[name='"+key+"']", block).val(data[key]);
+    }
+
+    var readonly = data.readonly || [];
+    readonly.forEach(function(element){
+        $("[name='"+element+"']", block).prop('readonly', true).addClass('readonly');
+        $("select[name='"+element+"'] option:not(:selected)", block).prop('disabled', true);
+    });
+};
+
+CustomBlocks.prototype.renameBlockFields = function(block) {
+    var _ = this;
+
+    $("input, textarea, select", block).each(function(index, element) {
+        if ($(this).prop("name") == 'order[]') return;
+
+        var name;
+        switch(_.settings.inputNameStrategy) {
+            case 'object':  name = $(_.container).prop("id")+"["+block.blockNumber+"]["+$(this).prop("name")+"]"; break;
+            case 'array':   name = $(this).prop("name")+"["+block.blockNumber+"]"; break;
+            case 'string':  name = $(this).prop("name")+block.blockNumber; break;
+        }
+
+        $(this).prop("name", name);
+        $(this).prop("id", $(this).prop("id")+block.blockNumber);
+    });
+
+    $("label", block).each(function(index, element) {
+        $(this).prop("for", $(this).prop("for")+block.blockNumber);
+    });
+};
+
+CustomBlocks.prototype.addBlockValidation = function(block) {
+    var _ = this;
+    
+    $("input, textarea, select", block).each(function(index, element) {
+        if ($(this).data('validation') && !$(this).prop('readonly')) {
+            var id = $(this).prop("id");
+            eval("block."+id+"Validate = new LiveValidation('"+id+"', {});");
+            $(this).data('validation').forEach(function(item) {
+                eval("block."+id+"Validate.add("+item.type+", {"+item.params+"});");
+            });
+        }
+    });
+};
+
+CustomBlocks.prototype.removeBlockValidation = function(block) {
+    var _ = this;
+    
+    $("input, textarea, select", block).each(function(index, element) {
+        if ($(this).data('validation') && !$(this).prop('readonly')) {
+            var id = $(this).prop("id");
+            eval("block."+id+"Validate.destroy();");
+        }
+    });
+};
+
+CustomBlocks.prototype.addBlockEvents = function(block) {
+    var _ = this;
+
+    $("a.blockButton", block).each(function(index, element) {
+        $(element).click(function(event){
+            event.preventDefault();
+            $(_.container).trigger($(this).data('event'), [ block, this ]);
+        });
+    });
+};
+
+CustomBlocks.prototype.refresh = function() {
+    var _ = this;
+
+    $(".blockCount", _.container).val(_.blockCount);
+    $(".blockPlaceholder", _.container).css("display", (_.blockCount > 0)? "none" : "block");
+    $("select.addBlock", _.container).val(''); // Deselect after action
+};
+
+// Add the prototype method to jQuery
+$.prototype.gibbonCustomBlocks = function(settings) {
+    this.gibbonCustomBlocks = new CustomBlocks(this, settings);
+};

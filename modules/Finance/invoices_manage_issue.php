@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Finance\Forms\FinanceFormFactory;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -28,16 +31,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 } else {
     //Proceed!
     //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonFinanceInvoiceID = $_GET['gibbonFinanceInvoiceID'];
-    $status = $_GET['status'];
-    $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
-    $monthOfIssue = $_GET['monthOfIssue'];
-    $gibbonFinanceBillingScheduleID = $_GET['gibbonFinanceBillingScheduleID'];
-    $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
+    $gibbonFinanceInvoiceID = isset($_GET['gibbonFinanceInvoiceID'])? $_GET['gibbonFinanceInvoiceID'] : '';
+    $status = isset($_GET['status'])? $_GET['status'] : '';
+    $gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '';
+    $monthOfIssue = isset($_GET['monthOfIssue'])? $_GET['monthOfIssue'] : '';
+    $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
+    $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
+
+    $linkParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
 
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Manage Invoices')."</a> > </div><div class='trailEnd'>".__($guid, 'Issue Invoice').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&'.http_build_query($linkParams)."'>".__($guid, 'Manage Invoices')."</a> > </div><div class='trailEnd'>".__($guid, 'Issue Invoice').'</div>';
     echo '</div>';
 
     echo '<p>';
@@ -55,7 +60,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
     } else {
         try {
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-            $sql = "SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND status='Pending'";
+            $sql = "SELECT gibbonFinanceInvoice.*, companyName, companyContact, companyEmail, companyCCFamily, gibbonSchoolYear.name as schoolYear, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFinanceBillingSchedule.name as billingScheduleName, gibbonFinanceBillingSchedule.invoiceDueDate as billingScheduleInvoiceDueDate
+					FROM gibbonFinanceInvoice 
+					JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID)
+					LEFT JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) 
+					LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID=gibbonFinanceInvoice.gibbonFinanceBillingScheduleID)
+					LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID)
+					WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID 
+					AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID
+					AND gibbonFinanceInvoice.status='Pending'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
@@ -68,288 +81,81 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $values = $result->fetch();
 
             if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($linkParams)."'>".__($guid, 'Back to Search Results').'</a>';
                 echo '</div>';
-            }
-            ?>
+			}
+			
+			$form = Form::create('invoice', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_issueProcess.php?'.http_build_query($linkParams));
+			$form->setFactory(FinanceFormFactory::create($pdo));
+			
+			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
 
-			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_manage_issueProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID" ?>">
-				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Basic Information') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            $yearName = '';
-            try {
-                $dataYear = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-                $sqlYear = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultYear = $connection2->prepare($sqlYear);
-                $resultYear->execute($dataYear);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultYear->rowCount() == 1) {
-                $rowYear = $resultYear->fetch();
-                $yearName = $rowYear['name'];
-            }
-            ?>
-							<input readonly name="yearName" id="yearName" value="<?php echo $yearName ?>" type="text" class="standardWidth">
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Invoicee') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<?php
-                            $personName = '';
-							try {
-								$dataInvoicee = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-								$sqlInvoicee = 'SELECT surname, preferredName FROM gibbonPerson JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID';
-								$resultInvoicee = $connection2->prepare($sqlInvoicee);
-								$resultInvoicee->execute($dataInvoicee);
-							} catch (PDOException $e) {
-								echo "<div class='error'>".$e->getMessage().'</div>';
-							}
-							if ($resultInvoicee->rowCount() == 1) {
-								$rowInvoicee = $resultInvoicee->fetch();
-								$personName = formatName('', htmlPrep($rowInvoicee['preferredName']), htmlPrep($rowInvoicee['surname']), 'Student', true);
-							}
-							?>
-							<input readonly name="personName" id="personName" value="<?php echo $personName ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<?php //BILLING TYPE CHOOSER ?>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Scheduling') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-						</td>
-						<td class="right">
-							<input readonly name="billingScheduleType" id="billingScheduleType" value="<?php echo $row['billingScheduleType'] ?>" type="text" class="standardWidth">
-						</td>
-					</tr>
-					<?php
-                    if ($row['billingScheduleType'] == 'Scheduled') {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Billing Schedule') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<?php
-                                $schedule = '';
-								try {
-									$dataSchedule = array('gibbonFinanceBillingScheduleID' => $row['gibbonFinanceBillingScheduleID']);
-									$sqlSchedule = 'SELECT * FROM gibbonFinanceBillingSchedule WHERE gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID';
-									$resultSchedule = $connection2->prepare($sqlSchedule);
-									$resultSchedule->execute($dataSchedule);
-								} catch (PDOException $e) {
-									echo "<div class='error'>".$e->getMessage().'</div>';
-								}
-								if ($resultSchedule->rowCount() == 1) {
-									$rowSchedule = $resultSchedule->fetch();
-									$schedule = $rowSchedule['name'];
-									$invoiceDueDate = $rowSchedule['invoiceDueDate'];
-								}
-								?>
-								<input readonly name="schedule" id="schedule" value="<?php echo $schedule ?>" type="text" class="standardWidth">
-								<input name="invoiceDueDate" id="invoiceDueDate" value="<?php echo dateConvertBack($guid, $invoiceDueDate) ?>" type="hidden" class="standardWidth">
-							</td>
-						</tr>
-						<?php
+			$form->addRow()->addHeading(__('Basic Information'));
 
-                    } else {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo __($guid, 'Invoice Due Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
-							</td>
-							<td class="right">
-								<input readonly name="invoiceDueDate" id="invoiceDueDate" value="<?php echo dateConvertBack($guid, $row['invoiceDueDate']) ?>" type="text" class="standardWidth">
-							</td>
-						</tr>
-						<?php
-					}
-                    ?>
-					<tr>
-						<td>
-							<b><?php echo __($guid, 'Status') ?> *</b><br/>
-							<?php
-                            if ($row['status'] == 'Pending') {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".').'</span>';
-                            } else {
-                                echo '<span style="font-size: 90%"><i>'.__($guid, 'Available options are limited according to current status.').'</span>';
-                            }
-            				?>
-						</td>
-						<td class="right">
-							<?php
-                            if ($row['status'] == 'Pending') {
-                                echo '<input readonly name="status" id="status" value="'.$row['status'].'" type="text" style="width: 300px">';
-                            } else {
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __($guid, 'Notes') ?></b>
-							<textarea name='notes' id='notes' rows=5 style='width: 300px'><?php echo htmlPrep($row['notes']) ?></textarea>
-						</td>
-					</tr>
+			$row = $form->addRow();
+                $row->addLabel('schoolYear', __('School Year'));
+				$row->addTextField('schoolYear')->isRequired()->readonly();
+				
+			$row = $form->addRow();
+                $row->addLabel('personName', __('Invoicee'));
+                $row->addTextField('personName')->isRequired()->readonly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
 
-					<tr>
-						<td colspan=2>
-							<h3><?php echo __($guid, 'Email Invoice') ?></h3>
-						</td>
-					</tr>
-					<?php
-                    $email = getSettingByScope($connection2, 'Finance', 'email');
-					if ($email == '') {
-						echo '<tr>';
-						echo '<td colspan=2>';
-						echo "<div class='error'>";
-						echo 'An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.';
-						echo '</div>';
-						echo "<input type='hidden' name='email' value='$email'/>";
-						echo '<td>';
-						echo '<tr>';
-					} else {
-						echo "<input type='hidden' name='email' value='$email'/>";
-						if ($row['invoiceTo'] == 'Company') {
-							if ($row['companyEmail'] != '' and $row['companyContact'] != '' and $row['companyName'] != '') {
-								?>
-								<tr>
-									<td>
-										<b><?php echo $row['companyContact'] ?></b> (<?php echo $row['companyName']; ?>)
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<?php echo $row['companyEmail'];
-										?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($row['companyEmail']); ?>'/>
-										<input type='hidden' name='names[]' value='<?php echo htmlPrep($row['companyContact']); ?>'/>
-									</td>
-								</tr>
-								<?php
-                                //CC family
-                                if ($row['companyCCFamily'] == 'Y') {
-                                    try {
-                                        $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                                        $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
-                                        $resultParents = $connection2->prepare($sqlParents);
-                                        $resultParents->execute($dataParents);
-                                    } catch (PDOException $e) {
-                                        $return .= "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    if ($resultParents->rowCount() < 1) {
-                                        $return .= "<div class='warning'>There are no family members available to send this receipt to.</div>";
-                                    } else {
-                                        while ($rowParents = $resultParents->fetch()) {
-                                            if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
-                                                ?>
-												<tr>
-													<td>
-														<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b> <i>(Family CC)</i>
-														<span class="emphasis small"></span>
-													</td>
-													<td class="right">
-														<?php echo $rowParents['email'];
-                                                ?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($rowParents['email']);
-                                                ?>'/>
-														<input type='hidden' name='names[]' value='<?php echo htmlPrep(formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false));
-                                                ?>'/>
-													</td>
-												</tr>
-												<?php
+            $row = $form->addRow();
+                $row->addLabel('billingScheduleType', __('Scheduling'));
+				$row->addTextField('billingScheduleType')->isRequired()->readonly();
+				
+			if ($values['billingScheduleType'] == 'Scheduled') {
+				$row = $form->addRow();
+					$row->addLabel('billingScheduleName', __('Billing Schedule'));
+					$row->addTextField('billingScheduleName')->isRequired()->readonly();
+					$form->addHiddenValue('invoiceDueDate', dateConvertBack($guid, $values['billingScheduleInvoiceDueDate']));
+			} else {
+				$row = $form->addRow();
+					$row->addLabel('invoiceDueDate', __('Invoice Due Date'));
+					$row->addDate('invoiceDueDate')->isRequired()->readonly();
+			}
 
-                                            }
-                                        }
-                                    }
-                                }
-                    } else {
-                        $return .= "<div class='warning'>There is no company contact available to send this invoice to.</div>";
-                    }
-                } else {
-                    try {
-                        $dataParents = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
-                        $sqlParents = "SELECT parent.title, parent.surname, parent.preferredName, parent.email, parent.address1, parent.address1District, parent.address1Country, homeAddress, homeAddressDistrict, homeAddressCountry FROM gibbonFinanceInvoicee JOIN gibbonPerson AS student ON (gibbonFinanceInvoicee.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=student.gibbonPersonID) JOIN gibbonFamily ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) JOIN gibbonFamilyAdult ON (gibbonFamily.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID) JOIN gibbonPerson AS parent ON (gibbonFamilyAdult.gibbonPersonID=parent.gibbonPersonID) WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) ORDER BY contactPriority, surname, preferredName";
-                        $resultParents = $connection2->prepare($sqlParents);
-                        $resultParents->execute($dataParents);
-                    } catch (PDOException $e) {
-                        $return .= "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultParents->rowCount() < 1) {
-                        $return .= "<div class='warning'>There are no family members available to send this receipt to.</div>";
-                    } else {
-                        while ($rowParents = $resultParents->fetch()) {
-                            if ($rowParents['preferredName'] != '' and $rowParents['surname'] != '' and $rowParents['email'] != '') {
-                                ?>
-								<tr>
-									<td>
-										<b><?php echo formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false) ?></b>
-										<span class="emphasis small"></span>
-									</td>
-									<td class="right">
-										<?php echo $rowParents['email']; ?> <input checked type='checkbox' name='emails[]' value='<?php echo htmlPrep($rowParents['email']); ?>'/>
-										<input type='hidden' name='names[]' value='<?php echo htmlPrep(formatName(htmlPrep($rowParents['title']), htmlPrep($rowParents['preferredName']), htmlPrep($rowParents['surname']), 'Parent', false)); ?>'/>
-									</td>
-								</tr>
-								<?php
+			$row = $form->addRow();
+				$row->addLabel('status', __('Status'));
+				$row->addTextField('status')->isRequired()->readonly();
 
-                            }
-                        }
-                    }
-                }
-            }
-                    //CC self?
-                    if ($_SESSION[$guid]['email'] != '') {
-                        ?>
-						<tr>
-							<td>
-								<b><?php echo formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Parent', false) ?></b>
-								<span class="emphasis small"><?php echo __($guid, '(CC Self?)') ?></span>
-							</td>
-							<td class="right">
-								<?php echo $_SESSION[$guid]['email'];
-                        ?> <input type='checkbox' name='emails[]' value='<?php echo $_SESSION[$guid]['email'];
-                        ?>'/>
-								<input type='hidden' name='names[]' value='<?php echo formatName('', htmlPrep($_SESSION[$guid]['preferredName']), htmlPrep($_SESSION[$guid]['surname']), 'Parent', false);
-                        ?>'/>
-							</td>
-						</tr>
-						<?php
-					}
-                    ?>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input name="gibbonFinanceInvoiceID" id="gibbonFinanceInvoiceID" value="<?php echo $gibbonFinanceInvoiceID ?>" type="hidden">
-							<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-						</td>
-					</tr>
-				</table>
-			</form>
-			<?php
+			$row = $form->addRow();
+                $row->addLabel('notes', __('Notes'))->description(__('Notes will be displayed on the final invoice and receipt.'));
+				$row->addTextArea('notes')->setRows(5);
+				
+			$form->addRow()->addHeading(__('Fees'));
 
+			$totalFee = getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $values['status']);
+			$row = $form->addRow();
+				$row->addLabel('totalFee', __('Total'))->description('<small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
+				$row->addTextField('totalFee')->isRequired()->readonly()->setValue(number_format($totalFee, 2));
+
+			$row = $form->addRow();
+				$row->addLabel('invoiceTo', __('Invoice To'));
+				$row->addTextField('invoiceTo')->isRequired()->readonly();
+
+			$form->addRow()->addHeading(__('Email Invoice'));
+
+			$email = getSettingByScope($connection2, 'Finance', 'email');
+			$form->addHiddenValue('email', $email);
+			if (empty($email)) {
+				$form->addRow()->addAlert(__('An outgoing email address has not been set up under Invoice & Receipt Settings, and so no emails can be sent.'), 'error');
+			} else {
+				$form->addRow()->addInvoiceEmailCheckboxes('emails[]', 'names[]', $values, $gibbon->session);
+			}
+
+			$row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            $form->loadAllValuesFrom($values);
+
+            echo $form->getOutput();
         }
     }
 }
-?>

@@ -100,7 +100,8 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     }
 
                     $partialFail = false;
-
+                    $emailFail = false;
+                    
                     //Read & Organise Fees
                     $fees = array();
                     $count = 0;
@@ -178,8 +179,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                     $from = $_POST['email'];
                     if ($partialFail == false and $from != '') {
                         //Send emails
-                        $emailFail = false;
-                        $emails = null;
+                        $emails = array() ;
                         if (isset($_POST['emails'])) {
                             $emails = $_POST['emails'];
                             for ($i = 0; $i < count($emails); ++$i) {

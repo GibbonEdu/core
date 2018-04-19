@@ -80,7 +80,7 @@ class Grid implements OutputableInterface, ValidatableInterface
      * Get all cells in the grid.
      * @return  array
      */
-    public function getCells()
+    public function getElements()
     {
         return $this->elements;
     }
@@ -96,7 +96,7 @@ class Grid implements OutputableInterface, ValidatableInterface
 
         $cellWidth = 100 / $this->columns;
         $emptyCell = $this->factory->createColumn();
-        $rows = array_chunk($this->getCells(), $this->columns);
+        $rows = array_chunk($this->getElements(), $this->columns);
         
         foreach ($rows as $cells) {
             $cells = array_pad($cells, $this->columns, $emptyCell);
@@ -133,7 +133,7 @@ class Grid implements OutputableInterface, ValidatableInterface
     {
         $output = '';
 
-        foreach ($this->getCells() as $cell) {
+        foreach ($this->getElements() as $cell) {
             foreach ($cell->getElements() as $element) {
                 if ($element instanceof ValidatableInterface) {
                     $output .= $element->getValidationOutput();
@@ -151,7 +151,7 @@ class Grid implements OutputableInterface, ValidatableInterface
      */
     public function loadFrom(&$data)
     {
-        foreach ($this->getCells() as $cell) {
+        foreach ($this->getElements() as $cell) {
             $cell->loadFrom($data);
         }
 
