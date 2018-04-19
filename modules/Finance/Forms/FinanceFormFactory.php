@@ -68,7 +68,9 @@ class FinanceFormFactory extends DatabaseFormFactory
         }
 
         // Sort the byName list so it's not byRollGroup
-        asort($values[$byName]);
+        if (!empty($values[$byName]) && is_array($values[$byName])) {
+            asort($values[$byName]);
+        }
 
         // Add students by Day Type (optionally)
         $dayTypeOptions = getSettingByScope($this->pdo->getConnection(), 'User Admin', 'dayTypeOptions');
