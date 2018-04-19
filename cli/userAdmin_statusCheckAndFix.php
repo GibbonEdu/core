@@ -19,14 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-require getcwd().'/../config.php';
-require getcwd().'/../functions.php';
+require getcwd().'/../gibbon.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
-
-@session_start();
 
 getSystemSettings($guid, $connection2);
 

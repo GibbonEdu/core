@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start() ;
-
 //Only include module include if it is not already included (which it may be been on the index page)
 $included=FALSE ;
 $includes=get_included_files() ;

@@ -17,12 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
-
-@session_start();
 
 $id = $_GET['id'];
 $type = $_GET['type'];

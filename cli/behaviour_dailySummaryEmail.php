@@ -19,14 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-require getcwd().'/../config.php';
-require getcwd().'/../functions.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+require getcwd().'/../gibbon.php';
 
 getSystemSettings($guid, $connection2);
 
