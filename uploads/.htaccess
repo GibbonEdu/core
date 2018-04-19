@@ -11,4 +11,5 @@
 RewriteEngine on
 RewriteCond %{HTTP_REFERER} !^https://(www\.)?tis\.edu\.mo.*$ [NC]
 RewriteCond %{HTTP_REFERER} !^https://gibbon\.tis\.edu\.mo.*$ [NC]
+RewriteCond %{HTTP_REFERER} !^http://localhost.*$ [NC]
 RewriteRule .*\.(wav|swf|jpg|jpeg|gif|png|bmp)$ - [F,NC,L]
