@@ -81,6 +81,32 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     }
 
     /**
+     * Can this input be validated? Prevent LiveValidation for elements with no ID, and readonly inputs.
+     * @return bool
+     */
+    public function isValidatable() {
+        return !empty($this->getID()) && !$this->getReadonly();
+    }
+
+    /**
+     * An input has validation if it's validatable and either required or has defined validations.
+     * @return bool
+     */
+    public function hasValidation()
+    {
+        return $this->isValidatable() && ($this->getRequired() == true || !empty($this->validation));
+    }
+
+    /**
+     * Get a stringified json object of the current validations.
+     * @return string
+     */
+    public function getValidationAsJSON()
+    {
+        return json_encode($this->buildValidations());
+    }
+
+    /**
      * Gets the HTML output for this form element.
      * @return  string
      */
@@ -88,34 +114,35 @@ abstract class Input extends Element implements ValidatableInterface, RowDependa
     {
         $output = '';
 
-        // Prevent LiveValidation breaking for elements with no ID
-        if (empty($this->getID())) {
-            return $output;
-        }
-
-        // Don't validate readonly input
-        if ($this->getReadonly() == true) {
-            return $output;
-        }
-
-        if ($this->getRequired() == true || !empty($this->validation)) {
+        if ($this->hasValidation()) {
             $output .= 'var '.$this->getID().'Validate=new LiveValidation(\''.$this->getID().'\', {'.implode(',', $this->validationOptions).' }); '."\r";
 
-            if ($this->getRequired() == true) {
-                if ($this instanceof Checkbox && $this->getOptionCount() == 1) {
-                    $this->addValidation('Validate.Acceptance');
-                } else {
-                    $this->addValidation('Validate.Presence');
-                }
-            }
-
-            if (!empty($this->validation) && is_array($this->validation)) {
-                foreach ($this->validation as $valid) {
-                    $output .= $this->getID().'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
-                }
+            foreach ($this->buildValidations() as $valid) {
+                $output .= $this->getID().'Validate.add('.$valid['type'].', {'.$valid['params'].' } ); '."\r";
             }
         }
 
         return $output;
+    }
+
+    /**
+     * Get the array of current validations for this input.
+     * @return array
+     */
+    protected function buildValidations()
+    {
+        if (!$this->isValidatable()) {
+            return array();
+        }
+
+        if ($this->getRequired() == true) {
+            if ($this instanceof Checkbox && $this->getOptionCount() == 1) {
+                $this->addValidation('Validate.Acceptance');
+            } else {
+                $this->addValidation('Validate.Presence');
+            }
+        }
+
+        return $this->validation;
     }
 }

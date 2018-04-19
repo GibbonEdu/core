@@ -257,8 +257,9 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectUsers($name)
     {
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
                 FROM gibbonPerson
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                 WHERE status='Full' ORDER BY surname, preferredName";
 
         $results = $this->pdo->executeQuery(array(), $sql);
@@ -266,7 +267,7 @@ class DatabaseFormFactory extends FormFactory
         $values = array();
         if ($results && $results->rowCount() > 0) {
             while ($row = $results->fetch()) {
-                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
+                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).' ('.$row['username'].', '.$row['category'].')';
             }
         }
 

@@ -577,7 +577,10 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelectCurrency($setting['name'])->isRequired();
 
-                                                $tzlist = DateTimeZone::listIdentifiers(DateTimeZone::ALL);
+                                                $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
+                                                    $group[$item] = __($item);
+                                                    return $group;
+                                                }, array());
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -818,6 +821,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 try {
                                                     $data = array('statsCollection' => $statsCollection);
                                                     $sql = "UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                } catch (PDOException $e) {
+                                                    $settingsFail = true;
+                                                }
+
+                                                try {
+                                                    $data = array('email' => $email); //Use organisation email as finance email, initially
+                                                    $sql = "UPDATE gibbonSetting SET value=:email WHERE scope='Finance' AND name='email'";
                                                     $result = $connection2->prepare($sql);
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {

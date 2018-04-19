@@ -20,6 +20,7 @@ v16.0.00
 --------
 	Headlines
 		Activated Simplified Chinese and Polish as available languages
+		Added Croatian as development language
 
 	Significant Changes
 
@@ -56,19 +57,24 @@ v16.0.00
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
 		Planner: fixed module name substitution in links in Lesson Planner
 		Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
+		Staff: fixed bug in paramater passing in Add in Manage Staff
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
 		Students: added View option to Students by Form Group report, allowing Basic or Extended view
 		Students: changed School Attendance sub page to Attendance to improve UI consistency
-        School Admin: updated Finance Settings email to default to organisation email if blank
+		Students: adjusted logic in student enrolment visualisation to include students who are not 'Full'
+		School Admin: updated Finance Settings email to default to organisation email if blank
+		School Admin: extend length of name field in Manage Houses to 30 chars
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
+		System Admin: fixed typo in Third Party Settings
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
 		User Admin: tweaked user CLI to better handle parents in multiple families
 		User Admin: added staff import feature
         User Admin: added an alphanumeric requirement for usernames in Add User
+		User Admin: added fix to prevent the logged in user from deleting themselves.
 
 v15.0.00
 --------

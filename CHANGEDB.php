@@ -892,6 +892,7 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '2', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Activities' AND gibbonAction.name='Activity Choices by Roll Group'));end
 UPDATE gibboni18n SET active='Y' WHERE code='pl_PL';end
 UPDATE gibbonSetting set description='The timezone where the school is located' WHERE name='timezone' AND scope='System';end
-UPDATE gibbonSetting SET value='' WHERE scope='Finance' AND name='email' AND value='finance@ichk.edu.hk';end
-
+UPDATE gibbonSetting SET value=(SELECT value FROM (SELECT value FROM gibbonSetting WHERE scope='System' AND name='organisationEmail') as temp) WHERE scope='Finance' AND name='email' AND value='finance@ichk.edu.hk';end
+ALTER TABLE `gibbonHouse` CHANGE `name` `name` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('hr_HR','Hrvatski - Hrvatska', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 ";
