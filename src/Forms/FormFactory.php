@@ -195,9 +195,9 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
+    public function createCustomBlocks($name, \Gibbon\Session $session)
     {
-        return new Input\CustomBlocks($this, $name, $block, $session);
+        return new Input\CustomBlocks($this, $name, $session);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */

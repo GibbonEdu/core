@@ -42,16 +42,21 @@ $guid = $gibbon->guid();
 $caching = $gibbon->getCaching();
 $version = $gibbon->getVersion();
 
+// Require the system-wide functions
+require_once $basePath.'/functions.php';
+
+
+// Detect the current module - TODO: replace this logic when switching to routing.
+$_SESSION[$guid]['address'] = isset($_GET['q'])? $_GET['q'] : str_replace($basePath, '', $_SERVER['SCRIPT_FILENAME']);
+$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
+$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
+
 // Autoload the current module namespace
 if (isset($_SESSION[$guid]['module'])) {
     $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION[$guid]['module']);
     $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', $basePath.'/modules/'.$_SESSION[$guid]['module']);
     $autoloader->register(true);
 }
-
-// Require the system-wide functions
-require_once $basePath.'/functions.php';
-
 
 if ($gibbon->isInstalled() == true) {
 

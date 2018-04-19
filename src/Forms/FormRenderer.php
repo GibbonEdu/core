@@ -85,8 +85,9 @@ class FormRenderer implements FormRendererInterface
             // Output each element inside the row
             foreach ($row->getElements() as $element) {
                 $colspan = ($row->isLastElement($element) && $row->getElementCount() < $totalColumns)? 'colspan="'.($totalColumns + 1 - $row->getElementCount()).'"' : '';
-
-                $output .= sprintf('<%1$s class="%2$s" %3$s>', $this->wrappers['cell'], $element->getClass(), $colspan);
+                $class = (method_exists($element, 'getClass'))? $element->getClass() : '';
+                
+                $output .= sprintf('<%1$s class="%2$s" %3$s>', $this->wrappers['cell'], $class, $colspan);
                 $output .= $element->getOutput();
                 $output .= sprintf('</%1$s>', $this->wrappers['cell']);
 
