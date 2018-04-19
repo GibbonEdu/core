@@ -23,10 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './functions.php';
 include './config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 try {
     $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
     $sql = "UPDATE gibbonStaff SET smartWorkflowHelp='N' WHERE gibbonPersonID=:gibbonPersonID";

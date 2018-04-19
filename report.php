@@ -22,10 +22,6 @@ include './functions.php';
 include './config.php';
 include './version.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 @session_start();
 
 //Check to see if system settings are set from databases

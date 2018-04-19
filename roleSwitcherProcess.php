@@ -22,10 +22,6 @@ include 'config.php';
 
 @session_start();
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 $URL = './index.php';
 $role = (isset($_GET['gibbonRoleID']))? $_GET['gibbonRoleID'] : '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);

@@ -27,10 +27,6 @@ include './config.php';
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.jsprint"></script>';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 $type = '';
 if (isset($_GET['type'])) {
     $type = $_GET['type'];

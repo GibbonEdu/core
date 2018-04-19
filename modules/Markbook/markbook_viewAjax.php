@@ -24,10 +24,6 @@ include './moduleFunctions.php';
 
 @session_start();
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 $order = (isset($_POST['order']))? $_POST['order'] : '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {

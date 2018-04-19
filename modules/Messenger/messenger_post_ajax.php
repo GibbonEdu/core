@@ -23,10 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 $output = '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_post.php')) {

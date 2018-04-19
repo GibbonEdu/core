@@ -23,10 +23,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './functions.php';
 include './config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 //Set up for i18n via gettext
 if (isset($_SESSION[$guid]['i18n']['code'])) {
     if ($_SESSION[$guid]['i18n']['code'] != null) {

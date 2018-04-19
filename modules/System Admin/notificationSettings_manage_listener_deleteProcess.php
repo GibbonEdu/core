@@ -22,10 +22,6 @@ use Gibbon\Domain\System\NotificationGateway;
 include '../../functions.php';
 include '../../config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 @session_start();
 
 $gibbonNotificationEventID = (isset($_GET['gibbonNotificationEventID']))? $_GET['gibbonNotificationEventID'] : null;

@@ -22,10 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 @session_start();
 
 getSystemSettings($guid, $connection2);
