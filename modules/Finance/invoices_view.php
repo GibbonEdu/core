@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     echo __($guid, 'Access denied.');
                     echo '</div>';
                 } elseif (count($options) == 1) {
-                    $_GET['search'] = $gibbonPersonID[0];
+                    $_GET['search'] = key($options);
                 } else {
                     echo '<h2>';
                     echo 'Choose Student';

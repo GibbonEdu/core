@@ -269,6 +269,7 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         $from = $_POST['email'];
                         if ($partialFail == false and $from != '') {
                             //Send emails
+                            $emails = array() ;
                             if (isset($_POST['emails'])) {
                                 $emails = $_POST['emails'];
                                 for ($i = 0; $i < count($emails); ++$i) {
