@@ -19,77 +19,82 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Psr\Container\ContainerInterface;
+
 /**
  * Session Class
- *
- * Responsibilities:
- * 		- User session
- * 		- Persistance ($_SESSION)
- * 		- Caching
  *
  * @version	v13
  * @since	v12
  */
 class Session
 {
-	/**
-	 * string
-	 */
-	private	$guid ;
+    /**
+     * string
+     */
+    private	$guid ;
 
-	/**
-	 * Gibbon/sqlConnection
-	 */
-	private	$pdo ;
+    /**
+     * Gibbon/sqlConnection
+     */
+    private	$pdo ;
 
-	/**
-	 * Construct
-	 */
-	public function __construct( core $gibbon = null )
-	{
-		global $guid;
+    /**
+     * Construct
+     */
+    public function __construct(ContainerInterface $container)
+    {
+        global $guid;
 
-		//Prevent breakage of back button on POST pages
-		ini_set('session.cache_limiter', 'private');
-		session_cache_limiter(false);
+        // Start the session (this should be the first time called)
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            //Prevent breakage of back button on POST pages
+            ini_set('session.cache_limiter', 'private');
+            session_cache_limiter(false);
+        
+            session_start();
+        }
 
-		// Start the session (this should be the first time called)
-		if (PHP_SESSION_ACTIVE !== session_status())
-			session_start();
+        $config = $container->get('config');
+        $this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
+        
+        // Detect the current module - TODO: replace this logic when switching to routing.
+        $address = isset($_GET['q'])? $_GET['q'] : '';
+        $this->set('address', $address);
+        $this->set('module',  getModuleName($address));
+        $this->set('action', getActionName($address));
+    }
 
-		$this->guid = (isset($gibbon))? $gibbon->guid() : $guid; // Backwards compatability for external modules
-	}
+    /**
+     * Set Database Connection
+     * @version  v13
+     * @since    v13
+     * @param    sqlConnection  $pdo
+     */
+    public function setDatabaseConnection(sqlConnection $pdo) {
+        $this->pdo = $pdo;
+    }
 
-	/**
-	 * Set Database Connection
-	 * @version  v13
-	 * @since    v13
-	 * @param    sqlConnection  $pdo
-	 */
-	public function setDatabaseConnection(sqlConnection $pdo) {
-		$this->pdo = $pdo;
-	}
+    /**
+     * Return the guid string
+     * TODO: Remove this
+     *
+     * @return	string
+     */
+    public function guid() {
+        return $this->guid;
+    }
 
-	/**
-	 * Return the guid string
-	 * TODO: Remove this
-	 *
-	 * @return	string
-	 */
-	public function guid() {
-		return $this->guid;
-	}
-
-	/**
-	 * Get Session Value
-	 *
-	 * @param	string	Session Value Name
-	 * @param	mixed	default Define a value to return if the variable is empty
-	 *
-	 * @return	mixed
-	 */
-	public function get($name, $default = null)
-	{
+    /**
+     * Get Session Value
+     *
+     * @param	string	Session Value Name
+     * @param	mixed	default Define a value to return if the variable is empty
+     *
+     * @return	mixed
+     */
+    public function get($name, $default = null)
+    {
         if (is_array($name)) {
             // Fetch a value from multi-dimensional array with an array of keys
             $retrieve = function($array, $keys, $default) {
@@ -104,49 +109,49 @@ class Session
         }
 
         return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
-	}
+    }
 
-	/**
-	 * Set Session Value
-	 *
-	 * @param	string	Session Value Name
-	 * @param	mixed	Session Value
-	 *
-	 * @return	object	Gibbon\session
-	 */
-	public function set($name, $value)
-	{
-		$_SESSION[$this->guid][$name] = $value ;
+    /**
+     * Set Session Value
+     *
+     * @param	string	Session Value Name
+     * @param	mixed	Session Value
+     *
+     * @return	object	Gibbon\session
+     */
+    public function set($name, $value)
+    {
+        $_SESSION[$this->guid][$name] = $value ;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Set Multiple Session Values
-	 *
-	 * @param	array	Array of name => value pairs
-	 *
-	 * @return	object	Gibbon\session
-	 */
-	public function setAll( array $values )
-	{
-		foreach ($values as $name => $value) {
-			$this->set($name, $value);
-		}
+    /**
+     * Set Multiple Session Values
+     *
+     * @param	array	Array of name => value pairs
+     *
+     * @return	object	Gibbon\session
+     */
+    public function setAll( array $values )
+    {
+        foreach ($values as $name => $value) {
+            $this->set($name, $value);
+        }
 
-		return $this;
-	}
+        return $this;
+    }
 
-	public function loadSystemSettings($pdo)
-	{
-		// System settings from gibbonSetting
-		$sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
-	    $result = $pdo->executeQuery(array(), $sql);
+    public function loadSystemSettings($pdo)
+    {
+        // System settings from gibbonSetting
+        $sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
+        $result = $pdo->executeQuery(array(), $sql);
 
         while ($row = $result->fetch()) {
             $this->set($row['name'], $row['value']);
         }
-	}
+    }
 
     public function loadLanguageSettings($pdo)
     {
@@ -159,54 +164,54 @@ class Session
         }
     }
 
-	public function createUserSession($username, $userData) {
+    public function createUserSession($username, $userData) {
 
-		$this->set('username', $username);
-		$this->set('passwordStrong', $userData['passwordStrong']);
-		$this->set('passwordStrongSalt', $userData['passwordStrongSalt']);
-		$this->set('passwordForceReset', $userData['passwordForceReset']);
-		$this->set('gibbonPersonID', $userData['gibbonPersonID']);
-		$this->set('surname', $userData['surname']);
-		$this->set('firstName', $userData['firstName']);
-		$this->set('preferredName', $userData['preferredName']);
-		$this->set('officialName', $userData['officialName']);
-		$this->set('email', $userData['email']);
-		$this->set('emailAlternate', $userData['emailAlternate']);
-		$this->set('website', filter_var($userData['website'], FILTER_VALIDATE_URL));
-		$this->set('gender', $userData['gender']);
-		$this->set('status', $userData['status']);
-		$this->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
-		$this->set('gibbonRoleIDCurrent', $userData['gibbonRoleIDPrimary']);
-		$this->set('gibbonRoleIDCurrentCategory', getRoleCategory($userData['gibbonRoleIDPrimary'], $this->pdo->getConnection()) );
-		$this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
-		$this->set('image_240', $userData['image_240']);
-		$this->set('lastTimestamp', $userData['lastTimestamp']);
-		$this->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
-		$this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
-		$this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
-		$this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
-		$this->set('dateStart', $userData['dateStart']);
-		$this->set('personalBackground', $userData['personalBackground']);
-		$this->set('messengerLastBubble', $userData['messengerLastBubble']);
-		$this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
-		$this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
-		$this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
-		$this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
-		$this->set('gibbonHouseID', $userData['gibbonHouseID']);
+        $this->set('username', $username);
+        $this->set('passwordStrong', $userData['passwordStrong']);
+        $this->set('passwordStrongSalt', $userData['passwordStrongSalt']);
+        $this->set('passwordForceReset', $userData['passwordForceReset']);
+        $this->set('gibbonPersonID', $userData['gibbonPersonID']);
+        $this->set('surname', $userData['surname']);
+        $this->set('firstName', $userData['firstName']);
+        $this->set('preferredName', $userData['preferredName']);
+        $this->set('officialName', $userData['officialName']);
+        $this->set('email', $userData['email']);
+        $this->set('emailAlternate', $userData['emailAlternate']);
+        $this->set('website', filter_var($userData['website'], FILTER_VALIDATE_URL));
+        $this->set('gender', $userData['gender']);
+        $this->set('status', $userData['status']);
+        $this->set('gibbonRoleIDPrimary', $userData['gibbonRoleIDPrimary']);
+        $this->set('gibbonRoleIDCurrent', $userData['gibbonRoleIDPrimary']);
+        $this->set('gibbonRoleIDCurrentCategory', getRoleCategory($userData['gibbonRoleIDPrimary'], $this->pdo->getConnection()) );
+        $this->set('gibbonRoleIDAll', getRoleList($userData['gibbonRoleIDAll'], $this->pdo->getConnection()) );
+        $this->set('image_240', $userData['image_240']);
+        $this->set('lastTimestamp', $userData['lastTimestamp']);
+        $this->set('calendarFeedPersonal', filter_var($userData['calendarFeedPersonal'], FILTER_VALIDATE_EMAIL));
+        $this->set('viewCalendarSchool', $userData['viewCalendarSchool']);
+        $this->set('viewCalendarPersonal', $userData['viewCalendarPersonal']);
+        $this->set('viewCalendarSpaceBooking', $userData['viewCalendarSpaceBooking']);
+        $this->set('dateStart', $userData['dateStart']);
+        $this->set('personalBackground', $userData['personalBackground']);
+        $this->set('messengerLastBubble', $userData['messengerLastBubble']);
+        $this->set('gibbonThemeIDPersonal', $userData['gibbonThemeIDPersonal']);
+        $this->set('gibboni18nIDPersonal', $userData['gibboni18nIDPersonal']);
+        $this->set('googleAPIRefreshToken', $userData['googleAPIRefreshToken']);
+        $this->set('receiveNotificationEmails', $userData['receiveNotificationEmails']);
+        $this->set('gibbonHouseID', $userData['gibbonHouseID']);
 
-		// Cache FF actions on login
+        // Cache FF actions on login
         $this->cacheFastFinderActions($userData['gibbonRoleIDPrimary']);
-	}
+    }
 
-	/**
-	 * Cache translated FastFinder actions to allow searching actions with the current locale
-	 * @version  v13
-	 * @since    v13
-	 * @param    Gibbon/sqlConnection  $pdo
-	 */
-	public function cacheFastFinderActions($gibbonRoleIDCurrent) {
+    /**
+     * Cache translated FastFinder actions to allow searching actions with the current locale
+     * @version  v13
+     * @since    v13
+     * @param    Gibbon/sqlConnection  $pdo
+     */
+    public function cacheFastFinderActions($gibbonRoleIDCurrent) {
 
-		// Get the accesible actions for the current user
+        // Get the accesible actions for the current user
         $data = array( 'gibbonRoleID' => $gibbonRoleIDCurrent );
         $sql = "SELECT DISTINCT concat(gibbonModule.name, '/', gibbonAction.entryURL) AS id, SUBSTRING_INDEX(gibbonAction.name, '_', 1) AS name, gibbonModule.type, gibbonModule.name AS module
                 FROM gibbonModule
@@ -232,5 +237,5 @@ class Session
             $this->set('fastFinderActions', $actions);
         }
         return $actions;
-	}
+    }
 }
