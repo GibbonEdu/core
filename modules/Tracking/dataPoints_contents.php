@@ -23,8 +23,7 @@ Certain code below was taken from the PHPExcel examples, which are licensed unde
 ini_set('max_execution_time', 600);
 
 //System includes
-include '../../config.php';
-include '../../functions.php';
+include '../../gibbon.php';
 include '../../version.php';
 
 //Module includes
