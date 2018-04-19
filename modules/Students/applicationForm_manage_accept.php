@@ -21,8 +21,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\UsernameGenerator;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';

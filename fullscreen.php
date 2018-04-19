@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 include './gibbon.php';
-
-@session_start();
 $_SESSION[$guid]['sidebarExtra'] = '';
 
 //Check to see if system settings are set from databases
