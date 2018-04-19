@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $date = $_POST['date'];
 $type = $_POST['type'];
 $name = $_POST['name'];

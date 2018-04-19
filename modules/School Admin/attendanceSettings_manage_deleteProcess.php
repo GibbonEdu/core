@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonAttendanceCodeID = (isset($_GET['gibbonAttendanceCodeID']))? $_GET['gibbonAttendanceCodeID'] : NULL;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings_manage_delete.php&gibbonAttendanceCodeID='.$gibbonAttendanceCodeID;
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings.php';

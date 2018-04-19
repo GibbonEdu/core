@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $location = $_POST['location'];
 $count = $_POST['count'];
 

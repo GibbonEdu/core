@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $subpage = $_GET['subpage'];
 $allStudents = '';

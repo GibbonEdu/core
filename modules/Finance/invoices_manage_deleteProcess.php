@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $gibbonFinanceInvoiceID = $_POST['gibbonFinanceInvoiceID'];
 $status = null;

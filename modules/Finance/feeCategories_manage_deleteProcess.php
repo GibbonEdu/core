@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonFinanceFeeCategoryID = $_POST['gibbonFinanceFeeCategoryID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/feeCategories_manage_delete.php&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/feeCategories_manage.php';

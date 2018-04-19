@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 
-@session_start();
-
 getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);

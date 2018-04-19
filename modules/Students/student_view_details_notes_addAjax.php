@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonStudentNoteCategoryID = $_GET['gibbonStudentNoteCategoryID'];
 
 if ($gibbonStudentNoteCategoryID != '') {

@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID";
 

@@ -23,8 +23,6 @@ include '../../functions.php';
 include '../../config.php';
 require '../../lib/PHPMailer/PHPMailerAutoload.php';
 
-@session_start();
-
 //Check to see if system settings are set from databases
 if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     getSystemSettings($guid, $connection2);

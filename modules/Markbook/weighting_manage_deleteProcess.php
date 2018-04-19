@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonMarkbookWeightID = (isset($_POST['gibbonMarkbookWeightID']))? $_POST['gibbonMarkbookWeightID'] : null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID";

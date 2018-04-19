@@ -1,6 +1,4 @@
 <?php
-
-@session_start();
 include './config.php';
 
 $type = substr($_GET['fastFinderSearch'], 0, 3);

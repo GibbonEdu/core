@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
 

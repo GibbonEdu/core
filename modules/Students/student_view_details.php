@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 

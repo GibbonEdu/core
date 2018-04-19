@@ -22,8 +22,6 @@ include '../../config.php';
 
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 
-@session_start();
-
 //Module includes
 include './moduleFunctions.php';
 

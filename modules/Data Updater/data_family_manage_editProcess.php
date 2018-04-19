@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonFamilyUpdateID = $_GET['gibbonFamilyUpdateID'];
 $gibbonFamilyID = $_POST['gibbonFamilyID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family_manage_edit.php&gibbonFamilyUpdateID=$gibbonFamilyUpdateID";

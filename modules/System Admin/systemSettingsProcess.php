@@ -23,8 +23,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/systemSettings.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {

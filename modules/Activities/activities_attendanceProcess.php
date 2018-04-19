@@ -29,8 +29,6 @@ try {
     echo $e->getMessage();
 }
 
-@session_start();
-
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/activities_attendance.php&gibbonActivityID=$gibbonActivityID";
 

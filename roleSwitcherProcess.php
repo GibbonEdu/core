@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include 'functions.php';
 include 'config.php';
 
-@session_start();
-
 $URL = './index.php';
 $role = (isset($_GET['gibbonRoleID']))? $_GET['gibbonRoleID'] : '';
 $role = str_pad(intval($role), 3, '0', STR_PAD_LEFT);

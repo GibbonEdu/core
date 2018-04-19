@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $statusCurrent = $_POST['statusCurrent'];
 $status = $_POST['status'];
 $type = 'Other';

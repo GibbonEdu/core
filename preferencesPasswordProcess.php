@@ -20,9 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './functions.php';
 include './config.php';
 
-//Start session
-@session_start();
-
 //Check to see if academic year id variables are set, if not set them
 if (isset($_SESSION[$guid]['gibbonAcademicYearID']) == false or isset($_SESSION[$guid]['gibbonSchoolYearName']) == false) {
     setCurrentSchoolYear($guid, $connection2);

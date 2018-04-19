@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include './functions.php';
 include './config.php';
 
-@session_start();
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/publicRegistration.php';
 
 $proceed = false;

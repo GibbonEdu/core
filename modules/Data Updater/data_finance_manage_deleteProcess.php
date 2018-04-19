@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonFinanceInvoiceeUpdateID = $_POST['gibbonFinanceInvoiceeUpdateID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_finance_manage_delete.php&gibbonFinanceInvoiceeUpdateID=$gibbonFinanceInvoiceeUpdateID";
 $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/data_finance_manage.php';

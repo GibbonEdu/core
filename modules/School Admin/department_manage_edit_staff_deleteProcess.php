@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
 $gibbonDepartmentStaffID = $_GET['gibbonDepartmentStaffID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_manage_edit.php&gibbonDepartmentID=$gibbonDepartmentID";

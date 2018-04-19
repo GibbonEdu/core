@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $currentDate = $_POST['currentDate'];
 $today = date('Y-m-d');

@@ -25,8 +25,6 @@ require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
-@session_start();
-
 getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);

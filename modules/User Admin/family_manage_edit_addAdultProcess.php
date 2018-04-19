@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $search = $_GET['search'];
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $gibbonPersonID = $_POST['gibbonPersonID2'];

@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
 $currentDate = $_POST['currentDate'];
 $today = date('Y-m-d');

@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $action = $_POST['action'];
 $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'];

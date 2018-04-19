@@ -22,8 +22,6 @@ use Gibbon\Domain\System\NotificationGateway;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonNotificationEventID = (isset($_GET['gibbonNotificationEventID']))? $_GET['gibbonNotificationEventID'] : null;
 $gibbonNotificationListenerID = (isset($_GET['gibbonNotificationListenerID']))? $_GET['gibbonNotificationListenerID'] : null;
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/notificationSettings_manage_edit.php&gibbonNotificationEventID=".$gibbonNotificationEventID;

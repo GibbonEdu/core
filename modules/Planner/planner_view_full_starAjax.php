@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $gibbonPlannerEntryID = $_POST['gibbonPlannerEntryID'];
 $mode = $_POST['mode']; //can be "add" or "remove"

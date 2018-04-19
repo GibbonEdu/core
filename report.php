@@ -22,8 +22,6 @@ include './functions.php';
 include './config.php';
 include './version.php';
 
-@session_start();
-
 //Check to see if system settings are set from databases
 if ($_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);

@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
 $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
 if ($gibbonExternalAssessmentID == '') { echo 'Fatal error loading this page!';

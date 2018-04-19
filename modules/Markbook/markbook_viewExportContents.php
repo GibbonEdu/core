@@ -33,8 +33,6 @@ if ($enableEffort == 'Y')
 else
     $effortAdjust = 1 ;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";

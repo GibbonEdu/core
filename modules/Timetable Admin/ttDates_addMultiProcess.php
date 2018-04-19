@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $dates = 0;
 if (isset($_POST['dates'])) {

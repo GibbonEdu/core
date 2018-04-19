@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 //Module includes from User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 

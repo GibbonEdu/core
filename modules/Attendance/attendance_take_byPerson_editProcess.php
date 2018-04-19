@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonAttendanceLogPersonID = isset($_POST['gibbonAttendanceLogPersonID'])? $_POST['gibbonAttendanceLogPersonID'] : '';
 $gibbonPersonID = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : '';
 $currentDate = isset($_POST['currentDate'])? dateConvert($guid, $_POST['currentDate']) : date('Y-m-d');

@@ -24,8 +24,6 @@ use Gibbon\Domain\System\NotificationGateway;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 //Module includes
 include '../User Admin/moduleFunctions.php';
 

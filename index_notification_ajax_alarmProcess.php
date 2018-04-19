@@ -21,8 +21,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include './functions.php';
 include './config.php';
 
-@session_start();
-
 $gibbonAlarmID = $_GET['gibbonAlarmID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
 

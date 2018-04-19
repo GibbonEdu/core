@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
 

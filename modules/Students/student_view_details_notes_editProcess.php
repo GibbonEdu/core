@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $subpage = $_GET['subpage'];
 $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];

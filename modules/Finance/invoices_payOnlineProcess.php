@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_payOnline.php';
 
 $paid = null;

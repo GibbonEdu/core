@@ -26,8 +26,6 @@ require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 $pdo = new Gibbon\sqlConnection();
 $connection2 = $pdo->getConnection();
 
-@session_start();
-
 getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);

@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $viewBy = isset($_POST['viewBy'])? $_POST['viewBy'] : '';
 $subView = isset($_POST['subView'])? $_POST['subView'] : '';

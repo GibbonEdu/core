@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
 

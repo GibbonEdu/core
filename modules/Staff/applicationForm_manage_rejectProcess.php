@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonStaffApplicationFormID = $_POST['gibbonStaffApplicationFormID'];
 $search = $_GET['search'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_reject.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID&search=$search";

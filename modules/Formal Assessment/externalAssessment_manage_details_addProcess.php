@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $count = 0;
 if (is_numeric($_POST['count'])) {
     $count = $_POST['count'];

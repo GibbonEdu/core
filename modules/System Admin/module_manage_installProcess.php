@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 //Get URL from calling page, and set returning URL
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/module_manage.php';
 $_SESSION[$guid]['moduleInstallError'] = '';

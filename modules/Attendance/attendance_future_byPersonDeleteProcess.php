@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $gibbonAttendanceLogPersonID = $_GET['gibbonAttendanceLogPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";

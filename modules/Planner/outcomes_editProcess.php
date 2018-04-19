@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $filter2 = '';
 if (isset($_GET['filter2'])) {
     $filter2 = $_GET['filter2'];

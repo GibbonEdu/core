@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
 $date = $_GET['date'];

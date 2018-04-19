@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $mode = $_GET['mode'];
 if ($mode == 'Add') {
     try {

@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include 'functions.php';
 include 'config.php';
 
-@session_start();
-
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year

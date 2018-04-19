@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 

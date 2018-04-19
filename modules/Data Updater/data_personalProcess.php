@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 //Module includes for User Admin (for custom fields)
 include '../User Admin/moduleFunctions.php';
 

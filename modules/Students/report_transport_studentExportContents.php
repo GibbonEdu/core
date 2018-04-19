@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../config.php';
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
     //Acess denied
     echo "<div class='error'>";

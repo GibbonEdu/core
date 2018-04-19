@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
 

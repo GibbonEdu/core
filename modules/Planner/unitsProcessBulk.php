@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonCourseID = $_POST['gibbonCourseID'];
 $gibbonCourseIDCopyTo = $_POST['gibbonCourseIDCopyTo'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];

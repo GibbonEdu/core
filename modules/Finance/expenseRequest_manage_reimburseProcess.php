@@ -23,8 +23,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
 $gibbonFinanceBudgetID = $_POST['gibbonFinanceBudgetID'];
 $gibbonFinanceExpenseID = $_POST['gibbonFinanceExpenseID'];

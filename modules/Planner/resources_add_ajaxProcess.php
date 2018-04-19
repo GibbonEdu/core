@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $time = time();
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {

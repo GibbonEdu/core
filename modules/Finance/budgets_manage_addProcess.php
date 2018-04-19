@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/budgets_manage_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgets_manage_add.php') == false) {

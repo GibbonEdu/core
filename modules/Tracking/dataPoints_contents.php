@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Certain code below was taken from the PHPExcel examples, which are licensed under the GNU GPL.
 */
 
-@session_start();
-
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
 

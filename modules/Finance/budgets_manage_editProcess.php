@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonFinanceBudgetID = $_GET['gibbonFinanceBudgetID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/budgets_manage_edit.php&gibbonFinanceBudgetID=$gibbonFinanceBudgetID";
 

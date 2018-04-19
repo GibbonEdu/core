@@ -24,8 +24,6 @@ include '../../config.php';
 //Module includes
 include './moduleFunctions.php';
 
-@session_start();
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
 $gibbonPersonID = $_GET['gibbonPersonID'];

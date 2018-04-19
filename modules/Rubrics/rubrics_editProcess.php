@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 //Search & Filters
 $search = null;
 if (isset($_GET['search'])) {

@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $id = $_GET['id'];
 $type = $_GET['type'];
 $gibbonOutcomeID = $_GET['gibbonOutcomeID'];

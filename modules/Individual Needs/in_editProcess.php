@@ -22,8 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'].'&source='.$_GET['source'].'&gibbonINDescriptorID='.$_GET['gibbonINDescriptorID'].'&gibbonAlertLevelID='.$_GET['gibbonAlertLevelID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];
 

@@ -22,8 +22,6 @@ include '../../config.php';
 
 include './moduleFunctions.php';
 
-@session_start();
-
 $order = (isset($_POST['order']))? $_POST['order'] : '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {

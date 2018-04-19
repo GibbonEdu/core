@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 

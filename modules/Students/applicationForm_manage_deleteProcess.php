@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../functions.php';
 include '../../config.php';
 
-@session_start();
-
 $gibbonApplicationFormID = $_POST['gibbonApplicationFormID'];
 $gibbonSchoolYearID = $_POST['gibbonSchoolYearID'];
 $search = $_GET['search'];
