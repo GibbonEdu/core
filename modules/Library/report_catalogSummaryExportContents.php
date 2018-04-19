@@ -19,12 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied
     echo "<div class='error'>";

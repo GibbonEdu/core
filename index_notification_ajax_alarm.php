@@ -17,19 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Gibbon system-wide includes
-include './functions.php';
-include './config.php';
+include './gibbon.php';
 
 //Load jQuery
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.jsprint"></script>';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
 
 $type = '';
 if (isset($_GET['type'])) {

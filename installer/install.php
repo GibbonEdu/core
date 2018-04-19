@@ -53,7 +53,6 @@ $nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
 $_SESSION[$guid]['nonce'][$step+1] = $nonce;
 
 // Deal with non-existent stringReplacement session
-@session_start();
 $_SESSION[$guid]['stringReplacement'] = array();
 
 ?>

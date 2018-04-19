@@ -19,19 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 Certain code below was taken from the PHPExcel examples, which are licensed under the GNU GPL.
 */
 
-@session_start();
-
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
 
 //System includes
-include '../../config.php';
-include '../../functions.php';
+include '../../gibbon.php';
 include '../../version.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
 
 //Module includes
 include './moduleFunctions.php';

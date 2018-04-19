@@ -17,8 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
 
@@ -33,8 +32,6 @@ if (!(mysql_select_db($databaseName, $connection))) {
 }
 
 mysql_set_charset('utf8');
-
-@session_start();
 
 $gibbonRubricID = $_GET['gibbonRubricID'];
 echo rubricEdit($guid, $connection, $gibbonRubricID);

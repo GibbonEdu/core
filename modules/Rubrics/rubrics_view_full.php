@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Rubric includes
 include './modules/Rubrics/moduleFunctions.php';
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.php') == false) {
     //Acess denied
     echo "<div class='error'>";

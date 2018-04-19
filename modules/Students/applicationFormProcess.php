@@ -19,15 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 require '../../lib/PHPMailer/PHPMailerAutoload.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 //Check to see if system settings are set from databases
 if (empty($_SESSION[$guid]['systemSettingsSet'])) {

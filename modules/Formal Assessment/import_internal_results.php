@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_internal_results.php') == false) {
     //Acess denied
     echo "<div class='error'>";
