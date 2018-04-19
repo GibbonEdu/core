@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-global $gibbon, $guid;
+global $gibbon, $guid, $connection2;
 
 // Prevent installer redirect
 if (!file_exists(__DIR__ . '/../config.php')) {
