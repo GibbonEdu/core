@@ -102,15 +102,6 @@ class Core
         $this->locale->setTextDomain($db);
         $this->locale->setStringReplacementList($db);
 
-        // Set global variables here for backwards compatibility
-        global $guid, $version, $caching, $pdo, $connection2;
-
-        $guid = $this->guid;
-        $caching = $this->caching;
-        $version = $this->version;
-        $pdo = $db;
-        $connection2 = $db->getConnection();
-
         $this->initialized = true;
     }
 
