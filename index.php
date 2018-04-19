@@ -50,19 +50,6 @@ if (isset($_GET['sidebar'])) {
     $sidebar = '';
 }
 
-//Deal with address param q
-if (isset($_GET['q'])) {
-    $_SESSION[$guid]['address'] = $_GET['q'];
-} else {
-    $_SESSION[$guid]['address'] = '';
-}
-$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
-$q = null;
-if (isset($_GET['q'])) {
-    $q = $_GET['q'];
-}
-
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
@@ -109,7 +96,7 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 
 //Check for force password reset flag
 if (isset($_SESSION[$guid]['passwordForceReset'])) {
-    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != 'preferences.php') {
+    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $_SESSION[$guid]['address'] != 'preferences.php') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
         $URL = $URL.'&forceReset=Y';
         header("Location: {$URL}");

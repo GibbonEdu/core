@@ -17,53 +17,39 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-$basePath = dirname(__FILE__);
-$basePath = rtrim(str_replace('\\', '/', $basePath), '/');
-
-// Handle Gibbon installation redirect
-if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config.php') == 0) {
-    // Test if installer already invoked and ignore.
-    if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
-        $URL = './installer/install.php';
-        header("Location: {$URL}");
-        exit();
-    }
-}
-
 // Setup the composer autoloader
-$autoloader = require_once $basePath.'/vendor/autoload.php';
-
-// New configuration object
-$gibbon = new Gibbon\Core($basePath, $_SERVER['PHP_SELF']);
-
-
-// Set global config variables, for backwards compatability
-$guid = $gibbon->guid();
-$caching = $gibbon->getCaching();
-$version = $gibbon->getVersion();
+$autoloader = require_once __DIR__.'/vendor/autoload.php';
 
 // Require the system-wide functions
-require_once $basePath.'/functions.php';
+require_once __DIR__.'/functions.php';
 
+// Core Services
+$container = new League\Container\Container();
+$container->add('config', new Gibbon\Core(__DIR__));
+$container->add('session', new Gibbon\Session($container));
+$container->add('locale', new Gibbon\Locale($container));
+$container->add('autoloader', $autoloader);
 
-// Detect the current module - TODO: replace this logic when switching to routing.
-$_SESSION[$guid]['address'] = isset($_GET['q'])? $_GET['q'] : str_replace($basePath, '', $_SERVER['SCRIPT_FILENAME']);
-$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
+// Globals for backwards compatibility
+$gibbon = $container->get('config');
+$gibbon->session = $container->get('session');
+$gibbon->locale = $container->get('locale');
+
+// Handle Gibbon installation redirect
+if (!$gibbon->isInstalled() && stripos($_SERVER['PHP_SELF'], 'installer/install.php') === false) {
+    header("Location: ./installer/install.php");
+    exit;
+}
 
 // Autoload the current module namespace
-if (isset($_SESSION[$guid]['module'])) {
-    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION[$guid]['module']);
-    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', $basePath.'/modules/'.$_SESSION[$guid]['module']);
+if (!empty($gibbon->session->get('module'))) {
+    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $gibbon->session->get('module'));
+    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module'));
     $autoloader->register(true);
 }
 
+// Initialize using the database connection
 if ($gibbon->isInstalled() == true) {
-
-	// New PDO DB connection
-	$pdo = new Gibbon\sqlConnection();
-	$connection2 = $pdo->getConnection();
-
-	// Initialize using the database connection
-	$gibbon->initializeCore($pdo);
+    $container->add('db', new Gibbon\sqlConnection());
+    $gibbon->initializeCore($container);
 }
