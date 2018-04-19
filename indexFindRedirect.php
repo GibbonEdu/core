@@ -1,5 +1,5 @@
 <?php
-include './config.php';
+include './gibbon.php';
 
 $type = substr($_GET['fastFinderSearch'], 0, 3);
 $id = substr($_GET['fastFinderSearch'], 4);
