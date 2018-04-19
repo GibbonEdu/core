@@ -51,7 +51,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $invoiceDueDate = $_POST['invoiceDueDate'];
         }
         $notes = $_POST['notes'];
-        $order = $_POST['order'];
+        $order = isset($_POST['order'])? $_POST['order'] : array();
 
         if (count($gibbonFinanceInvoiceeIDs) == 0 or $scheduling == '' or ($scheduling == 'Scheduled' and $gibbonFinanceBillingScheduleID == '') or ($scheduling == 'Ad Hoc' and $invoiceDueDate == '') or count($order) == 0) {
             $URL .= '&return=error1';

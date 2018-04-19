@@ -1161,7 +1161,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
         $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
+        if (!$preview && $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
             $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
             $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
             if ($financeOnlinePaymentEnabled == 'Y') {
@@ -1681,3 +1681,25 @@ function getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBud
     return $budgetAllocated;
 }
 
+function getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $status)
+{
+    try {
+        $dataTotal = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+        if ($status == 'Pending') {
+            $sqlTotal = 'SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2 FROM gibbonFinanceInvoiceFee LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        } else {
+            $sqlTotal = 'SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2 FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        }
+        $resultTotal = $pdo->executeQuery($dataTotal, $sqlTotal);
+    } catch (PDOException $e) {
+        return null;
+    }
+
+    $totalFee = 0;
+
+    while ($rowTotal = $resultTotal->fetch()) {
+        $totalFee += is_numeric($rowTotal['fee2'])? $rowTotal['fee2'] : $rowTotal['fee'];
+    }
+
+    return $totalFee;
+}
