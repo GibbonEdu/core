@@ -213,6 +213,12 @@ div.sidebarExtra {
 	text-align: right ;
 	font-style: italic ;
 }
+#footer-logo {
+	z-index: 9999;
+	margin-top: -82px;
+	margin-left: 850px;
+	opacity: 0.8; 
+}
 div.minorLinks {
 	text-align: right;
 	padding-right: 13px;
@@ -1525,25 +1531,25 @@ td.fullWidth[colspan] {
 
 /* Utility classes - will be part of the larger css refactor soon */
 .noMargin {
-    margin: 0 !important; 
+    margin: 0 !important;
 }
 
 .noPadding,
 table.smallIntBorder td.noPadding {
-    padding: 0!important; 
+    padding: 0!important;
 }
 
 .noBorder {
-    border: 0!important; 
+    border: 0!important;
 }
 
 /* CUSTOM BLOCKS v16 */
 .customBlocks .sortHighlight {
-    margin-bottom: 5px; 
-    min-height: 80px; 
-    line-height: 1.2em; 
+    margin-bottom: 5px;
+    min-height: 80px;
+    line-height: 1.2em;
     width: 100%;
-    border: 1px solid #fcd3a1; 
+    border: 1px solid #fcd3a1;
     background: #fbf8ee;
     color: #444444;
 }

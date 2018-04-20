@@ -41,6 +41,7 @@ v16.0.00
 		System: fixed issue preventing timezone string field description from being translated
 		System: added timezones strings to translatable string list
 		System: improved timezone selection process by using select instead of text field
+		System: moved footer logo style into theme CSS
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
         Activities: added Activity Choices by Roll Group for ease of looking up student's activity times
