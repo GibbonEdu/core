@@ -82456,7 +82456,7 @@ msgstr "解释性文字与所需文件一起出现？"
 #: .git/i18n/dbStringsForTranslation.php:2033
 #: i18n/dbStringsForTranslation.php:2095 i18n/dbStringsForTranslation.php:2139
 #: i18n/dbStringsForTranslation.php:2160 i18n/dbStringsForTranslation.php:2585
-msgid "Explanatory text to include with Day-Type Otpions."
+msgid "Explanatory text to include with Day-Type Options."
 msgstr "解释性文本包含日期类型选项。"
 
 #: i18n/dbStringsForTranslation.php:1552 i18n/dbStringsForTranslation.php:1913

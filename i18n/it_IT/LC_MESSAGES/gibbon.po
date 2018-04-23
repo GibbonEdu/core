@@ -82908,7 +82908,7 @@ msgstr "Testo esplicativo da  far comparire con i documenti richiesti?"
 #: .git/i18n/dbStringsForTranslation.php:2033
 #: i18n/dbStringsForTranslation.php:2095 i18n/dbStringsForTranslation.php:2139
 #: i18n/dbStringsForTranslation.php:2160 i18n/dbStringsForTranslation.php:2585
-msgid "Explanatory text to include with Day-Type Otpions."
+msgid "Explanatory text to include with Day-Type Options."
 msgstr "Testo esplicativo per includere con Giorno-Tipo Opzioni."
 
 #: i18n/dbStringsForTranslation.php:1552 i18n/dbStringsForTranslation.php:1913
