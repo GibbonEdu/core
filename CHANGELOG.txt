@@ -76,6 +76,7 @@ v16.0.00
 		User Admin: added staff import feature
         User Admin: added an alphanumeric requirement for usernames in Add User
 		User Admin: added fix to prevent the logged in user from deleting themselves.
+		User Admin: fixed typo in description for Day-Type Text setting 
 
 v15.0.00
 --------
