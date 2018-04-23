@@ -39414,7 +39414,7 @@ msgstr "重新加载此页面并按照说明将数据库更新到最新版本。
 #: .git/modules/System modules/System Admin/update.php:93
 #: modules/System Admin/update.php:152
 #: modules/System Admin/module_manage_update.php:109
-msgid "Datebase Update"
+msgid "Database Update"
 msgstr "数据库更新"
 
 #: modules/System Admin/module_manage_update.php:129

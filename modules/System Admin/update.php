@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         } elseif (version_compare($versionDB, $versionCode, '<')) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Datebase Update');
+            echo __($guid, 'Database Update');
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         } elseif ($update == true) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Datebase Update');
+            echo __($guid, 'Database Update');
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';

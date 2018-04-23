@@ -39514,7 +39514,7 @@ msgstr ""
 #: .git/modules/System modules/System Admin/update.php:93
 #: modules/System Admin/update.php:152
 #: modules/System Admin/module_manage_update.php:109
-msgid "Datebase Update"
+msgid "Database Update"
 msgstr "Baza de date Actualizare"
 
 #: modules/System Admin/module_manage_update.php:129

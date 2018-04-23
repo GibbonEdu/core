@@ -39437,7 +39437,7 @@ msgstr "โหลดหน้านี้ใหม่และทำตามค
 #: .git/modules/System modules/System Admin/update.php:93
 #: modules/System Admin/update.php:152
 #: modules/System Admin/module_manage_update.php:109
-msgid "Datebase Update"
+msgid "Database Update"
 msgstr "อัพเดตฐานข้อมูล"
 
 #: modules/System Admin/module_manage_update.php:129
