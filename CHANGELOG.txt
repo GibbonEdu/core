@@ -51,6 +51,8 @@ v16.0.00
 		Attendance: added ability for students to view their own attendance data for the current year
 		Attendance: added ability to delete attendance with Manage Attendance Logs permission in Attendance by Person
 		Finance: added logging for failed bulk email sends
+        Finance: add a Mark as Paid bulk action in Manage Invoices
+        Finance: add Credit Card payment type to gibbonPayment table
 		Form Group: added link to print listing of students in form group detail view
 		Library: simplified interface for Duplicate in Manage Catalog
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
