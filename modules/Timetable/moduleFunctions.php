@@ -821,7 +821,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
 
                     if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
-                        $output .= "<th style='color:#390; vertical-align: top; text-align: center; width: ";
+                        $output .= "<th style='position:relative;color:#004; vertical-align: top; text-align: center; width: ";
                     }
                     else {
                         $output .= "<th style='vertical-align: top; text-align: center; width: ";
@@ -859,6 +859,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     if ($resultSpecial->rowcount() == 1) {
                         $rowSpecial = $resultSpecial->fetch();
                         $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$rowSpecial['name'].'</u></span>';
+                    }
+                    if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
+                        $output .= "<div class='ttToday'></div>";
                     }
                     $output .= '</th>';
                 }
