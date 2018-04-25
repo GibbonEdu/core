@@ -820,16 +820,19 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         }
                     }
 
-                    if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() + (86400)))){ 
-                    $output .= "<th style='color:#390; vertical-align: top; text-align: center; width: ";
-                    } else{
-                    $output .= "<th style='vertical-align: top; text-align: center; width: ";
+                    if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
+                        $output .= "<th style='color:#390; vertical-align: top; text-align: center; width: ";
+                    }
+                    else {
+                        $output .= "<th style='vertical-align: top; text-align: center; width: ";
                     }
                     if ($narrow == 'trim') {
                         $output .= (550 / $daysInWeek);
-                    } elseif ($narrow == 'narrow') {
+                    }
+                    elseif ($narrow == 'narrow') {
                         $output .= (375 / $daysInWeek);
-                    } else {
+                    }
+                    else {
                         $output .= (550 / $daysInWeek);
                     }
                     $output .= "px".$color."'>";
