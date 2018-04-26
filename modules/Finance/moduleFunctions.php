@@ -1152,6 +1152,19 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= '<b>'.number_format($feeTotal, 2, '.', ',').'</b>';
             $return .= '</td>';
             $return .= '</tr>';
+            if ($row['status'] == 'Paid - Partial') {
+                $return .= "<tr style='height: 35px' class='warning'>";
+                $return .= "<td colspan=3 style='text-align: right; $style2'>";
+                $return .= '<b>'.__($guid, 'Amount Outstanding:').'</b>';
+                $return .= '</td>';
+                $return .= "<td style='$style2'>";
+                if (substr($currency, 4) != '') {
+                    $return .= substr($currency, 4).' ';
+                }
+                $return .= '<b>'.number_format(($feeTotal-$row['paidAmount']), 2, '.', ',').'</b>';
+                $return .= '</td>';
+                $return .= '</tr>';
+            }
             $return .= '</table>';
         }
 
