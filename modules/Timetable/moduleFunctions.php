@@ -434,7 +434,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
-            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, '< Last Week')."'>";
+            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='< ".__($guid, 'Last Week')."'>";
             $output .= '</form>';
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'],($thisWeek))."' type='hidden'>";
@@ -450,7 +450,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
-            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week >')."'>";
+            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week')." >'>";
             $output .= '</form>';
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
@@ -803,6 +803,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
+                    unset($rowDay);
                     $color = '';
                     try {
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
