@@ -1210,6 +1210,11 @@ table.chatBox tr td {
 	padding: 1px 4px
 }
 
+.ttToday {
+        background:#fefedd;
+}
+
+
 /* TAG CLOUD STYLE */
 .tag_cloud { padding: 3px; text-decoration: none; }
 .tag_cloud:link { color: #6799CF; text-decoration: none }
