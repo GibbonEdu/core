@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 }
                 ?>
 					<?php
-                    if ($row['status'] == 'Issued') {
+                    if ($row['status'] == 'Issued' || $row['status'] == 'Paid - Partial') {
                         if ($row['reminderCount'] >= 0) {
                             ?>
 							<tr class='<?php echo $rowNum ?>'>

@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceFeeCategoryID', __('Fee Category'));
             $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder()->selected($gibbonFinanceFeeCategoryID);
-        
+
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
@@ -271,10 +271,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo __($guid, 'View');
         echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s records(s) in current view'), $result->rowCount()).'</span>';
         echo '</h3>';
-        
+
         echo "<div class='linkTop'>";
         echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
-        echo '</div>'; 
+        echo '</div>';
 
         $linkParams = array(
             'gibbonSchoolYearID'             => $gibbonSchoolYearID,
@@ -294,7 +294,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         if ($status == 'Pending') {
             $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions;
         }
-        if ($status == 'Issued - Overdue') {
+        if ($status == 'Issued - Overdue' || $status == 'Paid - Partial') {
             $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions;
         }
         if ($status == 'Issued' || $status == 'Issued - Overdue') {
@@ -338,7 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             } else if ($invoice['status'] == 'Paid' and $invoice['invoiceDueDate'] < $invoice['paidDate']) {
                 $statusExtra = 'Late';
             }
-            
+
             $rowClass = ($invoice['status'] == 'Paid')? 'current' : (($invoice['status'] == 'Issued' and $statusExtra == 'Overdue')? 'error' : '');
 
             $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
@@ -404,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 if (!empty($invoice['notes'])) {
                     $table->addRow()->addClass('invoiceNotes')->addTableCell(htmlPrep($invoice['notes']))->colSpan(8);
                 }
-                
+
         }
 
         echo $form->getOutput();
