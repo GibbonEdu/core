@@ -820,12 +820,12 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         }
                     }
 
+                        $output .= "<th ";
                     if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
-                        $output .= "<th style='color:#390; vertical-align: top; text-align: center; width: ";
+                        $output .= "class='ttToday' ";
                     }
-                    else {
-                        $output .= "<th style='vertical-align: top; text-align: center; width: ";
-                    }
+                        $output .= "style='vertical-align: top; text-align: center; width: ";
+
                     if ($narrow == 'trim') {
                         $output .= (550 / $daysInWeek);
                     }
@@ -1137,7 +1137,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-        $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+        $output .= "<td ";
+
+        if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
+            $output .= "class='ttToday' ";
+        }
+        $output .= "style='text-align: center; vertical-align: top; font-size: 11px'>";
+
         try {
             $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
@@ -2015,7 +2021,12 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-    $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+    $output .= "<td ";
+    if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
+       $output .= "class='ttToday' ";
+    }
+    $output .= "style='text-align: center; vertical-align: top; font-size: 11px'>";
+
     try {
         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
         $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
