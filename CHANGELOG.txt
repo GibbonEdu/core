@@ -73,7 +73,7 @@ v16.0.00
 		System Admin: fixed spelling error in Department settings
 		System Admin: fixed typo in Third Party Settings
 		Timetable: added This Week link to timetable date navigation in Timetable by Person
-		Timetable: added highlight to the current day column header text in Timetable by Person
+		Timetable: added highlight to the current day column in Timetable by Person
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
