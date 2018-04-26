@@ -897,6 +897,5 @@ ALTER TABLE `gibbonHouse` CHANGE `name` `name` VARCHAR(30) CHARACTER SET utf8 CO
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('hr_HR','Hrvatski - Hrvatska', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 UPDATE gibbonSetting SET description='Explanatory text to include with Day-Type Options.' WHERE scope='User Admin' AND name='dayTypeText';end
 ALTER TABLE `gibbonPayment` CHANGE `type` `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other','Credit Card') NOT NULL DEFAULT 'Online';end
-CREATE INDEX contextKeyName ON gibbonLike (contextKeyName);end
-CREATE INDEX contextKeyValue ON gibbonLike (contextKeyValue);end
+CREATE INDEX contextKeyNameValue ON gibbonLike (contextKeyName, contextKeyValue);end
 ";
