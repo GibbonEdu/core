@@ -1211,12 +1211,7 @@ table.chatBox tr td {
 }
 
 .ttToday {
-        position:absolute;
-        background: rgba(255,250,170,0.5);
-        height:526px;
-        width:128px;
-        top:-1px;
-        left:-4px
+        background:#fefedd;
 }
 
 /* TAG CLOUD STYLE */
