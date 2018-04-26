@@ -34,10 +34,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $form = Form::create('staffApplicationFormSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
+
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+    $row = $form->addRow()->addHeading(__('Settings'));
+
+    $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addDate($setting['name'])->setValue(dateConvertBack($guid, $setting['value']));
+
+    $setting = getSettingByScope($connection2, 'Data Updater', 'parentRedirect', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addYesNo($setting['name'])->selected($setting['value']);
+
+    $row = $form->addRow();
+        $row->addFooter();
+        $row->addSubmit();
+    
+    echo $form->getOutput();
+    
+
     echo '<h2>'.__($guid, 'Required Fields for Personal Updates').'</h2>';
 	echo '<p>'.__($guid, 'These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
-    $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsProcess.php');
+    $form = Form::create('dataUpdaterSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
     
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);

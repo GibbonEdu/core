@@ -26,25 +26,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-   
+    $settingDefaults = array('title' => 'N', 'surname' => 'Y', 'firstName' => 'N', 'preferredName' => 'Y', 'officialName' => 'Y', 'nameInCharacters' => 'N', 'dob' => 'N', 'email' => 'N', 'emailAlternate' => 'N', 'phone1' => 'N', 'phone2' => 'N', 'phone3' => 'N', 'phone4' => 'N', 'languageFirst' => 'N', 'languageSecond' => 'N', 'languageThird' => 'N', 'countryOfBirth' => 'N', 'ethnicity' => 'N', 'citizenship1' => 'N', 'citizenship1Passport' => 'N', 'citizenship2' => 'N', 'citizenship2Passport' => 'N', 'religion' => 'N', 'nationalIDCardNumber' => 'N', 'residencyStatus' => 'N', 'visaExpiryDate' => 'N', 'profession' => 'N', 'employer' => 'N', 'jobTitle' => 'N', 'emergency1Name' => 'N', 'emergency1Number1' => 'N', 'emergency1Number2' => 'N', 'emergency1Relationship' => 'N', 'emergency2Name' => 'N', 'emergency2Number1' => 'N', 'emergency2Number2' => 'N', 'emergency2Relationship' => 'N', 'vehicleRegistration' => 'N');
+
+    $settings = array();
+
+    // Loop through $_POST, look only at valid settings
+    foreach ($settingDefaults as $name => $defaultValue) {
+        $settings[$name] = (isset($_POST[$name]) && $_POST[$name] == 'Y')? 'Y' : 'N';
+    }
 
     //Write to database
     $fail = false;
 
-    $cutoffDate = (isset($_POST['cutoffDate'])) ? $_POST['cutoffDate'] : NULL;
     try {
-        $data = array('value' => $cutoffDate);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='cutoffDate'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    $parentRedirect = (isset($_POST['parentRedirect'])) ? $_POST['parentRedirect'] : NULL;
-    try {
-        $data = array('value' => $parentRedirect);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='parentRedirect'";
+        $data = array('value' => serialize($settings));
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalDataUpdaterRequiredFields'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
