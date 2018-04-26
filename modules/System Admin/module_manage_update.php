@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             } elseif ($versionDB < $versionCode) {
                 //Time to update
                 echo '<h3>';
-                echo __($guid, 'Datebase Update');
+                echo __($guid, 'Database Update');
                 echo '</h3>';
                 echo '<p>';
                 echo sprintf(__($guid, 'It seems that you have updated your %1$s module code to a new version, and are ready to update your database from v%2$s to v%3$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), htmlPrep($values['name']), $versionDB, $versionCode).'</b>';
