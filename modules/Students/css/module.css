@@ -80,3 +80,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 .dayNoData {
 	border: 1px solid #555;
 }
+
+.existingFamily ul.token-input-list-facebook {
+    height: auto !important;
+}

@@ -466,10 +466,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 
-    // FAMILY
+    // NEW FAMILY
     if (empty($application['gibbonFamilyID'])) {
 
         $form->addHiddenValue('gibbonFamily', 'FALSE');
+
+        $row = $form->addRow();
+            $row->addHeading(__('Family'))->append(__('This application will create a new family and new users for the student and parent(s).'));
+
+        // Attach to Family
+        $row = $form->addRow();
+            $row->addCheckbox('attachToFamily')->setValue('Y')->prepend(__('Attach this application to an existing family'));
+            $form->toggleVisibilityByClass('existingFamily')->onCheckbox('attachToFamily')->when('Y');
+            $form->toggleVisibilityByClass('newFamily')->onCheckbox('attachToFamily')->whenNot('Y');
+
+        $row = $form->addRow()->addClass('existingFamily');
+            $row->addLabel('gibbonFamilyIDExisting', __('Family'))->description(__('Search by family, parent or student names.'));
+            $row->addFinder('gibbonFamilyIDExisting')
+                ->fromAjax($_SESSION[$guid]['absoluteURL'].'/modules/Students/applicationForm_manage_familyAjax.php')
+                ->isRequired()
+                ->setParameter('tokenLimit', 1)
+                ->setParameter('minChars', 2);
+
+        $row = $form->addRow()->addClass('existingFamily');
+            $row->addSubmit(__('Go'));
 
         // HOME ADDRESS
         $form->addRow()->addHeading(__('Home Address'))->append(__('This address will be used for all members of the family. If an individual within the family needs a different address, this can be set through Data Updater after admission.'));

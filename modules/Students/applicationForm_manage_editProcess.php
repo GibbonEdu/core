@@ -705,6 +705,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
                     }
 
+                    // Redirect to a different page if we're attaching this application to an existing family
+                    $attachToFamily = isset($_POST['attachToFamily'])? $_POST['attachToFamily'] : '';
+                    if ($attachToFamily == 'Y') {
+                        $gibbonFamilyIDExisting = isset($_POST['gibbonFamilyIDExisting'])? $_POST['gibbonFamilyIDExisting'] : '';
+                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_family.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonFamilyIDExisting=$gibbonFamilyIDExisting&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
+                        
+                        header("Location: {$URL}");
+                        exit;
+                    }
+
                     if ($partialFail == true) {
                         $URL .= '&return=warning1';
                         header("Location: {$URL}");
