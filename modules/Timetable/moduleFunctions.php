@@ -860,6 +860,9 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         $rowSpecial = $resultSpecial->fetch();
                         $output .= "<span style='font-size: 80%; font-weight: bold'><u>".$rowSpecial['name'].'</u></span>';
                     }
+                    if (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])){
+                        $output .= "<div class='ttToday'></div>";
+                    }
                     $output .= '</th>';
                 }
                 $count ++;
