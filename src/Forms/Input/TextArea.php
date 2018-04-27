@@ -80,6 +80,18 @@ class TextArea extends Input
     }
 
     /**
+     * Set the default text that appears before any text has been entered.
+     * @param   string  $value
+     * @return  self
+     */
+    public function placeholder($value = '')
+    {
+        $this->setAttribute('placeholder', $value);
+
+        return $this;
+    }
+
+    /**
      * Enables the jQuery autosize function for this textarea.
      * @param   string  $value
      * @return  self
