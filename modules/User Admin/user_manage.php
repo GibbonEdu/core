@@ -21,12 +21,6 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryFilters;
 use Gibbon\Forms\Form;
 
-use Gibbon\UserAdmin\Domain\UserGateway;
-
-if (!function_exists('isActionAccessible')) {
-    require_once '../../gibbon.php';
-}
-
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -71,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $filters = QueryFilters::createFromPost()->addSearch($search, $searchColumns)->defaultSort('fullName');
 
-    $gateway = new UserGateway($pdo);
+    $gateway = $container->get('Gibbon\UserAdmin\Domain\UserGateway');
     $resultSet = $gateway->queryAllUsers($filters);
 
     // Grab a set of family data per user
@@ -84,8 +78,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     // print_r($resultSet);
     // echo '</pre>';
 
+    $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
 
-    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath($_SESSION[$guid]['address']);
+    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath($path);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')

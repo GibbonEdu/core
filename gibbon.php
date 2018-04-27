@@ -25,6 +25,8 @@ require_once __DIR__.'/functions.php';
 
 // Core Services
 $container = new League\Container\Container();
+$container->delegate(new League\Container\ReflectionContainer);
+
 $container->add('config', new Gibbon\Core(__DIR__));
 $container->add('session', new Gibbon\Session($container));
 $container->add('locale', new Gibbon\Locale($container));
