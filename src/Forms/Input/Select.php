@@ -158,7 +158,7 @@ class Select extends Input
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
-            $selected = ($value == $this->selected);
+            $selected = strval($value) == strval($this->selected);
             if ($selected && $this->getAttribute('multiple') == false) $this->hasSelected = true;
             return $selected;
         }
