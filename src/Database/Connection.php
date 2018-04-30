@@ -26,7 +26,7 @@ use PDO;
  * Database Connection.
  *
  * @version	v16
- * @since	v12
+ * @since	v16
  */
 class Connection implements ConnectionInterface
 {
@@ -68,7 +68,7 @@ class Connection implements ConnectionInterface
         return $this->pdo;
     }
 
-     /**
+    /**
      * Run a select statement and return a single result.
      *
      * @param  string  $query
@@ -78,8 +78,8 @@ class Connection implements ConnectionInterface
     public function selectOne($query, $bindings = [])
     {
         $result = $this->run($query, $bindings);
-        return $result->columnCount() == 1 
-            ? $result->fetchColumn() 
+        return $result->columnCount() == 1
+            ? $result->fetchColumn()
             : $result->fetch();
     }
 
@@ -105,7 +105,7 @@ class Connection implements ConnectionInterface
     public function insert($query, $bindings = [])
     {
         $querySuccess = $this->statement($query, $bindings);
-        return $querySuccess 
+        return $querySuccess
             ? $this->pdo->lastInsertID()
             : false;
     }
@@ -166,7 +166,7 @@ class Connection implements ConnectionInterface
      * @param  array   $bindings
      * @return mixed
      *
-     * @throws \Illuminate\Database\QueryException
+     * @throws \PDOException
      */
     protected function run($query, $bindings = [])
     {
@@ -209,7 +209,7 @@ class Connection implements ConnectionInterface
     {
         return $this->run($query, $data);
     }
-    
+
     /**
      * @deprecated v16
      * Get the boolean success of the most recent query.
