@@ -25,6 +25,7 @@ v16.0.00
 	Significant Changes
 
 	Changes With Important Notices
+		System: fixed Cutting Edge detect/set issue in installer, impacting Cutting Edge installs from v15-16 (which may need to be reinstalled)
 
 	Security
 

@@ -898,4 +898,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat
 UPDATE gibbonSetting SET description='Explanatory text to include with Day-Type Options.' WHERE scope='User Admin' AND name='dayTypeText';end
 ALTER TABLE `gibbonPayment` CHANGE `type` `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other','Credit Card') NOT NULL DEFAULT 'Online';end
 CREATE INDEX contextKeyNameValue ON gibbonLike (contextKeyName, contextKeyValue);end
+UPDATE gibbonSetting SET value='Y' WHERE scope='System' AND name='cuttingEdgeCode';end
 ";
