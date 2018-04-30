@@ -899,4 +899,5 @@ UPDATE gibbonSetting SET description='Explanatory text to include with Day-Type 
 ALTER TABLE `gibbonPayment` CHANGE `type` `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other','Credit Card') NOT NULL DEFAULT 'Online';end
 CREATE INDEX contextKeyNameValue ON gibbonLike (contextKeyName, contextKeyValue);end
 UPDATE gibbonSetting SET value='Y' WHERE scope='System' AND name='cuttingEdgeCode' AND value='Yes';end
+ALTER TABLE `gibbonTT` CHANGE `nameShortDisplay` `nameShortDisplay` ENUM('Day Of The Week','Timetable Day Short Name','') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Day Of The Week';end
 ";
