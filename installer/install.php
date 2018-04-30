@@ -504,6 +504,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected('Testing')->isRequired();
 
+                                                $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__($guid, 'Checking for Cutting Edge Code.')."</div></div>";
+                                                $row = $form->addRow();
+                                                    $row->addContent($statusInitial);
                                                 $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
