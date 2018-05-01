@@ -17,12 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain;
+namespace Gibbon\Database;
+
+use PDO;
+use PDOStatement;
 
 /**
  * Helper methods to improve the intent and readability of database code.
  */
-class Result extends \PDOStatement
+class Result extends PDOStatement
 {
     public function isEmpty()
     {
@@ -34,18 +37,18 @@ class Result extends \PDOStatement
         return $this->rowCount() > 0;
     }
 
-    public function rowsAffected()
-    {
-        return $this->rowCount();
-    }
-
     public function fetchGrouped()
     {
-        return $this->hasRows()? $this->fetchAll(\PDO::FETCH_GROUP) : array();
+        return $this->hasRows()? $this->fetchAll(PDO::FETCH_GROUP) : array();
     }
 
     public function fetchGroupedByUnique()
     {
-        return $this->hasRows()? $this->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+        return $this->hasRows()? $this->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE) : array();
+    }
+
+    public function fetchKeyPair()
+    {
+        return $this->hasRows()? $this->fetchAll(PDO::FETCH_KEY_PAIR) : array();
     }
 }

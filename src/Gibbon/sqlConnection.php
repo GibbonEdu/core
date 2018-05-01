@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon ;
 
-use Gibbon\Domain\Result;
-
 /**
  * @deprecated v16
  * Database Connection Class
@@ -110,7 +108,6 @@ class sqlConnection
             $this->pdo = new \PDO($dns, $databaseUsername, $databasePassword );
             $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             $this->pdo->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
-            $this->pdo->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array(Result::class));
             $this->setSQLMode();
             $this->success = true;
         } catch(\PDOException $e) {
