@@ -49,7 +49,7 @@ class UserGateway extends QueryableGateway
                 ->defineFilter('date:starting', __('Before Start Date'),            "(dateStart IS NOT NULL AND dateStart >= :today)", ['today' => date('Y-m-d')])
                 ->defineFilter('date:ended',    __('Past End Date'),                "(dateEnd IS NOT NULL AND dateEnd <= :today)", ['today' => date('Y-m-d')]);
 
-        return $this->doFilteredQuery($filters, $sql);
+        return $this->query($filters, $sql);
     }
 
     public function selectFamilyDetailsPerUser($people)
@@ -67,6 +67,6 @@ class UserGateway extends QueryableGateway
             WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :people)
         ) ORDER BY gibbonFamilyID";
 
-        return $this->doSelect($sql, $data);
+        return $this->db->select($sql, $data);
     }
 }

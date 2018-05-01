@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\sqlConnection;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Gateway
@@ -29,55 +29,10 @@ use Gibbon\sqlConnection;
  */
 abstract class Gateway
 {
-    protected $pdo;
+    protected $db;
 
-    public function __construct(sqlConnection $pdo)
+    public function __construct(Connection $db)
     {
-        $this->pdo = $pdo;
+        $this->db = $db;
     }    
-
-    // DATA MANIPULATION
-    protected function doInsert($sql, $data = array())
-    {
-        $result = $this->pdo->executeQuery($data, $sql);
-
-        return $this->pdo->getConnection()->lastInsertID();
-    }
-
-    protected function doUpdate($sql, $data = array())
-    {
-        $result = $this->pdo->executeQuery($data, $sql);
-
-        return $result->rowCount() > 0;
-    }
-
-    protected function doDelete($sql, $data = array())
-    {
-        $result = $this->pdo->executeQuery($data, $sql);
-        
-        return $result->rowCount() > 0;
-    }
-
-    protected function doCopy($sql, $data = array())
-    {
-        $result = $this->pdo->executeQuery($data, $sql);
-        
-        return $result->rowCount() > 0;
-    }
-
-    // DATA SELECT
-    protected function doSelect($sql, $data = array())
-    {
-        return $this->pdo->executeQuery($data, $sql);
-    }
-    
-    protected function doFetch($sql, $data = array())
-    {
-        return $this->pdo->executeQuery($data, $sql)->fetch();
-    }
-
-    protected function doCount($sql, $data = array())
-    {
-        return $this->pdo->executeQuery($data, $sql)->fetchColumn(0);
-    }
 }

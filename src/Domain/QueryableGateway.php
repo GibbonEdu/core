@@ -19,58 +19,37 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\sqlConnection;
 use Gibbon\Domain\ResultSet;
 use Gibbon\Domain\QueryFilters;
+use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Contracts\Database\Connection;
 
 abstract class QueryableGateway extends Gateway
 {
-    protected static $tableName;
-
-    protected static $columns;
-
-    public function __construct(sqlConnection $pdo)
-    {
-        if (empty(static::$tableName)) {
-            throw new \Exception(get_called_class().' must define a $tableName');
-        }
-
-        parent::__construct($pdo);
-    }
+    use TableAware;
 
     // BUILT-IN QUERIES
     public function countAll()
     {
-        return $this->doCount("SELECT COUNT(*) FROM `".static::$tableName."`");
+        return $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
     }
 
     public function foundRows()
     {
-        return $this->doCount("SELECT FOUND_ROWS()");
+        return $this->db->selectOne("SELECT FOUND_ROWS()");
     }
 
     // QUERY-RELATED
-    protected function doFilteredQuery(QueryFilters $filters, $sql, $data = array())
+    protected function query(QueryFilters $filters, $sql, $data = array())
     {
         $sql = $filters->applyFilters($sql, $data);
 
-        $result = $this->pdo->executeQuery($data, $sql);
+        $result = $this->db->select($sql, $data);
 
-        if ($this->pdo->getQuerySuccess()) {
+        if ($result->rowCount() > 0) {
             return ResultSet::createFromArray($result->fetchAll(), $this->foundRows(), $this->countAll(), $filters->pageIndex, $filters->pageSize);
         } else {
             return ResultSet::createEmpty();
         }
-    }
-
-    // SCHEMA-RELATED
-    protected function getColumns()
-    {
-        if (!isset(static::$columns)) {
-            $result = $this->doSelect("SELECT DISTINCT(column_name), data_type FROM information_schema.columns WHERE table_name='".static::$tableName."'");
-            static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();       
-        }
-
-        return static::$columns;
     }
 }
