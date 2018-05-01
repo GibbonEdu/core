@@ -23,7 +23,7 @@ use Gibbon\Forms\FormFactory;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+include $_SESSION[$guid]['absolutePath'].'/modules/Library/moduleFunctions.php';
 
 //Setup variables
 $gibbonLibraryTypeID = isset($_POST['gibbonLibraryTypeID'])? $_POST['gibbonLibraryTypeID'] : '';
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo '</div>';
 } else {
     $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);
-    $sql = "SELECT * FROM gibbonLibraryType 
+    $sql = "SELECT * FROM gibbonLibraryType
             WHERE gibbonLibraryTypeID=:gibbonLibraryTypeID AND active='Y' ORDER BY name";
     $result = $pdo->executeQuery($data, $sql);
 

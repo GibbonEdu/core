@@ -60,6 +60,7 @@ v16.0.00
 		Finance: added ability to issue reminders (individually and in bulk) for invocies with status Paid - Partial
 		Form Group: added link to print listing of students in form group detail view
 		Library: simplified interface for Duplicate in Manage Catalog
+		Library: fixed PHP warning in Library's type-specific fields AJAX script
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
