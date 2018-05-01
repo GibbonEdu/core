@@ -59,6 +59,7 @@ if ($gibbon->isInstalled() == true) {
     $mysqlConnector = new Gibbon\Database\MySqlConnector();
     if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
         $container->add('db', $pdo);
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
         $connection2 = $pdo->getConnection();
 
         $gibbon->initializeCore($container);
