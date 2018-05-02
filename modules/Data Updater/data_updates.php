@@ -52,11 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     }
     
     // Get the active data types based on this user's permissions
-    $dataUpdateTypes = array();
-    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php')) $dataUpdateTypes[] = 'Family';
-    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php')) $dataUpdateTypes[] = 'Personal';
-    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php')) $dataUpdateTypes[] = 'Medical';
-    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.php')) $dataUpdateTypes[] = 'Finance';
+    $updatableDataTypes = array();
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php')) $updatableDataTypes[] = 'Family';
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php')) $updatableDataTypes[] = 'Personal';
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php')) $updatableDataTypes[] = 'Medical';
+    if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance.php')) $updatableDataTypes[] = 'Finance';
 
     echo '<p>';
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
         if ($updatesRequiredCount > 0) {
             echo '<div class="warning">';
             if (isset($_GET['redirect'])) {
-                echo '<b>'.__("You have been redirected from the Parent Dasboard because there are pending data updates.").'</b> ';
+                echo '<b>'.__("You have been redirected upon login because there are pending data updates.").'</b> ';
             }
             echo __("Please take a moment to view and submit the required updates. Even if you don't change your data, submitting the form will indicate you've reviewed the data and have confirmed it is correct.");
             echo '</div>';
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo __('Data Updates');
     echo '</h2>';
 
-    if ($updatablePeople->rowCount() == 0 || empty($dataUpdateTypes)) {
+    if ($updatablePeople->rowCount() == 0 || empty($updatableDataTypes)) {
         echo "<div class='error'>";
         echo __('There are no records to display.');
         echo '</div>';
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
         echo '<th>';
         echo __('Name');
         echo '</th>';
-        foreach ($dataUpdateTypes as $type) {
+        foreach ($updatableDataTypes as $type) {
             echo '<th>';
             echo __($type.' Data');
             echo '</th>';
@@ -116,13 +116,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
             $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'])->fetchAll(\PDO::FETCH_GROUP);
 
-            foreach ($dataUpdateTypes as $type) {
+            foreach ($updatableDataTypes as $type) {
                 $updateRequired = false;
                 $output = '';
 
                 if (!empty($dataUpdatesByType[$type])) {
                     foreach ($dataUpdatesByType[$type] as $dataUpdate) {
-                        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_'.$type.'.php&'.$dataUpdate['idType'].'='.$dataUpdate['id'].'">';
+                        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_'.strtolower($type).'.php&'.$dataUpdate['idType'].'='.$dataUpdate['id'].'">';
 
                         $lastUpdate = !empty($dataUpdate['lastUpdated'])? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) : '';
                         
