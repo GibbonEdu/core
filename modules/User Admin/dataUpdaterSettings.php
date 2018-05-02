@@ -63,10 +63,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addDate($setting['name'])->isRequired()->setValue(dateConvertBack($guid, $setting['value']));
 
-    $setting = getSettingByScope($connection2, 'Data Updater', 'parentDashboardRedirect', true);
+    $sql = "SELECT DISTINCT category as value, category as name FROM gibbonRole ORDER BY category";
+    $setting = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
+        $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selectMultiple()->selected(explode(',', $setting['value']));
 
     $row = $form->addRow();
         $row->addFooter();

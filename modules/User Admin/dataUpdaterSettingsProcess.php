@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $fail = true;
     }
 
-    $parentDashboardRedirect = (isset($_POST['parentDashboardRedirect'])) ? $_POST['parentDashboardRedirect'] : 'N';
+    $redirectByRoleCategory = (isset($_POST['redirectByRoleCategory'])) ? implode(',', $_POST['redirectByRoleCategory']) : 'Parent';
     try {
-        $data = array('value' => $parentDashboardRedirect);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='parentDashboardRedirect'";
+        $data = array('value' => $redirectByRoleCategory);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='redirectByRoleCategory'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

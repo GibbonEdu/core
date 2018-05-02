@@ -46,7 +46,6 @@ class DataUpdaterGateway
         $sql = "
         (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, 0 as sequenceNumber
             FROM gibbonPerson 
-            JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
             LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' GROUP BY gibbonPerson.gibbonPersonID)

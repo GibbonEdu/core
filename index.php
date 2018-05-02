@@ -131,13 +131,17 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
             }
         }
 
-        // Deal with parent Data Updater redirect
-        else if ($roleCategory == 'Parent') { //Are we a parent?
+        // Deal with Data Updater redirect (if required updates are enabled)
+        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+        if ($requiredUpdates == 'Y') { 
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { //Can we update data?
-                $parentDashboardRedirect = getSettingByScope($connection2, 'Data Updater', 'parentDashboardRedirect');
-                if ($parentDashboardRedirect == 'Y') {
+                $redirectByRoleCategory = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory');
+                $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
+
+                if (in_array($roleCategory, $redirectByRoleCategory)) { //Are we the right role category?
                     include $_SESSION[$guid]['absolutePath'].'/modules/Data Updater/Domain/DataUpdaterGateway.php';
                     $gateway = new Gibbon\DataUpdater\Domain\DataUpdaterGateway($pdo);
+
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
                     if ($updatesRequiredCount > 0) {
                         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
