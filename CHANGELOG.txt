@@ -64,6 +64,7 @@ v16.0.00
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
+		Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
 		Planner: fixed module name substitution in links in Lesson Planner
 		Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
 		Planner: added indexes to gibbonLike database table to improve performance
@@ -89,6 +90,7 @@ v16.0.00
         User Admin: added an alphanumeric requirement for usernames in Add User
 		User Admin: added fix to prevent the logged in user from deleting themselves.
 		User Admin: fixed typo in description for Day-Type Text setting
+		User Admin: fixed gibbonPersonID int length in gibbonFamilyAdult and gibbonFamilyChild
 
 v15.0.00
 --------
