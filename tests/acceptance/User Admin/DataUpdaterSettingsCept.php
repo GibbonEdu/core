@@ -46,7 +46,7 @@ $I->checkOption('emergency2Number2');
 $I->checkOption('emergency2Relationship');
 $I->checkOption('vehicleRegistration');
 
-$I->click('Submit');
+$I->click('#dataUpdaterSettingsFields input[type=submit]');
 
 // Verify Results ----------------------------------------------
 
@@ -90,5 +90,5 @@ $I->seeCheckboxIsChecked('emergency2Relationship');
 $I->seeCheckboxIsChecked('vehicleRegistration');
 
 // Cleanup -----------------------------------------------------
-$I->submitForm('#content form', $originalFormValues);
+$I->submitForm('#dataUpdaterSettingsFields', $originalFormValues);
 $I->see('Your request was completed successfully.', '.success');
