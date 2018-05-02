@@ -40,15 +40,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
 
     $row = $form->addRow()->addHeading(__('Settings'));
 
-    $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
-    $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addDate($setting['name'])->setValue(dateConvertBack($guid, $setting['value']));
-
-    $setting = getSettingByScope($connection2, 'Data Updater', 'parentRedirect', true);
+    $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
         $row->addYesNo($setting['name'])->selected($setting['value']);
+
+    $form->toggleVisibilityByClass('requiredUpdates')->onSelect('requiredUpdates')->when('Y');
+
+    $updateTypes = array(
+        'Family' => __('Family'),
+        'Personal' => __('Personal'),
+        'Medical' => __('Medical'),
+        'Finance' => __('Finance'),
+    );
+    $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType', true);
+    $row = $form->addRow()->addClass('requiredUpdates');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromArray($updateTypes)->isRequired()->selectMultiple()->selected(explode(',', $setting['value']));
+
+    $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
+    $row = $form->addRow()->addClass('requiredUpdates');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addDate($setting['name'])->isRequired()->setValue(dateConvertBack($guid, $setting['value']));
+
+    $setting = getSettingByScope($connection2, 'Data Updater', 'parentDashboardRedirect', true);
+    $row = $form->addRow()->addClass('requiredUpdates');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

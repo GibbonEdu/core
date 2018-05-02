@@ -31,7 +31,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     //Write to database
     $fail = false;
 
-    $cutoffDate = (isset($_POST['cutoffDate'])) ? $_POST['cutoffDate'] : NULL;
+    $requiredUpdates = (isset($_POST['requiredUpdates'])) ? $_POST['requiredUpdates']  : 'N';
+    try {
+        $data = array('value' => $requiredUpdates);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='requiredUpdates'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $requiredUpdatesByType = (isset($_POST['requiredUpdatesByType'])) ? implode(',', $_POST['requiredUpdatesByType'])  : 'Family,Personal';
+    try {
+        $data = array('value' => $requiredUpdatesByType);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='requiredUpdatesByType'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $cutoffDate = (isset($_POST['cutoffDate'])) ? dateConvert($guid, $_POST['cutoffDate'])  : NULL;
     try {
         $data = array('value' => $cutoffDate);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='cutoffDate'";
@@ -41,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $fail = true;
     }
 
-    $parentRedirect = (isset($_POST['parentRedirect'])) ? $_POST['parentRedirect'] : NULL;
+    $parentDashboardRedirect = (isset($_POST['parentDashboardRedirect'])) ? $_POST['parentDashboardRedirect'] : 'N';
     try {
-        $data = array('value' => $parentRedirect);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='parentRedirect'";
+        $data = array('value' => $parentDashboardRedirect);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='parentDashboardRedirect'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
