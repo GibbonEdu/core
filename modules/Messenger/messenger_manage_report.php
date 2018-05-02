@@ -137,9 +137,9 @@ else {
 						try {
 				            $data = array('gibbonMessengerID' => $gibbonMessengerID);
 				            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonMessenger.*, gibbonMessengerReceipt.*, gibbonRole.category as roleCategory
-                                FROM gibbonMessengerReceipt 
-                                JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
-                                LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                                FROM gibbonMessengerReceipt
+                                JOIN gibbonMessenger ON (gibbonMessengerReceipt.gibbonMessengerID=gibbonMessenger.gibbonMessengerID)
+                                LEFT JOIN gibbonPerson ON (gibbonMessengerReceipt.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                 LEFT JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
                                 WHERE gibbonMessengerReceipt.gibbonMessengerID=:gibbonMessengerID ORDER BY FIELD(confirmed, 'Y','N',NULL), confirmedTimestamp, surname, preferredName, contactType";
 				            $result = $connection2->prepare($sql);
@@ -169,16 +169,14 @@ else {
                                 $header->addCheckAll();
                             }
 
-                        
+
                         $recipients = $result->fetchAll();
                         $recipientIDs = array_column($recipients, 'gibbonPersonID');
-                        
-                        foreach ($recipients as $count => $recipient) {
-                            $recipientName = formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true);
 
-                            $row = $table->addRow();
+                        foreach ($recipients as $count => $recipient) {
+							$row = $table->addRow();
                                 $row->addContent($count+1);
-                                $row->addContent(!empty($recipientName)? $recipientName : __('N/A'));
+                                $row->addContent(($recipient['preferredName'] != '' && $recipient['surname'] != '') ? formatName('', $recipient['preferredName'], $recipient['surname'], 'Student', true) : __('N/A'));
                                 $row->addContent($recipient['roleCategory']);
                                 $row->addContent($recipient['contactType']);
                                 $row->addContent($recipient['contactDetail']);
@@ -206,10 +204,10 @@ else {
 							$sendReport .= "<span>".__('Messages not eligible for confirmation of receipt:')." <b>$nonConfirm</b><br/>";
 							$sendReport .= "<span>".__('Messages confirmed:').' <b>'.$yesConfirm.'</b><br/>';
                             $sendReport .= "<span>".__('Messages not yet confirmed:').' <b>'.$noConfirm.'</b><br/>';
-                            
+
                             $form->addRow()->addClass('right')->addAlert($sendReport, 'success');
                         }
-                        
+
                         echo $form->getOutput();
 					}
 				}
@@ -218,16 +216,16 @@ else {
 				try {
 					$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
 					$sql = "SELECT gibbonRollGroup.nameShort AS rollGroup, gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID, parent1.email AS parent1email, parent1.surname AS parent1surname, parent1.preferredName AS parent1preferredName, parent1.gibbonPersonID AS parent1gibbonPersonID, parent2.email AS parent2email, parent2.surname AS parent2surname, parent2.preferredName AS parent2preferredName, parent2.gibbonPersonID AS parent2gibbonPersonID
-                        FROM gibbonPerson 
-                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
-                        LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                        FROM gibbonPerson
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                        LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
 						LEFT JOIN gibbonFamilyAdult AS parent1Fam ON (parent1Fam.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID AND parent1Fam.contactPriority=1)
 						LEFT JOIN gibbonPerson AS parent1 ON (parent1Fam.gibbonPersonID=parent1.gibbonPersonID AND parent1.status='Full' AND NOT parent1.surname IS NULL)
 						LEFT JOIN gibbonFamilyAdult AS parent2Fam ON (parent2Fam.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID AND parent2Fam.contactPriority=2 AND parent2Fam.contactEmail='Y')
 						LEFT JOIN gibbonPerson AS parent2 ON (parent2Fam.gibbonPersonID=parent2.gibbonPersonID AND parent2.status='Full' AND NOT parent2.surname IS NULL)
-                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
-                        AND gibbonPerson.status='Full' 
+                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                        AND gibbonPerson.status='Full'
                         AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today) AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)
                         GROUP BY gibbonPerson.gibbonPersonID
                         ORDER BY rollGroup, gibbonPerson.surname, gibbonPerson.preferredName, gibbonFamilyChild.gibbonFamilyID";
@@ -236,7 +234,7 @@ else {
 				} catch (PDOException $e) {
 					echo "<div class='error'>".$e->getMessage().'</div>';
                 }
-                
+
 				if ($result->rowCount() < 1) {
 					echo "<div class='error'>";
 					echo __($guid, 'There are no records to display.');
@@ -256,7 +254,7 @@ else {
 
                     $row = $form->addBulkActionRow(array('resend' => __('Resend')));
                         $row->addSubmit(__('Go'));
-                    
+
                     $rollGroups = $result->fetchAll(\PDO::FETCH_GROUP);
                     $countTotal = 0;
 
@@ -265,7 +263,7 @@ else {
 
                         // Filter the array for only those individuals involved in the message (student or parent)
                         $recipients = array_filter($recipients, function($recipient) use (&$receipts) {
-                            return array_key_exists($recipient['gibbonPersonID'], $receipts) 
+                            return array_key_exists($recipient['gibbonPersonID'], $receipts)
                                 || array_key_exists($recipient['parent1gibbonPersonID'], $receipts)
                                 || array_key_exists($recipient['parent2gibbonPersonID'], $receipts);
                         });
@@ -282,7 +280,7 @@ else {
                             $header->addContent(__('Student'))->addClass('mediumWidth');
                             $header->addContent(__('Parent 1'))->addClass('mediumWidth');
                             $header->addContent(__('Parent 2'))->addClass('mediumWidth');
-                    
+
                         foreach ($recipients as $recipient) {
                             $countTotal++;
                             $count++;
@@ -327,7 +325,7 @@ else {
                     if ($countTotal == 0) {
                         $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(8);
                     }
-                    
+
                     echo $form->getOutput();
 				}
 			echo "</div>";
