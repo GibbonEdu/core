@@ -23,6 +23,7 @@ v16.0.00
 		Added Croatian and Estonian as development languages
 
 	Significant Changes
+		System: added tool for InnoDB database table storage engine migration
 
 	Changes With Important Notices
 		System: fixed Cutting Edge detect/set issue in installer, impacting Cutting Edge installs from v15-16 (which may need to be reinstalled)
