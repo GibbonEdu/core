@@ -4,7 +4,7 @@ $I->wantTo('update Data Updater Settings');
 $I->loginAsAdmin();
 $I->amOnModulePage('User Admin', 'dataUpdaterSettings.php');
 
-$originalFormValues = $I->grabAllFormValues();
+$originalFormValues = $I->grabAllFormValues('#dataUpdaterSettingsFields');
 
 // Make Changes ------------------------------------------------
 $I->checkOption('title');
