@@ -901,4 +901,6 @@ CREATE INDEX contextKeyNameValue ON gibbonLike (contextKeyName, contextKeyValue)
 UPDATE gibbonSetting SET value='Y' WHERE scope='System' AND name='cuttingEdgeCode' AND value='Yes';end
 ALTER TABLE `gibbonTT` CHANGE `nameShortDisplay` `nameShortDisplay` ENUM('Day Of The Week','Timetable Day Short Name','') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Day Of The Week';end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('et_EE','Eesti Keel - Eesti', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+ALTER TABLE gibbonFamilyAdult MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE gibbonFamilyChild MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
 ";
