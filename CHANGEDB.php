@@ -903,4 +903,6 @@ ALTER TABLE `gibbonTT` CHANGE `nameShortDisplay` `nameShortDisplay` ENUM('Day Of
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('et_EE','Eesti Keel - Eesti', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
 ALTER TABLE gibbonFamilyAdult MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
 ALTER TABLE gibbonFamilyChild MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE gibbonLibraryItem DROP INDEX fields;end
+ALTER TABLE gibbonLibraryType DROP INDEX fields;end
 ";
