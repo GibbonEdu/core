@@ -315,16 +315,17 @@ function getLegacyGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDS
     return ($rs && $rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
 }
 
-function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
+function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYearID ) {
 
     $data = array(
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
-        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
         'today' => date('Y-m-d'),
     );
-    $sql = "SELECT arrReportGPA.GPA, arrReport.reportName
+    $sql = "SELECT arrReportGPA.GPA, arrReport.reportName, gibbonSchoolYear.name as schoolYearName
         FROM arrReportGPA
         JOIN arrReport ON (arrReportGPA.reportID=arrReport.reportID)
+        JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=arrReport.schoolYearID)
         WHERE arrReport.schoolYearID=:gibbonSchoolYearID
         AND arrReport.endDate<=:today
         AND arrReportGPA.studentID=:gibbonPersonIDStudent
@@ -335,7 +336,7 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent ) {
 
     $marks = $rs->fetchAll();
 
-    echo '<h4>Current GPA</h4>';
+    echo '<h4>'.current($marks)['schoolYearName'].' GPA</h4>';
 
     echo '<table class="mini fullWidth" cellspacing="0">';
         echo '<tr class="head">';
@@ -452,7 +453,7 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
     $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
 
     $termNames = (intval($gibbonSchoolYearID) >= 12)
-            ? array('Term 1 Mid', 'Term 1 End', 'Term 2 Mid', 'Final')
+            ? array('Term 1 Mid', 'Term 1 End', 'Term 2 Interim', 'Final')
             : array('Sem1-Mid', 'Sem1-End', 'Sem2-Mid', 'Sem2-End');
 
     if (intval($gibbonSchoolYearID) < 11) {

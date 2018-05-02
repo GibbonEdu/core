@@ -2096,9 +2096,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         if ($highestAction == 'View Markbook_allClassesAllData') {
                                             renderStudentCourseAverage($pdo, $guid, $_GET['gibbonPersonID']);
                                         }
-
-                                        renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'] );
                                     }
+
+                                    renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'], $filter);
 
                                     while ($rowList = $resultList->fetch()) {
                                         echo "<a name='".$rowList['gibbonCourseClassID']."'></a><h4>".$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
