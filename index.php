@@ -717,7 +717,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 								}
 								?>
 						</span>
-						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
+						<img id='footer-logo' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>

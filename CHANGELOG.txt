@@ -20,11 +20,13 @@ v16.0.00
 --------
 	Headlines
 		Activated Simplified Chinese and Polish as available languages
-		Added Croatian as development language
+		Added Croatian and Estonian as development languages
 
 	Significant Changes
+		System: added tool for InnoDB database table storage engine migration
 
 	Changes With Important Notices
+		System: fixed Cutting Edge detect/set issue in installer, impacting Cutting Edge installs from v15-16 (which may need to be reinstalled)
 
 	Security
 
@@ -41,23 +43,33 @@ v16.0.00
 		System: fixed issue preventing timezone string field description from being translated
 		System: added timezones strings to translatable string list
 		System: improved timezone selection process by using select instead of text field
+		System: moved footer logo style into theme CSS
+		System: restored Cutting Edge status message to installer
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
         Activities: added Activity Choices by Roll Group for ease of looking up student's activity times
 		Activities: added Media bar to Description field in add and edit screens
+		Activities: fixed bug causing non-students enroled in activities to go missing from Manage Enrolment view
 		Attendance: added option for redirect to message wall after self registration has been taken
 		Attendance: added year group selectors to reports for not present and not onsite
 		Attendance: added ability for students to view their own attendance data for the current year
 		Attendance: added ability to delete attendance with Manage Attendance Logs permission in Attendance by Person
+        Attendance: fixed date format for links in View Daily Attendance
 		Finance: added logging for failed bulk email sends
+        Finance: add a Mark as Paid bulk action in Manage Invoices
+        Finance: add Credit Card payment type to gibbonPayment table
+		Finance: added ability to issue reminders (individually and in bulk) for invocies with status Paid - Partial
 		Form Group: added link to print listing of students in form group detail view
 		Library: simplified interface for Duplicate in Manage Catalog
+		Library: fixed PHP warning in Library's type-specific fields AJAX script
 		Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
 		Messenger: added the ability to resend in By Roll Group view in View Send Report
 		Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
+		Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
 		Planner: fixed module name substitution in links in Lesson Planner
 		Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
-		Staff: fixed bug in paramater passing in Add in Manage Staff
+		Planner: added indexes to gibbonLike database table to improve performance
+		Staff: fixed bug in parameter passing in Add in Manage Staff
 		Students: added sibling and family information to Letters Home by Roll Group
 		Students: added Comment field to medical form, linked to student application form.
 		Students: added View option to Students by Form Group report, allowing Basic or Extended view
@@ -68,6 +80,9 @@ v16.0.00
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
 		System Admin: fixed typo in Third Party Settings
+		Timetable: added This Week link to timetable date navigation in Timetable by Person
+		Timetable: added highlight to the current day column in Timetable by Person and Facility
+		Timetable: fixed error is specification of gibbonTT database table
 		User Admin: fixed Child's Name list in Edit Family to include all students
 		User Admin: fixed bug preventing some family links from showing up in Manage Users
 		User Admin: removed Back link from child and adult delete modals in Manage Families
@@ -75,6 +90,8 @@ v16.0.00
 		User Admin: added staff import feature
         User Admin: added an alphanumeric requirement for usernames in Add User
 		User Admin: added fix to prevent the logged in user from deleting themselves.
+		User Admin: fixed typo in description for Day-Type Text setting
+		User Admin: fixed gibbonPersonID int length in gibbonFamilyAdult and gibbonFamilyChild
 
 v15.0.00
 --------

@@ -494,9 +494,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $form->addHiddenValue('parent1email', $application['parent1email']);
             $email = $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
-            if ($uniqueEmailAddress == 'Y') {
-                $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
-            }
 
             $row = $form->addRow();
                 $row->addLabel('parent1surname', __('Surname'))->description(__('Family name as shown in ID documents.'));

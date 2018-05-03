@@ -420,20 +420,29 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $row = $result->fetch();
             $gibbonTTID = $row['gibbonTTID'];
             $nameShortDisplay = $row['nameShortDisplay']; //Store day short name display setting for later
+            $thisWeek = time();
 
             if ($title != false) {
                 $output .= '<h2>'.$row['name'].'</h2>';
             }
             $output .= "<table cellspacing='0' class='noIntBorder' style='width: 100%; margin: 10px 0 10px 0'>";
             $output .= '<tr>';
-            $output .= "<td style='vertical-align: top'>";
+            $output .= "<td style='vertical-align: top;width:300px'>";
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp - (7 * 24 * 60 * 60)))."' type='hidden'>";
             $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
             $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
-            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Last Week')."'>";
+            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='< ".__($guid, 'Last Week')."'>";
+            $output .= '</form>';
+            $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
+            $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'],($thisWeek))."' type='hidden'>";
+            $output .= "<input name='schoolCalendar' value='".$_SESSION[$guid]['viewCalendarSchool']."' type='hidden'>";
+            $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
+            $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
+            $output .= "<input name='fromTT' value='Y' type='hidden'>";
+            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'This Week')."'>";
             $output .= '</form>';
             $output .= "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/index.php?q=$q&gibbonTTID=".$row['gibbonTTID']."$params'>";
             $output .= "<input name='ttDate' value='".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (7 * 24 * 60 * 60)))."' type='hidden'>";
@@ -441,7 +450,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
             $output .= "<input name='personalCalendar' value='".$_SESSION[$guid]['viewCalendarPersonal']."' type='hidden'>";
             $output .= "<input name='spaceBookingCalendar' value='".$_SESSION[$guid]['viewCalendarSpaceBooking']."' type='hidden'>";
             $output .= "<input name='fromTT' value='Y' type='hidden'>";
-            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week')."'>";
+            $output .= "<input class='buttonLink' style='min-width: 30px; margin-top: 0px; float: left' type='submit' value='".__($guid, 'Next Week')." >'>";
             $output .= '</form>';
             $output .= '</td>';
             $output .= "<td style='vertical-align: top; text-align: right'>";
@@ -794,6 +803,7 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
+                    unset($rowDay);
                     $color = '';
                     try {
                         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
@@ -811,12 +821,16 @@ function renderTT($guid, $connection2, $gibbonPersonID, $gibbonTTID, $title = ''
                         }
                     }
 
-                    $output .= "<th style='vertical-align: top; text-align: center; width: ";
+                    $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+                    $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
+
                     if ($narrow == 'trim') {
                         $output .= (550 / $daysInWeek);
-                    } elseif ($narrow == 'narrow') {
+                    }
+                    elseif ($narrow == 'narrow') {
                         $output .= (375 / $daysInWeek);
-                    } else {
+                    }
+                    else {
                         $output .= (550 / $daysInWeek);
                     }
                     $output .= "px".$color."'>";
@@ -1121,7 +1135,9 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
         $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-        $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+        $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+        $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
+
         try {
             $dataDay = array('gibbonTTID' => $gibbonTTID, 'date' => date('Y-m-d', ($startDayStamp + (86400 * $count))));
             $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';
@@ -1790,7 +1806,9 @@ function renderTTSpace($guid, $connection2, $gibbonSpaceID, $gibbonTTID, $title 
                     }
                     $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
-                    $output .= "<th style='vertical-align: top; text-align: center; width: ";
+                    $today = ((date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))) == date($_SESSION[$guid]['i18n']['dateFormatPHP'])) ? "class='ttToday'" : '');
+                    $output .= "<th $today style='vertical-align: top; text-align: center; width: ";
+
                     $output .= (550 / $daysInWeek);
                     $output .= "px'>";
                     if ($nameShortDisplay != 'Timetable Day Short Name') {
@@ -2016,7 +2034,9 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
 
     $startPad = strtotime($dayTimeStart) - strtotime($gridTimeStart);
 
-    $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
+    $today = (date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $count))) == date($_SESSION[$guid]['i18n']['dateFormatPHP']) ? "class='ttToday'" : '');
+    $output .= "<td $today style='text-align: center; vertical-align: top; font-size: 11px'>";
+
     try {
         $dataDay = array('date' => date('Y-m-d', ($startDayStamp + (86400 * $count))), 'gibbonTTID' => $gibbonTTID);
         $sqlDay = 'SELECT gibbonTTDay.gibbonTTDayID FROM gibbonTTDayDate JOIN gibbonTTDay ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonTTID=:gibbonTTID AND date=:date';

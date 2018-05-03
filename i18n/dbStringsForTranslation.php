@@ -2582,7 +2582,7 @@ __('Enable Gibbon-wide integration with the Google APIs?') ;
 __('Enables a public listing of units, with teachers able to opt in to share units.') ;
 __('Enrolment process type') ;
 __('Explanatory text to appear with the required documents?') ;
-__('Explanatory text to include with Day-Type Otpions.') ;
+__('Explanatory text to include with Day-Type Options.') ;
 __('General email address for the school') ;
 __('Google Calendar ID for your school calendar. Only enables timetable integration when logging in via Google.') ;
 __('Google project Developer Key.') ;

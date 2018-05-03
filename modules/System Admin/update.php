@@ -62,6 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     echo '</p>';
 
     $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
+    $databaseUpdated = false;
     if ($cuttingEdgeCode != 'Y') {
         //Check for new version of Gibbon
         echo getCurrentVersion($guid, $connection2, $version);
@@ -71,6 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             echo '<b>'.__($guid, 'You seem to be all up to date, good work buddy!').'</b>';
             echo '</p>';
         } elseif (version_compare($versionDB, $versionCode, '=')) {
+            $databaseUpdated = true;
             //Instructions on how to update
             echo '<h3>';
             echo __($guid, 'Update Instructions');
@@ -90,20 +92,20 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         } elseif (version_compare($versionDB, $versionCode, '<')) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Datebase Update');
+            echo __($guid, 'Database Update');
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
-            echo '</p>'; 
-            
+            echo '</p>';
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=regularRelease');
-            
+
             $form->addHiddenValue('versionDB', $versionDB);
             $form->addHiddenValue('versionCode', $versionCode);
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $form->addRow()->addSubmit();
-            echo $form->getOutput(); 
+            echo $form->getOutput();
         }
     } else {
         $cuttingEdgeCodeLine = getSettingByScope($connection2, 'System', 'cuttingEdgeCodeLine');
@@ -131,10 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         echo '</div>';
 
         if ($return == 'success0') {
+            $databaseUpdated = true;
             echo '<p>';
             echo '<b>'.__($guid, 'You seem to be all up to date, good work buddy!').'</b>';
             echo '</p>';
         } elseif ($update == false) {
+            $databaseUpdated = true;
             //Instructions on how to update
             echo '<h3>';
             echo __($guid, 'Update Instructions');
@@ -149,20 +153,119 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         } elseif ($update == true) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Datebase Update');
+            echo __($guid, 'Database Update');
             echo '</h3>';
             echo '<p>';
             echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';
-            echo '</p>'; 
-            
+            echo '</p>';
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=cuttingEdge');
-            
+
             $form->addHiddenValue('versionDB', $versionDB);
             $form->addHiddenValue('versionCode', $versionCode);
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
             $form->addRow()->addSubmit();
-            echo $form->getOutput(); 
+            echo $form->getOutput();
         }
     }
+
+    //INNODB UPGRADE - can be removed
+    if (version_compare($version, '16.0.00', '>=')) {
+        echo '<h3>';
+        echo __($guid, 'Database Engine Migration');
+        echo '</h3>';
+        echo '<p>';
+        echo __('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.');
+        echo '</p>';
+
+        if (!$databaseUpdated) { //Not eligible
+            echo '<div class=\'warning\'>';
+                echo __('Please run the database update, above, before proceeding with the Database Engine Migration.');
+            echo '</div>';
+        }
+        else { //Eligible
+            //CHECK DEFAULT ENGINE
+            $currentEngine = 'Unknown';
+            try {
+                $data = array();
+                $sql = 'SHOW ENGINES';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            if ($result->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            } else {
+                while ($row = $result->fetch()) {
+                    if ($row['Support'] == 'DEFAULT') {
+                        $currentEngine = $row['Engine'];
+                    }
+                }
+            }
+
+            if ($currentEngine == 'InnoDB') {
+                echo "<div class='message'>";
+                    echo sprintf(__('Your current default database engine is: %1$s'), $currentEngine);
+                echo "</div>";
+            }
+            else {
+                echo "<div class='warning'>";
+                    echo sprintf(__('Your current default database engine is: %1$s.'), $currentEngine).' '.__('It is advised that you change your server config so that your default storage engine is set to InnoDB.');
+                echo "</div>";
+            }
+
+            //CHECK TABLES
+            $tableUpdate = false;
+            $tablesTotal = 0;
+            $tablesInnoDB = 0;
+            try {
+                $data = array();
+                $sql = 'SHOW TABLE STATUS';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                echo "<div class='error'>".$e->getMessage().'</div>';
+            }
+            if ($result->rowCount() < 1) {
+                echo "<div class='error'>";
+                echo __($guid, 'There are no records to display.');
+                echo '</div>';
+            } else {
+                while ($row = $result->fetch()) {
+                    if ($row['Engine'] == 'InnoDB') {
+                        $tablesInnoDB++;
+                    }
+                    $tablesTotal++;
+                }
+                if ($tablesTotal-$tablesInnoDB > 0) {
+                    $tableUpdate = true;
+                }
+            }
+
+            if (!$tableUpdate) { //No tables to update
+                echo "<div class='success'>";
+                    echo __('All of your tables are set to InnoDB. Well done!');
+                echo "</div>";
+            }
+            else {
+                echo "<div class='warning'>";
+                    echo sprintf(__('%1$s of your tables are not set to InnoDB.'), $tablesTotal-$tablesInnoDB).' <b>'.__('Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!').'</b>';
+                echo "</div>";
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=InnoDB');
+
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+                $form->addRow()->addSubmit();
+                echo $form->getOutput();
+            }
+        }
+    }
+
+    //echo "ALTER TABLE ".$row['Tables_in_'.$databaseName]." ENGINE=InnoDB;<br/>";
+
+
 }

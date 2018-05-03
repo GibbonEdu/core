@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceFeeCategoryID', __('Fee Category'));
             $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder()->selected($gibbonFinanceFeeCategoryID);
-        
+
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
@@ -271,10 +271,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo __($guid, 'View');
         echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s records(s) in current view'), $result->rowCount()).'</span>';
         echo '</h3>';
-        
+
         echo "<div class='linkTop'>";
         echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
-        echo '</div>'; 
+        echo '</div>';
 
         $linkParams = array(
             'gibbonSchoolYearID'             => $gibbonSchoolYearID,
@@ -286,17 +286,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         );
 
         $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($linkParams));
+        $form->setFactory(FinanceFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $bulkActions = array('export' => __('Export'));
         if ($status == 'Pending') {
             $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions;
-        } else if ($status == 'Issued - Overdue') {
+        }
+        if ($status == 'Issued - Overdue' || $status == 'Paid - Partial') {
             $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions;
         }
+        if ($status == 'Issued' || $status == 'Issued - Overdue') {
+            $bulkActions = array('paid' => __('Mark as Paid')) + $bulkActions;
+        }
+
+        $form->toggleVisibilityByClass('bulkPaid')->onSelect('action')->when('paid');
+
+        $row = $form->addRow()->addClass('bulkPaid');
+            $row->addContent(__('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.'))->wrap('<p>', '</p>');
 
         $row = $form->addBulkActionRow($bulkActions);
+            $row->addSelectPaymentMethod('paymentType')->setClass('bulkPaid shortWidth')->isRequired()->placeholder(__('Payment Type').'...');
+            $row->addDate('paidDate')->setClass('bulkPaid shortWidth')->isRequired()->placeholder(__('Date Paid'));
             $row->addSubmit(__('Go'));
 
         $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
@@ -326,7 +338,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             } else if ($invoice['status'] == 'Paid' and $invoice['invoiceDueDate'] < $invoice['paidDate']) {
                 $statusExtra = 'Late';
             }
-            
+
             $rowClass = ($invoice['status'] == 'Paid')? 'current' : (($invoice['status'] == 'Issued' and $statusExtra == 'Overdue')? 'error' : '');
 
             $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
@@ -392,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 if (!empty($invoice['notes'])) {
                     $table->addRow()->addClass('invoiceNotes')->addTableCell(htmlPrep($invoice['notes']))->colSpan(8);
                 }
-                
+
         }
 
         echo $form->getOutput();

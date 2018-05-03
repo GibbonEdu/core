@@ -895,4 +895,14 @@ UPDATE gibbonSetting set description='The timezone where the school is located' 
 UPDATE gibbonSetting SET value=(SELECT value FROM (SELECT value FROM gibbonSetting WHERE scope='System' AND name='organisationEmail') as temp) WHERE scope='Finance' AND name='email' AND value='finance@ichk.edu.hk';end
 ALTER TABLE `gibbonHouse` CHANGE `name` `name` VARCHAR(30) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('hr_HR','Hrvatski - Hrvatska', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+UPDATE gibbonSetting SET description='Explanatory text to include with Day-Type Options.' WHERE scope='User Admin' AND name='dayTypeText';end
+ALTER TABLE `gibbonPayment` CHANGE `type` `type` ENUM('Online','Bank Transfer','Cash','Cheque','Other','Credit Card') NOT NULL DEFAULT 'Online';end
+CREATE INDEX contextKeyNameValue ON gibbonLike (contextKeyName, contextKeyValue);end
+UPDATE gibbonSetting SET value='Y' WHERE scope='System' AND name='cuttingEdgeCode' AND value='Yes';end
+ALTER TABLE `gibbonTT` CHANGE `nameShortDisplay` `nameShortDisplay` ENUM('Day Of The Week','Timetable Day Short Name','') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Day Of The Week';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('et_EE','Eesti Keel - Eesti', 'N', 'N', 'dd/mm/yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd/m/Y', 'N');end
+ALTER TABLE gibbonFamilyAdult MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE gibbonFamilyChild MODIFY gibbonPersonID INT(10) UNSIGNED ZEROFILL NOT NULL;end
+ALTER TABLE gibbonLibraryItem DROP INDEX fields;end
+ALTER TABLE gibbonLibraryType DROP INDEX fields;end
 ";

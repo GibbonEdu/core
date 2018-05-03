@@ -223,14 +223,15 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         } catch (PDOException $e) {
                         }
 
+                        $emails = array();
+                        $emailsCount = 0;
+
                         if ($result->rowCount() != 1) {
                             $emailFail = true;
                         } else {
                             $row = $result->fetch();
 
                             //DEAL WITH EMAILS
-                            $emails = array();
-                            $emailsCount = 0;
                             if ($row['invoiceTo'] == 'Company') {
                                 try {
                                     $dataCompany = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
@@ -348,11 +349,15 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
                     try {
                         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
-                        $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND status='Issued'";
+                        $sql = "SELECT gibbonFinanceInvoice.*, gibbonFinanceBillingSchedule.invoiceDueDate AS invoiceDueDateScheduled FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID AND (status='Issued' OR status='Paid - Partial')";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
                     }
+
+                    $emailFail = false;
+                    $emails = array();
+                    $emailsCount = 0;
 
                     if ($result->rowCount() != 1) {
                         $partialFail = true;
@@ -360,9 +365,6 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         $row = $result->fetch();
 
                         //DEAL WITH EMAILS
-                        $emailFail = false;
-                        $emails = array();
-                        $emailsCount = 0;
                         if ($row['invoiceTo'] == 'Company') {
                             try {
                                 $dataCompany = array('gibbonFinanceInvoiceeID' => $row['gibbonFinanceInvoiceeID']);
@@ -497,6 +499,52 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                 $_SESSION[$guid]['financeInvoiceExportIDs'] = $gibbonFinanceInvoiceIDs;
 
 				include ('./invoices_manage_processBulkExportContents.php');
+            }
+            // Mark as Paid
+            elseif ($action == 'paid') {
+                $paymentType = isset($_POST['paymentType'])? $_POST['paymentType'] : '';
+                $paidDate = isset($_POST['paidDate'])?dateConvert($guid, $_POST['paidDate']) : '';
+
+                if (empty($paymentType) || empty($paidDate)) {
+                    $URL .= '&return=error1';
+                    header("Location: {$URL}");
+                    exit;
+                }
+
+                $partialFail = false;
+                foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
+                    $totalFee = getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, 'Issued');
+                    $alreadyPaid = getAmountPaid($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID);
+
+                    $paidAmount = $totalFee - $alreadyPaid;
+
+                    if (empty($paidAmount) || $paidAmount <= 0) {
+                        $partialFail = true;
+                    } else {
+                        $logFail = setPaymentLog($connection2, $guid, 'gibbonFinanceInvoice', $gibbonFinanceInvoiceID, $paymentType, 'Complete', $paidAmount, null, null, null, null, null, null, $paidDate);
+                        if ($logFail == false) {
+                            $partialFail = true;
+                        } else {
+                            try {
+                                $data = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID, 'paidDate' => $paidDate, 'paidAmount' => $paidAmount, 'timestampUpdate' => date('Y-m-d H:i:s'), 'gibbonPersonIDUpdate' => $_SESSION[$guid]['gibbonPersonID']);
+                                $sql = "UPDATE gibbonFinanceInvoice SET status='Paid', paidDate=:paidDate, paidAmount=:paidAmount, gibbonPersonIDUpdate=:gibbonPersonIDUpdate, timestampUpdate=:timestampUpdate WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID";
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
+                        }
+                    }
+                }
+
+                if ($partialFail == true) {
+                    $URL .= '&return=warning1';
+                    header("Location: {$URL}");
+                } else {
+                    $URL .= '&return=success0';
+                    header("Location: {$URL}");
+                }
+
             } else {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");

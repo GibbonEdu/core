@@ -34,6 +34,9 @@ $container->add('autoloader', $autoloader);
 $gibbon = $container->get('config');
 $gibbon->session = $container->get('session');
 $gibbon->locale = $container->get('locale');
+$guid = $gibbon->guid();
+$caching = $gibbon->getCaching();
+$version = $gibbon->getVersion();
 
 // Handle Gibbon installation redirect
 if (!$gibbon->isInstalled() && stripos($_SERVER['PHP_SELF'], 'installer/install.php') === false) {
@@ -51,5 +54,9 @@ if (!empty($gibbon->session->get('module'))) {
 // Initialize using the database connection
 if ($gibbon->isInstalled() == true) {
     $container->add('db', new Gibbon\sqlConnection());
+
+    $pdo = $container->get('db');
+    $connection2 = $pdo->getConnection();
+
     $gibbon->initializeCore($container);
 }
