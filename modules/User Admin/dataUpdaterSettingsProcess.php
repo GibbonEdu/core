@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $fail = true;
     }
 
-    $requiredUpdatesByType = (isset($_POST['requiredUpdatesByType'])) ? implode(',', $_POST['requiredUpdatesByType'])  : 'Family,Personal';
+    $requiredUpdatesByType = (isset($_POST['requiredUpdatesByType'])) ? implode(',', $_POST['requiredUpdatesByType'])  : '';
     try {
         $data = array('value' => $requiredUpdatesByType);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='requiredUpdatesByType'";
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
         $fail = true;
     }
 
-    $redirectByRoleCategory = (isset($_POST['redirectByRoleCategory'])) ? implode(',', $_POST['redirectByRoleCategory']) : 'Parent';
+    $redirectByRoleCategory = (isset($_POST['redirectByRoleCategory'])) ? implode(',', $_POST['redirectByRoleCategory']) : '';
     try {
         $data = array('value' => $redirectByRoleCategory);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='redirectByRoleCategory'";
