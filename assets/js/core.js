@@ -158,6 +158,9 @@ CustomBlocks.prototype.init = function() {
 
     $('.showHide', _.blockTemplate).hide();
 
+    // Disable all block template inputs
+    $(':input', _.blockTemplate).prop('disabled', true);
+
     // Initialize existing blocks from JSON data
     for (var index in _.settings.currentBlocks) {
         _.addBlock(_.settings.currentBlocks[index]);
@@ -199,9 +202,12 @@ CustomBlocks.prototype.addBlock = function(data = {}) {
 
     var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
     $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+    $(':input', block).prop('disabled', false);
 
     _.initBlock(block, data);
     _.refresh();
+
+    $(_.container).trigger('addedBlock', [block]);
 };
 
 CustomBlocks.prototype.removeBlock = function(block) {
@@ -215,6 +221,8 @@ CustomBlocks.prototype.removeBlock = function(block) {
         $(block).detach().remove();
         _.refresh();
     });
+
+    $(_.container).trigger('removedBlock', [block]);
 };
 
 CustomBlocks.prototype.initBlock = function(block, data = {}) {
@@ -256,7 +264,9 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
         }
 
         $(this).prop("name", name);
-        $(this).prop("id", $(this).prop("id")+block.blockNumber);
+        if ($(this).prop("id") != '') {
+            $(this).prop("id", $(this).prop("id")+block.blockNumber);
+        }
     });
 
     $("label", block).each(function(index, element) {
