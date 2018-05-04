@@ -21,26 +21,50 @@ include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/dataUpdaterSettings.php';
 
-if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationFormSettings.php') == false) {
+if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $settingDefaults = array('title' => 'N', 'surname' => 'Y', 'firstName' => 'N', 'preferredName' => 'Y', 'officialName' => 'Y', 'nameInCharacters' => 'N', 'dob' => 'N', 'email' => 'N', 'emailAlternate' => 'N', 'phone1' => 'N', 'phone2' => 'N', 'phone3' => 'N', 'phone4' => 'N', 'languageFirst' => 'N', 'languageSecond' => 'N', 'languageThird' => 'N', 'countryOfBirth' => 'N', 'ethnicity' => 'N', 'citizenship1' => 'N', 'citizenship1Passport' => 'N', 'citizenship2' => 'N', 'citizenship2Passport' => 'N', 'religion' => 'N', 'nationalIDCardNumber' => 'N', 'residencyStatus' => 'N', 'visaExpiryDate' => 'N', 'profession' => 'N', 'employer' => 'N', 'jobTitle' => 'N', 'emergency1Name' => 'N', 'emergency1Number1' => 'N', 'emergency1Number2' => 'N', 'emergency1Relationship' => 'N', 'emergency2Name' => 'N', 'emergency2Number1' => 'N', 'emergency2Number2' => 'N', 'emergency2Relationship' => 'N', 'vehicleRegistration' => 'N');
-
-    $settings = array();
-
-    // Loop through $_POST, look only at valid settings
-    foreach ($settingDefaults as $name => $defaultValue) {
-        $settings[$name] = (isset($_POST[$name]) && $_POST[$name] == 'Y')? 'Y' : 'N';
-    }
+   
 
     //Write to database
     $fail = false;
 
+    $requiredUpdates = (isset($_POST['requiredUpdates'])) ? $_POST['requiredUpdates']  : 'N';
     try {
-        $data = array('value' => serialize($settings));
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='User Admin' AND name='personalDataUpdaterRequiredFields'";
+        $data = array('value' => $requiredUpdates);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='requiredUpdates'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $requiredUpdatesByType = (isset($_POST['requiredUpdatesByType'])) ? implode(',', $_POST['requiredUpdatesByType'])  : '';
+    try {
+        $data = array('value' => $requiredUpdatesByType);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='requiredUpdatesByType'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $cutoffDate = (isset($_POST['cutoffDate'])) ? dateConvert($guid, $_POST['cutoffDate'])  : NULL;
+    try {
+        $data = array('value' => $cutoffDate);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='cutoffDate'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $redirectByRoleCategory = (isset($_POST['redirectByRoleCategory'])) ? implode(',', $_POST['redirectByRoleCategory']) : '';
+    try {
+        $data = array('value' => $redirectByRoleCategory);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Data Updater' AND name='redirectByRoleCategory'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
