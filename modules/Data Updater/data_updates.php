@@ -128,17 +128,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
                         
                         if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
                             // Display an edit link if updates aren't required or no cutoff date is set
-                            $output .= "<img title='".__('Edit').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/>";
+                            $output .= "<img title='".__('Edit').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/><br/>";
                             $output .= $dataUpdate['name'];
                         } else if (empty($dataUpdate['lastUpdated']) || $dataUpdate['lastUpdated'] < $cutoffDate ) {
                             // Display an arrow and highlight the cell if the most recent update is before the cutoff date
                             $output .= "<img title='".__('Update Required').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyforward.png'/>";
-                            $output .= $dataUpdate['name'];
-                            $output .= '<br/>'.__('Update Required');
+                            if ($dataUpdate['name'] != '') {
+                                $output .= "<br/>".$dataUpdate['name'];
+                            }
+                            $output .= "<br/>".__('Update Required');
                             $updateRequired = true;
                         } else {
                             // Display a checkmark if the most recent data is up-to-date
-                            $output .= "<img title='".__('Up to date').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/>";
+                            $output .= "<img title='".__('Up to date').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/><br/>";
                             $output .= $dataUpdate['name'];
                         }
                         $output .= '</a><br/>';
