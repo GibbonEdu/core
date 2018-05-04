@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Finance\Forms;
 
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * FinanceFormFactory
@@ -33,7 +34,7 @@ class FinanceFormFactory extends DatabaseFormFactory
      * Create and return an instance of DatabaseFormFactory.
      * @return  object DatabaseFormFactory
      */
-    public static function create(\Gibbon\sqlConnection $pdo = null)
+    public static function create(Connection $pdo = null)
     {
         return new FinanceFormFactory($pdo);
     }

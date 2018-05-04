@@ -45,12 +45,9 @@ class Core
     
     /**
      * Configuration variables
-     * @var  string
+     * @var  array
      */
-    protected $guid;
-    protected $caching;
-    protected $version;
-    protected $systemRequirements;
+    protected $config = array();
 
     /**
      * Has gibbon been initialized using a DB connection?
@@ -65,13 +62,11 @@ class Core
     {
         $this->basePath = realpath($directory);
         
+        // Load the configuration, if installed
+        $this->loadConfigFromFile($this->basePath . '/config.php');
+
         // Set the current version
         $this->loadVersionFromFile($this->basePath . '/version.php');
-
-        // Load the configuration, if installed
-        if ($this->isInstalled()) {
-            $this->loadConfigFromFile($this->basePath . '/config.php');
-        }
     }
 
     /**
@@ -115,6 +110,11 @@ class Core
         return (file_exists($this->basePath . '/config.php') && filesize($this->basePath . '/config.php') > 0);
     }
 
+    public function isInstalling()
+    {
+        return stripos($_SERVER['PHP_SELF'], 'installer/install.php') !== false;
+    }
+
     /**
      * Gets the globally unique id, to allow multiple installs on the server
      *
@@ -122,7 +122,7 @@ class Core
      */
     public function guid()
     {
-        return $this->guid;
+        return isset($this->config['guid'])? $this->config['guid'] : 'undefined';
     }
 
     /**
@@ -132,27 +132,32 @@ class Core
      */
     public function getVersion()
     {
-        return $this->version;
+        return $this->getConfig('version');
     }
 
     /**
-     * Gets a System Requirement by array key
+     * Get a config value by name, othwerwise return the config array.
+     * @param string $name
+     * 
+     * @return mixed|array
+     */
+    public function getConfig($name = null)
+    {
+        return !is_null($name) && isset($this->config[$name])
+            ? $this->config[$name]
+            : $this->config;
+    }
+
+    /**
+     * Gets a System Requirement by array key.
      *
      * @return   string
      */
     public function getSystemRequirement($key)
     {
-        return (isset($this->systemRequirements[$key])) ? $this->systemRequirements[$key] : null;
-    }
-
-    /**
-     * Gets system-wide caching factor, used to balance performance and freshness.
-     *
-     * @return   int|null
-     */
-    public function getCaching()
-    {
-        return $this->caching;
+        return isset($this->config['systemRequirements'][$key]) 
+            ? $this->config['systemRequirements'][$key] 
+            : null;
     }
 
     /**
@@ -170,8 +175,8 @@ class Core
 
         include $versionFilePath;
 
-        $this->version = $version;
-        $this->systemRequirements = $systemRequirements;
+        $this->config['version'] = $version;
+        $this->config['systemRequirements'] = $systemRequirements;
     }
 
     /**
@@ -181,12 +186,14 @@ class Core
      */
     protected function loadConfigFromFile($configFilePath)
     {
-        include $configFilePath;
+        // Load the config values (from an array if possible)
+        if ($this->isInstalled()) {
+            $this->config = include $configFilePath;
+        }
 
-        //Sets globally unique id, to allow multiple installs on the server.
-        $this->guid = $guid;
-
-        //Sets system-wide caching factor, used to balance performance and freshness.
-        $this->caching = $caching;
+        // Otherwise load the config values from global scope (pre v16)
+        if (empty($this->config) || !is_array($this->config)) {
+            $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
+        }
     }
 }

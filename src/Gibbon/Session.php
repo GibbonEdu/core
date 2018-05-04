@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Database\Connection;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -35,7 +36,7 @@ class Session
     private	$guid ;
 
     /**
-     * Gibbon/sqlConnection
+     * Gibbon\Contracts\Database\Connection
      */
     private	$pdo ;
 
@@ -69,9 +70,9 @@ class Session
      * Set Database Connection
      * @version  v13
      * @since    v13
-     * @param    sqlConnection  $pdo
+     * @param    Gibbon\Contracts\Database\Connection  $pdo
      */
-    public function setDatabaseConnection(sqlConnection $pdo) {
+    public function setDatabaseConnection(Connection $pdo) {
         $this->pdo = $pdo;
     }
 
@@ -142,7 +143,7 @@ class Session
         return $this;
     }
 
-    public function loadSystemSettings($pdo)
+    public function loadSystemSettings(Connection $pdo)
     {
         // System settings from gibbonSetting
         $sql = "SELECT name, value FROM gibbonSetting WHERE scope='System'";
@@ -153,7 +154,7 @@ class Session
         }
     }
 
-    public function loadLanguageSettings($pdo)
+    public function loadLanguageSettings(Connection $pdo)
     {
         // Language settings from gibboni18n
         $sql = "SELECT * FROM gibboni18n WHERE systemDefault='Y'";
@@ -207,7 +208,7 @@ class Session
      * Cache translated FastFinder actions to allow searching actions with the current locale
      * @version  v13
      * @since    v13
-     * @param    Gibbon/sqlConnection  $pdo
+     * @param    string  $gibbonRoleIDCurrent
      */
     public function cacheFastFinderActions($gibbonRoleIDCurrent) {
 

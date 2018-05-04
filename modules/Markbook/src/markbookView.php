@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\Markbook ;
 
 use Gibbon\session;
-use Gibbon\sqlConnection;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Markbook display & edit class
@@ -33,7 +33,7 @@ class markbookView
 {
 
     /**
-     * Gibbon\sqlConnection
+     * Gibbon\Contracts\Database\Connection
      */
     protected $pdo ;
 
@@ -115,12 +115,12 @@ class markbookView
      *
      * @version  3rd May 2016
      * @since    3rd May 2016
-     * @param    Gibbon\sqlConnection
+     * @param    Gibbon\Contracts\Database\Connection
      * @param    Gibbon\session
      * @param    int  gibbonCourseClassID
      * @return   void
      */
-    public function __construct( \Gibbon\Core $gibbon, \Gibbon\sqlConnection $pdo, $gibbonCourseClassID)
+    public function __construct( \Gibbon\Core $gibbon, Connection $pdo, $gibbonCourseClassID)
     {
         $this->session = $gibbon->session ;
         $this->pdo = $pdo ;

@@ -33,17 +33,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	</head>
 	<body>
 		<?php
-        include './functions.php';
+        include './gibbon.php';
         include './config.php';
         include './version.php';
 
         $partialFail = false;
-
-        //New PDO DB connection
-        $pdo = new Gibbon\sqlConnection();
-		$connection2 = $pdo->getConnection();
-
-        @session_start();
 
         $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
         if ($cuttingEdgeCode != 'Y') {

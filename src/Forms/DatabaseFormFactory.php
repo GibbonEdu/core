@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactory;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * DatabaseFormFactory
@@ -37,9 +38,9 @@ class DatabaseFormFactory extends FormFactory
 
     /**
      * Create a factory with access to the provided a database connection.
-     * @param  \Gibbon\sqlConnection  $pdo
+     * @param  Gibbon\Contracts\Database\Connection  $pdo
      */
-    public function __construct(\Gibbon\sqlConnection $pdo)
+    public function __construct(Connection $pdo)
     {
         $this->pdo = $pdo;
     }
@@ -48,7 +49,7 @@ class DatabaseFormFactory extends FormFactory
      * Create and return an instance of DatabaseFormFactory.
      * @return  object DatabaseFormFactory
      */
-    public static function create(\Gibbon\sqlConnection $pdo = null)
+    public static function create(Connection $pdo = null)
     {
         return new DatabaseFormFactory($pdo);
     }

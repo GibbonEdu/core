@@ -34,12 +34,12 @@ $container->add('autoloader', $autoloader);
 $gibbon = $container->get('config');
 $gibbon->session = $container->get('session');
 $gibbon->locale = $container->get('locale');
-$guid = $gibbon->guid();
-$caching = $gibbon->getCaching();
-$version = $gibbon->getVersion();
+$guid = $gibbon->getConfig('guid');
+$caching = $gibbon->getConfig('caching');
+$version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
-if (!$gibbon->isInstalled() && stripos($_SERVER['PHP_SELF'], 'installer/install.php') === false) {
+if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
     header("Location: ./installer/install.php");
     exit;
 }
@@ -53,10 +53,19 @@ if (!empty($gibbon->session->get('module'))) {
 
 // Initialize using the database connection
 if ($gibbon->isInstalled() == true) {
-    $container->add('db', new Gibbon\sqlConnection());
+    
+    $mysqlConnector = new Gibbon\Database\MySqlConnector();
+    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+        $container->add('db', $pdo);
+        $connection2 = $pdo->getConnection();
 
-    $pdo = $container->get('db');
-    $connection2 = $pdo->getConnection();
-
-    $gibbon->initializeCore($container);
+        $gibbon->initializeCore($container);
+    } else {
+        // We need to handle failed database connections after install. Display an error if no connection 
+        // can be established. Needs a specific error page once header/footer is split out of index.
+        if (!$gibbon->isInstalling()) {
+            include('./error.php');
+            exit;
+        }
+    }
 }
