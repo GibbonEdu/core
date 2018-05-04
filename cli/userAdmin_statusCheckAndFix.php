@@ -22,9 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 require getcwd().'/../gibbon.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 getSystemSettings($guid, $connection2);
 
 setCurrentSchoolYear($guid, $connection2);

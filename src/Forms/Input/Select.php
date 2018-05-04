@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Select
@@ -120,12 +121,12 @@ class Select extends Input
 
     /**
      * Build an internal options array from an SQL query with required value and name fields
-     * @param   \Gibbon\sqlConnection  $pdo
+     * @param   Connection  $pdo
      * @param   string                 $sql
      * @param   array                  $data
      * @return  self
      */
-    public function fromQueryChained(\Gibbon\sqlConnection $pdo, $sql, $data = array(), $chainedToID = false, $groupBy = false)
+    public function fromQueryChained(Connection $pdo, $sql, $data = array(), $chainedToID = false, $groupBy = false)
     {
         $results = $pdo->executeQuery($data, $sql);
         $this->fromResults($results, $groupBy);

@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Database\Connection;
+
 /**
  * Main menu building Class
  *
@@ -29,7 +31,7 @@ namespace Gibbon;
 class MenuModule
 {
 	/**
-	 * Gibbon\sqlConnection
+	 * Gibbon\Contracts\Database\Connection
 	 */
 	private $pdo;
 
@@ -49,7 +51,7 @@ class MenuModule
 	 * @version 23rd November 2016
 	 * @since	22nd April 2016
 	 */
-	public function __construct( Core $gibbon, sqlConnection $pdo )
+	public function __construct( Core $gibbon, Connection $pdo )
 	{
 		$this->pdo = $pdo;
 		$this->session = $gibbon->session;

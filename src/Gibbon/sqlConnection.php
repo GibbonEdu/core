@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon ;
 
 /**
+ * @deprecated v16
  * Database Connection Class
  *
  * @version	v13

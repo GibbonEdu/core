@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\Attendance ;
 
 use Gibbon\session;
-use Gibbon\sqlConnection;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Attendance display & edit class
@@ -32,7 +32,7 @@ use Gibbon\sqlConnection;
 class attendanceView
 {
 	/**
-	 * Gibbon\sqlConnection
+	 * Gibbon\Contracts\Database\Connection
 	 */
 	protected $pdo ;
 
@@ -67,10 +67,10 @@ class attendanceView
      * @since    3rd May 2016
      * @param    Gibbon\session
      * @param    Gibbon\config
-     * @param    Gibbon\sqlConnection
+     * @param    Gibbon\Contracts\Database\Connection
      * @return   void
      */
-    public function __construct(\Gibbon\Core $gibbon, \Gibbon\sqlConnection $pdo)
+    public function __construct(\Gibbon\Core $gibbon, Connection $pdo)
     {
         $this->session = $gibbon->session ;
         $this->pdo = $pdo ;

@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Gibbon\sqlConnection;
-use Gibbon\session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Session;
 
 /**
  * File Upload Class
@@ -35,7 +35,7 @@ class FileUploader
     const FILE_SUFFIX_ALPHANUMERIC = 2;
 
     /**
-     * Gibbon/sqlConnection
+     * Gibbon\Contracts\Database\Connection
      */
     protected $pdo ;
 
@@ -71,10 +71,10 @@ class FileUploader
     /**
      * @version  v14
      * @since    v14
-     * @param    sqlConnection  $pdo
-     * @param    session        $session
+     * @param    Connection  $pdo
+     * @param    session     $session
      */
-    public function __construct(sqlConnection $pdo, session $session)
+    public function __construct(Connection $pdo, Session $session)
     {
         $this->pdo = $pdo;
         $this->session = $session;
