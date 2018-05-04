@@ -104,10 +104,13 @@ if (isset($_SESSION[$guid]['passwordForceReset'])) {
     }
 }
 
-//Deal with attendance self-registration redirect
+// USER REDIRECTS
 if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { //First page load, so proceed
     if (!empty($_SESSION[$guid]['username'])) { //Are we logged in?
-        if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') { //Are we a student?
+        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+
+        // Deal with attendance self-registration redirect
+        if ($roleCategory == 'Student') { //Are we a student?
             if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) { //Can we self register?
                 //Check to see if student is on site
                 $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
@@ -144,8 +147,32 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
                 }
             }
         }
+
+        // Deal with Data Updater redirect (if required updates are enabled)
+        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+        if ($requiredUpdates == 'Y') { 
+            if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { //Can we update data?
+                $redirectByRoleCategory = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory');
+                $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
+
+                if (in_array($roleCategory, $redirectByRoleCategory)) { //Are we the right role category?
+                    include $_SESSION[$guid]['absolutePath'].'/modules/Data Updater/Domain/DataUpdaterGateway.php';
+                    $gateway = new Gibbon\DataUpdater\Domain\DataUpdaterGateway($pdo);
+
+                    $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+                    if ($updatesRequiredCount > 0) {
+                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $_SESSION[$guid]['pageLoads'] = null;
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                }
+            }
+        }
     }
 }
+
+
 
 if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     try {
