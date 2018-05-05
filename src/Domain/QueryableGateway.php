@@ -19,37 +19,94 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\Domain\ResultSet;
+use Gibbon\Database\Result;
+use Gibbon\Domain\QueryResult;
 use Gibbon\Domain\QueryFilters;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Contracts\Database\Connection;
+
+use Aura\SqlQuery\Mysql\Select;
+use Aura\SqlQuery\QueryFactory;
 
 abstract class QueryableGateway extends Gateway
 {
     use TableAware;
 
+    private static $queryFactory;
+
     // BUILT-IN QUERIES
-    public function countAll()
+    protected function countAll()
     {
         return $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
     }
 
-    public function foundRows()
+    protected function newQuery()
     {
-        return $this->db->selectOne("SELECT FOUND_ROWS()");
+        return $this->getQueryFactory()->newSelect()->from($this->getTableName());
     }
 
     // QUERY-RELATED
-    protected function query(QueryFilters $filters, $sql, $data = array())
+    protected function runQuery(Select $query, QueryFilters $filters)
     {
-        $sql = $filters->applyFilters($sql, $data);
+        $query = $this->applyFilters($query, $filters);
 
-        $result = $this->db->select($sql, $data);
+        $result = $this->db->select($query->getStatement(), $query->getBindValues());
 
-        if ($result->rowCount() > 0) {
-            return ResultSet::createFromArray($result->fetchAll(), $this->foundRows(), $this->countAll(), $filters->pageIndex, $filters->pageSize);
-        } else {
-            return ResultSet::createEmpty();
+        $foundRows = $this->db->selectOne("SELECT FOUND_ROWS()");
+
+        echo $query->getStatement();
+
+        return QueryResult::createFromResult($result, $foundRows, $this->countAll(), $filters->pageIndex, $filters->pageSize);
+    }
+
+    private function applyFilters(Select $query, QueryFilters $filters)
+    {
+        $query->calcFoundRows();
+
+        // Filter By
+        foreach ($filters->filterBy as $filter) {
+            list($name, $value) = explode(':', $filter, 2);
+            if ($callback = $filters->getDefinition($name)) {
+                $query = $callback($query, $value);
+            }
         }
+
+        // Search By
+        $count = 0;
+        foreach ($filters->searchBy as $column => $text) {
+            $column = $this->escapeIdentifier($column);
+            $query->orWhere("{$column} LIKE :search{$count}");
+            $query->bindValue(":search{$count}", $text);
+            $count++;
+        }
+
+        // Order By
+        foreach ($filters->orderBy as $column => $direction) {
+            // $column = $this->escapeIdentifier($column);
+            $direction = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
+            $query->orderBy(["{$column} {$direction}"]);
+        }
+
+        // Limit & Offset
+        $query->limit($filters->pageSize);
+        $query->offset(max(0, $filters->pageIndex * $filters->pageSize));
+
+        return $query;
+    }
+
+    private function escapeIdentifier($value)
+    {
+        return implode('.', array_map(function ($piece) {
+            return '`' . str_replace('`', '``', $piece) . '`';
+        }, explode('.', $value, 2)));
+    }
+
+    private function getQueryFactory()
+    {
+        if (!isset(self::$queryFactory)) {
+            self::$queryFactory = new QueryFactory('mysql');
+        }
+
+        return self::$queryFactory;
     }
 }

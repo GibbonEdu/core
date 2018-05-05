@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
+use Gibbon\Database\Result;
+
 /**
  * Object representing the paginated results of a Gateway query.
  */
-class ResultSet implements \Countable, \IteratorAggregate
+class QueryResult implements \Countable, \IteratorAggregate
 {
     protected $data;
 
@@ -31,7 +33,7 @@ class ResultSet implements \Countable, \IteratorAggregate
     protected $pageIndex; 
     protected $pageSize; 
 
-    public function __construct(array $data, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
+    public function __construct(array $data = [], $resultCount = 0, $totalCount = 0, $pageIndex = 0, $pageSize = -1)
     {
         $this->data = $data;
         $this->resultCount = $resultCount;
@@ -40,14 +42,9 @@ class ResultSet implements \Countable, \IteratorAggregate
         $this->pageSize = $pageSize;
     }
 
-    public static function createFromArray(array $data, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
+    public static function createFromResult(Result $result, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
     {
-        return new self($data, $resultCount, $totalCount, $pageIndex, $pageSize);
-    }
-
-    public static function createEmpty()
-    {
-        return new self(array(), 0, 0);
+        return new self($result->fetchAll(), $resultCount, $totalCount, $pageIndex, $pageSize);
     }
 
     public function count()

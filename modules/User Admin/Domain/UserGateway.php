@@ -32,29 +32,41 @@ class UserGateway extends QueryableGateway
 {
     protected static $tableName = 'gibbonPerson';
 
-    public function queryAllUsers($filters = null)
+    public function queryAllUsers(QueryFilters $filters)
     {
-        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.username, 
-                gibbonPerson.image_240, gibbonPerson.status, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName) as fullName, gibbonRole.name as primaryRole 
-                FROM gibbonPerson 
-                LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)";
+        $query = $this
+            ->newQuery()
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonRole.name as primaryRole'
+            ])
+            ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
 
-        $filters = !($filters instanceof QueryFilters)? QueryFilters::createEmpty() : $filters;
-        $filters->defineFilter('role:student',  __('Role').': '.__('Student'),      "gibbonRole.category = 'Student'")
-                ->defineFilter('role:parent',   __('Role').': '.__('Parent'),       "gibbonRole.category = 'Parent'")
-                ->defineFilter('role:staff',    __('Role').': '.__('Staff'),        "gibbonRole.category = 'Staff'")
-                ->defineFilter('is:full',       __('Status').': '.__('Full'),       "gibbonPerson.status = 'Full'")
-                ->defineFilter('is:left',       __('Status').': '.__('Left'),       "gibbonPerson.status = 'Left'")
-                ->defineFilter('is:expected',   __('Status').': '.__('Expected'),   "gibbonPerson.status = 'Expected'")
-                ->defineFilter('date:starting', __('Before Start Date'),            "(dateStart IS NOT NULL AND dateStart >= :today)", ['today' => date('Y-m-d')])
-                ->defineFilter('date:ended',    __('Past End Date'),                "(dateEnd IS NOT NULL AND dateEnd <= :today)", ['today' => date('Y-m-d')]);
+        $filters->defineFilter('role', function ($query, $roleCategory) {
+            return $query
+                ->where('gibbonRole.category = :roleCategory')
+                ->bindValue('roleCategory', ucfirst($roleCategory));
+        });
 
-        return $this->query($filters, $sql);
+        $filters->defineFilter('status', function ($query, $status) {
+            return $query
+                ->where('gibbonPerson.status = :status')
+                ->bindValue('status', ucfirst($status));
+        });
+
+        $filters->defineFilter('date', function ($query, $dateType) {
+            return $query
+                ->where(($dateType == 'starting')
+                    ? '(dateStart IS NOT NULL AND dateStart >= :today)'
+                    : '(dateEnd IS NOT NULL AND dateEnd <= :today)')
+                ->bindValue('today', date('Y-m-d'));
+        });
+
+        return $this->runQuery($query, $filters);
     }
 
     public function selectFamilyDetailsPerUser($people)
     {
-        $data = array('people' => is_array($people)? implode(',', $people) : $people);
+        $data = array('people' => is_array($people) ? implode(',', $people) : $people);
         $sql = "(
             SELECT LPAD(gibbonFamilyAdult.gibbonPersonID, 10, '0'), gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, (SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID ORDER BY gibbonPerson.dob DESC LIMIT 1) as gibbonPersonIDStudent
             FROM gibbonFamily 

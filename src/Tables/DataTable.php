@@ -21,7 +21,7 @@ namespace Gibbon\Tables;
 
 use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
-use Gibbon\Domain\ResultSet;
+use Gibbon\Domain\QueryResult;
 use Gibbon\Domain\QueryFilters;
 use Gibbon\Forms\FormFactory;
 
@@ -37,21 +37,21 @@ class DataTable
     protected $columns = array();
     protected $actionLinks = array();
 
-    protected $resultSet;
+    protected $queryResult;
     protected $filters;
     protected $factory;
 
-    public function __construct($id, ResultSet $resultSet)
+    public function __construct($id, QueryResult $queryResult)
     {
         $this->id = $id;
-        $this->resultSet = $resultSet;
+        $this->queryResult = $queryResult;
         $this->filters = QueryFilters::createEmpty();
         $this->factory = FormFactory::create();
     }
 
-    public static function createFromResultSet($id, ResultSet $resultSet)
+    public static function createFromQueryResult($id, QueryResult $queryResult)
     {
-        return new DataTable($id, $resultSet);
+        return new DataTable($id, $queryResult);
     }
 
     public function setPath($path = '')
@@ -109,14 +109,14 @@ class DataTable
         // $output .= json_encode($this->filters->getFilters());
 
         $output .= '<div>';
-        $output .= $this->renderPageCount($this->resultSet);
+        $output .= $this->renderPageCount($this->queryResult);
         $output .= $this->renderPageFilters($this->filters);
         $output .= '</div>';
         $output .= $this->renderSelectFilters($this->filters);
-        $output .= $this->renderPageSize($this->resultSet);
-        $output .= $this->renderPagination($this->resultSet);
+        $output .= $this->renderPageSize($this->queryResult);
+        $output .= $this->renderPagination($this->queryResult);
 
-        if ($this->resultSet->hasResults()) {
+        if ($this->queryResult->hasResults()) {
             $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
 
             // HEADING
@@ -146,7 +146,7 @@ class DataTable
             // ROWS
             $output .= '<tbody>';
 
-            foreach ($this->resultSet as $data) {
+            foreach ($this->queryResult as $data) {
                 $output .= '<tr>';
 
                 if (!empty($this->columns)) {
@@ -163,10 +163,10 @@ class DataTable
             $output .= '</tbody>';
             $output .= '</table>';
 
-            $output .= $this->renderPageCount($this->resultSet);
-            $output .= $this->renderPagination($this->resultSet);
+            $output .= $this->renderPageCount($this->queryResult);
+            $output .= $this->renderPagination($this->queryResult);
         } else {
-            if ($this->resultSet->isSubset()) {
+            if ($this->queryResult->isSubset()) {
                 $output .= '<div class="warning">';
                 $output .= __('No results matched your search.');
                 $output .= '</div>';
@@ -184,21 +184,21 @@ class DataTable
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->resultSet->getResultCount().");
+            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->queryResult->getResultCount().");
         });
         </script>";
 
         return $output;
     }
 
-    protected function renderPageCount(ResultSet $resultSet)
+    protected function renderPageCount(QueryResult $queryResult)
     {
         $output = '<span class="small" style="line-height: 32px;">';
 
-        if ($resultSet->hasResults()) {
-            $output .= $resultSet->isSubset()? __('Results') : __('Records');
-            $output .= ' '.$resultSet->getPageLowerBounds().'-'.$resultSet->getPageUpperBounds().' '.__('of').' ';
-            $output .= $resultSet->isSubset()? $resultSet->getResultCount() : $resultSet->getTotalCount();
+        if ($queryResult->hasResults()) {
+            $output .= $queryResult->isSubset()? __('Results') : __('Records');
+            $output .= ' '.$queryResult->getPageLowerBounds().'-'.$queryResult->getPageUpperBounds().' '.__('of').' ';
+            $output .= $queryResult->isSubset()? $queryResult->getResultCount() : $queryResult->getTotalCount();
         } else {
             $output .= __('No Results');
         }
@@ -244,9 +244,9 @@ class DataTable
             ->getOutput();
     }
 
-    protected function renderPageSize(ResultSet $resultSet)
+    protected function renderPageSize(QueryResult $queryResult)
     {
-        $pageSize = $resultSet->getPageSize();
+        $pageSize = $queryResult->getPageSize();
 
         if ($pageSize <= 0) return '';
 
@@ -258,16 +258,16 @@ class DataTable
             ->getOutput();
     }
 
-    protected function renderPagination(ResultSet $resultSet)
+    protected function renderPagination(QueryResult $queryResult)
     {
-        if ($resultSet->getPageCount() <= 1) return '';
+        if ($queryResult->getPageCount() <= 1) return '';
 
-        $pageIndex = $resultSet->getPageIndex();
+        $pageIndex = $queryResult->getPageIndex();
 
         $output = '<div class="floatRight">';
             $output .= '<input type="button" class="paginate" data-page="'.($pageIndex - 1).'" '.($pageIndex <= 0? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $pageCount = $resultSet->getPageCount()-1;
+            $pageCount = $queryResult->getPageCount()-1;
             $range = range(0, $pageCount);
 
             // Collapse the leading page-numbers

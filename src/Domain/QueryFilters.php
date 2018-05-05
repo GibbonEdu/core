@@ -19,17 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
+use Closure;
+
 /**
  * Object describing the filters applied to a Gateway query.
  */
 class QueryFilters
 {
     protected $filters = array(
-        'pageIndex'  => 0,
-        'pageSize'   => 25,
-        'searchBy'   => array(),
-        'filterBy'   => array(),
-        'orderBy'    => array(),
+        'pageIndex' => 0,
+        'pageSize' => 25,
+        'searchBy' => array(),
+        'filterBy' => array(),
+        'orderBy' => array(),
     );
 
     protected $definitions = array();
@@ -38,10 +40,10 @@ class QueryFilters
     {
         $this->filters = $this->sanitizeFilters(array_replace($this->filters, $filters));
     }
-    
+
     public function __get($name)
     {
-        return isset($this->filters[$name])? $this->filters[$name] : null;
+        return isset($this->filters[$name]) ? $this->filters[$name] : null;
     }
 
     public function __isset($name)
@@ -59,15 +61,16 @@ class QueryFilters
         return new self();
     }
 
-    public function defineFilter($name, $label, $query, $data = array())
+    public function defineFilter($name, Closure $callback)
     {
-        $this->definitions[$name] = array(
-            'label' => $label,
-            'query' => $query,
-            'data' => $data,
-        );
+        $this->definitions[$name] = $callback;
 
         return $this;
+    }
+
+    public function getDefinition($name)
+    {
+        return isset($this->definitions[$name]) ? $this->definitions[$name] : null;
     }
 
     public function getFilters()
@@ -77,16 +80,17 @@ class QueryFilters
 
     public function getDefinitionLabels()
     {
-        return array_combine(array_keys($this->definitions), array_column($this->definitions, 'label'));
+        // return array_combine(array_keys($this->definitions), array_column($this->definitions, 'label'));
+        return array();
     }
 
-    public function addSearch($search, $column)
+    public function addSearch($column, $search)
     {
         if (trim($search) == '') return $this;
 
-        $columns = is_array($column)? $column : array($column);
+        $columns = is_array($column) ? $column : array($column);
         foreach ($columns as $column) {
-            $this->filters['searchBy'][$column] = $search;
+            $this->filters['searchBy'][$column] = trim($search);
         }
 
         return $this;
@@ -97,96 +101,29 @@ class QueryFilters
         if (empty($name)) return $this;
 
         if (!in_array($name, $this->filters['filterBy'])) {
-            $this->filters['filterBy'][] = $name;
+            $this->filters['filterBy'][] = trim($name);
         }
 
         return $this;
     }
 
-    public function defaultSort($column, $direction = 'ASC') 
+    public function defaultSort($column, $direction = 'ASC')
     {
         if (empty($column) || !empty($this->filters['orderBy'])) return $this;
 
-        $this->filters['orderBy'][$column] = ($direction == 'DESC')? 'DESC' : 'ASC';
+        $this->filters['orderBy'][$column] = ($direction == 'DESC') ? 'DESC' : 'ASC';
 
         return $this;
-    }
-
-    public function applyFilters($sql, &$data = array())
-    {
-        if (mb_stripos($sql, 'SQL_CALC_FOUND_ROWS') === false) {
-            $sql = str_ireplace('SELECT', 'SELECT SQL_CALC_FOUND_ROWS', $sql);
-        }
-
-        if (!empty($this->searchBy)) {
-            $sql .= (mb_stripos($sql, 'WHERE') !== false)? ' AND ' : ' WHERE ';
-
-            $where = array();
-            $count = 0;
-            foreach ($this->searchBy as $column => $search) {
-                $data['search'.$count] = "%{$search}%";
-                $where[] = $this->escapeIdentifier($column)." LIKE :search{$count}";
-                $count++;
-            }
-
-            $sql .= '('.implode(' OR ', $where).')';
-        }
-
-        if (!empty($this->filterBy)) {
-            $sql .= (mb_stripos($sql, 'WHERE') !== false)? ' AND ' : ' WHERE ';
-
-            $where = array();
-            $filters = array_intersect_key($this->definitions, array_flip($this->filterBy));
-
-            foreach ($filters as $filterName => $filter) {
-                $where[] = $filter['query'];
-                if (!empty($filter['data'])) {
-                    $data = array_replace($data, $filter['data']);
-                }
-            }
-
-            $sql .= '('.implode(' AND ', $where).')';
-        }
-
-        if (!empty($this->orderBy)) {
-            $sql .= ' ORDER BY ';
-
-            $order = array();
-            foreach ($this->orderBy as $column => $direction) {
-                $direction = ($direction == 'DESC')? 'DESC' : 'ASC';
-                $order[] =  $this->escapeIdentifier($column).' '.$direction;
-            }
-
-            $sql .= implode(', ', $order);
-        }
-
-        if (!empty($this->pageSize)) {
-            $offset = max(0, $this->pageIndex * $this->pageSize);
-            
-            $sql .= ' LIMIT '.intval($this->pageSize);
-            $sql .= ' OFFSET '.intval($offset);
-        }
-
-        // echo $sql;
-
-        return $sql;
-    }
-
-    protected function escapeIdentifier($value)
-    {
-        return implode('.', array_map(function($piece) {
-            return '`'.str_replace('`','``',$piece).'`';
-        }, explode('.', $value)));
     }
 
     protected function sanitizeFilters($filters)
     {
         return array(
-            'pageIndex'  => intval($filters['pageIndex']),
-            'pageSize'   => intval($filters['pageSize']),
-            'searchBy'   => is_array($filters['searchBy'])? $filters['searchBy'] : array(),
-            'filterBy'   => is_array($filters['filterBy'])? $filters['filterBy'] : array(),
-            'orderBy'   => is_array($filters['orderBy'])? $filters['orderBy'] : array(),
+            'pageIndex' => intval($filters['pageIndex']),
+            'pageSize' => intval($filters['pageSize']),
+            'searchBy' => is_array($filters['searchBy']) ? $filters['searchBy'] : array(),
+            'filterBy' => is_array($filters['filterBy']) ? $filters['filterBy'] : array(),
+            'orderBy' => is_array($filters['orderBy']) ? $filters['orderBy'] : array(),
         );
     }
 }

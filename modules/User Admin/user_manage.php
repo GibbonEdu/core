@@ -63,24 +63,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $search = isset($_GET['search'])? $_GET['search'] : '';
     $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
-    $filters = QueryFilters::createFromPost()->addSearch($search, $searchColumns)->defaultSort('fullName');
+    $filters = QueryFilters::createFromPost()
+        ->addSearch($searchColumns, $search)
+        ->defaultSort('surname, preferredName')
+        ->addFilter('status:left')
+        ->addFilter('role:parent');
 
     $gateway = $container->get('Gibbon\UserAdmin\Domain\UserGateway');
-    $resultSet = $gateway->queryAllUsers($filters);
+    $queryResult = $gateway->queryAllUsers($filters);
 
     // Grab a set of family data per user
-    $people = $resultSet->getColumn('gibbonPersonID');
+    $people = $queryResult->getColumn('gibbonPersonID');
     $familyData = $gateway->selectFamilyDetailsPerUser($people)->fetchGrouped();
 
-    $resultSet->joinResults('gibbonPersonID', 'families', $familyData);
-
-    // echo '<pre>';
-    // print_r($resultSet);
-    // echo '</pre>';
+    $queryResult->joinResults('gibbonPersonID', 'families', $familyData);
 
     $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
-
-    $table = DataTable::createFromResultSet('userManage', $resultSet)->withFilters($filters)->setPath($path);
+    $table = DataTable::createFromQueryResult('userManage', $queryResult)->withFilters($filters)->setPath($path);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
@@ -93,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('fullName', __('Name'))->format(function($item) {
         return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
-    })->setWidth('30%');
+    })->setWidth('30%')->setSortable(false);
 
     $table->addColumn('status', __('Status'))->setWidth('10%');
     $table->addColumn('primaryRole', __('Primary Role'))->setWidth('16%');
