@@ -149,5 +149,71 @@
             "provider",
             "service"
         ]
+    },
+    {
+        "name": "aura/sqlquery",
+        "version": "2.7.1",
+        "version_normalized": "2.7.1.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/auraphp/Aura.SqlQuery.git",
+            "reference": "dd81b57aeb43628180a9c70a4df58d872024d7f2"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/dd81b57aeb43628180a9c70a4df58d872024d7f2",
+            "reference": "dd81b57aeb43628180a9c70a4df58d872024d7f2",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.9"
+        },
+        "suggest": {
+            "aura/sql": "Provides an extension to the native PDO along with a profiler and connection locator. Use version 2.*."
+        },
+        "time": "2016-10-03T20:34:56+00:00",
+        "type": "library",
+        "extra": {
+            "aura": {
+                "type": "library"
+            }
+        },
+        "installation-source": "source",
+        "autoload": {
+            "psr-4": {
+                "Aura\\SqlQuery\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Aura.SqlQuery Contributors",
+                "homepage": "https://github.com/auraphp/Aura.SqlQuery/contributors"
+            }
+        ],
+        "description": "Object-oriented query builders for MySQL, Postgres, SQLite, and SQLServer; can be used with any database connection library.",
+        "homepage": "https://github.com/auraphp/Aura.SqlQuery",
+        "keywords": [
+            "database",
+            "db",
+            "delete",
+            "dml",
+            "insert",
+            "mysql",
+            "pdo",
+            "pgsql",
+            "postgres",
+            "postgresql",
+            "query",
+            "select",
+            "sql",
+            "sql server",
+            "sqlite",
+            "sqlserver",
+            "update"
+        ]
     }
 ]

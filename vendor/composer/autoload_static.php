@@ -23,6 +23,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             'Gibbon\\' => 7,
         ),
+        'A' => 
+        array (
+            'Aura\\SqlQuery\\' => 14,
+        ),
     );
 
     public static $prefixDirsPsr4 = array (
@@ -42,6 +46,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/../..' . '/src',
             1 => __DIR__ . '/../..' . '/src/Gibbon',
+        ),
+        'Aura\\SqlQuery\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/aura/sqlquery/src',
         ),
     );
 
