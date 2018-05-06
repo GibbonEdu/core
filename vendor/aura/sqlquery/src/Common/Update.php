@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -19,6 +19,8 @@ use Aura\SqlQuery\AbstractDmlQuery;
  */
 class Update extends AbstractDmlQuery implements UpdateInterface
 {
+    use WhereTrait;
+
     /**
      *
      * The table to update.
@@ -53,63 +55,11 @@ class Update extends AbstractDmlQuery implements UpdateInterface
     protected function build()
     {
         return 'UPDATE'
-            . $this->buildFlags()
-            . $this->buildTable()
-            . $this->buildValuesForUpdate()
-            . $this->buildWhere()
-            . $this->buildOrderBy()
-            . $this->buildLimit()
-            . $this->buildReturning();
-    }
-
-    /**
-     *
-     * Builds the table clause.
-     *
-     * @return null
-     *
-     */
-    protected function buildTable()
-    {
-        return " {$this->table}";
-    }
-
-    /**
-     *
-     * Adds a WHERE condition to the query by AND. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
-     *
-     * @param string $cond The WHERE condition.
-     * @param mixed ...$bind arguments to bind to placeholders
-     *
-     * @return $this
-     *
-     */
-    public function where($cond)
-    {
-        $this->addWhere('AND', func_get_args());
-        return $this;
-    }
-
-    /**
-     *
-     * Adds a WHERE condition to the query by OR. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
-     *
-     * @param string $cond The WHERE condition.
-     * @param mixed ...$bind arguments to bind to placeholders
-     *
-     * @return $this
-     *
-     * @see where()
-     *
-     */
-    public function orWhere($cond)
-    {
-        $this->addWhere('OR', func_get_args());
-        return $this;
+            . $this->builder->buildFlags($this->flags)
+            . $this->builder->buildTable($this->table)
+            . $this->builder->buildValuesForUpdate($this->col_values)
+            . $this->builder->buildWhere($this->where)
+            . $this->builder->buildOrderBy($this->order_by);
     }
 
     /**
@@ -119,12 +69,13 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      *
      * @param string $col The column name.
      *
-     * @return $this
+     * @param array $value
      *
+     * @return $this
      */
-    public function col($col)
+    public function col($col, ...$value)
     {
-        return call_user_func_array(array($this, 'addCol'), func_get_args());
+        return $this->addCol($col, ...$value);
     }
 
     /**
@@ -134,8 +85,8 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      * that column.
      *
      * @param array $cols A list of column names, optionally as key-value
-     *                    pairs where the key is a column name and the value is a bind value for
-     *                    that column.
+     * pairs where the key is a column name and the value is a bind value for
+     * that column.
      *
      * @return $this
      *
@@ -150,7 +101,7 @@ class Update extends AbstractDmlQuery implements UpdateInterface
      * Sets a column value directly; the value will not be escaped, although
      * fully-qualified identifiers in the value will be quoted.
      *
-     * @param string $col   The column name.
+     * @param string $col The column name.
      *
      * @param string $value The column value expression.
      *
@@ -160,21 +111,5 @@ class Update extends AbstractDmlQuery implements UpdateInterface
     public function set($col, $value)
     {
         return $this->setCol($col, $value);
-    }
-
-    /**
-     *
-     * Builds the updated columns and values of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildValuesForUpdate()
-    {
-        $values = array();
-        foreach ($this->col_values as $col => $value) {
-            $values[] = "{$col} = {$value}";
-        }
-        return PHP_EOL . 'SET' . $this->indentCsv($values);
     }
 }

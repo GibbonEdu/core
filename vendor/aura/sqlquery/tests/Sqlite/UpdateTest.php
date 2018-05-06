@@ -17,8 +17,8 @@ class UpdateTest extends Common\UpdateTest
                 <<c4>> = NULL,
                 <<c5>> = NOW()
             WHERE
-                foo = :_1_
-                AND baz = :_2_
+                foo = :foo
+                AND baz = :baz
                 OR zim = gir
             LIMIT 5
     ";
@@ -29,8 +29,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->orderBy(array('zim DESC', 'baz ASC'))
                     ->limit(5)
@@ -46,8 +46,8 @@ class UpdateTest extends Common\UpdateTest
                 <<c4>> = NULL,
                 <<c5>> = NOW()
             WHERE
-                foo = :_1_
-                AND baz = :_2_
+                foo = :foo
+                AND baz = :baz
                 OR zim = gir
             ORDER BY
                 zim DESC,
@@ -58,8 +58,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -71,8 +71,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->limit(5);
 
@@ -82,8 +82,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -95,8 +95,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->limit(5);
 
@@ -106,8 +106,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -119,8 +119,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->limit(5);
 
@@ -130,8 +130,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -143,8 +143,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->limit(5);
 
@@ -154,8 +154,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -167,8 +167,8 @@ class UpdateTest extends Common\UpdateTest
                     ->cols(array('c1', 'c2', 'c3'))
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir')
                     ->limit(5);
 
@@ -178,8 +178,8 @@ class UpdateTest extends Common\UpdateTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -206,7 +206,7 @@ class UpdateTest extends Common\UpdateTest
 
         $this->query->table('test')
                     ->cols(array('name'))
-                    ->where('id = ?', 1)
+                    ->where('id = :id', ['id' => 1])
                     ->bindValues(array('name' => 'Annabelle'));
 
         $stm = $this->query->__toString();

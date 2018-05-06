@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -27,4 +27,13 @@ interface LimitInterface
      *
      */
     public function limit($limit);
+
+    /**
+     *
+     * Returns the LIMIT value.
+     *
+     * @return int
+     *
+     */
+    public function getLimit();
 }

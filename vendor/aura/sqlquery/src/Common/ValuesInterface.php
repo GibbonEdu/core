@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -24,10 +24,11 @@ interface ValuesInterface
      *
      * @param string $col The column name.
      *
-     * @return $this
+     * @param array $value
      *
+     * @return $this
      */
-    public function col($col);
+    public function col($col, ...$value);
 
     /**
      *

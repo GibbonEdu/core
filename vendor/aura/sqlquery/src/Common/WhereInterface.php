@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -24,12 +24,13 @@ interface WhereInterface
      * those placeholders sequentially.
      *
      * @param string $cond The WHERE condition.
-     * @param mixed ...$params arguments to be bound to placeholders
+     *
+     * @param array $bind Values to be bound to placeholders.
      *
      * @return $this
      *
      */
-    public function where($cond);
+    public function where($cond, array $bind = []);
 
     /**
      *
@@ -38,12 +39,13 @@ interface WhereInterface
      * those placeholders sequentially.
      *
      * @param string $cond The WHERE condition.
-     * @param mixed ...$params arguments to be bound to placeholders
+     *
+     * @param array $bind Values to be bound to placeholders.
      *
      * @return $this
      *
      * @see where()
      *
      */
-    public function orWhere($cond);
+    public function orWhere($cond, array $bind = []);
 }

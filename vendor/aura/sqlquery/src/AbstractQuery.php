@@ -3,14 +3,14 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery;
 
-use Aura\SqlQuery\Common\LimitInterface;
-use Aura\SqlQuery\Common\LimitOffsetInterface;
-use Aura\SqlQuery\Common\SubselectInterface;
+use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\QuoterInterface;
+use Closure;
 
 /**
  *
@@ -50,24 +50,6 @@ abstract class AbstractQuery
 
     /**
      *
-     * The number of rows to select
-     *
-     * @var int
-     *
-     */
-    protected $limit = 0;
-
-    /**
-     *
-     * Return rows after this offset.
-     *
-     * @var int
-     *
-     */
-    protected $offset = 0;
-
-    /**
-     *
      * The list of flags.
      *
      * @var array
@@ -86,13 +68,12 @@ abstract class AbstractQuery
 
     /**
      *
-     * Prefix to use on placeholders for "sequential" bound values; used for
-     * deconfliction when merging bound values from sub-selects, etc.
+     * A builder for the query.
      *
-     * @var mixed
+     * @var AbstractBuilder
      *
      */
-    protected $seq_bind_prefix = '';
+    protected $builder;
 
     /**
      *
@@ -100,27 +81,13 @@ abstract class AbstractQuery
      *
      * @param Quoter $quoter A helper for quoting identifier names.
      *
-     * @param string $seq_bind_prefix A prefix for rewritten sequential-binding
-     * placeholders (@see getSeqPlaceholder()).
+     * @param AbstractBuilder $builder A builder for the query.
      *
      */
-    public function __construct(Quoter $quoter, $seq_bind_prefix = '')
+    public function __construct(QuoterInterface $quoter, $builder)
     {
         $this->quoter = $quoter;
-        $this->seq_bind_prefix = $seq_bind_prefix;
-    }
-
-    /**
-     *
-     * Returns the prefix for rewritten sequential-binding placeholders
-     * (@see getSeqPlaceholder()).
-     *
-     * @return string
-     *
-     */
-    public function getSeqBindPrefix()
-    {
-        return $this->seq_bind_prefix;
+        $this->builder = $builder;
     }
 
     /**
@@ -178,36 +145,6 @@ abstract class AbstractQuery
     public function getQuoteNameSuffix()
     {
         return $this->quoter->getQuoteNameSuffix();
-    }
-
-    /**
-     *
-     * Returns an array as an indented comma-separated values string.
-     *
-     * @param array $list The values to convert.
-     *
-     * @return string
-     *
-     */
-    protected function indentCsv(array $list)
-    {
-        return PHP_EOL . '    '
-             . implode(',' . PHP_EOL . '    ', $list);
-    }
-
-    /**
-     *
-     * Returns an array as an indented string.
-     *
-     * @param array $list The values to convert.
-     *
-     * @return string
-     *
-     */
-    protected function indent(array $list)
-    {
-        return PHP_EOL . '    '
-             . implode(PHP_EOL . '    ', $list);
     }
 
     /**
@@ -273,22 +210,6 @@ abstract class AbstractQuery
 
     /**
      *
-     * Builds the flags as a space-separated string.
-     *
-     * @return string
-     *
-     */
-    protected function buildFlags()
-    {
-        if (! $this->flags) {
-            return ''; // not applicable
-        }
-
-        return ' ' . implode(' ', array_keys($this->flags));
-    }
-
-    /**
-     *
      * Sets or unsets specified flag.
      *
      * @param string $flag Flag to set or unset
@@ -309,6 +230,20 @@ abstract class AbstractQuery
 
     /**
      *
+     * Returns true if the specified flag was enabled by setFlag().
+     *
+     * @param string $flag Flag to check
+     *
+     * @return bool
+     *
+     */
+    protected function hasFlag($flag)
+    {
+        return isset($this->flags[$flag]);
+    }
+
+    /**
+     *
      * Reset all query flags.
      *
      * @return $this
@@ -322,26 +257,6 @@ abstract class AbstractQuery
 
     /**
      *
-     * Adds a WHERE condition to the query by AND or OR. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
-     *
-     * @param string $andor Add the condition using this operator, typically
-     * 'AND' or 'OR'.
-     *
-     * @param array $args Arguments for adding the condition.
-     *
-     * @return $this
-     *
-     */
-    protected function addWhere($andor, $args)
-    {
-        $this->addClauseCondWithBind('where', $andor, $args);
-        return $this;
-    }
-
-    /**
-     *
      * Adds conditions and binds values to a clause.
      *
      * @param string $clause The clause to work with, typically 'where' or
@@ -350,24 +265,81 @@ abstract class AbstractQuery
      * @param string $andor Add the condition using this operator, typically
      * 'AND' or 'OR'.
      *
-     * @param array $args Arguments for adding the condition.
+     * @param string $cond The WHERE condition.
+     *
+     * @param array $bind arguments to bind to placeholders
      *
      * @return null
      *
      */
-    protected function addClauseCondWithBind($clause, $andor, $args)
+    protected function addClauseCondWithBind($clause, $andor, $cond, $bind)
     {
-        // remove the condition from the args and quote names in it
-        $cond = array_shift($args);
-        $cond = $this->rebuildCondAndBindValues($cond, $args);
+        if ($cond instanceof Closure) {
+            $this->addClauseCondClosure($clause, $andor, $cond);
+            $this->bindValues($bind);
+            return;
+        }
 
-        // add condition to clause; $this->where
+        $cond = $this->quoter->quoteNamesIn($cond);
+        $cond = $this->rebuildCondAndBindValues($cond, $bind);
+
         $clause =& $this->$clause;
         if ($clause) {
             $clause[] = "$andor $cond";
         } else {
             $clause[] = $cond;
         }
+    }
+
+    /**
+     *
+     * Adds to a clause through a closure, enclosing within parentheses.
+     *
+     * @param string $clause The clause to work with, typically 'where' or
+     * 'having'.
+     *
+     * @param string $andor Add the condition using this operator, typically
+     * 'AND' or 'OR'.
+     *
+     * @param callable $closure The closure that adds to the clause.
+     *
+     * @return null
+     *
+     */
+    protected function addClauseCondClosure($clause, $andor, $closure)
+    {
+        // retain the prior set of conditions, and temporarily reset the clause
+        // for the closure to work with (otherwise there will be an extraneous
+        // opening AND/OR keyword)
+        $set = $this->$clause;
+        $this->$clause = [];
+
+        // invoke the closure, which will re-populate the $this->$clause
+        $closure($this);
+
+        // are there new clause elements?
+        if (! $this->$clause) {
+            // no: restore the old ones, and done
+            $this->$clause = $set;
+            return;
+        }
+
+        // append an opening parenthesis to the prior set of conditions,
+        // with AND/OR as needed ...
+        if ($set) {
+            $set[] = "{$andor} (";
+        } else {
+            $set[] = "(";
+        }
+
+        // append the new conditions to the set, with indenting
+        foreach ($this->$clause as $cond) {
+            $set[] = "    {$cond}";
+        }
+        $set[] = ")";
+
+        // ... then put the full set of conditions back into $this->$clause
+        $this->$clause = $set;
     }
 
     /**
@@ -386,63 +358,26 @@ abstract class AbstractQuery
      */
     protected function rebuildCondAndBindValues($cond, array $bind_values)
     {
-        $cond = $this->quoter->quoteNamesIn($cond);
+        $selects = [];
 
-        // bind values against ?-mark placeholders, but because PDO is finicky
-        // about the numbering of sequential placeholders, convert each ?-mark
-        // to a named placeholder
-        $parts = preg_split('/(\?)/', $cond, null, PREG_SPLIT_DELIM_CAPTURE);
-        foreach ($parts as $key => $val) {
-            if ($val != '?') {
-                continue;
+        foreach ($bind_values as $key => $val) {
+            if ($val instanceof SelectInterface) {
+                $selects[":{$key}"] = $val;
+            } else {
+                $this->bindValue($key, $val);
             }
-
-            $bind_value = array_shift($bind_values);
-            if ($bind_value instanceof SubselectInterface) {
-                $parts[$key] = $bind_value->getStatement();
-                $this->bind_values = array_merge(
-                    $this->bind_values,
-                    $bind_value->getBindValues()
-                );
-                continue;
-            }
-
-            $placeholder = $this->getSeqPlaceholder();
-            $parts[$key] = ':' . $placeholder;
-            $this->bind_values[$placeholder] = $bind_value;
         }
 
-        $cond = implode('', $parts);
+        foreach ($selects as $key => $select) {
+            $selects[$key] = $select->getStatement();
+            $this->bind_values = array_merge(
+                $this->bind_values,
+                $select->getBindValues()
+            );
+        }
+
+        $cond = strtr($cond, $selects);
         return $cond;
-    }
-
-    /**
-     *
-     * Gets the current sequential placeholder name.
-     *
-     * @return string
-     *
-     */
-    protected function getSeqPlaceholder()
-    {
-        $i = count($this->bind_values) + 1;
-        return $this->seq_bind_prefix . "_{$i}_";
-    }
-
-    /**
-     *
-     * Builds the `WHERE` clause of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildWhere()
-    {
-        if (! $this->where) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'WHERE' . $this->indent($this->where);
     }
 
     /**
@@ -460,51 +395,5 @@ abstract class AbstractQuery
             $this->order_by[] = $this->quoter->quoteNamesIn($col);
         }
         return $this;
-    }
-
-    /**
-     *
-     * Builds the `ORDER BY ...` clause of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildOrderBy()
-    {
-        if (! $this->order_by) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'ORDER BY' . $this->indentCsv($this->order_by);
-    }
-
-    /**
-     *
-     * Builds the `LIMIT ... OFFSET` clause of the statement.
-     *
-     * Note that this will allow OFFSET values with a LIMIT.
-     *
-     * @return string
-     *
-     */
-    protected function buildLimit()
-    {
-        $clause = '';
-        $limit = $this instanceof LimitInterface && $this->limit;
-        $offset = $this instanceof LimitOffsetInterface && $this->offset;
-
-        if ($limit) {
-            $clause .= "LIMIT {$this->limit}";
-        }
-
-        if ($offset) {
-            $clause .= " OFFSET {$this->offset}";
-        }
-
-        if ($clause) {
-            $clause = PHP_EOL . trim($clause);
-        }
-
-        return $clause;
     }
 }

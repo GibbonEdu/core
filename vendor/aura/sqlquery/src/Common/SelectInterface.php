@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -65,6 +65,15 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
 
     /**
      *
+     * Is the select DISTINCT?
+     *
+     * @return bool
+     *
+     */
+    public function isDistinct();
+
+    /**
+     *
      * Adds columns to the query.
      *
      * Multiple calls to cols() will append to the list of columns, not
@@ -76,6 +85,46 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      */
     public function cols(array $cols);
+
+    /**
+     *
+     * Remove a column via its alias.
+     *
+     * @param string $alias The column to remove
+     *
+     * @return bool
+     *
+     */
+    public function removeCol($alias);
+
+    /**
+     *
+     * Has the column or alias been added to the query?
+     *
+     * @param string $alias The column or alias to look for
+     *
+     * @return bool
+     *
+     */
+    public function hasCol($alias);
+
+    /**
+     *
+     * Does the query have any columns in it?
+     *
+     * @return bool
+     *
+     */
+    public function hasCols();
+
+    /**
+     *
+     * Returns a list of columns.
+     *
+     * @return array
+     *
+     */
+    public function getCols();
 
     /**
      *
@@ -131,6 +180,40 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
 
     /**
      *
+     * Adds a INNER JOIN table and columns to the query.
+     *
+     * @param string $spec The table specification; "foo" or "foo AS bar".
+     *
+     * @param string $cond Join on this condition.
+     *
+     * @param array $bind Values to bind to ?-placeholders in the condition.
+     *
+     * @return $this
+     *
+     * @throws \Exception
+     *
+     */
+    public function innerJoin($spec, $cond = null, array $bind = array());
+
+    /**
+     *
+     * Adds a LEFT JOIN table and columns to the query.
+     *
+     * @param string $spec The table specification; "foo" or "foo AS bar".
+     *
+     * @param string $cond Join on this condition.
+     *
+     * @param array $bind Values to bind to ?-placeholders in the condition.
+     *
+     * @return $this
+     *
+     * @throws \Exception
+     *
+     */
+    public function leftJoin($spec, $cond = null, array $bind = array());
+
+    /**
+     *
      * Adds a JOIN to an aliased subselect and columns to the query.
      *
      * @param string $join The join type: inner, left, natural, etc.
@@ -161,44 +244,31 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
 
     /**
      *
-     * Adds a HAVING condition to the query by AND; if a value is passed as
-     * the second param, it will be quoted and replaced into the condition
-     * wherever a question-mark appears.
-     *
-     * Array values are quoted and comma-separated.
-     *
-     * {{code: php
-     *     // simplest but non-secure
-     *     $select->having("COUNT(id) = $count");
-     *
-     *     // secure
-     *     $select->having('COUNT(id) = ?', $count);
-     *
-     *     // equivalent security with named binding
-     *     $select->having('COUNT(id) = :count');
-     *     $select->bind('count', $count);
-     * }}
+     * Adds a HAVING condition to the query by AND.
      *
      * @param string $cond The HAVING condition.
+     *
+     * @param array $bind Values to be bound to placeholders.
      *
      * @return $this
      *
      */
-    public function having($cond);
+    public function having($cond, array $bind = []);
 
     /**
      *
-     * Adds a HAVING condition to the query by AND; otherwise identical to
-     * `having()`.
+     * Adds a HAVING condition to the query by OR.
      *
      * @param string $cond The HAVING condition.
+     *
+     * @param array $bind Values to be bound to placeholders.
      *
      * @return $this
      *
      * @see having()
      *
      */
-    public function orHaving($cond);
+    public function orHaving($cond, array $bind = []);
 
     /**
      *
@@ -210,6 +280,15 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      */
     public function page($page);
+
+    /**
+     *
+     * Returns the page number being selected.
+     *
+     * @return int
+     *
+     */
+    public function getPage();
 
     /**
      *
@@ -230,4 +309,77 @@ interface SelectInterface extends QueryInterface, WhereInterface, OrderByInterfa
      *
      */
     public function unionAll();
+
+    /**
+     *
+     * Clears the current select properties, usually called after a union.
+     * You may need to call resetUnions() if you have used one
+     *
+     * @return null
+     *
+     */
+    public function reset();
+
+    /**
+     *
+     * Resets the columns on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetCols();
+
+    /**
+     *
+     * Resets the FROM and JOIN clauses on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetTables();
+
+    /**
+     *
+     * Resets the WHERE clause on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetWhere();
+
+    /**
+     *
+     * Resets the GROUP BY clause on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetGroupBy();
+
+    /**
+     *
+     * Resets the HAVING clause on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetHaving();
+
+    /**
+     *
+     * Resets the ORDER BY clause on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetOrderBy();
+
+    /**
+     *
+     * Resets the UNION and UNION ALL clauses on the SELECT.
+     *
+     * @return $this
+     *
+     */
+    public function resetUnions();
 }

@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Mysql;
@@ -19,6 +19,21 @@ use Aura\SqlQuery\Common;
  */
 class Update extends Common\Update implements Common\OrderByInterface, Common\LimitInterface
 {
+    use Common\LimitTrait;
+
+    /**
+     *
+     * Builds the statement.
+     *
+     * @return string
+     *
+     */
+    protected function build()
+    {
+        return parent::build()
+            . $this->builder->buildLimit($this->getLimit());
+    }
+
     /**
      *
      * Adds or removes LOW_PRIORITY flag.
@@ -47,33 +62,6 @@ class Update extends Common\Update implements Common\OrderByInterface, Common\Li
     {
         $this->setFlag('IGNORE', $enable);
         return $this;
-    }
-
-    /**
-     *
-     * Sets a limit count on the query.
-     *
-     * @param int $limit The number of rows to select.
-     *
-     * @return $this
-     *
-     */
-    public function limit($limit)
-    {
-        $this->limit = (int) $limit;
-        return $this;
-    }
-
-    /**
-     *
-     * Returns the LIMIT value.
-     *
-     * @return int
-     *
-     */
-    public function getLimit()
-    {
-        return $this->limit;
     }
 
     /**

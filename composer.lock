@@ -4,34 +4,32 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "b05a50a31c1bebe6c0042e7721fecd17",
+    "content-hash": "7405dc9461979e8c3fa38aa81cb3e996",
     "packages": [
         {
             "name": "aura/sqlquery",
-            "version": "2.7.1",
+            "version": "3.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/auraphp/Aura.SqlQuery.git",
-                "reference": "dd81b57aeb43628180a9c70a4df58d872024d7f2"
+                "reference": "a4fd8dc4493d517ef3d06e1dbb9433c81fff16ce"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/dd81b57aeb43628180a9c70a4df58d872024d7f2",
-                "reference": "dd81b57aeb43628180a9c70a4df58d872024d7f2",
+                "url": "https://api.github.com/repos/auraphp/Aura.SqlQuery/zipball/a4fd8dc4493d517ef3d06e1dbb9433c81fff16ce",
+                "reference": "a4fd8dc4493d517ef3d06e1dbb9433c81fff16ce",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~5.0"
             },
             "suggest": {
-                "aura/sql": "Provides an extension to the native PDO along with a profiler and connection locator. Use version 2.*."
+                "aura/sql": "Provides an extension to the native PDO along with a profiler and connection locator."
             },
             "type": "library",
-            "extra": {
-                "aura": {
-                    "type": "library"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Aura\\SqlQuery\\": "src/"
@@ -39,7 +37,7 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "BSD-2-Clause"
+                "MIT"
             ],
             "authors": [
                 {
@@ -68,7 +66,7 @@
                 "sqlserver",
                 "update"
             ],
-            "time": "2016-10-03T20:34:56+00:00"
+            "time": "2017-11-29 17:43:44"
         },
         {
             "name": "container-interop/container-interop",
@@ -219,7 +217,9 @@
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "aura/sqlquery": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

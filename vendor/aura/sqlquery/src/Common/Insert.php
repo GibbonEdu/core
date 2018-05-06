@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -22,7 +22,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
 {
     /**
      *
-     * The table to insert into.
+     * The table to insert into (quoted).
      *
      * @var string
      *
@@ -31,9 +31,18 @@ class Insert extends AbstractDmlQuery implements InsertInterface
 
     /**
      *
+     * The table to insert into (raw, for last-insert-id use).
+     *
+     * @var string
+     *
+     */
+    protected $into_raw;
+
+    /**
+     *
      * A map of fully-qualified `table.column` names to last-insert-id names.
      * This is used to look up the right last-insert-id name for a given table
-     * and column. Generally useful only for extended tables in Posgres.
+     * and column. Generally useful only for extended tables in Postgres.
      *
      * @var array
      *
@@ -81,7 +90,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
     /**
      *
      * Sets the map of fully-qualified `table.column` names to last-insert-id
-     * names. Generally useful only for extended tables in Posgres.
+     * names. Generally useful only for extended tables in Postgres.
      *
      * @param array $last_insert_id_names The list of ID names.
      *
@@ -102,8 +111,8 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      */
     public function into($into)
     {
-        // don't quote yet, we might need it for getLastInsertIdName()
-        $this->into = $into;
+        $this->into_raw = $into;
+        $this->into = $this->quoter->quoteName($into);
         return $this;
     }
 
@@ -116,23 +125,18 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      */
     protected function build()
     {
-        return 'INSERT'
-            . $this->buildFlags()
-            . $this->buildInto()
-            . $this->buildValuesForInsert()
-            . $this->buildReturning();
-    }
+        $stm = 'INSERT'
+            . $this->builder->buildFlags($this->flags)
+            . $this->builder->buildInto($this->into);
 
-    /**
-     *
-     * Builds the INTO clause.
-     *
-     * @return string
-     *
-     */
-    protected function buildInto()
-    {
-        return " INTO " . $this->quoter->quoteName($this->into);
+        if ($this->row) {
+            $this->finishRow();
+            $stm .= $this->builder->buildValuesForBulkInsert($this->col_order, $this->col_values_bulk);
+        } else {
+            $stm .= $this->builder->buildValuesForInsert($this->col_values);
+        }
+
+        return $stm;
     }
 
     /**
@@ -147,7 +151,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      */
     public function getLastInsertIdName($col)
     {
-        $key = $this->into . '.' . $col;
+        $key = $this->into_raw . '.' . $col;
         if (isset($this->last_insert_id_names[$key])) {
             return $this->last_insert_id_names[$key];
         }
@@ -160,14 +164,14 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      *
      * @param string $col The column name.
      *
-     * @param mixed,...  $val Optional: a value to bind to the placeholder.
+     * @param array $value Optional: a value to bind to the placeholder.
      *
      * @return $this
      *
      */
-    public function col($col)
+    public function col($col, ...$value)
     {
-        return call_user_func_array(array($this, 'addCol'), func_get_args());
+        return $this->addCol($col, ...$value);
     }
 
     /**
@@ -257,11 +261,11 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      */
     public function addRow(array $cols = array())
     {
-        if (! $this->col_values) {
+        if (empty($this->col_values)) {
             return $this->cols($cols);
         }
 
-        if (! $this->col_order) {
+        if (empty($this->col_order)) {
             $this->col_order = array_keys($this->col_values);
         }
 
@@ -281,7 +285,7 @@ class Insert extends AbstractDmlQuery implements InsertInterface
      */
     protected function finishRow()
     {
-        if (! $this->col_values) {
+        if (empty($this->col_values)) {
             return;
         }
 
@@ -330,45 +334,5 @@ class Insert extends AbstractDmlQuery implements InsertInterface
         if (array_key_exists($name, $this->bind_values)) {
             $this->bind_values_bulk["{$name}_{$this->row}"] = $this->bind_values[$name];
         }
-    }
-
-    /**
-     *
-     * Builds the inserted columns and values of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildValuesForInsert()
-    {
-        if ($this->row) {
-            return $this->buildValuesForBulkInsert();
-        }
-
-        return ' ('
-            . $this->indentCsv(array_keys($this->col_values))
-            . PHP_EOL . ') VALUES ('
-            . $this->indentCsv(array_values($this->col_values))
-            . PHP_EOL . ')';
-    }
-
-    /**
-     *
-     * Builds the bulk-inserted columns and values of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildValuesForBulkInsert()
-    {
-        $this->finishRow();
-        $cols = "    (" . implode(', ', $this->col_order) . ")";
-        $vals = array();
-        foreach ($this->col_values_bulk as $row_values) {
-            $vals[] = "    (" . implode(', ', $row_values) . ")";
-        }
-        return PHP_EOL . $cols . PHP_EOL
-            . "VALUES" . PHP_EOL
-            . implode("," . PHP_EOL, $vals);
     }
 }

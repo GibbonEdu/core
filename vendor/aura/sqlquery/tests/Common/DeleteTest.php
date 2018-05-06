@@ -1,4 +1,11 @@
 <?php
+/**
+ *
+ * This file is part of Aura for PHP.
+ *
+ * @license http://opensource.org/licenses/mit-license.php MIT
+ *
+ */
 namespace Aura\SqlQuery\Common;
 
 use Aura\SqlQuery\AbstractQueryTest;
@@ -10,16 +17,16 @@ class DeleteTest extends AbstractQueryTest
     public function testCommon()
     {
         $this->query->from('t1')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir');
 
         $actual = $this->query->__toString();
         $expect = "
             DELETE FROM <<t1>>
             WHERE
-                foo = :_1_
-                AND baz = :_2_
+                foo = :foo
+                AND baz = :baz
                 OR zim = gir
         ";
 
@@ -27,8 +34,8 @@ class DeleteTest extends AbstractQueryTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }

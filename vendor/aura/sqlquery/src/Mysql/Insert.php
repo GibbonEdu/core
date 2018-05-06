@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Mysql;
@@ -21,6 +21,15 @@ class Insert extends Common\Insert
 {
     /**
      *
+     * if true, use a REPLACE sql command instead of INSERT
+     *
+     * @var bool
+     *
+     */
+    protected $use_replace = false;
+
+    /**
+     *
      * Column values for ON DUPLICATE KEY UPDATE section of query; the key is
      * the column name and the value is the column value.
      *
@@ -28,6 +37,22 @@ class Insert extends Common\Insert
      *
      */
     protected $col_on_update_values;
+
+    /**
+     *
+     * Use a REPLACE statement.
+     * Matches similar orReplace() function for Sqlite
+     *
+     * @param bool $enable Set or unset flag (default true).
+     *
+     * @return $this
+     *
+     */
+    public function orReplace($enable = true)
+    {
+        $this->use_replace = $enable;
+        return $this;
+    }
 
     /**
      *
@@ -97,19 +122,18 @@ class Insert extends Common\Insert
      *
      * @param string $col The column name.
      *
-     * @param mixed,... $val Optional: a value to bind to the placeholder.
+     * @param array $value Optional: a value to bind to the placeholder.
      *
      * @return $this
      *
      */
-    public function onDuplicateKeyUpdateCol($col)
+    public function onDuplicateKeyUpdateCol($col, ...$value)
     {
         $key = $this->quoter->quoteName($col);
         $bind = $col . '__on_duplicate_key';
         $this->col_on_update_values[$key] = ":$bind";
-        $args = func_get_args();
-        if (count($args) > 1) {
-            $this->bindValue($bind, $args[1]);
+        if (count($value) > 0) {
+            $this->bindValue($bind, $value[0]);
         }
         return $this;
     }
@@ -176,33 +200,14 @@ class Insert extends Common\Insert
      */
     protected function build()
     {
-        return 'INSERT'
-            . $this->buildFlags()
-            . $this->buildInto()
-            . $this->buildValuesForInsert()
-            . $this->buildValuesForUpdateOnDuplicateKey()
-            . $this->buildReturning();
-    }
+        $stm = parent::build();
 
-    /**
-     *
-     * Builds the UPDATE ON DUPLICATE KEY part of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildValuesForUpdateOnDuplicateKey()
-    {
-        if (! $this->col_on_update_values) {
-            return ''; // not applicable
+        if ($this->use_replace) {
+            // change INSERT to REPLACE
+            $stm = 'REPLACE' . substr($stm, 6);
         }
 
-        $values = array();
-        foreach ($this->col_on_update_values as $key => $row) {
-            $values[] = $this->indent(array($key . ' = ' . $row));
-        }
-
-        return ' ON DUPLICATE KEY UPDATE'
-            . implode (',', $values);
+        return $stm
+            . $this->builder->buildValuesForUpdateOnDuplicateKey($this->col_on_update_values);
     }
 }

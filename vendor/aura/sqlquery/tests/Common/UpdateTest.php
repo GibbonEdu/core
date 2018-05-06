@@ -10,12 +10,12 @@ class UpdateTest extends AbstractQueryTest
     public function testCommon()
     {
         $this->query->table('t1')
-                    ->cols(array('c1', 'c2'))
+                    ->cols(['c1', 'c2'])
                     ->col('c3')
                     ->set('c4', null)
                     ->set('c5', 'NOW()')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir');
 
         $actual = $this->query->__toString();
@@ -28,8 +28,8 @@ class UpdateTest extends AbstractQueryTest
                 <<c4>> = NULL,
                 <<c5>> = NOW()
             WHERE
-                foo = :_1_
-                AND baz = :_2_
+                foo = :foo
+                AND baz = :baz
                 OR zim = gir
         ";
 
@@ -37,9 +37,17 @@ class UpdateTest extends AbstractQueryTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
+    }
+
+    public function testHasCols()
+    {
+        $this->query->table('t1');
+        $this->assertFalse($this->query->hasCols());
+        $this->query->cols(['c1', 'c2']);
+        $this->assertTrue($this->query->hasCols());
     }
 }

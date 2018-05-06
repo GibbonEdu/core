@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Sqlite;
@@ -19,6 +19,21 @@ use Aura\SqlQuery\Common;
  */
 class Update extends Common\Update implements Common\OrderByInterface, Common\LimitOffsetInterface
 {
+    use Common\LimitOffsetTrait;
+
+    /**
+     *
+     * Builds the statement.
+     *
+     * @return string
+     *
+     */
+    protected function build()
+    {
+        return parent::build()
+            . $this->builder->buildLimitOffset($this->getLimit(), $this->offset);
+    }
+
     /**
      *
      * Adds or removes OR ABORT flag.
@@ -92,60 +107,6 @@ class Update extends Common\Update implements Common\OrderByInterface, Common\Li
     {
         $this->setFlag('OR ROLLBACK', $enable);
         return $this;
-    }
-
-    /**
-     *
-     * Sets a limit count on the query.
-     *
-     * @param int $limit The number of rows to select.
-     *
-     * @return $this
-     *
-     */
-    public function limit($limit)
-    {
-        $this->limit = (int) $limit;
-        return $this;
-    }
-
-    /**
-     *
-     * Returns the LIMIT value.
-     *
-     * @return int
-     *
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     *
-     * Sets a limit offset on the query.
-     *
-     * @param int $offset Start returning after this many rows.
-     *
-     * @return $this
-     *
-     */
-    public function offset($offset)
-    {
-        $this->offset = (int) $offset;
-        return $this;
-    }
-
-    /**
-     *
-     * Returns the OFFSET value.
-     *
-     * @return int
-     *
-     */
-    public function getOffset()
-    {
-        return $this->offset;
     }
 
     /**

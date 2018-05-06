@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery;
@@ -17,6 +17,9 @@ namespace Aura\SqlQuery;
  */
 class QueryFactory
 {
+    /**
+     * Use the 'common' driver instead of a database-specific one.
+     */
     const COMMON = 'common';
 
     /**
@@ -39,39 +42,6 @@ class QueryFactory
 
     /**
      *
-     * The quote prefix/suffix to use for each type.
-     *
-     * @param array
-     *
-     */
-    protected $quotes = array(
-        'Common' => array('"', '"'),
-        'Mysql'  => array('`', '`'),
-        'Pgsql'  => array('"', '"'),
-        'Sqlite' => array('"', '"'),
-        'Sqlsrv' => array('[', ']'),
-    );
-
-    /**
-     *
-     * The quote name prefix extracted from `$quotes`.
-     *
-     * @var string
-     *
-     */
-    protected $quote_name_prefix;
-
-    /**
-     *
-     * The quote name suffix extracted from `$quotes`.
-     *
-     * @var string
-     *
-     */
-    protected $quote_name_suffix;
-
-    /**
-     *
      * A map of `table.col` names to last-insert-id names.
      *
      * @var array
@@ -83,19 +53,10 @@ class QueryFactory
      *
      * A Quoter for identifiers.
      *
-     * @param Quoter
+     * @param QuoterInterface
      *
      */
     protected $quoter;
-
-    /**
-     *
-     * A count of Query instances, used for determining $seq_bind_prefix.
-     *
-     * @var int
-     *
-     */
-    protected $instance_count = 0;
 
     /**
      *
@@ -107,14 +68,10 @@ class QueryFactory
      * query objects instead of db-specific ones.
      *
      */
-    public function __construct(
-        $db,
-        $common = null
-    ) {
+    public function __construct($db, $common = null)
+    {
         $this->db = ucfirst(strtolower($db));
         $this->common = ($common === self::COMMON);
-        $this->quote_name_prefix = $this->quotes[$this->db][0];
-        $this->quote_name_suffix = $this->quotes[$this->db][1];
     }
 
     /**
@@ -188,23 +145,43 @@ class QueryFactory
      *
      * @param string $query The query object type.
      *
-     * @return AbstractQuery
+     * @return Common\SelectInterface|Common\InsertInterface|Common\UpdateInterface|Common\DeleteInterface
      *
      */
     protected function newInstance($query)
     {
+        $queryClass = "Aura\SqlQuery\\{$this->db}\\{$query}";
         if ($this->common) {
-            $class = "Aura\SqlQuery\Common";
-        } else {
-            $class = "Aura\SqlQuery\\{$this->db}";
+            $queryClass = "Aura\SqlQuery\Common\\{$query}";
         }
 
-        $class .= "\\{$query}";
+        $builderClass = "Aura\SqlQuery\\{$this->db}\\{$query}Builder";
+        if ($this->common || ! class_exists($builderClass)) {
+            $builderClass = "Aura\SqlQuery\Common\\{$query}Builder";
+        }
 
-        return new $class(
+        return new $queryClass(
             $this->getQuoter(),
-            $this->newSeqBindPrefix()
+            $this->newBuilder($query)
         );
+    }
+
+    /**
+     *
+     * Returns a new Builder for the database driver.
+     *
+     * @param string $query The query type.
+     *
+     * @return AbstractBuilder
+     *
+     */
+    protected function newBuilder($query)
+    {
+        $builderClass = "Aura\SqlQuery\\{$this->db}\\{$query}Builder";
+        if ($this->common || ! class_exists($builderClass)) {
+            $builderClass = "Aura\SqlQuery\Common\\{$query}Builder";
+        }
+        return new $builderClass();
     }
 
     /**
@@ -217,32 +194,24 @@ class QueryFactory
     protected function getQuoter()
     {
         if (! $this->quoter) {
-            $this->quoter = new Quoter(
-                $this->quote_name_prefix,
-                $this->quote_name_suffix
-            );
+            $this->quoter = $this->newQuoter();
         }
-
         return $this->quoter;
     }
 
     /**
      *
-     * Returns a new sequential-placeholder prefix for a query object.
+     * Returns a new Quoter for the database driver.
      *
-     * We need these to deconflict between bound values in subselect queries.
-     *
-     * @return string
+     * @return QuoterInerface
      *
      */
-    protected function newSeqBindPrefix()
+    protected function newQuoter()
     {
-        $seq_bind_prefix = '';
-        if ($this->instance_count) {
-            $seq_bind_prefix = '_' . $this->instance_count;
+        $quoterClass = "Aura\SqlQuery\\{$this->db}\Quoter";
+        if (! class_exists($quoterClass)) {
+            $quoterClass = "Aura\SqlQuery\Common\Quoter";
         }
-
-        $this->instance_count ++;
-        return $seq_bind_prefix;
+        return new $quoterClass();
     }
 }

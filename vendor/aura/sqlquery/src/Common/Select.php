@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery\Common;
@@ -18,8 +18,11 @@ use Aura\SqlQuery\Exception;
  * @package Aura.SqlQuery
  *
  */
-class Select extends AbstractQuery implements SelectInterface, SubselectInterface
+class Select extends AbstractQuery implements SelectInterface
 {
+    use WhereTrait;
+    use LimitOffsetTrait { limit as setLimit; offset as setOffset; }
+
     /**
      *
      * An array of union SELECT statements.
@@ -129,7 +132,7 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
     public function getStatement()
     {
         $union = '';
-        if ($this->union) {
+        if (! empty($this->union)) {
             $union = implode(PHP_EOL, $this->union) . PHP_EOL;
         }
         return $union . $this->build();
@@ -195,6 +198,18 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
     {
         $this->setFlag('DISTINCT', $enable);
         return $this;
+    }
+
+    /**
+     *
+     * Is the select DISTINCT?
+     *
+     * @return bool
+     *
+     */
+    public function isDistinct()
+    {
+        return $this->hasFlag('DISTINCT');
     }
 
     /**
@@ -273,7 +288,7 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
      *
      * @param string $alias The column to remove
      *
-     * @return null
+     * @return bool
      *
      */
     public function removeCol($alias)
@@ -291,6 +306,20 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
         }
 
         return false;
+    }
+
+    /**
+     *
+     * Has the column or alias been added to the query?
+     *
+     * @param string $alias The column or alias to look for
+     *
+     * @return bool
+     *
+     */
+    public function hasCol($alias)
+    {
+        return isset($this->cols[$alias]) || array_search($alias, $this->cols) !== false;
     }
 
     /**
@@ -479,7 +508,7 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
     protected function fixJoinCondition($cond, array $bind)
     {
         if (! $cond) {
-            return;
+            return '';
         }
 
         $cond = $this->quoter->quoteNamesIn($cond);
@@ -606,37 +635,37 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
 
     /**
      *
-     * Adds a HAVING condition to the query by AND. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
+     * Adds a HAVING condition to the query by AND.
      *
      * @param string $cond The HAVING condition.
+     *
+     * @param array $bind arguments to bind to placeholders
      *
      * @return $this
      *
      */
-    public function having($cond)
+    public function having($cond, array $bind = [])
     {
-        $this->addClauseCondWithBind('having', 'AND', func_get_args());
+        $this->addClauseCondWithBind('having', 'AND', $cond, $bind);
         return $this;
     }
 
     /**
      *
-     * Adds a HAVING condition to the query by AND. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
+     * Adds a HAVING condition to the query by OR.
      *
      * @param string $cond The HAVING condition.
+     *
+     * @param array $bind arguments to bind to placeholders
      *
      * @return $this
      *
      * @see having()
      *
      */
-    public function orHaving($cond)
+    public function orHaving($cond, array $bind = [])
     {
-        $this->addClauseCondWithBind('having', 'OR', func_get_args());
+        $this->addClauseCondWithBind('having', 'OR', $cond, $bind);
         return $this;
     }
 
@@ -665,11 +694,11 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
      */
     protected function setPagingLimitOffset()
     {
-        $this->limit  = 0;
-        $this->offset = 0;
+        $this->setLimit(0);
+        $this->setOffset(0);
         if ($this->page) {
-            $this->limit  = $this->paging;
-            $this->offset = $this->paging * ($this->page - 1);
+            $this->setLimit($this->paging);
+            $this->setOffset($this->paging * ($this->page - 1));
         }
     }
 
@@ -717,37 +746,13 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
 
     /**
      *
-     * Returns the LIMIT value.
-     *
-     * @return int
-     *
-     */
-    public function getLimit()
-    {
-        return $this->limit;
-    }
-
-    /**
-     *
-     * Returns the OFFSET value.
-     *
-     * @return int
-     *
-     */
-    public function getOffset()
-    {
-        return $this->offset;
-    }
-
-    /**
-     *
      * Clears the current select properties; generally used after adding a
      * union.
      *
      * @return null
      *
      */
-    protected function reset()
+    public function reset()
     {
         $this->resetFlags();
         $this->resetCols();
@@ -865,33 +870,6 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
      */
     protected function build()
     {
-        return 'SELECT'
-            . $this->buildFlags()
-            . $this->buildCols()
-            . $this->buildFrom() // includes JOIN
-            . $this->buildWhere()
-            . $this->buildGroupBy()
-            . $this->buildHaving()
-            . $this->buildOrderBy()
-            . $this->buildLimit()
-            . $this->buildForUpdate();
-    }
-
-    /**
-     *
-     * Builds the columns clause.
-     *
-     * @return string
-     *
-     * @throws Exception when there are no columns in the SELECT.
-     *
-     */
-    protected function buildCols()
-    {
-        if (! $this->cols) {
-            throw new Exception('No columns in the SELECT.');
-        }
-
         $cols = array();
         foreach ($this->cols as $key => $val) {
             if (is_int($key)) {
@@ -901,116 +879,16 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
             }
         }
 
-        return $this->indentCsv($cols);
-    }
-
-    /**
-     *
-     * Builds the FROM clause.
-     *
-     * @return string
-     *
-     */
-    protected function buildFrom()
-    {
-        if (! $this->from) {
-            return ''; // not applicable
-        }
-
-        $refs = array();
-        foreach ($this->from as $from_key => $from) {
-            if (isset($this->join[$from_key])) {
-                $from = array_merge($from, $this->join[$from_key]);
-            }
-            $refs[] = implode(PHP_EOL, $from);
-        }
-        return PHP_EOL . 'FROM' . $this->indentCsv($refs);
-    }
-
-    /**
-     *
-     * Builds the GROUP BY clause.
-     *
-     * @return string
-     *
-     */
-    protected function buildGroupBy()
-    {
-        if (! $this->group_by) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'GROUP BY' . $this->indentCsv($this->group_by);
-    }
-
-    /**
-     *
-     * Builds the HAVING clause.
-     *
-     * @return string
-     *
-     */
-    protected function buildHaving()
-    {
-        if (! $this->having) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'HAVING' . $this->indent($this->having);
-    }
-
-    /**
-     *
-     * Builds the FOR UPDATE clause.
-     *
-     * @return string
-     *
-     */
-    protected function buildForUpdate()
-    {
-        if (! $this->for_update) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'FOR UPDATE';
-    }
-
-    /**
-     *
-     * Adds a WHERE condition to the query by AND. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
-     *
-     * @param string $cond The WHERE condition.
-     * @param mixed ...$bind arguments to bind to placeholders
-     *
-     * @return $this
-     *
-     */
-    public function where($cond)
-    {
-        $this->addWhere('AND', func_get_args());
-        return $this;
-    }
-
-    /**
-     *
-     * Adds a WHERE condition to the query by OR. If the condition has
-     * ?-placeholders, additional arguments to the method will be bound to
-     * those placeholders sequentially.
-     *
-     * @param string $cond The WHERE condition.
-     * @param mixed ...$bind arguments to bind to placeholders
-     *
-     * @return $this
-     *
-     * @see where()
-     *
-     */
-    public function orWhere($cond)
-    {
-        $this->addWhere('OR', func_get_args());
-        return $this;
+        return 'SELECT'
+            . $this->builder->buildFlags($this->flags)
+            . $this->builder->buildCols($cols)
+            . $this->builder->buildFrom($this->from, $this->join)
+            . $this->builder->buildWhere($this->where)
+            . $this->builder->buildGroupBy($this->group_by)
+            . $this->builder->buildHaving($this->having)
+            . $this->builder->buildOrderBy($this->order_by)
+            . $this->builder->buildLimitOffset($this->limit, $this->offset)
+            . $this->builder->buildForUpdate($this->for_update);
     }
 
     /**
@@ -1024,10 +902,10 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
      */
     public function limit($limit)
     {
-        $this->limit = (int) $limit;
+        $this->setLimit($limit);
         if ($this->page) {
             $this->page = 0;
-            $this->offset = 0;
+            $this->setOffset(0);
         }
         return $this;
     }
@@ -1043,10 +921,10 @@ class Select extends AbstractQuery implements SelectInterface, SubselectInterfac
      */
     public function offset($offset)
     {
-        $this->offset = (int) $offset;
+        $this->setOffset($offset);
         if ($this->page) {
             $this->page = 0;
-            $this->limit = 0;
+            $this->setLimit(0);
         }
         return $this;
     }

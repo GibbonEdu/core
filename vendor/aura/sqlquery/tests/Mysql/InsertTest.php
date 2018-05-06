@@ -44,6 +44,22 @@ class InsertTest extends Common\InsertTest
             <<c5>> = :c5__on_duplicate_key
     ";
 
+    protected $expected_replace_sql = "
+        REPLACE INTO <<t1>> (
+            <<c1>>,
+            <<c2>>,
+            <<c3>>,
+            <<c4>>,
+            <<c5>>
+        ) VALUES (
+            :c1,
+            :c2,
+            :c3,
+            NOW(),
+            NULL
+        )
+    ";
+
     public function testHighPriority()
     {
         $this->query->highPriority()
@@ -56,6 +72,18 @@ class InsertTest extends Common\InsertTest
         $expect = sprintf($this->expected_sql_with_flag, 'HIGH_PRIORITY');
 
         $this->assertSameSql($expect, $actual);
+    }
+
+    public function testOrReplace()
+    {
+        $this->query->orReplace()
+                    ->into('t1')
+                    ->cols(array('c1', 'c2', 'c3'))
+                    ->set('c4', 'NOW()')
+                    ->set('c5', null);
+
+        $actual = $this->query->__toString();
+        $this->assertSameSql($this->expected_replace_sql, $actual);
     }
 
     public function testLowPriority()

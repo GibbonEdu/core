@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery;
@@ -29,15 +29,6 @@ abstract class AbstractDmlQuery extends AbstractQuery
 
     /**
      *
-     * The columns to be returned.
-     *
-     * @var array
-     *
-     */
-    protected $returning = array();
-
-    /**
-     *
      * Does the query have any columns in it?
      *
      * @return bool
@@ -45,7 +36,7 @@ abstract class AbstractDmlQuery extends AbstractQuery
      */
     public function hasCols()
     {
-        return (bool) $this->col_values;
+        return !empty($this->col_values);
     }
 
     /**
@@ -55,16 +46,17 @@ abstract class AbstractDmlQuery extends AbstractQuery
      *
      * @param string $col The column name.
      *
+     * @param array $value Value of the column
+     *
      * @return $this
      *
      */
-    protected function addCol($col)
+    protected function addCol($col, ...$value)
     {
         $key = $this->quoter->quoteName($col);
         $this->col_values[$key] = ":$col";
-        $args = func_get_args();
-        if (count($args) > 1) {
-            $this->bindValue($col, $args[1]);
+        if (count($value) > 0) {
+            $this->bindValue($col, $value[0]);
         }
         return $this;
     }
@@ -119,41 +111,5 @@ abstract class AbstractDmlQuery extends AbstractQuery
         $value = $this->quoter->quoteNamesIn($value);
         $this->col_values[$key] = $value;
         return $this;
-    }
-
-    /**
-     *
-     * Adds returning columns to the query.
-     *
-     * Multiple calls to returning() will append to the list of columns, not
-     * overwrite the previous columns.
-     *
-     * @param array $cols The column(s) to add to the query.
-     *
-     * @return $this
-     *
-     */
-    protected function addReturning(array $cols)
-    {
-        foreach ($cols as $col) {
-            $this->returning[] = $this->quoter->quoteNamesIn($col);
-        }
-        return $this;
-    }
-
-    /**
-     *
-     * Builds the `RETURNING` clause of the statement.
-     *
-     * @return string
-     *
-     */
-    protected function buildReturning()
-    {
-        if (! $this->returning) {
-            return ''; // not applicable
-        }
-
-        return PHP_EOL . 'RETURNING' . $this->indentCsv($this->returning);
     }
 }

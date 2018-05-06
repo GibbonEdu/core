@@ -62,15 +62,4 @@ class QueryFactoryTest extends \PHPUnit_Framework_TestCase
             array('Sqlsrv', QueryFactory::COMMON, 'Delete', 'Aura\SqlQuery\Common\Delete'),
         );
     }
-
-    public function testSeqBindPrefix()
-    {
-        $query_factory = new QueryFactory('sqlite');
-
-        $first = $query_factory->newSelect();
-        $this->assertSame('', $first->getSeqBindPrefix());
-
-        $again = $query_factory->newSelect();
-        $this->assertSame('_1', $again->getSeqBindPrefix());
-    }
 }

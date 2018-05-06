@@ -10,8 +10,8 @@ class DeleteTest extends Common\DeleteTest
     protected $expected_sql_with_flag = "
         DELETE %s FROM <<t1>>
             WHERE
-                foo = :_1_
-                AND baz = :_2_
+                foo = :foo
+                AND baz = :baz
                 OR zim = gir
     ";
 
@@ -36,8 +36,8 @@ class DeleteTest extends Common\DeleteTest
     {
         $this->query->lowPriority()
                     ->from('t1')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir');
 
         $actual = $this->query->__toString();
@@ -46,8 +46,8 @@ class DeleteTest extends Common\DeleteTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -56,8 +56,8 @@ class DeleteTest extends Common\DeleteTest
     {
         $this->query->quick()
                     ->from('t1')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir');
 
         $actual = $this->query->__toString();
@@ -66,8 +66,8 @@ class DeleteTest extends Common\DeleteTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }
@@ -76,8 +76,8 @@ class DeleteTest extends Common\DeleteTest
     {
         $this->query->ignore()
                     ->from('t1')
-                    ->where('foo = ?', 'bar')
-                    ->where('baz = ?', 'dib')
+                    ->where('foo = :foo', ['foo' => 'bar'])
+                    ->where('baz = :baz', ['baz' => 'dib'])
                     ->orWhere('zim = gir');
 
         $actual = $this->query->__toString();
@@ -86,8 +86,8 @@ class DeleteTest extends Common\DeleteTest
 
         $actual = $this->query->getBindValues();
         $expect = array(
-            '_1_' => 'bar',
-            '_2_' => 'dib',
+            'foo' => 'bar',
+            'baz' => 'dib',
         );
         $this->assertSame($expect, $actual);
     }

@@ -3,7 +3,7 @@
  *
  * This file is part of Aura for PHP.
  *
- * @license http://opensource.org/licenses/bsd-license.php BSD
+ * @license http://opensource.org/licenses/mit-license.php MIT
  *
  */
 namespace Aura\SqlQuery;
@@ -13,12 +13,6 @@ namespace Aura\SqlQuery;
  * Interface for query objects.
  *
  * @package Aura.SqlQuery
- *
- * @method string getStatement() Returns the query statement as a string;
- * missing from the interface but present in the implementations.
- *
- * @todo Add getStatement() to the interface in 3.x, since adding it in 2.x
- * would be a BC break.
  *
  */
 interface QueryInterface
@@ -31,6 +25,15 @@ interface QueryInterface
      *
      */
     public function __toString();
+
+    /**
+     *
+     * Returns this query object as an SQL statement string.
+     *
+     * @return string
+     *
+     */
+    public function getStatement();
 
     /**
      *
@@ -82,4 +85,13 @@ interface QueryInterface
      *
      */
     public function getBindValues();
+
+    /**
+     *
+     * Reset all query flags.
+     *
+     * @return $this
+     *
+     */
+    public function resetFlags();
 }
