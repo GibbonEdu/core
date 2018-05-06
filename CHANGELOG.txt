@@ -21,10 +21,10 @@ v16.0.00
 	Headlines
 		Activated Simplified Chinese and Polish as available languages
 		Added Croatian and Estonian as development languages
+        Data Updater: added a My Data Updates overview and settings to redirect users on login
 
 	Significant Changes
 		System: added tool for InnoDB database table storage engine migration
-        Data Updater: added a My Data Updates overview and settings to redirect users on login
 
 	Changes With Important Notices
 		System: fixed Cutting Edge detect/set issue in installer, impacting Cutting Edge installs from v15-16 (which may need to be reinstalled)
