@@ -24,9 +24,9 @@ use Closure;
 /**
  * Object describing the filters applied to a Gateway query.
  */
-class QueryFilters
+class QueryCriteria
 {
-    protected $filters = array(
+    protected $criteria = array(
         'pageIndex' => 0,
         'pageSize' => 25,
         'searchBy' => array(),
@@ -36,29 +36,41 @@ class QueryFilters
 
     protected $definitions = array();
 
-    public function __construct($filters = array())
+    public function __construct(array $criteria = array())
     {
-        $this->filters = $this->sanitizeFilters(array_replace($this->filters, $filters));
+        $this->criteria = $this->sanitizeFilters(array_replace($this->criteria, $criteria));
     }
 
     public function __get($name)
     {
-        return isset($this->filters[$name]) ? $this->filters[$name] : null;
+        return isset($this->criteria[$name]) ? $this->criteria[$name] : null;
     }
 
     public function __isset($name)
     {
-        return isset($this->filters[$name]);
+        return isset($this->criteria[$name]);
     }
 
-    public static function createFromPost()
+    public function fromArray(array $criteria)
     {
-        return new self($_POST);
+        $this->criteria = $this->sanitizeFilters(array_replace($this->criteria, $criteria));
+
+        return $this;
     }
 
-    public static function createEmpty()
+    public function fromJson($jsonString)
     {
-        return new self();
+        return $this->fromArray(json_decode($jsonString, true));
+    }
+
+    public function toArray()
+    {
+        return $this->criteria;
+    }
+
+    public function toJson()
+    {
+        return json_encode($this->criteria);
     }
 
     public function defineFilter($name, Closure $callback)
@@ -73,45 +85,36 @@ class QueryFilters
         return isset($this->definitions[$name]) ? $this->definitions[$name] : null;
     }
 
-    public function getFilters()
-    {
-        return $this->filters;
-    }
-
-    public function getDefinitionLabels()
-    {
-        // return array_combine(array_keys($this->definitions), array_column($this->definitions, 'label'));
-        return array();
-    }
-
-    public function addSearch($column, $search)
+    public function searchBy($column, $search)
     {
         if (trim($search) == '') return $this;
 
         $columns = is_array($column) ? $column : array($column);
+        $columns = array_map([$this, 'escapeIdentifier'], $columns);
+
         foreach ($columns as $column) {
-            $this->filters['searchBy'][$column] = trim($search);
+            $this->criteria['searchBy'][$column] = trim($search);
         }
 
         return $this;
     }
 
-    public function addFilter($name)
+    public function filterBy($filter)
     {
-        if (empty($name)) return $this;
+        if (empty($filter)) return $this;
 
-        if (!in_array($name, $this->filters['filterBy'])) {
-            $this->filters['filterBy'][] = trim($name);
-        }
+        list($name, $value) = array_pad(explode(':', $filter, 2), 2, '');
+
+        $this->criteria['filterBy'][$name] = trim($value, '"');
 
         return $this;
     }
 
-    public function defaultSort($column, $direction = 'ASC')
+    public function sortBy($column, $direction = 'ASC')
     {
-        if (empty($column) || !empty($this->filters['orderBy'])) return $this;
+        if (empty($column)) return $this;
 
-        $this->filters['orderBy'][$column] = ($direction == 'DESC') ? 'DESC' : 'ASC';
+        $this->criteria['orderBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
 
         return $this;
     }
@@ -125,5 +128,12 @@ class QueryFilters
             'filterBy' => is_array($filters['filterBy']) ? $filters['filterBy'] : array(),
             'orderBy' => is_array($filters['orderBy']) ? $filters['orderBy'] : array(),
         );
+    }
+
+    protected function escapeIdentifier($value)
+    {
+        return implode('.', array_map(function ($piece) {
+            return '`' . str_replace('`', '``', $piece) . '`';
+        }, explode('.', $value, 2)));
     }
 }

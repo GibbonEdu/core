@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Tables\DataTable;
-use Gibbon\Domain\QueryFilters;
+use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
@@ -60,17 +60,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo __($guid, 'View');
     echo '</h2>';
 
-    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $gateway = $container->get('Gibbon\Domain\User\UserGateway');
+    
     $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
-    $filters = QueryFilters::createFromPost()
-        ->addSearch($searchColumns, $search)
-        ->defaultSort('surname, preferredName')
-        ->addFilter('status:left')
-        ->addFilter('role:parent');
-
-    $gateway = $container->get('Gibbon\UserAdmin\Domain\UserGateway');
-    $queryResult = $gateway->queryAllUsers($filters);
+    $criteria = $gateway->newQueryCriteria()
+        ->searchBy($searchColumns, $search)
+        ->sortBy('gibbonPerson.surname, gibbonPerson.preferredName')
+        ->filterBy('status:left')
+        ->filterBy('status:full')
+        ->filterBy('role:parent')
+        ->filterBy('none')
+        ->fromArray($_POST);
+    
+    $queryResult = $gateway->queryAllUsers($criteria);
 
     // Grab a set of family data per user
     $people = $queryResult->getColumn('gibbonPersonID');
@@ -79,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $queryResult->joinResults('gibbonPersonID', 'families', $familyData);
 
     $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
-    $table = DataTable::createFromQueryResult('userManage', $queryResult)->withFilters($filters)->setPath($path);
+    $table = DataTable::createFromQueryResult('userManage', $queryResult)->withCriteria($criteria)->setPath($path);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')

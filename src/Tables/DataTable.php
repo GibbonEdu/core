@@ -22,7 +22,7 @@ namespace Gibbon\Tables;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
 use Gibbon\Domain\QueryResult;
-use Gibbon\Domain\QueryFilters;
+use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\FormFactory;
 
 /**
@@ -38,14 +38,13 @@ class DataTable
     protected $actionLinks = array();
 
     protected $queryResult;
-    protected $filters;
+    protected $criteria;
     protected $factory;
 
     public function __construct($id, QueryResult $queryResult)
     {
         $this->id = $id;
         $this->queryResult = $queryResult;
-        $this->filters = QueryFilters::createEmpty();
         $this->factory = FormFactory::create();
     }
 
@@ -61,9 +60,9 @@ class DataTable
         return $this;
     }
 
-    public function withFilters(QueryFilters $filters)
+    public function withCriteria(QueryCriteria $criteria)
     {
-        $this->filters = $filters;
+        $this->criteria = $criteria;
 
         return $this;
     }
@@ -106,13 +105,13 @@ class DataTable
 
         // Debug the AJAX $POST => Filters
         // $output .= json_encode($_POST).'<br/>';
-        // $output .= json_encode($this->filters->getFilters());
+        // $output .= json_encode($this->criteria->getFilters());
 
         $output .= '<div>';
         $output .= $this->renderPageCount($this->queryResult);
-        $output .= $this->renderPageFilters($this->filters);
+        $output .= $this->renderPageFilters($this->criteria);
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($this->filters);
+        $output .= $this->renderSelectFilters($this->criteria);
         $output .= $this->renderPageSize($this->queryResult);
         $output .= $this->renderPagination($this->queryResult);
 
@@ -129,8 +128,8 @@ class DataTable
                 if ($column->getSortable()) {
                     $classes[] = 'sortable';
                 }
-                if (isset($this->filters->orderBy[$columnName])) {
-                    $classes[] = 'sorting sort'.$this->filters->orderBy[$columnName];
+                if (isset($this->criteria->orderBy[$columnName])) {
+                    $classes[] = 'sorting sort'.$this->criteria->orderBy[$columnName];
                 }
 
                 if ($column instanceOf ActionColumn) {
@@ -180,11 +179,10 @@ class DataTable
         $output .= '</div></div><br/>';
 
         // Initialize the jQuery Data Table functionality
-        $filterData = !empty($this->filters)? json_encode($this->filters->getFilters()) : '{}';
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$filterData.", ".$this->queryResult->getResultCount().");
+            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$this->criteria->toJson().", ".$this->queryResult->getResultCount().");
         });
         </script>";
 
@@ -208,21 +206,21 @@ class DataTable
         return $output;
     }
 
-    protected function renderPageFilters(QueryFilters $filters)
+    protected function renderPageFilters(QueryCriteria $criteria)
     {
-        if (empty($filters)) return '';
+        if (empty($criteria)) return '';
 
         $output = '<span class="small" style="line-height: 32px;">';
 
-        if (!empty($filters->filterBy)) {
+        if (!empty($criteria->filterBy)) {
             $output .= '&nbsp;&nbsp; '.__('Filtered by').' ';
 
-            $definitions = $filters->getDefinitionLabels();
-            $filters = array_intersect_key($filters->getDefinitionLabels(), array_flip($this->filters->filterBy));
+            // $definitions = array();
+            // $criteria = array_intersect_key($criteria->getDefinitionLabels(), array_flip($this->criteria->filterBy));
 
-            foreach ($filters as $value => $label) {
-                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
-            }
+            // foreach ($criteria as $value => $label) {
+            //     $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
+            // }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
@@ -230,18 +228,19 @@ class DataTable
         return $output;
     }
 
-    protected function renderSelectFilters(QueryFilters $filters)
+    protected function renderSelectFilters(QueryCriteria $criteria)
     {
-        if (empty($filters)) return '';
+        return '';
+        // if (empty($criteria)) return '';
 
-        $definitions = $filters->getDefinitionLabels();
-        if (empty($definitions)) return '';
+        // $definitions = $criteria->getDefinitionLabels();
+        // if (empty($definitions)) return '';
         
-        return $this->factory->createSelect('filter')
-            ->fromArray($definitions)
-            ->setClass('filters floatNone')
-            ->placeholder(__('Filters'))
-            ->getOutput();
+        // return $this->factory->createSelect('filter')
+        //     ->fromArray($definitions)
+        //     ->setClass('filters floatNone')
+        //     ->placeholder(__('Filters'))
+        //     ->getOutput();
     }
 
     protected function renderPageSize(QueryResult $queryResult)

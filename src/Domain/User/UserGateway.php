@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\UserAdmin\Domain;
+namespace Gibbon\Domain\User;
 
 use Gibbon\Domain\QueryableGateway;
-use Gibbon\Domain\QueryFilters;
+use Gibbon\Domain\QueryCriteria;
 
 /**
  * User Gateway
@@ -32,7 +32,7 @@ class UserGateway extends QueryableGateway
 {
     protected static $tableName = 'gibbonPerson';
 
-    public function queryAllUsers(QueryFilters $filters)
+    public function queryAllUsers(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
@@ -41,27 +41,27 @@ class UserGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
 
-        $filters->defineFilter('role', function ($query, $roleCategory) {
+        $criteria->defineFilter('role', function ($query, $roleCategory) {
             return $query
                 ->where('gibbonRole.category = :roleCategory')
                 ->bindValue('roleCategory', ucfirst($roleCategory));
         });
 
-        $filters->defineFilter('status', function ($query, $status) {
+        $criteria->defineFilter('status', function ($query, $status) {
             return $query
                 ->where('gibbonPerson.status = :status')
                 ->bindValue('status', ucfirst($status));
         });
 
-        $filters->defineFilter('date', function ($query, $dateType) {
+        $criteria->defineFilter('date', function ($query, $dateType) {
             return $query
                 ->where(($dateType == 'starting')
-                    ? '(dateStart IS NOT NULL AND dateStart >= :today)'
-                    : '(dateEnd IS NOT NULL AND dateEnd <= :today)')
+                    ? '(gibbonPerson.dateStart IS NOT NULL AND gibbonPerson.dateStart >= :today)'
+                    : '(gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd <= :today)')
                 ->bindValue('today', date('Y-m-d'));
         });
 
-        return $this->runQuery($query, $filters);
+        return $this->runQuery($query, $criteria);
     }
 
     public function selectFamilyDetailsPerUser($people)
