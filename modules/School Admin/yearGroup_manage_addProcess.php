@@ -30,6 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $name = $_POST['name'];
     $nameShort = $_POST['nameShort'];
     $sequenceNumber = $_POST['sequenceNumber'];
+    $gibbonPersonIDHOY = $_POST['gibbonPersonIDHOY'];
 
     if ($name == '' or $nameShort == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false) {
         $URL .= '&return=error1';
@@ -53,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
-                $sql = 'INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber';
+                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDHOY' => $gibbonPersonIDHOY);
+                $sql = 'INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber, gibbonPersonIDHOY=:gibbonPersonIDHOY';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

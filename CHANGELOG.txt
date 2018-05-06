@@ -78,6 +78,7 @@ v16.0.00
 		Students: adjusted logic in student enrolment visualisation to include students who are not 'Full'
 		School Admin: updated Finance Settings email to default to organisation email if blank
 		School Admin: extend length of name field in Manage Houses to 30 chars
+		School Admin: added Head of Year to Manage Year Groups and integrated into Students
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
 		System Admin: fixed typo in Third Party Settings

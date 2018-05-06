@@ -915,4 +915,5 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '004', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='My Data Updates'));end
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '006', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='My Data Updates'));end
 UPDATE `gibbonModule` SET `entryURL`='data_updates.php' WHERE gibbonModule.name = 'Data Updater';end
+ALTER TABLE `gibbonYearGroup` ADD `gibbonPersonIDHOY` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL AFTER `sequenceNumber`;end
 ";

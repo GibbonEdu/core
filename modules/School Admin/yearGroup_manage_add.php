@@ -57,6 +57,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         $row->addSequenceNumber('sequenceNumber', 'gibbonYearGroup')->isRequired()->maxLength(3);
 
     $row = $form->addRow();
+        $row->addLabel('gibbonPersonIDHOY', __('Head of Year'));
+        $row->addSelectStaff('gibbonPersonIDHOY')->placeholder();
+        
+    $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
 
