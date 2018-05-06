@@ -46,7 +46,7 @@ CREATE TABLE `gibbonAction` (
   `categoryPermissionStudent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionParent` enum('Y','N') NOT NULL DEFAULT 'Y',
   `categoryPermissionOther` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAction`
@@ -353,7 +353,7 @@ CREATE TABLE `gibbonActivity` (
   `payment` decimal(8,2) DEFAULT NULL,
   `paymentType` enum('Entire Programme','Per Session','Per Week','Per Term') DEFAULT 'Entire Programme',
   `paymentFirmness` enum('Finalised','Estimated') DEFAULT 'Finalised'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -368,7 +368,7 @@ CREATE TABLE `gibbonActivityAttendance` (
   `attendance` text NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -384,7 +384,7 @@ CREATE TABLE `gibbonActivitySlot` (
   `gibbonDaysOfWeekID` int(2) UNSIGNED ZEROFILL NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -397,7 +397,7 @@ CREATE TABLE `gibbonActivityStaff` (
   `gibbonActivityID` int(8) UNSIGNED ZEROFILL NOT NULL DEFAULT '00000000',
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL DEFAULT '0000000000',
   `role` enum('Organiser','Coach','Assistant','Other') NOT NULL DEFAULT 'Organiser'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -414,7 +414,7 @@ CREATE TABLE `gibbonActivityStudent` (
   `gibbonActivityIDBackup` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `invoiceGenerated` enum('N','Y') NOT NULL DEFAULT 'N',
   `gibbonFinanceInvoiceID` int(14) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -429,7 +429,7 @@ CREATE TABLE `gibbonAlarm` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampStart` timestamp NULL DEFAULT NULL,
   `timestampEnd` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -442,7 +442,7 @@ CREATE TABLE `gibbonAlarmConfirm` (
   `gibbonAlarmID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -458,7 +458,7 @@ CREATE TABLE `gibbonAlertLevel` (
   `colorBG` varchar(6) NOT NULL COMMENT 'RGB Hex, no leading #',
   `description` text NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAlertLevel`
@@ -612,7 +612,7 @@ CREATE TABLE `gibbonApplicationForm` (
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values',
   `parent1fields` text NOT NULL COMMENT 'Serialised array of custom field values',
   `parent2fields` text NOT NULL COMMENT 'Serialised array of custom field values'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -625,7 +625,7 @@ CREATE TABLE `gibbonApplicationFormFile` (
   `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -638,7 +638,7 @@ CREATE TABLE `gibbonApplicationFormLink` (
   `gibbonApplicationFormID1` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonApplicationFormID2` int(12) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -651,7 +651,7 @@ CREATE TABLE `gibbonApplicationFormRelationship` (
   `gibbonApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `relationship` varchar(50) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -671,7 +671,7 @@ CREATE TABLE `gibbonAttendanceCode` (
   `future` enum('Y','N') NOT NULL,
   `gibbonRoleIDAll` varchar(90) NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonAttendanceCode`
@@ -697,7 +697,7 @@ CREATE TABLE `gibbonAttendanceLogCourseClass` (
   `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -718,7 +718,7 @@ CREATE TABLE `gibbonAttendanceLogPerson` (
   `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampTaken` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -732,7 +732,7 @@ CREATE TABLE `gibbonAttendanceLogRollGroup` (
   `gibbonPersonIDTaker` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date DEFAULT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -753,7 +753,7 @@ CREATE TABLE `gibbonBehaviour` (
   `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -771,7 +771,7 @@ CREATE TABLE `gibbonBehaviourLetter` (
   `body` text NOT NULL,
   `recipientList` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -782,7 +782,7 @@ CREATE TABLE `gibbonBehaviourLetter` (
 CREATE TABLE `gibbonCountry` (
   `printable_name` varchar(80) NOT NULL,
   `iddCountryCode` varchar(7) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonCountry`
@@ -1045,7 +1045,7 @@ CREATE TABLE `gibbonCourse` (
   `map` enum('Y','N') NOT NULL DEFAULT 'Y' COMMENT 'Should this course be included in curriculum maps and other summaries?',
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
   `orderBy` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1061,7 +1061,7 @@ CREATE TABLE `gibbonCourseClass` (
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
   `gibbonScaleIDTarget` int(5) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1074,7 +1074,7 @@ CREATE TABLE `gibbonCourseClassMap` (
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1088,7 +1088,7 @@ CREATE TABLE `gibbonCourseClassPerson` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Student','Teacher','Assistant','Technician','Parent','Student - Left','Teacher - Left') NOT NULL,
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1103,7 +1103,7 @@ CREATE TABLE `gibbonCrowdAssessDiscuss` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
   `gibbonCrowdAssessDiscussIDReplyTo` int(16) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1121,7 +1121,7 @@ CREATE TABLE `gibbonDaysOfWeek` (
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
   `schoolClose` time DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonDaysOfWeek`
@@ -1150,7 +1150,7 @@ CREATE TABLE `gibbonDepartment` (
   `subjectListing` varchar(255) NOT NULL,
   `blurb` text NOT NULL,
   `logo` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1164,7 +1164,7 @@ CREATE TABLE `gibbonDepartmentResource` (
   `type` enum('Link','File') NOT NULL,
   `name` varchar(100) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1177,7 +1177,7 @@ CREATE TABLE `gibbonDepartmentStaff` (
   `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Coordinator','Assistant Coordinator','Teacher (Curriculum)','Teacher','Director','Manager','Administrator','Other') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1188,7 +1188,7 @@ CREATE TABLE `gibbonDepartmentStaff` (
 CREATE TABLE `gibbonDistrict` (
   `gibbonDistrictID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1204,7 +1204,7 @@ CREATE TABLE `gibbonExternalAssessment` (
   `website` text NOT NULL,
   `active` enum('Y','N') NOT NULL,
   `allowFileUpload` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessment`
@@ -1229,7 +1229,7 @@ CREATE TABLE `gibbonExternalAssessmentField` (
   `order` int(4) NOT NULL,
   `gibbonScaleID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `gibbonYearGroupIDList` varchar(255) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonExternalAssessmentField`
@@ -1377,7 +1377,7 @@ CREATE TABLE `gibbonExternalAssessmentStudent` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL,
   `attachment` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1390,7 +1390,7 @@ CREATE TABLE `gibbonExternalAssessmentStudentEntry` (
   `gibbonExternalAssessmentStudentID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonExternalAssessmentFieldID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL DEFAULT NULL COMMENT 'Key for the actual grade achieved'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1409,7 +1409,7 @@ CREATE TABLE `gibbonFamily` (
   `languageHomePrimary` varchar(30) NOT NULL,
   `languageHomeSecondary` varchar(30) DEFAULT NULL,
   `familySync` varchar(50) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1428,7 +1428,7 @@ CREATE TABLE `gibbonFamilyAdult` (
   `contactSMS` enum('Y','N') NOT NULL,
   `contactEmail` enum('Y','N') NOT NULL,
   `contactMail` enum('Y','N') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1441,7 +1441,7 @@ CREATE TABLE `gibbonFamilyChild` (
   `gibbonFamilyID` int(7) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `comment` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1455,7 +1455,7 @@ CREATE TABLE `gibbonFamilyRelationship` (
   `gibbonPersonID1` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID2` int(10) UNSIGNED ZEROFILL NOT NULL,
   `relationship` varchar(50) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Person 1 is [relationship] to person 2?';
 
 -- --------------------------------------------------------
 
@@ -1476,7 +1476,7 @@ CREATE TABLE `gibbonFamilyUpdate` (
   `languageHomeSecondary` varchar(30) NOT NULL,
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1489,7 +1489,7 @@ CREATE TABLE `gibbonFileExtension` (
   `type` enum('Document','Spreadsheet','Presentation','Graphics/Design','Video','Audio','Other') NOT NULL DEFAULT 'Other',
   `extension` varchar(7) NOT NULL,
   `name` varchar(50) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonFileExtension`
@@ -1560,7 +1560,7 @@ CREATE TABLE `gibbonFinanceBillingSchedule` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1578,7 +1578,7 @@ CREATE TABLE `gibbonFinanceBudget` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1597,7 +1597,7 @@ CREATE TABLE `gibbonFinanceBudgetCycle` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1610,7 +1610,7 @@ CREATE TABLE `gibbonFinanceBudgetCycleAllocation` (
   `gibbonFinanceBudgetID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `gibbonFinanceBudgetCycleID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `value` decimal(14,2) NOT NULL DEFAULT '0.00'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1623,7 +1623,7 @@ CREATE TABLE `gibbonFinanceBudgetPerson` (
   `gibbonFinanceBudgetID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `access` enum('Full','Write','Read') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1652,7 +1652,7 @@ CREATE TABLE `gibbonFinanceExpense` (
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `statusApprovalBudgetCleared` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1668,7 +1668,7 @@ CREATE TABLE `gibbonFinanceExpenseApprover` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1683,7 +1683,7 @@ CREATE TABLE `gibbonFinanceExpenseLog` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `action` enum('Request','Approval - Partial - Budget','Approval - Partial - School','Approval - Final','Approval - Exempt','Rejection','Cancellation','Order','Payment','Reimbursement Request','Reimbursement Completion','Comment') NOT NULL,
   `comment` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1704,7 +1704,7 @@ CREATE TABLE `gibbonFinanceFee` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1722,7 +1722,7 @@ CREATE TABLE `gibbonFinanceFeeCategory` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1752,7 +1752,7 @@ CREATE TABLE `gibbonFinanceInvoice` (
   `timestampCreator` timestamp NULL DEFAULT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1772,7 +1772,7 @@ CREATE TABLE `gibbonFinanceInvoicee` (
   `companyPhone` varchar(20) DEFAULT NULL,
   `companyAll` enum('Y','N') DEFAULT NULL COMMENT 'Should company pay all invoices?.',
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1796,7 +1796,7 @@ CREATE TABLE `gibbonFinanceInvoiceeUpdate` (
   `gibbonFinanceFeeCategoryIDList` text COMMENT 'If companyAll is N, list category IDs for campany to pay here.',
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1815,7 +1815,7 @@ CREATE TABLE `gibbonFinanceInvoiceFee` (
   `gibbonFinanceFeeCategoryID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `fee` decimal(12,2) DEFAULT NULL,
   `sequenceNumber` int(10) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1836,7 +1836,7 @@ CREATE TABLE `gibbonFirstAid` (
   `timeIn` time NOT NULL,
   `timeOut` time DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1850,7 +1850,7 @@ CREATE TABLE `gibbonHook` (
   `type` enum('Public Home Page','Student Profile','Unit','Parental Dashboard','Staff Dashboard','Student Dashboard') DEFAULT NULL,
   `options` text NOT NULL,
   `gibbonModuleID` int(4) UNSIGNED ZEROFILL NOT NULL COMMENT 'The module which installed this hook.'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1863,7 +1863,7 @@ CREATE TABLE `gibbonHouse` (
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `logo` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1883,7 +1883,7 @@ CREATE TABLE `gibboni18n` (
   `dateFormatRegEx` text NOT NULL,
   `dateFormatPHP` varchar(20) NOT NULL,
   `rtl` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibboni18n`
@@ -1938,7 +1938,7 @@ CREATE TABLE `gibbonIN` (
   `strategies` text NOT NULL,
   `targets` text NOT NULL,
   `notes` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1955,7 +1955,7 @@ CREATE TABLE `gibbonINArchive` (
   `descriptors` text NOT NULL COMMENT 'Serialised array of descriptors.',
   `archiveTitle` varchar(50) NOT NULL,
   `archiveTimestamp` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -1968,7 +1968,7 @@ CREATE TABLE `gibbonINAssistant` (
   `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDAssistant` int(10) UNSIGNED ZEROFILL NOT NULL,
   `comment` text COLLATE utf8_unicode_ci NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -1982,7 +1982,7 @@ CREATE TABLE `gibbonINDescriptor` (
   `nameShort` varchar(5) NOT NULL,
   `description` text NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonINDescriptor`
@@ -2004,7 +2004,7 @@ CREATE TABLE `gibbonINPersonDescriptor` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonINDescriptorID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonAlertLevelID` int(3) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2032,7 +2032,7 @@ CREATE TABLE `gibbonInternalAssessmentColumn` (
   `viewableParents` enum('N','Y') NOT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2051,7 +2051,7 @@ CREATE TABLE `gibbonInternalAssessmentEntry` (
   `comment` text,
   `response` text,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2062,7 +2062,7 @@ CREATE TABLE `gibbonInternalAssessmentEntry` (
 CREATE TABLE `gibbonLanguage` (
   `gibbonLanguageID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonLanguage`
@@ -2188,7 +2188,7 @@ CREATE TABLE `gibbonLibraryItem` (
   `timestampCreator` datetime NOT NULL,
   `gibbonPersonIDUpdate` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampUpdate` datetime DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2209,7 +2209,7 @@ CREATE TABLE `gibbonLibraryItemEvent` (
   `gibbonPersonIDReturnAction` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `timestampReturn` datetime DEFAULT NULL,
   `gibbonPersonIDIn` int(10) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2222,7 +2222,7 @@ CREATE TABLE `gibbonLibraryType` (
   `name` varchar(30) NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `fields` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonLibraryType`
@@ -2254,7 +2254,7 @@ CREATE TABLE `gibbonLike` (
   `title` varchar(50) NOT NULL,
   `comment` text NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2271,7 +2271,7 @@ CREATE TABLE `gibbonLog` (
   `title` varchar(50) NOT NULL,
   `serialisedArray` text,
   `ip` varchar(15) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2310,7 +2310,7 @@ CREATE TABLE `gibbonMarkbookColumn` (
   `viewableParents` enum('N','Y') NOT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2332,7 +2332,7 @@ CREATE TABLE `gibbonMarkbookEntry` (
   `comment` text,
   `response` varchar(255) DEFAULT NULL,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2345,7 +2345,7 @@ CREATE TABLE `gibbonMarkbookTarget` (
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDStudent` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonScaleGradeID` int(7) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2361,7 +2361,7 @@ CREATE TABLE `gibbonMarkbookWeight` (
   `reportable` enum('Y','N') NOT NULL DEFAULT 'Y',
   `calculate` enum('term','year') NOT NULL DEFAULT 'year',
   `weighting` decimal(5,2) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2372,7 +2372,7 @@ CREATE TABLE `gibbonMarkbookWeight` (
 CREATE TABLE `gibbonMedicalCondition` (
   `gibbonMedicalConditionID` int(4) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(80) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonMedicalCondition`
@@ -2429,7 +2429,7 @@ CREATE TABLE `gibbonMessenger` (
   `emailReceipt` enum('N','Y') DEFAULT NULL,
   `emailReceiptText` text,
   `smsReport` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2443,7 +2443,7 @@ CREATE TABLE `gibbonMessengerCannedResponse` (
   `body` text NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `gibbonPersonIDCreator` int(11) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2462,7 +2462,7 @@ CREATE TABLE `gibbonMessengerReceipt` (
   `key` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
   `confirmed` enum('N','Y') COLLATE utf8_unicode_ci DEFAULT NULL,
   `confirmedTimestamp` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -2478,7 +2478,7 @@ CREATE TABLE `gibbonMessengerTarget` (
   `parents` enum('N','Y') NOT NULL DEFAULT 'N',
   `students` enum('N','Y') NOT NULL DEFAULT 'N',
   `staff` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2497,7 +2497,7 @@ CREATE TABLE `gibbonModule` (
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonModule`
@@ -2543,7 +2543,7 @@ CREATE TABLE `gibbonNotification` (
   `text` text NOT NULL,
   `actionLink` varchar(255) NOT NULL COMMENT 'Relative to absoluteURL, start with a forward slash',
   `timestamp` datetime NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2559,7 +2559,7 @@ CREATE TABLE `gibbonNotificationEvent` (
   `type` enum('Core','Additional','CLI') NOT NULL DEFAULT 'Core',
   `scopes` varchar(255) NOT NULL DEFAULT 'All',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonNotificationEvent`
@@ -2602,7 +2602,7 @@ CREATE TABLE `gibbonNotificationListener` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL DEFAULT NULL,
   `scopeType` varchar(30) DEFAULT NULL,
   `scopeID` int(20) UNSIGNED DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2621,7 +2621,7 @@ CREATE TABLE `gibbonOutcome` (
   `gibbonDepartmentID` int(4) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
   `gibbonPersonIDCreator` int(8) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2644,7 +2644,7 @@ CREATE TABLE `gibbonPayment` (
   `paymentTransactionID` varchar(50) DEFAULT NULL,
   `paymentReceiptID` varchar(50) DEFAULT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -2656,7 +2656,7 @@ CREATE TABLE `gibbonPermission` (
   `permissionID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonRoleID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonActionID` int(7) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonPermission`
@@ -3160,7 +3160,7 @@ CREATE TABLE `gibbonPerson` (
   `googleAPIRefreshToken` varchar(255) NOT NULL,
   `receiveNotificationEmails` enum('Y','N') NOT NULL DEFAULT 'Y',
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3182,7 +3182,7 @@ CREATE TABLE `gibbonPersonField` (
   `activePersonOther` tinyint(1) NOT NULL DEFAULT '0',
   `activeApplicationForm` tinyint(1) NOT NULL DEFAULT '0',
   `activeDataUpdater` tinyint(1) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3197,7 +3197,7 @@ CREATE TABLE `gibbonPersonMedical` (
   `longTermMedication` enum('','Y','N') NOT NULL,
   `longTermMedicationDetails` text NOT NULL,
   `tetanusWithin10Years` enum('','Y','N') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3217,7 +3217,7 @@ CREATE TABLE `gibbonPersonMedicalCondition` (
   `lastEpisode` date DEFAULT NULL,
   `lastEpisodeTreatment` varchar(255) NOT NULL,
   `comment` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3241,7 +3241,7 @@ CREATE TABLE `gibbonPersonMedicalConditionUpdate` (
   `comment` text NOT NULL,
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3256,7 +3256,7 @@ CREATE TABLE `gibbonPersonMedicalSymptoms` (
   `date` date NOT NULL,
   `timestampTaken` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `gibbonPersonIDTaker` int(11) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3276,7 +3276,7 @@ CREATE TABLE `gibbonPersonMedicalUpdate` (
   `tetanusWithin10Years` enum('','Y','N') NOT NULL,
   `gibbonPersonIDUpdater` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3289,7 +3289,7 @@ CREATE TABLE `gibbonPersonReset` (
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `key` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -3359,7 +3359,7 @@ CREATE TABLE `gibbonPersonUpdate` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `privacy` text,
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3398,7 +3398,7 @@ CREATE TABLE `gibbonPlannerEntry` (
   `viewableParents` enum('Y','N') NOT NULL DEFAULT 'N',
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3413,7 +3413,7 @@ CREATE TABLE `gibbonPlannerEntryDiscuss` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `comment` text NOT NULL,
   `gibbonPlannerEntryDiscussIDReplyTo` int(16) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3426,7 +3426,7 @@ CREATE TABLE `gibbonPlannerEntryGuest` (
   `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `role` enum('Guest Student','Guest Teacher','Guest Assistant','Guest Technician','Guest Parent','Other Guest') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3444,7 +3444,7 @@ CREATE TABLE `gibbonPlannerEntryHomework` (
   `location` varchar(255) DEFAULT NULL,
   `count` int(1) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3458,7 +3458,7 @@ CREATE TABLE `gibbonPlannerEntryOutcome` (
   `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `content` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3473,7 +3473,7 @@ CREATE TABLE `gibbonPlannerEntryStudentHomework` (
   `homeworkDueDateTime` datetime NOT NULL,
   `homeworkDetails` mediumtext NOT NULL,
   `homeworkComplete` enum('Y','N') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Allows students to add homework deadlines themselves';
 
 -- --------------------------------------------------------
 
@@ -3486,7 +3486,7 @@ CREATE TABLE `gibbonPlannerEntryStudentTracker` (
   `gibbonPlannerEntryID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `homeworkComplete` enum('Y','N') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3502,7 +3502,7 @@ CREATE TABLE `gibbonPlannerParentWeeklyEmailSummary` (
   `weekOfYear` int(2) NOT NULL,
   `key` varchar(40) NOT NULL,
   `confirmed` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3522,7 +3522,7 @@ CREATE TABLE `gibbonResource` (
   `content` text NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3534,7 +3534,7 @@ CREATE TABLE `gibbonResourceTag` (
   `gibbonResourceTagID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `tag` varchar(100) NOT NULL,
   `count` int(6) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3552,7 +3552,7 @@ CREATE TABLE `gibbonRole` (
   `futureYearsLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
   `pastYearsLogin` enum('Y','N') NOT NULL DEFAULT 'Y',
   `restriction` enum('None','Same Role','Admin Only') NOT NULL DEFAULT 'None'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonRole`
@@ -3586,7 +3586,7 @@ CREATE TABLE `gibbonRollGroup` (
   `gibbonRollGroupIDNext` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `attendance` enum('Y','N') NOT NULL DEFAULT 'Y',
   `website` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3605,7 +3605,7 @@ CREATE TABLE `gibbonRubric` (
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
   `gibbonScaleID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `gibbonPersonIDCreator` int(8) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3619,7 +3619,7 @@ CREATE TABLE `gibbonRubricCell` (
   `gibbonRubricColumnID` int(9) UNSIGNED ZEROFILL NOT NULL,
   `gibbonRubricRowID` int(9) UNSIGNED ZEROFILL NOT NULL,
   `contents` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3633,7 +3633,7 @@ CREATE TABLE `gibbonRubricColumn` (
   `title` varchar(20) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
   `gibbonScaleGradeID` int(7) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3648,7 +3648,7 @@ CREATE TABLE `gibbonRubricEntry` (
   `gibbonRubricCellID` int(11) UNSIGNED ZEROFILL NOT NULL,
   `contextDBTable` varchar(255) NOT NULL COMMENT 'Which database table is this entry related to?',
   `contextDBTableID` int(20) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3662,7 +3662,7 @@ CREATE TABLE `gibbonRubricRow` (
   `title` varchar(40) NOT NULL,
   `sequenceNumber` int(2) NOT NULL,
   `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -3678,7 +3678,7 @@ CREATE TABLE `gibbonScale` (
   `lowestAcceptable` varchar(5) DEFAULT NULL COMMENT 'This is the sequence number of the lowest grade a student can get without being unsatisfactory',
   `active` enum('Y','N') NOT NULL DEFAULT 'Y',
   `numeric` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScale`
@@ -3713,7 +3713,7 @@ CREATE TABLE `gibbonScaleGrade` (
   `descriptor` varchar(50) NOT NULL,
   `sequenceNumber` int(5) NOT NULL,
   `isDefault` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonScaleGrade`
@@ -4063,7 +4063,7 @@ CREATE TABLE `gibbonSchoolYear` (
   `sequenceNumber` int(3) NOT NULL,
   `firstDay` date DEFAULT NULL,
   `lastDay` date DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSchoolYear`
@@ -4094,7 +4094,7 @@ CREATE TABLE `gibbonSchoolYearSpecialDay` (
   `schoolStart` time DEFAULT NULL,
   `schoolEnd` time DEFAULT NULL,
   `schoolClose` time DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4110,7 +4110,7 @@ CREATE TABLE `gibbonSchoolYearTerm` (
   `nameShort` varchar(4) NOT NULL,
   `firstDay` date NOT NULL,
   `lastDay` date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSchoolYearTerm`
@@ -4140,7 +4140,7 @@ CREATE TABLE `gibbonSetting` (
   `nameDisplay` varchar(60) NOT NULL,
   `description` varchar(255) NOT NULL,
   `value` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonSetting`
@@ -4416,7 +4416,7 @@ CREATE TABLE `gibbonSpace` (
   `phoneInternal` varchar(5) NOT NULL,
   `phoneExternal` varchar(20) NOT NULL,
   `comment` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4429,7 +4429,7 @@ CREATE TABLE `gibbonSpacePerson` (
   `gibbonSpaceID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `usageType` enum('','Teaching','Office','Other') COLLATE utf8_unicode_ci DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4451,7 +4451,7 @@ CREATE TABLE `gibbonStaff` (
   `biography` text NOT NULL,
   `biographicalGrouping` varchar(100) NOT NULL COMMENT 'Used for group staff when creating a staff directory.',
   `biographicalGroupingPriority` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4497,7 +4497,7 @@ CREATE TABLE `gibbonStaffApplicationForm` (
   `fields` text NOT NULL COMMENT 'Serialised array of custom field values',
   `referenceEmail1` varchar(100) NOT NULL,
   `referenceEmail2` varchar(100) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4510,7 +4510,7 @@ CREATE TABLE `gibbonStaffApplicationFormFile` (
   `gibbonStaffApplicationFormID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(255) NOT NULL,
   `path` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4544,7 +4544,7 @@ CREATE TABLE `gibbonStaffContract` (
   `contractUpload` varchar(255) DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4561,7 +4561,7 @@ CREATE TABLE `gibbonStaffJobOpening` (
   `description` text NOT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestampCreator` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4576,7 +4576,7 @@ CREATE TABLE `gibbonString` (
   `mode` enum('Whole','Partial') NOT NULL,
   `caseSensitive` enum('Y','N') NOT NULL,
   `priority` int(2) NOT NULL DEFAULT '0'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4591,7 +4591,7 @@ CREATE TABLE `gibbonStudentEnrolment` (
   `gibbonYearGroupID` int(3) UNSIGNED ZEROFILL NOT NULL,
   `gibbonRollGroupID` int(5) UNSIGNED ZEROFILL NOT NULL,
   `rollOrder` int(2) DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4607,7 +4607,7 @@ CREATE TABLE `gibbonStudentNote` (
   `note` text NOT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `timestamp` timestamp NULL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4620,7 +4620,7 @@ CREATE TABLE `gibbonStudentNoteCategory` (
   `name` varchar(30) NOT NULL,
   `template` text NOT NULL,
   `active` enum('Y','N') NOT NULL DEFAULT 'Y'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonStudentNoteCategory`
@@ -4646,7 +4646,7 @@ CREATE TABLE `gibbonTheme` (
   `version` varchar(6) NOT NULL,
   `author` varchar(40) NOT NULL,
   `url` varchar(255) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonTheme`
@@ -4669,7 +4669,7 @@ CREATE TABLE `gibbonTT` (
   `nameShortDisplay` enum('Day Of The Week','Timetable Day Short Name','','') NOT NULL DEFAULT 'Day Of The Week',
   `gibbonYearGroupIDList` varchar(255) NOT NULL,
   `active` enum('Y','N') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4681,7 +4681,7 @@ CREATE TABLE `gibbonTTColumn` (
   `gibbonTTColumnID` int(6) UNSIGNED ZEROFILL NOT NULL,
   `name` varchar(30) NOT NULL,
   `nameShort` varchar(12) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4697,7 +4697,7 @@ CREATE TABLE `gibbonTTColumnRow` (
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL,
   `type` enum('Lesson','Pastoral','Sport','Break','Service','Other') NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4713,7 +4713,7 @@ CREATE TABLE `gibbonTTDay` (
   `nameShort` varchar(4) NOT NULL,
   `color` varchar(6) NOT NULL,
   `fontColor` varchar(6) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4725,7 +4725,7 @@ CREATE TABLE `gibbonTTDayDate` (
   `gibbonTTDayDateID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `date` date NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4739,7 +4739,7 @@ CREATE TABLE `gibbonTTDayRowClass` (
   `gibbonTTDayID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4751,7 +4751,7 @@ CREATE TABLE `gibbonTTDayRowClassException` (
   `gibbonTTDayRowClassExceptionID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonTTDayRowClassID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4767,7 +4767,7 @@ CREATE TABLE `gibbonTTImport` (
   `rowName` varchar(12) NOT NULL,
   `teacherUsernameList` text NOT NULL,
   `spaceName` varchar(30) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4783,7 +4783,7 @@ CREATE TABLE `gibbonTTSpaceBooking` (
   `date` date NOT NULL,
   `timeStart` time NOT NULL,
   `timeEnd` time NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4797,7 +4797,7 @@ CREATE TABLE `gibbonTTSpaceChange` (
   `gibbonSpaceID` int(5) UNSIGNED ZEROFILL DEFAULT NULL,
   `date` date NOT NULL,
   `gibbonPersonID` int(12) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4821,7 +4821,7 @@ CREATE TABLE `gibbonUnit` (
   `sharedPublic` enum('Y','N') DEFAULT NULL,
   `gibbonPersonIDCreator` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonIDLastEdit` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4839,7 +4839,7 @@ CREATE TABLE `gibbonUnitBlock` (
   `teachersNotes` text NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `gibbonOutcomeIDList` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4851,7 +4851,7 @@ CREATE TABLE `gibbonUnitBlockStar` (
   `gibbonUnitBlockStarID` int(14) UNSIGNED ZEROFILL NOT NULL,
   `gibbonUnitBlockID` int(12) UNSIGNED ZEROFILL NOT NULL,
   `gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4864,7 +4864,7 @@ CREATE TABLE `gibbonUnitClass` (
   `gibbonUnitID` int(10) UNSIGNED ZEROFILL NOT NULL,
   `gibbonCourseClassID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `running` enum('N','Y') NOT NULL DEFAULT 'N'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4885,7 +4885,7 @@ CREATE TABLE `gibbonUnitClassBlock` (
   `sequenceNumber` int(4) NOT NULL,
   `complete` enum('Y','N') NOT NULL DEFAULT 'N',
   `gibbonOutcomeIDList` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4899,7 +4899,7 @@ CREATE TABLE `gibbonUnitOutcome` (
   `gibbonOutcomeID` int(8) UNSIGNED ZEROFILL NOT NULL,
   `sequenceNumber` int(4) NOT NULL,
   `content` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -4916,7 +4916,7 @@ CREATE TABLE `gibbonUsernameFormat` (
   `numericValue` int(12) UNSIGNED NOT NULL DEFAULT '0',
   `numericIncrement` int(3) UNSIGNED NOT NULL DEFAULT '1',
   `numericSize` int(3) UNSIGNED NOT NULL DEFAULT '4'
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Dumping data for table `gibbonUsernameFormat`
@@ -4937,7 +4937,7 @@ CREATE TABLE `gibbonYearGroup` (
   `name` varchar(10) NOT NULL,
   `nameShort` varchar(4) NOT NULL,
   `sequenceNumber` int(3) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `gibbonYearGroup`
