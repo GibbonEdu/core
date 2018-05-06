@@ -1374,6 +1374,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
+							<input type="checkbox" name="notify" value="on">
+							<label for="notify">Notify all class participants</label>								
 								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>
