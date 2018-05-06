@@ -27,18 +27,18 @@ use Closure;
 class QueryCriteria
 {
     protected $criteria = array(
-        'pageIndex' => 0,
+        'page' => 1,
         'pageSize' => 25,
         'searchBy' => array(),
         'filterBy' => array(),
-        'orderBy' => array(),
+        'sortBy' => array(),
     );
 
     protected $definitions = array();
 
     public function __construct(array $criteria = array())
     {
-        $this->criteria = $this->sanitizeFilters(array_replace($this->criteria, $criteria));
+        $this->criteria = $this->sanitizeArray(array_replace($this->criteria, $criteria));
     }
 
     public function __get($name)
@@ -46,14 +46,9 @@ class QueryCriteria
         return isset($this->criteria[$name]) ? $this->criteria[$name] : null;
     }
 
-    public function __isset($name)
-    {
-        return isset($this->criteria[$name]);
-    }
-
     public function fromArray(array $criteria)
     {
-        $this->criteria = $this->sanitizeFilters(array_replace($this->criteria, $criteria));
+        $this->criteria = $this->sanitizeArray(array_replace($this->criteria, $criteria));
 
         return $this;
     }
@@ -80,11 +75,19 @@ class QueryCriteria
         return $this;
     }
 
-    public function getDefinition($name)
+    public function getFilter($name)
     {
         return isset($this->definitions[$name]) ? $this->definitions[$name] : null;
     }
 
+    /**
+     * Add a search string to the criteria. 
+     * Accepts $column as a string or an array of columns to search.
+     * 
+     * @param string|array $column
+     * @param string $search
+     * @return self
+     */
     public function searchBy($column, $search)
     {
         if (trim($search) == '') return $this;
@@ -99,34 +102,83 @@ class QueryCriteria
         return $this;
     }
 
-    public function filterBy($filter)
+    /**
+     * Add a filter to the criteria. 
+     * Accepts parameters as filter:value strings, or separate $name, $value params.
+     * Values with spaces or other characters can also be quoted, as filter:"some value"
+     * 
+     * @param string $filter
+     * @param string $value
+     * @return self
+     */
+    public function filterBy($name, $value = null)
     {
-        if (empty($filter)) return $this;
+        if (empty($name)) return $this;
 
-        list($name, $value) = array_pad(explode(':', $filter, 2), 2, '');
+        if (empty($value)) {
+            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+        }
 
-        $this->criteria['filterBy'][$name] = trim($value, '"');
+        $this->criteria['filterBy'][$name] = trim($value, '" ');
 
         return $this;
     }
 
+    /**
+     * Add a sort column to the criteria.
+     * Accepts $column as a string or an array of columns to search.
+     * 
+     * @param string $column
+     * @param string $direction
+     * @return self
+     */
     public function sortBy($column, $direction = 'ASC')
     {
         if (empty($column)) return $this;
 
-        $this->criteria['orderBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
+        $columns = is_array($column) ? $column : array($column);
+        $columns = array_map([$this, 'escapeIdentifier'], $columns);
+
+        foreach ($columns as $column) {
+            $this->criteria['sortBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
+        }
 
         return $this;
     }
 
-    protected function sanitizeFilters($filters)
+    /**
+     * Sets the page number for paginated queries, applied to the sql offset.
+     * 
+     * @param int $page
+     * @return self
+     */
+    public function page($page)
+    {
+        $this->criteria['page'] = intval($page);
+
+        return $this;
+    }
+
+    /**
+     * Sets the page size for paginated queries, applied to the sql limit.
+     * @param int $pageSize
+     * @return self
+     */
+    public function pageSize($pageSize)
+    {
+        $this->criteria['pageSize'] = intval($pageSize);
+
+        return $this;
+    }
+
+    protected function sanitizeArray($criteria)
     {
         return array(
-            'pageIndex' => intval($filters['pageIndex']),
-            'pageSize' => intval($filters['pageSize']),
-            'searchBy' => is_array($filters['searchBy']) ? $filters['searchBy'] : array(),
-            'filterBy' => is_array($filters['filterBy']) ? $filters['filterBy'] : array(),
-            'orderBy' => is_array($filters['orderBy']) ? $filters['orderBy'] : array(),
+            'page' => intval($criteria['page']),
+            'pageSize' => intval($criteria['pageSize']),
+            'searchBy' => is_array($criteria['searchBy']) ? $criteria['searchBy'] : array(),
+            'filterBy' => is_array($criteria['filterBy']) ? $criteria['filterBy'] : array(),
+            'sortBy' => is_array($criteria['sortBy']) ? $criteria['sortBy'] : array(),
         );
     }
 

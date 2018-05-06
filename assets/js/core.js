@@ -327,7 +327,7 @@ DataTable = (function(element, basePath, filters, totalCount) {
     _.filters = filters;
     _.totalCount = totalCount;
     
-    if (_.filters.orderBy.length == 0) _.filters.orderBy = {};
+    if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
 
     _.init();
 });
@@ -338,17 +338,17 @@ DataTable.prototype.init = function() {
     // Pagination
     $(_.table).on('click', '.paginate', function() {
         _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
-        _.filters.pageIndex = Math.min($(this).data('page'), _.filters.pageMax);
+        _.filters.page = Math.min($(this).data('page'), _.filters.pageMax);
         _.refresh();
     });
 
     // Sortable Columns
     $(_.table).on('click', '.column.sortable', function(event) {
         var column = $(this).data('column');
-        var direction = (_.filters.orderBy[column] == 'ASC')? 'DESC' : 'ASC';
+        var direction = (_.filters.sortBy[column] == 'ASC')? 'DESC' : 'ASC';
 
-        if (!(column in _.filters.orderBy) && !event.shiftKey) _.filters.orderBy = {};
-        _.filters.orderBy[column] = direction;
+        if (!(column in _.filters.sortBy) && !event.shiftKey) _.filters.sortBy = {};
+        _.filters.sortBy[column] = direction;
         _.refresh();
     });
 
@@ -360,7 +360,7 @@ DataTable.prototype.init = function() {
         } else if (index !== -1) {
             _.filters.filterBy.splice(index, 1);
         }
-        _.filters.pageIndex = 0;
+        _.filters.page = 1;
         _.refresh();
     });
 
@@ -368,7 +368,7 @@ DataTable.prototype.init = function() {
     $(_.table).on('change', '.filters', function() {
         if (!_.filters.filterBy.includes($(this).val())) {
             _.filters.filterBy.push( $(this).val() );
-            _.filters.pageIndex = 0;
+            _.filters.page = 1;
         }
         _.refresh();
     });
@@ -377,7 +377,7 @@ DataTable.prototype.init = function() {
     $(_.table).on('change', '.limit', function() {
         _.filters.pageSize = parseInt($(this).val());
         _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
-        _.filters.pageIndex = Math.min(_.filters.pageIndex, _.filters.pageMax - 1);
+        _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
     });
 };

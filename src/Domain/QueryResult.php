@@ -19,32 +19,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\Database\Result;
-
 /**
  * Object representing the paginated results of a Gateway query.
  */
 class QueryResult implements \Countable, \IteratorAggregate
 {
     protected $data;
-
-    protected $totalCount; 
+    protected $criteria;
+    
     protected $resultCount; 
-    protected $pageIndex; 
-    protected $pageSize; 
+    protected $totalCount; 
 
-    public function __construct(array $data = [], $resultCount = 0, $totalCount = 0, $pageIndex = 0, $pageSize = -1)
+    public function __construct(array $data, array $criteria, $resultCount = 0, $totalCount = 0)
     {
         $this->data = $data;
+        $this->criteria = $criteria;
         $this->resultCount = $resultCount;
         $this->totalCount = $totalCount;
-        $this->pageIndex = $pageIndex;
-        $this->pageSize = $pageSize;
-    }
-
-    public static function createFromResult(Result $result, $resultCount, $totalCount, $pageIndex = 0, $pageSize = -1)
-    {
-        return new self($result->fetchAll(), $resultCount, $totalCount, $pageIndex, $pageSize);
     }
 
     public function count()
@@ -57,9 +48,14 @@ class QueryResult implements \Countable, \IteratorAggregate
         return new \ArrayIterator($this->data);
     }
 
-    public function getColumn($column)
+    public function arrayColumn($column)
     {
         return array_column($this->data, $column);
+    }
+
+    public function getCriteria()
+    {
+        return $this->criteria;
     }
 
     public function hasResults()
@@ -82,29 +78,29 @@ class QueryResult implements \Countable, \IteratorAggregate
         return $this->resultCount;
     }
 
-    public function getPageIndex()
+    public function getPage()
     {
-        return $this->pageIndex;
+        return $this->criteria['page'];
     }
 
     public function getPageSize()
     {
-        return $this->pageSize;
+        return $this->criteria['pageSize'];
     }
 
     public function getPageCount()
     {
-        return ceil($this->resultCount / $this->pageSize);
+        return ceil($this->resultCount / $this->criteria['pageSize']);
     }
 
     public function getPageLowerBounds()
     {
-        return ($this->pageIndex * $this->pageSize + 1);
+        return (($this->criteria['page']-1) * $this->criteria['pageSize'] + 1);
     }
 
     public function getPageUpperBounds()
     {
-        return max(1, min( (($this->pageIndex + 1) * $this->pageSize), $this->resultCount));
+        return max(1, min( ($this->criteria['page'] * $this->criteria['pageSize']), $this->resultCount));
     }
 
     public function joinResults($keyField, $joinField, &$joinData)

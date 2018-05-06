@@ -66,23 +66,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $criteria = $gateway->newQueryCriteria()
         ->searchBy($searchColumns, $search)
-        ->sortBy('gibbonPerson.surname, gibbonPerson.preferredName')
+        ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
         ->filterBy('status:left')
-        ->filterBy('status:full')
-        ->filterBy('role:parent')
+        ->filterBy('role', 'Parent')
         ->filterBy('none')
         ->fromArray($_POST);
     
     $queryResult = $gateway->queryAllUsers($criteria);
 
-    // Grab a set of family data per user
-    $people = $queryResult->getColumn('gibbonPersonID');
+    // Join a set of family data per user
+    $people = $queryResult->arrayColumn('gibbonPersonID');
     $familyData = $gateway->selectFamilyDetailsPerUser($people)->fetchGrouped();
 
     $queryResult->joinResults('gibbonPersonID', 'families', $familyData);
 
     $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
-    $table = DataTable::createFromQueryResult('userManage', $queryResult)->withCriteria($criteria)->setPath($path);
+    $table = DataTable::createFromQueryResult('userManage', $queryResult)->setPath($path);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')

@@ -45,6 +45,7 @@ class DataTable
     {
         $this->id = $id;
         $this->queryResult = $queryResult;
+        $this->criteria = $queryResult->getCriteria();
         $this->factory = FormFactory::create();
     }
 
@@ -56,13 +57,6 @@ class DataTable
     public function setPath($path = '')
     {
         $this->path = $path;
-
-        return $this;
-    }
-
-    public function withCriteria(QueryCriteria $criteria)
-    {
-        $this->criteria = $criteria;
 
         return $this;
     }
@@ -109,9 +103,9 @@ class DataTable
 
         $output .= '<div>';
         $output .= $this->renderPageCount($this->queryResult);
-        $output .= $this->renderPageFilters($this->criteria);
+        $output .= $this->renderPageFilters($this->queryResult);
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($this->criteria);
+        $output .= $this->renderSelectFilters($this->queryResult);
         $output .= $this->renderPageSize($this->queryResult);
         $output .= $this->renderPagination($this->queryResult);
 
@@ -128,8 +122,8 @@ class DataTable
                 if ($column->getSortable()) {
                     $classes[] = 'sortable';
                 }
-                if (isset($this->criteria->orderBy[$columnName])) {
-                    $classes[] = 'sorting sort'.$this->criteria->orderBy[$columnName];
+                if (isset($this->criteria->sortBy[$columnName])) {
+                    $classes[] = 'sorting sort'.$this->criteria->sortBy[$columnName];
                 }
 
                 if ($column instanceOf ActionColumn) {
@@ -182,7 +176,7 @@ class DataTable
         $output .="
         <script>
         $(function(){
-            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$this->criteria->toJson().", ".$this->queryResult->getResultCount().");
+            $('#".$this->id."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".json_encode($this->criteria).", ".$this->queryResult->getResultCount().");
         });
         </script>";
 
@@ -206,13 +200,15 @@ class DataTable
         return $output;
     }
 
-    protected function renderPageFilters(QueryCriteria $criteria)
+    protected function renderPageFilters(QueryResult $queryResult)
     {
+        $criteria = $queryResult->getCriteria();
+
         if (empty($criteria)) return '';
 
         $output = '<span class="small" style="line-height: 32px;">';
 
-        if (!empty($criteria->filterBy)) {
+        if (!empty($criteria['filterBy'])) {
             $output .= '&nbsp;&nbsp; '.__('Filtered by').' ';
 
             // $definitions = array();
@@ -228,7 +224,7 @@ class DataTable
         return $output;
     }
 
-    protected function renderSelectFilters(QueryCriteria $criteria)
+    protected function renderSelectFilters(QueryResult $queryResult)
     {
         return '';
         // if (empty($criteria)) return '';
@@ -261,34 +257,35 @@ class DataTable
     {
         if ($queryResult->getPageCount() <= 1) return '';
 
-        $pageIndex = $queryResult->getPageIndex();
+        $pageNumber = $queryResult->getPage();
+        $pageIndex = $pageNumber - 1;
 
         $output = '<div class="floatRight">';
-            $output .= '<input type="button" class="paginate" data-page="'.($pageIndex - 1).'" '.($pageIndex <= 0? 'disabled' : '').' value="'.__('Prev').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($pageNumber - 1).'" '.($pageNumber <= 1? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $pageCount = $queryResult->getPageCount()-1;
-            $range = range(0, $pageCount);
+            $pageCount = $queryResult->getPageCount();
+            $range = range(1, $pageCount);
 
             // Collapse the leading page-numbers
-            if ($pageCount > 7 && $pageIndex > 5) {
-                array_splice($range, 2, $pageIndex - 4, '...');
+            if ($pageCount > 7 && $pageNumber > 6) {
+                array_splice($range, 2, $pageNumber - 5, '...');
             }
 
             // Collapse the trailing page-numbers
-            if ($pageCount > 7 && ($pageCount - $pageIndex) > 5) {
-                array_splice($range, ($pageCount - $pageIndex - 2)*-1, ($pageCount - $pageIndex)-4, '...');
+            if ($pageCount > 7 && ($pageCount - $pageNumber) > 5) {
+                array_splice($range, ($pageCount - $pageNumber - 2)*-1, ($pageCount - $pageNumber)-4, '...');
             }
 
             foreach ($range as $page) {
                 if ($page === '...') {
                     $output .= '<input type="button" disabled value="...">';
                 } else {
-                    $class = ($page == $pageIndex)? 'active paginate' : 'paginate';
-                    $output .= '<input type="button" class="'.$class.'" data-page="'.$page.'" value="'.($page + 1).'">';
+                    $class = ($page == $pageNumber)? 'active paginate' : 'paginate';
+                    $output .= '<input type="button" class="'.$class.'" data-page="'.$page.'" value="'.$page.'">';
                 }
             }
 
-            $output .= '<input type="button" class="paginate" data-page="'.($pageIndex + 1).'" '.($pageIndex >= $pageCount? 'disabled' : '').' value="'.__('Next').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.($pageNumber + 1).'" '.($pageNumber >= $pageCount? 'disabled' : '').' value="'.__('Next').'">';
         $output .= '</div>';
 
         return $output;

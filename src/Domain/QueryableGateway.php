@@ -32,15 +32,9 @@ abstract class QueryableGateway extends Gateway
 
     private static $queryFactory;
 
-    public function newQueryCriteria()
+    public function newQueryCriteria($values = [])
     {
-        return new QueryCriteria();
-    }
-
-    // BUILT-IN QUERIES
-    protected function countAll()
-    {
-        return $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
+        return new QueryCriteria($values);
     }
 
     protected function newQuery()
@@ -49,54 +43,51 @@ abstract class QueryableGateway extends Gateway
     }
 
     // QUERY-RELATED
-    protected function runQuery(SelectInterface $query, QueryCriteria $filters)
+    protected function runQuery(SelectInterface $query, QueryCriteria $criteria)
     {
-        $query = $this->applyFilters($query, $filters);
+        $query = $this->applyCriteria($query, $criteria);
 
         $result = $this->db->select($query->getStatement(), $query->getBindValues());
 
         $foundRows = $this->db->selectOne("SELECT FOUND_ROWS()");
+        $totalRows = $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
 
         echo '<pre>';
         echo $query->getStatement();
         echo '</pre>';
         
-        return QueryResult::createFromResult($result, $foundRows, $this->countAll(), $filters->pageIndex, $filters->pageSize);
+        return new QueryResult($result->fetchAll(), $criteria->toArray(), $foundRows, $totalRows);
     }
 
-    private function applyFilters(SelectInterface $query, QueryCriteria $filters)
+    private function applyCriteria(SelectInterface $query, QueryCriteria $criteria)
     {
         $query->calcFoundRows();
 
         // Filter By
-        foreach ($filters->filterBy as $name => $value) {
-            if ($callback = $filters->getDefinition($name)) {
+        foreach ($criteria->filterBy as $name => $value) {
+            if ($callback = $criteria->getFilter($name)) {
                 $query = $callback($query, $value);
             }
         }
 
         // Search By
-        $count = 0;
-        $query->where('(');
-        foreach ($filters->searchBy as $column => $text) {
-            $query->orWhere("{$column} LIKE :search{$count}");
-            $query->bindValue(":search{$count}", $text);
-            $count++;
-        }
-        $query->where(')');
-
-        // Order By
-        foreach ($filters->orderBy as $column => $direction) {
+        $query->where(function($query) use ($criteria) {
+            $count = 0;
+            foreach ($criteria->searchBy as $column => $text) {
+                $query->orWhere("{$column} LIKE :search{$count}");
+                $query->bindValue(":search{$count}", "%$text%");
+                $count++;
+            }
+        });
+        
+        // Sort By
+        foreach ($criteria->sortBy as $column => $direction) {
             $query->orderBy(["{$column} {$direction}"]);
         }
 
         // Limit & Offset
-        
-        $query->setPaging($filters->pageSize);
-        $query->page($filters->pageIndex+1);
-
-        // $query->limit($filters->pageSize);
-        // $query->offset(max(0, $filters->pageIndex * $filters->pageSize));
+        $query->setPaging($criteria->pageSize);
+        $query->page($criteria->page);
 
         return $query;
     }
