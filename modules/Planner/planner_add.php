@@ -1221,7 +1221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 						</td>
 						<td class="right">
 							<input type="checkbox" name="notify" value="on">
-							<label for="notify">Notify all class participants</label>
+							<label for="notify"><?php echo __('Notify all class participants') ?></label>
 							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
 					</tr>
