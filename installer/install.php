@@ -19,12 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Database\MySqlConnector;
+use Gibbon\Data\Validator;
 
 include '../version.php';
 include '../gibbon.php';
 
 // Sanitize the whole $_POST array
-$validator = new \Gibbon\Data\Validator();
+$validator = new Validator();
 $_POST = $validator->sanitize($_POST);
 
 // Get or set the current step
@@ -269,18 +271,20 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo $form->getOutput();
                             } elseif ($step == 2) {
 
-                                $connected1 = false;
-
                                 //Check for db values
                                 if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
                                     //Estabish db connection without database name
-                                    $pdo = new Gibbon\sqlConnection(true);
-                                    $pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
-                                    $connected1 = $pdo->getSuccess();
-                                    $connection2 = $pdo->getConnection();
+
+                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databasePort');
+                                    $mysqlConnector = new MySqlConnector();
+
+                                    if ($pdo = $mysqlConnector->connect($config)) {
+                                        $mysqlConnector->useDatabase($pdo, $databaseName);
+                                        $connection2 = $pdo->getConnection();
+                                    }
                                 }
 
-                                if ($connected1 == false) {
+                                if (empty($pdo)) {
                                     echo "<div class='error'>";
                                     echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                     echo '</div>';
@@ -599,10 +603,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 }
                             } elseif ($step == 3) {
                                 //New PDO DB connection
-                                $pdo = new Gibbon\sqlConnection();
-                                $connection2 = $pdo->getConnection();
+                                $mysqlConnector = new MySqlConnector();
 
-                                if ($pdo->getSuccess() == false) {
+                                if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+                                    $connection2 = $pdo->getConnection();
+                                }
+
+                                if (empty($pdo)) {
                                     echo "<div class='error'>";
                                     echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                     echo '</div>';

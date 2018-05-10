@@ -34,7 +34,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
     try {
         $data = array();
-        $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
+        $sql = 'SELECT 
+            gibbonYearGroup.*, gibbonPerson.surname, gibbonPerson.preferredName
+        FROM gibbonYearGroup 
+            LEFT JOIN gibbonPerson ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID)
+        ORDER BY sequenceNumber';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -62,6 +66,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         echo __($guid, 'Short Name');
         echo '</th>';
         echo '<th>';
+        echo __($guid, 'Head of Year');
+        echo '</th>';
+        echo '<th>';
         echo __($guid, 'Actions');
         echo '</th>';
         echo '</tr>';
@@ -85,6 +92,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
             echo '</td>';
             echo '<td>';
             echo __($guid, $row['nameShort']);
+            echo '</td>';
+            echo '<td>';
+                if ($row['preferredName'] != '' && $row['surname'] != '') {
+                    echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+                }
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/yearGroup_manage_edit.php&gibbonYearGroupID='.$row['gibbonYearGroupID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";

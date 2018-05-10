@@ -10,6 +10,8 @@
  */
 namespace Gibbon;
 
+use Gibbon\Contracts\Database\Connection;
+
 if (file_exists('../../lib/PHPExcel/Classes/PHPExcel.php'))
 	require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
 else
@@ -183,10 +185,10 @@ class Excel extends \PHPExcel
 	 *
 	 * @version	14th April 2016
 	 * @since	14th April 2016
-	 * @param	Object	Gibbon\sqlConnection
+	 * @param	Object	Connection
 	 * return	integer	Estimated Cell Count
 	 */
-	public function estimateCellCount( sqlConnection $pdo)
+	public function estimateCellCount(Connection $pdo)
 	{
 		if ($pdo->getResult() !== NULL)
 			return $pdo->getResult()->columnCount (  ) * $pdo->getResult()->rowCount ( );

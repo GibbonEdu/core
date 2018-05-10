@@ -21,6 +21,7 @@ v16.0.00
 	Headlines
 		Activated Simplified Chinese and Polish as available languages
 		Added Croatian and Estonian as development languages
+        Data Updater: added a My Data Updates overview and settings to redirect users on login
 
 	Significant Changes
 		System: added tool for InnoDB database table storage engine migration
@@ -46,6 +47,7 @@ v16.0.00
 		System: improved timezone selection process by using select instead of text field
 		System: moved footer logo style into theme CSS
 		System: restored Cutting Edge status message to installer
+		System: added setting of HELO value when sending mail with SMTP
 		Activities: added notifications when students are bumped up into an activity on self unenrolment
 		Activities: added logging of student activity changes in order to track sign up history
         Activities: added Activity Choices by Roll Group for ease of looking up student's activity times
@@ -78,6 +80,7 @@ v16.0.00
 		Students: adjusted logic in student enrolment visualisation to include students who are not 'Full'
 		School Admin: updated Finance Settings email to default to organisation email if blank
 		School Admin: extend length of name field in Manage Houses to 30 chars
+		School Admin: added Head of Year to Manage Year Groups and integrated into Students
 		System Admin: fixed bug causing theme names with spaces to break the theme installer
 		System Admin: fixed spelling error in Department settings
 		System Admin: fixed typo in Third Party Settings
