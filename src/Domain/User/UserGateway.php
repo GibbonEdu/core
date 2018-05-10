@@ -37,46 +37,50 @@ class UserGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonRole.name as primaryRole'
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 
+                'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonRole.name as primaryRole'
             ])
             ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
 
-        $criteria->defineFilter('role', function ($query, $roleCategory) {
-            return $query
-                ->where('gibbonRole.category = :roleCategory')
-                ->bindValue('roleCategory', ucfirst($roleCategory));
-        });
+        $criteria->defineFilters([
+            'role' => function ($query, $roleCategory) {
+                return $query
+                    ->where('gibbonRole.category = :roleCategory')
+                    ->bindValue('roleCategory', ucfirst($roleCategory));
+            },
 
-        $criteria->defineFilter('status', function ($query, $status) {
-            return $query
-                ->where('gibbonPerson.status = :status')
-                ->bindValue('status', ucfirst($status));
-        });
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonPerson.status = :status')
+                    ->bindValue('status', ucfirst($status));
+            },
 
-        $criteria->defineFilter('date', function ($query, $dateType) {
-            return $query
-                ->where(($dateType == 'starting')
-                    ? '(gibbonPerson.dateStart IS NOT NULL AND gibbonPerson.dateStart >= :today)'
-                    : '(gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd <= :today)')
-                ->bindValue('today', date('Y-m-d'));
-        });
+            'date' => function ($query, $dateType) {
+                return $query
+                    ->where(($dateType == 'starting')
+                        ? '(gibbonPerson.dateStart IS NOT NULL AND gibbonPerson.dateStart >= :today)'
+                        : '(gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd <= :today)')
+                    ->bindValue('today', date('Y-m-d'));
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectFamilyDetailsPerUser($people)
+    public function selectFamilyDetailsByPersonID($gibbonPersonIDList)
     {
-        $data = array('people' => is_array($people) ? implode(',', $people) : $people);
+        $idList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
+        $data = array('idList' => $idList);
         $sql = "(
             SELECT LPAD(gibbonFamilyAdult.gibbonPersonID, 10, '0'), gibbonFamilyAdult.gibbonFamilyID, 'adult' AS role, gibbonFamily.name, (SELECT gibbonFamilyChild.gibbonPersonID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID ORDER BY gibbonPerson.dob DESC LIMIT 1) as gibbonPersonIDStudent
             FROM gibbonFamily 
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
-            WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :people)
+            WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonPersonID, :idList)
         ) UNION (
             SELECT LPAD(gibbonFamilyChild.gibbonPersonID, 10, '0'), gibbonFamilyChild.gibbonFamilyID, 'child' AS role, gibbonFamily.name, gibbonFamilyChild.gibbonPersonID as gibbonPersonIDStudent
             FROM gibbonFamily 
             JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
-            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :people)
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :idList)
         ) ORDER BY gibbonFamilyID";
 
         return $this->db->select($sql, $data);

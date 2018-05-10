@@ -35,6 +35,7 @@ class DataTable
 {
     protected $id;
     protected $columns = array();
+    protected $filters = array();
     protected $actionLinks = array();
 
     protected $queryResult;
@@ -82,6 +83,19 @@ class DataTable
         return $this->actionLinks[$name];
     }
 
+    public function addFilter($name, $label = '')
+    {
+        $this->filters[$name] = $label;
+
+        return $this;
+    }
+
+    public function addFilters($filters)
+    {
+        $this->filters = array_replace($this->filters, $filters);
+
+        return $this;
+    }
 
     public function getOutput()
     {
@@ -185,15 +199,14 @@ class DataTable
 
     protected function renderPageCount(QueryResult $queryResult)
     {
-        $output = '<span class="small" style="line-height: 32px;">';
+        $criteria = $queryResult->getCriteria();
 
-        if ($queryResult->hasResults()) {
-            $output .= $queryResult->isSubset()? __('Results') : __('Records');
-            $output .= ' '.$queryResult->getPageLowerBounds().'-'.$queryResult->getPageUpperBounds().' '.__('of').' ';
-            $output .= $queryResult->isSubset()? $queryResult->getResultCount() : $queryResult->getTotalCount();
-        } else {
-            $output .= __('No Results');
-        }
+        $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
+
+        $output .= !empty($criteria['searchBy'])? __('Search').' ' : '';
+        $output .= $queryResult->isSubset()? __('Results') : __('Records');
+        $output .= $queryResult->hasResults()? ' '.$queryResult->getPageLowerBounds().'-'.$queryResult->getPageUpperBounds().' '.__('of').' ' : ': ';
+        $output .= $queryResult->isSubset()? $queryResult->getResultCount() : $queryResult->getTotalCount();
 
         $output .= '</span>';
 
@@ -209,14 +222,16 @@ class DataTable
         $output = '<span class="small" style="line-height: 32px;">';
 
         if (!empty($criteria['filterBy'])) {
-            $output .= '&nbsp;&nbsp; '.__('Filtered by').' ';
+            $output .= __('Filtered by').' ';
 
-            // $definitions = array();
-            // $criteria = array_intersect_key($criteria->getDefinitionLabels(), array_flip($this->criteria->filterBy));
+            // $criteriaUsed = array_intersect_key($this->filters, array_flip($criteria['filterBy']));
+            $criteriaUsed = array_filter($this->filters, function($name) use ($criteria) {
+                return in_array($name, $criteria['filterBy']);
+            }, ARRAY_FILTER_USE_KEY);
 
-            // foreach ($criteria as $value => $label) {
-            //     $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
-            // }
+            foreach ($criteriaUsed as $value => $label) {
+                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
+            }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
@@ -226,17 +241,14 @@ class DataTable
 
     protected function renderSelectFilters(QueryResult $queryResult)
     {
-        return '';
-        // if (empty($criteria)) return '';
-
-        // $definitions = $criteria->getDefinitionLabels();
-        // if (empty($definitions)) return '';
+        if (empty($queryResult->getCriteria())) return '';
+        if (empty($this->filters)) return '';
         
-        // return $this->factory->createSelect('filter')
-        //     ->fromArray($definitions)
-        //     ->setClass('filters floatNone')
-        //     ->placeholder(__('Filters'))
-        //     ->getOutput();
+        return $this->factory->createSelect('filter')
+            ->fromArray($this->filters)
+            ->setClass('filters floatNone')
+            ->placeholder(__('Filters'))
+            ->getOutput();
     }
 
     protected function renderPageSize(QueryResult $queryResult)

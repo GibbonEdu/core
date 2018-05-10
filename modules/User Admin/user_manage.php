@@ -66,17 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $criteria = $gateway->newQueryCriteria()
         ->searchBy($searchColumns, $search)
-        ->sortBy(['gibbonPerson.preferredName', 'gibbonPerson.surname'])
-        ->filterBy('status:left')
-        ->filterBy('role', 'Parent')
-        ->filterBy('none')
+        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->fromArray($_POST);
     
     $queryResult = $gateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
     $people = $queryResult->arrayColumn('gibbonPersonID');
-    $familyData = $gateway->selectFamilyDetailsPerUser($people)->fetchGrouped();
+    $familyData = $gateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
 
     $queryResult->joinResults('gibbonPersonID', 'families', $familyData);
 
@@ -87,6 +84,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->setURL('/modules/User Admin/user_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
+
+    $table->addFilters([
+        'role:student'    => __('Role').': '.__('Student'),
+        'role:parent'     => __('Role').': '.__('Parent'),
+        'role:staff'      => __('Role').': '.__('Staff'),
+
+        'status:full'     => __('Status').': '.__('Full'),
+        'status:left'     => __('Status').': '.__('Left'),
+        'status:expected' => __('Status').': '.__('Expected'),
+
+        'date:starting'   => __('Before Start Date'),
+        'date:ended'      => __('After End Date'),
+    ]);
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);

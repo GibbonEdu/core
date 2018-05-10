@@ -75,6 +75,15 @@ class QueryCriteria
         return $this;
     }
 
+    public function defineFilters(array $filters)
+    {
+        foreach ($filters as $name => $callback) {
+            $this->defineFilter($name, $callback);
+        }
+
+        return $this;
+    }
+
     public function getFilter($name)
     {
         return isset($this->definitions[$name]) ? $this->definitions[$name] : null;
@@ -115,11 +124,17 @@ class QueryCriteria
     {
         if (empty($name)) return $this;
 
-        if (empty($value)) {
-            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+        // if (empty($value)) {
+        //     list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+        // }
+
+        // $this->criteria['filterBy'][$name] = trim($value, '" ');
+
+        if (!empty($value)) {
+            $name = $name.':'.strtolower($value);
         }
 
-        $this->criteria['filterBy'][$name] = trim($value, '" ');
+        $this->criteria['filterBy'][] = $name;
 
         return $this;
     }

@@ -23,8 +23,8 @@ use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryResult;
-use Aura\SqlQuery\Common\SelectInterface;
 use Aura\SqlQuery\QueryFactory;
+use Aura\SqlQuery\Common\SelectInterface;
 
 abstract class QueryableGateway extends Gateway
 {
@@ -42,7 +42,6 @@ abstract class QueryableGateway extends Gateway
         return $this->getQueryFactory()->newSelect()->from($this->getTableName());
     }
 
-    // QUERY-RELATED
     protected function runQuery(SelectInterface $query, QueryCriteria $criteria)
     {
         $query = $this->applyCriteria($query, $criteria);
@@ -51,10 +50,6 @@ abstract class QueryableGateway extends Gateway
 
         $foundRows = $this->db->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
-
-        echo '<pre>';
-        echo $query->getStatement();
-        echo '</pre>';
         
         return new QueryResult($result->fetchAll(), $criteria->toArray(), $foundRows, $totalRows);
     }
@@ -64,7 +59,8 @@ abstract class QueryableGateway extends Gateway
         $query->calcFoundRows();
 
         // Filter By
-        foreach ($criteria->filterBy as $name => $value) {
+        foreach ($criteria->filterBy as $name) {
+            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
             if ($callback = $criteria->getFilter($name)) {
                 $query = $callback($query, $value);
             }
