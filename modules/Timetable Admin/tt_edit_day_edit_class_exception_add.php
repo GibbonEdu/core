@@ -111,10 +111,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $row = $form->addRow();
                     $row->addLabel('Members', __('Participants'));
                     if (count($participants) > 0 ) {
-                        $row->addSelect('Members')->fromArray($participants)->selectMultiple()->isRequired();
+                        $row->addSelect('Members')->fromArray($participants)->selectMultiple()->isRequired()->setSize(8);
                     }
                     else {
-                        $row->addSelect('Members')->selectMultiple()->isRequired();
+                        $row->addSelect('Members')->selectMultiple()->isRequired()->setSize(8);
                     }
 
                 $row = $form->addRow();
