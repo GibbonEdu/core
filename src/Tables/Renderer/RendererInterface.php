@@ -19,10 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Domain\QueryResult;
+use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 
 interface RendererInterface
 {
-    public function renderTable(DataTable $table, QueryResult $queryResult);
+    public function renderTable(DataTable $table, DataSet $dataSet);
 }

@@ -69,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
     
-    $queryResult = $userGateway->queryAllUsers($criteria);
+    $dataSet = $userGateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
-    $people = $queryResult->getColumn('gibbonPersonID');
+    $people = $dataSet->getColumn('gibbonPersonID');
     $familyData = $userGateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
 
-    $queryResult->joinColumn('gibbonPersonID', 'families', $familyData);
+    $dataSet->joinColumn('gibbonPersonID', 'families', $familyData);
 
     $table = DataTable::create('userManage');
 
@@ -127,5 +127,5 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             ->setURL('/modules/User Admin/user_manage_password.php')
             ->setIcon('key');
 
-    echo $table->renderToHTML($queryResult, $criteria);
+    echo $table->renderToHTML($dataSet, $criteria);
 }

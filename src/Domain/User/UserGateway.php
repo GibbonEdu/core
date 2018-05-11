@@ -36,7 +36,7 @@ class UserGateway extends QueryableGateway
      * Queries the list of users for the Manage Users page.
      *
      * @param QueryCriteria $criteria
-     * @return QueryResult
+     * @return DataSet
      */
     public function queryAllUsers(QueryCriteria $criteria)
     {

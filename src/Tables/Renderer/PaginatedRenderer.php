@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Domain\QueryResult;
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Tables\DataTable;
@@ -43,7 +43,7 @@ class PaginatedRenderer implements RendererInterface
         $this->factory = FormFactory::create();
     }
 
-    public function renderTable(DataTable $table, QueryResult $queryResult)
+    public function renderTable(DataTable $table, DataSet $dataSet)
     {
         $output = '';
 
@@ -65,14 +65,14 @@ class PaginatedRenderer implements RendererInterface
         // $output .= '</code>';
 
         $output .= '<div>';
-        $output .= $this->renderPageCount($queryResult);
-        $output .= $this->renderPageFilters($queryResult, $table->getFilterOptions());
+        $output .= $this->renderPageCount($dataSet);
+        $output .= $this->renderPageFilters($dataSet, $table->getFilterOptions());
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($queryResult, $table->getFilterOptions());
-        $output .= $this->renderPageSize($queryResult);
-        $output .= $this->renderPagination($queryResult);
+        $output .= $this->renderSelectFilters($dataSet, $table->getFilterOptions());
+        $output .= $this->renderPageSize($dataSet);
+        $output .= $this->renderPagination($dataSet);
 
-        if ($queryResult->count() > 0) {
+        if ($dataSet->count() > 0) {
             $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
 
             // HEADING
@@ -103,7 +103,7 @@ class PaginatedRenderer implements RendererInterface
             // ROWS
             $output .= '<tbody>';
 
-            foreach ($queryResult as $data) {
+            foreach ($dataSet as $data) {
                 $output .= '<tr>';
 
                 foreach ($table->getColumns() as $columnName => $column) {
@@ -118,7 +118,7 @@ class PaginatedRenderer implements RendererInterface
             $output .= '</tbody>';
             $output .= '</table>';
         } else {
-            if ($queryResult->isSubset()) {
+            if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
                 $output .= __('No results matched your search.');
                 $output .= '</div>';
@@ -129,8 +129,8 @@ class PaginatedRenderer implements RendererInterface
             }
         }
 
-        $output .= $this->renderPageCount($queryResult);
-        $output .= $this->renderPagination($queryResult);
+        $output .= $this->renderPageCount($dataSet);
+        $output .= $this->renderPagination($dataSet);
 
         $output .= '</div></div><br/>';
 
@@ -138,28 +138,28 @@ class PaginatedRenderer implements RendererInterface
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $table->getPath())."', ".$this->criteria->toJson().", ".$queryResult->getResultCount().");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $table->getPath())."', ".$this->criteria->toJson().", ".$dataSet->getResultCount().");
         });
         </script>";
 
         return $output;
     }
 
-    protected function renderPageCount(QueryResult $queryResult)
+    protected function renderPageCount(DataSet $dataSet)
     {
         $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
 
         $output .= $this->criteria->hasSearch()? __('Search').' ' : '';
-        $output .= $queryResult->isSubset()? __('Results') : __('Records');
-        $output .= $queryResult->count() > 0? ' '.$queryResult->getPageFrom().'-'.$queryResult->getPageTo().' '.__('of').' ' : ': ';
-        $output .= $queryResult->isSubset()? $queryResult->getResultCount() : $queryResult->getTotalCount();
+        $output .= $dataSet->isSubset()? __('Results') : __('Records');
+        $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
+        $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
 
         $output .= '</span>';
 
         return $output;
     }
 
-    protected function renderPageFilters(QueryResult $queryResult, array $filters)
+    protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
         if (empty($this->criteria)) return '';
 
@@ -184,7 +184,7 @@ class PaginatedRenderer implements RendererInterface
         return $output;
     }
 
-    protected function renderSelectFilters(QueryResult $queryResult, array $filters)
+    protected function renderSelectFilters(DataSet $dataSet, array $filters)
     {
         if (empty($this->criteria)) return '';
         if (empty($filters)) return '';
@@ -196,9 +196,9 @@ class PaginatedRenderer implements RendererInterface
             ->getOutput();
     }
 
-    protected function renderPageSize(QueryResult $queryResult)
+    protected function renderPageSize(DataSet $dataSet)
     {
-        $pageSize = $queryResult->getPageSize();
+        $pageSize = $dataSet->getPageSize();
 
         if ($pageSize <= 0) return '';
 
@@ -210,17 +210,17 @@ class PaginatedRenderer implements RendererInterface
             ->getOutput();
     }
 
-    protected function renderPagination(QueryResult $queryResult)
+    protected function renderPagination(DataSet $dataSet)
     {
-        if ($queryResult->getPageCount() <= 1) return '';
+        if ($dataSet->getPageCount() <= 1) return '';
 
-        $pageNumber = $queryResult->getPage();
+        $pageNumber = $dataSet->getPage();
         $pageIndex = $pageNumber - 1;
 
         $output = '<div class="floatRight">';
             $output .= '<input type="button" class="paginate" data-page="'.($pageNumber - 1).'" '.($pageNumber <= 1? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $pageCount = $queryResult->getPageCount();
+            $pageCount = $dataSet->getPageCount();
             $range = range(1, $pageCount);
 
             // Collapse the leading page-numbers

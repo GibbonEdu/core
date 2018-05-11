@@ -19,13 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\Database\Result;
-use Gibbon\Domain\QueryCriteria;
-
 /**
  * Object representing the paginated results of a Gateway query.
  */
-class QueryResult implements \Countable, \IteratorAggregate
+class DataSet implements \Countable, \IteratorAggregate
 {
     protected $data;
     
@@ -41,11 +38,6 @@ class QueryResult implements \Countable, \IteratorAggregate
         $this->totalCount = isset($totalCount) ? $totalCount : count($data);
         $this->page = 1;
         $this->pageSize = count($data);
-    }
-
-    public static function createFromResult(Result $result, $resultCount = null, $totalCount = null)
-    {
-        return new static($result->fetchAll(), $resultCount, $totalCount);
     }
 
     /**

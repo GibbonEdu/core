@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
-use Gibbon\Domain\QueryResult;
+use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
@@ -120,14 +120,14 @@ class DataTable
         return $this->filterOptions;
     }
 
-    public function renderToHTML(QueryResult $queryResult, QueryCriteria $criteria)
+    public function renderToHTML(DataSet $dataSet, QueryCriteria $criteria)
     {
         $renderer = new PaginatedRenderer($criteria);
-        return $renderer->renderTable($this, $queryResult);
+        return $renderer->renderTable($this, $dataSet);
     }
 
-    public function renderWith(RendererInterface $renderer, QueryResult $queryResult)
+    public function renderWith(DataSet $dataSet, RendererInterface $renderer)
     {
-        return $renderer->renderTable($this, $queryResult);
+        return $renderer->renderTable($this, $dataSet);
     }
 }

@@ -22,7 +22,7 @@ namespace Gibbon\Domain;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\QueryResult;
+use Gibbon\Domain\DataSet;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
 
@@ -69,7 +69,7 @@ abstract class QueryableGateway extends Gateway
      *
      * @param SelectInterface $query
      * @param QueryCriteria $criteria
-     * @return QueryResult
+     * @return DataSet
      */
     protected function runQuery(SelectInterface $query, QueryCriteria $criteria)
     {
@@ -80,7 +80,7 @@ abstract class QueryableGateway extends Gateway
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
 
-        return QueryResult::createFromResult($result, $foundRows, $totalRows)->setPagination($criteria->page, $criteria->pageSize);
+        return $result->toDataSet($foundRows, $totalRows)->setPagination($criteria->page, $criteria->pageSize);
     }
 
     /**

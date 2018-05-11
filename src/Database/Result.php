@@ -21,6 +21,7 @@ namespace Gibbon\Database;
 
 use PDO;
 use PDOStatement;
+use Gibbon\Domain\DataSet;
 
 /**
  * Helper methods to improve the intent and readability of database code.
@@ -32,23 +33,33 @@ class Result extends PDOStatement
         return $this->rowCount() == 0;
     }
 
-    public function hasRows()
+    public function isNotEmpty()
     {
         return $this->rowCount() > 0;
     }
 
+    public function fetchAny()
+    {
+        return $this->isNotEmpty()? $this->fetchAll() : array();
+    }
+
     public function fetchGrouped()
     {
-        return $this->hasRows()? $this->fetchAll(PDO::FETCH_GROUP) : array();
+        return $this->isNotEmpty()? $this->fetchAll(PDO::FETCH_GROUP) : array();
     }
 
     public function fetchGroupedByUnique()
     {
-        return $this->hasRows()? $this->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE) : array();
+        return $this->isNotEmpty()? $this->fetchAll(PDO::FETCH_GROUP|PDO::FETCH_UNIQUE) : array();
     }
 
     public function fetchKeyPair()
     {
-        return $this->hasRows()? $this->fetchAll(PDO::FETCH_KEY_PAIR) : array();
+        return $this->isNotEmpty()? $this->fetchAll(PDO::FETCH_KEY_PAIR) : array();
+    }
+
+    public function toDataSet($foundRows, $totalRows)
+    {
+        return new DataSet($this->fetchAll(), $foundRows, $totalRows);
     }
 }
