@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UserGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
     //Acess denied
@@ -59,32 +60,31 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo __($guid, 'View');
     echo '</h2>';
 
-    $gateway = $container->get('Gibbon\Domain\User\UserGateway');
+    $userGateway = $container->get(UserGateway::class);
     
     $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
 
-    $criteria = $gateway->newQueryCriteria()
+    $criteria = $userGateway->newQueryCriteria()
         ->searchBy($searchColumns, $search)
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
     
-    $queryResult = $gateway->queryAllUsers($criteria);
+    $queryResult = $userGateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
     $people = $queryResult->getColumn('gibbonPersonID');
-    $familyData = $gateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
+    $familyData = $userGateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
 
     $queryResult->joinColumn('gibbonPersonID', 'families', $familyData);
 
-    $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
-    $table = DataTable::createPaginatedTable('userManage', $queryResult, $criteria)->setPath($path);
+    $table = DataTable::create('userManage');
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
 
-    $table->addFilters([
+    $table->addFilterOptions([
         'role:student'    => __('Role').': '.__('Student'),
         'role:parent'     => __('Role').': '.__('Parent'),
         'role:staff'      => __('Role').': '.__('Staff'),
@@ -127,5 +127,5 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             ->setURL('/modules/User Admin/user_manage_password.php')
             ->setIcon('key');
 
-    echo $table->getOutput();
+    echo $table->renderToHTML($queryResult, $criteria);
 }

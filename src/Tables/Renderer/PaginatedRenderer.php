@@ -23,6 +23,7 @@ use Gibbon\Domain\QueryResult;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Tables\DataTable;
+use Gibbon\Tables\ActionColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 
 /**
@@ -31,7 +32,7 @@ use Gibbon\Tables\Renderer\RendererInterface;
  * @version v16
  * @since   v16
  */
-class PaginatedRenderer extends SimpleRenderer
+class PaginatedRenderer implements RendererInterface
 {
     protected $criteria;
     protected $factory;
@@ -65,13 +66,68 @@ class PaginatedRenderer extends SimpleRenderer
 
         $output .= '<div>';
         $output .= $this->renderPageCount($queryResult);
-        $output .= $this->renderPageFilters($queryResult, $table->getFilters());
+        $output .= $this->renderPageFilters($queryResult, $table->getFilterOptions());
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($queryResult, $table->getFilters());
+        $output .= $this->renderSelectFilters($queryResult, $table->getFilterOptions());
         $output .= $this->renderPageSize($queryResult);
         $output .= $this->renderPagination($queryResult);
 
-        $output .= parent::renderTable($table, $queryResult);
+        if ($queryResult->count() > 0) {
+            $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
+
+            // HEADING
+            $output .= '<thead>';
+            $output .= '<tr class="head">';
+            foreach ($table->getColumns() as $columnName => $column) {
+                $classes = array('column');
+                $style = array('width:' . $column->getWidth());
+
+                if ($column->getSortable()) {
+                    $classes[] = 'sortable';
+                }
+
+                if (isset($criteria->sortBy[$columnName])) {
+                    $classes[] = 'sorting sort'.$criteria->sortBy[$columnName];
+                }
+
+                if ($column instanceOf ActionColumn) {
+                    $style[] = 'min-width: '.$column->getWidth();
+                }
+                $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
+                $output .=  $column->getLabel();
+                $output .= '</th>';
+            }
+            $output .= '</tr>';
+            $output .= '</thead>';
+
+            // ROWS
+            $output .= '<tbody>';
+
+            foreach ($queryResult as $data) {
+                $output .= '<tr>';
+
+                foreach ($table->getColumns() as $columnName => $column) {
+                    $output .= '<td>';
+                    $output .= $column->getOutput($data);
+                    $output .= '</td>';
+                }
+
+                $output .= '</tr>';
+            }
+
+            $output .= '</tbody>';
+            $output .= '</table>';
+        } else {
+            if ($queryResult->isSubset()) {
+                $output .= '<div class="warning">';
+                $output .= __('No results matched your search.');
+                $output .= '</div>';
+            } else {
+                $output .= '<div class="error">';
+                $output .= __('There are no records to display.');
+                $output .= '</div>';
+            }
+        }
 
         $output .= $this->renderPageCount($queryResult);
         $output .= $this->renderPagination($queryResult);
@@ -130,7 +186,7 @@ class PaginatedRenderer extends SimpleRenderer
 
     protected function renderSelectFilters(QueryResult $queryResult, array $filters)
     {
-        if (empty($queryResult->getCriteria())) return '';
+        if (empty($this->criteria)) return '';
         if (empty($filters)) return '';
         
         return $this->factory->createSelect('filter')

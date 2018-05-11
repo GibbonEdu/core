@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
+use Gibbon\Database\Result;
 use Gibbon\Domain\QueryCriteria;
 
 /**
@@ -27,17 +28,24 @@ use Gibbon\Domain\QueryCriteria;
 class QueryResult implements \Countable, \IteratorAggregate
 {
     protected $data;
-    protected $criteria;
     
     protected $resultCount; 
     protected $totalCount; 
-
-    public function __construct(array $data, QueryCriteria $criteria, $resultCount = 0, $totalCount = 0)
+    protected $page; 
+    protected $pageSize; 
+    
+    public function __construct(array $data, $resultCount = null, $totalCount = null)
     {
         $this->data = $data;
-        $this->criteria = $criteria;
-        $this->resultCount = $resultCount;
-        $this->totalCount = $totalCount;
+        $this->resultCount = isset($resultCount) ? $resultCount : count($data);
+        $this->totalCount = isset($totalCount) ? $totalCount : count($data);
+        $this->page = 1;
+        $this->pageSize = count($data);
+    }
+
+    public static function createFromResult(Result $result, $resultCount = null, $totalCount = null)
+    {
+        return new static($result->fetchAll(), $resultCount, $totalCount);
     }
 
     /**
@@ -50,6 +58,14 @@ class QueryResult implements \Countable, \IteratorAggregate
         return count($this->data);
     }
 
+    public function setPagination($page, $pageSize)
+    {
+        $this->page = $page;
+        $this->pageSize = $pageSize;
+
+        return $this;
+    }
+
     /**
      * Implements IteratorAggregate, allowing this object to be looped over in a foreach.
      *
@@ -58,16 +74,6 @@ class QueryResult implements \Countable, \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
-    }
-
-    /**
-     * Get the criteria used to query for this result set.
-     *
-     * @return \QueryCriteria
-     */
-    public function getCriteria()
-    {
-        return $this->criteria;
     }
 
     /**
@@ -82,7 +88,7 @@ class QueryResult implements \Countable, \IteratorAggregate
     }
 
     /**
-     * The total number of rows in the table being queried, regardless of criteria.
+     * The total number of rows in the table being queried.
      *
      * @return int
      */
@@ -93,7 +99,7 @@ class QueryResult implements \Countable, \IteratorAggregate
 
     /**
      * The total un-paginated number of rows for this query. 
-     * Will be less than the $totalCount if the results have criteria applied.
+     * Will be less than the totalCount if the results have criteria applied.
      *
      * @return int
      */
@@ -109,7 +115,7 @@ class QueryResult implements \Countable, \IteratorAggregate
      */
     public function getPage()
     {
-        return $this->criteria->page;
+        return $this->page;
     }
 
     /**
@@ -119,7 +125,7 @@ class QueryResult implements \Countable, \IteratorAggregate
      */
     public function getPageSize()
     {
-        return $this->criteria->pageSize;
+        return $this->pageSize;
     }
 
     /**
@@ -129,7 +135,7 @@ class QueryResult implements \Countable, \IteratorAggregate
      */
     public function getPageCount()
     {
-        return ceil($this->resultCount / $this->criteria->pageSize);
+        return ceil($this->resultCount / $this->pageSize);
     }
 
     /**
@@ -139,7 +145,7 @@ class QueryResult implements \Countable, \IteratorAggregate
      */
     public function getPageFrom()
     {
-        return (($this->criteria->page-1) * $this->criteria->pageSize + 1);
+        return (($this->page-1) * $this->pageSize + 1);
     }
 
     /**
@@ -149,7 +155,7 @@ class QueryResult implements \Countable, \IteratorAggregate
      */
     public function getPageTo()
     {
-        return max(1, min( ($this->criteria->page * $this->criteria->pageSize), $this->resultCount));
+        return max(1, min( ($this->page * $this->pageSize), $this->resultCount));
     }
 
     /**

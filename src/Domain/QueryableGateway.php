@@ -80,7 +80,7 @@ abstract class QueryableGateway extends Gateway
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
 
-        return new QueryResult($result->fetchAll(), $criteria, $foundRows, $totalRows);
+        return QueryResult::createFromResult($result, $foundRows, $totalRows)->setPagination($criteria->page, $criteria->pageSize);
     }
 
     /**

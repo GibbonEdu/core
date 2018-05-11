@@ -19,13 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Domain\QueryResult;
+use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
-use Gibbon\Domain\QueryResult;
 use Gibbon\Tables\ActionColumn;
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
 
 /**
@@ -37,32 +36,21 @@ use Gibbon\Tables\Renderer\PaginatedRenderer;
 class DataTable
 {
     protected $id;
+    protected $path;
+
     protected $columns = array();
-    protected $filters = array();
+    protected $filterOptions = array();
     protected $actionLinks = array();
 
-    protected $queryResult;
-    protected $renderer;
-
-    public function __construct($id, QueryResult $queryResult, RendererInterface $renderer)
+    public function __construct($id, $path)
     {
         $this->id = $id;
-        $this->queryResult = $queryResult;
-        
-
-        $this->renderer = $renderer;
+        $this->path = $path;
     }
 
-    public static function createSimpleTable($id, QueryResult $queryResult)
+    public static function create($id)
     {
-        $renderer = new SimpleRenderer();
-        return new DataTable($id, $queryResult, $renderer);
-    }
-
-    public static function createPaginatedTable($id, QueryResult $queryResult, QueryCriteria $criteria)
-    {
-        $renderer = new PaginatedRenderer($criteria);
-        return new DataTable($id, $queryResult, $renderer);
+        return new static($id, '/fullscreen.php?q='.$_GET['q']);
     }
 
     public function getID()
@@ -70,16 +58,16 @@ class DataTable
         return $this->id;
     }
 
-    public function getPath()
-    {
-        return $this->path;
-    }
-
     public function setPath($path = '')
     {
         $this->path = $path;
 
         return $this;
+    }
+
+    public function getPath()
+    {
+        return $this->path;
     }
 
     public function addColumn($name, $label = '')
@@ -113,29 +101,33 @@ class DataTable
         return $this->actionLinks;
     }
 
-    public function addFilter($name, $label = '')
+    public function addFilterOption($name, $label = '')
     {
-        $this->filters[$name] = $label;
+        $this->filterOptions[$name] = $label;
 
         return $this;
     }
 
-    public function addFilters($filters)
+    public function addFilterOptions($filterOptions)
     {
-        $this->filters = array_replace($this->filters, $filters);
+        $this->filterOptions = array_replace($this->filterOptions, $filterOptions);
 
         return $this;
     }
 
-    public function getFilters()
+    public function getFilterOptions()
     {
-        return $this->filters;
+        return $this->filterOptions;
     }
 
-    public function getOutput()
+    public function renderToHTML(QueryResult $queryResult, QueryCriteria $criteria)
     {
-        return $this->renderer->renderTable($this, $this->queryResult);
+        $renderer = new PaginatedRenderer($criteria);
+        return $renderer->renderTable($this, $queryResult);
     }
 
-    
+    public function renderWith(RendererInterface $renderer, QueryResult $queryResult)
+    {
+        return $renderer->renderTable($this, $queryResult);
+    }
 }
