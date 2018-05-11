@@ -32,6 +32,12 @@ class UserGateway extends QueryableGateway
 {
     protected static $tableName = 'gibbonPerson';
 
+    /**
+     * Queries the list of users for the Manage Users page.
+     *
+     * @param QueryCriteria $criteria
+     * @return QueryResult
+     */
     public function queryAllUsers(QueryCriteria $criteria)
     {
         $query = $this
@@ -67,6 +73,12 @@ class UserGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    /**
+     * Selects the family info for a subset of users. Primarily used to join family data to the queryAllUsers results.
+     *
+     * @param string|array $gibbonPersonIDList
+     * @return Result
+     */
     public function selectFamilyDetailsByPersonID($gibbonPersonIDList)
     {
         $idList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
@@ -83,6 +95,6 @@ class UserGateway extends QueryableGateway
             WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :idList)
         ) ORDER BY gibbonFamilyID";
 
-        return $this->db->select($sql, $data);
+        return $this->db()->select($sql, $data);
     }
 }

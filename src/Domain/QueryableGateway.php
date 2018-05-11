@@ -26,34 +26,70 @@ use Gibbon\Domain\QueryResult;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
 
+/**
+ * Queryable Gateway
+ *
+ * @version v16
+ * @since   v16
+ */
 abstract class QueryableGateway extends Gateway
 {
     use TableAware;
 
+    /**
+     * Internal QueryFactory.
+     *
+     * @var QueryFactory
+     */
     private static $queryFactory;
 
+    /**
+     * Creates a new QueryCriteria instance.
+     *
+     * @param array $values
+     * @return QueryCriteria
+     */
     public function newQueryCriteria($values = [])
     {
         return new QueryCriteria($values);
     }
 
+    /**
+     * Creates a new instance of the Select class using the current database table.
+     *
+     * @return SelectInterface
+     */
     protected function newQuery()
     {
         return $this->getQueryFactory()->newSelect()->from($this->getTableName());
     }
 
+    /**
+     * Runs a query with a defined set of criteria and returns the result as an object with pagination data.
+     *
+     * @param SelectInterface $query
+     * @param QueryCriteria $criteria
+     * @return QueryResult
+     */
     protected function runQuery(SelectInterface $query, QueryCriteria $criteria)
     {
         $query = $this->applyCriteria($query, $criteria);
 
-        $result = $this->db->select($query->getStatement(), $query->getBindValues());
+        $result = $this->db()->select($query->getStatement(), $query->getBindValues());
 
-        $foundRows = $this->db->selectOne("SELECT FOUND_ROWS()");
-        $totalRows = $this->db->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
-        
-        return new QueryResult($result->fetchAll(), $criteria->toArray(), $foundRows, $totalRows);
+        $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
+        $totalRows = $this->countAll();
+
+        return new QueryResult($result->fetchAll(), $criteria, $foundRows, $totalRows);
     }
 
+    /**
+     * Applies a set of criteria to an existing query and returns the resulting query.
+     *
+     * @param SelectInterface $query
+     * @param QueryCriteria $criteria
+     * @return SelectInterface
+     */
     private function applyCriteria(SelectInterface $query, QueryCriteria $criteria)
     {
         $query->calcFoundRows();
@@ -81,13 +117,18 @@ abstract class QueryableGateway extends Gateway
             $query->orderBy(["{$column} {$direction}"]);
         }
 
-        // Limit & Offset
+        // Pagination
         $query->setPaging($criteria->pageSize);
         $query->page($criteria->page);
 
         return $query;
     }
 
+    /**
+     * Gets the internal QueryFactory. Lazy-loaded and static to maintain a single instance.
+     *
+     * @return QueryFactory
+     */
     private function getQueryFactory()
     {
         if (!isset(self::$queryFactory)) {

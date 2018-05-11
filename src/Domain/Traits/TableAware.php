@@ -21,28 +21,45 @@ namespace Gibbon\Domain\Traits;
 
 trait TableAware
 {
+    /**
+     * The database table name. Inheriting classes must set this.
+     *
+     * @var string
+     */
     protected static $tableName;
 
-    protected static $columns;   
-
-    // SCHEMA-RELATED
-
+    /**
+     * Gets the database table name.
+     *
+     * @return string
+     */
     protected function getTableName()
     {
         if (empty(static::$tableName)) {
-            throw new \Exception(get_called_class().' must define a $tableName');
+            throw new \BadMethodCallException(get_called_class().' must define a $tableName');
         }
 
         return static::$tableName;
     }
 
+    /**
+     * Gets the total number of rows in this database table.
+     *
+     * @return int
+     */
+    protected function countAll()
+    {
+        return $this->db()->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
+    }
+
+    /**
+     * Gets the schema information for the columns in this database table.
+     *
+     * @return array
+     */
     protected function getColumns()
     {
-        if (!isset(static::$columns)) {
-            $result = $this->db->select("SELECT DISTINCT(column_name), data_type FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
-            static::$columns = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();       
-        }
-
-        return static::$columns;
+        $result = $this->db()->select("SELECT * FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
+        return $result->rowCount() > 0 ? $result->fetchAll() : array();
     }
 }

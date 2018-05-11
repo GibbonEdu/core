@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
+use Gibbon\Domain\QueryCriteria;
+
 /**
  * Object representing the paginated results of a Gateway query.
  */
@@ -30,7 +32,7 @@ class QueryResult implements \Countable, \IteratorAggregate
     protected $resultCount; 
     protected $totalCount; 
 
-    public function __construct(array $data, array $criteria, $resultCount = 0, $totalCount = 0)
+    public function __construct(array $data, QueryCriteria $criteria, $resultCount = 0, $totalCount = 0)
     {
         $this->data = $data;
         $this->criteria = $criteria;
@@ -38,76 +40,142 @@ class QueryResult implements \Countable, \IteratorAggregate
         $this->totalCount = $totalCount;
     }
 
+    /**
+     * Implements \Countable, allowing the data set to be counted.
+     *
+     * @return int
+     */
     public function count()
     {
         return count($this->data);
     }
 
+    /**
+     * Implements IteratorAggregate, allowing this object to be looped over in a foreach.
+     *
+     * @return \ArrayIterator
+     */
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
     }
 
-    public function arrayColumn($column)
-    {
-        return array_column($this->data, $column);
-    }
-
+    /**
+     * Get the criteria used to query for this result set.
+     *
+     * @return \QueryCriteria
+     */
     public function getCriteria()
     {
         return $this->criteria;
     }
 
-    public function hasResults()
-    {
-        return !empty($this->data);
-    }
-
+    /**
+     * This result is a subset of the whole table if searches or filters have been applied.
+     * Ignores paginated row counts and looks at the total results vs the total table size.
+     *
+     * @return bool
+     */
     public function isSubset()
     {
         return $this->totalCount > 0 && ($this->totalCount != $this->resultCount);
     }
 
+    /**
+     * The total number of rows in the table being queried, regardless of criteria.
+     *
+     * @return int
+     */
     public function getTotalCount()
     {
         return $this->totalCount;
     }
 
+    /**
+     * The total un-paginated number of rows for this query. 
+     * Will be less than the $totalCount if the results have criteria applied.
+     *
+     * @return int
+     */
     public function getResultCount()
     {
         return $this->resultCount;
     }
 
+    /**
+     * The current page number, counting from 1.
+     *
+     * @return int
+     */
     public function getPage()
     {
-        return $this->criteria['page'];
+        return $this->criteria->page;
     }
 
+    /**
+     * The number of rows per page in this result set.
+     *
+     * @return int
+     */
     public function getPageSize()
     {
-        return $this->criteria['pageSize'];
+        return $this->criteria->pageSize;
     }
 
+    /**
+     * The total number of pages in this result set.
+     *
+     * @return int
+     */
     public function getPageCount()
     {
-        return ceil($this->resultCount / $this->criteria['pageSize']);
+        return ceil($this->resultCount / $this->criteria->pageSize);
     }
 
-    public function getPageLowerBounds()
+    /**
+     * The row number for the lower bounds of the current page.
+     *
+     * @return int
+     */
+    public function getPageFrom()
     {
-        return (($this->criteria['page']-1) * $this->criteria['pageSize'] + 1);
+        return (($this->criteria->page-1) * $this->criteria->pageSize + 1);
     }
 
-    public function getPageUpperBounds()
+    /**
+     * The row number for the upper bounds of the current page.
+     *
+     * @return int
+     */
+    public function getPageTo()
     {
-        return max(1, min( ($this->criteria['page'] * $this->criteria['pageSize']), $this->resultCount));
+        return max(1, min( ($this->criteria->page * $this->criteria->pageSize), $this->resultCount));
     }
 
-    public function joinResults($keyField, $joinField, &$joinData)
+    /**
+     * Extract a single column from the result set as an array.
+     *
+     * @param string $columnName
+     * @return void
+     */
+    public function getColumn($columnName)
     {
-        array_walk($this->data, function(&$item) use ($keyField, $joinField, &$joinData){
-            $key = $item[$keyField];
-            $item[$joinField] = isset($joinData[$key])? $joinData[$key] : array();
+        return array_column($this->data, $columnName);
+    }
+
+    /**
+     * Joins a column of data to the result set based on a common key in both data.
+     *
+     * @param string $keyName
+     * @param string $columnName
+     * @param array $columnData
+     * @return void
+     */
+    public function joinColumn($keyName, $columnName, &$columnData)
+    {
+        array_walk($this->data, function(&$item) use ($keyName, $columnName, &$columnData){
+            $key = $item[$keyName];
+            $item[$columnName] = isset($columnData[$key])? $columnData[$key] : array();
             return $item;
         });
     }

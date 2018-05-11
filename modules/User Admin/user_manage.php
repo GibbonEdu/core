@@ -17,9 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
     //Acess denied
@@ -66,19 +65,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $criteria = $gateway->newQueryCriteria()
         ->searchBy($searchColumns, $search)
-        ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+        ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
     
     $queryResult = $gateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
-    $people = $queryResult->arrayColumn('gibbonPersonID');
+    $people = $queryResult->getColumn('gibbonPersonID');
     $familyData = $gateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
 
-    $queryResult->joinResults('gibbonPersonID', 'families', $familyData);
+    $queryResult->joinColumn('gibbonPersonID', 'families', $familyData);
 
     $path = '/fullscreen.php?q='.$_SESSION[$guid]['address'];
-    $table = DataTable::createFromQueryResult('userManage', $queryResult)->setPath($path);
+    $table = DataTable::createPaginatedTable('userManage', $queryResult, $criteria)->setPath($path);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
@@ -89,24 +88,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         'role:student'    => __('Role').': '.__('Student'),
         'role:parent'     => __('Role').': '.__('Parent'),
         'role:staff'      => __('Role').': '.__('Staff'),
-
         'status:full'     => __('Status').': '.__('Full'),
         'status:left'     => __('Status').': '.__('Left'),
         'status:expected' => __('Status').': '.__('Expected'),
-
         'date:starting'   => __('Before Start Date'),
         'date:ended'      => __('After End Date'),
     ]);
 
     $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
         return getUserPhoto($guid, $item['image_240'], 75);
-    })->setSortable(false)->setWidth('10%');
+    })->setWidth('10%');
 
     $table->addColumn('fullName', __('Name'))->format(function($item) {
         return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
-    })->setWidth('30%')->setSortable(false);
+    })->setWidth('30%')->sortable(['surname', 'preferredName']);
 
-    $table->addColumn('status', __('Status'))->setWidth('10%');
+    $table->addColumn('status', __('Status'))->sortable()->setWidth('10%');
     $table->addColumn('primaryRole', __('Primary Role'))->setWidth('16%');
 
     $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
@@ -115,12 +112,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
         }
         return $output;
-    })->setSortable(false);
+    });
 
     $table->addColumn('username', __('Username'));
 
     $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $search);
-
         $col->addAction('edit', __('Edit'))
             ->setURL('/modules/User Admin/user_manage_edit.php');
 

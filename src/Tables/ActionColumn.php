@@ -34,7 +34,7 @@ class ActionColumn extends Column
     {
         $this->name = 'actions';
         $this->setLabel(__('Actions'));
-        $this->setSortable(false);
+        $this->sortable(false);
     }
 
     public function addAction($name, $label = '')

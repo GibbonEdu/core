@@ -17,42 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain;
+namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Contracts\Database\Connection;
+use Gibbon\Domain\QueryResult;
+use Gibbon\Tables\DataTable;
 
-/**
- * Gateway
- *
- * @version v16
- * @since   v16
- */
-abstract class Gateway
+interface RendererInterface
 {
-    /**
-     * The internal PDO connection.
-     * 
-     * @var Connection
-     */
-    private $db;
-
-    /**
-     * Create a new gateway instance using the supplied database connection.
-     * 
-     * @param Connection $db
-     */
-    public function __construct(Connection $db)
-    {
-        $this->db = $db;
-    }
-    
-    /**
-     * Inheriting classes can get the current database connection.
-     *
-     * @return Connection
-     */
-    protected function db()
-    {
-        return $this->db;
-    }
+    public function renderTable(DataTable $table, QueryResult $queryResult);
 }

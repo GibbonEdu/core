@@ -33,7 +33,7 @@ class Column
     protected $description;
     protected $width = 'auto';
 
-    protected $sortable = true;
+    protected $sortable = false;
     protected $formatter;
 
     public function __construct($name, $label = '')
@@ -90,9 +90,9 @@ class Column
         return $this->description;
     }
 
-    public function setSortable($value = true) 
+    public function sortable($value = '') 
     {
-        $this->sortable = $value;
+        $this->sortable = ($value === '') ? $this->name : $value;
 
         return $this;
     }

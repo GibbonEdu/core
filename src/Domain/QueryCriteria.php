@@ -186,6 +186,21 @@ class QueryCriteria
         return $this;
     }
 
+    public function hasSearch()
+    {
+        return !empty($criteria['searchBy']);
+    }
+
+    public function hasFilters()
+    {
+        return !empty($criteria['filterBy']);
+    }
+
+    public function hasSort()
+    {
+        return !empty($criteria['sortBy']);
+    }
+
     protected function sanitizeArray($criteria)
     {
         return array(
