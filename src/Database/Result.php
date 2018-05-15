@@ -58,8 +58,8 @@ class Result extends PDOStatement
         return $this->isNotEmpty()? $this->fetchAll(PDO::FETCH_KEY_PAIR) : array();
     }
 
-    public function toDataSet($foundRows, $totalRows)
+    public function toDataSet()
     {
-        return new DataSet($this->fetchAll(), $foundRows, $totalRows);
+        return new DataSet($this->fetchAll());
     }
 }

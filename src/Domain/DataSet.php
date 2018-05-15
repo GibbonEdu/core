@@ -28,16 +28,46 @@ class DataSet implements \Countable, \IteratorAggregate
     
     protected $resultCount; 
     protected $totalCount; 
+
     protected $page; 
     protected $pageSize; 
     
-    public function __construct(array $data, $resultCount = null, $totalCount = null)
+    public function __construct(array $data)
     {
         $this->data = $data;
-        $this->resultCount = isset($resultCount) ? $resultCount : count($data);
-        $this->totalCount = isset($totalCount) ? $totalCount : count($data);
-        $this->page = 1;
-        $this->pageSize = count($data);
+
+        $this->setResultCount();
+        $this->setPagination(1);
+    }
+
+    /**
+     * Sets the result count (that this page may be a subset of), and the total count of all possible results.
+     *
+     * @param int $resultCount
+     * @param int $totalCount
+     * @return self
+     */
+    public function setResultCount($resultCount = null, $totalCount = null)
+    {
+        $this->resultCount = isset($resultCount) ? $resultCount : $this->count();
+        $this->totalCount = isset($totalCount) ? $totalCount : $this->resultCount;
+
+        return $this;
+    }
+
+    /**
+     * Set the page and pageSize for the data set.
+     *
+     * @param int $page
+     * @param int $pageSize
+     * @return self
+     */
+    public function setPagination($page, $pageSize = null)
+    {
+        $this->page = $page;
+        $this->pageSize = isset($pageSize)? $pageSize : $this->count();
+
+        return $this;
     }
 
     /**
@@ -50,14 +80,6 @@ class DataSet implements \Countable, \IteratorAggregate
         return count($this->data);
     }
 
-    public function setPagination($page, $pageSize)
-    {
-        $this->page = $page;
-        $this->pageSize = $pageSize;
-
-        return $this;
-    }
-
     /**
      * Implements IteratorAggregate, allowing this object to be looped over in a foreach.
      *
@@ -66,6 +88,11 @@ class DataSet implements \Countable, \IteratorAggregate
     public function getIterator()
     {
         return new \ArrayIterator($this->data);
+    }
+
+    public function toArray()
+    {
+        return $this->data;
     }
 
     /**
@@ -90,7 +117,7 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
-     * The total un-paginated number of rows for this query. 
+     * The total un-paginated number of rows for this data set. 
      * Will be less than the totalCount if the results have criteria applied.
      *
      * @return int
