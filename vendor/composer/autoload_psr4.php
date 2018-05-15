@@ -10,4 +10,5 @@ return array(
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
     'Interop\\Container\\' => array($vendorDir . '/container-interop/container-interop/src/Interop/Container'),
     'Gibbon\\' => array($baseDir . '/src', $baseDir . '/src/Gibbon'),
+    'Aura\\SqlQuery\\' => array($vendorDir . '/aura/sqlquery/src'),
 );
