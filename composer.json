@@ -15,7 +15,8 @@
         "ext-mbstring": "*",
         "ext-gettext": "*",
         "ext-PDO": "*",
-        "league/container": "^2.4"
+        "league/container": "^2.4",
+        "aura/sqlquery": "3.*-dev"
     },
     "require-dev": {
     },
