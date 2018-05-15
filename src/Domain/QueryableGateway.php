@@ -19,11 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Gibbon\Contracts\Database\Connection;
-use Gibbon\Domain\Traits\TableAware;
-use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\DataSet;
 use Aura\SqlQuery\QueryFactory;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\Traits\TableAware;
 use Aura\SqlQuery\Common\SelectInterface;
 
 /**
@@ -49,9 +47,9 @@ abstract class QueryableGateway extends Gateway
      * @param array $values
      * @return QueryCriteria
      */
-    public function newQueryCriteria($values = [])
+    public function newQueryCriteria()
     {
-        return new QueryCriteria($values);
+        return new QueryCriteria();
     }
 
     /**
@@ -80,7 +78,7 @@ abstract class QueryableGateway extends Gateway
         $foundRows = $this->db()->selectOne("SELECT FOUND_ROWS()");
         $totalRows = $this->countAll();
 
-        return $result->toDataSet($foundRows, $totalRows)->setPagination($criteria->page, $criteria->pageSize);
+        return $result->toDataSet()->setResultCount($foundRows, $totalRows)->setPagination($criteria->getPage(), $criteria->getPageSize());
     }
 
     /**
@@ -95,7 +93,7 @@ abstract class QueryableGateway extends Gateway
         $query->calcFoundRows();
 
         // Filter By
-        foreach ($criteria->filterBy as $name) {
+        foreach ($criteria->getFilters() as $name) {
             list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
             if ($callback = $criteria->getFilter($name)) {
                 $query = $callback($query, $value);
@@ -105,7 +103,8 @@ abstract class QueryableGateway extends Gateway
         // Search By
         $query->where(function($query) use ($criteria) {
             $count = 0;
-            foreach ($criteria->searchBy as $column => $text) {
+            foreach ($criteria->getSearch() as $column => $text) {
+                $column = $this->escapeIdentifier($column);
                 $query->orWhere("{$column} LIKE :search{$count}");
                 $query->bindValue(":search{$count}", "%$text%");
                 $count++;
@@ -113,13 +112,14 @@ abstract class QueryableGateway extends Gateway
         });
         
         // Sort By
-        foreach ($criteria->sortBy as $column => $direction) {
+        foreach ($criteria->getSort() as $column => $direction) {
+            $column = $this->escapeIdentifier($column);
             $query->orderBy(["{$column} {$direction}"]);
         }
 
         // Pagination
-        $query->setPaging($criteria->pageSize);
-        $query->page($criteria->page);
+        $query->setPaging($criteria->getPageSize());
+        $query->page($criteria->getPage());
 
         return $query;
     }
@@ -136,5 +136,12 @@ abstract class QueryableGateway extends Gateway
         }
 
         return self::$queryFactory;
+    }
+
+    protected function escapeIdentifier($value)
+    {
+        return implode('.', array_map(function ($piece) {
+            return '`' . str_replace('`', '``', $piece) . '`';
+        }, explode('.', $value, 2)));
     }
 }

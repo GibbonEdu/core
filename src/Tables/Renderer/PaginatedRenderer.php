@@ -86,8 +86,8 @@ class PaginatedRenderer implements RendererInterface
                     $classes[] = 'sortable';
                 }
 
-                if (isset($criteria->sortBy[$columnName])) {
-                    $classes[] = 'sorting sort'.$criteria->sortBy[$columnName];
+                if ($this->criteria->hasSort($columnName)) {
+                    $classes[] = 'sorting sort'.$this->criteria->sortBy[$columnName];
                 }
 
                 if ($column instanceOf ActionColumn) {
@@ -165,7 +165,7 @@ class PaginatedRenderer implements RendererInterface
 
         $output = '<span class="small" style="line-height: 32px;">';
 
-        $filterBy = $this->criteria->filterBy;
+        $filterBy = $this->criteria->getFilters();
 
         if (!empty($filterBy)) {
             $output .= __('Filtered by').' ';
