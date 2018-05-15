@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address']).'/planner_add.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
@@ -294,6 +298,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         $URL .= "&return=success0&editID=".$AI.$params;
                         header("Location: {$URL}");
                     }
+                }
+
+                //Notify participants
+                if (isset($_POST['notify'])) {
+                    //Create notification for all people in class except me
+                    $notificationGateway = new NotificationGateway($pdo);
+                    $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+    
+                    try {
+                        $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
+                        $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
+                        $resultClassGroup = $connection2->prepare($sqlClassGroup);
+                        $resultClassGroup->execute($dataClassGroup);
+                    } catch (PDOException $e) {
+                        $URL .= "&return=warning1$params";
+                        header("Location: {$URL}");
+                        exit();
+                    }
+                    while ($rowClassGroup = $resultClassGroup->fetch()) {
+                        if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], sprintf(__('Lesson “%1$s” has been created.'), $name), "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$AI&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID");
+                        }
+                    }
+                    $notificationSender->sendNotifications();
                 }
             }
         }
