@@ -401,7 +401,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                             while ($rowClassGroup = $resultClassGroup->fetch()) {
                                 if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
-                                    $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], sprintf(__('Lesson “%1$s” has been updated.'), $name), "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$AI&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID");
+                                    $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], sprintf(__('Lesson “%1$s” has been updated.'), $name), "Planner", "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID");
                                 }
                             }
                             $notificationSender->sendNotifications();
