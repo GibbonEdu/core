@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain;
 
-use Aura\SqlQuery\QueryFactory;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Domain\Traits\TableAware;
+use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
 
 /**
@@ -32,8 +31,6 @@ use Aura\SqlQuery\Common\SelectInterface;
  */
 abstract class QueryableGateway extends Gateway
 {
-    use TableAware;
-
     /**
      * Internal QueryFactory.
      *
@@ -53,13 +50,13 @@ abstract class QueryableGateway extends Gateway
     }
 
     /**
-     * Creates a new instance of the Select class using the current database table.
+     * Creates a new instance of the Select class.
      *
      * @return SelectInterface
      */
     protected function newQuery()
     {
-        return $this->getQueryFactory()->newSelect()->from($this->getTableName());
+        return $this->getQueryFactory()->newSelect();
     }
 
     /**
@@ -80,6 +77,13 @@ abstract class QueryableGateway extends Gateway
 
         return $result->toDataSet()->setResultCount($foundRows, $totalRows)->setPagination($criteria->getPage(), $criteria->getPageSize());
     }
+
+    /**
+     * Inheriting classes must define this. Commonly provided through the TableAware trait.
+     *
+     * @return int
+     */
+    protected abstract function countAll();
 
     /**
      * Applies a set of criteria to an existing query and returns the resulting query.

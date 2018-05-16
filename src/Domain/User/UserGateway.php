@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\User;
 
-use Gibbon\Domain\QueryableGateway;
+use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
 /**
  * User Gateway
@@ -30,6 +31,8 @@ use Gibbon\Domain\QueryCriteria;
  */
 class UserGateway extends QueryableGateway
 {
+    use TableAware;
+
     protected static $tableName = 'gibbonPerson';
 
     /**
@@ -42,6 +45,7 @@ class UserGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
+            ->from($this->getTableName())
             ->cols([
                 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.username', 
                 'gibbonPerson.image_240', 'gibbonPerson.status', 'gibbonRole.name as primaryRole'

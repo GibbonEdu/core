@@ -19,14 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Traits;
 
+/**
+ * Provides methods for Gateway classes that are tied to a specific database table.
+ * For QueryableGateways, this trait implements the required countAll() method.
+ * 
+ * The classes using this trait must implement a static $tableName;
+ */
 trait TableAware
 {
     /**
-     * The database table name. Inheriting classes must set this.
+     * Internal array of column name => data type.
      *
-     * @var string
+     * @var array
      */
-    protected static $tableName;
     protected static $columns;
 
     /**
