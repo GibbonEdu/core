@@ -39,7 +39,7 @@ trait TableAware
      *
      * @return string
      */
-    protected function getTableName()
+    public function getTableName()
     {
         if (empty(static::$tableName)) {
             throw new \BadMethodCallException(get_called_class().' must define a $tableName');
@@ -49,38 +49,33 @@ trait TableAware
     }
 
     /**
-     * Gets the total number of rows in this database table.
-     *
-     * @return int
-     */
-    protected function countAll()
-    {
-        return $this->db()->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
-    }
-
-    /**
-     * Checks to see if the named column exists in the table schema.
-     *
-     * @param string $columnName
-     * @return bool
-     */
-    protected function hasTableColumn($columnName) 
-    {
-        return isset($this->getTableColumns()[$columnName]);
-    }
-
-    /**
      * Gets the schema information for the columns in this database table.
      *
      * @return array
      */
-    protected function getTableColumns()
+    public function getTableSchema()
     {
-        if (empty(static::$columns)) {
-            $result = $this->db()->select("SELECT DISTINCT `COLUMN_NAME`, `DATA_TYPE` FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
-            static::$columns = $result->fetchKeyPair();
-        }
+        $result = $this->db()->select("SELECT * FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
+        return $result->fetchAll();
+    }
 
-        return static::$columns;
+    /**
+     * Get an internal pre-defined array of column names that are searchable.
+     *
+     * @return array
+     */
+    public function getSearchableColumns()
+    {
+        return isset(self::$searchableColumns)? self::$searchableColumns : [];
+    }
+    
+    /**
+     * Gets the total number of rows in this database table.
+     *
+     * @return int
+     */
+    public function countAll()
+    {
+        return $this->db()->selectOne("SELECT COUNT(*) FROM `{$this->getTableName()}`");
     }
 }

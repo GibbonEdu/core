@@ -79,13 +79,6 @@ abstract class QueryableGateway extends Gateway
     }
 
     /**
-     * Inheriting classes must define this. Commonly provided through the TableAware trait.
-     *
-     * @return int
-     */
-    protected abstract function countAll();
-
-    /**
      * Applies a set of criteria to an existing query and returns the resulting query.
      *
      * @param SelectInterface $query
@@ -108,14 +101,16 @@ abstract class QueryableGateway extends Gateway
 
         // Search By
         if ($criteria->hasSearchColumn() && $criteria->hasSearchText()) {
-            $query->where(function($query) use ($criteria) {
-                $count = 0;
+            $searchable = $this->getSearchableColumns();
+
+            $query->where(function($query) use ($criteria, $searchable) {
                 $search = $criteria->getSearchBy();
-                foreach ($search['columns'] as $column) {
+                foreach ($search['columns'] as $count => $column) {
+                    if (!in_array($column, $searchable)) continue;
+
                     $column = $this->escapeIdentifier($column);
                     $query->orWhere("{$column} LIKE :search{$count}");
                     $query->bindValue(":search{$count}", "%{$search['text']}%");
-                    $count++;
                 }
             });
         }
@@ -134,6 +129,20 @@ abstract class QueryableGateway extends Gateway
 
         return $query;
     }
+
+    /**
+     * The total count of all queryable rows. Commonly provided through the TableAware trait.
+     *
+     * @return int
+     */
+    protected abstract function countAll();
+
+    /**
+     * The column names that are valid when searching. Commonly provided through the TableAware trait.
+     *
+     * @return array
+     */
+    protected abstract function getSearchableColumns();
 
     /**
      * Gets the internal QueryFactory. Lazy-loaded and static to maintain a single instance.

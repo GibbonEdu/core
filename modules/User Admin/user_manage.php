@@ -63,9 +63,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $userGateway = $container->get(UserGateway::class);
     
     // QUERY
-    $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
     $criteria = $userGateway->newQueryCriteria()
-        ->searchBy($searchColumns, $search)
+        ->searchBy($userGateway->getSearchableColumns(), $search)
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
 

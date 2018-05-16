@@ -33,8 +33,10 @@ class UserGateway extends QueryableGateway
 {
     use TableAware;
 
-    protected static $tableName = 'gibbonPerson';
+    private static $tableName = 'gibbonPerson';
 
+    private static $searchableColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
+    
     /**
      * Queries the list of users for the Manage Users page.
      *
@@ -54,8 +56,10 @@ class UserGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'in' => function ($query, $columnName) use (&$criteria) {
-                if ($this->hasTableColumn($columnName)) {
+                if (in_array($columnName, $this->getSearchableColumns())) {
                     $criteria->searchBy($columnName);
+                } else {
+                    $criteria->fromArray(['filterBy' => []]);
                 }
                 return $query;
             },

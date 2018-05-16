@@ -52,20 +52,20 @@ class QueryCriteria
             $this->pageSize($criteria['pageSize']);
         }
 
-        if (isset($criteria['searchBy'])) {
+        if (isset($criteria['searchBy']) && is_array($criteria['searchBy'])) {
             $columns = isset($criteria['searchBy']['columns'])? $criteria['searchBy']['columns'] : '';
             $text = isset($criteria['searchBy']['text'])? $criteria['searchBy']['text'] : '';
             $this->searchBy($columns, $text);
         }
 
-        if (isset($criteria['filterBy'])) {
+        if (isset($criteria['filterBy']) && is_array($criteria['filterBy'])) {
             $this->criteria['filterBy'] = [];
             foreach ($criteria['filterBy'] as $filter) {
                 $this->filterBy($filter);
             }
         }
 
-        if (isset($criteria['sortBy'])) {
+        if (isset($criteria['sortBy']) && is_array($criteria['sortBy'])) {
             $this->criteria['sortBy'] = [];
             foreach ($criteria['sortBy'] as $column => $direction) {
                 $this->sortBy($column, $direction);
