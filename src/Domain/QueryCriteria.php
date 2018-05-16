@@ -34,7 +34,7 @@ class QueryCriteria
         'sortBy' => array(),
     );
 
-    protected $definitions = array();
+    protected $rules = array();
 
     /**
      * Loads and sanitizes a set of criteria from array.
@@ -50,6 +50,26 @@ class QueryCriteria
 
         if (isset($criteria['pageSize'])) {
             $this->pageSize($criteria['pageSize']);
+        }
+
+        if (isset($criteria['searchBy'])) {
+            $columns = isset($criteria['searchBy']['columns'])? $criteria['searchBy']['columns'] : '';
+            $text = isset($criteria['searchBy']['text'])? $criteria['searchBy']['text'] : '';
+            $this->searchBy($columns, $text);
+        }
+
+        if (isset($criteria['filterBy'])) {
+            $this->criteria['filterBy'] = [];
+            foreach ($criteria['filterBy'] as $filter) {
+                $this->filterBy($filter);
+            }
+        }
+
+        if (isset($criteria['sortBy'])) {
+            $this->criteria['sortBy'] = [];
+            foreach ($criteria['sortBy'] as $column => $direction) {
+                $this->sortBy($column, $direction);
+            }
         }
 
         return $this;
@@ -87,24 +107,91 @@ class QueryCriteria
     }
 
     /**
-     * Add a search string to the criteria. 
+     * Sets the page number for paginated queries, applied to the sql offset.
+     * 
+     * @param int $page
+     * @return self
+     */
+    public function page($page)
+    {
+        $this->criteria['page'] = max(1, intval($page));
+
+        return $this;
+    }
+
+    /**
+     * Gets the page number.
+     *
+     * @return int
+     */
+    public function getPage()
+    {
+        return $this->criteria['page'];
+    }
+
+    /**
+     * Sets the page size for paginated queries, applied to the sql limit.
+     * @param int $pageSize
+     * @return self
+     */
+    public function pageSize($pageSize)
+    {
+        $this->criteria['pageSize'] = max(1, intval($pageSize));
+
+        return $this;
+    }
+
+    /**
+     * Gets the page size.
+     *
+     * @return int
+     */
+    public function getPageSize()
+    {
+        return $this->criteria['pageSize'];
+    }
+
+    /**
+     * Add a search string to the criteria for the specified columns.
      * Accepts $column as a string or an array of columns to search.
+     * Omitting the $text value will modify the columns for the current search.
      * 
      * @param string|array $column
      * @param string $search
      * @return self
      */
-    public function searchBy($column, $search)
+    public function searchBy($column, $text = null)
     {
-        if (trim($search) == '') return $this;
-
         $columns = is_array($column) ? $column : array($column);
+        $columns = array_filter($columns);
 
-        foreach ($columns as $column) {
-            $this->criteria['searchBy'][$column] = trim($search);
+        if (!empty($columns)) {
+            $this->criteria['searchBy']['columns'] =  $columns;
+        }
+
+        if (!is_null($text)) {
+            $this->criteria['searchBy']['text'] = $this->applyAdvancedSearchFilters($text);
         }
 
         return $this;
+    }
+
+    /**
+     * Allows filters to be added to the search string as foo:bar or foo:"bar baz"
+     * Removes each filter from the string and adds it to the criteria.
+     *
+     * @param string $text
+     * @return string
+     */
+    private function applyAdvancedSearchFilters($text)
+    {
+        $filters = [];
+        $text = preg_replace_callback('/(\w*\:\w*|(?:"[^"]*"))+/', function ($matches) use (&$filters) {
+            $this->filterBy($matches[0]);
+            return '';
+        }, $text);
+
+        return trim($text);
     }
 
     /**
@@ -112,20 +199,30 @@ class QueryCriteria
      *
      * @return bool
      */
-    public function hasSearch($column = null)
+    public function hasSearchColumn($column = null)
     {
-        return !is_null($column) ? isset($this->criteria['searchBy'][$column]) : !empty($this->criteria['searchBy']);
+        return !is_null($column) ? in_array($column, $this->criteria['searchBy']['columns']) : !empty(array_filter($this->criteria['searchBy']['columns']));
     }
 
     /**
-     * Get the search value by column name, or return all search columns if none is specified.
+     * Does the criteria have any search values set, by column or in total?
+     *
+     * @return bool
+     */
+    public function hasSearchText()
+    {
+        return !empty($this->criteria['searchBy']['text']);
+    }
+
+    /**
+     * Get all the search values, if any.
      *
      * @param string $column
      * @return string|array
      */
-    public function getSearch($column = null)
+    public function getSearchBy()
     {
-        return isset($this->criteria['searchBy'][$column]) ? $this->criteria['searchBy'][$column] : $this->criteria['searchBy'];
+        return isset($this->criteria['searchBy']) ? $this->criteria['searchBy'] : array();
     }
 
     /**
@@ -151,23 +248,23 @@ class QueryCriteria
     }
 
     /**
-     * Does the criteria have any filters set?
+     * Does the criteria have a filter set, by name or in total?
      *
      * @return bool
      */
-    public function hasFilters()
+    public function hasFilter($name = null)
     {
-        return !empty($this->criteria['filterBy']);
+        return !is_null($name)? in_array($name, $this->criteria['filterBy']) : !empty($this->criteria['filterBy']);
     }
 
     /**
-     * Get the criteria filters, if any.
+     * Get all the criteria filters, if any.
      *
      * @return array
      */
-    public function getFilters()
+    public function getFilterBy()
     {
-        return $this->hasFilters()? $this->criteria['filterBy'] : array();
+        return isset($this->criteria['filterBy'])? $this->criteria['filterBy'] : array();
     }
 
     /**
@@ -207,74 +304,59 @@ class QueryCriteria
      * @param string $column
      * @return string|array
      */
-    public function getSort($column = null)
+    public function getSortBy($column = null)
     {
         return isset($this->criteria['sortBy'][$column]) ? $this->criteria['sortBy'][$column] : $this->criteria['sortBy'];
     }
 
     /**
-     * Sets the page number for paginated queries, applied to the sql offset.
-     * 
-     * @param int $page
+     * Add a closure which defines the behaviour for a given filter by name.
+     *
+     * @param string $name
+     * @param Closure $callback
      * @return self
      */
-    public function page($page)
+    public function addFilterRule($name, Closure $callback)
     {
-        $this->criteria['page'] = intval($page);
+        $this->rules[$name] = $callback;
 
         return $this;
     }
 
     /**
-     * Gets the page number.
+     * Add multiple filter rules as an array.
      *
-     * @return int
-     */
-    public function getPage()
-    {
-        return $this->criteria['page'];
-    }
-
-    /**
-     * Sets the page size for paginated queries, applied to the sql limit.
-     * @param int $pageSize
+     * @param array $rules
      * @return self
      */
-    public function pageSize($pageSize)
+    public function addFilterRules(array $rules)
     {
-        $this->criteria['pageSize'] = intval($pageSize);
-
-        return $this;
-    }
-
-    /**
-     * Gets the page size.
-     *
-     * @return int
-     */
-    public function getPageSize()
-    {
-        return $this->criteria['pageSize'];
-    }
-
-    public function defineFilter($name, Closure $callback)
-    {
-        $this->definitions[$name] = $callback;
-
-        return $this;
-    }
-
-    public function defineFilters(array $filters)
-    {
-        foreach ($filters as $name => $callback) {
-            $this->defineFilter($name, $callback);
+        foreach ($rules as $name => $callback) {
+            $this->addFilterRule($name, $callback);
         }
 
         return $this;
     }
 
-    public function getFilter($name)
+    /**
+     * Does the criteria have a filter rule for the given name?
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasFilterRule($name)
     {
-        return isset($this->definitions[$name]) ? $this->definitions[$name] : null;
+        return isset($this->rules[$name]);
+    }
+
+    /**
+     * Get the filter rule for a given name.
+     *
+     * @param string $name
+     * @return Closure|null
+     */
+    public function getFilterRule($name)
+    {
+        return $this->hasFilterRule($name) ? $this->rules[$name] : null;
     }
 }

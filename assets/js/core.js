@@ -356,9 +356,18 @@ DataTable.prototype.init = function() {
     $(_.table).on('click', '.filter', function() {
         var index = _.filters.filterBy.indexOf($(this).data('filter'));
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = [];
+            _.filters.filterBy = [''];
+            _.filters.searchBy.columns = [''];
         } else if (index !== -1) {
             _.filters.filterBy.splice(index, 1);
+
+            // Remove columns from search criteria if using an in: filter
+            if ($(this).data('filter').startsWith('in:')) {
+                var columnName = $(this).data('filter').substr(3);
+                _.filters.searchBy.columns = _.filters.searchBy.columns.filter(function(item) {
+                    return item != columnName;
+                });
+            }
         }
         _.filters.page = 1;
         _.refresh();

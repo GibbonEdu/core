@@ -27,6 +27,7 @@ trait TableAware
      * @var string
      */
     protected static $tableName;
+    protected static $columns;
 
     /**
      * Gets the database table name.
@@ -53,13 +54,28 @@ trait TableAware
     }
 
     /**
+     * Checks to see if the named column exists in the table schema.
+     *
+     * @param string $columnName
+     * @return bool
+     */
+    protected function hasTableColumn($columnName) 
+    {
+        return isset($this->getTableColumns()[$columnName]);
+    }
+
+    /**
      * Gets the schema information for the columns in this database table.
      *
      * @return array
      */
-    protected function getColumns()
+    protected function getTableColumns()
     {
-        $result = $this->db()->select("SELECT * FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
-        return $result->rowCount() > 0 ? $result->fetchAll() : array();
+        if (empty(static::$columns)) {
+            $result = $this->db()->select("SELECT DISTINCT `COLUMN_NAME`, `DATA_TYPE` FROM information_schema.columns WHERE table_name='{$this->getTableName()}'");
+            static::$columns = $result->fetchKeyPair();
+        }
+
+        return static::$columns;
     }
 }

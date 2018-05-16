@@ -31,7 +31,7 @@ class QueryCriteriaTest extends TestCase
 
     public function testCanBeCreated()
     {
-        $this->assertInstanceOf(QueryCriteria::class, new QueryCriteria());
+        $this->assertInstanceOf(QueryCriteria::class, $this->criteria);
     }
 
     public function testCanLoadFromArray()
@@ -39,31 +39,47 @@ class QueryCriteriaTest extends TestCase
         $values = array(
             'page' => 5,
             'pageSize' => 42,
-            'searchBy' => [],
-            'filterBy' => [],
-            'sortBy' => [],
-            // 'searchBy' => array('columnName' => 'foo bar'),
-            // 'filterBy' => array('foo:bar'),
-            // 'sortBy' => array('columnName' => 'DESC'),
+            'searchBy' => array('columns' => ['columnName'], 'text' => 'foo bar'),
+            'filterBy' => array('foo:bar'),
+            'sortBy' => array('columnName' => 'DESC'),
         );
 
         $this->assertEquals($values, $this->criteria->fromArray($values)->toArray());
     }
 
+    public function testCanSanitizeArray()
+    {
+        $values = array(
+            'page' => "foo",
+            'pageSize' => ["thing"],
+            'searchBy' => array('columns' => ['columnName'], 'text' => 'foo bar'),
+            'filterBy' => array('foo:bar'),
+            'sortBy' => array('columnName' => 'DESC'),
+            'otherStuff' => [],
+        );
+
+        $this->assertNotEquals($values, $this->criteria->fromArray($values)->toArray());
+    }
+
     public function testCanLoadFromJson()
     {
-        $values = '{"page":3,"pageSize":24,"searchBy":[],"filterBy":[],"sortBy":[]}';
+        $values = '{"page":3,"pageSize":24,"searchBy":{"columns":["columnName"],"text":"foo bar"},"filterBy":["foo:bar"],"sortBy":{"foo":"DESC"}}';
 
         $this->assertEquals($values, $this->criteria->fromJson($values)->toJson());
     }
-
-
 
     public function testCanSetPageNumber()
     {
         $this->criteria->page(5);
 
         $this->assertEquals(5, $this->criteria->getPage());
+    }
+
+    public function testCannotSetNegativePageNumber()
+    {
+        $this->criteria->page(-3);
+
+        $this->assertEquals(1, $this->criteria->getPage());
     }
 
     public function testCanSetPageSize()
@@ -73,87 +89,112 @@ class QueryCriteriaTest extends TestCase
         $this->assertEquals(42, $this->criteria->getPageSize());
     }   
 
+    public function testCannotSetNegativePageSize()
+    {
+        $this->criteria->pageSize(-42);
+
+        $this->assertEquals(1, $this->criteria->getPageSize());
+    }
+
     public function testCanSearchByOneColumn()
     {
         $this->criteria->searchBy('columnName', 'foo bar');
 
-        $this->assertEquals('foo bar', $this->criteria->getSearch('columnName'));
+        $this->assertTrue($this->criteria->hasSearchColumn('columnName'));
+        $this->assertTrue($this->criteria->hasSearchText());
     }
 
     public function testCanSearchByManyColumns()
     {
         $this->criteria->searchBy(['column1', 'column2', 'column3'], 'foo bar');
 
-        $this->assertEquals('foo bar', $this->criteria->getSearch('column1'));
-        $this->assertEquals('foo bar', $this->criteria->getSearch('column2'));
-        $this->assertEquals('foo bar', $this->criteria->getSearch('column3'));
+        $this->assertTrue($this->criteria->hasSearchColumn('column1'));
+        $this->assertTrue($this->criteria->hasSearchColumn('column2'));
+        $this->assertTrue($this->criteria->hasSearchColumn('column3'));
     }
 
-    public function testCanCheckIfCriteriaHasSearch()
+    public function testCanModifySearchColumns()
     {
-        $this->assertFalse($this->criteria->hasSearch());
+        $this->criteria->searchBy('columnName', 'foo bar');
+        $this->criteria->searchBy('otherColumn', 'foo bar');
+
+        $this->assertFalse($this->criteria->hasSearchColumn('columnName'));
+        $this->assertTrue($this->criteria->hasSearchColumn('otherColumn'));
+    }
+
+    public function testCanCheckIfCriteriaHasSearchText()
+    {
+        $this->assertFalse($this->criteria->hasSearchText());
 
         $this->criteria->searchBy('columnName', 'foo bar');
 
-        $this->assertTrue($this->criteria->hasSearch());
+        $this->assertTrue($this->criteria->hasSearchText());
     }
 
     public function testCanGetAllSearches()
     {
         $this->criteria->searchBy('columnName', 'foo bar');
 
-        $this->assertTrue(is_array($this->criteria->getSearch()));
+        $this->assertTrue(is_array($this->criteria->getSearchBy()));
+    }
+
+    public function testCanAddFilterToSearchString()
+    {
+        $this->criteria->searchBy('columnName', 'foo bar active:Y');
+
+        $this->assertTrue($this->criteria->hasFilter('active:Y'));
+        $this->assertNotContains('active:Y', $this->criteria->getSearchBy()['text']);
     }
 
     public function testCanFilterByString()
     {
         $this->criteria->filterBy('foo:bar');
 
-        $this->assertContains('foo:bar', $this->criteria->getFilters());
+        $this->assertTrue($this->criteria->hasFilter('foo:bar'));
     }
 
     public function testCanFilterByNameValuePair()
     {
         $this->criteria->filterBy('foo', 'bar');
 
-        $this->assertContains('foo:bar', $this->criteria->getFilters());
+        $this->assertTrue($this->criteria->hasFilter('foo:bar'));
     }
 
     public function testCanCheckIfCriteriaHasFilters()
     {
-        $this->assertFalse($this->criteria->hasFilters());
+        $this->assertFalse($this->criteria->hasFilter());
 
         $this->criteria->filterBy('foo:bar');
 
-        $this->assertTrue($this->criteria->hasFilters());
+        $this->assertTrue($this->criteria->hasFilter());
     }
 
     public function testCanGetAllFilters()
     {
         $this->criteria->filterBy('foo:bar');
 
-        $this->assertTrue(is_array($this->criteria->getFilters()));
+        $this->assertTrue(is_array($this->criteria->getFilterBy()));
     }
 
     public function testCanSortAscending()
     {
         $this->criteria->sortBy('columnName');
 
-        $this->assertEquals('ASC', $this->criteria->getSort('columnName'));
+        $this->assertEquals('ASC', $this->criteria->getSortBy('columnName'));
     }
 
     public function testCanSortDescending()
     {
         $this->criteria->sortBy('columnName', 'DESC');
 
-        $this->assertEquals('DESC', $this->criteria->getSort('columnName'));
+        $this->assertEquals('DESC', $this->criteria->getSortBy('columnName'));
     }
 
     public function testCannotSortByUnknown()
     {
         $this->criteria->sortBy('columnName', 'BOGUS');
 
-        $this->assertEquals('ASC', $this->criteria->getSort('columnName'));
+        $this->assertEquals('ASC', $this->criteria->getSortBy('columnName'));
     }
 
     public function testCanCheckIfCriteriaHasSorting()
@@ -169,6 +210,33 @@ class QueryCriteriaTest extends TestCase
     {
         $this->criteria->sortBy('columnName');
 
-        $this->assertTrue(is_array($this->criteria->getSort()));
+        $this->assertTrue(is_array($this->criteria->getSortBy()));
+    }
+
+    public function testCanAddFilterRule()
+    {
+        $this->criteria->addFilterRule('foo', function ($query) { return $query; });
+
+        $this->assertTrue($this->criteria->hasFilterRule('foo'));
+    }
+
+    public function testCanAddMultipleFilterRules()
+    {
+        $this->criteria->addFilterRules([
+            'foo' => function ($query) { return $query; },
+            'bar' => function ($query) { return $query; },
+        ]);
+
+        $this->assertTrue($this->criteria->hasFilterRule('foo'));
+        $this->assertTrue($this->criteria->hasFilterRule('bar'));
+    }
+
+    public function testCanGetFilterRuleByName()
+    {
+        $closure = function ($query) { return $query; };
+
+        $this->criteria->addFilterRule('foo', $closure);
+
+        $this->assertEquals($closure, $this->criteria->getFilterRule('foo'));
     }
 }

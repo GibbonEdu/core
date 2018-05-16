@@ -57,7 +57,9 @@ class PaginatedRenderer implements RendererInterface
         $output .= '<div class="dataTable">';
 
         // Debug the AJAX $POST => Filters
+        // $output .= '<code>';
         // $output .= json_encode($_POST).'<br/>';
+        // $output .= '</code>';
 
         // Debug the criteria
         // $output .= '<code>';
@@ -87,7 +89,7 @@ class PaginatedRenderer implements RendererInterface
                 }
 
                 if ($this->criteria->hasSort($columnName)) {
-                    $classes[] = 'sorting sort'.$this->criteria->sortBy[$columnName];
+                    $classes[] = 'sorting sort'.$this->criteria->getSortBy($columnName);
                 }
 
                 if ($column instanceOf ActionColumn) {
@@ -149,7 +151,7 @@ class PaginatedRenderer implements RendererInterface
     {
         $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
 
-        $output .= $this->criteria->hasSearch()? __('Search').' ' : '';
+        $output .= $this->criteria->hasSearchText()? __('Search').' ' : '';
         $output .= $dataSet->isSubset()? __('Results') : __('Records');
         $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
         $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
@@ -161,18 +163,15 @@ class PaginatedRenderer implements RendererInterface
 
     protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
-        if (empty($this->criteria)) return '';
-
         $output = '<span class="small" style="line-height: 32px;">';
 
-        $filterBy = $this->criteria->getFilters();
-
-        if (!empty($filterBy)) {
+        if ($this->criteria->hasFilter()) {
             $output .= __('Filtered by').' ';
 
-            $criteriaUsed = array_filter($filters, function($name) use ($filterBy) {
-                return in_array($name, $filterBy);
-            }, ARRAY_FILTER_USE_KEY);
+            $criteriaUsed = array_reduce($this->criteria->getFilterBy(), function($group, $item) use ($filters) {
+                $group[$item] = isset($filters[$item])? $filters[$item] : ucwords(str_replace(':', ': ', $item));
+                return $group; 
+            }, array());
 
             foreach ($criteriaUsed as $value => $label) {
                 $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
@@ -186,7 +185,6 @@ class PaginatedRenderer implements RendererInterface
 
     protected function renderSelectFilters(DataSet $dataSet, array $filters)
     {
-        if (empty($this->criteria)) return '';
         if (empty($filters)) return '';
         
         return $this->factory->createSelect('filter')

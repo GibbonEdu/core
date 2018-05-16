@@ -63,7 +63,7 @@ abstract class QueryableGateway extends Gateway
     }
 
     /**
-     * Runs a query with a defined set of criteria and returns the result as an object with pagination data.
+     * Runs a query with a defined set of criteria and returns the result as a data set with pagination info.
      *
      * @param SelectInterface $query
      * @param QueryCriteria $criteria
@@ -93,28 +93,35 @@ abstract class QueryableGateway extends Gateway
         $query->calcFoundRows();
 
         // Filter By
-        foreach ($criteria->getFilters() as $name) {
-            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
-            if ($callback = $criteria->getFilter($name)) {
-                $query = $callback($query, $value);
+        if ($criteria->hasFilter()) {
+            foreach ($criteria->getFilterBy() as $name) {
+                list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+                if ($callback = $criteria->getFilterRule($name)) {
+                    $query = $callback($query, $value);
+                }
             }
         }
 
         // Search By
-        $query->where(function($query) use ($criteria) {
-            $count = 0;
-            foreach ($criteria->getSearch() as $column => $text) {
-                $column = $this->escapeIdentifier($column);
-                $query->orWhere("{$column} LIKE :search{$count}");
-                $query->bindValue(":search{$count}", "%$text%");
-                $count++;
-            }
-        });
+        if ($criteria->hasSearchColumn() && $criteria->hasSearchText()) {
+            $query->where(function($query) use ($criteria) {
+                $count = 0;
+                $search = $criteria->getSearchBy();
+                foreach ($search['columns'] as $column) {
+                    $column = $this->escapeIdentifier($column);
+                    $query->orWhere("{$column} LIKE :search{$count}");
+                    $query->bindValue(":search{$count}", "%{$search['text']}%");
+                    $count++;
+                }
+            });
+        }
         
         // Sort By
-        foreach ($criteria->getSort() as $column => $direction) {
-            $column = $this->escapeIdentifier($column);
-            $query->orderBy(["{$column} {$direction}"]);
+        if ($criteria->hasSort()) {
+            foreach ($criteria->getSortBy() as $column => $direction) {
+                $column = $this->escapeIdentifier($column);
+                $query->orderBy(["{$column} {$direction}"]);
+            }
         }
 
         // Pagination
@@ -138,7 +145,13 @@ abstract class QueryableGateway extends Gateway
         return self::$queryFactory;
     }
 
-    protected function escapeIdentifier($value)
+    /**
+     * Wraps all SQL identifiers in ` backticks, escaping existing backticks; handles tableName.columnName
+     *
+     * @param string $value
+     * @return string
+     */
+    private function escapeIdentifier($value)
     {
         return implode('.', array_map(function ($piece) {
             return '`' . str_replace('`', '``', $piece) . '`';
