@@ -41,6 +41,7 @@ class Action
         $this->name = $name;
         $this->setLabel($label);
 
+        // Pre-defined settings for common actions
         switch ($this->name) {
             case 'add':     $this->setIcon('page_new');
                             break;
@@ -52,7 +53,6 @@ class Action
             case 'view':    $this->setIcon('zoom');
                             break;
         }
-
     }
 
     public function setLabel($label)
@@ -112,6 +112,13 @@ class Action
         return $this;
     }
 
+    /**
+     * Renders the action as an icon and url, adding in any nessesary url parameters.
+     *
+     * @param array $data
+     * @param array $params
+     * @return string
+     */
     public function getOutput(&$data = array(), $params = array())
     {
         global $guid;

@@ -34,22 +34,38 @@ use Gibbon\Tables\Renderer\RendererInterface;
  */
 class PaginatedRenderer implements RendererInterface
 {
+    protected $path;
     protected $criteria;
     protected $factory;
     
-    public function __construct(QueryCriteria $criteria)
+    /**
+     * Creates a renderer that uses page info from the QueryCriteria to display a paginated data table.
+     * Hooks into the DataTable functionality in core.js to load using AJAX.
+     *
+     * @param QueryCriteria $criteria
+     * @param string $path
+     */
+    public function __construct(QueryCriteria $criteria, $path)
     {
+        $this->path = $path;
         $this->criteria = $criteria;
         $this->factory = FormFactory::create();
     }
 
+    /**
+     * Render the table to HTML. TODO: replace with Twig.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     public function renderTable(DataTable $table, DataSet $dataSet)
     {
         $output = '';
 
         $output .= '<div class="linkTop">';
-        foreach ($table->getHeaderActions() as $action) {
-            $output .= $action->getOutput();
+        foreach ($table->getHeader() as $header) {
+            $output .= $header->getOutput();
         }
         $output .= '</div>';
 
@@ -66,11 +82,13 @@ class PaginatedRenderer implements RendererInterface
         // $output .= 'Criteria: '.$this->criteria->toJson();
         // $output .= '</code>';
 
+        $filterOptions = $table->getMetaData('filterOptions');
+
         $output .= '<div>';
         $output .= $this->renderPageCount($dataSet);
-        $output .= $this->renderPageFilters($dataSet, $table->getFilterOptions());
+        $output .= $this->renderPageFilters($dataSet, $filterOptions);
         $output .= '</div>';
-        $output .= $this->renderSelectFilters($dataSet, $table->getFilterOptions());
+        $output .= $this->renderFilterOptions($dataSet, $filterOptions);
         $output .= $this->renderPageSize($dataSet);
         $output .= $this->renderPagination($dataSet);
 
@@ -82,9 +100,9 @@ class PaginatedRenderer implements RendererInterface
             $output .= '<tr class="head">';
             foreach ($table->getColumns() as $columnName => $column) {
                 $classes = array('column');
-                $style = array('width:' . $column->getWidth());
+                $style = array('width:' . $column->width);
                 
-                if ($sortBy = $column->getSortable()) {
+                if ($sortBy = $column->sortable) {
                     $classes[] = 'sortable';
 
                     foreach ($sortBy as $sortColumn) {
@@ -97,10 +115,10 @@ class PaginatedRenderer implements RendererInterface
                 }
 
                 if ($column instanceOf ActionColumn) {
-                    $style[] = 'min-width: '.$column->getWidth();
+                    $style[] = 'min-width: '.$column->calculateWidth();
                 }
                 $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-sort="'.implode(',', $sortBy).'">';
-                $output .=  $column->getLabel();
+                $output .=  $column->label;
                 $output .= '</th>';
             }
             $output .= '</tr>';
@@ -123,6 +141,9 @@ class PaginatedRenderer implements RendererInterface
 
             $output .= '</tbody>';
             $output .= '</table>';
+
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPagination($dataSet);
         } else {
             if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
@@ -135,8 +156,7 @@ class PaginatedRenderer implements RendererInterface
             }
         }
 
-        $output .= $this->renderPageCount($dataSet);
-        $output .= $this->renderPagination($dataSet);
+        
 
         $output .= '</div></div><br/>';
 
@@ -144,13 +164,19 @@ class PaginatedRenderer implements RendererInterface
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $table->getPath())."', ".$this->criteria->toJson().", ".$dataSet->getResultCount().");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$this->criteria->toJson().", ".$dataSet->getResultCount().");
         });
         </script>";
 
         return $output;
     }
 
+    /**
+     * Render the record count for this page, and total record count.
+     *
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderPageCount(DataSet $dataSet)
     {
         $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
@@ -165,6 +191,13 @@ class PaginatedRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Render the currently active filters for this data set.
+     *
+     * @param DataSet $dataSet
+     * @param array $filters
+     * @return string
+     */
     protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
         $output = '<span class="small" style="line-height: 32px;">';
@@ -187,7 +220,14 @@ class PaginatedRenderer implements RendererInterface
         return $output;
     }
 
-    protected function renderSelectFilters(DataSet $dataSet, array $filters)
+    /**
+     * Render the available options for filtering the data set.
+     *
+     * @param DataSet $dataSet
+     * @param array $filters
+     * @return string
+     */
+    protected function renderFilterOptions(DataSet $dataSet, array $filters)
     {
         if (empty($filters)) return '';
         
@@ -198,6 +238,12 @@ class PaginatedRenderer implements RendererInterface
             ->getOutput();
     }
 
+    /**
+     * Render the page size drop-down.
+     *
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderPageSize(DataSet $dataSet)
     {
         $pageSize = $dataSet->getPageSize();
@@ -212,6 +258,12 @@ class PaginatedRenderer implements RendererInterface
             ->getOutput();
     }
 
+    /**
+     * Render the set of numeric page buttons for naigating paginated data sets.
+     *
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderPagination(DataSet $dataSet)
     {
         if ($dataSet->getPageCount() <= 1) return '';

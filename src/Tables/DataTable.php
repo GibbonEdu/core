@@ -21,8 +21,8 @@ namespace Gibbon\Tables;
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
+use Gibbon\Tables\Action;
 use Gibbon\Tables\ActionColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
@@ -36,40 +36,101 @@ use Gibbon\Tables\Renderer\PaginatedRenderer;
 class DataTable
 {
     protected $id;
-    protected $path;
+    protected $renderer;
 
     protected $columns = array();
-    protected $filterOptions = array();
-    protected $actionLinks = array();
+    protected $header = array();
+    protected $meta = array();
 
-    public function __construct($id, $path)
+    /**
+     * Create a data table with optional renderer.
+     *
+     * @param string $id
+     * @param RendererInterface $renderer
+     */
+    public function __construct($id, RendererInterface $renderer = null)
     {
         $this->id = $id;
-        $this->path = $path;
+        $this->renderer = $renderer;
     }
 
-    public static function create($id)
+    /**
+     * Static create method, for ease of method chaining.
+     *
+     * @param string $id
+     * @param RendererInterface $renderer
+     * @return self
+     */
+    public static function create($id, RendererInterface $renderer = null)
     {
-        return new static($id, '/fullscreen.php?q='.$_GET['q']);
+        return new self($id, $renderer);
     }
 
+    /**
+     * Helper method to create a default paginated data table, using criteria from a gateway query.
+     *
+     * @param string $id
+     * @param QueryCriteria $criteria
+     * @return self
+     */
+    public static function createPaginated($id, QueryCriteria $criteria)
+    {
+        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?q='.$_GET['q']));
+    }
+
+    /**
+     * Set the table ID.
+     *
+     * @param string $id
+     * @return self
+     */
+    public function setID($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Get the table ID.
+     *
+     * @return string
+     */
     public function getID()
     {
         return $this->id;
     }
 
-    public function setPath($path = '')
+    /**
+     * Set the renderer for the data table. Cal also be supplied ad hoc in the render method.
+     *
+     * @param RendererInterface $renderer
+     * @return self
+     */
+    public function setRenderer(RendererInterface $renderer)
     {
-        $this->path = $path;
+        $this->renderer = $renderer;
 
         return $this;
     }
 
-    public function getPath()
+    /**
+     * Get the current data table renderer.
+     *
+     * @return RendererInterface
+     */
+    public function getRenderer()
     {
-        return $this->path;
+        return $this->renderer;
     }
 
+    /**
+     * Add a column to the table, by name and optional label. Returns the created column.
+     *
+     * @param string $name
+     * @param string $label
+     * @return Column
+     */
     public function addColumn($name, $label = '')
     {
         $this->columns[$name] = new Column($name, $label);
@@ -77,6 +138,11 @@ class DataTable
         return $this->columns[$name];
     }
 
+    /**
+     * Add an action column to the table, which is generally rendered on the right-hand side.
+     *
+     * @return ActionColumn
+     */
     public function addActionColumn()
     {
         $this->columns['actions'] = new ActionColumn();
@@ -84,50 +150,77 @@ class DataTable
         return $this->columns['actions'];
     }
 
+    /**
+     * Get all columns in the table.
+     *
+     * @return array
+     */
     public function getColumns()
     {
         return $this->columns;
     }
 
+    /**
+     * Add an action to the table, generally displayed in the header right-hand side.
+     *
+     * @param string $name
+     * @param string $label
+     * @return Action
+     */
     public function addHeaderAction($name, $label = '')
     {
-        $this->actionLinks[$name] = new Action($name, $label);
+        $this->header[$name] = new Action($name, $label);
 
-        return $this->actionLinks[$name];
+        return $this->header[$name];
     }
 
-    public function getHeaderActions()
+    /**
+     * Get all header content in the table.
+     *
+     * @return array
+     */
+    public function getHeader()
     {
-        return $this->actionLinks;
+        return $this->header;
     }
 
-    public function addFilterOption($name, $label = '')
+
+    /**
+     * Add a piece of meta data to the table. Can be used for renderer-specific details.
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return self
+     */
+    public function addMetaData($name, $value)
     {
-        $this->filterOptions[$name] = $label;
+        $this->meta[$name] = $value;
 
         return $this;
     }
 
-    public function addFilterOptions($filterOptions)
+    /**
+     * Gets the value of a meta data entry by name.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function getMetaData($name)
     {
-        $this->filterOptions = array_replace($this->filterOptions, $filterOptions);
-
-        return $this;
+        return isset($this->meta[$name]) ? $this->meta[$name] : null;
     }
 
-    public function getFilterOptions()
+    /**
+     * Render the data table, either with the supplied renderer or default to the built-in one.
+     *
+     * @param DataSet $dataSet
+     * @param RendererInterface $renderer
+     * @return string
+     */
+    public function render(DataSet $dataSet, RendererInterface $renderer = null)
     {
-        return $this->filterOptions;
-    }
+        $renderer = isset($renderer)? $renderer : $this->renderer;
 
-    public function renderToHTML(DataSet $dataSet, QueryCriteria $criteria)
-    {
-        $renderer = new PaginatedRenderer($criteria);
-        return $renderer->renderTable($this, $dataSet);
-    }
-
-    public function renderWith(DataSet $dataSet, RendererInterface $renderer)
-    {
         return $renderer->renderTable($this, $dataSet);
     }
 }

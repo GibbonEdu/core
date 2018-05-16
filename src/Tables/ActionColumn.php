@@ -30,13 +30,21 @@ class ActionColumn extends Column
     protected $actions = array();
     protected $params = array();
 
+    /**
+     * Creates a pre-defined column for grouped sets of action icons.
+     */
     public function __construct()
     {
-        $this->name = 'actions';
-        $this->setLabel(__('Actions'));
-        $this->sortable(false);
+        $this->name('actions')->label(__('Actions'))->sortable(false);
     }
 
+    /**
+     * Adds a named action to the column and returns the new Action object. 
+     *
+     * @param string $name
+     * @param string $label
+     * @return Action
+     */
     public function addAction($name, $label = '')
     {
         $action = new Action($name, $label);
@@ -45,6 +53,13 @@ class ActionColumn extends Column
         return $action;
     }
 
+    /**
+     * Adds a URL parameter to the column that is passed to _each_ action.
+     *
+     * @param string $name
+     * @param string $value
+     * @return self
+     */
     public function addParam($name, $value = '')
     {
         $this->params[$name] = $value;
@@ -52,11 +67,22 @@ class ActionColumn extends Column
         return $this;
     }
 
-    public function getWidth()
+    /**
+     * Returns a column width based on the number of actions.
+     *
+     * @return string
+     */
+    public function calculateWidth()
     {
         return (count($this->actions) * 36).'px';
     }
 
+    /**
+     * Iterates over and renders each action, passing in the row data and URL parameters.
+     *
+     * @param array $data
+     * @return string
+     */
     public function getOutput(&$data = array())
     {
         $output = '';

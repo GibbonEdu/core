@@ -22,11 +22,12 @@ namespace Gibbon\Database;
 use PDO;
 use PDOStatement;
 use Gibbon\Domain\DataSet;
+use Gibbon\Contracts\Database\Result;
 
 /**
  * Helper methods to improve the intent and readability of database code.
  */
-class Result extends PDOStatement
+class Result extends PDOStatement implements Result
 {
     public function isEmpty()
     {

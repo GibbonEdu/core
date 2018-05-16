@@ -62,29 +62,29 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $userGateway = $container->get(UserGateway::class);
     
+    // QUERY
     $searchColumns = ['preferredName', 'surname', 'username', 'studentID', 'email', 'emailAlternate', 'phone1', 'phone2', 'phone3', 'phone4', 'vehicleRegistration', 'gibbonRole.name'];
-
     $criteria = $userGateway->newQueryCriteria()
         ->searchBy($searchColumns, $search)
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
-    
+
     $dataSet = $userGateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
     $people = $dataSet->getColumn('gibbonPersonID');
     $familyData = $userGateway->selectFamilyDetailsByPersonID($people)->fetchGrouped();
-
     $dataSet->joinColumn('gibbonPersonID', 'families', $familyData);
 
-    $table = DataTable::create('userManage');
+    // DATA TABLE
+    $table = DataTable::createPaginated('userManage', $criteria);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/user_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
 
-    $table->addFilterOptions([
+    $table->addMetaData('filterOptions', [
         'role:student'    => __('Role').': '.__('Student'),
         'role:parent'     => __('Role').': '.__('Parent'),
         'role:staff'      => __('Role').': '.__('Staff'),
@@ -95,16 +95,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         'date:ended'      => __('After End Date'),
     ]);
 
-    $table->addColumn('image_240', __('Photo'))->format(function($item) use ($guid) {
-        return getUserPhoto($guid, $item['image_240'], 75);
-    })->setWidth('10%');
+    // COLUMNS
+    $table->addColumn('image_240', __('Photo'))
+        ->width('10%')
+        ->format(function($item) use ($guid) {
+            return getUserPhoto($guid, $item['image_240'], 75);
+        });
 
-    $table->addColumn('fullName', __('Name'))->format(function($item) {
-        return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
-    })->setWidth('30%')->sortable(['surname', 'preferredName']);
+    $table->addColumn('fullName', __('Name'))
+        ->width('30%')
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($item) {
+            return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+        });
 
-    $table->addColumn('status', __('Status'))->sortable()->setWidth('10%');
-    $table->addColumn('primaryRole', __('Primary Role'))->sortable()->setWidth('16%');
+    $table->addColumn('status', __('Status'))
+        ->width('10%')
+        ->sortable();
+
+    $table->addColumn('primaryRole', __('Primary Role'))
+        ->width('16%')
+        ->sortable();
 
     $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
         $output = '';
@@ -116,6 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     $table->addColumn('username', __('Username'))->sortable();
 
+    // ACTIONS
     $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $search);
         $col->addAction('edit', __('Edit'))
             ->setURL('/modules/User Admin/user_manage_edit.php');
@@ -127,5 +139,5 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             ->setURL('/modules/User Admin/user_manage_password.php')
             ->setIcon('key');
 
-    echo $table->renderToHTML($dataSet, $criteria);
+    echo $table->render($dataSet);
 }
