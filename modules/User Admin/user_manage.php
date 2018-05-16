@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     })->setWidth('30%')->sortable(['surname', 'preferredName']);
 
     $table->addColumn('status', __('Status'))->sortable()->setWidth('10%');
-    $table->addColumn('primaryRole', __('Primary Role'))->setWidth('16%');
+    $table->addColumn('primaryRole', __('Primary Role'))->sortable()->setWidth('16%');
 
     $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
         $output = '';
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         return $output;
     });
 
-    $table->addColumn('username', __('Username'));
+    $table->addColumn('username', __('Username'))->sortable();
 
     $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $search);
         $col->addAction('edit', __('Edit'))

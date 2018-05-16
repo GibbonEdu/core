@@ -58,12 +58,12 @@ class PaginatedRenderer implements RendererInterface
 
         // Debug the AJAX $POST => Filters
         // $output .= '<code>';
-        // $output .= json_encode($_POST).'<br/>';
+        // $output .= 'POST: '.json_encode($_POST).'<br/>';
         // $output .= '</code>';
 
         // Debug the criteria
         // $output .= '<code>';
-        // $output .= $this->criteria->toJson();
+        // $output .= 'Criteria: '.$this->criteria->toJson();
         // $output .= '</code>';
 
         $output .= '<div>';
@@ -83,19 +83,23 @@ class PaginatedRenderer implements RendererInterface
             foreach ($table->getColumns() as $columnName => $column) {
                 $classes = array('column');
                 $style = array('width:' . $column->getWidth());
-
-                if ($column->getSortable()) {
+                
+                if ($sortBy = $column->getSortable()) {
                     $classes[] = 'sortable';
-                }
 
-                if ($this->criteria->hasSort($columnName)) {
-                    $classes[] = 'sorting sort'.$this->criteria->getSortBy($columnName);
+                    foreach ($sortBy as $sortColumn) {
+                        if ($this->criteria->hasSort($sortColumn)) {
+                            $classes[] = 'sorting sort'.$this->criteria->getSortBy($sortColumn);
+                        }
+                    }
+                } else {
+                    $sortBy = array();
                 }
 
                 if ($column instanceOf ActionColumn) {
                     $style[] = 'min-width: '.$column->getWidth();
                 }
-                $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-column="'.$columnName.'">';
+                $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-sort="'.implode(',', $sortBy).'">';
                 $output .=  $column->getLabel();
                 $output .= '</th>';
             }

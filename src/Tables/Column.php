@@ -90,9 +90,9 @@ class Column
         return $this->description;
     }
 
-    public function sortable($value = '') 
+    public function sortable($value = null) 
     {
-        $this->sortable = ($value === '') ? $this->name : $value;
+        $this->sortable = is_null($value) ? array($this->name) : $value;
 
         return $this;
     }

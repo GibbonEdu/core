@@ -344,11 +344,16 @@ DataTable.prototype.init = function() {
 
     // Sortable Columns
     $(_.table).on('click', '.column.sortable', function(event) {
-        var column = $(this).data('column');
-        var direction = (_.filters.sortBy[column] == 'ASC')? 'DESC' : 'ASC';
+        var columns = $(this).data('sort').split(',');
 
-        if (!(column in _.filters.sortBy) && !event.shiftKey) _.filters.sortBy = {};
-        _.filters.sortBy[column] = direction;
+        // Hold shift to add columns to the sort (or toggle them), otherwise clear it each time.
+        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; }); 
+        if (activeColumns.length == 0 && !event.shiftKey) _.filters.sortBy = {};
+
+        columns.forEach(function(column) {
+            _.filters.sortBy[column] = (_.filters.sortBy[column] == 'ASC')? 'DESC' : 'ASC';
+        });
+
         _.refresh();
     });
 
