@@ -72,6 +72,7 @@ v16.0.00
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
         Planner: added indexes to gibbonLike database table to improve performance
+        Planner: fixed translatable string error in Lesson Planner
         Staff: fixed bug in parameter passing in Add in Manage Staff
         Students: added sibling and family information to Letters Home by Roll Group
         Students: added Comment field to medical form, linked to student application form.
