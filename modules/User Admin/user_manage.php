@@ -128,6 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
 
     // ACTIONS
     $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $search);
+
         $col->addAction('edit', __('Edit'))
             ->setURL('/modules/User Admin/user_manage_edit.php');
 

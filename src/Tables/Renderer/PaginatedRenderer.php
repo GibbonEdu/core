@@ -100,9 +100,8 @@ class PaginatedRenderer implements RendererInterface
             $output .= '<tr class="head">';
             foreach ($table->getColumns() as $columnName => $column) {
                 $classes = array('column');
-                $style = array('width:' . $column->width);
-                
-                if ($sortBy = $column->sortable) {
+
+                if ($sortBy = $column->getSortable()) {
                     $classes[] = 'sortable';
 
                     foreach ($sortBy as $sortColumn) {
@@ -114,11 +113,9 @@ class PaginatedRenderer implements RendererInterface
                     $sortBy = array();
                 }
 
-                if ($column instanceOf ActionColumn) {
-                    $style[] = 'min-width: '.$column->calculateWidth();
-                }
-                $output .= '<th style="'.implode('; ', $style).'" class="'.implode(' ', $classes).'" data-sort="'.implode(',', $sortBy).'">';
-                $output .=  $column->label;
+                $output .= '<th title="'.$column->getTitle().'" style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-sort="'.implode(',', $sortBy).'">';
+                $output .=  $column->getLabel();
+                $output .= '<br/><small><i>'.$column->getDescription().'</i></small>';
                 $output .= '</th>';
             }
             $output .= '</tr>';
@@ -269,25 +266,11 @@ class PaginatedRenderer implements RendererInterface
         if ($dataSet->getPageCount() <= 1) return '';
 
         $pageNumber = $dataSet->getPage();
-        $pageIndex = $pageNumber - 1;
 
         $output = '<div class="floatRight">';
-            $output .= '<input type="button" class="paginate" data-page="'.($pageNumber - 1).'" '.($pageNumber <= 1? 'disabled' : '').' value="'.__('Prev').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getPrevPageNumber().'" '.($dataSet->isFirstPage()? 'disabled' : '').' value="'.__('Prev').'">';
 
-            $pageCount = $dataSet->getPageCount();
-            $range = range(1, $pageCount);
-
-            // Collapse the leading page-numbers
-            if ($pageCount > 7 && $pageNumber > 6) {
-                array_splice($range, 2, $pageNumber - 5, '...');
-            }
-
-            // Collapse the trailing page-numbers
-            if ($pageCount > 7 && ($pageCount - $pageNumber) > 5) {
-                array_splice($range, ($pageCount - $pageNumber - 2)*-1, ($pageCount - $pageNumber)-4, '...');
-            }
-
-            foreach ($range as $page) {
+            foreach ($dataSet->getPaginatedRange() as $page) {
                 if ($page === '...') {
                     $output .= '<input type="button" disabled value="...">';
                 } else {
@@ -296,7 +279,7 @@ class PaginatedRenderer implements RendererInterface
                 }
             }
 
-            $output .= '<input type="button" class="paginate" data-page="'.($pageNumber + 1).'" '.($pageNumber >= $pageCount? 'disabled' : '').' value="'.__('Next').'">';
+            $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getNextPageNumber().'" '.($dataSet->isLastPage()? 'disabled' : '').' value="'.__('Next').'">';
         $output .= '</div>';
 
         return $output;

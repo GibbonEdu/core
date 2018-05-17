@@ -124,7 +124,6 @@ class Action
         global $guid;
 
         $class = '';
-        $path = $_SESSION[$guid]['absoluteURL'].'/index.php';
         $queryParams = array();
 
         if (!empty($data)) {
@@ -136,6 +135,8 @@ class Action
         if ($this->modal) {
             $path = $_SESSION[$guid]['absoluteURL'].'/fullscreen.php';
             $class = 'thickbox';
+        } else {
+            $path = $_SESSION[$guid]['absoluteURL'].'/index.php';
         }
 
         $url = $path.'?q='.$this->getURL();

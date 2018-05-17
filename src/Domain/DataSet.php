@@ -32,12 +32,17 @@ class DataSet implements \Countable, \IteratorAggregate
     protected $page; 
     protected $pageSize; 
     
+    /**
+     * Creates a new data set from an array and calculates the result counts and pagination based on array size.
+     *
+     * @param array $data
+     */
     public function __construct(array $data)
     {
         $this->data = $data;
 
         $this->setResultCount();
-        $this->setPagination(1);
+        $this->setPagination();
     }
 
     /**
@@ -62,7 +67,7 @@ class DataSet implements \Countable, \IteratorAggregate
      * @param int $pageSize
      * @return self
      */
-    public function setPagination($page, $pageSize = null)
+    public function setPagination($page = 1, $pageSize = null)
     {
         $this->page = $page;
         $this->pageSize = isset($pageSize)? $pageSize : $this->count();
@@ -90,20 +95,14 @@ class DataSet implements \Countable, \IteratorAggregate
         return new \ArrayIterator($this->data);
     }
 
+    /**
+     * Returns the internal array of row data.
+     *
+     * @return array
+     */
     public function toArray()
     {
         return $this->data;
-    }
-
-    /**
-     * This result is a subset of the whole table if searches or filters have been applied.
-     * Ignores paginated row counts and looks at the total results vs the total table size.
-     *
-     * @return bool
-     */
-    public function isSubset()
-    {
-        return $this->totalCount > 0 && ($this->totalCount != $this->resultCount);
     }
 
     /**
@@ -158,6 +157,26 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Get the previous page number.
+     *
+     * @return int
+     */
+    public function getPrevPageNumber()
+    {
+        return max($this->page - 1, 1);
+    }
+
+    /**
+     * Get the next page number.
+     *
+     * @return int
+     */
+    public function getNextPageNumber()
+    {
+        return min($this->page + 1, $this->getPageCount());
+    }
+
+    /**
      * The row number for the lower bounds of the current page.
      *
      * @return int
@@ -178,10 +197,80 @@ class DataSet implements \Countable, \IteratorAggregate
     }
 
     /**
+     * Returns a range of page numbers with sections collapsed into a placeholder string.
+     * The midSize sets how many pages are displayed on either side of the current page.
+     * The endSize sets how many pages are displayed on both ends of the range.
+     *
+     * @param string $placeholder
+     * @param int $midSize
+     * @param int $endSize
+     * @return array
+     */
+    public function getPaginatedRange($placeholder = '...', $midSize = 2, $endSize = 2)
+    {
+        $range = range(1, $this->getPageCount());
+        $countFromEnd = count($range) - $this->page;
+
+        // Collapse the leading page numbers
+        if ($this->page > ($midSize + $endSize + 2)) {
+            array_splice($range, $endSize, $this->page-$midSize-$endSize-1, $placeholder);
+        }
+
+        // Collapse the trailing page numbers
+        if ($countFromEnd > ($midSize + $endSize + 1)) {
+            array_splice($range, ($countFromEnd - $midSize)*-1, $countFromEnd-$endSize-$midSize, $placeholder);
+        }
+
+        return $range;
+    }
+
+    /**
+     * This result is a subset of the whole table if searches or filters have been applied.
+     * Ignores paginated row counts and looks at the total results vs the total table size.
+     *
+     * @return bool
+     */
+    public function isSubset()
+    {
+        return $this->totalCount > 0 && ($this->totalCount != $this->resultCount);
+    }
+
+    /**
+     * Is the current page the first one in the data set?
+     *
+     * @return bool
+     */
+    public function isFirstPage()
+    {
+        return $this->page == 1;
+    }
+
+    /**
+     * Is the current page the last one in the data set?
+     *
+     * @return bool
+     */
+    public function isLastPage()
+    {
+        return $this->page >= $this->getPageCount();
+    }
+
+    /**
+     * Extract a single row from the result set as an array.
+     *
+     * @param string $index
+     * @return array
+     */
+    public function getRow($index)
+    {
+        return isset($this->data[$index])? $this->data[$index] : array();
+    }
+
+    /**
      * Extract a single column from the result set as an array.
      *
      * @param string $columnName
-     * @return void
+     * @return array
      */
     public function getColumn($columnName)
     {
@@ -194,7 +283,6 @@ class DataSet implements \Countable, \IteratorAggregate
      * @param string $keyName
      * @param string $columnName
      * @param array $columnData
-     * @return void
      */
     public function joinColumn($keyName, $columnName, &$columnData)
     {

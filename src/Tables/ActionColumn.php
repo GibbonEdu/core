@@ -35,7 +35,8 @@ class ActionColumn extends Column
      */
     public function __construct()
     {
-        $this->name('actions')->label(__('Actions'))->sortable(false);
+        parent::__construct('actions', __('Actions'));
+        $this->sortable(false);
     }
 
     /**
@@ -68,11 +69,11 @@ class ActionColumn extends Column
     }
 
     /**
-     * Returns a column width based on the number of actions.
+     * Sets a column width based on the number of actions.
      *
      * @return string
      */
-    public function calculateWidth()
+    public function getWidth()
     {
         return (count($this->actions) * 36).'px';
     }
@@ -86,9 +87,12 @@ class ActionColumn extends Column
     public function getOutput(&$data = array())
     {
         $output = '';
+
+        $output .= '<div style="white-space: nowrap;">';
         foreach ($this->actions as $actionName => $action) {
             $output .= $action->getOutput($data, $this->params);
         }
+        $output .= '</div>';
 
         return $output;
     }

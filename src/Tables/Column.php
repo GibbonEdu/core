@@ -42,51 +42,23 @@ class Column
     }
 
     /**
-     * Allows read-only access to the column properties.
+     * Gets the column name, used as an array key with table row data.
      *
-     * @param string $name
-     * @return mixed
+     * @return string
      */
-    public function __get($name)
+    public function getName()
     {
-        return isset($this->$name) ? $this->$name : '';
+        return $this->name;
     }
 
     /**
-     * Allows read-only isset checking for the column properties.
+     * Gets the column label, often displayed in the table heading.
      *
-     * @param string $name
-     * @return bool
+     * @return string
      */
-    public function __isset($name)
+    public function getLabel()
     {
-        return isset($this->$name);
-    }
-
-    /**
-     * Sets the column name, used when accessing row data by array key.
-     *
-     * @param string $name
-     * @return self
-     */
-    public function name($name)
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * Sets the column label, often displayed in the table's header. Should be already translated.
-     *
-     * @param string $label
-     * @return self
-     */
-    public function label($label)
-    {
-        $this->label = $label;
-
-        return $this;
+        return $this->label;
     }
     
     /**
@@ -103,6 +75,16 @@ class Column
     }
 
     /**
+     * Gets the column title text, often displayed on hover.
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
      * Sets the column width.
      *
      * @param string|int $width
@@ -113,6 +95,16 @@ class Column
         $this->width = $width;
 
         return $this;
+    }
+
+    /**
+     * Gets the column width.
+     *
+     * @return string|int
+     */
+    public function getWidth()
+    {
+        return $this->width;
     }
 
     /**
@@ -129,6 +121,16 @@ class Column
     }
 
     /**
+     * Gets the column description, often displayed as smaller text below the label.
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
      * Sets the names of table columns to sort on. Blank defaults to the column name, false disables sorting.
      *
      * @param array|bool $value
@@ -139,6 +141,16 @@ class Column
         $this->sortable = is_null($value) ? array($this->name) : $value;
 
         return $this;
+    }
+
+    /**
+     * Gets the name of table columns to sort on, or false if sorting is disabled.
+     *
+     * @return array|bool
+     */
+    public function getSortable()
+    {
+        return $this->sortable;
     }
 
     /**
