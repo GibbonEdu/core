@@ -394,7 +394,8 @@ class FormFactory implements FormFactoryInterface
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
-                'VND ₫‎' => 'Vietnamese Dong (₫‎)'
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'XOF FCFA' => 'West African Francs (FCFA)'
             ),
         );
 
