@@ -76620,7 +76620,7 @@ msgstr "Aula"
 
 #: modules/Planner/planner_add.php:128 modules/Planner/planner_add.php:119
 #: .git/modules/Planner/planner_add.php:119
-msgid ">Add Lesson Plan"
+msgid "Add Lesson Plan"
 msgstr "Adicionar"
 
 #: modules/Planner/planner_add.php:240 modules/Planner/planner_add.php:300
