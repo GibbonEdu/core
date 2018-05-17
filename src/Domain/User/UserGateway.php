@@ -55,15 +55,6 @@ class UserGateway extends QueryableGateway
             ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
 
         $criteria->addFilterRules([
-            'in' => function ($query, $columnName) use (&$criteria) {
-                if (in_array($columnName, $this->getSearchableColumns())) {
-                    $criteria->searchBy($columnName);
-                } else {
-                    $criteria->fromArray(['filterBy' => []]);
-                }
-                return $query;
-            },
-
             'role' => function ($query, $roleCategory) {
                 return $query
                     ->where('gibbonRole.category = :roleCategory')

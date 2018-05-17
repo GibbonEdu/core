@@ -89,6 +89,8 @@ abstract class QueryableGateway extends Gateway
     {
         $query->calcFoundRows();
 
+        $criteria->addFilterRules($this->getDefaultFilterRules($criteria));
+
         // Filter By
         if ($criteria->hasFilter()) {
             foreach ($criteria->getFilterBy() as $name) {
@@ -128,6 +130,25 @@ abstract class QueryableGateway extends Gateway
         $query->page($criteria->getPage());
 
         return $query;
+    }
+
+    /**
+     * Returns a set of built-in rules available to all queryable gateways.
+     *
+     * @return array
+     */
+    protected function getDefaultFilterRules(QueryCriteria $criteria)
+    {
+        return [
+            'in' => function ($query, $columnName) use (&$criteria) {
+                if (in_array($columnName, $this->getSearchableColumns())) {
+                    $criteria->searchBy($columnName);
+                } else {
+                    $criteria->fromArray(['filterBy' => []]);
+                }
+                return $query;
+            },
+        ];
     }
 
     /**
