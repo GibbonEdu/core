@@ -143,7 +143,7 @@ class QueryCriteriaTest extends TestCase
         $this->criteria->searchBy('columnName', 'foo bar active:Y');
 
         $this->assertTrue($this->criteria->hasFilter('active:Y'));
-        $this->assertNotContains('active:Y', $this->criteria->getSearchBy()['text']);
+        $this->assertNotContains('active:Y', $this->criteria->getSearchText());
     }
 
     public function testCanFilterByString()

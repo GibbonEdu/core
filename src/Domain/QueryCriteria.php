@@ -226,6 +226,33 @@ class QueryCriteria
     }
 
     /**
+     * Gets the current search text, optionally including any current filters.
+     *
+     * @param bool $includeFilters
+     * @return string
+     */
+    public function getSearchText($includeFilters = false)
+    {
+        $searchText = $this->criteria['searchBy']['text'];
+
+        if ($includeFilters && $this->hasFilter()) {
+            $searchText .= ' '.implode(' ', $this->getFilterBy());
+        }
+
+        return trim($searchText);
+    }
+
+    /**
+     * Get the current searched columns.
+     *
+     * @return array
+     */
+    public function getSearchColumns()
+    {
+        return isset($this->criteria['searchBy']['columns'])? $this->criteria['searchBy']['columns'] : array();
+    }
+
+    /**
      * Add a filter to the criteria. 
      * Accepts parameters as filter:value strings, or separate $name, $value params.
      * Values with spaces or other characters can also be quoted, as filter:"some value"
