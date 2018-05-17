@@ -21,11 +21,12 @@ namespace Gibbon\Tables;
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Column;
 use Gibbon\Tables\Action;
+use Gibbon\Tables\Column;
 use Gibbon\Tables\ActionColumn;
-use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
+use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Forms\OutputableInterface;
 
 /**
  * DataTable
@@ -33,9 +34,10 @@ use Gibbon\Tables\Renderer\PaginatedRenderer;
  * @version v16
  * @since   v16
  */
-class DataTable
+class DataTable implements OutputableInterface
 {
     protected $id;
+    protected $data;
     protected $renderer;
 
     protected $columns = array();
@@ -99,6 +101,19 @@ class DataTable
     public function getID()
     {
         return $this->id;
+    }
+
+    /**
+     * Set the table data internally.
+     *
+     * @param DataSet $data
+     * @return self
+     */
+    public function withData(DataSet $data)
+    {
+        $this->data = $data;
+
+        return $this;
     }
 
     /**
@@ -205,9 +220,9 @@ class DataTable
      * @param string $name
      * @return mixed
      */
-    public function getMetaData($name)
+    public function getMetaData($name, $defaultValue = null)
     {
-        return isset($this->meta[$name]) ? $this->meta[$name] : null;
+        return isset($this->meta[$name]) ? $this->meta[$name] : $defaultValue;
     }
 
     /**
@@ -222,5 +237,10 @@ class DataTable
         $renderer = isset($renderer)? $renderer : $this->renderer;
 
         return $renderer->renderTable($this, $dataSet);
+    }
+
+    public function getOutput()
+    {
+        return $this->renderer->renderTable($this, $this->data);
     }
 }
