@@ -29,7 +29,7 @@ class QueryCriteria
     protected $criteria = array(
         'page' => 1,
         'pageSize' => 25,
-        'searchBy' => array(),
+        'searchBy' => array('columns' => [], 'text' => ''),
         'filterBy' => array(),
         'sortBy' => array(),
     );
@@ -265,11 +265,13 @@ class QueryCriteria
     {
         if (empty($name)) return $this;
 
-        if (!empty($value)) {
-            $name = $name.':'.strtolower($value);
+        if (stripos($name, ':') === false) {
+            if (!empty($value)) {
+                $this->criteria['filterBy'][] = $name.':'.$value;
+            }
+        } else {
+            $this->criteria['filterBy'][] = $name;
         }
-
-        $this->criteria['filterBy'][] = $name;
 
         return $this;
     }

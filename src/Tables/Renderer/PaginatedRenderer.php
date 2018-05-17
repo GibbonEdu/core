@@ -82,7 +82,7 @@ class PaginatedRenderer implements RendererInterface
         // $output .= 'Criteria: '.$this->criteria->toJson();
         // $output .= '</code>';
 
-        $filterOptions = $table->getMetaData('filterOptions');
+        $filterOptions = $table->getMetaData('filterOptions', []);
 
         $output .= '<div>';
         $output .= $this->renderPageCount($dataSet);
@@ -245,7 +245,7 @@ class PaginatedRenderer implements RendererInterface
     {
         $pageSize = $dataSet->getPageSize();
 
-        if ($pageSize <= 0) return '';
+        if ($pageSize <= 25) return '';
 
         return $this->factory->createSelect('limit')
             ->fromArray(array(10, 25, 50, 100))

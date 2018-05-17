@@ -96,6 +96,7 @@ abstract class QueryableGateway extends Gateway
             foreach ($criteria->getFilterBy() as $name) {
                 list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
                 if ($callback = $criteria->getFilterRule($name)) {
+                    $value = str_replace('"', '', $value);
                     $query = $callback($query, $value);
                 }
             }
