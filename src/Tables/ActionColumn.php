@@ -69,6 +69,21 @@ class ActionColumn extends Column
     }
 
     /**
+     * Adds an array of URL parameters to be appended to the link URL.
+     * 
+     * @param array $values
+     * @return self
+     */
+    public function addParams($values)
+    {
+        if (is_array($values)) {
+            $this->params = array_replace($this->params, $values);
+        }
+
+        return $this;
+    }
+
+    /**
      * Sets a column width based on the number of actions.
      *
      * @return string
