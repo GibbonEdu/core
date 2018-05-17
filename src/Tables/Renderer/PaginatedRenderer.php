@@ -236,21 +236,19 @@ class PaginatedRenderer implements RendererInterface
     }
 
     /**
-     * Render the page size drop-down.
+     * Render the page size drop-down. Hidden if there's less than one page of total results.
      *
      * @param DataSet $dataSet
      * @return string
      */
     protected function renderPageSize(DataSet $dataSet)
     {
-        $pageSize = $dataSet->getPageSize();
-
-        if ($pageSize <= 25) return '';
+        if ($dataSet->getPageSize() <= 0 || $dataSet->getPageCount() <= 1) return '';
 
         return $this->factory->createSelect('limit')
             ->fromArray(array(10, 25, 50, 100))
             ->setClass('limit floatNone')
-            ->selected($pageSize)
+            ->selected($dataSet->getPageSize())
             ->append('<small style="line-height: 30px;margin-left:5px;">'.__('Per Page').'</small>')
             ->getOutput();
     }
