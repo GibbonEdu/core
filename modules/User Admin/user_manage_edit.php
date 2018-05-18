@@ -259,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
-				$row->addTextField('address1')->maxLength(255);
+				$row->addTextArea('address1')->maxLength(255)->setRows(2);
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
-				$row->addTextField('address2')->maxLength(255);
+                $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));

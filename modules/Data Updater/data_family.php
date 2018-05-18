@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                     $row = $form->addRow();
                         $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
-                        $row->addTextField('homeAddress')->maxLength(255)->setRequired($required);
+                        $row->addTextArea('homeAddress')->maxLength(255)->setRequired($required)->setRows(2);
 
                     $row = $form->addRow();
                         $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
