@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Forms\Traits\BasicAttributesTrait;
+
 /**
  * Column
  *
@@ -27,28 +29,18 @@ namespace Gibbon\Tables;
  */
 class Column
 {
-    protected $name;
+    use BasicAttributesTrait;
+
     protected $label;
-    protected $title;
     protected $description;
     protected $width = 'auto';
     protected $sortable = false;
     protected $formatter;
 
-    public function __construct($name, $label = '')
+    public function __construct($id, $label = '')
     {
-        $this->name = $name;
+        $this->setID($id);
         $this->label = $label;
-    }
-
-    /**
-     * Gets the column name, used as an array key with table row data.
-     *
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
     }
 
     /**
@@ -59,29 +51,6 @@ class Column
     public function getLabel()
     {
         return $this->label;
-    }
-    
-    /**
-     * Sets the column title text, often displayed on hover. Should be already translated.
-     *
-     * @param string $title
-     * @return self
-     */
-    public function title($title)
-    {
-        $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * Gets the column title text, often displayed on hover.
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return $this->title;
     }
 
     /**
@@ -138,7 +107,7 @@ class Column
      */
     public function sortable($value = null) 
     {
-        $this->sortable = is_null($value) ? array($this->name) : $value;
+        $this->sortable = is_null($value) ? array($this->getID()) : $value;
 
         return $this;
     }
@@ -188,7 +157,7 @@ class Column
         if ($this->hasFormatter()) {
             return call_user_func($this->formatter, $data);
         } else {
-            return isset($data[$this->name])? $data[$this->name] : '';
+            return isset($data[$this->getID()])? $data[$this->getID()] : '';
         }
     }
 }

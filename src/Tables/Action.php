@@ -19,13 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Forms\Layout\WebLink;
+
 /**
  * Action
  *
  * @version v16
  * @since   v16
  */
-class Action
+class Action extends WebLink
 {
     protected $name;
     protected $label;
@@ -55,6 +57,12 @@ class Action
         }
     }
 
+    /**
+     * Sets the action label, displayed on hover.
+     *
+     * @param string $label
+     * @return self
+     */
     public function setLabel($label)
     {
         $this->label = $label;
@@ -62,11 +70,22 @@ class Action
         return $this;
     }
 
+    /**
+     * Gets the action label.
+     *
+     * @return string
+     */
     public function getLabel()
     {
         return $this->label;
     }
 
+    /**
+     * Display the action label as text next to the icon.
+     *
+     * @param bool $value
+     * @return self
+     */
     public function displayLabel($value = true)
     {
         $this->displayLabel = $value;
@@ -74,18 +93,12 @@ class Action
         return $this;
     }
 
-    public function setURL($url)
-    {
-        $this->url = $url;
-
-        return $this;
-    }
-
-    public function getURL()
-    {
-        return $this->url;
-    }
-
+    /**
+     * Set the icon name, without any path or filetype
+     *
+     * @param string $icon
+     * @return self
+     */
     public function setIcon($icon)
     {
         $this->icon = $icon;
@@ -93,18 +106,22 @@ class Action
         return $this;
     }
 
+    /**
+     * Gets the action icon.
+     *
+     * @return string
+     */
     public function getIcon()
     {
         return $this->icon;
     }
 
-    public function addParam($name, $value = '')
-    {
-        $this->params[$name] = $value;
-
-        return $this;
-    }
-
+    /**
+     * Load the action URL in a modal window rather than loading a new page. Commonly used for delete actions.
+     *
+     * @param bool $value
+     * @return self
+     */
     public function isModal($value = true) 
     {
         $this->modal = $value;
@@ -121,9 +138,8 @@ class Action
      */
     public function getOutput(&$data = array(), $params = array())
     {
-        global $guid;
+        global $guid; // :(
 
-        $class = '';
         $queryParams = array();
 
         if (!empty($data)) {
@@ -133,23 +149,23 @@ class Action
         }
 
         if ($this->modal) {
-            $path = $_SESSION[$guid]['absoluteURL'].'/fullscreen.php';
-            $class = 'thickbox';
+            $url = $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q='.$this->getURL();
+            $this->addClass('thickbox');
         } else {
-            $path = $_SESSION[$guid]['absoluteURL'].'/index.php';
+            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$this->getURL();
         }
 
-        $url = $path.'?q='.$this->getURL();
         if (!empty($queryParams)) {
             $url .= '&'.http_build_query($queryParams);
         }
 
-        return sprintf('<a href="%1$s" class="%2$s">%3$s<img title="%4$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/Default/img/%5$s.png" style="margin-left: 5px"></a>', 
-            $url, 
-            $class,
-            ($this->displayLabel? $this->getLabel() : ''),
-            $this->getLabel(), 
-            $this->getIcon()
-        );
+        $this->setURL($url);
+        $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/Default/img/%3$s.png" style="margin-left: 5px">', 
+                ($this->displayLabel? $this->getLabel() : ''),
+                $this->getLabel(), 
+                $this->getIcon()
+            ));
+
+        return parent::getOutput();
     }
 }
