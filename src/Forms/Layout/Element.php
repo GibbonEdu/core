@@ -76,6 +76,16 @@ class Element implements OutputableInterface
     }
 
     /**
+     * Get the currently prepended string.
+     *
+     * @return string
+     */
+    public function getPrepended()
+    {
+        return $this->prepended;
+    }
+
+    /**
      * Add a string to the end of the current content.
      * @param  string  $value
      * @return self
@@ -84,6 +94,16 @@ class Element implements OutputableInterface
     {
         $this->appended .= $value;
         return $this;
+    }
+
+    /**
+     * Get the currently appended string.
+     *
+     * @return string
+     */
+    public function getAppended()
+    {
+        return $this->prepended;
     }
 
     /**

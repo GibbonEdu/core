@@ -54,7 +54,6 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
-
 });
 
 // Form API Functions
@@ -311,4 +310,100 @@ CustomBlocks.prototype.refresh = function() {
 // Add the prototype method to jQuery
 $.prototype.gibbonCustomBlocks = function(settings) {
     this.gibbonCustomBlocks = new CustomBlocks(this, settings);
+};
+    
+/**
+ * Gibbon Data Table: a very basic implementation of jQuery + AJAX powered data tables in Gibbon
+ * @param string basePath 
+ * @param Object settings 
+ */
+var DataTable = window.DataTable || {};
+
+DataTable = (function(element, basePath, filters, totalCount) {
+    var _ = this;
+
+    _.table = $(element);
+    _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
+    _.filters = filters;
+    _.totalCount = totalCount;
+    
+    if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
+
+    _.init();
+});
+
+DataTable.prototype.init = function() {
+    var _ = this;
+
+    // Pagination
+    $(_.table).on('click', '.paginate', function() {
+        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.page = Math.min($(this).data('page'), _.filters.pageMax);
+        _.refresh();
+    });
+
+    // Sortable Columns
+    $(_.table).on('click', '.column.sortable', function(event) {
+        var columns = $(this).data('sort').split(',');
+
+        // Hold shift to add columns to the sort (or toggle them), otherwise clear it each time.
+        var activeColumns = columns.filter(function(item){ return item in _.filters.sortBy; }); 
+        if (activeColumns.length == 0 && !event.shiftKey) _.filters.sortBy = {};
+
+        columns.forEach(function(column) {
+            _.filters.sortBy[column] = (_.filters.sortBy[column] == 'ASC')? 'DESC' : 'ASC';
+        });
+
+        _.refresh();
+    });
+
+    // Remove Filter
+    $(_.table).on('click', '.filter', function() {
+        var index = _.filters.filterBy.indexOf($(this).data('filter'));
+        if ($(this).hasClass('clear')) {
+            _.filters.filterBy = [''];
+            _.filters.searchBy.columns = [''];
+        } else if (index !== -1) {
+            _.filters.filterBy.splice(index, 1);
+
+            // Remove columns from search criteria if using an in: filter
+            if ($(this).data('filter').startsWith('in:')) {
+                var columnName = $(this).data('filter').substr(3);
+                _.filters.searchBy.columns = _.filters.searchBy.columns.filter(function(item) {
+                    return item != columnName;
+                });
+            }
+        }
+        _.filters.page = 1;
+        _.refresh();
+    });
+
+    // Add Filter
+    $(_.table).on('change', '.filters', function() {
+        if (!_.filters.filterBy.includes($(this).val())) {
+            _.filters.filterBy.push( $(this).val() );
+            _.filters.page = 1;
+        }
+        _.refresh();
+    });
+
+    // Page Size
+    $(_.table).on('change', '.limit', function() {
+        _.filters.pageSize = parseInt($(this).val());
+        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
+        _.refresh();
+    });
+};
+
+DataTable.prototype.refresh = function() {
+    var _ = this;
+
+    $(_.table).load(_.path, _.filters, function(responseText, textStatus, jqXHR) { 
+        tb_init('a.thickbox'); 
+    });
+};
+
+$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
+    this.gibbonDataTable = new DataTable(this, basePath, filters, totalCount);
 };

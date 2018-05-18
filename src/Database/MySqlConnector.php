@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Database;
 
-use Gibbon\Database\Connection;
 use PDO;
+use Gibbon\Database\Result;
+use Gibbon\Database\Connection;
 
 /**
  * Establish a Database Connection.
@@ -85,6 +86,7 @@ class MySqlConnector
     {
         $connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         $connection->setAttribute(\PDO::ATTR_DEFAULT_FETCH_MODE, \PDO::FETCH_ASSOC);
+        $connection->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array(Result::class));
     }
 
     /**
