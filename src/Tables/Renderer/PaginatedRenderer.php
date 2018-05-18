@@ -124,15 +124,32 @@ class PaginatedRenderer implements RendererInterface
             // ROWS
             $output .= '<tbody>';
 
+            $rowLogic = $table->getRowLogic();
+            $cellLogic = $table->getCellLogic();
+
             foreach ($dataSet as $data) {
-                $output .= '<tr>';
+                $row = $this->factory->createTableCell();
+                if ($rowLogic) {
+                    $row = $rowLogic($row, $data);
+                }
+
+                $output .= '<tr '.$row->getAttributeString().'>';
+                $output .= $row->getPrepended();
 
                 foreach ($table->getColumns() as $columnName => $column) {
-                    $output .= '<td>';
+                    $cell = $this->factory->createTableCell();
+                    if ($cellLogic) {
+                        $cell = $cellLogic($cell, $data);
+                    }
+
+                    $output .= '<td '.$row->getAttributeString().'>';
+                    $output .= $cell->getPrepended();
                     $output .= $column->getOutput($data);
+                    $output .= $cell->getAppended();
                     $output .= '</td>';
                 }
 
+                $output .= $row->getAppended();
                 $output .= '</tr>';
             }
 

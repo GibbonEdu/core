@@ -44,6 +44,9 @@ class DataTable implements OutputableInterface
     protected $header = array();
     protected $meta = array();
 
+    protected $rowLogic;
+    protected $cellLogic;
+
     /**
      * Create a data table with optional renderer.
      *
@@ -146,11 +149,11 @@ class DataTable implements OutputableInterface
      * @param string $label
      * @return Column
      */
-    public function addColumn($name, $label = '')
+    public function addColumn($id, $label = '')
     {
-        $this->columns[$name] = new Column($name, $label);
+        $this->columns[$id] = new Column($id, $label);
 
-        return $this->columns[$name];
+        return $this->columns[$id];
     }
 
     /**
@@ -223,6 +226,52 @@ class DataTable implements OutputableInterface
     public function getMetaData($name, $defaultValue = null)
     {
         return isset($this->meta[$name]) ? $this->meta[$name] : $defaultValue;
+    }
+
+    /**
+     * Set a callable function that can modify each row based on that row's data.
+     *
+     * @param callable $callable
+     * @return self
+     */
+    public function setRowLogic(callable $callable)
+    {
+        $this->rowLogic = $callable;
+
+        return $this;
+    }
+
+    /**
+     * Get the row logic callable.
+     *
+     * @return callable
+     */
+    public function getRowLogic()
+    {
+        return $this->rowLogic;
+    }
+
+    /**
+     * Set a callable function that can modify each cell based on that row's data.
+     *
+     * @param callable $callable
+     * @return self
+     */
+    public function setCellLogic(callable $callable)
+    {
+        $this->cellLogic = $callable;
+
+        return $this;
+    }
+
+    /**
+     * Get the cell logic callable.
+     *
+     * @return callable
+     */
+    public function getCellLogic()
+    {
+        return $this->cellLogic;
     }
 
     /**
