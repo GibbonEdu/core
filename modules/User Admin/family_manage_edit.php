@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
-                $row->addTextField('homeAddress')->maxLength(255);
+                $row->addTextArea('homeAddress')->maxLength(255)->setRows(2);
 
             $row = $form->addRow();
                 $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
