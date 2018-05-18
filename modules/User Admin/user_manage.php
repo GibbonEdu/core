@@ -97,15 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     // COLUMNS
     $table->addColumn('image_240', __('Photo'))
         ->width('10%')
-        ->format(function($item) use ($guid) {
-            return getUserPhoto($guid, $item['image_240'], 75);
+        ->format(function($person) use ($guid) {
+            return getUserPhoto($guid, $person['image_240'], 75);
         });
 
     $table->addColumn('fullName', __('Name'))
         ->width('30%')
         ->sortable(['surname', 'preferredName'])
-        ->format(function($item) {
-            return formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+        ->format(function($person) {
+            return formatName('', $person['preferredName'], $person['surname'], 'Student', true);
         });
 
     $table->addColumn('status', __('Status'))
@@ -116,28 +116,34 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->width('16%')
         ->sortable();
 
-    $table->addColumn('family', __('Family'))->format(function($item) use ($guid) {
-        $output = '';
-        foreach ($item['families'] as $family) {
-            $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
-        }
-        return $output;
-    });
+    $table->addColumn('family', __('Family'))
+        ->format(function($person) use ($guid) {
+            $output = '';
+            foreach ($person['families'] as $family) {
+                $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$family['gibbonPersonIDStudent'].'&search=&allStudents=on&sort=surname, preferredName&subpage=Family">'.$family['name'].'</a><br/>';
+            }
+            return $output;
+        });
 
     $table->addColumn('username', __('Username'))->sortable();
 
     // ACTIONS
-    $col = $table->addActionColumn()->addParam('gibbonPersonID')->addParam('search', $criteria->getSearchText(true));
+    $table->addActionColumn()
+        ->addParam('gibbonPersonID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($person, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/User Admin/user_manage_edit.php');
 
-        $col->addAction('edit', __('Edit'))
-            ->setURL('/modules/User Admin/user_manage_edit.php');
+            if ($person['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/User Admin/user_manage_delete.php');
+            }
 
-        $col->addAction('delete', __('Delete'))
-            ->setURL('/modules/User Admin/user_manage_delete.php');
-
-        $col->addAction('password', __('Change Password'))
-            ->setURL('/modules/User Admin/user_manage_password.php')
-            ->setIcon('key');
+            $actions->addAction('password', __('Change Password'))
+                    ->setURL('/modules/User Admin/user_manage_password.php')
+                    ->setIcon('key');
+        });
 
     echo $table->render($dataSet);
 }

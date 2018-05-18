@@ -103,6 +103,11 @@ class ActionColumn extends Column
     {
         $output = '';
 
+        if ($this->hasFormatter()) {
+            $this->actions = [];
+            call_user_func($this->formatter, $data, $this);
+        }
+
         $output .= '<div style="white-space: nowrap;">';
         foreach ($this->actions as $actionName => $action) {
             $output .= $action->getOutput($data, $this->params);
