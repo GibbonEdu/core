@@ -624,7 +624,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired()->maxLength(50);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50);
 
                 if ($uniqueEmailAddress == 'Y') {
                     $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
@@ -633,7 +633,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
                     $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
-                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1);
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1);
             }
 
             // PARENT EMPLOYMENT
