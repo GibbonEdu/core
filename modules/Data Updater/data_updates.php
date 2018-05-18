@@ -75,12 +75,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
         echo '<table cellspacing=0 class="smallintBorder fullWidth">';
         echo '<tr>';
-        echo '<td>';
+        echo '<td style="font-size:14px;">';
         echo __('ID card requests for the <b>upcoming school year 2018-2019</b> are now available. Please visit the photo upload page to review your family photos and check the box at the bottom if your family will need ID cards for the upcoming school year.');
         echo '</td>';
-        echo '<td style="width: 25%; text-align:right;">';
-        echo '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/ID Cards/photos.php" style="display:block;">';
-        echo '<img title="'.__('Request ID Cards').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_right.png"/><br/>'.__('Request ID Cards').'</a>';
+        echo '<td style="width: 35%; text-align:right;vertical-align: baseline;">';
+        echo '<a class="button buttonPush buttonBlueGreen" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/ID Cards/photos.php">';
+            echo 'Request ID Cards<br/>for 2018-2019';
+        echo '</a>';
         echo '</td>';
         echo '</tr>';
         echo '</table><br/>';
