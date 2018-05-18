@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Finance\InvoiceGateway;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Finance\Forms\FinanceFormFactory;
@@ -92,13 +94,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         }
         echo '</div>';
 
-        $status = isset($_GET['status'])? $_GET['status'] : null;
-        if ($status == '') $status = 'Pending';
+        $request = array(
+            'gibbonSchoolYearID'             => $gibbonSchoolYearID,
+            'status'                         => isset($_GET['status'])? $_GET['status'] : '',
+            'gibbonFinanceInvoiceeID'        => isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '',
+            'monthOfIssue'                   => isset($_GET['monthOfIssue'])? $_GET['monthOfIssue'] : '',
+            'gibbonFinanceBillingScheduleID' => isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '',
+            'gibbonFinanceFeeCategoryID'     => isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '',
+        );
 
-        $gibbonFinanceInvoiceeID = isset($_GET['gibbonFinanceInvoiceeID'])? $_GET['gibbonFinanceInvoiceeID'] : '';
-        $monthOfIssue = isset($_GET['monthOfIssue'])? $_GET['monthOfIssue'] : '';
-        $gibbonFinanceBillingScheduleID = isset($_GET['gibbonFinanceBillingScheduleID'])? $_GET['gibbonFinanceBillingScheduleID'] : '';
-        $gibbonFinanceFeeCategoryID = isset($_GET['gibbonFinanceFeeCategoryID'])? $_GET['gibbonFinanceFeeCategoryID'] : '';
+        if (empty($_POST) && !isset($_GET['status'])) $request['status'] = 'Pending';
 
         echo '<h3>';
         echo __($guid, 'Filters');
@@ -112,193 +117,69 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
-            $row->addSelectInvoiceStatus('status')->selected($status, 'All');
+            $row->addSelectInvoiceStatus('status');
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeID', __('Student'));
-            $row->addSelectInvoicee('gibbonFinanceInvoiceeID', $gibbonSchoolYearID)->selected($gibbonFinanceInvoiceeID);
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeID', $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('monthOfIssue', __('Month of Issue'));
-            $row->addSelectMonth('monthOfIssue')->selected($monthOfIssue);
+            $row->addSelectMonth('monthOfIssue');
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceBillingScheduleID', __('Billing Schedule'));
             $row->addSelectBillingSchedule('gibbonFinanceBillingScheduleID', $gibbonSchoolYearID)
-                ->fromArray(array('Ad Hoc' => __('Ad Hoc')))
-                ->selected($gibbonFinanceBillingScheduleID);
+                ->fromArray(array('Ad Hoc' => __('Ad Hoc')));
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceFeeCategoryID', __('Fee Category'));
-            $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder()->selected($gibbonFinanceFeeCategoryID);
+            $row->addSelectFeeCategory('gibbonFinanceFeeCategoryID')->placeholder();
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Filters'), array('gibbonSchoolYearID'));
 
+        $form->loadAllValuesFrom($request);
+
         echo $form->getOutput();
 
-        try {
-            //Add in filter wheres
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonSchoolYearID2' => $gibbonSchoolYearID);
-            $whereSched = '';
-            $whereAdHoc = '';
-            $whereNotPending = '';
-            $today = date('Y-m-d');
-            if ($status != '') {
-                if ($status == 'Pending') {
-                    $data['status1'] = 'Pending';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
-                    $data['status2'] = 'Pending';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
-                    $data['status3'] = 'Pending';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
-                } elseif ($status == 'Issued') {
-                    $data['status1'] = 'Issued';
-                    $data['dateTest1'] = $today;
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate>=:dateTest1';
-                    $data['status2'] = 'Issued';
-                    $data['dateTest2'] = $today;
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=:dateTest2';
-                    $data['status3'] = 'Issued';
-                    $data['dateTest3'] = $today;
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=:dateTest3';
-                } elseif ($status == 'Issued - Overdue') {
-                    $data['status1'] = 'Issued';
-                    $data['dateTest1'] = $today;
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate<:dateTest1';
-                    $data['status2'] = 'Issued';
-                    $data['dateTest2'] = $today;
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate<:dateTest2';
-                    $data['status3'] = 'Issued';
-                    $data['dateTest3'] = $today;
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate<:dateTest3';
-                } elseif ($status == 'Paid') {
-                    $data['status1'] = 'Paid';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
-                    $data['status2'] = 'Paid';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
-                    $data['status3'] = 'Paid';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate>=paidDate';
-                } elseif ($status == 'Paid - Partial') {
-                    $data['status1'] = 'Paid - Partial';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
-                    $data['status2'] = 'Paid - Partial';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
-                    $data['status3'] = 'Paid - Partial';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
-                } elseif ($status == 'Paid - Late') {
-                    $data['status1'] = 'Paid';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1 AND gibbonFinanceInvoice.invoiceDueDate<paidDate';
-                    $data['status2'] = 'Paid';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2 AND gibbonFinanceInvoice.invoiceDueDate<paidDate';
-                    $data['status3'] = 'Paid';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3 AND gibbonFinanceInvoice.invoiceDueDate<paidDate';
-                } elseif ($status == 'Cancelled') {
-                    $data['status1'] = 'Cancelled';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
-                    $data['status2'] = 'Cancelled';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
-                    $data['status3'] = 'Cancelled';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
-                } elseif ($status == 'Refunded') {
-                    $data['status1'] = 'Refunded';
-                    $whereSched .= ' AND gibbonFinanceInvoice.status=:status1';
-                    $data['status2'] = 'Refunded';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.status=:status2';
-                    $data['status3'] = 'Refunded';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.status=:status3';
-                }
-            }
-            if ($gibbonFinanceInvoiceeID != '') {
-                $data['gibbonFinanceInvoiceeID1'] = $gibbonFinanceInvoiceeID;
-                $whereSched .= ' AND gibbonFinanceInvoice.gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID1';
-                $data['gibbonFinanceInvoiceeID2'] = $gibbonFinanceInvoiceeID;
-                $whereAdHoc .= ' AND gibbonFinanceInvoice.gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID2';
-                $data['gibbonFinanceInvoiceeID3'] = $gibbonFinanceInvoiceeID;
-                $whereNotPending .= ' AND gibbonFinanceInvoice.gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID3';
-            }
-            if ($monthOfIssue != '') {
-                $data['monthOfIssue1'] = "%-$monthOfIssue-%";
-                $whereSched .= ' AND gibbonFinanceInvoice.invoiceIssueDate LIKE :monthOfIssue1';
-                $data['monthOfIssue2'] = "%-$monthOfIssue-%";
-                $whereAdHoc .= ' AND gibbonFinanceInvoice.invoiceIssueDate LIKE :monthOfIssue2';
-                $data['monthOfIssue3'] = "%-$monthOfIssue-%";
-                $whereNotPending .= ' AND gibbonFinanceInvoice.invoiceIssueDate LIKE :monthOfIssue3';
-            }
-            if ($gibbonFinanceBillingScheduleID != '') {
-                if ($gibbonFinanceBillingScheduleID == 'Ad Hoc') {
-                    $data['billingScheduleType1'] = 'Ah Hoc';
-                    $whereSched .= ' AND gibbonFinanceInvoice.billingScheduleType=:billingScheduleType1';
-                    $data['billingScheduleType2'] = 'Ad Hoc';
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.billingScheduleType=:billingScheduleType2';
-                    $data['billingScheduleType3'] = 'Ad Hoc';
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.billingScheduleType=:billingScheduleType3';
-                } elseif ($gibbonFinanceBillingScheduleID != '') {
-                    $data['gibbonFinanceBillingScheduleID1'] = $gibbonFinanceBillingScheduleID;
-                    $whereSched .= ' AND gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID1';
-                    $data['gibbonFinanceBillingScheduleID2'] = $gibbonFinanceBillingScheduleID;
-                    $whereAdHoc .= ' AND gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID2';
-                    $data['gibbonFinanceBillingScheduleID3'] = $gibbonFinanceBillingScheduleID;
-                    $whereNotPending .= ' AND gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=:gibbonFinanceBillingScheduleID3';
-                }
-            }
-            if ($gibbonFinanceFeeCategoryID != '') {
-                $data['gibbonFinanceFeeCategoryID1'] = '%'.$gibbonFinanceFeeCategoryID.'%';
-                $whereSched .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID1';
-                $data['gibbonFinanceFeeCategoryID2'] = '%'.$gibbonFinanceFeeCategoryID.'%';
-                $whereAdHoc .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID2';
-                $data['gibbonFinanceFeeCategoryID3'] = '%'.$gibbonFinanceFeeCategoryID.'%';
-                $whereNotPending .= ' AND gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList LIKE :gibbonFinanceFeeCategoryID3';
-            }
+        // QUERY
+        $invoiceGateway = $container->get(InvoiceGateway::class);
 
-            //SQL for billing schedule AND pending
-            $sql = "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, paidAmount, gibbonFinanceBillingSchedule.name AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Scheduled' AND gibbonFinanceInvoice.status='Pending' $whereSched)";
-            $sql .= ' UNION ';
-            //SQL for Ad Hoc AND pending
-            $sql .= "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, paidAmount, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)  WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' $whereAdHoc)";
-            $sql .= ' UNION ';
-            //SQL for NOT Pending
-            $sql .= "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)  WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' $whereNotPending)";
-            $sql .= " ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), invoiceIssueDate, surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
+        $criteria = $invoiceGateway->newQueryCriteria()
+            ->sortBy(['defaultSortOrder', 'invoiceIssueDate', 'surname', 'preferredName'])
+            ->filterBy('status', $request['status'])
+            ->filterBy('invoicee', $request['gibbonFinanceInvoiceeID'])
+            ->filterBy('month', $request['monthOfIssue'])
+            ->filterBy('billingSchedule', $request['gibbonFinanceBillingScheduleID'])
+            ->filterBy('feeCategory', $request['gibbonFinanceFeeCategoryID'])
+            ->fromArray($_POST);
+        $invoices = $invoiceGateway->queryInvoices($criteria);
 
         echo '<h3>';
         echo __($guid, 'View');
-        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s records(s) in current view'), $result->rowCount()).'</span>';
         echo '</h3>';
 
         echo "<div class='linkTop'>";
-        echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
+        echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&".http_build_query($request)."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
         echo '</div>';
 
-        $linkParams = array(
-            'gibbonSchoolYearID'             => $gibbonSchoolYearID,
-            'status'                         => $status,
-            'gibbonFinanceInvoiceeID'        => $gibbonFinanceInvoiceeID,
-            'monthOfIssue'                   => $monthOfIssue,
-            'gibbonFinanceBillingScheduleID' => $gibbonFinanceBillingScheduleID,
-            'gibbonFinanceFeeCategoryID'     => $gibbonFinanceFeeCategoryID,
-        );
-
-        $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($linkParams));
+        // FORM
+        $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($request));
         $form->setFactory(FinanceFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $bulkActions = array('export' => __('Export'));
-        if ($status == 'Pending') {
-            $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions;
-        }
-        if ($status == 'Issued - Overdue' || $status == 'Paid - Partial') {
-            $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions;
-        }
-        if ($status == 'Issued' || $status == 'Issued - Overdue') {
-            $bulkActions = array('paid' => __('Mark as Paid')) + $bulkActions;
+        switch($request['status']) {
+            case 'Pending':
+                $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions; break;
+            case 'Issued - Overdue':
+                $bulkActions = array('reminders' => __('Issue Reminders'), 'paid' => __('Mark as Paid')) + $bulkActions; break;
+            case 'Paid - Partial':
+                $bulkActions = array('reminders' => __('Issue Reminders')) + $bulkActions; break;
+            case 'Issued':
+                $bulkActions = array('paid' => __('Mark as Paid')) + $bulkActions; break;
         }
 
         $form->toggleVisibilityByClass('bulkPaid')->onSelect('action')->when('paid');
@@ -311,101 +192,107 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $row->addDate('paidDate')->setClass('bulkPaid shortWidth')->isRequired()->placeholder(__('Date Paid'));
             $row->addSubmit(__('Go'));
 
-        $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+        // DATA TABLE
+        $table = $form->addRow()->addDataTable('invoices', $criteria)->withData($invoices);
 
-        $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->append('<br/><small><i>'.__('Invoice To').'</i></small>');
-            $header->addContent(__('Roll Group'));
-            $header->addContent(__('Status'));
-            $header->addContent(__('Schedule'));
-            $header->addContent(__('Total'))
-                ->append(' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
-                ->append('<br/><small><i>'.__('Paid').' ('.$_SESSION[$guid]['currency'].')</i></small>');
-            $header->addContent(__('Issue Date'))->append('<br/><small><i>'.__('Due Date').'</i></small>');
-            $header->addContent(__('Actions'))->addClass('shortWidth');
-            $header->addCheckAll();
-
-        $invoices = $result->rowCount() > 0? $result->fetchAll() : array();
-
-        if (count($invoices) == 0) {
-            $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(8);
-        }
-
-        foreach ($invoices as $invoice) {
-            $statusExtra = '';
-            if ($invoice['status'] == 'Issued' and $invoice['invoiceDueDate'] < date('Y-m-d')) {
-                $statusExtra = 'Overdue';
-            } else if ($invoice['status'] == 'Paid' and $invoice['invoiceDueDate'] < $invoice['paidDate']) {
-                $statusExtra = 'Late';
+        $table->setRowLogic(function ($row, $invoice) {
+            // Row Highlight
+            if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
+            else if ($invoice['status'] == 'Paid') $row->addClass('current');
+            
+            // Expandable Notes
+            if (!empty($invoice['notes'])) {
+                $row->append('<tr class="invoiceNotes" style="display:none;"><td colspan=8>'.$invoice['notes'].'</td></tr>');
             }
+            return $row;
+        });
 
-            $rowClass = ($invoice['status'] == 'Paid')? 'current' : (($invoice['status'] == 'Issued' and $statusExtra == 'Overdue')? 'error' : '');
+        // COLUMNS
+        $table->addColumn('student', __('Student'))
+            ->sortable(['surname', 'preferredName'])
+            ->format(function($invoice) {
+                $output = '<b>'.formatName('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
+                $output .= '<br/><span class="small emphasis">'.$invoice['invoiceTo'].'</span>';
+                return $output;
+            });
 
-            $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
+        $table->addColumn('rollGroup', __('Roll Group'))->sortable();
 
-            $row = $table->addRow()->addClass($rowClass);
-                $row->addContent(formatName('', htmlPrep($invoice['preferredName']), htmlPrep($invoice['surname']), 'Student', true))
-                    ->wrap('<b>', '</b>')
-                    ->append('<br/><span class="small emphasis">'.$invoice['invoiceTo'].'</span>');
-                $row->addContent($invoice['rollGroup']);
-                $row->addContent($invoice['status'])->append(!empty($statusExtra)? ' - '.$statusExtra : '');
-                $row->addContent(!empty($invoice['billingScheduleExtra'])? $invoice['billingScheduleExtra'] : $invoice['billingSchedule']);
-                if (!is_null($totalFee)) {
-                    $fee = $row->addContent(number_format($totalFee, 2, '.', ','));
-                    if (!empty($invoice['paidAmount'])) {
-                        $fee->setClass(number_format($invoice['paidAmount']) != number_format($totalFee)? 'textOverBudget' : '')
-                            ->append('<br/><span class="small emphasis">'.number_format($invoice['paidAmount'], 2, '.', ',').'</span>');
-                    }
-                } else {
-                    $row->addContent('');
+        $table->addColumn('status', __('Status'))->sortable()->format(function ($invoice) {
+            if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {
+                return 'Issued - Overdue';
+            } else if ($invoice['status'] == 'Paid' && $invoice['invoiceDueDate'] < $invoice['paidDate']) {
+                return 'Paid - Late';
+            } else {
+                return $invoice['status'];
+            }
+        });
+
+        $table->addColumn('billingSchedule', __('Schedule'))->sortable();
+
+        $table->addColumn('total', __('Total').' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
+            ->description(__('Paid').' ('.$_SESSION[$guid]['currency'].')')
+            ->format(function ($invoice) use ($pdo) {
+                $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
+                if (is_null($totalFee)) return '';
+
+                $output = number_format($totalFee, 2, '.', ',');
+                if (!empty($invoice['paidAmount'])) {
+                    $class = number_format($invoice['paidAmount']) != number_format($totalFee)? 'textOverBudget' : '';
+                    $output .= '<br/><span class="small emphasis '.$class.'">'.number_format($invoice['paidAmount'], 2, '.', ',').'</span>';
                 }
-                $row->addContent(!is_null($invoice['invoiceIssueDate'])? dateConvertBack($guid, $invoice['invoiceIssueDate']) : __('N/A') )
-                    ->append('<br/><span class="small emphasis">'.dateConvertBack($guid, $invoice['invoiceDueDate']).'</span>');
+                return $output;
+            });
 
-                $col = $row->addColumn()->addClass('inline');
-                    $col->onlyIf($invoice['status'] != 'Cancelled' && $invoice['status'] != 'Refunded')
-                        ->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png" style="margin-right:4px;" />')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_edit.php')
-                        ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
-                        ->addParams($linkParams);
+        $table->addColumn('issueDate', __('Issue Date'))
+            ->description(__('Due Date'))
+            ->format(function ($invoice) use ($guid) {
+                $output = !is_null($invoice['invoiceIssueDate'])? dateConvertBack($guid, $invoice['invoiceIssueDate']) : __('N/A');
+                $output .= '<br/><span class="small emphasis">'.dateConvertBack($guid, $invoice['invoiceDueDate']).'</span>';
+                return $output;
+            });
 
-                    $col->onlyIf($invoice['status'] == 'Pending')
-                        ->addWebLink('<img title="'.__('Issue').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_right.png" style="margin-right:4px;" />')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_issue.php')
-                        ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
-                        ->addParams($linkParams);
+        // ACTIONS
+        $table->addActionColumn()
+            ->addParam('gibbonFinanceInvoiceID')
+            ->addParams($request)
+            ->format(function ($invoice, $col) {
+                if ($invoice['status'] != 'Cancelled' && $invoice['status'] != 'Refunded') {
+                    $col->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Finance/invoices_manage_edit.php');
+                }
 
-                    $col->onlyIf($invoice['status'] == 'Pending')
-                        ->addWebLink('<img title="'.__('Delete').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/garbage.png" style="margin-right:4px;" />')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_delete.php&width=650&height=135')
-                        ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
-                        ->addParams($linkParams)
-                        ->addClass('thickbox');
+                if ($invoice['status'] == 'Pending') {
+                    $col->addAction('issue', __('Issue'))
+                        ->setURL('/modules/Finance/invoices_manage_issue.php')
+                        ->setIcon('page_right');
 
-                    $col->onlyIf($invoice['status'] == 'Pending')
-                        ->addWebLink('<img title="'.__('Preview Invoice').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print_print.php&type=invoice')
-                        ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
+                    $col->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Finance/invoices_manage_delete.php');
+
+                    $col->addAction('preview', __('Preview Invoice'))
+                        ->setURL('/modules/Finance/invoices_manage_print_print.php&type=invoice')
                         ->addParam('preview', 'true')
-                        ->addParams($linkParams);
+                        ->setIcon('print');
+                }
 
-                    $col->onlyIf($invoice['status'] != 'Pending')
-                        ->addWebLink('<img title="'.__('Print Invoices, Receipts & Reminders').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png" style="margin-right:4px;" />')
-                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_manage_print.php')
-                        ->addParam('gibbonFinanceInvoiceID', $invoice['gibbonFinanceInvoiceID'])
-                        ->addParams($linkParams);
-
-                    $col->onlyIf(!empty($invoice['notes']))
-                        ->addWebLink('<img title="'.__('View Notes').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_down.png" style="margin-right:4px;"/>')
-                        ->setURL('#')->onClick('return false;')->addClass('invoiceNotesView');
-
-                $row->addCheckbox('gibbonFinanceInvoiceIDs[]')->setValue($invoice['gibbonFinanceInvoiceID'])->setClass('textCenter');
+                if ($invoice['status'] != 'Pending') {
+                    $col->addAction('print', __('Print Invoices, Receipts & Reminders'))
+                        ->setURL('/modules/Finance/invoices_manage_print.php')
+                        ->setIcon('print');
+                }
 
                 if (!empty($invoice['notes'])) {
-                    $table->addRow()->addClass('invoiceNotes')->addTableCell(htmlPrep($invoice['notes']))->colSpan(8);
+                    $col->addAction('notes', __('View Notes'))
+                        ->setURL('#')
+                        ->onClick('return false;')
+                        ->addClass('invoiceNotesView')
+                        ->setIcon('page_down');
                 }
-
-        }
+            });
+            
+        // BULK-ACTION
+        $table->addCheckboxColumn('gibbonFinanceInvoiceIDs', 'gibbonFinanceInvoiceID');
 
         echo $form->getOutput();
         echo '<br/>';

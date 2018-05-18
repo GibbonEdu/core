@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 $(function(){
     $('.invoiceNotes').hide();
 
-    $('a.invoiceNotesView').click(function(){
+    $(document).on('click', 'a.invoiceNotesView', function(){
         $(this).parents('tr').next('tr').toggle();
     });
 });
