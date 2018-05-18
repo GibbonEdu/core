@@ -29,18 +29,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
+
+    // Allows for a single value or a csv list of gibbonYearGroupID
+    $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : null;
+    $gibbonSchoolYearID = (isset($_GET['gibbonSchoolYearID']))? $_GET['gibbonSchoolYearID'] : null;
+
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/courseEnrolment_sync.php'>".__($guid, 'Sync Course Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Now').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/courseEnrolment_sync.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__($guid, 'Sync Course Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Sync Now').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    // Allows for a single value or a csv list of gibbonYearGroupID
-    $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : null;
-
-    if (empty($gibbonYearGroupIDList)) {
+    if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID)) {
         echo "<div class='error'>";
         echo __($guid, 'Your request failed because your inputs were invalid.');
         echo '</div>';
@@ -49,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     if ($gibbonYearGroupIDList == 'all') {
         // All class mappings
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
         $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.name as gibbonYearGroupName
                 FROM gibbonCourseClassMap
                 JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
@@ -58,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 GROUP BY gibbonCourseClassMap.gibbonYearGroupID";
     } else {
         // Pull up the class mapping for this year group
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID' => $gibbonYearGroupIDList);
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupIDList);
         $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.name as gibbonYearGroupName
                 FROM gibbonCourseClassMap
                 JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonCourseClassMap.gibbonRollGroupID)
@@ -87,6 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
     $form->addHiddenValue('gibbonYearGroupIDList', $gibbonYearGroupIDList);
+    $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
     // Checkall options
     $row = $form->addRow()->addContent('<h4>'.__('Options').'</h4>');
@@ -105,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $form->addRow()->addHeading($classMap['gibbonYearGroupName']);
 
         $data = array(
-            'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
             'gibbonYearGroupID' => $classMap['gibbonYearGroupID'],
             'date' => date('Y-m-d'),
         );

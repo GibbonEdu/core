@@ -36,6 +36,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
+    if ($gibbonSchoolYearID == $_SESSION[$guid]['gibbonSchoolYearID']) {
+        $gibbonSchoolYearName = $_SESSION[$guid]['gibbonSchoolYearName'];
+    } else {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID";
+        $gibbonSchoolYearName = $pdo->selectOne($sql, $data);
+    }
+
+    echo '<h2>';
+    echo $gibbonSchoolYearName;
+    echo '</h2>';
+
+    echo "<div class='linkTop'>";
+        //Print year picker
+        $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
+        $nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
+        if ($previousYear != false) {
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
+        } else {
+            echo __('Previous Year').' ';
+        }
+        echo ' | ';
+        if ($nextYear != false) {
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_sync.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
+        } else {
+            echo __('Next Year').' ';
+        }
+    echo '</div>';
+
     echo '<h3>';
     echo __('Settings');
     echo '</h3>';
@@ -54,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo $form->getOutput();
 
     // Grab all mapped classes grouped by year group
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
     $sql = "SELECT gibbonCourseClassMap.*, gibbonYearGroup.gibbonYearGroupID, gibbonRollGroup.name as gibbonRollGroupName, gibbonYearGroup.name as gibbonYearGroupName, COUNT(DISTINCT gibbonCourseClassMap.gibbonCourseClassID) as classCount, GROUP_CONCAT(DISTINCT gibbonRollGroup.nameShort ORDER BY gibbonRollGroup.nameShort SEPARATOR ', ') as rollGroupList, GROUP_CONCAT(DISTINCT gibbonRollGroup.gibbonRollGroupID ORDER BY gibbonRollGroup.gibbonRollGroupID SEPARATOR ',') as gibbonRollGroupIDList
             FROM gibbonCourseClassMap
             JOIN gibbonRollGroup ON (gibbonCourseClassMap.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
@@ -62,6 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassMap.gibbonCourseClassID)
             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
             WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)
+            AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
             GROUP BY gibbonYearGroup.gibbonYearGroupID
             ORDER BY gibbonYearGroup.sequenceNumber";
 
@@ -81,8 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo '<p>';
 
     echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>&nbsp; | ";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$classMapsAllYearGroups."'>".__('Sync All')."<img style='margin-left: 5px;width:22px;height:22px;' title='".__('Sync All')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_add.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>&nbsp; | ";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonSchoolYearID=".$gibbonSchoolYearID."&gibbonYearGroupIDList=".$classMapsAllYearGroups."'>".__('Sync All')."<img style='margin-left: 5px;width:22px;height:22px;' title='".__('Sync All')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a>";
     echo '</div>';
 
     if (empty($classMaps)) {
@@ -113,9 +145,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo '<td>'.$mapping['rollGroupList'].'</td>';
                 echo '<td>'.$mapping['classCount'].'</td>';
                 echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_edit.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonYearGroupIDList=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' style='width:22px;height:22px;'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_edit.php&gibbonSchoolYearID=".$gibbonSchoolYearID."&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_delete.php&gibbonSchoolYearID=".$gibbonSchoolYearID."&gibbonYearGroupID=".$mapping['gibbonYearGroupID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> &nbsp;";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/".$_SESSION[$guid]['module']."/courseEnrolment_sync_run.php&gibbonSchoolYearID=".$gibbonSchoolYearID."&gibbonYearGroupIDList=".$mapping['gibbonYearGroupID']."'><img title='".__('Sync Now')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png' style='width:22px;height:22px;'/></a>";
                 echo '</td>';
             echo '</tr>';
         }
