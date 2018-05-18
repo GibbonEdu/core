@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
 
 include '../../gibbon.php';
 
@@ -354,6 +355,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                         $event->setActionLink('/index.php?q=/modules/Data Updater/data_personal_manage.php');
 
                         $event->sendNotifications($pdo, $gibbon->session);
+
+                        // Redirect this user to the My Data Updates page if there are any required updates pending
+                        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+                        if ($requiredUpdates == 'Y') {
+                            $gateway = new DataUpdaterGateway($pdo);
+                            $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+                            if ($updatesRequiredCount > 0) {
+                                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php';
+                            }
+                        }
 
                         if ($partialFail == true) {
                             $URL .= '&return=warning1';
