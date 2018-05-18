@@ -70,6 +70,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
 
+            // Provide a link back to edit the associated record
+            if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == true && !empty($oldValues['gibbonPersonMedicalID'])) {
+                echo "<div class='linkTop'>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=".$oldValues['gibbonPersonMedicalID']."&search='>".__('Edit Medical Form')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Medical Form')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo '</div>';
+            }
+
             $compare = array(
                 'bloodType'                 => __('Blood Type'),
                 'longTermMedication'        => __('Long-Term Medication?'),
