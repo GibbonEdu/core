@@ -25,6 +25,8 @@ require_once __DIR__.'/functions.php';
 
 // Core Services
 $container = new League\Container\Container();
+$container->delegate(new League\Container\ReflectionContainer);
+
 $container->add('config', new Gibbon\Core(__DIR__));
 $container->add('session', new Gibbon\Session($container));
 $container->add('locale', new Gibbon\Locale($container));
@@ -57,6 +59,7 @@ if ($gibbon->isInstalled() == true) {
     $mysqlConnector = new Gibbon\Database\MySqlConnector();
     if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
         $container->add('db', $pdo);
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
         $connection2 = $pdo->getConnection();
 
         $gibbon->initializeCore($container);
