@@ -616,7 +616,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired()->maxLength(50)->loadFrom($application);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50)->loadFrom($application);
                 if ($uniqueEmailAddress == 'Y') {
                     $email->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'email'));
                 }
@@ -624,7 +624,7 @@ if ($proceed == false) {
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
                     $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
-                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1)->loadFrom($application);
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1)->loadFrom($application);
             }
 
             // PARENT EMPLOYMENT
@@ -633,7 +633,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
