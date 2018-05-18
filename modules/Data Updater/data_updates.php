@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
+use Modules\IDCards\Domain\UpdaterGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -61,6 +62,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo '<p>';
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');
     echo '</p>';
+
+    include './modules/ID Cards/src/Domain/UpdaterGateway.php';
+    $updaterGateway = new UpdaterGateway($pdo);
+
+    $gibbonFamilyID = $updaterGateway->selectFamilyIDByPerson($gibbonPersonID);
+    if (!empty($gibbonFamilyID)) {
+
+        echo '<h2>';
+        echo __('Family ID Cards');
+        echo '</h2>';
+
+        echo '<table cellspacing=0 class="smallintBorder fullWidth">';
+        echo '<tr>';
+        echo '<td>';
+        echo __('ID card requests for the <b>upcoming school year 2018-2019</b> are now available. Please visit the photo upload page to review your family photos and check the box at the bottom if your family will need ID cards for the upcoming school year.');
+        echo '</td>';
+        echo '<td style="width: 25%; text-align:right;">';
+        echo '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/ID Cards/photos.php" style="display:block;">';
+        echo '<img title="'.__('Request ID Cards').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/page_right.png"/><br/>'.__('Request ID Cards').'</a>';
+        echo '</td>';
+        echo '</tr>';
+        echo '</table><br/>';
+    }
 
     if ($requiredUpdates == 'Y') {
         $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
