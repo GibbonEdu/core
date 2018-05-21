@@ -219,19 +219,20 @@ class PaginatedRenderer implements RendererInterface
         if ($this->criteria->hasFilter()) {
             $output .= __('Filtered by').' ';
 
-            $criteriaUsed = array_reduce($this->criteria->getFilterBy(), function($group, $item) use ($filters) {
-                $group[$item] = isset($filters[$item])? $filters[$item] : ucwords(str_replace(':', ': ', $item));
-                return $group; 
-            }, array());
+            $criteriaUsed = array();
+            foreach ($this->criteria->getFilterBy() as $name => $value) {
+                $key = $name.':'.$value;
+                $criteriaUsed[$name] = isset($filters[$key]) ? $filters[$key] : __(ucfirst($name)).': '.__(ucfirst($value));
+            }
 
-            foreach ($criteriaUsed as $value => $label) {
-                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
+            foreach ($criteriaUsed as $name => $label) {
+                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$name.'"> ';
             }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
 
-        $output = '</small>';
+        $output .= '</small>';
 
         return $output;
     }
