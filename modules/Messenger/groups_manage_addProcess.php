@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
                 header("Location: {$URL}");
                 exit;
             } else {
-                $URL .= '&return=success0';
+                $URL .= "&return=success0&editID=$AI";
                 header("Location: {$URL}");
                 exit;
             }
