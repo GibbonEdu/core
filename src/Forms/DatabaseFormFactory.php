@@ -256,23 +256,54 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromArray($values);
     }
 
-    public function createSelectUsers($name)
+    public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = array())
     {
+        $params = array_replace(['includeStudents' => false], $params);
+
+        $users = array();
+        $allUsers = array();
+
         $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
                 FROM gibbonPerson
                 JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                WHERE status='Full' ORDER BY surname, preferredName";
+                WHERE status='Full' OR status='Expected' 
+                ORDER BY surname, preferredName";
 
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $result = $this->pdo->executeQuery(array(), $sql);
 
-        $values = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true).' ('.$row['username'].', '.$row['category'].')';
-            }
+        if ($result->rowCount() > 0) {
+            $allUsers = array_reduce($result->fetchAll(), function ($group, $item) {
+                $group[$item['gibbonPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['category'].')';
+                return $group;
+            }, array());
         }
 
-        return $this->createSelect($name)->fromArray($values);
+        if ($params['includeStudents'] == true) {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS rollGroupName 
+                    FROM gibbonPerson
+                    JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                    WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    AND gibbonPerson.status='FULL' 
+                    AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
+                    ORDER BY rollGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
+            $result = $this->pdo->executeQuery($data, $sql);
+        
+            if ($result->rowCount() > 0) {
+                $users[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                    return $group;
+                }, array());
+            }
+
+            $users[__('All Users')] = $allUsers;
+        } else {
+            $users = $allUsers;
+        }
+
+        return $this->createSelect($name)->fromArray($users);
     }
 
     /*
