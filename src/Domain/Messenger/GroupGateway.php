@@ -42,7 +42,7 @@ class GroupGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryGroups(QueryCriteria $criteria)
+    public function queryGroups(QueryCriteria $criteria, $gibbonPersonIDOwner = null)
     {
         $query = $this
             ->newQuery()
@@ -55,6 +55,11 @@ class GroupGateway extends QueryableGateway
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroup.gibbonPersonIDOwner')
             ->groupBy(['gibbonGroup.gibbonGroupID']);
 
+        if (!empty($gibbonPersonIDOwner)) {
+            $query->where('gibbonGroup.gibbonPersonIDOwner = :gibbonPersonIDOwner')
+                  ->bindValue('gibbonPersonIDOwner', $gibbonPersonIDOwner);
+        }
+        
         return $this->runQuery($query, $criteria);
     }
 
@@ -87,7 +92,7 @@ class GroupGateway extends QueryableGateway
 
     public function selectGroupByIDAndOwner($gibbonGroupID, $gibbonPersonIDOwner)
     {
-        $data = array('gibbonGroupID' => $gibbonGroupID, $gibbonPersonIDOwner => 'gibbonPersonIDOwner');
+        $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonIDOwner' => $gibbonPersonIDOwner);
         $sql = "SELECT * FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonIDOwner=:gibbonPersonIDOwner";
 
         return $this->db()->select($sql, $data);

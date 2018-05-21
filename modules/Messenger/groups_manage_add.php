@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Domain\Messenger\GroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_add.php') == false) {
     //Acess denied
@@ -34,8 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-    
-    $groupGateway = $container->get(GroupGateway::class);
     
     $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_addProcess.php");
     $form->setFactory(DatabaseFormFactory::create($pdo));
