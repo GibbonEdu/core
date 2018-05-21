@@ -17,102 +17,66 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Messenger\GroupGateway;
+
 include '../../gibbon.php';
 
-$gibbonGroupID = $_GET['gibbonGroupID'];
+$gibbonGroupID = isset($_GET['gibbonGroupID'])? $_GET['gibbonGroupID'] : '';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
 
-if ($gibbonGroupID == '') { echo 'Fatal error loading this page!';
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+    exit;
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_edit.php&gibbonGroupID=$gibbonGroupID";
-
-    if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
-        $URL .= '&return=error0';
+    //Proceed!
+    if (empty($gibbonGroupID)) { 
+        $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
-        //Proceed!
-        $name = $_POST['name'];
-        $choices = null;
-        if (isset($_POST['Members'])) {
-            $choices = $_POST['Members'];
-        }
-        if ($name == '' ||  !is_array($choices)) {
+        $name = isset($_POST['name'])? $_POST['name'] : '';
+        $choices = isset($_POST['members'])? $_POST['members'] : array();
+
+        if (empty($name)) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
+            exit;
         } else {
-            try {
-                $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
-                if ($highestAction == 'Manage Groups_all') {
-                    $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = 'SELECT gibbonGroupID, name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                }
-                else {
-                    $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                    $sql = 'SELECT gibbonGroupID, name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID';
-                }
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-           
-            if ($result->rowCount() != 1) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
+            $groupGateway = $container->get(GroupGateway::class);
+
+            $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+            if ($highestAction == 'Manage Groups_all') {
+                $values = $groupGateway->selectGroupByID($gibbonGroupID);
             } else {
-                $row = $result->fetch();
-
-                //Write to database
-                try {
-                    $data = array('gibbonGroupID' => $gibbonGroupID, 'name' => $name);
-                    $sql = 'UPDATE gibbonGroup SET name=:name WHERE gibbonGroupID=:gibbonGroupID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $URL .= '&return=error2';
-                    header("Location: {$URL}");
-                    exit();
-                }
-
-                //REMOVE CURRENT MEMBERS FROM $choices ARRAY
+                $values = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+            }
+                
+            if (empty($values)) {
+                $URL .= '&return=error2';
+                header("Location: {$URL}");
+                exit;
+            } else {
+                $data = array('gibbonGroupID' => $gibbonGroupID, 'name' => $name);
+                $updated = $groupGateway->updateGroup($data);
                 $partialFail = false;
-                try {
-                    $data = array('gibbonGroupID' => $gibbonGroupID);
-                    $sql = 'SELECT gibbonPersonID FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $partialFail = true;
-                }
-                while ($row = $result->fetch()) {
-                    $choices = array_diff($choices, array(0 => $row['gibbonPersonID']));
-                }
 
-                //ADD USERS WHERE NOT CURRENT MEMBERS
-                if (count($choices) < 1) {
-                    $URL .= '&return=error1';
-                    header("Location: {$URL}");
-                } else {
-                    foreach ($choices as $t) {
-                        try {
-                            $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $t);
-                            $sql = 'INSERT INTO gibbonGroupPerson SET gibbonGroupID=:gibbonGroupID, gibbonPersonID=:gibbonPersonID';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $update = false;
-                        }
-                       
+                if (count($choices) > 0) {
+                    foreach ($choices as $gibbonPersonID) {
+                        $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $gibbonPersonID);
+                        $inserted = $groupGateway->insertGroupPerson($data);
+                        $partialFail &= !$inserted;
                     }
                 }
 
-                if ($partialFail == true) {
-                    $URL .= '&return=error2';
+                if ($partialFail) {
+                    $URL .= '&return=warning1';
                     header("Location: {$URL}");
+                    exit;
                 } else {
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
+                    exit;
                 }
             }
         }

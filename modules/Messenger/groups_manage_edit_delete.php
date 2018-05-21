@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Domain\Messenger\GroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     //Acess denied
@@ -38,40 +39,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
-            if ($highestAction == 'Manage Groups_all') {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = 'SELECT gibbonGroupID FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-            }
-            else {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = 'SELECT gibbonGroupID FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID';
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+        $groupGateway = $container->get(GroupGateway::class);
+
+        $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+        if ($highestAction == 'Manage Groups_all') {
+            $result = $groupGateway->selectGroupByID($gibbonGroupID);
+        } else {
+            $result = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
         }
 
-        if ($result->rowCount() != 1) {
+        if ($result->isEmpty()) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $row = $result->fetch();
+            $result = $groupGateway->selectGroupPersonByID($gibbonGroupID, $gibbonPersonID);
 
-            try {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $gibbonPersonID);
-                $sql = 'SELECT gibbonGroupPersonID FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonID=:gibbonPersonID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($result->rowCount() != 1) {
+            if ($result->isEmpty()) {
                 echo "<div class='error'>";
                 echo __($guid, 'The specified record cannot be found.');
                 echo '</div>';
