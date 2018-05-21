@@ -923,6 +923,7 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 CREATE TABLE `gibbonGroup` (`gibbonGroupID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,`gibbonPersonIDOwner` int(10) UNSIGNED ZEROFILL NOT NULL,`name` varchar(30) NOT NULL,`timestampCreated` timestamp NULL,`timestampUpdated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (`gibbonGroupID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 CREATE TABLE `gibbonGroupPerson` (`gibbonGroupPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,`gibbonGroupID` int(8) UNSIGNED ZEROFILL NOT NULL,`gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,PRIMARY KEY (`gibbonGroupPersonID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 ALTER TABLE `gibbonGroupPerson` ADD UNIQUE( `gibbonGroupID`, `gibbonPersonID`);end
+ALTER TABLE `gibbonGroup` ADD `gibbonSchoolYearID` INT(3) UNSIGNED ZEROFILL NOT NULL AFTER `gibbonPersonIDOwner`;end
 ";
 
 
