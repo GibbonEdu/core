@@ -30,9 +30,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
 } else {
     //Proceed!
     //Validate Inputs
-    $name = $_POST['name'];
+    $name = isset($_POST['name'])? $_POST['name'] : '';
+    $choices = isset($_POST['members'])? $_POST['members'] : array();
 
-    if ($name == '') {
+    if (empty($name) || empty($choices)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;
@@ -43,14 +44,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
         $data = array('gibbonPersonIDOwner' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'name' => $name);
         $AI = $groupGateway->insertGroup($data);
 
-        //Run through each of the selected participants.
-        $partialFail = false;
-        $choices = isset($_POST['Members'])? $_POST['Members'] : array();
-
-        if (count($choices) < 1) {
+        if (!$AI) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
+            $partialFail = false;
+
+            //Run through each of the selected participants.
             foreach ($choices as $gibbonPersonID) {
                 $data = array('gibbonGroupID' => $AI, 'gibbonPersonID' => $gibbonPersonID);
                 $inserted = $groupGateway->insertGroupPerson($data);

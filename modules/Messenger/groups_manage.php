@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
 
@@ -37,7 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $groupGateway = $container->get(GroupGateway::class);
 
-    $criteria = $groupGateway->newQueryCriteria()->fromArray($_POST);
+    $criteria = $groupGateway->newQueryCriteria()
+        ->sortBy(['schoolYear', 'name'])
+        ->fromArray($_POST);
     $groups = $groupGateway->queryGroups($criteria);    
 
     // DATA TABLE
@@ -54,9 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $table->addColumn('owner', __('Group Owner'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function($person) {
-        return formatName('', $person['preferredName'], $person['surname'], 'Staff', false, true);
-    });
+        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', true, true]));
 
     $table->addColumn('count', __('Group Members'))->sortable();
 

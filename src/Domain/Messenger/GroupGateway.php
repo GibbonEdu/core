@@ -34,8 +34,7 @@ class GroupGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonGroup';
-
-    private static $searchableColumns = ['name'];
+    private static $searchableColumns = [];
     
     /**
      * Queries the list of groups for the messenger Manage Groups page.
@@ -59,20 +58,47 @@ class GroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function getGroupByID($gibbonGroupID)
+    /**
+     * Queries the group members based on group ID.
+     * @param QueryCriteria $criteria
+     * @param string $gibbonGroupID
+     * @return DataSet
+     */
+    public function queryGroupMembers(QueryCriteria $criteria, $gibbonGroupID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonGroupPerson')
+            ->cols(['gibbonGroupPerson.gibbonGroupID', 'gibbonGroupPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.email'])
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroupPerson.gibbonPersonID')
+            ->where('gibbonGroupPerson.gibbonGroupID = :gibbonGroupID')
+            ->bindValue('gibbonGroupID', $gibbonGroupID);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectGroupByID($gibbonGroupID)
     {
         $data = array('gibbonGroupID' => $gibbonGroupID);
         $sql = "SELECT * FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID";
 
-        return $this->db()->selectOne($sql, $data);
+        return $this->db()->select($sql, $data);
     }
 
-    public function getGroupByIDAndOwner($gibbonGroupID, $gibbonPersonIDOwner)
+    public function selectGroupByIDAndOwner($gibbonGroupID, $gibbonPersonIDOwner)
     {
         $data = array('gibbonGroupID' => $gibbonGroupID, $gibbonPersonIDOwner => 'gibbonPersonIDOwner');
         $sql = "SELECT * FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonIDOwner=:gibbonPersonIDOwner";
 
-        return $this->db()->selectOne($sql, $data);
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectGroupPersonByID($gibbonGroupID, $gibbonPersonID)
+    {
+        $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT * FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
     }
 
     public function insertGroup(array $data)

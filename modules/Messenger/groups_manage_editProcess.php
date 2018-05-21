@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         exit;
     } else {
         $name = isset($_POST['name'])? $_POST['name'] : '';
-        $choices = isset($_POST['Members'])? $_POST['Members'] : array();
+        $choices = isset($_POST['members'])? $_POST['members'] : array();
 
         if (empty($name)) {
             $URL .= '&return=error1';
@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
             if ($highestAction == 'Manage Groups_all') {
-                $values = $groupGateway->getGroupByID($gibbonGroupID);
+                $values = $groupGateway->selectGroupByID($gibbonGroupID);
             } else {
-                $values = $groupGateway->getGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+                $values = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
             }
                 
             if (empty($values)) {

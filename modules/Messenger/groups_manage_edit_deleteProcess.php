@@ -41,9 +41,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
     if ($highestAction == 'Manage Groups_all') {
-        $values = $groupGateway->getGroupByID($gibbonGroupID);
+        $values = $groupGateway->selectGroupByID($gibbonGroupID);
     } else {
-        $values = $groupGateway->getGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+        $values = $groupGateway->selectGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
     }
 
     if (empty($values)) {
