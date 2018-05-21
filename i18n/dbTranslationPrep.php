@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" ;
 //New PDO DB connection
 try {
-  	$connection2=new PDO("mysql:host=localhost;dbname=gibbon_dev_core;charset=utf8", 'root', 'root');
+  	$connection2=new PDO("mysql:host=localhost;dbname=gibbon-strings;charset=utf8", 'root', 'root');
 	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
