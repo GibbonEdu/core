@@ -59,6 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
     $table->addColumn('count', __('Group Members'))->sortable();
 
     $table->addActionColumn()
+        ->addParam('gibbonGroupID')
         ->format(function ($person, $actions) use ($guid) {
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/Messenger/groups_manage_edit.php');

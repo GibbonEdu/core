@@ -922,6 +922,7 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '002', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Messenger' AND gibbonAction.name='Manage Groups_my'));end
 CREATE TABLE `gibbonGroup` (`gibbonGroupID` int(8) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,`gibbonPersonIDOwner` int(10) UNSIGNED ZEROFILL NOT NULL,`name` varchar(30) NOT NULL,`timestampCreated` timestamp NULL,`timestampUpdated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,PRIMARY KEY (`gibbonGroupID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
 CREATE TABLE `gibbonGroupPerson` (`gibbonGroupPersonID` int(10) UNSIGNED ZEROFILL NOT NULL AUTO_INCREMENT,`gibbonGroupID` int(8) UNSIGNED ZEROFILL NOT NULL,`gibbonPersonID` int(10) UNSIGNED ZEROFILL NOT NULL,PRIMARY KEY (`gibbonGroupPersonID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;end
+ALTER TABLE `gibbonGroupPerson` ADD UNIQUE( `gibbonGroupID`, `gibbonPersonID`);end
 ";
 
 

@@ -49,12 +49,59 @@ class GroupGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonGroup.name', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'COUNT(DISTINCT gibbonGroupPersonID) as count'
+                'gibbonGroup.gibbonGroupID', 'gibbonGroup.name', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'COUNT(DISTINCT gibbonGroupPersonID) as count'
             ])
             ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroup.gibbonPersonIDOwner')
-            ->leftJoin('gibbonGroupPerson', 'gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID');
+            ->leftJoin('gibbonGroupPerson', 'gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID')
+            ->groupBy(['gibbonGroup.gibbonGroupID']);
 
         return $this->runQuery($query, $criteria);
     }
 
+    public function insertGroup(array $data)
+    {
+        $sql = "INSERT INTO gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonIDOwner, name=:name, timestampCreated=NOW()";
+
+        return $this->db()->insert($sql, $data);
+    }
+
+    public function insertGroupPerson(array $data)
+    {
+        $sql = "INSERT INTO gibbonGroupPerson SET gibbonGroupID=:gibbonGroupID, gibbonPersonID=:gibbonPersonID ON DUPLICATE KEY UPDATE gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->insert($sql, $data);
+    }
+
+    public function updateGroup(array $data)
+    {
+        $sql = "UPDATE gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonIDOwner, name=:name WHERE gibbonGroupID=:gibbonGroupID";
+
+        return $this->db()->update($sql, $data);
+    }
+
+    public function deleteGroup($gibbonGroupID)
+    {
+        $this->deletePeopleByGroupID($gibbonGroupID);
+
+        $data = array('gibbonGroupID' => $gibbonGroupID);
+        $sql = "DELETE FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID";
+
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function deleteGroupPerson($gibbonGroupPersonID)
+    {
+        $data = array('gibbonGroupPersonID' => $gibbonGroupPersonID);
+        $sql = "DELETE FROM gibbonGroupPerson WHERE gibbonGroupPersonID=:gibbonGroupPersonID";
+
+        return $this->db()->delete($sql, $data);
+    }
+
+    public function deletePeopleByGroupID($gibbonGroupID)
+    {
+        $data = array('gibbonGroupID' => $gibbonGroupID);
+        $sql = "DELETE FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID";
+
+        return $this->db()->delete($sql, $data);
+    }
 }
