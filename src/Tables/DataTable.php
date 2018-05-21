@@ -80,7 +80,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?q='.$_GET['q']));
+        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
     }
 
     /**

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_add.php') == false) {
     //Acess denied
@@ -34,46 +35,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     }
     
     $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_addProcess.php");
-    
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
         $row->addTextField('name')->isRequired()->setValue();
 
-    $students = array();
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
-    $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, gibbonRollGroup.name AS rollGroupName 
-            FROM gibbonPerson
-            JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
-            JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-            JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-            AND gibbonPerson.status='FULL' 
-            AND (dateStart IS NULL OR dateStart<=:date) AND (dateEnd IS NULL  OR dateEnd>=:date) 
-            ORDER BY rollGroupName, gibbonPerson.surname, gibbonPerson.preferredName";
-    $result = $pdo->executeQuery($data, $sql);
-
-    if ($result->rowCount() > 0) {
-        $students[__('Enrolable Students')] = array_reduce($result->fetchAll(), function($group, $item) {
-            $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', $item['preferredName'], $item['surname'], 'Student', true);
-            return $group;
-        }, array());
-    }
-
-    $sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' OR status='Expected' ORDER BY surname, preferredName";
-    $result = $pdo->executeQuery(array(), $sql);
-
-    if ($result->rowCount() > 0) {
-        $students[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
-            $group[$item['gibbonPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].')';
-            return $group;
-        }, array());
-    }
-
     $row = $form->addRow();
-        $row->addLabel('Members[]', __('Members'));
-        $row->addSelect('Members[]')->fromArray($students)->selectMultiple()->isRequired();
+        $row->addLabel('members', __('Members'));
+        $row->addSelectUsers('members', $_SESSION[$guid]['gibbonSchoolYearID'], ['includeStudents' => true])
+            ->selectMultiple()
+            ->isRequired();
 
     $row = $form->addRow();
         $row->addFooter();

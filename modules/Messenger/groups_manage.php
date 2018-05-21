@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Messenger\GroupGateway;
 
@@ -37,8 +38,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $groupGateway = $container->get(GroupGateway::class);
 
-    $criteria = $groupGateway->newQueryCriteria()->fromArray($_POST);
-    $groups = $groupGateway->queryGroups($criteria);    
+    $criteria = $groupGateway->newQueryCriteria()
+        ->sortBy(['schoolYear', 'name'])
+        ->fromArray($_POST);
+
+    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+    if ($highestAction == 'Manage Groups_all') {
+        $groups = $groupGateway->queryGroups($criteria);
+    } else {
+        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonPersonID']);
+    }
+    
 
     // DATA TABLE
     $table = DataTable::createPaginated('groupsManage', $criteria);
@@ -48,13 +58,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         ->displayLabel();
 
     // COLUMNS
+    $table->addColumn('schoolYear', __('School Year'))->sortable();
+
     $table->addColumn('name', __('Name'))->sortable();
 
     $table->addColumn('owner', __('Group Owner'))
         ->sortable(['surname', 'preferredName'])
-        ->format(function($person) {
-        return formatName('', $person['preferredName'], $person['surname'], 'Staff', false, true);
-    });
+        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', true, true]));
 
     $table->addColumn('count', __('Group Members'))->sortable();
 
