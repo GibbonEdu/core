@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\Finance\InvoiceGateway;
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Domain\Finance\InvoiceGateway;
 use Gibbon\Finance\Forms\FinanceFormFactory;
 
 //Module includes
@@ -199,19 +200,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             // Row Highlight
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
             else if ($invoice['status'] == 'Paid') $row->addClass('current');
-            
-            // Expandable Notes
-            if (!empty($invoice['notes'])) {
-                $row->append('<tr class="invoiceNotes" style="display:none;"><td colspan=8>'.$invoice['notes'].'</td></tr>');
-            }
             return $row;
         });
 
         // COLUMNS
+        $table->addExpandableColumn('notes');
+
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
             ->format(function($invoice) {
-                $output = '<b>'.formatName('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
+                $output = '<b>'.Format::name('', $invoice['preferredName'], $invoice['surname'], 'Student', true).'</b>';
                 $output .= '<br/><span class="small emphasis">'.$invoice['invoiceTo'].'</span>';
                 return $output;
             });
@@ -236,10 +234,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
                 if (is_null($totalFee)) return '';
 
-                $output = number_format($totalFee, 2, '.', ',');
+                $output = Format::currency($totalFee, 2);
                 if (!empty($invoice['paidAmount'])) {
-                    $class = number_format($invoice['paidAmount']) != number_format($totalFee)? 'textOverBudget' : '';
-                    $output .= '<br/><span class="small emphasis '.$class.'">'.number_format($invoice['paidAmount'], 2, '.', ',').'</span>';
+                    $class = Format::number($invoice['paidAmount']) != Format::number($totalFee)? 'textOverBudget' : '';
+                    $output .= '<br/><span class="small emphasis '.$class.'">'.Format::currency($invoice['paidAmount'], 2).'</span>';
                 }
                 return $output;
             });
@@ -247,8 +245,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $table->addColumn('issueDate', __('Issue Date'))
             ->description(__('Due Date'))
             ->format(function ($invoice) use ($guid) {
-                $output = !is_null($invoice['invoiceIssueDate'])? dateConvertBack($guid, $invoice['invoiceIssueDate']) : __('N/A');
-                $output .= '<br/><span class="small emphasis">'.dateConvertBack($guid, $invoice['invoiceDueDate']).'</span>';
+                $output = !is_null($invoice['invoiceIssueDate'])? Format::date($invoice['invoiceIssueDate']) : __('N/A');
+                $output .= '<br/><span class="small emphasis">'.Format::date($invoice['invoiceDueDate']).'</span>';
                 return $output;
             });
 
@@ -280,14 +278,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                     $col->addAction('print', __('Print Invoices, Receipts & Reminders'))
                         ->setURL('/modules/Finance/invoices_manage_print.php')
                         ->setIcon('print');
-                }
-
-                if (!empty($invoice['notes'])) {
-                    $col->addAction('notes', __('View Notes'))
-                        ->setURL('#')
-                        ->onClick('return false;')
-                        ->addClass('invoiceNotesView')
-                        ->setIcon('page_down');
                 }
             });
             
