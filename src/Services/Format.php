@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use DateTime;
+use Gibbon\Session;
 
 /**
  * Format values based on locale and system settings.
@@ -31,69 +32,153 @@ class Format
 {
     use FormatResolver;
 
-    protected static $session;
-    protected static $i18n;
+    protected static $settings = [];
 
-    public static function setup($session)
+    /**
+     * Sets the internal formatting options from an array.
+     *
+     * @param array $settings
+     */
+    public static function setup(array $settings)
     {
-        static::$session = $session;
-        static::$i18n = $session->get('i18n');
+        static::$settings = array_replace(static::$settings, $settings);
     }
 
+    /**
+     * Sets the formatting options from session i18n and database settings.
+     *
+     * @param Session $session
+     */
+    public static function setupFromSession(Session $session)
+    {
+        $settings = $session->get('i18n');
+        
+        $settings['absolutePath'] = $session->get('absolutePath');
+        $settings['absoluteURL'] = $session->get('absoluteURL');
+        $settings['gibbonThemeName'] = $session->get('gibbonThemeName');
+        $settings['currency'] = $session->get('currency');
+        $settings['currencySymbol'] = !empty(substr($settings['currency'], 4)) ? substr($settings['currency'], 4) : '';
+        $settings['currencyName'] = substr($settings['currency'], 0, 3);
+        
+        static::setup($settings);
+    }
+
+    /**
+     * Formats a YYYY-MM-DD date with the language-specific format. Optionally provide a format string to use instead.
+     *
+     * @param string $dateString
+     * @param string $format
+     * @return string
+     */
     public static function date($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
-        return $date ? $date->format($format ? $format : static::$i18n['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
     }
 
-    public static function dateTime($dateString)
+    /**
+     * Converts a date in the language-specific format to YYYY-MM-DD.
+     *
+     * @param string $dateString
+     * @return string
+     */
+    public static function dateConvert($dateString)
     {
-        return static::date($dateString, 'F j, Y g:i a');
+        $date = DateTime::createFromFormat(static::$settings['dateFormatPHP'], $dateString);
+        return $date ? $date->format('Y-m-d') : '';
     }
 
+    /**
+     * Formats a YYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
+     *
+     * @param string $dateString
+     * @param string $format
+     * @return string
+     */
+    public static function dateTime($dateString, $format = false)
+    {
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        return $date ? $date->format($format ? $format : 'F j, Y g:i a') : '';
+    }
+    
+    /**
+     * Formats a YYYY-MM-DD date as a readable string with month names.
+     *
+     * @param string $dateString
+     * @return string
+     */
     public static function dateReadable($dateString)
     {
         return static::date($dateString, 'F j, Y');
     }
 
+    /**
+     * Formats two YYYY-MM-DD dates with the language-specific format. Optionally provide a format string to use instead.
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return string
+     */
     public static function dateRange($dateFrom, $dateTo, $format = false)
     {
         return static::date($dateFrom, $format) . ' - ' . static::date($dateTo, $format);
     }
 
+    /**
+     * Formats a Unix timestamp as the language-specific format. Optionally provide a format string to use instead.
+     *
+     * @param string|int $timestamp
+     * @param string $format
+     * @return string
+     */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
         $date = DateTime::createFromFormat('U', $timestamp);
-        return $date ? $date->format($format ? $format : static::$i18n['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
     }
 
-    public static function dateConvert($dateString)
-    {
-        $date = DateTime::createFromFormat(static::$i18n['dateFormatPHP'], $dateString);
-        return $date ? $date->format('Y-m-d') : '';
-    }
-
-    public static function timestamp($dateString)
-    {
-        $date = DateTime::createFromFormat('Y-m-d', $dateString);
-        return $date ? $date->getTimestamp() : '';
-    }
-
+    /**
+     * Formats a number to an optional decimal points.
+     *
+     * @param int|string $value
+     * @param int $decimals
+     * @return string
+     */
     public static function number($value, $decimals = 0)
     {
         return number_format($value, $decimals);
     }
 
-    public static function currency($value, $decimals = 2)
+    /**
+     * Formats a currency with a symbol and two decimals, optionally displaying the currency name in brackets.
+     *
+     * @param string|int $value
+     * @param bool $includeName
+     * @return string
+     */
+    public static function currency($value, $includeName = false)
     {
-        return number_format($value, $decimals).' ('.static::$session->get('currency').')';
+        return static::$settings['currencySymbol'] . number_format($value, 2) . ( $includeName ? ' ('.static::$settings['currencyName'].')' : '');
     }
 
+    /**
+     * Formats a Y/N value as Yes or No in the current language.
+     *
+     * @param string $value
+     * @return string
+     */
     public static function yesNo($value)
     {
         return ($value == 'Y' || $value == 'Yes') ? __('Yes') : __('No');
     }
 
+    /**
+     * Formats a YYYY-MM-DD date as a relative age with years and months.
+     *
+     * @param string $dateString
+     * @param bool $short
+     * @return string
+     */
     public static function age($dateString, $short = false)
     {
         $date = DateTime::createFromFormat('Y-m-d', $dateString);
@@ -106,6 +191,15 @@ class Format
             : $date->y .' '. __('years') .', '. $date->m .' '. __('months');
     }
 
+    /**
+     * Formats phone numbers, optionally including countrt code and types.
+     * Adds spaces to 7-10 digit numbers based on the most common global formats.
+     *
+     * @param string|int $number
+     * @param bool $countryCode
+     * @param bool $type
+     * @return string
+     */
     public static function phone($number, $countryCode = false, $type = false)
     {
         $number = preg_replace('/[^0-9]/', '', $number);
@@ -119,13 +213,24 @@ class Format
         return ($type? $type.': ' : '') . ($countryCode? '+'.$countryCode.' ' : '') . $number;
     }
 
+    /**
+     * Formats a name based on the provided Role Category. Optionally reverses the name (surname first) or uses an informal format (no title).
+     *
+     * @param string $title
+     * @param string $preferredName
+     * @param string $surname
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @return string
+     */
     public static function name($title, $preferredName, $surname, $roleCategory = 'Staff', $reverse = false, $informal = false)
     {
         $output = '';
 
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
-            $format = static::$session->get($setting, '[title] [preferredName:1]. [surname]');
+            $format = isset(static::$settings[$setting])? static::$settings[$setting] : '[title] [preferredName:1]. [surname]';
 
             $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
                 function ($matches) use ($title, $preferredName, $surname) {
@@ -137,7 +242,7 @@ class Format
             $format);
 
         } elseif ($roleCategory == 'Parent') {
-            $format = ($informal? '%1$s ' : '') . ($reverse? '%3$s, %2$s' : '%2$s %3$s');
+            $format = (!$informal? '%1$s ' : '') . ($reverse? '%3$s, %2$s' : '%2$s %3$s');
             $output = sprintf($format, $title, $preferredName, $surname);
         } elseif ($roleCategory == 'Student') {
             $format = $reverse ? '%2$s, %1$s' : '%1$s %2$s';
@@ -147,17 +252,31 @@ class Format
         return trim($output);
     }
 
+    /**
+     * Returns an HTML <img> based on the supplied photo path, using a placeholder image if none exists. Size may be either 75 or 240 at this time.
+     *
+     * @param string $path
+     * @param int $size
+     * @return string
+     */
     public static function userPhoto($path, $size = 75)
     {   
         $sizeStyle = $size == 240 ? "width: 240px; height: 320px" : "width: 75px; height: 100px";
 
-        if (empty($path) or file_exists(static::$session->get('absolutePath').'/'.$path) == false) {
-            $path = '/themes/'.static::$session->get('gibbonThemeName').'/img/anonymous_'.$size.'.jpg';
+        if (empty($path) or file_exists(static::$settings['absolutePath'].'/'.$path) == false) {
+            $path = '/themes/'.static::$settings['gibbonThemeName'].'/img/anonymous_'.$size.'.jpg';
         }
 
-        return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$session->get('absoluteURL').'/'.$path);
+        return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$settings['absoluteURL'].'/'.$path);
     }
 
+    /**
+     * Returns the course and class name concatenated with a . (dot). The separator could become a setting at some point?
+     *
+     * @param string $courseName
+     * @param string $className
+     * @return string
+     */
     public static function courseClassName($courseName, $className)
     {
         return $courseName .'.'. $className;
