@@ -1623,7 +1623,8 @@ table.smallIntBorder td.noPadding {
 /* Gibbon Data Table CSS - Will be moved to core.css */
 .dataTable .sortable {
 	cursor: pointer;
-	position: relative;
+    position: relative;
+    padding-right: 20px;
 }
 
 .dataTable .sortable:not(.sorting):hover:after,
@@ -1634,8 +1635,8 @@ table.smallIntBorder td.noPadding {
 	height: 0px; 
 	border: 5px solid transparent;
 	position: absolute;
-	top: 20px;
-	right: 10px;
+	top: 18px;
+	right: 6px;
 }
 
 .dataTable .sortable:not(.sorting):hover:after {
