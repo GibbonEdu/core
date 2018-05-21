@@ -568,6 +568,45 @@ else {
 			$row = $form->addRow()->addClass('attendance hiddenReveal');
                 $row->addLabel('attendanceParents', __('Include Parents?'));
                 $row->addYesNo('attendanceParents')->selected('Y');
+		}
+		
+		 // Group
+		 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+            $row = $form->addRow();
+				$row->addLabel('group', __('Group'))->description(__('Members of a Messenger module group.'));
+				$row->addYesNoRadio('group')->checked('N')->isRequired();
+
+			$form->toggleVisibilityByClass('group')->onRadio('group')->when('Y');
+
+            if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+				$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+            } else {
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+				$sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name)
+					UNION
+					(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2)
+					ORDER BY name
+					";
+            }
+
+			$row = $form->addRow()->addClass('group hiddenReveal');
+				$row->addLabel('groups[]', __('Select Classes'));
+				$row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired();
+
+			$row = $form->addRow()->addClass('group hiddenReveal');
+		        $row->addLabel('groupsStaff', __('Include Staff?'));
+				$row->addYesNo('groupsStaff')->selected('Y');
+
+			$row = $form->addRow()->addClass('group hiddenReveal');
+		        $row->addLabel('groupsStudents', __('Include Students?'));
+				$row->addYesNo('groupsStudents')->selected('Y');
+
+			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
+				$row = $form->addRow()->addClass('group hiddenReveal');
+			        $row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
+					$row->addYesNo('groupsParents')->selected('N');
+			}
         }
 
         // Individuals
