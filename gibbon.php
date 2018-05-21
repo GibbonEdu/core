@@ -32,6 +32,8 @@ $container->add('session', new Gibbon\Session($container));
 $container->add('locale', new Gibbon\Locale($container));
 $container->add('autoloader', $autoloader);
 
+\Gibbon\Services\Format::setup($container->get('session'));
+
 // Globals for backwards compatibility
 $gibbon = $container->get('config');
 $gibbon->session = $container->get('session');
