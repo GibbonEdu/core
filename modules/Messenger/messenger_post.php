@@ -591,7 +591,7 @@ else {
             }
 
 			$row = $form->addRow()->addClass('group hiddenReveal');
-				$row->addLabel('groups[]', __('Select Classes'));
+				$row->addLabel('groups[]', __('Select Groups'));
 				$row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired();
 
 			$row = $form->addRow()->addClass('group hiddenReveal');
