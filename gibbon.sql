@@ -5383,7 +5383,6 @@ ALTER TABLE `gibbonLanguage`
 ALTER TABLE `gibbonLibraryItem`
   ADD PRIMARY KEY (`gibbonLibraryItemID`),
   ADD UNIQUE KEY `id` (`id`);
-ALTER TABLE `gibbonLibraryItem` ADD FULLTEXT KEY `fields` (`fields`);
 
 --
 -- Indexes for table `gibbonLibraryItemEvent`
@@ -5396,7 +5395,6 @@ ALTER TABLE `gibbonLibraryItemEvent`
 --
 ALTER TABLE `gibbonLibraryType`
   ADD PRIMARY KEY (`gibbonLibraryTypeID`);
-ALTER TABLE `gibbonLibraryType` ADD FULLTEXT KEY `fields` (`fields`);
 
 --
 -- Indexes for table `gibbonLike`
