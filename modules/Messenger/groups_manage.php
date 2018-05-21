@@ -48,6 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         ->displayLabel();
 
     // COLUMNS
+    $table->addColumn('schoolYear', __('School Year'))->sortable();
+
     $table->addColumn('name', __('Name'))->sortable();
 
     $table->addColumn('owner', __('Group Owner'))

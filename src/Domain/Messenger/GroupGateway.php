@@ -49,18 +49,35 @@ class GroupGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonGroup.gibbonGroupID', 'gibbonGroup.name', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'COUNT(DISTINCT gibbonGroupPersonID) as count'
+                'gibbonGroup.gibbonGroupID', 'gibbonGroup.name', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'COUNT(DISTINCT gibbonGroupPersonID) as count', 'gibbonSchoolYear.name as schoolYear'
             ])
-            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroup.gibbonPersonIDOwner')
+            ->innerJoin('gibbonSchoolYear', 'gibbonSchoolYear.gibbonSchoolYearID=gibbonGroup.gibbonSchoolYearID')
             ->leftJoin('gibbonGroupPerson', 'gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID')
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonGroup.gibbonPersonIDOwner')
             ->groupBy(['gibbonGroup.gibbonGroupID']);
 
         return $this->runQuery($query, $criteria);
     }
 
+    public function getGroupByID($gibbonGroupID)
+    {
+        $data = array('gibbonGroupID' => $gibbonGroupID);
+        $sql = "SELECT * FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getGroupByIDAndOwner($gibbonGroupID, $gibbonPersonIDOwner)
+    {
+        $data = array('gibbonGroupID' => $gibbonGroupID, $gibbonPersonIDOwner => 'gibbonPersonIDOwner');
+        $sql = "SELECT * FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonIDOwner=:gibbonPersonIDOwner";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function insertGroup(array $data)
     {
-        $sql = "INSERT INTO gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonIDOwner, name=:name, timestampCreated=NOW()";
+        $sql = "INSERT INTO gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonIDOwner, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, timestampCreated=NOW()";
 
         return $this->db()->insert($sql, $data);
     }
@@ -74,25 +91,23 @@ class GroupGateway extends QueryableGateway
 
     public function updateGroup(array $data)
     {
-        $sql = "UPDATE gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonIDOwner, name=:name WHERE gibbonGroupID=:gibbonGroupID";
+        $sql = "UPDATE gibbonGroup SET name=:name WHERE gibbonGroupID=:gibbonGroupID";
 
         return $this->db()->update($sql, $data);
     }
 
     public function deleteGroup($gibbonGroupID)
     {
-        $this->deletePeopleByGroupID($gibbonGroupID);
-
         $data = array('gibbonGroupID' => $gibbonGroupID);
         $sql = "DELETE FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID";
 
         return $this->db()->delete($sql, $data);
     }
 
-    public function deleteGroupPerson($gibbonGroupPersonID)
+    public function deleteGroupPerson($gibbonGroupID, $gibbonPersonID)
     {
-        $data = array('gibbonGroupPersonID' => $gibbonGroupPersonID);
-        $sql = "DELETE FROM gibbonGroupPerson WHERE gibbonGroupPersonID=:gibbonGroupPersonID";
+        $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = "DELETE FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID AND gibbonPersonID=:gibbonPersonID";
 
         return $this->db()->delete($sql, $data);
     }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Messenger\GroupGateway;
+
 include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_add.php";
@@ -24,6 +26,7 @@ $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_add.php') == false) {
     $URL .= '&return=error0';
     header("Location: {$URL}");
+    exit;
 } else {
     //Proceed!
     //Validate Inputs
@@ -32,49 +35,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ad
     if ($name == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
+        exit;
     } else {
+        $groupGateway = $container->get(GroupGateway::class);
+
         //Create the group
-        try {
-            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'name' => $name, 'timestampCreated' => date('Y-m-d H:i:s', time()));
-            $sql = 'INSERT INTO gibbonGroup SET gibbonPersonIDOwner=:gibbonPersonID, gibbonSchoolYearID=:gibbonSchoolYearID, name=:name, timestampCreated=:timestampCreated';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit;
-        }
-        $AI = str_pad($connection2->lastInsertID(), 8, '0', STR_PAD_LEFT);
+        $data = array('gibbonPersonIDOwner' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'name' => $name);
+        $AI = $groupGateway->insertGroup($data);
 
         //Run through each of the selected participants.
-        $update = true;
-        $choices = null;
-        if (isset($_POST['Members'])) {
-            $choices = $_POST['Members'];
-        }
+        $partialFail = false;
+        $choices = isset($_POST['Members'])? $_POST['Members'] : array();
 
         if (count($choices) < 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
-            foreach ($choices as $t) {
-                try {
-                    $data = array('gibbonGroupID' => $AI, 'gibbonPersonID' => $t);
-                    $sql = 'INSERT INTO gibbonGroupPerson SET gibbonGroupID=:gibbonGroupID, gibbonPersonID=:gibbonPersonID';
-                    $result = $connection2->prepare($sql);
-                    $result->execute($data);
-                } catch (PDOException $e) {
-                    $update = false;
-                }
-               
+            foreach ($choices as $gibbonPersonID) {
+                $data = array('gibbonGroupID' => $AI, 'gibbonPersonID' => $gibbonPersonID);
+                $inserted = $groupGateway->insertGroupPerson($data);
+                $partialFail &= !$inserted;
             }
+
             //Write to database
-            if ($update == false) {
-                $URL .= '&return=error2';
+            if ($partialFail) {
+                $URL .= '&return=warning1';
                 header("Location: {$URL}");
+                exit;
             } else {
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
+                exit;
             }
         }
     }

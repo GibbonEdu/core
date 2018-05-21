@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Messenger\GroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     //Acess denied
@@ -43,37 +44,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
-            if ($highestAction == 'Manage Groups_all') {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = 'SELECT gibbonGroupID, name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-            }
-            else {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = 'SELECT gibbonGroupID, name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID';
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+        $groupGateway = $container->get(GroupGateway::class);
+        
+        $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+        if ($highestAction == 'Manage Groups_all') {
+            $values = $groupGateway->getGroupByID($gibbonGroupID);
+        } else {
+            $values = $groupGateway->getGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
         }
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-           
             $form = Form::create('groups', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_editProcess.php?gibbonGroupID=$gibbonGroupID");
 			
 			$form->addHiddenValue('address', $_SESSION[$guid]['address']);
 			
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->setValue($values['name']);
+                $row->addTextField('name')->isRequired();
 
             $students = array();
             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));

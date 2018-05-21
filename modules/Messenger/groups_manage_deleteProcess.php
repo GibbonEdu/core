@@ -17,70 +17,52 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Messenger\GroupGateway;
+
 include '../../gibbon.php';
 
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/Messenger/moduleFunctions.php';
 
-$gibbonGroupID = $_GET['gibbonGroupID'];
+$gibbonGroupID = isset($_GET['gibbonGroupID'])? $_GET['gibbonGroupID'] : '';
 
-if ($gibbonGroupID == '') { echo 'Fatal error loading this page!';
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
+
+if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
+    $URL .= '&return=error0';
+    header("Location: {$URL}");
+    exit;
+} else if (empty($gibbonGroupID)) { 
+    $URL .= '&return=error2';
+    header("Location: {$URL}");
+    exit;
 } else {
-    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage_delete.php&gibbonGroupID=$gibbonGroupID";
-    $URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/groups_manage.php&gibbonGroupID=$gibbonGroupID";
+    //Proceed!
+    $groupGateway = $container->get(GroupGateway::class);
 
-    if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
-        $URL .= '&return=error0';
+    $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
+    if ($highestAction == 'Manage Groups_all') {
+        $values = $groupGateway->getGroupByID($gibbonGroupID);
+    } else {
+        $values = $groupGateway->getGroupByIDAndOwner($gibbonGroupID, $_SESSION[$guid]['gibbonPersonID']);
+    }
+
+    if (empty($values)) {
+        $URL .= '&return=error2';
         header("Location: {$URL}");
     } else {
-        //Proceed!
-        try {
-            $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
-            if ($highestAction == 'Manage Groups_all') {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sql = 'SELECT gibbonGroupID FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-            }
-            else {
-                $data = array('gibbonGroupID' => $gibbonGroupID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = 'SELECT gibbonGroupID FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID';
-            }
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
+        $deleted = $groupGateway->deleteGroup($gibbonGroupID);
+        $groupGateway->deletePeopleByGroupID($gibbonGroupID);
+
+        if (!$deleted) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
             exit;
-        }
-
-        if ($result->rowCount() != 1) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
         } else {
-            //Write to database
-            try {
-                $data = array('gibbonGroupID' => $gibbonGroupID);
-                $sql = 'DELETE FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
-            try {
-                $data = array('gibbonGroupID' => $gibbonGroupID);
-                $sql = 'DELETE FROM gibbonGroupPerson WHERE gibbonGroupID=:gibbonGroupID';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
-
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");
+            exit;
         }
     }
 }
