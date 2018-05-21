@@ -172,8 +172,6 @@ class PaginatedRenderer implements RendererInterface
             }
         }
 
-        
-
         $output .= '</div></div><br/>';
 
         // Initialize the jQuery Data Table functionality
@@ -195,14 +193,14 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageCount(DataSet $dataSet)
     {
-        $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
+        $output = '<small style="margin-right: 10px;">';
 
         $output .= $this->criteria->hasSearchText()? __('Search').' ' : '';
         $output .= $dataSet->isSubset()? __('Results') : __('Records');
         $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
         $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
 
-        $output .= '</span>';
+        $output .= '</small>';
 
         return $output;
     }
@@ -216,7 +214,7 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
-        $output = '<span class="small" style="line-height: 32px;">';
+        $output = '<small>';
 
         if ($this->criteria->hasFilter()) {
             $output .= __('Filtered by').' ';
@@ -232,6 +230,8 @@ class PaginatedRenderer implements RendererInterface
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
+
+        $output = '</small>';
 
         return $output;
     }
