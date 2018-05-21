@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 print "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />" ;
 //New PDO DB connection
 try {
-  	$connection2=new PDO("mysql:host=localhost;dbname=gibbon_dev_core;charset=utf8", 'root', '42Liblabb');
+  	$connection2=new PDO("mysql:host=localhost;dbname=gibbon_dev_core;charset=utf8", 'root', 'root');
 	$connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 	$connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
 }
@@ -81,19 +81,19 @@ foreach ($queries AS $query) {
 		//Deal with special case of gibbonAction names
 		if ($query[0]=="gibbonAction" AND $query[1]=="name") {
 			if (strpos($row[$query[1]],'_')===false) {
-				print "__($" . "guid" . ", '" . addslashes($row[$query[1]]) . "') ;<br/>" ;
+				print "__('" . addslashes($row[$query[1]]) . "') ;<br/>" ;
 			}
 			else {
-				print "__($" . "guid" . ", '" . addslashes(substr($row[$query[1]],0, strpos($row[$query[1]],'_'))) . "') ;<br/>" ;
+				print "__('" . addslashes(substr($row[$query[1]],0, strpos($row[$query[1]],'_'))) . "') ;<br/>" ;
 			}
 		}
 		//Deal with special case of gibbonExternalAssessmentField categories
 		else if ($query[0]=="gibbonExternalAssessmentField" AND $query[1]=="category") {
 			if (strpos($row[$query[1]],'_')===false) {
-				print "__($" . "guid" . ", '" . addslashes($row[$query[1]]) . "') ;<br/>" ;
+				print "__('" . addslashes($row[$query[1]]) . "') ;<br/>" ;
 			}
 			else {
-				print "__($" . "guid" . ", '" . addslashes(substr($row[$query[1]],(strpos($row[$query[1]],'_')+1))) . "') ;<br/>" ;
+				print "__('" . addslashes(substr($row[$query[1]],(strpos($row[$query[1]],'_')+1))) . "') ;<br/>" ;
 			}
 		}
 		//Deal with special case of gibbonExternalAssessmentField categories
@@ -101,12 +101,12 @@ foreach ($queries AS $query) {
 			$fields=array() ;
 			$fields=unserialize($row[$query[1]]) ;
 			foreach ($fields AS $field) {
-				print "__($" . "guid" . ", '" . addslashes($field["name"] ) . "') ;<br/>" ;
+				print "__('" . addslashes($field["name"] ) . "') ;<br/>" ;
 			}
 		}
 		//Deal with all other cases
 		else {
-			print "__($" . "guid" . ", '" . addslashes($row[$query[1]]) . "') ;<br/>" ;
+			print "__('" . addslashes($row[$query[1]]) . "') ;<br/>" ;
 		}
 	}
 	print "<br/>" ;
