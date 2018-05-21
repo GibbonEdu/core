@@ -60,8 +60,8 @@ class QueryCriteria
 
         if (isset($criteria['filterBy']) && is_array($criteria['filterBy'])) {
             $this->criteria['filterBy'] = [];
-            foreach ($criteria['filterBy'] as $filter) {
-                $this->filterBy($filter);
+            foreach ($criteria['filterBy'] as $name => $value) {
+                $this->filterBy($name, $value);
             }
         }
 
@@ -236,7 +236,7 @@ class QueryCriteria
         $searchText = $this->criteria['searchBy']['text'];
 
         if ($includeFilters && $this->hasFilter()) {
-            $searchText .= ' '.implode(' ', $this->getFilterBy());
+            $searchText .= ' '.$this->getFilterString();
         }
 
         return trim($searchText);
@@ -265,12 +265,13 @@ class QueryCriteria
     {
         if (empty($name)) return $this;
 
-        if (stripos($name, ':') === false) {
-            if (!empty($value)) {
-                $this->criteria['filterBy'][] = $name.':'.$value;
-            }
-        } else {
-            $this->criteria['filterBy'][] = $name;
+        if (stripos($name, ':') !== false) {
+            list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+            $value = str_replace('"', '', $value);
+        }
+
+        if (!empty($value)) {
+            $this->criteria['filterBy'][$name] = $value;
         }
 
         return $this;
@@ -281,9 +282,13 @@ class QueryCriteria
      *
      * @return bool
      */
-    public function hasFilter($name = null)
+    public function hasFilter($name = null, $value = null)
     {
-        return !is_null($name)? in_array($name, $this->criteria['filterBy']) : !empty($this->criteria['filterBy']);
+        if (!is_null($value)) {
+            return isset($this->criteria['filterBy'][$name]) && $this->criteria['filterBy'][$name] == $value;
+        } else {
+            return !is_null($name)? isset($this->criteria['filterBy'][$name]) : !empty($this->criteria['filterBy']);
+        }
     }
 
     /**
@@ -294,6 +299,18 @@ class QueryCriteria
     public function getFilterBy()
     {
         return isset($this->criteria['filterBy'])? $this->criteria['filterBy'] : array();
+    }
+
+    /**
+     * Returns the current filter array as a string of name:value filters.
+     *
+     * @return string
+     */
+    public function getFilterString()
+    {
+        return implode(' ', array_map(function($value, $name) {
+            return stripos($value, ' ') !== false ? $name.':"'.$value .'"' : $name.':'.$value;
+        }, $this->criteria['filterBy'], array_keys($this->criteria['filterBy'])));
     }
 
     /**

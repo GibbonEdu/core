@@ -156,8 +156,10 @@ class PaginatedRenderer implements RendererInterface
             $output .= '</tbody>';
             $output .= '</table>';
 
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPagination($dataSet);
+            if ($dataSet->getPageCount() > 1) {
+                $output .= $this->renderPageCount($dataSet);
+                $output .= $this->renderPagination($dataSet);
+            }
         } else {
             if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
@@ -169,8 +171,6 @@ class PaginatedRenderer implements RendererInterface
                 $output .= '</div>';
             }
         }
-
-        
 
         $output .= '</div></div><br/>';
 
@@ -193,14 +193,14 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageCount(DataSet $dataSet)
     {
-        $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
+        $output = '<small style="margin-right: 10px;">';
 
         $output .= $this->criteria->hasSearchText()? __('Search').' ' : '';
         $output .= $dataSet->isSubset()? __('Results') : __('Records');
         $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
         $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
 
-        $output .= '</span>';
+        $output .= '</small>';
 
         return $output;
     }
@@ -214,22 +214,25 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
-        $output = '<span class="small" style="line-height: 32px;">';
+        $output = '<small>';
 
         if ($this->criteria->hasFilter()) {
             $output .= __('Filtered by').' ';
 
-            $criteriaUsed = array_reduce($this->criteria->getFilterBy(), function($group, $item) use ($filters) {
-                $group[$item] = isset($filters[$item])? $filters[$item] : ucwords(str_replace(':', ': ', $item));
-                return $group; 
-            }, array());
+            $criteriaUsed = array();
+            foreach ($this->criteria->getFilterBy() as $name => $value) {
+                $key = $name.':'.$value;
+                $criteriaUsed[$name] = isset($filters[$key]) ? $filters[$key] : __(ucfirst($name)).': '.__(ucfirst($value));
+            }
 
-            foreach ($criteriaUsed as $value => $label) {
-                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
+            foreach ($criteriaUsed as $name => $label) {
+                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$name.'"> ';
             }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
+
+        $output .= '</small>';
 
         return $output;
     }
