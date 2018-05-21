@@ -156,8 +156,10 @@ class PaginatedRenderer implements RendererInterface
             $output .= '</tbody>';
             $output .= '</table>';
 
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPagination($dataSet);
+            if ($dataSet->getPageCount() > 1) {
+                $output .= $this->renderPageCount($dataSet);
+                $output .= $this->renderPagination($dataSet);
+            }
         } else {
             if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
