@@ -22,6 +22,7 @@ v16.0.00
         Activated Simplified Chinese and Polish as available languages
         Added Croatian and Estonian as development languages
         Data Updater: added a My Data Updates overview and settings to redirect users on login
+        Messenger: new Groups action for custom mailing lists
 
     Significant Changes
         System: added tool for InnoDB database table storage engine migration
