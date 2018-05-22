@@ -109,8 +109,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                     .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
             });
 
-        $table->addColumn('type', __('Type'))->sortable()->width('25%');
-        $table->addColumn('jobTitle', __('Job Title'))->sortable()->width('25%');
+        $table->addColumn('type', __('Type'))->width('25%');
+        $table->addColumn('jobTitle', __('Job Title'))->width('25%');
 
         // ACTIONS
         $table->addActionColumn()

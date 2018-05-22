@@ -58,15 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     ]);
 
     // COLUMNS
-    $table->addColumn('type', __('Type'))->sortable();
-    $table->addColumn('jobTitle', __('Job Title'))->sortable();
-    
+    $table->addColumn('type', __('Type'));
+    $table->addColumn('jobTitle', __('Job Title'));
     $table->addColumn('dateOpen', __('Opening Date'))
-        ->sortable()
         ->format(Format::using('date', 'dateOpen'));
-
     $table->addColumn('active', __('Active'))
-        ->sortable()
         ->format(Format::using('yesNo', 'active'));
 
     // ACTIONS

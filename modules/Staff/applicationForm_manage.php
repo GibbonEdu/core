@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     // COLUMNS
     $table->addColumn('gibbonStaffApplicationFormID', __('ID'))
-        ->sortable()
+        
         ->format(Format::using('number', 'gibbonStaffApplicationFormID'));
 
     $table->addColumn('person', __('Applicant'))
@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 .'<br/><span class="small emphasis">'.Format::dateTime($row['timestamp']).'</span>';
         });
 
-    $table->addColumn('jobTitle', __('Position'))->sortable();
+    $table->addColumn('jobTitle', __('Position'));
     
     $table->addColumn('status', __('Status'))
-        ->sortable()
+        
         ->description(__('Milestones'))
         ->format(function($row) {
             $output = '<strong>'.$row['status'].'</strong>';
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             return $output;
         });
 
-    $table->addColumn('priority', __('Priority'))->sortable();
+    $table->addColumn('priority', __('Priority'));
 
     // ACTIONS
     $table->addActionColumn()
