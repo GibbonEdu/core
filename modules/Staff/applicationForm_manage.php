@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffApplicationFormGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage.php') == false) {
     //Acess denied
@@ -34,19 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
-
-    $search = '';
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
 
     echo '<h4>';
     echo __($guid, 'Search');
@@ -73,119 +64,80 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     echo __($guid, 'View');
     echo '</h2>';
 
-    try {
-        $data = array();
-        $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) ORDER BY gibbonStaffApplicationForm.status, priority DESC, timestamp DESC';
-        if ($search != '') {
-            $data = array('search' => "%$search%", 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%", 'search4' => "%$search%");
-            $sql = 'SELECT gibbonStaffApplicationForm.*, gibbonStaffJobOpening.jobTitle FROM gibbonStaffApplicationForm JOIN gibbonStaffJobOpening ON (gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID) LEFT JOIN gibbonPerson ON (gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE (gibbonStaffApplicationFormID LIKE :search OR gibbonStaffApplicationForm.preferredName LIKE :search1 OR gibbonStaffApplicationForm.surname LIKE :search2 OR gibbonPerson.preferredName LIKE :search3 OR gibbonPerson.surname LIKE :search4) ORDER BY gibbonStaffApplicationForm.status, priority DESC, timestamp DESC';
+    $applicationGateway = $container->get(StaffApplicationFormGateway::class);
+
+    // QUERY
+    $criteria = $applicationGateway->newQueryCriteria()
+        ->searchBy($applicationGateway->getSearchableColumns(), $search)
+        ->sortBy('gibbonStaffApplicationForm.status')
+        ->sortBy(['priority', 'timestamp'], 'DESC')
+        ->fromArray($_POST);
+
+    $applications = $applicationGateway->queryApplications($criteria);
+
+    // DATA TABLE
+    $table = DataTable::createPaginated('applicationsManage', $criteria);
+
+    $table->setRowLogic(function($row, $application) {
+        // Highlight rows based on status
+        if ($application['status'] == 'Accepted') {
+            $row->addClass('current');
+        } else if ($application['status'] == 'Rejected' || $application['status'] == 'Withdrawn') {
+            $row->addClass('error');
         }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+        return $row;
+    });
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo 'There are no records display.';
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
-        }
+    // COLUMNS
+    $table->addColumn('gibbonStaffApplicationFormID', __('ID'))
+        ->sortable()
+        ->format(Format::using('number', 'gibbonStaffApplicationFormID'));
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'ID');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Applicant')."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Application Date').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Position');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status')."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Milestones').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Priority');
-        echo '</th>';
-        echo "<th style='width: 80px'>";
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $table->addColumn('person', __('Applicant'))
+        ->description(__('Application Date'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($row) {
+            return Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true)
+                .'<br/><span class="small emphasis">'.Format::dateTime($row['timestamp']).'</span>';
+        });
 
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-
-            if ($row['status'] == 'Accepted') {
-                $rowNum = 'current';
-            } elseif ($row['status'] == 'Rejected' or $row['status'] == 'Withdrawn') {
-                $rowNum = 'error';
-            }
-
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo ltrim($row['gibbonStaffApplicationFormID'], '0');
-            echo '</td>';
-            echo '<td>';
-            if ($row['gibbonPersonID'] != null and isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php')) {
-                echo "<b><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a></b><br/>';
-            } else {
-                echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
-            }
-            echo "<span style='font-style: italic; font-size: 85%'>".dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'</span>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['jobTitle'];
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['status'].'</b>';
+    $table->addColumn('jobTitle', __('Position'))->sortable();
+    
+    $table->addColumn('status', __('Status'))
+        ->sortable()
+        ->description(__('Milestones'))
+        ->format(function($row) {
+            $output = '<strong>'.$row['status'].'</strong>';
             if ($row['status'] == 'Pending') {
-                $milestones = explode(',', $row['milestones']);
-                foreach ($milestones as $milestone) {
-                    echo "<br/><span style='font-style: italic; font-size: 85%'>".trim($milestone).'</span>';
-                }
+                $output .= '<br/><span class="small emphasis">'.trim(str_replace(',', '<br/>', $row['milestones'])).'</span>';
             }
-            echo '</td>';
-            echo '<td>';
-            echo $row['priority'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['status'] == 'Pending' or $row['status'] == 'Waiting List') {
-                echo "<a style='margin-left: 1px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&gibbonStaffApplicationFormID='.$row['gibbonStaffApplicationFormID']."&search=$search'><img title='".__($guid, 'Accept')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a>";
-                echo "<a style='margin-left: 5px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_reject.php&gibbonStaffApplicationFormID='.$row['gibbonStaffApplicationFormID']."&search=$search'><img title='".__($guid, 'Reject')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a>";
-                echo '<br/>';
+            return $output;
+        });
+
+    $table->addColumn('priority', __('Priority'))->sortable();
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonStaffApplicationFormID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($row, $actions) use ($guid) {
+            if ($row['status'] == 'Pending' || $row['status'] == 'Waiting List') {
+                $actions->addAction('accept', __('Accept'))
+                        ->setIcon('iconTick')
+                        ->setURL('/modules/Staff/applicationForm_manage_accept.php');
+
+                $actions->addAction('reject', __('Reject'))
+                        ->setIcon('iconCross')
+                        ->append('<br/>')
+                        ->setURL('/modules/Staff/applicationForm_manage_reject.php');
             }
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_edit.php&gibbonStaffApplicationFormID='.$row['gibbonStaffApplicationFormID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo " <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_delete.php&gibbonStaffApplicationFormID='.$row['gibbonStaffApplicationFormID']."&search=$search&width=650&height=135'><img style='margin-left: 4px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
 
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Staff/applicationForm_manage_edit.php');
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search");
-        }
-    }
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Staff/applicationForm_manage_delete.php');
+        });
+
+    echo $table->render($applications);
 }
-?>
