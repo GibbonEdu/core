@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
         $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
-        return Format::listNames($tutors, 'Staff', false, true);
+        return Format::nameList($tutors, 'Staff', false, true);
     };
 
     $table = DataTable::create('rollGroups');

@@ -283,7 +283,7 @@ class Format
      * @param bool $informal
      * @return string
      */
-    public static function listNames($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
+    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
     {
         $output = '';
         foreach ($list as $person) {
