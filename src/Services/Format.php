@@ -173,6 +173,24 @@ class Format
     }
 
     /**
+     * Formats a link from a url. Automatically adds target _blank to external links.
+     * @param string $url
+     * @param string $text
+     * @param string $title
+     * @return void
+     */
+    public static function link($url, $text = '', $title = '')
+    {
+        if (!$text) $text = $url;
+
+        if (stripos($url, static::$settings['absoluteURL']) === false) {
+            return '<a href="'.$url.'" title="'.$title.'" target="_blank">'.$text.'</a>';
+        } else {
+            return '<a href="'.$url.'" title="'.$title.'">'.$text.'</a>';
+        }
+    }
+
+    /**
      * Formats a YYYY-MM-DD date as a relative age with years and months.
      *
      * @param string $dateString
@@ -237,7 +255,7 @@ class Format
                     list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
                     return isset($$token)
                         ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
-                        : $matches[0];
+                        : '';
                 },
             $format);
 
@@ -249,7 +267,27 @@ class Format
             $output = sprintf($format, $preferredName, $surname);
         }
 
-        return trim($output);
+        return trim($output, ' .');
+    }
+
+    /**
+     * Formats a list of names from an array containing standard title, preferredName & surname fields.
+     * 
+     * @param array $list
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @return string
+     */
+    public static function listNames($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
+    {
+        $output = '';
+        foreach ($list as $person) {
+            $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+            $output .= '<br/>';
+        }
+
+        return $output;
     }
 
     /**
