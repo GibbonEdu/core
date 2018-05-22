@@ -2382,19 +2382,6 @@ msgstr "Det finnes ingen informasjon for denne datoen."
 #: modules/Finance/expenses_manage.php:41
 #: modules/Finance/budgetCycles_manage_edit.php:33 src/Gibbon/MenuMain.php:68
 #: src/Gibbon/MenuMain.php:91 likes.php:21
-#: module Data Admin/Data Admin/duplication_combine.php:32
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:32
-#: module Data Admin/Data Admin/import_history.php:37
-#: module Data Admin/Data Admin/import_manage.php:37
-#: module Data Admin/Data Admin/import_run.php:43
-#: module Data Admin/Data Admin/records_duplicates.php:38
-#: module Data Admin/Data Admin/records_manage.php:38
-#: module Data Admin/Data Admin/records_orphaned.php:38
-#: module Data Admin/Data Admin/settings.php:32
-#: module Data Admin/Data Admin/snapshot_manage.php:32
-#: module Data Admin/Data Admin/snapshot_manage_add.php:31
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:32
-#: module Data Admin/Data Admin/snapshot_manage_load.php:32
 #: modules/Activities/activities_attendance.php:33
 #: modules/Activities/activities_attendance_sheet.php:34
 #: modules/Activities/activities_manage.php:34
@@ -2441,30 +2428,6 @@ msgstr "Det finnes ingen informasjon for denne datoen."
 #: modules/Behaviour/behaviour_pattern.php:36
 #: modules/Behaviour/behaviour_view.php:40
 #: modules/Behaviour/behaviour_view_details.php:42
-#: modules/Course Selection/access_manage.php:20
-#: modules/Course Selection/access_manage_addEdit.php:45
-#: modules/Course Selection/approval_byCourse.php:23
-#: modules/Course Selection/approval_byOffering.php:24
-#: modules/Course Selection/blocks_manage.php:20
-#: modules/Course Selection/blocks_manage_addEdit.php:53
-#: modules/Course Selection/meta_manage.php:20
-#: modules/Course Selection/meta_manage_addEdit.php:49
-#: modules/Course Selection/offerings_manage.php:20
-#: modules/Course Selection/offerings_manage_addEdit.php:49
-#: modules/Course Selection/report_courseSelectionLog.php:21
-#: modules/Course Selection/report_requestsByCourse.php:21
-#: modules/Course Selection/report_studentGrades.php:20
-#: modules/Course Selection/report_studentsNotApproved.php:21
-#: modules/Course Selection/report_studentsNotSelected.php:21
-#: modules/Course Selection/selection.php:25
-#: modules/Course Selection/selectionChoices.php:28
-#: modules/Course Selection/settings.php:20
-#: modules/Course Selection/tools_copyByCourse.php:22
-#: modules/Course Selection/tools_timetableByClass.php:22
-#: modules/Course Selection/tt_engine.php:24
-#: modules/Course Selection/tt_resultsByCourse.php:21
-#: modules/Course Selection/tt_resultsByStudent.php:21
-#: modules/Course Selection/upcomingTimetable.php:21
 #: modules/Crowd Assessment/crowdAssess.php:30
 #: modules/Crowd Assessment/crowdAssess_view.php:30
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:30
@@ -2554,10 +2517,6 @@ msgstr "Det finnes ingen informasjon for denne datoen."
 #: modules/Formal Assessment/internalAssessment_write.php:89
 #: modules/Formal Assessment/internalAssessment_write.php:99
 #: modules/Formal Assessment/internalAssessment_write_data.php:103
-#: modules/ID Cards/archive.php:35 modules/ID Cards/create.php:33
-#: modules/ID Cards/index.php:35 modules/ID Cards/print.php:33
-#: modules/ID Cards/requests.php:32 modules/ID Cards/search.php:35
-#: modules/ID Cards/templates.php:34
 #: modules/Individual Needs/iep_view_myChildren.php:30
 #: modules/Individual Needs/in_archive.php:32
 #: modules/Individual Needs/in_edit.php:43
@@ -2611,8 +2570,6 @@ msgstr "Det finnes ingen informasjon for denne datoen."
 #: modules/Messenger/messenger_manage_report.php:48
 #: modules/Messenger/messenger_post.php:48
 #: modules/Messenger/messenger_postQuickWall.php:32
-#: modules/PASI Export/export.php:37 modules/PASI Export/export_generate.php:33
-#: modules/PASI Export/files_manage.php:37
 #: modules/Planner/conceptExplorer.php:34
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:33
 #: modules/Planner/outcomes.php:37 modules/Planner/outcomes_add.php:46
@@ -2647,7 +2604,7 @@ msgstr "Det finnes ingen informasjon for denne datoen."
 #: modules/Planner/units_edit_working_add.php:48
 #: modules/Planner/units_edit_working_copyback.php:38
 #: modules/Planner/units_public.php:32 modules/Planner/units_public_view.php:31
-#: modules/Reporting/function.php:425 modules/Roll Groups/rollGroups.php:28
+#: modules/Roll Groups/rollGroups.php:28
 #: modules/Roll Groups/rollGroups_details.php:53 modules/Rubrics/rubrics.php:37
 #: modules/Rubrics/rubrics_add.php:56 modules/Rubrics/rubrics_delete.php:55
 #: modules/Rubrics/rubrics_duplicate.php:55 modules/Rubrics/rubrics_edit.php:56
@@ -4079,12 +4036,8 @@ msgstr ""
 #: modules/Planner/planner_deadlines.php:937 Needs/in_edit.php:388
 #: modules/Finance/expenses_manage_edit.php:791
 #: modules/Finance/expenses_manage_approve.php:495
-#: module Data Admin/Data Admin/import_run.php:189
-#: module Data Admin/Data Admin/import_run.php:608
-#: module Data Admin/Data Admin/import_run.php:898
-#: module Data Admin/Data Admin/settings.php:252
-#: modules/PASI Export/export_generate.php:96 modules/Planner/planner.php:171
-#: modules/Planner/planner_add.php:1225 modules/Planner/planner_bump.php:142
+#: modules/Planner/planner.php:171 modules/Planner/planner_add.php:1225
+#: modules/Planner/planner_bump.php:142
 #: modules/Planner/planner_deadlines.php:165
 #: modules/Planner/planner_deadlines.php:706
 #: modules/Planner/planner_deadlines.php:935
@@ -4099,8 +4052,6 @@ msgstr ""
 #: modules/Planner/units_duplicate.php:448
 #: modules/Planner/units_edit_copyForward.php:241
 #: modules/Planner/units_edit_working_copyback.php:161
-#: modules/Reporting/credits_function.php:447
-#: modules/Reporting/transcript_function.php:353
 #: modules/System Admin/module_manage.php:260
 msgid "Submit"
 msgstr "Send"
@@ -4937,9 +4888,6 @@ msgstr "Bekreft nytt passord"
 #: modules/Finance/expenses_manage_edit.php:783
 #: modules/Finance/expenses_manage_approve.php:486
 #: src/Forms/FormFactory.php:237 src/Forms/FormFactory.php:242
-#: module Data Admin/Data Admin/import_run.php:185
-#: module Data Admin/Data Admin/import_run.php:600
-#: module Data Admin/Data Admin/settings.php:248
 #: modules/Planner/planner_add.php:1220 modules/Planner/planner_bump.php:134
 #: modules/Planner/planner_duplicate.php:244
 #: modules/Planner/planner_duplicate.php:481
@@ -5085,7 +5033,7 @@ msgstr "Planleggings stjerner"
 #: Admin/family_manage_edit.php:395 Admin/user_manage.php:130 .git/likes.php:40
 #: .git/modules/User Admin/user_manage.php:133 Admin/user_manage.php:127
 #: Admin/family_manage_edit.php:250 likes.php:40
-#: modules/Data Updater/data_updates.php:94 modules/ID Cards/search.php:155
+#: modules/Data Updater/data_updates.php:94
 #: modules/User Admin/family_manage_edit.php:248
 #: modules/User Admin/user_manage.php:100
 msgid "Photo"
@@ -6034,8 +5982,6 @@ msgstr "Bilde"
 #: Admin/ttColumn_edit.php:112
 #: modules/Timetable/report_viewAvailableTeachers.php:68
 #: index_notification_ajax_alarm.php:134
-#: module Data Admin/Data Admin/import_manage.php:72
-#: module Data Admin/Data Admin/import_run.php:217
 #: modules/Activities/activities_manage_add.php:60
 #: modules/Activities/activities_manage_edit.php:82
 #: modules/Activities/activities_manage_edit.php:187
@@ -6055,17 +6001,6 @@ msgstr "Bilde"
 #: modules/Behaviour/behaviour_pattern.php:229
 #: modules/Behaviour/behaviour_view.php:114
 #: modules/Behaviour/behaviour_view_details.php:75
-#: modules/Course Selection/blocks_manage.php:58
-#: modules/Course Selection/blocks_manage_addEdit.php:83
-#: modules/Course Selection/blocks_manage_addEdit.php:119
-#: modules/Course Selection/meta_manage.php:55
-#: modules/Course Selection/offerings_manage.php:55
-#: modules/Course Selection/offerings_manage_addEdit.php:75
-#: modules/Course Selection/report_requestsByCourse.php:83
-#: modules/Course Selection/report_requestsByCourse.php:138
-#: modules/Course Selection/report_studentGrades.php:64
-#: modules/Course Selection/tools_timetableByClass.php:175
-#: modules/Course Selection/tt_resultsByStudent.php:82
 #: modules/Crowd Assessment/crowdAssess_view.php:69
 #: modules/Data Updater/data_updates.php:97
 #: modules/Departments/department_edit.php:90
@@ -6096,9 +6031,7 @@ msgstr "Bilde"
 #: modules/Formal Assessment/internalAssessment_manage.php:143
 #: modules/Formal Assessment/internalAssessment_manage_add.php:84
 #: modules/Formal Assessment/internalAssessment_manage_edit.php:100
-#: modules/ID Cards/create.php:62 modules/ID Cards/requests.php:51
-#: modules/ID Cards/requests.php:97 modules/ID Cards/search.php:158
-#: modules/ID Cards/templates.php:53 modules/Individual Needs/in_edit.php:141
+#: modules/Individual Needs/in_edit.php:141
 #: modules/Individual Needs/in_edit.php:182
 #: modules/Individual Needs/in_summary.php:153
 #: modules/Individual Needs/in_view.php:102
@@ -6125,9 +6058,8 @@ msgstr "Bilde"
 #: modules/Messenger/groups_manage_add.php:47
 #: modules/Messenger/groups_manage_edit.php:72
 #: modules/Messenger/groups_manage_edit.php:100
-#: modules/PASI Export/export.php:48 modules/Planner/moduleFunctions.php:215
-#: modules/Planner/outcomes.php:127 modules/Planner/outcomes_add.php:103
-#: modules/Planner/outcomes_edit.php:114
+#: modules/Planner/moduleFunctions.php:215 modules/Planner/outcomes.php:127
+#: modules/Planner/outcomes_add.php:103 modules/Planner/outcomes_edit.php:114
 #: modules/Planner/outcomes_import.php:110 modules/Planner/planner_add.php:314
 #: modules/Planner/planner_duplicate.php:341
 #: modules/Planner/planner_edit.php:312 modules/Planner/planner_edit.php:1293
@@ -6144,9 +6076,6 @@ msgstr "Bilde"
 #: modules/Planner/units_edit.php:900 modules/Planner/units_embed.php:149
 #: modules/Planner/units_public.php:121
 #: modules/Planner/units_public_view.php:285
-#: modules/Reporting/credits_function.php:518
-#: modules/Reporting/reporting.php:140 modules/Reporting/reporting.php:216
-#: modules/Reporting/transcript_function.php:424
 #: modules/Roll Groups/rollGroups.php:52
 #: modules/Roll Groups/rollGroups_details.php:63
 #: modules/Rubrics/rubrics.php:144 modules/Rubrics/rubrics_add.php:103
@@ -6279,8 +6208,7 @@ msgstr "Bilde"
 #: modules/User Admin/rollover.php:452 modules/User Admin/rollover.php:487
 #: modules/User Admin/user_manage.php:104 modules/User Admin/userFields.php:70
 #: modules/User Admin/userFields_add.php:48
-#: modules/User Admin/userFields_edit.php:68 src/FormsTemplate.php:53
-#: src/FormsTemplate.php:118
+#: modules/User Admin/userFields_edit.php:68
 msgid "Name"
 msgstr "Navn"
 
@@ -6602,9 +6530,6 @@ msgstr "Klasse/leksjon"
 #: modules/Messenger/messenger_post.php:563
 #: modules/Finance/expenses_manage.php:290
 #: modules/Behaviour/behaviour_manage_add.php:100 likes.php:51
-#: module Data Admin/Data Admin/import_history.php:60
-#: module Data Admin/Data Admin/import_history_view.php:77
-#: module Data Admin/Data Admin/snapshot_manage.php:76
 #: modules/Activities/activities_attendance.php:223
 #: modules/Activities/report_attendance.php:228
 #: modules/Activities/report_attendance_byDate.php:56
@@ -6627,7 +6552,6 @@ msgstr "Klasse/leksjon"
 #: modules/Behaviour/behaviour_manage_edit.php:106
 #: modules/Behaviour/behaviour_pattern.php:122
 #: modules/Behaviour/moduleFunctions.php:81
-#: modules/Course Selection/report_courseSelectionLog.php:55
 #: modules/Crowd Assessment/crowdAssess.php:61
 #: modules/Crowd Assessment/crowdAssess_view.php:73
 #: modules/Data Updater/report_student_dataUpdaterHistory.php:61
@@ -6637,11 +6561,10 @@ msgstr "Klasse/leksjon"
 #: modules/Finance/moduleFunctions.php:567
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:365
 #: modules/Formal Assessment/externalAssessment_manage_details_edit.php:116
-#: modules/ID Cards/create.php:68 modules/Markbook/markbook_edit_add.php:164
+#: modules/Markbook/markbook_edit_add.php:164
 #: modules/Markbook/markbook_edit_addMulti.php:160
 #: modules/Markbook/markbook_edit_edit.php:183
-#: modules/Messenger/messenger_post.php:561
-#: modules/PASI Export/files_manage.php:67 modules/Planner/planner.php:410
+#: modules/Messenger/messenger_post.php:561 modules/Planner/planner.php:410
 #: modules/Planner/planner.php:820 modules/Planner/planner.php:1094
 #: modules/Planner/planner_add.php:385
 #: modules/Planner/planner_deadlines.php:331
@@ -6665,7 +6588,7 @@ msgstr "Klasse/leksjon"
 #: modules/Timetable Admin/ttDates_edit_add.php:77
 #: modules/User Admin/userFields_add.php:62
 #: modules/User Admin/userFields_edit.php:82 notifications.php:60
-#: notifications.php:135 src/FormsTemplate.php:110
+#: notifications.php:135
 msgid "Date"
 msgstr "Dato"
 
@@ -6749,8 +6672,6 @@ msgstr "Adferdsstjerner"
 #: modules/Students/report_student_medicalSummary.php:179
 #: modules/Students/student_view_details.php:2836
 #: modules/Students/medicalForm_manage_edit.php:151
-#: module Data Admin/Data Admin/import_history.php:72
-#: module Data Admin/Data Admin/import_history_view.php:83
 #: modules/Library/report_catalogSummaryExportContents.php:96
 #: modules/Planner/planner_deadlines.php:339
 #: modules/Planner/planner_deadlines.php:723
@@ -7357,7 +7278,7 @@ msgstr "Epost"
 #: modules/Students/student_view_details.php:820
 #: modules/User Admin/import_users.php:125
 #: modules/User Admin/user_manage_add.php:233
-#: modules/User Admin/user_manage_edit.php:322 src/FormsTemplate.php:105
+#: modules/User Admin/user_manage_edit.php:322
 msgid "Website"
 msgstr "Webside"
 
@@ -8132,12 +8053,6 @@ msgstr "Studentprofil"
 #: modules/Behaviour/behaviour_pattern.php:239
 #: modules/Behaviour/behaviour_view.php:120
 #: modules/Behaviour/behaviour_view_details.php:83
-#: modules/Course Selection/approval_byCourse.php:80
-#: modules/Course Selection/report_studentsNotApproved.php:49
-#: modules/Course Selection/report_studentsNotApproved.php:76
-#: modules/Course Selection/report_studentsNotSelected.php:49
-#: modules/Course Selection/report_studentsNotSelected.php:76
-#: modules/Course Selection/tt_resultsByStudent.php:57
 #: modules/Data Updater/report_student_dataUpdaterHistory.php:103
 #: modules/Finance/invoices_manage.php:318
 #: modules/Finance/invoices_manage_processBulkExportContents.php:99
@@ -8157,11 +8072,6 @@ msgstr "Studentprofil"
 #: modules/Messenger/messenger_post.php:323
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:53
 #: modules/Planner/report_workSummary_byRollGroup.php:52
-#: modules/Reporting/credits_function.php:421
-#: modules/Reporting/credits_function.php:524
-#: modules/Reporting/reporting.php:134
-#: modules/Reporting/transcript_function.php:327
-#: modules/Reporting/transcript_function.php:430
 #: modules/Students/applicationForm_manage_accept.php:327
 #: modules/Students/firstAidRecord.php:77
 #: modules/Students/medicalForm_manage.php:108
@@ -8951,11 +8861,6 @@ msgstr "Vis planlegging"
 #: modules/Messenger/messenger_manage_edit.php:62
 #: modules/Messenger/messenger_manage_edit.php:65 installer/install.php:156
 #: functions.php:4893 functions.php:4895 installer/install.php:157
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:42
-#: module Data Admin/Data Admin/export_run.php:56
-#: module Data Admin/Data Admin/import_run.php:61
-#: module Data Admin/Data Admin/import_run.php:651
-#: module Data Admin/Data Admin/import_run.php:662
 #: modules/Activities/activities_my_full.php:41
 #: modules/Activities/activities_view_full.php:53
 #: modules/Messenger/messenger_manage_edit.php:54
@@ -9634,8 +9539,7 @@ msgstr "Forespørsel feilet. Feil i input."
 #: modules/Planner/planner_view_full.php:1239
 #: modules/Planner/resources_add_ajaxProcess.php:84
 #: modules/Planner/resources_add_ajaxProcess.php:134
-#: modules/Planner/units_edit_deploy.php:72 modules/Reporting/pdf_batch.php:110
-#: modules/Reporting/pdf_batch.php:149 modules/Rubrics/rubrics_edit.php:93
+#: modules/Planner/units_edit_deploy.php:72 modules/Rubrics/rubrics_edit.php:93
 #: modules/Rubrics/rubrics_edit.php:118 modules/Rubrics/rubrics_edit.php:143
 #: modules/Staff/applicationForm.php:99
 #: modules/Staff/applicationForm_jobOpenings_view.php:61
@@ -10211,9 +10115,6 @@ msgstr "Forespørsel utført."
 #: modules/Attendance/report_courseClassesNotRegistered_byDate.php:162
 #: modules/Attendance/report_courseClassesNotRegistered_byDate_print.php:114
 #: modules/Attendance/report_summary_byDate.php:99
-#: modules/Course Selection/tools_copyByCourse.php:173
-#: modules/Course Selection/tools_timetableByClass.php:58
-#: modules/Course Selection/tt_resultsByCourse.php:80
 #: modules/Crowd Assessment/crowdAssess.php:54
 #: modules/Crowd Assessment/crowdAssess_view.php:65
 #: modules/Formal Assessment/internalAssessment_manage_add.php:76
@@ -10988,7 +10889,6 @@ msgstr "Enhet"
 #: modules/Students/student_view_details.php:2955
 #: modules/Activities/report_activityChoices_byRollGroup.php:129
 #: modules/Activities/activities_view.php:451
-#: module Data Admin/Data Admin/import_history.php:98
 #: modules/Activities/activities_my.php:110
 #: modules/Activities/activities_view.php:449
 #: modules/Activities/report_activityChoices_byRollGroup.php:127
@@ -10996,11 +10896,10 @@ msgstr "Enhet"
 #: modules/Behaviour/behaviour_letters.php:161
 #: modules/Behaviour/behaviour_pattern.php:282
 #: modules/Behaviour/behaviour_view.php:155
-#: modules/Crowd Assessment/crowdAssess.php:105 modules/ID Cards/create.php:83
-#: modules/ID Cards/requests.php:72 modules/ID Cards/search.php:123
-#: modules/ID Cards/search.php:177 modules/Planner/units_public.php:152
-#: modules/Staff/staff_view.php:164 modules/Students/student_view.php:109
-#: modules/Students/student_view.php:247 modules/Students/student_view.php:425
+#: modules/Crowd Assessment/crowdAssess.php:105
+#: modules/Planner/units_public.php:152 modules/Staff/staff_view.php:164
+#: modules/Students/student_view.php:109 modules/Students/student_view.php:247
+#: modules/Students/student_view.php:425
 #: modules/Students/student_view_details.php:1941
 #: modules/Students/student_view_details.php:2742
 #: modules/Students/student_view_details.php:2991 modules/Timetable/tt.php:210
@@ -12520,15 +12419,7 @@ msgstr "Detaljer"
 #: functions.php:1215 functions.php:1476 functions.php:1518 functions.php:1570
 #: functions.php:1587 functions.php:1731 functions.php:2942 index.php:630
 #: index.php:646 index.php:665 index_notification_ajax_alarm.php:128
-#: likes.php:34 module Data Admin/Data Admin/import_history.php:52
-#: module Data Admin/Data Admin/import_history_view.php:44
-#: module Data Admin/Data Admin/import_history_view.php:53
-#: module Data Admin/Data Admin/import_manage.php:45
-#: module Data Admin/Data Admin/records_duplicates.php:68
-#: module Data Admin/Data Admin/records_manage.php:64
-#: module Data Admin/Data Admin/records_orphaned.php:69
-#: module Data Admin/Data Admin/snapshot_manage.php:69
-#: modules/Activities/activities_attendance.php:99
+#: likes.php:34 modules/Activities/activities_attendance.php:99
 #: modules/Activities/activities_attendance.php:191
 #: modules/Activities/activities_attendance_sheet.php:88
 #: modules/Activities/activities_attendance_sheet.php:138
@@ -12563,7 +12454,6 @@ msgstr "Detaljer"
 #: modules/Activities/report_attendance_print.php:143
 #: modules/Activities/report_participants.php:82
 #: modules/Activities/report_participants_print.php:62
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:162
 #: modules/Attendance/attendance_take_byCourseClass.php:126
 #: modules/Attendance/attendance_take_byCourseClass.php:209
 #: modules/Attendance/attendance_take_byRollGroup.php:119
@@ -12592,26 +12482,6 @@ msgstr "Detaljer"
 #: modules/Behaviour/behaviour_view.php:104
 #: modules/Behaviour/moduleFunctions.php:36
 #: modules/Behaviour/moduleFunctions.php:75
-#: modules/Course Selection/access_manage.php:41
-#: modules/Course Selection/approval_byCourse.php:65
-#: modules/Course Selection/approval_byOffering.php:54
-#: modules/Course Selection/approval_byOffering.php:84
-#: modules/Course Selection/blocks_manage.php:45
-#: modules/Course Selection/blocks_manage_addEdit.php:109
-#: modules/Course Selection/meta_manage.php:45
-#: modules/Course Selection/offerings_manage.php:45
-#: modules/Course Selection/offerings_manage_addEdit.php:166
-#: modules/Course Selection/report_courseSelectionLog.php:39
-#: modules/Course Selection/report_requestsByCourse.php:69
-#: modules/Course Selection/report_requestsByCourse.php:124
-#: modules/Course Selection/report_studentGrades.php:38
-#: modules/Course Selection/report_studentsNotApproved.php:66
-#: modules/Course Selection/report_studentsNotSelected.php:66
-#: modules/Course Selection/tools_copyByCourse.php:109
-#: modules/Course Selection/tools_timetableByClass.php:77
-#: modules/Course Selection/tt_resultsByCourse.php:40
-#: modules/Course Selection/tt_resultsByStudent.php:42
-#: modules/Course Selection/upcomingTimetable.php:62
 #: modules/Data Updater/data_family_manage.php:56
 #: modules/Data Updater/data_finance_manage.php:56
 #: modules/Data Updater/data_medical_manage.php:56
@@ -12650,9 +12520,6 @@ msgstr "Detaljer"
 #: modules/Formal Assessment/moduleFunctions.php:205
 #: modules/Formal Assessment/moduleFunctions.php:278
 #: modules/Formal Assessment/moduleFunctions.php:322
-#: modules/ID Cards/archive.php:47
-#: modules/ID Cards/cli/idCards_requestsSummary.php:73
-#: modules/ID Cards/templates.php:46
 #: modules/Individual Needs/iep_view_myChildren.php:131
 #: modules/Individual Needs/in_edit.php:203
 #: modules/Individual Needs/in_summary.php:143
@@ -12685,7 +12552,6 @@ msgstr "Detaljer"
 #: modules/Messenger/messenger_manage_report.php:240
 #: modules/Messenger/messenger_manage_report.php:326
 #: modules/Messenger/moduleFunctions.php:498
-#: modules/PASI Export/files_manage.php:57
 #: modules/Planner/conceptExplorer.php:134
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:183
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:261
@@ -12719,8 +12585,6 @@ msgstr "Detaljer"
 #: modules/Planner/units_public.php:112
 #: modules/Planner/units_public_view.php:102
 #: modules/Planner/units_public_view.php:261
-#: modules/Reporting/credits_function.php:508
-#: modules/Reporting/transcript_function.php:414
 #: modules/Roll Groups/rollGroups.php:46 modules/Rubrics/rubrics.php:128
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:145
 #: modules/Rubrics/rubrics_edit_editRowsColumns.php:184
@@ -12911,7 +12775,6 @@ msgstr "Nylige karakterer"
 #: modules/Markbook/markbook_view_allClassesAllData.php:40
 #: modules/Markbook/markbook_view_allClassesAllData.php:60
 #: modules/Markbook/markbook_view_myMarks.php:17
-#: modules/Reporting/subject_function.php:787
 msgid "View Markbook"
 msgstr "Se vurderingsbok"
 
@@ -13494,7 +13357,6 @@ msgstr "Innsats"
 #: modules/User Admin/family_manage_edit.php:458
 #: modules/User Admin/family_manage_edit_editAdult.php:82
 #: modules/User Admin/family_manage_edit_editChild.php:82
-#: src/FormsTemplate.php:68
 msgid "Comment"
 msgstr "Kommentar"
 
@@ -15242,7 +15104,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:2364
 #: modules/Students/student_view_details.php:2933 functions.php:1451
 #: i18n/dbStringsForTranslation.php:1998
-#: modules/Course Selection/src/Form/CourseProgressByBlock.php:40
 #: modules/Formal Assessment/internalAssessment_write.php:641
 #: modules/Markbook/markbook_view_allClassesAllData.php:828
 #: modules/Markbook/markbook_view_myMarks.php:373
@@ -16781,11 +16642,6 @@ msgstr "Leksjon/Enhet"
 #: src/Forms/FormFactory.php:256 functions.php:513 functions.php:522
 #: functions.php:945 functions.php:954 functions.php:1184 functions.php:1193
 #: installer/install.php:166 installer/install.php:442
-#: module Data Admin/Data Admin/import_run.php:357
-#: module Data Admin/Data Admin/settings.php:39
-#: module Data Admin/Data Admin/settings.php:197
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:76
-#: module Data Admin/Data Admin/snapshot_manage_load.php:82
 #: modules/Markbook/weighting_manage.php:180
 #: modules/Messenger/messenger_postQuickWall.php:62
 #: modules/Planner/planner.php:323 modules/Planner/planner.php:332
@@ -16826,9 +16682,8 @@ msgstr "Leksjon/Enhet"
 #: modules/User Admin/userFields_add.php:95
 #: modules/User Admin/userFields_add.php:99
 #: modules/User Admin/userFields_edit.php:118
-#: modules/User Admin/userFields_edit.php:122 src/Facades/Format copy.php:61
-#: src/Forms/FormFactory.php:251 src/Forms/FormFactory.php:256
-#: src/Services/Format.php:172
+#: modules/User Admin/userFields_edit.php:122 src/Forms/FormFactory.php:251
+#: src/Forms/FormFactory.php:256 src/Services/Format.php:172
 msgid "Yes"
 msgstr "Ja"
 
@@ -17847,9 +17702,6 @@ msgstr "Ja"
 #: installer/install.php:166 src/Forms/FormFactory.php:251
 #: src/Forms/FormFactory.php:256 functions.php:510 functions.php:942
 #: functions.php:1181 installer/install.php:167
-#: module Data Admin/Data Admin/import_run.php:358
-#: module Data Admin/Data Admin/settings.php:40
-#: module Data Admin/Data Admin/settings.php:198
 #: modules/Markbook/weighting_manage.php:180 modules/Planner/planner.php:320
 #: modules/Planner/planner.php:479 modules/Planner/planner.php:658
 #: modules/Planner/planner.php:900 modules/Planner/planner_add.php:619
@@ -17881,9 +17733,8 @@ msgstr "Ja"
 #: modules/User Admin/userFields_add.php:95
 #: modules/User Admin/userFields_add.php:99
 #: modules/User Admin/userFields_edit.php:118
-#: modules/User Admin/userFields_edit.php:122 src/Facades/Format copy.php:61
-#: src/Forms/FormFactory.php:251 src/Forms/FormFactory.php:256
-#: src/Services/Format.php:172
+#: modules/User Admin/userFields_edit.php:122 src/Forms/FormFactory.php:251
+#: src/Forms/FormFactory.php:256 src/Services/Format.php:172
 msgid "No"
 msgstr "Nei"
 
@@ -18052,8 +17903,6 @@ msgstr "Mine elevgrupper"
 #: functions.php:2193 i18n/dbStringsForTranslation.php:1603
 #: modules/Activities/activities_manage_enrolment_add.php:153
 #: modules/Behaviour/behaviour_manage_addMulti.php:66
-#: modules/Course Selection/tt_resultsByCourse.php:54
-#: modules/Course Selection/tt_resultsByCourse.php:86
 #: modules/Data Updater/report_student_dataUpdaterHistory.php:54
 #: modules/Formal Assessment/internalAssessment_write_data.php:143
 #: modules/Individual Needs/in_archive.php:66
@@ -18500,14 +18349,6 @@ msgstr "Eksporter til Excel"
 #: modules/Behaviour/behaviour_manage.php:158
 #: modules/Behaviour/behaviour_manage_add.php:43
 #: modules/Behaviour/moduleFunctions.php:42
-#: modules/Course Selection/access_manage.php:33
-#: modules/Course Selection/blocks_manage.php:37
-#: modules/Course Selection/blocks_manage_addEdit.php:158
-#: modules/Course Selection/meta_manage.php:37
-#: modules/Course Selection/offerings_manage.php:37
-#: modules/Course Selection/offerings_manage_addEdit.php:152
-#: modules/Course Selection/offerings_manage_addEdit.php:243
-#: modules/Course Selection/tools_timetableByClass.php:156
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:129
 #: modules/Finance/billingSchedule_manage.php:134
 #: modules/Finance/budgetCycles_manage.php:45
@@ -18519,7 +18360,6 @@ msgstr "Eksporter til Excel"
 #: modules/Finance/feeCategories_manage.php:59
 #: modules/Finance/fees_manage.php:138 modules/Finance/invoices_manage.php:276
 #: modules/Formal Assessment/externalAssessment_details.php:103
-#: modules/ID Cards/templates.php:38
 #: modules/Library/library_manage_catalog.php:197
 #: modules/Markbook/markbook_edit.php:159
 #: modules/Markbook/markbook_view_allClassesAllData.php:131
@@ -19098,7 +18938,6 @@ msgstr "Student og dato"
 #: modules/Behaviour/behaviour_manage_add.php:105 Admin/ttColumn_edit.php:121
 #: functions.php:632 functions.php:1598 i18n/dbStringsForTranslation.php:1492
 #: i18n/dbStringsForTranslation.php:1519 i18n/dbStringsForTranslation.php:1547
-#: module Data Admin/Data Admin/import_run.php:223
 #: modules/Activities/activities_manage_add.php:70
 #: modules/Activities/activities_manage_edit.php:92
 #: modules/Activities/activities_my.php:56
@@ -19112,8 +18951,6 @@ msgstr "Student og dato"
 #: modules/Behaviour/behaviour_manage_addMulti.php:76
 #: modules/Behaviour/behaviour_manage_edit.php:111
 #: modules/Behaviour/moduleFunctions.php:84
-#: modules/Course Selection/access_manage.php:57
-#: modules/Course Selection/report_courseSelectionLog.php:52
 #: modules/Data Updater/data_personal_manage_edit.php:100
 #: modules/Data Updater/data_personal_manage_edit.php:103
 #: modules/Data Updater/data_personal_manage_edit.php:106
@@ -19123,9 +18960,7 @@ msgstr "Student og dato"
 #: modules/Formal Assessment/internalAssessment_manage.php:144
 #: modules/Formal Assessment/internalAssessment_manage_add.php:94
 #: modules/Formal Assessment/internalAssessment_manage_edit.php:110
-#: modules/ID Cards/requests.php:54 modules/ID Cards/requests.php:100
-#: modules/ID Cards/templates.php:56 modules/Library/library_import.php:87
-#: modules/Library/library_lending.php:94
+#: modules/Library/library_import.php:87 modules/Library/library_lending.php:94
 #: modules/Library/library_lending.php:108
 #: modules/Library/library_lending.php:207
 #: modules/Library/library_lending_item.php:99
@@ -19187,7 +19022,7 @@ msgstr "Student og dato"
 #: modules/User Admin/role_manage_edit.php:100
 #: modules/User Admin/rollover.php:490 modules/User Admin/userFields.php:73
 #: modules/User Admin/userFields_add.php:67
-#: modules/User Admin/userFields_edit.php:87 src/FormsTemplate.php:100
+#: modules/User Admin/userFields_edit.php:87
 msgid "Type"
 msgstr "Type"
 
@@ -20621,9 +20456,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_report.php:258
 #: modules/Messenger/messageWall_view.php:72
 #: modules/Finance/expenses_manage.php:281 functions.php:2209
-#: functions.php:2254 module Data Admin/Data Admin/duplication_combine.php:134
-#: module Data Admin/Data Admin/duplication_combine.php:173
-#: modules/Activities/activities_manage.php:148
+#: functions.php:2254 modules/Activities/activities_manage.php:148
 #: modules/Activities/activities_payment.php:89
 #: modules/Departments/department.php:210
 #: modules/Departments/department_course_class.php:251
@@ -21241,15 +21074,6 @@ msgstr ""
 #: functions.php:2857 modules/Students/applicationForm_manage_accept.php:323
 #: modules/Students/report_students_IDCards.php:148 functions.php:2857
 #: modules/Activities/report_attendanceExport.php:172
-#: modules/Course Selection/access_manage.php:48
-#: modules/Course Selection/access_manage_addEdit.php:60
-#: modules/Course Selection/blocks_manage.php:52
-#: modules/Course Selection/blocks_manage_addEdit.php:70
-#: modules/Course Selection/blocks_manage_addEdit.php:74
-#: modules/Course Selection/offerings_manage.php:52
-#: modules/Course Selection/offerings_manage_addEdit.php:66
-#: modules/Course Selection/offerings_manage_addEdit.php:70
-#: modules/Course Selection/offerings_manage_addEdit.php:117
 #: modules/Finance/billingSchedule_manage_add.php:61
 #: modules/Finance/billingSchedule_manage_edit.php:89
 #: modules/Finance/fees_manage_add.php:72
@@ -21257,8 +21081,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_add.php:91
 #: modules/Finance/invoices_manage_edit.php:96
 #: modules/Finance/invoices_manage_issue.php:101
-#: modules/Messenger/groups_manage.php:61
-#: modules/PASI Export/export_generate.php:52 modules/Planner/units_add.php:106
+#: modules/Messenger/groups_manage.php:61 modules/Planner/units_add.php:106
 #: modules/Planner/units_duplicate.php:126
 #: modules/Planner/units_duplicate.php:307
 #: modules/Planner/units_duplicate.php:394 modules/Planner/units_edit.php:125
@@ -21270,7 +21093,6 @@ msgstr ""
 #: modules/Planner/units_edit_working.php:140
 #: modules/Planner/units_edit_working_add.php:139
 #: modules/Planner/units_edit_working_copyback.php:108
-#: modules/Reporting/credits_function.php:207 modules/Reporting/gpa.php:25
 #: modules/School Admin/rollGroup_manage_add.php:71
 #: modules/School Admin/rollGroup_manage_edit.php:70
 #: modules/School Admin/schoolYearTerm_manage.php:56
@@ -22227,12 +22049,6 @@ msgstr ""
 #: functions.php:4116 functions.php:4159 functions.php:4119
 #: cli/behaviour_dailySummaryEmail.php:80 functions.php:4125
 #: cli/behaviour_dailySummaryEmail.php:73 functions.php:4125
-#: modules/Course Selection/report_requestsByCourse.php:74
-#: modules/Course Selection/report_requestsByCourse.php:129
-#: modules/Course Selection/report_studentsNotApproved.php:134
-#: modules/Course Selection/report_studentsNotSelected.php:139
-#: modules/Course Selection/tt_resultsByCourse.php:70
-#: modules/Course Selection/tt_resultsByStudent.php:75
 #: modules/Markbook/markbook_view_allClassesAllData.php:194
 #: src/Tables/Renderer/PaginatedRenderer.php:199
 msgid "Records"
@@ -23489,27 +23305,6 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:29
 #: modules/Finance/budgetCycles_manage_edit.php:28
 #: Admin/report_classEnrolment_byRollGroup.php:29
-#: module Data Admin/Data Admin/duplication_combine.php:28
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:28
-#: module Data Admin/Data Admin/export_run.php:35
-#: module Data Admin/Data Admin/export_run.php:51
-#: module Data Admin/Data Admin/import_history.php:28
-#: module Data Admin/Data Admin/import_history_view.php:28
-#: module Data Admin/Data Admin/import_manage.php:28
-#: module Data Admin/Data Admin/import_manage.php:108
-#: module Data Admin/Data Admin/import_run.php:30
-#: module Data Admin/Data Admin/import_run.php:56
-#: module Data Admin/Data Admin/records_duplicates.php:29
-#: module Data Admin/Data Admin/records_duplicates.php:126
-#: module Data Admin/Data Admin/records_manage.php:29
-#: module Data Admin/Data Admin/records_manage.php:150
-#: module Data Admin/Data Admin/records_orphaned.php:29
-#: module Data Admin/Data Admin/records_orphaned.php:118
-#: module Data Admin/Data Admin/settings.php:26
-#: module Data Admin/Data Admin/snapshot_manage.php:26
-#: module Data Admin/Data Admin/snapshot_manage_add.php:26
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:26
-#: module Data Admin/Data Admin/snapshot_manage_load.php:26
 #: modules/Activities/activities_attendance.php:28
 #: modules/Activities/activities_attendance_sheet.php:29
 #: modules/Activities/activities_attendance_sheetPrint.php:26
@@ -23542,8 +23337,6 @@ msgstr ""
 #: modules/Activities/report_participants.php:29
 #: modules/Activities/report_participants_print.php:26
 #: modules/Activities/report_participants_print.php:178
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:30
-#: modules/Assessment Calendar/index.php:28
 #: modules/Attendance/attendance.php:28
 #: modules/Attendance/attendance_future_byPerson.php:31
 #: modules/Attendance/attendance_studentSelfRegister.php:29
@@ -23575,38 +23368,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_pattern.php:32
 #: modules/Behaviour/behaviour_view.php:29
 #: modules/Behaviour/behaviour_view_details.php:29
-#: modules/Course Selection/access_manage.php:16
-#: modules/Course Selection/access_manage_addEdit.php:17
-#: modules/Course Selection/access_manage_delete.php:15
-#: modules/Course Selection/approval_byCourse.php:19
-#: modules/Course Selection/approval_byOffering.php:20
-#: modules/Course Selection/blocks_manage.php:16
-#: modules/Course Selection/blocks_manage_addEdit.php:17
-#: modules/Course Selection/blocks_manage_delete.php:15
-#: modules/Course Selection/meta_manage.php:16
-#: modules/Course Selection/meta_manage_addEdit.php:18
-#: modules/Course Selection/meta_manage_delete.php:15
-#: modules/Course Selection/offerings_manage.php:16
-#: modules/Course Selection/offerings_manage_addEdit.php:17
-#: modules/Course Selection/offerings_manage_delete.php:15
-#: modules/Course Selection/report_courseSelectionLog.php:17
-#: modules/Course Selection/report_requestsByCourse.php:17
-#: modules/Course Selection/report_studentGrades.php:16
-#: modules/Course Selection/report_studentsNotApproved.php:17
-#: modules/Course Selection/report_studentsNotSelected.php:17
-#: modules/Course Selection/selection.php:21
-#: modules/Course Selection/selectionChoices.php:24
-#: modules/Course Selection/selectionChoices.php:39
-#: modules/Course Selection/selectionChoices.php:47
-#: modules/Course Selection/settings.php:16
-#: modules/Course Selection/tools_copyByCourse.php:18
-#: modules/Course Selection/tools_timetableByClass.php:18
-#: modules/Course Selection/tt_engine.php:20
-#: modules/Course Selection/tt_engine_clear.php:15
-#: modules/Course Selection/tt_engine_goLive.php:15
-#: modules/Course Selection/tt_resultsByCourse.php:17
-#: modules/Course Selection/tt_resultsByStudent.php:17
-#: modules/Course Selection/upcomingTimetable.php:17
 #: modules/Crowd Assessment/crowdAssess.php:26
 #: modules/Crowd Assessment/crowdAssess_view.php:26
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:26
@@ -23693,10 +23454,6 @@ msgstr ""
 #: modules/Formal Assessment/internalAssessment_manage_delete.php:28
 #: modules/Formal Assessment/internalAssessment_manage_edit.php:33
 #: modules/Formal Assessment/internalAssessment_write_data.php:44
-#: modules/ID Cards/archive.php:30 modules/ID Cards/create.php:29
-#: modules/ID Cards/index.php:30 modules/ID Cards/print.php:29
-#: modules/ID Cards/requests.php:28 modules/ID Cards/requests_view.php:29
-#: modules/ID Cards/search.php:31 modules/ID Cards/templates.php:30
 #: modules/Individual Needs/iep_view_myChildren.php:25
 #: modules/Individual Needs/in_archive.php:28
 #: modules/Individual Needs/in_edit.php:29
@@ -23743,8 +23500,6 @@ msgstr ""
 #: modules/Messenger/messenger_manage_report.php:26
 #: modules/Messenger/messenger_post.php:36
 #: modules/Messenger/messenger_postQuickWall.php:27
-#: modules/PASI Export/export.php:28 modules/PASI Export/export_generate.php:28
-#: modules/PASI Export/files_manage.php:28
 #: modules/Planner/conceptExplorer.php:29
 #: modules/Planner/curriculumMapping_outcomesByCourse.php:28
 #: modules/Planner/outcomes.php:25 modules/Planner/outcomes_add.php:29
@@ -23774,7 +23529,7 @@ msgstr ""
 #: modules/Planner/units_edit_working.php:26
 #: modules/Planner/units_edit_working_add.php:26
 #: modules/Planner/units_edit_working_copyback.php:26
-#: modules/Reporting/gpa.php:9 modules/Roll Groups/rollGroups.php:23
+#: modules/Roll Groups/rollGroups.php:23
 #: modules/Roll Groups/rollGroups_details.php:26 modules/Rubrics/rubrics.php:25
 #: modules/Rubrics/rubrics_add.php:39 modules/Rubrics/rubrics_add.php:51
 #: modules/Rubrics/rubrics_delete.php:38 modules/Rubrics/rubrics_delete.php:50
@@ -24196,8 +23951,6 @@ msgstr "Du har ikke tilgang til denne handlingen"
 #: modules/Messenger/messenger_manage.php:71
 #: modules/Planner/planner_deadlines.php:164
 #: modules/Planner/resources_manage.php:74
-#: modules/Reporting/credits_function.php:446
-#: modules/Reporting/transcript_function.php:352
 #: modules/School Admin/space_manage.php:52
 #: modules/Students/applicationForm_manage.php:115
 #: modules/Students/medicalForm_manage.php:63
@@ -24208,7 +23961,7 @@ msgstr "Du har ikke tilgang til denne handlingen"
 #: modules/Timetable Admin/courseEnrolment_manage.php:96
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:92
 #: modules/User Admin/family_manage.php:63
-#: modules/User Admin/user_manage.php:57 src/FormsTemplate.php:18
+#: modules/User Admin/user_manage.php:57
 msgid "Clear Search"
 msgstr ""
 
@@ -24805,12 +24558,6 @@ msgstr ""
 #: modules/Staff/staff_manage_edit.php:195
 #: modules/Staff/staff_manage_edit.php:260 Admin/ttColumn_edit.php:124
 #: functions.php:2191 index_notification_ajax_alarm.php:140
-#: module Data Admin/Data Admin/import_history.php:75
-#: module Data Admin/Data Admin/import_manage.php:81
-#: module Data Admin/Data Admin/records_duplicates.php:92
-#: module Data Admin/Data Admin/records_manage.php:106
-#: module Data Admin/Data Admin/records_orphaned.php:88
-#: module Data Admin/Data Admin/snapshot_manage.php:82
 #: modules/Activities/activities_manage.php:164
 #: modules/Activities/activities_manage_enrolment.php:163
 #: modules/Activities/activities_my.php:66
@@ -24824,21 +24571,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_pattern.php:242
 #: modules/Behaviour/behaviour_view.php:123
 #: modules/Behaviour/moduleFunctions.php:100
-#: modules/Course Selection/access_manage.php:60
-#: modules/Course Selection/approval_byCourse.php:89
-#: modules/Course Selection/blocks_manage.php:64
-#: modules/Course Selection/blocks_manage_addEdit.php:122
-#: modules/Course Selection/meta_manage.php:67
-#: modules/Course Selection/offerings_manage.php:61
-#: modules/Course Selection/offerings_manage_addEdit.php:123
-#: modules/Course Selection/offerings_manage_addEdit.php:185
-#: modules/Course Selection/report_courseSelectionLog.php:58
-#: modules/Course Selection/report_requestsByCourse.php:89
-#: modules/Course Selection/report_requestsByCourse.php:144
-#: modules/Course Selection/report_studentsNotApproved.php:88
-#: modules/Course Selection/report_studentsNotSelected.php:85
-#: modules/Course Selection/tools_timetableByClass.php:96
-#: modules/Course Selection/tt_resultsByCourse.php:92
 #: modules/Crowd Assessment/crowdAssess.php:64
 #: modules/Data Updater/data_family_manage.php:78
 #: modules/Data Updater/data_finance_manage.php:78
@@ -24859,10 +24591,6 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:574
 #: modules/Formal Assessment/externalAssessment.php:119
 #: modules/Formal Assessment/internalAssessment_manage.php:150
-#: modules/ID Cards/archive.php:69 modules/ID Cards/create.php:71
-#: modules/ID Cards/print.php:81 modules/ID Cards/print.php:133
-#: modules/ID Cards/requests.php:60 modules/ID Cards/requests.php:106
-#: modules/ID Cards/search.php:164 modules/ID Cards/templates.php:59
 #: modules/Individual Needs/in_summary.php:162
 #: modules/Individual Needs/in_view.php:111
 #: modules/Library/library_browse.php:346
@@ -24873,8 +24601,7 @@ msgstr ""
 #: modules/Library/report_viewOverdueItems.php:101
 #: modules/Markbook/markbook_edit.php:196
 #: modules/Markbook/weighting_manage.php:149
-#: modules/Messenger/messenger_manage.php:164 modules/PASI Export/export.php:54
-#: modules/PASI Export/files_manage.php:73
+#: modules/Messenger/messenger_manage.php:164
 #: modules/Planner/conceptExplorer.php:155 modules/Planner/outcomes.php:136
 #: modules/Planner/planner.php:278 modules/Planner/planner.php:429
 #: modules/Planner/planner.php:612 modules/Planner/planner.php:839
@@ -24890,9 +24617,6 @@ msgstr ""
 #: modules/Planner/units_edit.php:295 modules/Planner/units_edit.php:950
 #: modules/Planner/units_public.php:127
 #: modules/Planner/units_public_view.php:291
-#: modules/Reporting/credits_function.php:530
-#: modules/Reporting/reporting.php:154 modules/Reporting/reporting.php:228
-#: modules/Reporting/transcript_function.php:436
 #: modules/Roll Groups/rollGroups.php:67 modules/Rubrics/rubrics.php:153
 #: modules/Rubrics/rubrics_view.php:134
 #: modules/School Admin/attendanceSettings.php:81
@@ -25898,7 +25622,6 @@ msgstr ""
 #: modules/Activities/report_attendanceExport.php:194
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:74
 #: modules/Attendance/report_studentsNotPresent_byDate.php:74
-#: modules/Course Selection/offerings_manage.php:58
 #: modules/Planner/outcomes.php:130 modules/Planner/outcomes_add.php:127
 #: modules/Planner/outcomes_edit.php:138
 #: modules/Planner/outcomes_import.php:120
@@ -27129,8 +26852,6 @@ msgstr ""
 #: modules/Finance/expenses_manage_add.php:61
 #: modules/Finance/budgetCycles_manage_edit.php:44
 #: modules/Behaviour/behaviour_manage_add.php:161
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:43
-#: module Data Admin/Data Admin/snapshot_manage_load.php:49
 #: modules/Activities/activities_manage_delete.php:44
 #: modules/Activities/activities_manage_edit.php:45
 #: modules/Activities/activities_manage_enrolment.php:65
@@ -27143,12 +26864,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_add.php:159
 #: modules/Behaviour/behaviour_manage_delete.php:51
 #: modules/Behaviour/behaviour_manage_edit.php:55
-#: modules/Course Selection/access_manage_delete.php:22
-#: modules/Course Selection/blocks_manage_delete.php:22
-#: modules/Course Selection/meta_manage_delete.php:22
-#: modules/Course Selection/offerings_manage_delete.php:22
-#: modules/Course Selection/tt_engine_clear.php:22
-#: modules/Course Selection/tt_engine_goLive.php:22
 #: modules/Crowd Assessment/crowdAssess_view.php:41
 #: modules/Crowd Assessment/crowdAssess_view_discuss_post.php:45
 #: modules/Data Updater/data_family_manage_delete.php:44
@@ -27202,7 +26917,6 @@ msgstr ""
 #: modules/Formal Assessment/internalAssessment_manage_delete.php:36
 #: modules/Formal Assessment/internalAssessment_manage_edit.php:41
 #: modules/Formal Assessment/internalAssessment_write_data.php:58
-#: modules/ID Cards/requests_view.php:42
 #: modules/Library/library_lending_item.php:42
 #: modules/Library/library_lending_item_edit.php:34
 #: modules/Library/library_lending_item_renew.php:34
@@ -28077,8 +27791,6 @@ msgstr "Du mangler å spesifisere en eller flere obligatoriske felter"
 #: modules/Planner/units_edit_working_add.php:82
 #: modules/Planner/units_edit_working_copyback.php:74
 #: modules/Planner/units_embed.php:68
-#: modules/Reporting/credits_function.php:180
-#: modules/Reporting/transcript_function.php:124
 #: modules/Roll Groups/rollGroups_details.php:46
 #: modules/Rubrics/rubrics_delete.php:85
 #: modules/School Admin/attendanceSettings_manage_edit.php:59
@@ -28287,15 +27999,9 @@ msgstr "Den valgte posten finnes ikke, eller så har du ikke adgang til den."
 #: modules/Staff/staff_manage_edit_facility_delete.php:80
 #: modules/Activities/activities_manage_enrolment_delete.php:94
 #: src/Forms/Input/FileUpload.php:208 src/Forms/Input/FileUpload.php:210
-#: src/Forms/Prefab/DeleteForm.php:43
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:66
-#: modules/Course Selection/access_manage_delete.php:30
-#: modules/Course Selection/blocks_manage_delete.php:30
-#: modules/Course Selection/meta_manage_delete.php:30
-#: modules/Course Selection/offerings_manage_delete.php:30
-#: modules/Planner/moduleFunctions.php:81 src/Forms/Input/CustomBlocks.php:63
-#: src/Forms/Input/FileUpload.php:208 src/Forms/Input/FileUpload.php:210
-#: src/Forms/Prefab/DeleteForm.php:43
+#: src/Forms/Prefab/DeleteForm.php:43 modules/Planner/moduleFunctions.php:81
+#: src/Forms/Input/CustomBlocks.php:63 src/Forms/Input/FileUpload.php:208
+#: src/Forms/Input/FileUpload.php:210 src/Forms/Prefab/DeleteForm.php:43
 msgid "Are you sure you want to delete this record?"
 msgstr ""
 
@@ -28513,13 +28219,6 @@ msgstr ""
 #: modules/Staff/staff_manage_edit_facility_delete.php:81
 #: modules/Activities/activities_manage_enrolment_delete.php:95
 #: src/Forms/Prefab/DeleteForm.php:44
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:67
-#: module Data Admin/Data Admin/snapshot_manage_load.php:73
-#: modules/Course Selection/access_manage_delete.php:33
-#: modules/Course Selection/blocks_manage_delete.php:33
-#: modules/Course Selection/meta_manage_delete.php:33
-#: modules/Course Selection/offerings_manage_delete.php:33
-#: modules/Course Selection/tt_engine_clear.php:33
 #: modules/Planner/units_edit_copyBack.php:129
 #: modules/Planner/units_edit_smartBlockify.php:130
 #: src/Forms/Prefab/DeleteForm.php:44
@@ -29082,9 +28781,6 @@ msgstr ""
 #: modules/Attendance/report_studentsNotPresent_byDate.php:173
 #: modules/Attendance/report_studentsNotPresent_byDate_print.php:121
 #: modules/Behaviour/behaviour_letters.php:115
-#: modules/Course Selection/approval_byCourse.php:83
-#: modules/Course Selection/report_studentsNotApproved.php:85
-#: modules/Course Selection/report_studentsNotSelected.php:82
 #: modules/Data Updater/data_family_manage.php:75
 #: modules/Data Updater/data_finance_manage.php:75
 #: modules/Data Updater/data_medical_manage.php:75
@@ -29115,7 +28811,7 @@ msgstr ""
 #: modules/Finance/invoices_manage_processBulkExportContents.php:111
 #: modules/Finance/invoices_view.php:218
 #: modules/Finance/moduleFunctions.php:1010
-#: modules/Finance/moduleFunctions.php:1332 modules/ID Cards/search.php:113
+#: modules/Finance/moduleFunctions.php:1332
 #: modules/Library/library_browse.php:340
 #: modules/Library/library_lending.php:213
 #: modules/Library/library_lending_item.php:117
@@ -29949,8 +29645,6 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:119
 #: modules/Finance/budgetCycles_manage_edit.php:58
 #: modules/Behaviour/behaviour_manage_add.php:175
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:56
-#: module Data Admin/Data Admin/snapshot_manage_load.php:62
 #: modules/Activities/activities_manage_enrolment_delete.php:79
 #: modules/Activities/activities_manage_enrolment_edit.php:82
 #: modules/Behaviour/behaviour_manage_add.php:173
@@ -31032,12 +30726,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_add.php:93
 #: modules/Behaviour/behaviour_manage_add.php:187
 #: modules/Behaviour/behaviour_manage_edit.php:100
-#: modules/Course Selection/approval_byCourse.php:77
-#: modules/Course Selection/report_courseSelectionLog.php:49
-#: modules/Course Selection/report_studentsNotApproved.php:73
-#: modules/Course Selection/report_studentsNotSelected.php:73
-#: modules/Course Selection/selection.php:49
-#: modules/Course Selection/upcomingTimetable.php:39
 #: modules/Crowd Assessment/crowdAssess_view.php:106
 #: modules/Data Updater/report_student_dataUpdaterHistory.php:100
 #: modules/Finance/invoices_manage.php:118
@@ -31049,7 +30737,6 @@ msgstr ""
 #: modules/Formal Assessment/internalAssessment_view.php:147
 #: modules/Formal Assessment/internalAssessment_write.php:262
 #: modules/Formal Assessment/internalAssessment_write_data.php:155
-#: modules/ID Cards/search.php:174
 #: modules/Individual Needs/iep_view_myChildren.php:90
 #: modules/Library/report_studentBorrowingRecord.php:56
 #: modules/Markbook/markbook_edit_data.php:344
@@ -31064,8 +30751,6 @@ msgstr ""
 #: modules/Planner/planner_view_full_submit_edit.php:223
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:91
 #: modules/Planner/report_workSummary_byRollGroup.php:77
-#: modules/Reporting/credits_function.php:198
-#: modules/Reporting/transcript_function.php:156
 #: modules/Students/applicationForm.php:200
 #: modules/Students/applicationForm_manage.php:156
 #: modules/Students/applicationForm_manage_edit.php:236
@@ -31790,7 +31475,6 @@ msgstr ""
 #: modules/Students/applicationForm_manage_edit.php:919
 #: modules/Behaviour/behaviour_manage_add.php:96 src/Forms/Input/Select.php:188
 #: modules/Behaviour/behaviour_manage_add.php:94
-#: modules/PASI Export/export_generate.php:58
 #: modules/Planner/planner_add.php:153
 #: modules/Planner/planner_duplicate.php:153
 #: modules/Planner/planner_duplicate.php:184
@@ -31798,7 +31482,6 @@ msgstr ""
 #: modules/Planner/units.php:267 modules/Planner/units_duplicate.php:181
 #: modules/Planner/units_duplicate.php:354
 #: modules/Planner/units_edit_copyForward.php:159
-#: modules/Reporting/credits_function.php:214
 #: modules/Staff/applicationForm.php:203
 #: modules/Staff/applicationForm_manage_edit.php:219
 #: modules/Students/applicationForm.php:262
@@ -32509,15 +32192,12 @@ msgstr ""
 #: modules/Finance/expenses_manage_approve.php:210
 #: modules/Finance/expenses_manage_approve.php:474
 #: src/Forms/Input/Select.php:172 src/Forms/Input/Select.php:198
-#: modules/PASI Export/export_generate.php:75
 #: modules/Planner/planner_add.php:177
 #: modules/Planner/planner_duplicate.php:173
 #: modules/Planner/planner_duplicate.php:205
 #: modules/Planner/planner_edit.php:237 modules/Planner/units.php:267
 #: modules/Planner/units.php:277 modules/Planner/units_duplicate.php:206
 #: modules/Planner/units_edit_copyForward.php:184
-#: modules/Reporting/credits_function.php:230
-#: modules/Reporting/credits_function.php:257
 #: modules/User Admin/moduleFunctions.php:163 src/Forms/Input/Select.php:199
 msgid "Select something!"
 msgstr ""
@@ -32714,10 +32394,6 @@ msgstr ""
 #: modules/Attendance/report_studentsNotPresent_byDate.php:91
 #: modules/Attendance/report_summary_byDate.php:147
 #: modules/Attendance/report_summary_byDate_print.php:68
-#: modules/Course Selection/report_studentsNotApproved.php:57
-#: modules/Course Selection/report_studentsNotSelected.php:57
-#: modules/Course Selection/tt_resultsByCourse.php:66
-#: modules/Course Selection/tt_resultsByStudent.php:69
 #: modules/Data Updater/report_student_dataUpdaterHistory.php:75
 #: modules/Library/report_catalogSummary.php:114
 #: modules/Library/report_studentBorrowingRecord.php:67
@@ -33332,7 +33008,6 @@ msgstr ""
 #: modules/Students/report_students_ageGenderSummary.php:95
 #: modules/Students/report_students_ageGenderSummary.php:106
 #: src/Forms/FormFactory.php:278
-#: modules/Course Selection/tt_resultsByCourse.php:114
 #: modules/Students/report_rollGroupSummary.php:145
 #: modules/Students/report_students_ageGenderSummary.php:93
 #: modules/Students/report_students_ageGenderSummary.php:104
@@ -33391,7 +33066,6 @@ msgstr ""
 #: modules/Students/report_students_ageGenderSummary.php:90
 #: modules/Students/report_students_ageGenderSummary.php:101
 #: src/Forms/FormFactory.php:279
-#: modules/Course Selection/tt_resultsByCourse.php:115
 #: modules/Students/report_rollGroupSummary.php:142
 #: modules/Students/report_students_ageGenderSummary.php:88
 #: modules/Students/report_students_ageGenderSummary.php:99
@@ -33899,10 +33573,8 @@ msgstr ""
 #: modules/Formal Assessment/externalAssessment.php:48
 #: modules/Individual Needs/in_view.php:52 modules/Planner/planner.php:148
 #: modules/Planner/planner_deadlines.php:149
-#: modules/Planner/resources_manage.php:70
-#: modules/Reporting/credits_function.php:405
-#: modules/Reporting/transcript_function.php:311
-#: modules/Rubrics/rubrics.php:102 modules/School Admin/space_manage.php:48
+#: modules/Planner/resources_manage.php:70 modules/Rubrics/rubrics.php:102
+#: modules/School Admin/space_manage.php:48
 #: modules/Staff/applicationForm_manage.php:63
 #: modules/Staff/staff_manage.php:52 modules/Staff/staff_view.php:55
 #: modules/Students/applicationForm_manage.php:111
@@ -33915,7 +33587,7 @@ msgstr ""
 #: modules/Timetable Admin/courseEnrolment_manage.php:87
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:84
 #: modules/User Admin/family_manage.php:59
-#: modules/User Admin/user_manage.php:53 src/FormsTemplate.php:14
+#: modules/User Admin/user_manage.php:53
 msgid "Search For"
 msgstr ""
 
@@ -34114,7 +33786,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_pattern.php:236
 #: modules/Behaviour/behaviour_view.php:117
 #: modules/Behaviour/behaviour_view_details.php:79
-#: modules/Course Selection/offerings_manage_addEdit.php:120
 #: modules/Formal Assessment/externalAssessment.php:113
 #: modules/Formal Assessment/externalAssessment_details.php:89
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:86
@@ -34126,10 +33797,6 @@ msgstr ""
 #: modules/Messenger/messenger_post.php:294
 #: modules/Planner/conceptExplorer.php:73 modules/Planner/resources_view.php:74
 #: modules/Planner/scopeAndSequence.php:71
-#: modules/Reporting/credits_function.php:422
-#: modules/Reporting/credits_function.php:521 modules/Reporting/gpa.php:30
-#: modules/Reporting/transcript_function.php:328
-#: modules/Reporting/transcript_function.php:427
 #: modules/School Admin/formalAssessmentSettings.php:51
 #: modules/Students/applicationForm_manage_accept.php:324
 #: modules/Students/firstAidRecord.php:81
@@ -34325,8 +33992,6 @@ msgstr ""
 #: Admin/courseEnrolment_manage.php:59 Admin/courseEnrolment_manage.php:61
 #: Admin/ttDates.php:81 Admin/courseEnrolment_manage_byPerson.php:58
 #: Admin/courseEnrolment_manage_byPerson.php:60
-#: modules/Course Selection/src/SchoolYearNavigation.php:48
-#: modules/Course Selection/src/SchoolYearNavigation.php:50
 #: modules/Finance/billingSchedule_manage.php:74
 #: modules/Finance/billingSchedule_manage.php:76
 #: modules/Finance/fees_manage.php:74 modules/Finance/fees_manage.php:76
@@ -34420,8 +34085,6 @@ msgstr ""
 #: Admin/courseEnrolment_manage.php:65 Admin/courseEnrolment_manage.php:67
 #: Admin/ttDates.php:87 Admin/courseEnrolment_manage_byPerson.php:64
 #: Admin/courseEnrolment_manage_byPerson.php:66
-#: modules/Course Selection/src/SchoolYearNavigation.php:54
-#: modules/Course Selection/src/SchoolYearNavigation.php:56
 #: modules/Finance/billingSchedule_manage.php:80
 #: modules/Finance/billingSchedule_manage.php:82
 #: modules/Finance/fees_manage.php:80 modules/Finance/fees_manage.php:82
@@ -34765,14 +34428,10 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1105
 #: modules/Finance/moduleFunctions.php:1438
 #: i18n/dbStringsForTranslation.php:1527
-#: module Data Admin/Data Admin/import_manage.php:75
-#: module Data Admin/Data Admin/import_run.php:220
 #: modules/Activities/activities_manage_add.php:132
 #: modules/Activities/activities_manage_edit.php:137
 #: modules/Activities/activities_my_full.php:167
 #: modules/Activities/activities_view_full.php:187
-#: modules/Course Selection/blocks_manage_addEdit.php:87
-#: modules/Course Selection/offerings_manage_addEdit.php:79
 #: modules/Finance/billingSchedule_manage_add.php:73
 #: modules/Finance/billingSchedule_manage_edit.php:101
 #: modules/Finance/expenseRequest_manage_add.php:129
@@ -34804,8 +34463,8 @@ msgstr ""
 #: modules/Markbook/weighting_manage.php:137
 #: modules/Markbook/weighting_manage_add.php:118
 #: modules/Markbook/weighting_manage_edit.php:126
-#: modules/PASI Export/export.php:51 modules/Planner/conceptExplorer.php:149
-#: modules/Planner/outcomes_add.php:123 modules/Planner/outcomes_edit.php:134
+#: modules/Planner/conceptExplorer.php:149 modules/Planner/outcomes_add.php:123
+#: modules/Planner/outcomes_edit.php:134
 #: modules/Planner/outcomes_import.php:113
 #: modules/Planner/planner_unitOverview.php:248
 #: modules/Planner/resources_add_ajax.php:158
@@ -34837,9 +34496,7 @@ msgstr ""
 #: modules/User Admin/role_manage_add.php:71
 #: modules/User Admin/role_manage_edit.php:96
 #: modules/User Admin/userFields_add.php:56
-#: modules/User Admin/userFields_edit.php:76 src/FormsTemplate.php:53
-#: src/FormsTemplate.php:63 src/FormsTemplate.php:73 src/FormsTemplate.php:83
-#: src/FormsTemplate.php:94
+#: modules/User Admin/userFields_edit.php:76
 msgid "Description"
 msgstr ""
 
@@ -34987,8 +34644,6 @@ msgstr ""
 #: Admin/attendanceSettings_manage_add.php:55 Admin/inSettings_edit.php:72
 #: Admin/inSettings_add.php:52 Admin/attendanceSettings_manage_edit.php:75
 #: Admin/ttColumn_edit.php:76 Admin/ttColumn_edit.php:115
-#: modules/Course Selection/blocks_manage_addEdit.php:116
-#: modules/Course Selection/tools_timetableByClass.php:179
 #: modules/Finance/budgets_manage.php:77
 #: modules/Finance/budgets_manage_add.php:59
 #: modules/Finance/budgets_manage_edit.php:79
@@ -35249,7 +34904,6 @@ msgstr ""
 #: modules/Activities/activities_my_full.php:195
 #: modules/Activities/activities_view_full.php:212
 #: modules/Activities/activities_view_full.php:214
-#: modules/Course Selection/tools_timetableByClass.php:152
 #: modules/Library/library_browse.php:343
 #: modules/Library/library_import.php:112
 #: modules/Library/library_lending.php:210
@@ -35536,19 +35190,6 @@ msgstr ""
 #: modules/Timetable/studentEnrolment_manage_edit_edit.php:72
 #: modules/Messenger/messenger_post.php:366
 #: modules/Messenger/messenger_manage_edit.php:362
-#: modules/Course Selection/approval_byCourse.php:51
-#: modules/Course Selection/blocks_manage_addEdit.php:151
-#: modules/Course Selection/meta_manage.php:52
-#: modules/Course Selection/meta_manage_addEdit.php:72
-#: modules/Course Selection/meta_manage_addEdit.php:76
-#: modules/Course Selection/report_requestsByCourse.php:80
-#: modules/Course Selection/report_requestsByCourse.php:135
-#: modules/Course Selection/report_studentGrades.php:63
-#: modules/Course Selection/selectionChoices.php:237
-#: modules/Course Selection/tools_copyByCourse.php:79
-#: modules/Course Selection/tools_copyByCourse.php:87
-#: modules/Course Selection/tools_copyByCourse.php:164
-#: modules/Course Selection/tt_resultsByCourse.php:77
 #: modules/Departments/department_course_class.php:106
 #: modules/Messenger/messenger_manage_edit.php:360
 #: modules/Messenger/messenger_post.php:364
@@ -35653,7 +35294,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:184
 #: modules/Finance/expenses_manage.php:206
 #: modules/Finance/Forms/FinanceFormFactory.php:103
-#: modules/Finance/invoicees_manage_edit.php:140 modules/ID Cards/index.php:77
+#: modules/Finance/invoicees_manage_edit.php:140
 #: modules/Students/applicationForm.php:863
 #: modules/Students/applicationForm_manage_edit.php:830
 #: modules/Students/report_graph_studentEnrolment.php:113
@@ -35807,7 +35448,6 @@ msgstr ""
 #: modules/Activities/activities_view_full.php:162
 #: modules/Activities/activities_view_full.php:221
 #: modules/Activities/activities_view_full.php:238
-#: modules/Course Selection/tt_engine.php:147
 #: modules/Planner/planner_add.php:742 modules/Planner/planner_edit.php:854
 #: modules/Planner/planner_view_full_submit_edit.php:239
 #: modules/Planner/planner_view_full_submit_edit.php:245
@@ -36342,13 +35982,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:259
 #: modules/Finance/expenses_manage.php:318
 #: cli/behaviour_dailySummaryEmail.php:83 functions.php:542 functions.php:974
-#: functions.php:1206 modules/Course Selection/access_manage_addEdit.php:74
-#: modules/Course Selection/approval_byCourse.php:124
-#: modules/Course Selection/approval_byCourse.php:128
-#: modules/Course Selection/report_courseSelectionLog.php:75
-#: modules/Course Selection/selection.php:148
-#: modules/Course Selection/tt_resultsByCourse.php:123
-#: modules/Crowd Assessment/crowdAssess_view.php:192
+#: functions.php:1206 modules/Crowd Assessment/crowdAssess_view.php:192
 #: modules/Finance/billingSchedule_manage.php:104
 #: modules/Finance/expenseRequest_manage.php:217
 #: modules/Finance/expenseRequest_manage.php:229
@@ -36358,9 +35992,6 @@ msgstr ""
 #: modules/Finance/invoicees_manage.php:111
 #: modules/Finance/invoices_manage.php:271
 #: modules/Finance/invoices_view.php:196 modules/Finance/invoices_view.php:204
-#: modules/ID Cards/archive.php:88 modules/ID Cards/print.php:96
-#: modules/ID Cards/print.php:147 modules/ID Cards/requests.php:116
-#: modules/ID Cards/search.php:120
 #: modules/Individual Needs/iep_view_myChildren.php:127
 #: modules/Individual Needs/iep_view_myChildren.php:135
 #: modules/Library/library_lending.php:128
@@ -36382,9 +36013,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1007
 #: modules/Planner/planner_view_full.php:1089
 #: modules/Planner/resources_manage.php:79
-#: modules/Planner/resources_view.php:92 modules/Reporting/pdf_function.php:360
-#: modules/Reporting/transcript_function.php:288
-#: modules/Roll Groups/rollGroups.php:122 modules/Rubrics/rubrics_view.php:192
+#: modules/Planner/resources_view.php:92 modules/Roll Groups/rollGroups.php:122
+#: modules/Rubrics/rubrics_view.php:192
 #: modules/School Admin/space_manage.php:57
 #: modules/Staff/applicationForm_manage.php:73
 #: modules/Staff/staff_manage.php:66
@@ -36532,7 +36162,6 @@ msgstr ""
 #: Admin/inSettings_add.php:56 Admin/attendanceSettings_manage_edit.php:97
 #: modules/Finance/budgetCycles_manage_add.php:61
 #: modules/Finance/budgetCycles_manage_edit.php:81
-#: modules/Course Selection/offerings_manage_addEdit.php:91
 #: modules/Finance/budgetCycles_manage_add.php:59
 #: modules/Finance/budgetCycles_manage_edit.php:79
 #: modules/Finance/expenseApprovers_manage.php:99
@@ -36994,7 +36623,7 @@ msgstr ""
 #: modules/User Admin/permission_manage.php:58
 #: modules/User Admin/role_manage_duplicate.php:68
 #: modules/User Admin/user_manage.php:89 modules/User Admin/user_manage.php:90
-#: modules/User Admin/user_manage.php:91 src/FormsTemplate.php:119
+#: modules/User Admin/user_manage.php:91
 msgid "Role"
 msgstr ""
 
@@ -38143,9 +37772,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:1848
 #: modules/Finance/moduleFunctions.php:1102
 #: modules/Finance/moduleFunctions.php:1435
-#: module Data Admin/Data Admin/import_history.php:66
-#: module Data Admin/Data Admin/import_manage.php:69
-#: module Data Admin/Data Admin/records_manage.php:88
 #: modules/Finance/budgets_manage.php:80
 #: modules/Finance/budgets_manage_add.php:71
 #: modules/Finance/budgets_manage_edit.php:91
@@ -39049,7 +38675,6 @@ msgstr ""
 #: Admin/rollGroup_manage.php:130 Admin/rollGroup_manage.php:157
 #: Admin/rollGroup_manage.php:119 .git/modules/School
 #: modules/Library/library_lending.php:100
-#: modules/Course Selection/tools_timetableByClass.php:93
 #: modules/Library/library_lending.php:98
 msgid "Space"
 msgstr ""
@@ -39243,7 +38868,6 @@ msgstr ""
 #: modules/Activities/activities_manage.php:158
 #: modules/Activities/activities_view.php:311
 #: modules/Activities/report_activityChoices_byStudent.php:143
-#: modules/Course Selection/access_manage.php:51
 #: modules/Finance/budgetCycles_manage.php:62
 #: modules/School Admin/schoolYear_manage.php:62
 #: modules/School Admin/schoolYearTerm_manage.php:68
@@ -39330,7 +38954,6 @@ msgstr ""
 #: modules/Finance/budgetCycles_manage_edit.php:78
 #: modules/Activities/report_activityChoices_byRollGroup.php:123
 #: modules/Activities/report_activityChoices_byRollGroup.php:132
-#: modules/Course Selection/tools_copyByCourse.php:124
 #: modules/Finance/budgetCycles_manage_add.php:56
 #: modules/Finance/budgetCycles_manage_edit.php:76
 #: modules/Rubrics/moduleFunctions.php:257
@@ -39782,7 +39405,7 @@ msgstr ""
 #: Admin/space_manage_edit.php:78 Admin/space_manage.php:106
 #: modules/School Admin/space_manage.php:104
 #: modules/School Admin/space_manage_add.php:56
-#: modules/School Admin/space_manage_edit.php:76 src/FormsTemplate.php:58
+#: modules/School Admin/space_manage_edit.php:76
 msgid "Capacity"
 msgstr ""
 
@@ -40175,9 +39798,6 @@ msgstr ""
 #: Admin/studentsSettings_noteCategory_edit.php:88 .git/modules/School
 #: Admin/studentsSettings_noteCategory_add.php:54
 #: Admin/studentsSettings_noteCategory_edit.php:73
-#: modules/ID Cards/archive.php:57 modules/ID Cards/create.php:96
-#: modules/ID Cards/index.php:53 modules/ID Cards/print.php:69
-#: modules/ID Cards/print.php:121
 #: modules/School Admin/studentsSettings_noteCategory_add.php:54
 #: modules/School Admin/studentsSettings_noteCategory_edit.php:73
 msgid "Template"
@@ -41161,11 +40781,8 @@ msgstr ""
 #: Admin/courseEnrolment_manage_byPerson_edit.php:140
 #: Admin/tt_edit_day_edit.php:140 functions.php:2192
 #: cli/attendance_dailyIncompleteEmail.php:260 functions.php:2192
-#: modules/Course Selection/tt_resultsByStudent.php:57
-#: modules/Course Selection/tt_resultsByStudent.php:88
 #: modules/Planner/units_add.php:215 modules/Planner/units_duplicate.php:421
 #: modules/Planner/units_edit.php:252 modules/Planner/units_edit.php:910
-#: modules/Reporting/reporting.php:210
 #: modules/Timetable Admin/course_manage.php:189
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php:140
 #: modules/Timetable Admin/courseEnrolment_sync.php:135
@@ -41546,7 +41163,6 @@ msgstr "Filter"
 #: modules/Staff/staff_view.php:55 modules/Students/medicalForm_manage.php:59
 #: modules/Students/studentEnrolment_manage.php:99 modules/Timetable/tt.php:67
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson.php:84
-#: src/FormsTemplate.php:14
 msgid "Preferred, surname, username."
 msgstr ""
 
@@ -42189,8 +41805,7 @@ msgstr ""
 #: modules/Activities/activities_manage.php:213
 #: modules/Activities/activities_manage_enrolment.php:204
 #: modules/Staff/staff_manage_edit.php:219 Admin/ttColumn_edit.php:153
-#: functions.php:2262 module Data Admin/Data Admin/snapshot_manage.php:94
-#: modules/Activities/activities_manage.php:140
+#: functions.php:2262 modules/Activities/activities_manage.php:140
 #: modules/Activities/activities_manage.php:211
 #: modules/Activities/activities_manage_edit.php:198
 #: modules/Activities/activities_manage_edit.php:277
@@ -42199,14 +41814,6 @@ msgstr ""
 #: modules/Attendance/attendance_take_byPerson.php:159
 #: modules/Behaviour/behaviour_manage.php:254
 #: modules/Behaviour/behaviour_manage_delete.php:40
-#: modules/Course Selection/access_manage.php:75
-#: modules/Course Selection/blocks_manage.php:77
-#: modules/Course Selection/blocks_manage_addEdit.php:131
-#: modules/Course Selection/meta_manage.php:81
-#: modules/Course Selection/offerings_manage.php:73
-#: modules/Course Selection/offerings_manage_addEdit.php:132
-#: modules/Course Selection/offerings_manage_addEdit.php:199
-#: modules/Course Selection/tools_timetableByClass.php:107
 #: modules/Data Updater/data_family_manage.php:132
 #: modules/Data Updater/data_finance_manage.php:132
 #: modules/Data Updater/data_medical_manage.php:131
@@ -42222,7 +41829,7 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:855
 #: modules/Formal Assessment/internalAssessment_manage.php:176
 #: modules/Formal Assessment/moduleFunctions.php:286
-#: modules/ID Cards/templates.php:70 modules/Individual Needs/in_edit.php:194
+#: modules/Individual Needs/in_edit.php:194
 #: modules/Library/library_manage_catalog.php:327
 #: modules/Markbook/markbook_edit.php:242
 #: modules/Markbook/markbook_view_allClassesAllData.php:405
@@ -42232,7 +41839,6 @@ msgstr ""
 #: modules/Messenger/groups_manage.php:77
 #: modules/Messenger/groups_manage_edit.php:110
 #: modules/Messenger/messenger_manage.php:395
-#: modules/PASI Export/files_manage.php:93
 #: modules/Planner/moduleFunctions.php:127
 #: modules/Planner/moduleFunctions.php:752 modules/Planner/outcomes.php:193
 #: modules/Planner/outcomes.php:206 modules/Planner/planner.php:700
@@ -42241,7 +41847,6 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:814
 #: modules/Planner/planner_view_full.php:1189 modules/Planner/units.php:346
 #: modules/Planner/units_edit_working.php:248
-#: modules/Reporting/credits_function.php:383
 #: modules/Rubrics/moduleFunctions.php:94
 #: modules/Rubrics/moduleFunctions.php:113 modules/Rubrics/rubrics.php:220
 #: modules/Rubrics/rubrics.php:235
@@ -42509,7 +42114,6 @@ msgstr ""
 #: src/Forms/FormFactory.php:296 i18n/dbStringsForTranslation.php:1627
 #: i18n/dbStringsForTranslation.php:1631 src/Forms/FormFactory.php:306
 #: i18n/dbStringsForTranslation.php:1645 i18n/dbStringsForTranslation.php:1649
-#: modules/ID Cards/search.php:193
 #: modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php:94
 #: modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_edit.php:100
 #: modules/Timetable Admin/courseEnrolment_manage_class_edit.php:109
@@ -42895,8 +42499,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:3174
 #: modules/Timetable/tt_master.php:76 functions.php:1747
 #: i18n/dbStringsForTranslation.php:504 i18n/dbStringsForTranslation.php:1605
-#: modules/Course Selection/tools_timetableByClass.php:54
-#: modules/Course Selection/tools_timetableByClass.php:84
 #: modules/Staff/staff_view_details.php:252
 #: modules/Staff/staff_view_details.php:700
 #: modules/Students/student_view_details.php:665
@@ -43184,8 +42786,6 @@ msgstr ""
 #: Admin/ttDates_edit_add.php:95 modules/Attendance/moduleFunctions.php:446
 #: modules/Attendance/moduleFunctions.php:447
 #: modules/Attendance/moduleFunctions.php:448
-#: modules/Course Selection/tools_timetableByClass.php:87
-#: modules/Course Selection/upcomingTimetable.php:73
 #: modules/Planner/units_edit_deploy.php:342
 #: modules/Planner/units_edit_working_add.php:299
 #: modules/Timetable Admin/tt_edit_day_edit_class.php:71
@@ -43204,8 +42804,6 @@ msgstr ""
 #: Admin/tt_edit_day_edit_class_edit.php:116 .git/modules/Timetable
 #: Admin/tt_edit_day_edit_class_add.php:81 Admin/tt_edit_day_edit_class.php:77
 #: Admin/tt_edit_day_edit_class_edit.php:102
-#: modules/Course Selection/tt_resultsByCourse.php:54
-#: modules/Course Selection/upcomingTimetable.php:76
 #: modules/Timetable Admin/tt_edit_day_edit_class.php:75
 #: modules/Timetable Admin/tt_edit_day_edit_class_add.php:79
 #: modules/Timetable Admin/tt_edit_day_edit_class_edit.php:100
@@ -43564,7 +43162,6 @@ msgstr ""
 #: modules/Finance/moduleFunctions.php:1186
 #: modules/Finance/moduleFunctions.php:1397
 #: modules/Finance/moduleFunctions.php:1646
-#: module Data Admin/Data Admin/import_run.php:197
 #: modules/Finance/invoices_manage_add.php:115
 #: modules/Finance/invoices_manage_edit.php:160
 #: modules/Finance/invoices_manage_issue.php:128
@@ -43612,7 +43209,6 @@ msgstr ""
 #: modules/Library/library_import.php:82 Admin/import_studentEnrolment.php:86
 #: Admin/import_users.php:90 Admin/import_families.php:90
 #: Admin/tt_import.php:126 Admin/import_staff.php:86
-#: module Data Admin/Data Admin/import_run.php:201
 #: modules/Formal Assessment/import_internal_results.php:86
 #: modules/Formal Assessment/import_results.php:80
 #: modules/Library/library_import.php:80 modules/Planner/outcomes_import.php:99
@@ -43642,7 +43238,7 @@ msgstr ""
 #: modules/Library/library_import.php:83 Admin/import_studentEnrolment.php:87
 #: Admin/import_users.php:91 Admin/import_families.php:91
 #: Admin/import_userPhotos.php:76 Admin/tt_import.php:127
-#: Admin/import_staff.php:87 module Data Admin/Data Admin/import_run.php:202
+#: Admin/import_staff.php:87
 #: modules/Formal Assessment/import_internal_results.php:87
 #: modules/Formal Assessment/import_results.php:81
 #: modules/Library/library_import.php:81
@@ -44642,7 +44238,6 @@ msgstr ""
 #: modules/Finance/billingSchedule_manage.php:87
 #: modules/Finance/fees_manage.php:87
 #: modules/Formal Assessment/externalAssessment.php:36
-#: modules/ID Cards/search.php:43 modules/ID Cards/search.php:62
 #: modules/Individual Needs/in_view.php:40
 #: modules/Messenger/messenger_manage.php:56
 #: modules/Planner/resources_manage.php:61
@@ -44898,7 +44493,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:838
 #: modules/Students/applicationForm_manage.php:167
 #: Admin/user_manage_edit.php:344
-#: module Data Admin/Data Admin/src/CombineableFields.php:11
 #: modules/Students/applicationForm_manage.php:165
 #: modules/Students/report_students_new.php:152
 #: modules/Students/report_students_new.php:266
@@ -44986,7 +44580,6 @@ msgstr ""
 #: modules/Students/applicationForm_manage.php:173
 #: modules/Staff/applicationForm_manage.php:116
 #: Admin/stringReplacement_manage.php:112
-#: modules/Course Selection/meta_manage.php:61
 #: modules/Staff/applicationForm_manage.php:114
 #: modules/Staff/applicationForm_manage_edit.php:91
 #: modules/Staff/applicationForm_manage_edit_print.php:68
@@ -45031,7 +44624,6 @@ msgstr ""
 #: modules/Data Updater/data_finance_manage_edit.php:92
 #: modules/Data Updater/data_medical_manage_edit.php:112
 #: modules/Data Updater/data_personal_manage_edit.php:159
-#: modules/ID Cards/requests_view.php:98
 #: modules/Staff/applicationForm_manage.php:174
 #: modules/Staff/applicationForm_manage_accept.php:120
 #: modules/Students/applicationForm_manage.php:301
@@ -45058,7 +44650,6 @@ msgstr ""
 #: modules/Staff/applicationForm_manage.php:177
 #: modules/Finance/expenses_manage_approve.php:243
 #: modules/Finance/expenses_manage_approve.php:243
-#: modules/ID Cards/requests_view.php:94
 #: modules/Staff/applicationForm_manage.php:175
 #: modules/Students/applicationForm_manage.php:302
 msgid "Reject"
@@ -45686,7 +45277,7 @@ msgstr ""
 #: modules/Data Updater/data_family.php:88
 #: modules/Data Updater/data_finance.php:225
 #: modules/Finance/invoicees_manage.php:196
-#: modules/Finance/invoicees_manage_edit.php:98 modules/ID Cards/search.php:145
+#: modules/Finance/invoicees_manage_edit.php:98
 #: modules/Students/applicationForm.php:664
 #: modules/Students/applicationForm.php:822
 #: modules/Students/applicationForm_manage_accept.php:731
@@ -45792,8 +45383,6 @@ msgstr ""
 #: Admin/userSettings_usernameFormat_edit.php:75
 #: modules/Students/applicationForm_manage_accept.php:728
 #: modules/Students/applicationForm_manage_accept.php:738
-#: modules/Course Selection/access_manage.php:54
-#: modules/Course Selection/access_manage_addEdit.php:83
 #: modules/Students/applicationForm_manage_accept.php:736
 #: modules/User Admin/userSettings.php:56
 #: modules/User Admin/userSettings_usernameFormat_add.php:53
@@ -46794,10 +46383,8 @@ msgstr ""
 #: modules/Attendance/report_graph_byType.php:105
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:79
 #: modules/Attendance/report_summary_byDate.php:79
-#: modules/Course Selection/access_manage_addEdit.php:64
 #: modules/Finance/budgetCycles_manage_add.php:63
 #: modules/Finance/budgetCycles_manage_edit.php:83
-#: modules/Reporting/transcript_function.php:172
 #: modules/Staff/applicationForm_manage_accept.php:231
 #: modules/Staff/applicationForm_manage_edit.php:129
 #: modules/Staff/applicationForm_manage_edit_print.php:78
@@ -47207,14 +46794,9 @@ msgstr ""
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:67
 #: modules/Attendance/report_studentsNotPresent_byDate.php:67
 #: modules/Attendance/report_summary_byDate.php:109
-#: modules/Course Selection/report_studentsNotApproved.php:49
-#: modules/Course Selection/report_studentsNotSelected.php:49
-#: modules/Course Selection/tt_resultsByStudent.php:57
 #: modules/Data Updater/data_personal.php:288
 #: modules/Data Updater/data_personal_manage_edit.php:86
 #: modules/Markbook/moduleFunctions.php:105
-#: modules/Reporting/credits_function.php:419
-#: modules/Reporting/transcript_function.php:325
 #: modules/Roll Groups/rollGroups_details.php:146
 #: modules/Staff/applicationForm.php:144 modules/Staff/applicationForm.php:154
 #: modules/Staff/applicationForm_manage_edit.php:161
@@ -50889,9 +50471,7 @@ msgstr ""
 #: Updater/data_personal_manage_edit.php:146 Admin/user_manage_edit.php:500
 #: modules/Students/applicationForm.php:637
 #: modules/Students/applicationForm_manage_edit.php:649
-#: Updater/data_personal.php:549
-#: module Data Admin/Data Admin/src/CombineableFields.php:6
-#: modules/Data Updater/data_personal.php:547
+#: Updater/data_personal.php:549 modules/Data Updater/data_personal.php:547
 #: modules/Data Updater/data_personal_manage_edit.php:144
 #: modules/Students/applicationForm.php:635
 #: modules/Students/applicationForm_manage_edit.php:644
@@ -50958,9 +50538,7 @@ msgstr ""
 #: Updater/data_personal_manage_edit.php:147 Admin/user_manage_edit.php:504
 #: modules/Students/applicationForm.php:641
 #: modules/Students/applicationForm_manage_edit.php:653
-#: Updater/data_personal.php:553
-#: module Data Admin/Data Admin/src/CombineableFields.php:7
-#: modules/Data Updater/data_personal.php:551
+#: Updater/data_personal.php:553 modules/Data Updater/data_personal.php:551
 #: modules/Data Updater/data_personal_manage_edit.php:145
 #: modules/Students/applicationForm.php:639
 #: modules/Students/applicationForm_manage_edit.php:648
@@ -52674,7 +52252,6 @@ msgstr ""
 #: modules/Students/applicationForm_manage_edit.php:484
 #: modules/Staff/applicationForm.php:252
 #: modules/Staff/applicationForm_manage_edit.php:268
-#: module Data Admin/Data Admin/src/CombineableFields.php:23
 #: modules/Data Updater/data_family.php:192
 #: modules/Data Updater/data_family_manage_edit.php:72
 #: modules/Staff/applicationForm.php:250
@@ -53459,7 +53036,6 @@ msgstr ""
 #: Admin/user_manage_add.php:207 Admin/dataUpdaterSettings.php:102
 #: Updater/data_personal.php:384 Updater/data_personal_manage_edit.php:97
 #: Admin/user_manage_edit.php:265 Updater/data_personal.php:389
-#: module Data Admin/Data Admin/src/CombineableFields.php:9
 #: modules/Data Updater/data_personal.php:387
 #: modules/Data Updater/data_personal_manage_edit.php:95
 #: modules/User Admin/dataUpdaterSettings.php:142
@@ -53561,7 +53137,6 @@ msgstr ""
 #: Admin/user_manage_add.php:219 Admin/dataUpdaterSettings.php:114
 #: Updater/data_personal.php:427 Updater/data_personal_manage_edit.php:100
 #: Admin/user_manage_edit.php:308 Updater/data_personal.php:440
-#: module Data Admin/Data Admin/src/CombineableFields.php:10
 #: modules/Data Updater/data_personal.php:438
 #: modules/Data Updater/data_personal_manage_edit.php:98
 #: modules/User Admin/dataUpdaterSettings.php:154
@@ -53652,7 +53227,6 @@ msgstr ""
 #: Updater/data_personal_manage_edit.php:118
 #: i18n/dbStringsForTranslation.php:2342 Admin/user_manage_edit.php:410
 #: Updater/data_personal.php:474 i18n/dbStringsForTranslation.php:2362
-#: module Data Admin/Data Admin/src/CombineableFields.php:15
 #: modules/Data Updater/data_personal.php:472
 #: modules/Data Updater/data_personal_manage_edit.php:116
 #: modules/Students/student_view_details.php:930
@@ -53791,9 +53365,7 @@ msgstr ""
 #: Admin/user_manage_add.php:297 Admin/dataUpdaterSettings.php:164
 #: modules/Students/student_view_details.php:915 Updater/data_personal.php:470
 #: Updater/data_personal_manage_edit.php:119 Admin/user_manage_edit.php:419
-#: Updater/data_personal.php:483
-#: module Data Admin/Data Admin/src/CombineableFields.php:16
-#: modules/Data Updater/data_personal.php:481
+#: Updater/data_personal.php:483 modules/Data Updater/data_personal.php:481
 #: modules/Data Updater/data_personal_manage_edit.php:117
 #: modules/Students/student_view_details.php:934
 #: modules/User Admin/dataUpdaterSettings.php:204
@@ -53914,8 +53486,6 @@ msgstr ""
 #: modules/Staff/jobOpenings_manage_add.php:58 Admin/user_manage_edit.php:508
 #: Admin/import_staff.php:94 Updater/data_personal.php:557
 #: modules/Staff/staff_manage_edit.php:109
-#: module Data Admin/Data Admin/src/CombineableFields.php:8
-#: module Data Admin/Data Admin/src/CombineableFields.php:29
 #: modules/Data Updater/data_personal.php:555
 #: modules/Data Updater/data_personal_manage_edit.php:146
 #: modules/Staff/applicationForm_manage_accept.php:234
@@ -54166,9 +53736,7 @@ msgstr ""
 #: Admin/userFields_edit.php:187 .git/modules/User
 #: modules/Students/report_privacy_student.php:104 Admin/userFields_add.php:132
 #: Admin/userFields_edit.php:102 Admin/dataUpdaterSettings.php:59
-#: Admin/userFields_add.php:82
-#: modules/Course Selection/src/Form/CourseSelection.php:153
-#: modules/Students/report_privacy_student.php:102
+#: Admin/userFields_add.php:82 modules/Students/report_privacy_student.php:102
 #: modules/User Admin/dataUpdaterSettings.php:99
 #: modules/User Admin/userFields_add.php:80
 #: modules/User Admin/userFields_edit.php:100
@@ -54303,7 +53871,6 @@ msgstr ""
 #: Admin/family_manage_edit.php:345 Admin/family_manage.php:119
 #: Admin/family_manage_edit.php:328 .git/modules/User
 #: Admin/family_manage.php:113 Admin/family_manage_edit.php:212
-#: modules/ID Cards/requests_view.php:62
 #: modules/User Admin/family_manage.php:111
 #: modules/User Admin/family_manage_edit.php:210
 msgid "Adults"
@@ -54311,7 +53878,6 @@ msgstr ""
 
 #: modules/User Admin/family_manage.php:133 Admin/family_manage.php:128
 #: Admin/family_manage.php:122 .git/modules/User Admin/family_manage.php:116
-#: modules/ID Cards/requests_view.php:48
 #: modules/User Admin/family_manage.php:114
 msgid "Children"
 msgstr ""
@@ -56047,10 +55613,8 @@ msgstr ""
 #: modules/Attendance/report_graph_byType.php:109
 #: modules/Attendance/report_rollGroupsNotRegistered_byDate.php:83
 #: modules/Attendance/report_summary_byDate.php:83
-#: modules/Course Selection/access_manage_addEdit.php:68
 #: modules/Finance/budgetCycles_manage_add.php:67
 #: modules/Finance/budgetCycles_manage_edit.php:87
-#: modules/Reporting/transcript_function.php:183
 #: modules/Staff/staff_manage_edit.php:115
 #: modules/Staff/staff_manage_edit_contract_add.php:96
 #: modules/Staff/staff_manage_edit_contract_edit.php:94
@@ -56829,10 +56393,10 @@ msgstr ""
 #: Admin/user_manage_add.php:502 Admin/rollover.php:210 Admin/rollover.php:249
 #: Admin/rollover.php:325 Admin/rollover.php:393 Admin/rollover.php:455
 #: Admin/rollover.php:490 Admin/rollover.php:324
-#: modules/ID Cards/search.php:161 modules/User Admin/rollover.php:208
-#: modules/User Admin/rollover.php:247 modules/User Admin/rollover.php:322
-#: modules/User Admin/rollover.php:391 modules/User Admin/rollover.php:453
-#: modules/User Admin/rollover.php:488 modules/User Admin/user_manage.php:113
+#: modules/User Admin/rollover.php:208 modules/User Admin/rollover.php:247
+#: modules/User Admin/rollover.php:322 modules/User Admin/rollover.php:391
+#: modules/User Admin/rollover.php:453 modules/User Admin/rollover.php:488
+#: modules/User Admin/user_manage.php:113
 #: modules/User Admin/user_manage_add.php:128
 #: modules/User Admin/user_manage_add.php:502
 #: modules/User Admin/user_manage_edit.php:183
@@ -57399,7 +56963,6 @@ msgstr ""
 #: modules/Staff/staff_manage_edit.php:142
 #: modules/Staff/staff_manage_add.php:105
 #: modules/Staff/staff_manage_edit.php:143
-#: module Data Admin/Data Admin/src/CombineableFields.php:30
 #: modules/Staff/staff_manage_add.php:103
 #: modules/Staff/staff_manage_edit.php:141
 msgid "Grouping"
@@ -57572,7 +57135,6 @@ msgstr ""
 #: modules/Students/studentEnrolment_manage_delete.php:32
 #: modules/Students/studentEnrolment_manage_add.php:33
 #: i18n/dbStringsForTranslation.php:712 i18n/dbStringsForTranslation.php:721
-#: modules/Course Selection/offerings_manage_addEdit.php:147
 #: modules/Students/studentEnrolment_manage.php:30
 #: modules/Students/studentEnrolment_manage_add.php:31
 #: modules/Students/studentEnrolment_manage_delete.php:30
@@ -57614,7 +57176,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:501
 #: modules/Students/studentEnrolment_manage_edit.php:138
 #: modules/Students/student_view_details.php:502
-#: modules/Reporting/transcript_function.php:165
 #: modules/Students/student_view_details.php:505
 #: modules/Students/studentEnrolment_manage_edit.php:136
 msgid "School History"
@@ -58041,7 +57602,7 @@ msgstr ""
 #: modules/School Admin/rollGroup_manage_add.php:114
 #: modules/School Admin/rollGroup_manage_edit.php:113
 #: modules/User Admin/user_manage_add.php:233
-#: modules/User Admin/user_manage_edit.php:322 src/FormsTemplate.php:105
+#: modules/User Admin/user_manage_edit.php:322
 msgid "Include http://"
 msgstr ""
 
@@ -58987,7 +58548,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:785 Admin/user_manage_edit.php:938
 #: Admin/user_manage_edit.php:369 modules/Students/student_view_details.php:868
 #: modules/Students/report_students_left.php:151 Admin/user_manage_edit.php:368
-#: module Data Admin/Data Admin/src/CombineableFields.php:12
 #: modules/Students/report_students_left.php:149
 #: modules/Students/student_view_details.php:887
 #: modules/User Admin/user_manage_edit.php:368
@@ -59014,7 +58574,6 @@ msgstr ""
 #: modules/Students/student_view_details.php:793 Admin/user_manage_edit.php:970
 #: Admin/user_manage_edit.php:375 modules/Students/student_view_details.php:876
 #: modules/Students/report_students_left.php:148 Admin/user_manage_edit.php:374
-#: module Data Admin/Data Admin/src/CombineableFields.php:13
 #: modules/Students/report_students_left.php:146
 #: modules/Students/student_view_details.php:895
 #: modules/User Admin/user_manage_edit.php:374
@@ -60379,7 +59938,7 @@ msgstr ""
 #: modules/Students/report_students_new.php:76
 #: modules/Timetable/spaceBooking_manage_add.php:88
 #: modules/User Admin/rollover.php:183 modules/User Admin/rollover.php:187
-#: publicRegistration.php:93 src/FormsTemplate.php:110
+#: publicRegistration.php:93
 msgid "Format:"
 msgstr ""
 
@@ -62432,7 +61991,6 @@ msgstr ""
 #: modules/Markbook/markbook_view_myMarks.php:344
 #: modules/Markbook/markbook_view_viewMyChildrensClasses.php:429
 #: modules/Students/student_view_details.php:2327 functions.php:1422
-#: modules/Course Selection/report_studentGrades.php:79
 #: modules/Crowd Assessment/crowdAssess_view_discuss.php:109
 #: modules/Markbook/markbook_view_myMarks.php:344
 #: modules/Markbook/markbook_view_viewMyChildrensClasses.php:429
@@ -62511,8 +62069,6 @@ msgstr ""
 #: modules/Formal Assessment/externalAssessment.php:61
 #: modules/Formal Assessment/internalAssessment_view.php:50
 #: modules/Individual Needs/in_view.php:61
-#: modules/Reporting/credits_function.php:460
-#: modules/Reporting/transcript_function.php:366
 #: modules/Students/student_view.php:156 modules/Students/student_view.php:303
 msgid "Choose A Student"
 msgstr ""
@@ -62618,11 +62174,8 @@ msgstr ""
 #: Assessment/externalAssessment_manage_details_add.php:558 .git/modules/Formal
 #: Assessment/externalAssessment_manage_details_add.php:396
 #: Assessment/externalAssessment_manage_details_edit.php:147
-#: modules/Course Selection/tools_copyByCourse.php:123
-#: modules/Course Selection/tt_resultsByStudent.php:85
 #: modules/Formal Assessment/externalAssessment_manage_details_add.php:394
 #: modules/Formal Assessment/externalAssessment_manage_details_edit.php:145
-#: modules/Reporting/credits_function.php:291
 msgid "Grade"
 msgstr ""
 
@@ -63308,10 +62861,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_manage_edit.php:44
 #: modules/Behaviour/moduleFunctions.php:146
 #: modules/Behaviour/moduleFunctions.php:148
-#: modules/Course Selection/access_manage.php:73
-#: modules/Course Selection/blocks_manage.php:75
-#: modules/Course Selection/meta_manage.php:79
-#: modules/Course Selection/offerings_manage.php:71
 #: modules/Data Updater/data_family_manage.php:131
 #: modules/Data Updater/data_finance_manage.php:131
 #: modules/Data Updater/data_medical_manage.php:130
@@ -63329,8 +62878,6 @@ msgstr ""
 #: modules/Finance/invoices_manage.php:367
 #: modules/Formal Assessment/internalAssessment_manage.php:175
 #: modules/Formal Assessment/moduleFunctions.php:285
-#: modules/ID Cards/search.php:181 modules/ID Cards/search.php:196
-#: modules/ID Cards/search.php:210 modules/ID Cards/templates.php:68
 #: modules/Library/library_lending.php:302
 #: modules/Library/library_lending_item.php:280
 #: modules/Library/library_manage_catalog.php:325
@@ -63354,8 +62901,8 @@ msgstr ""
 #: modules/Planner/planner_view_full.php:1188
 #: modules/Planner/resources_manage.php:216
 #: modules/Planner/scopeAndSequence.php:220 modules/Planner/units.php:345
-#: modules/Planner/units.php:419 modules/Reporting/credits_function.php:566
-#: modules/Rubrics/rubrics.php:219 modules/Rubrics/rubrics.php:234
+#: modules/Planner/units.php:419 modules/Rubrics/rubrics.php:219
+#: modules/Rubrics/rubrics.php:234
 #: modules/School Admin/attendanceSettings.php:105
 #: modules/School Admin/department_manage.php:138
 #: modules/School Admin/externalAssessments_manage.php:100
@@ -66390,11 +65937,6 @@ msgstr ""
 #: modules/Behaviour/behaviour_letters.php:42
 #: modules/Behaviour/behaviour_manage.php:68
 #: modules/Behaviour/behaviour_pattern.php:74
-#: modules/Course Selection/report_requestsByCourse.php:37
-#: modules/Course Selection/report_studentsNotApproved.php:39
-#: modules/Course Selection/report_studentsNotSelected.php:39
-#: modules/Course Selection/tt_resultsByCourse.php:44
-#: modules/Course Selection/tt_resultsByStudent.php:46
 #: modules/Individual Needs/in_summary.php:59
 #: modules/Library/report_viewOverdueItems.php:38
 #: modules/Planner/outcomes.php:79 modules/Rubrics/rubrics.php:95
@@ -68632,7 +68174,6 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:592 i18n/dbStringsForTranslation.php:616
 #: i18n/dbStringsForTranslation.php:620 i18n/dbStringsForTranslation.php:1045
 #: i18n/dbStringsForTranslation.php:1063
-#: modules/Course Selection/tt_engine.php:151
 msgid "High"
 msgstr ""
 
@@ -68646,7 +68187,6 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:593 i18n/dbStringsForTranslation.php:617
 #: i18n/dbStringsForTranslation.php:621 i18n/dbStringsForTranslation.php:1046
 #: i18n/dbStringsForTranslation.php:1064
-#: modules/Course Selection/tt_engine.php:149
 msgid "Low"
 msgstr ""
 
@@ -68660,7 +68200,6 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:594 i18n/dbStringsForTranslation.php:618
 #: i18n/dbStringsForTranslation.php:622 i18n/dbStringsForTranslation.php:1047
 #: i18n/dbStringsForTranslation.php:1065
-#: modules/Course Selection/tt_engine.php:150
 msgid "Medium"
 msgstr ""
 
@@ -74232,8 +73771,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1148 Admin/department_manage.php:61
 #: i18n/dbStringsForTranslation.php:473 i18n/dbStringsForTranslation.php:1573
 #: i18n/dbStringsForTranslation.php:473 i18n/dbStringsForTranslation.php:1591
-#: index.php:503 modules/Course Selection/blocks_manage_addEdit.php:79
-#: modules/School Admin/department_manage.php:59
+#: index.php:503 modules/School Admin/department_manage.php:59
 msgid "Departments"
 msgstr ""
 
@@ -82316,12 +81854,7 @@ msgstr ""
 #: i18n/dbStringsForTranslation.php:1969
 #: modules/Finance/expenses_manage_edit.php:295
 #: i18n/dbStringsForTranslation.php:1987
-#: modules/Course Selection/approval_byOffering.php:103
-#: modules/Course Selection/src/Form/CourseProgressByBlock.php:39
-#: modules/Course Selection/tt_engineRun.php:171
 #: modules/Finance/expenses_manage_edit.php:295
-#: modules/Reporting/reporting.php:149 modules/Reporting/reporting.php:180
-#: modules/Reporting/reporting.php:224 modules/Reporting/reporting.php:278
 msgid "Complete"
 msgstr ""
 
@@ -83901,7 +83434,6 @@ msgstr ""
 #: modules/Students/report_students_byRollGroup.php:145
 #: modules/Students/report_students_byRollGroup_print.php:113
 #: i18n/dbStringsForTranslation.php:2427
-#: module Data Admin/Data Admin/src/CombineableFields.php:14
 #: modules/Students/report_students_byRollGroup.php:143
 #: modules/Students/report_students_byRollGroup_print.php:111
 msgid "Nationality"
@@ -89017,7 +88549,6 @@ msgstr ""
 
 #: modules/Departments/department_course_class.php:489
 #: modules/Departments/department_course_class.php:491
-#: modules/Course Selection/settings.php:42
 msgid "Information"
 msgstr ""
 
@@ -89808,8 +89339,6 @@ msgstr ""
 #: modules/Attendance/report_studentsNotPresent_byDate.php:70
 #: modules/Finance/invoicees_manage.php:101
 #: modules/Formal Assessment/externalAssessment.php:52
-#: modules/Reporting/credits_function.php:429
-#: modules/Reporting/transcript_function.php:335
 #: modules/Students/student_view.php:294
 #: modules/Timetable/studentEnrolment_manage_edit.php:92
 msgid "All Students"
@@ -90251,7 +89780,7 @@ msgstr ""
 #: modules/Finance/expenses_manage.php:279
 #: modules/Departments/department_course_class.php:183
 #: modules/Finance/expenses_manage.php:279
-#: modules/Finance/invoices_manage.php:293 modules/PASI Export/export.php:42
+#: modules/Finance/invoices_manage.php:293
 #: modules/Planner/conceptExplorer.php:214
 #: modules/Planner/scopeAndSequence.php:221 modules/Planner/units.php:348
 msgid "Export"
@@ -92016,8 +91545,6 @@ msgstr ""
 #: modules/Library/library_lending_item.php:170
 #: .git/modules/Library/library_lending_item.php:170
 #: modules/Students/applicationForm_manage_add.php:49
-#: module Data Admin/Data Admin/import_history.php:63
-#: module Data Admin/Data Admin/import_history_view.php:87
 #: modules/Library/library_lending_item.php:168
 #: modules/Students/applicationForm_manage_add.php:47
 msgid "User"
@@ -92877,8 +92404,7 @@ msgstr ""
 #: modules/Departments/department_edit.php:115
 #: modules/Library/library_manage_catalog_add.php:105
 #: modules/Library/library_manage_catalog_edit.php:123
-#: modules/PASI Export/files_manage.php:64 modules/Planner/planner_add.php:757
-#: modules/Planner/planner_edit.php:869
+#: modules/Planner/planner_add.php:757 modules/Planner/planner_edit.php:869
 #: modules/Planner/planner_view_full_submit_edit.php:244
 #: modules/Planner/planner_view_full_submit_edit.php:251
 #: modules/Planner/resources_add_ajax.php:110
@@ -93221,8 +92747,6 @@ msgstr ""
 #: modules/Library/library_import.php:118
 #: modules/Library/library_manage_catalog_edit.php:168
 #: modules/Library/library_manage_catalog_add.php:150
-#: modules/Course Selection/blocks_manage.php:55
-#: modules/Course Selection/selectionChoices.php:125
 #: modules/Library/library_import.php:116
 #: modules/Library/library_manage_catalog_add.php:150
 #: modules/Library/library_manage_catalog_edit.php:168
@@ -96736,7 +96260,6 @@ msgstr ""
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:124
 #: modules/Attendance/report_studentsNotPresent_byDate.php:166
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:177
-#: module Data Admin/Data Admin/records_duplicates.php:78
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:175
 #: modules/Attendance/report_studentsNotOnsite_byDate_print.php:122
 #: modules/Attendance/report_studentsNotPresent_byDate.php:164
@@ -98040,8 +97563,6 @@ msgstr ""
 #: modules/Planner/resources_insert_ajax.php:170
 #: modules/Planner/resources_manage_edit.php:136
 #: modules/Planner/resources_view.php:61 modules/Planner/resources_view.php:162
-#: modules/Course Selection/meta_manage.php:64
-#: modules/Course Selection/meta_manage_addEdit.php:90
 #: modules/Planner/resources_add_ajax.php:146
 #: modules/Planner/resources_insert_ajax.php:102
 #: modules/Planner/resources_insert_ajax.php:170
@@ -99237,7 +98758,6 @@ msgstr ""
 #: modules/Planner/conceptExplorer.php:141
 #: modules/Library/library_import.php:380
 #: modules/Students/report_rollGroupSummary.php:93
-#: module Data Admin/Data Admin/duplication_combine.php:108
 #: modules/Formal Assessment/import_internal_results.php:236
 #: modules/Formal Assessment/import_results.php:216
 #: modules/Library/library_import.php:378
@@ -104572,9 +104092,6 @@ msgstr ""
 #: cli/library_overdueNotification.php:43
 #: cli/planner_parentWeeklyEmailSummary.php:44
 #: cli/userAdmin_statusCheckAndFix.php:40
-#: modules/Course Selection/tt_engineRun.php:22
-#: modules/ID Cards/cli/idCards_requestsSummary.php:27
-#: modules/Reporting/pdf_batch.php:68
 msgid "This script cannot be run from a browser, only via CLI."
 msgstr ""
 
@@ -104993,8 +104510,6 @@ msgstr ""
 #: modules/Students/student_view.php:340 Assessment/externalAssessment.php:54
 #: modules/Students/student_view.php:296
 #: modules/Formal Assessment/externalAssessment.php:52
-#: modules/Reporting/credits_function.php:430
-#: modules/Reporting/transcript_function.php:336
 #: modules/Students/student_view.php:294
 msgid ""
 "Include all students, regardless of status and current enrolment. Some data "
@@ -105297,8 +104812,6 @@ msgstr ""
 #: modules/Activities/activities_view.php:452
 #: modules/Activities/activities_view.php:444
 #: modules/Activities/activities_view.php:442
-#: modules/Course Selection/selection.php:80
-#: modules/Course Selection/selection.php:90
 msgid "Closed"
 msgstr ""
 
@@ -105937,7 +105450,6 @@ msgstr ""
 #: modules/External Assessment/import_results.php:122 modules/Formal
 #: Assessment/import_results.php:120 .git/modules/Formal
 #: Assessment/import_results.php:90
-#: module Data Admin/Data Admin/duplication_combine.php:70
 #: modules/Formal Assessment/import_results.php:88
 msgid "Field Name"
 msgstr ""
@@ -108852,14 +108364,7 @@ msgstr ""
 #: modules/Attendance/report_studentsNotOnsite_byDate.php:66
 #: modules/Attendance/report_studentsNotPresent_byDate.php:66
 #: modules/Attendance/report_summary_byDate.php:108
-#: modules/Course Selection/report_requestsByCourse.php:46
-#: modules/Course Selection/report_studentsNotApproved.php:48
-#: modules/Course Selection/report_studentsNotSelected.php:48
-#: modules/Course Selection/tt_resultsByCourse.php:53
-#: modules/Course Selection/tt_resultsByStudent.php:56
 #: modules/Markbook/moduleFunctions.php:108
-#: modules/Reporting/credits_function.php:415
-#: modules/Reporting/transcript_function.php:321
 #: modules/Roll Groups/rollGroups_details.php:145
 #: modules/Students/student_view.php:147 modules/Students/student_view.php:290
 msgid "Sort By"
@@ -110712,7 +110217,6 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:171
 #: modules/Finance/expenses_manage_edit.php:295
 #: modules/Finance/expenses_manage.php:185
-#: modules/Course Selection/src/Form/CourseSelection.php:155
 #: modules/Finance/expenseRequest_manage.php:168
 #: modules/Finance/expenses_manage.php:185
 #: modules/Finance/expenses_manage_edit.php:171
@@ -110756,7 +110260,6 @@ msgstr ""
 #: modules/Finance/expenses_manage_edit.php:177
 #: modules/Finance/expenses_manage_add.php:95
 #: modules/Finance/expenses_manage.php:187
-#: modules/Course Selection/report_studentsNotApproved.php:82
 #: modules/Finance/expenseRequest_manage.php:169
 #: modules/Finance/expenses_manage.php:187
 #: modules/Finance/expenses_manage_add.php:95
@@ -111924,7 +111427,6 @@ msgstr ""
 #: modules/Messenger/messenger_manage_report.php:159
 #: modules/Messenger/messenger_manage_report.php:167
 #: modules/Finance/expenses_manage_processBulkExportContents.php:101
-#: modules/ID Cards/archive.php:63
 #: modules/Messenger/messenger_manage_report.php:167
 msgid "Timestamp"
 msgstr ""
@@ -114616,9 +114118,6 @@ msgstr ""
 #: Admin/course_manage.php:175 Admin/rollGroup_manage.php:99
 #: Admin/course_manage.php:110 .git/modules/School .git/modules/Timetable
 #: Admin/course_manage.php:185 Admin/course_manage.php:165
-#: modules/Course Selection/blocks_manage.php:35
-#: modules/Course Selection/meta_manage.php:35
-#: modules/Course Selection/offerings_manage.php:35
 #: modules/School Admin/rollGroup_manage.php:97
 #: modules/Timetable Admin/course_manage.php:163
 msgid "Copy All To Next Year"
@@ -114639,8 +114138,6 @@ msgstr ""
 #: modules/Students/student_view.php:160 modules/Students/student_view.php:330
 #: modules/Activities/report_attendance_byDate.php:61
 #: modules/Activities/report_attendance_byDate.php:59
-#: modules/Reporting/credits_function.php:420
-#: modules/Reporting/transcript_function.php:326
 msgid "Given Name"
 msgstr ""
 
@@ -115393,8 +114890,7 @@ msgstr ""
 #: .git/modules/Tracking/dataPoints_contents.php:65
 #: .git/src/Gibbon/Excel.php:98
 #: modules/Activities/report_attendanceExport.php:62 src/Gibbon/Excel.php:97
-#: src/Gibbon/Excel.php:100 module Data Admin/Data Admin/export_run.php:82
-#: modules/Activities/report_attendanceExport.php:50
+#: src/Gibbon/Excel.php:100 modules/Activities/report_attendanceExport.php:50
 #: modules/Tracking/dataPoints_contents.php:58 src/Gibbon/Excel.php:102
 msgid ""
 "This information is confidential. Generated by Gibbon (https://gibbonedu."
@@ -116442,7 +115938,6 @@ msgstr ""
 #: modules/Activities/report_attendanceExport.php:64
 #: .git/modules/Activities/report_attendanceExport.php:64
 #: modules/Activities/report_attendanceExport.php:61
-#: module Data Admin/Data Admin/export_run.php:81
 #: modules/Activities/report_attendanceExport.php:49
 msgid "Activity Attendance"
 msgstr ""
@@ -118194,7 +117689,6 @@ msgstr ""
 #: Admin/stringReplacement_manage_edit.php:87
 #: Admin/stringReplacement_manage_add.php:67 Admin/import_staff.php:59
 #: Admin/stringReplacement_manage.php:106
-#: module Data Admin/Data Admin/duplication_combine.php:79
 #: modules/Attendance/report_graph_byType.php:123
 #: modules/System Admin/stringReplacement_manage.php:106
 #: modules/System Admin/stringReplacement_manage_add.php:65
@@ -121676,7 +121170,6 @@ msgstr ""
 
 #: modules/Planner/scopeAndSequence.php:278
 #: modules/Planner/scopeAndSequence.php:234
-#: modules/Course Selection/tt_engine.php:123
 #: modules/Planner/scopeAndSequence.php:232
 msgid "Total Courses"
 msgstr ""
@@ -123196,8 +122689,7 @@ msgid "%1$s already in use"
 msgstr ""
 
 #: modules/User Admin/user_manage_add.php:131 src/Forms/Input/Password.php:67
-#: modules/PASI Export/export.php:63 modules/User Admin/user_manage_add.php:131
-#: src/Forms/Input/Password.php:69
+#: modules/User Admin/user_manage_add.php:131 src/Forms/Input/Password.php:69
 msgid "Generate"
 msgstr ""
 
@@ -123936,11 +123428,6 @@ msgstr ""
 #: modules/Staff/applicationForm_manage_edit.php:319
 #: src/Forms/Input/FileUpload.php:203
 #: modules/Staff/applicationForm_manage_edit.php:324
-#: modules/ID Cards/archive.php:89 modules/ID Cards/print.php:97
-#: modules/ID Cards/print.php:148 modules/ID Cards/search.php:121
-#: modules/PASI Export/files_manage.php:90
-#: modules/Reporting/pdf_function.php:361
-#: modules/Reporting/transcript_function.php:289
 #: modules/Staff/applicationForm_manage_edit.php:322
 #: src/Forms/Input/FileUpload.php:203
 msgid "Download"
@@ -124071,7 +123558,6 @@ msgid "Blocks will appear here..."
 msgstr ""
 
 #: src/Forms/Input/CustomBlocks.php:55
-#: modules/Course Selection/blocks_manage_addEdit.php:48
 msgid "Add Block"
 msgstr ""
 
@@ -124107,29 +123593,12 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
-#: src/Forms/Prefab/DeleteForm.php:49
-#: modules/Course Selection/access_manage_delete.php:36
-#: modules/Course Selection/blocks_manage_delete.php:36
-#: modules/Course Selection/meta_manage_delete.php:36
-#: modules/Course Selection/offerings_manage_delete.php:36
-#: modules/Course Selection/tt_engine_clear.php:36
-#: modules/Course Selection/tt_engine_goLive.php:36
-#: src/Forms/Prefab/DeleteForm.php:49
+#: src/Forms/Prefab/DeleteForm.php:49 src/Forms/Prefab/DeleteForm.php:49
 #, php-format
 msgid "Type %1$s to confirm"
 msgstr ""
 
 #: src/Forms/Prefab/DeleteForm.php:49 src/Forms/Prefab/DeleteForm.php:54
-#: modules/Course Selection/access_manage_delete.php:36
-#: modules/Course Selection/access_manage_delete.php:40
-#: modules/Course Selection/blocks_manage_delete.php:36
-#: modules/Course Selection/blocks_manage_delete.php:40
-#: modules/Course Selection/meta_manage_delete.php:36
-#: modules/Course Selection/meta_manage_delete.php:40
-#: modules/Course Selection/offerings_manage_delete.php:36
-#: modules/Course Selection/offerings_manage_delete.php:40
-#: modules/Course Selection/tt_engine_clear.php:36
-#: modules/Course Selection/tt_engine_clear.php:40
 #: src/Forms/Prefab/DeleteForm.php:49 src/Forms/Prefab/DeleteForm.php:54
 msgid "DELETE"
 msgstr ""
@@ -126250,1017 +125719,6 @@ msgid ""
 "required."
 msgstr ""
 
-#: module Data Admin/Data Admin/duplication_combine.php:32
-#: module Data Admin/Data Admin/duplication_combine.php:40
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:32
-#: module Data Admin/Data Admin/export_run.php:61
-#: module Data Admin/Data Admin/export_run.php:234
-#: module Data Admin/Data Admin/import_history.php:37
-#: module Data Admin/Data Admin/import_history.php:41
-#: module Data Admin/Data Admin/import_history.php:69
-#: module Data Admin/Data Admin/import_history_view.php:61
-#: module Data Admin/Data Admin/import_history_view.php:73
-#: module Data Admin/Data Admin/import_history_view.php:97
-#: module Data Admin/Data Admin/import_history_view.php:100
-#: module Data Admin/Data Admin/import_history_view.php:105
-#: module Data Admin/Data Admin/import_history_view.php:113
-#: module Data Admin/Data Admin/import_history_view.php:123
-#: module Data Admin/Data Admin/import_history_view.php:126
-#: module Data Admin/Data Admin/import_history_view.php:131
-#: module Data Admin/Data Admin/import_history_view.php:139
-#: module Data Admin/Data Admin/import_history_view.php:147
-#: module Data Admin/Data Admin/import_history_view.php:156
-#: module Data Admin/Data Admin/import_history_view.php:168
-#: module Data Admin/Data Admin/import_history_view.php:171
-#: module Data Admin/Data Admin/import_history_view.php:176
-#: module Data Admin/Data Admin/import_history_view.php:182
-#: module Data Admin/Data Admin/import_history_view.php:190
-#: module Data Admin/Data Admin/import_history_view.php:196
-#: module Data Admin/Data Admin/import_manage.php:37
-#: module Data Admin/Data Admin/import_manage.php:78
-#: module Data Admin/Data Admin/import_manage.php:105
-#: module Data Admin/Data Admin/import_manage.php:106
-#: module Data Admin/Data Admin/import_manage.php:121
-#: module Data Admin/Data Admin/import_run.php:43
-#: module Data Admin/Data Admin/import_run.php:66
-#: module Data Admin/Data Admin/import_run.php:74
-#: module Data Admin/Data Admin/import_run.php:75
-#: module Data Admin/Data Admin/import_run.php:76
-#: module Data Admin/Data Admin/import_run.php:77
-#: module Data Admin/Data Admin/import_run.php:94
-#: module Data Admin/Data Admin/import_run.php:98
-#: module Data Admin/Data Admin/import_run.php:106
-#: module Data Admin/Data Admin/import_run.php:107
-#: module Data Admin/Data Admin/import_run.php:115
-#: module Data Admin/Data Admin/import_run.php:119
-#: module Data Admin/Data Admin/import_run.php:123
-#: module Data Admin/Data Admin/import_run.php:131
-#: module Data Admin/Data Admin/import_run.php:136
-#: module Data Admin/Data Admin/import_run.php:138
-#: module Data Admin/Data Admin/import_run.php:140
-#: module Data Admin/Data Admin/import_run.php:141
-#: module Data Admin/Data Admin/import_run.php:147
-#: module Data Admin/Data Admin/import_run.php:148
-#: module Data Admin/Data Admin/import_run.php:160
-#: module Data Admin/Data Admin/import_run.php:172
-#: module Data Admin/Data Admin/import_run.php:200
-#: module Data Admin/Data Admin/import_run.php:208
-#: module Data Admin/Data Admin/import_run.php:267
-#: module Data Admin/Data Admin/import_run.php:275
-#: module Data Admin/Data Admin/import_run.php:280
-#: module Data Admin/Data Admin/import_run.php:285
-#: module Data Admin/Data Admin/import_run.php:317
-#: module Data Admin/Data Admin/import_run.php:348
-#: module Data Admin/Data Admin/import_run.php:352
-#: module Data Admin/Data Admin/import_run.php:365
-#: module Data Admin/Data Admin/import_run.php:411
-#: module Data Admin/Data Admin/import_run.php:413
-#: module Data Admin/Data Admin/import_run.php:427
-#: module Data Admin/Data Admin/import_run.php:434
-#: module Data Admin/Data Admin/import_run.php:458
-#: module Data Admin/Data Admin/import_run.php:478
-#: module Data Admin/Data Admin/import_run.php:481
-#: module Data Admin/Data Admin/import_run.php:484
-#: module Data Admin/Data Admin/import_run.php:487
-#: module Data Admin/Data Admin/import_run.php:516
-#: module Data Admin/Data Admin/import_run.php:520
-#: module Data Admin/Data Admin/import_run.php:594
-#: module Data Admin/Data Admin/import_run.php:627
-#: module Data Admin/Data Admin/import_run.php:657
-#: module Data Admin/Data Admin/import_run.php:668
-#: module Data Admin/Data Admin/import_run.php:706
-#: module Data Admin/Data Admin/import_run.php:708
-#: module Data Admin/Data Admin/import_run.php:725
-#: module Data Admin/Data Admin/import_run.php:728
-#: module Data Admin/Data Admin/import_run.php:731
-#: module Data Admin/Data Admin/import_run.php:757
-#: module Data Admin/Data Admin/import_run.php:765
-#: module Data Admin/Data Admin/import_run.php:773
-#: module Data Admin/Data Admin/import_run.php:786
-#: module Data Admin/Data Admin/import_run.php:789
-#: module Data Admin/Data Admin/import_run.php:794
-#: module Data Admin/Data Admin/import_run.php:802
-#: module Data Admin/Data Admin/import_run.php:810
-#: module Data Admin/Data Admin/import_run.php:819
-#: module Data Admin/Data Admin/import_run.php:831
-#: module Data Admin/Data Admin/import_run.php:834
-#: module Data Admin/Data Admin/import_run.php:839
-#: module Data Admin/Data Admin/import_run.php:845
-#: module Data Admin/Data Admin/import_run.php:858
-#: module Data Admin/Data Admin/import_run.php:874
-#: module Data Admin/Data Admin/import_run.php:882
-#: module Data Admin/Data Admin/import_run.php:896
-#: module Data Admin/Data Admin/records_duplicates.php:38
-#: module Data Admin/Data Admin/records_duplicates.php:43
-#: module Data Admin/Data Admin/records_duplicates.php:116
-#: module Data Admin/Data Admin/records_manage.php:38
-#: module Data Admin/Data Admin/records_manage.php:43
-#: module Data Admin/Data Admin/records_manage.php:91
-#: module Data Admin/Data Admin/records_manage.php:94
-#: module Data Admin/Data Admin/records_manage.php:100
-#: module Data Admin/Data Admin/records_manage.php:103
-#: module Data Admin/Data Admin/records_manage.php:147
-#: module Data Admin/Data Admin/records_orphaned.php:38
-#: module Data Admin/Data Admin/records_orphaned.php:43
-#: module Data Admin/Data Admin/records_orphaned.php:108
-#: module Data Admin/Data Admin/settings.php:32
-#: module Data Admin/Data Admin/settings.php:49
-#: module Data Admin/Data Admin/settings.php:57
-#: module Data Admin/Data Admin/settings.php:69
-#: module Data Admin/Data Admin/settings.php:84
-#: module Data Admin/Data Admin/settings.php:100
-#: module Data Admin/Data Admin/settings.php:109
-#: module Data Admin/Data Admin/settings.php:118
-#: module Data Admin/Data Admin/settings.php:127
-#: module Data Admin/Data Admin/settings.php:141
-#: module Data Admin/Data Admin/settings.php:169
-#: module Data Admin/Data Admin/settings.php:170
-#: module Data Admin/Data Admin/settings.php:174
-#: module Data Admin/Data Admin/settings.php:175
-#: module Data Admin/Data Admin/settings.php:176
-#: module Data Admin/Data Admin/settings.php:177
-#: module Data Admin/Data Admin/settings.php:192
-#: module Data Admin/Data Admin/settings.php:193
-#: module Data Admin/Data Admin/settings.php:213
-#: module Data Admin/Data Admin/settings.php:214
-#: module Data Admin/Data Admin/settings.php:235
-#: module Data Admin/Data Admin/settings.php:236
-#: module Data Admin/Data Admin/snapshot_manage.php:32
-#: module Data Admin/Data Admin/snapshot_manage.php:36
-#: module Data Admin/Data Admin/snapshot_manage.php:42
-#: module Data Admin/Data Admin/snapshot_manage.php:47
-#: module Data Admin/Data Admin/snapshot_manage_add.php:31
-#: module Data Admin/Data Admin/snapshot_manage_add.php:37
-#: module Data Admin/Data Admin/snapshot_manage_add.php:41
-#: module Data Admin/Data Admin/snapshot_manage_add.php:52
-#: module Data Admin/Data Admin/snapshot_manage_delete.php:32
-#: module Data Admin/Data Admin/snapshot_manage_load.php:32
-#: module Data Admin/Data Admin/snapshot_manage_load.php:36
-#: module Data Admin/Data Admin/snapshot_manage_load.php:42
-#: module Data Admin/Data Admin/snapshot_manage_load.php:72
-msgid "Data Admin"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:66
-msgid "Record Type"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:80
-msgid "Assisted"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:80
-msgid "Manual"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:113
-msgid ""
-"Assisted mode aims to help find matches between similar values, but can also "
-"result in false positives. Use manual mode to select and combine values "
-"listed alphabetically."
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:131
-#: module Data Admin/Data Admin/duplication_combine.php:170
-msgid "Combine Selected"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combine.php:141
-msgid "Matches"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:57
-msgid "Combine"
-msgstr ""
-
-#: module Data Admin/Data Admin/duplication_combineConfirm.php:65
-msgid "Rename to"
-msgstr ""
-
-#: module Data Admin/Data Admin/import_history_view.php:66
-msgid "Imported with errors ignored."
-msgstr ""
-
-#: module Data Admin/Data Admin/import_history_view.php:84
-#: module Data Admin/Data Admin/import_run.php:760
-msgid "Success"
-msgstr ""
-
-#: module Data Admin/Data Admin/import_history_view.php:84
-#: module Data Admin/Data Admin/import_run.php:760
-msgid "Failed"
-msgstr ""
-
-#: module Data Admin/Data Admin/import_run.php:442
-#, php-format
-msgid "%s must be a valid email address"
-msgstr ""
-
-#: module Data Admin/Data Admin/import_run.php:446
-#, php-format
-msgid "%s must be a valid url"
-msgstr ""
-
-#: module Data Admin/Data Admin/import_run.php:853
-msgid "Database Updates"
-msgstr ""
-
-#: module Data Admin/Data Admin/snapshot_manage.php:79
-#: modules/PASI Export/files_manage.php:70
-msgid "Size"
-msgstr ""
-
-#: module Data Admin/Data Admin/snapshot_manage.php:93
-msgid "Load"
-msgstr ""
-
-#: module Data Admin/Data Admin/src/CombineableFields.php:17
-msgid "Residency Type"
-msgstr ""
-
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:61
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:85
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:128
-#: modules/Assessment Calendar/hook_dashboard_calendar.php:149
-msgid "Calendar could not be loaded."
-msgstr ""
-
-#: modules/Course Selection/access_manage.php:20
-#: modules/Course Selection/approval_byCourse.php:23
-#: modules/Course Selection/approval_byOffering.php:24
-#: modules/Course Selection/blocks_manage.php:20
-#: modules/Course Selection/blocks_manage_addEdit.php:53
-#: modules/Course Selection/meta_manage.php:20
-#: modules/Course Selection/offerings_manage.php:20
-#: modules/Course Selection/offerings_manage_addEdit.php:49
-#: modules/Course Selection/selectionChoices.php:84
-#: modules/Course Selection/tools_copyByCourse.php:22
-#: modules/Course Selection/tools_copyByCourse.php:150
-#: modules/Course Selection/tools_timetableByClass.php:22
-#: modules/Course Selection/tt_engine.php:24
-#: modules/Course Selection/tt_resultsByCourse.php:21
-#: modules/Course Selection/tt_resultsByStudent.php:21
-msgid "Course Selection"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:37
-msgid "Edit Access"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:40
-msgid "Add Access"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:45
-msgid "Course Selection Access"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:72
-msgid "Access Type"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:75
-msgid "Request Courses (approval)"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:76
-msgid "Select Courses (no approval)"
-msgstr ""
-
-#: modules/Course Selection/access_manage_addEdit.php:83
-msgid "Available to roles with access to Course Selection page."
-msgstr ""
-
-#: modules/Course Selection/access_manage_delete.php:40
-#: modules/Course Selection/blocks_manage_delete.php:40
-#: modules/Course Selection/meta_manage_delete.php:40
-#: modules/Course Selection/offerings_manage_delete.php:40
-#: modules/Course Selection/tt_engine_clear.php:40
-#: modules/Course Selection/tt_engine_goLive.php:40
-msgid ""
-" Please enter the text exactly as it is displayed to confirm this action."
-msgstr ""
-
-#: modules/Course Selection/approval_byCourse.php:70
-#: modules/Course Selection/approval_byOffering.php:89
-#, php-format
-msgid "Showing %1$s student course selections:"
-msgstr ""
-
-#: modules/Course Selection/approval_byCourse.php:86
-msgid "Selected By"
-msgstr ""
-
-#: modules/Course Selection/approval_byCourse.php:109
-msgid "Alternate"
-msgstr ""
-
-#: modules/Course Selection/approval_byCourse.php:126
-#: modules/Course Selection/report_studentsNotApproved.php:124
-msgid "Go to Approval"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:63
-#: modules/Course Selection/report_studentsNotSelected.php:123
-msgid "Offering"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:99
-msgid "In Progress"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:136
-#, php-format
-msgid "%1$s of %2$s courses selected"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:141
-msgid "Approve All"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:143
-#: modules/Course Selection/report_requestsByCourse.php:106
-#: modules/Course Selection/report_requestsByCourse.php:161
-#: modules/Course Selection/report_studentsNotApproved.php:122
-#: modules/Course Selection/report_studentsNotSelected.php:129
-msgid "View Course Selections"
-msgstr ""
-
-#: modules/Course Selection/approval_byOffering.php:145
-#: modules/Course Selection/tt_resultsByStudent.php:115
-msgid "Student Grades"
-msgstr ""
-
-#: modules/Course Selection/blocks_manage.php:61
-#: modules/Course Selection/offerings_manage_addEdit.php:176
-msgid "Courses"
-msgstr ""
-
-#: modules/Course Selection/blocks_manage_addEdit.php:44
-msgid "Edit Block"
-msgstr ""
-
-#: modules/Course Selection/blocks_manage_addEdit.php:79
-msgid ""
-"This determines courses available to add, and course marks associated with "
-"this block. Leave blank to select from any courses."
-msgstr ""
-
-#: modules/Course Selection/blocks_manage_addEdit.php:91
-msgid "Countable?"
-msgstr ""
-
-#: modules/Course Selection/blocks_manage_addEdit.php:91
-msgid ""
-"Should courses from this block be counted against the min and max selections "
-"for a course offering?"
-msgstr ""
-
-#: modules/Course Selection/blocks_manage_addEdit.php:102
-msgid "Manage Courses"
-msgstr ""
-
-#: modules/Course Selection/meta_manage.php:58
-#: modules/Course Selection/meta_manage_addEdit.php:86
-msgid "Enrolment Group"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:41
-msgid "Edit Meta Data"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:44
-msgid "Add Meta Data"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:49
-msgid "Manage Meta Data"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:82
-msgid "Timetable Priority"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:82
-msgid ""
-"Helps determine the priority of a course when auto-resolving timetabling "
-"conflicts. "
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:86
-msgid ""
-"The timetabling engine will group student enrolment counts for classes "
-"together that share the same timetable period and enrolment group."
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:90
-msgid ""
-"Comma-separated values. Tagged courses are counted during the course "
-"selection approval process."
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:98
-msgid "Exclude Classes"
-msgstr ""
-
-#: modules/Course Selection/meta_manage_addEdit.php:98
-msgid "Any classes selected here will be omitted from the timetabling engine."
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:40
-msgid "Edit Course Offering"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:44
-msgid "Add Course Offering"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:83
-#: modules/Course Selection/offerings_manage_addEdit.php:179
-#: modules/Course Selection/offerings_manage_addEdit.php:235
-msgid "Min Selections"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:83
-#: modules/Course Selection/offerings_manage_addEdit.php:87
-msgid "Across all course blocks."
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:87
-#: modules/Course Selection/offerings_manage_addEdit.php:182
-#: modules/Course Selection/offerings_manage_addEdit.php:239
-msgid "Max Selections"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:103
-msgid "Manage Enrolment Restrictions"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:110
-msgid ""
-"There are currently no enrolment rescrictions applied to this course "
-"offering; any active student will be able to make course selections. Use the "
-"fields below if you wish to restrict this course offering to students "
-"enroled in a specific year group."
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:159
-msgid "Manage Blocks"
-msgstr ""
-
-#: modules/Course Selection/offerings_manage_addEdit.php:173
-#: modules/Course Selection/offerings_manage_addEdit.php:228
-msgid "Course Block"
-msgstr ""
-
-#: modules/Course Selection/report_courseSelectionLog.php:46
-msgid "Course Offering"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:47
-#: modules/Course Selection/tt_resultsByCourse.php:54
-#: modules/Course Selection/upcomingTimetable.php:82
-msgid "Course Code"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:47
-#: modules/Course Selection/tt_resultsByCourse.php:54
-#: modules/Course Selection/upcomingTimetable.php:79
-msgid "Course Name"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:47
-msgid "Report Order"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:47
-#: modules/Course Selection/report_requestsByCourse.php:86
-#: modules/Course Selection/report_requestsByCourse.php:141
-#: modules/ID Cards/search.php:87
-msgid "Requests"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:50
-msgid "Target Range"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:50
-msgid "Highlight courses outside this range."
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:52
-msgid "Minimum"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:53
-msgid "Maximum"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:61
-msgid "Course Requests"
-msgstr ""
-
-#: modules/Course Selection/report_requestsByCourse.php:116
-msgid "Alternate Course Requests"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:45
-msgid "Viewing report grades for "
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:67
-#: modules/Course Selection/report_studentGrades.php:69
-msgid "Term 1 Mid"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:68
-msgid "Term 1 End"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:70
-msgid "Term 2 End"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:72
-msgid "Sem1-Mid"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:73
-msgid "Sem1-End"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:74
-msgid "Sem2-Mid"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:75
-msgid "Sem2-End"
-msgstr ""
-
-#: modules/Course Selection/report_studentGrades.php:78
-msgid "Exam"
-msgstr ""
-
-#: modules/Course Selection/report_studentsNotApproved.php:35
-msgid ""
-"This report shows students who have completed the course selection process "
-"but their courses have not yet been approved."
-msgstr ""
-
-#: modules/Course Selection/report_studentsNotApproved.php:49
-msgid "Approvals"
-msgstr ""
-
-#: modules/Course Selection/report_studentsNotApproved.php:79
-#: modules/Course Selection/report_studentsNotSelected.php:79
-msgid "Course Selections"
-msgstr ""
-
-#: modules/Course Selection/report_studentsNotSelected.php:35
-msgid ""
-"This report shows students who have not completed the course selection "
-"process. Completion is determined by the minimum selections required for "
-"each course offering."
-msgstr ""
-
-#: modules/Course Selection/report_studentsNotSelected.php:49
-msgid "Selections"
-msgstr ""
-
-#: modules/Course Selection/selection.php:72
-#: modules/Course Selection/selectionChoices.php:68
-#: modules/Course Selection/selectionChoices.php:76
-msgid ""
-"Course selection for this year is closed, or you do not have access at this "
-"time."
-msgstr ""
-
-#: modules/Course Selection/selection.php:80
-#: modules/Course Selection/selection.php:84
-#: modules/Course Selection/selection.php:87
-#: modules/Course Selection/selection.php:90
-#, php-format
-msgid "Course selection is currently %1$s."
-msgstr ""
-
-#: modules/Course Selection/selection.php:84
-msgid "Open"
-msgstr ""
-
-#: modules/Course Selection/selection.php:87
-msgid "View Only"
-msgstr ""
-
-#: modules/Course Selection/selection.php:94
-#, php-format
-msgid "Access is available from %1$s to %2$s"
-msgstr ""
-
-#: modules/Course Selection/selection.php:124
-msgid "Course Offerings"
-msgstr ""
-
-#: modules/Course Selection/selection.php:148
-msgid "Select"
-msgstr ""
-
-#: modules/Course Selection/selection.php:153
-msgid "There are no course offerings available at this time."
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:92
-msgid "Selecting courses for "
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:109
-msgid ""
-"You have changed your previous course offering selection. Submitting your "
-"course choices here will replace any choices selected in a previous course "
-"offering."
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:126
-msgid "Course Marks"
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:127
-msgid "Choices"
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:130
-#: modules/Reporting/reporting.php:145 modules/Reporting/reporting.php:220
-msgid "Progress"
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:180
-msgid "Other Courses"
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:216
-msgid "Add a Course Selection"
-msgstr ""
-
-#: modules/Course Selection/selectionChoices.php:241
-#: modules/Course Selection/tools_copyByCourse.php:154
-msgid "Selection Status"
-msgstr ""
-
-#: modules/Course Selection/settings.php:59
-msgid "Course Selection Messages"
-msgstr ""
-
-#: modules/Course Selection/settings.php:76
-msgid "Timetabling"
-msgstr ""
-
-#: modules/Course Selection/src/Form/CourseSelection.php:154
-msgid "Recommended"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:62
-msgid ""
-"This tool lets you copy student enrolments or course requests and convert "
-"them into requests for a different course. After selecting the year and "
-"course below you'll have the option to select students and the destination "
-"course to copy to."
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:68
-msgid "Copy From"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:72
-msgid "Copy To"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:83
-#: modules/Course Selection/tools_copyByCourse.php:144
-msgid "Destination School Year"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:122
-msgid "Student Name"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:138
-msgid "Copy to Course"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:158
-msgid "Overwrite?"
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:158
-msgid ""
-"Replace the course selection status if one already exists for that student "
-"and course."
-msgstr ""
-
-#: modules/Course Selection/tools_copyByCourse.php:181
-msgid ""
-"This will copy course requests directly to class enrolments, bypassing the "
-"timetabling engine. Use with caution!"
-msgstr ""
-
-#: modules/Course Selection/tools_timetableByClass.php:90
-msgid "Column Row"
-msgstr ""
-
-#: modules/Course Selection/tools_timetableByClass.php:137
-msgid "Timetable Day"
-msgstr ""
-
-#: modules/Course Selection/tools_timetableByClass.php:144
-msgid "Timetable Column Row"
-msgstr ""
-
-#: modules/Course Selection/tools_timetableByClass.php:164
-msgid "Rename Class"
-msgstr ""
-
-#: modules/Course Selection/tools_timetableByClass.php:183
-msgid "Rename"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:38
-msgid "Processing! Please wait a moment ..."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:68
-msgid "There are no approved course selections for this school year."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:105
-#, php-format
-msgid ""
-"There are %1$s students with unapproved or incomplete course requests. If "
-"you continue with the timetabling process, those course requests will not be "
-"included."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:107
-msgid ""
-"All student course requests have been approved. You're ready to do some "
-"timetabling!"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:111
-#, php-format
-msgid ""
-"There are %1$s requested courses that do not have any classes. If you "
-"continue with the timetabling process, those courses will not be included."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:115
-#, php-format
-msgid ""
-"There are %1$s requested courses that have not been timetabled. If you "
-"continue with the timetabling process, those courses will not be included."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:119
-msgid "Total Students"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:131
-msgid "Enrolment Targets"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:131
-msgid "Edit in Settings"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:132
-#, php-format
-msgid "Min: %1$s  Target: %2$s  Max: %3$s"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:134
-msgid "Balance each class (more classes)"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:134
-msgid "Fill to maximum (less classes)"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:137
-msgid "Class Enrolment Goal"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:140
-msgid "Year Group, descending"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:143
-msgid "Student Order"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:148
-msgid "Very Low"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:152
-msgid "Very High"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:186
-msgid ""
-"Click run when you're ready to begin timetabling. Once complete you'll see "
-"the results here, as well as be able to view them by Course and Student. The "
-"timetabling engine will take a moment to process: <b>it's okay to leave or "
-"close this page while waiting.</b>"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:190
-msgid "Run"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:213
-msgid "Timetabling Results"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:219
-msgid "Successful"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:220
-#: modules/Course Selection/tt_resultsByCourse.php:54
-#: modules/Course Selection/tt_resultsByCourse.php:89
-#: modules/Course Selection/tt_resultsByStudent.php:57
-#: modules/Course Selection/tt_resultsByStudent.php:94
-msgid "Issues"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:224
-msgid "Success Rate"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:227
-msgid "Total Timetables"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:231
-msgid "Timetabling Issues"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:235
-msgid "Timetabling Failures"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:243
-msgid "Engine Stats"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:246
-msgid "Time Elapsed"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:247
-msgid "seconds"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:250
-msgid "Memory Consumed"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:254
-msgid "Total Engine Iterations"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:258
-msgid "Total Timetable Combinations"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:262
-msgid "Valid Timetable Combinations"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:266
-msgid "Average Combinations per Student"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:271
-#, php-format
-msgid ""
-"There are %1$s timetables with issues and %2$s failed timetables, these "
-"students will not recieve complete timetables when the timetabling goes live."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:274
-#, php-format
-msgid ""
-"Congrats! All %1$s timetables have been created successfully. You're ready "
-"to take this timetable live."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:278
-#: modules/Course Selection/tt_engine_goLive.php:33
-msgid ""
-"Taking the timetable live will turn all results into student enrolments for "
-"the selected school year. After going live the new student enrolments can be "
-"managed as usual from the Timetable Admin module."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:285
-msgid "Go Live!"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:290
-msgid "Reset"
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:300
-msgid ""
-"Resetting the engine will delete ALL timetabling results, which allows the "
-"engine to run again. Course requests will not be deleted."
-msgstr ""
-
-#: modules/Course Selection/tt_engine.php:304
-msgid "Clear All Results"
-msgstr ""
-
-#: modules/Course Selection/tt_engine_clear.php:30
-msgid "Are you sure you want to delete all results?"
-msgstr ""
-
-#: modules/Course Selection/tt_engine_goLive.php:30
-msgid "Are you sure you want to continue?"
-msgstr ""
-
-#: modules/Course Selection/tt_engine_goLive.php:33
-#: modules/Reporting/admin_criteria_function.php:403
-msgid "This operation cannot be undone."
-msgstr ""
-
-#: modules/Course Selection/tt_engine_goLive.php:36
-#: modules/Course Selection/tt_engine_goLive.php:40
-msgid "I LOVE GIBBON"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByCourse.php:57
-#: modules/Course Selection/tt_resultsByStudent.php:60
-msgid "All Courses"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByCourse.php:57
-#: modules/Course Selection/tt_resultsByStudent.php:60
-msgid "Include courses with no classes or not timetabled."
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByCourse.php:83
-msgid "Balance"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByCourse.php:103
-msgid "Excluded from timetabling via Meta Data settings."
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:57
-#: modules/Course Selection/tt_resultsByStudent.php:91
-msgid "Weight"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:109
-msgid "View Student"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:111
-msgid "Course Enrolment"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:113
-msgid "Next Year Timetable"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:137
-msgid "Already enroled in class."
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:137
-msgid "Enroled"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:155
-msgid "No classes"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:158
-msgid "Not timetabled"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:161
-msgid "Classes excluded"
-msgstr ""
-
-#: modules/Course Selection/tt_resultsByStudent.php:165
-msgid "Omitted"
-msgstr ""
-
-#: modules/Course Selection/upcomingTimetable.php:66
-#, php-format
-msgid "Timetable Courses for %1$s"
-msgstr ""
-
 #: modules/Data Updater/data_updates.php:62
 msgid ""
 "This page shows all the data updates that are available to you. If an update "
@@ -127347,201 +125805,6 @@ msgstr ""
 msgid "Amount Outstanding:"
 msgstr ""
 
-#: modules/ID Cards/archive.php:54 modules/ID Cards/index.php:73
-#: modules/ID Cards/print.php:66 modules/ID Cards/print.php:118
-msgid "Batch"
-msgstr ""
-
-#: modules/ID Cards/archive.php:60
-msgid "Record ID"
-msgstr ""
-
-#: modules/ID Cards/archive.php:66
-msgid "Reprint"
-msgstr ""
-
-#: modules/ID Cards/archive.php:81
-msgid "Reprint in progress"
-msgstr ""
-
-#: modules/ID Cards/archive.php:83 modules/ID Cards/search.php:117
-msgid "Request Reprint?"
-msgstr ""
-
-#: modules/ID Cards/cli/idCards_requestsSummary.php:40
-#, php-format
-msgid "There are %1$s ID card requests pending:"
-msgstr ""
-
-#: modules/ID Cards/cli/idCards_requestsSummary.php:45
-#: modules/ID Cards/requests.php:36
-msgid "Requiring Approval"
-msgstr ""
-
-#: modules/ID Cards/cli/idCards_requestsSummary.php:46
-#: modules/ID Cards/requests.php:86
-msgid "Problem with Photos"
-msgstr ""
-
-#: modules/ID Cards/cli/idCards_requestsSummary.php:47
-msgid "Approved, Ready to Print"
-msgstr ""
-
-#: modules/ID Cards/cli/idCards_requestsSummary.php:64
-msgid "An ID Card CLI script has run."
-msgstr ""
-
-#: modules/ID Cards/create.php:39
-#, php-format
-msgid "Failed to create %1$s card(s)."
-msgstr ""
-
-#: modules/ID Cards/create.php:39 modules/ID Cards/print.php:40
-#: modules/ID Cards/print.php:41
-msgid "The cards with problems can be found under View Requests."
-msgstr ""
-
-#: modules/ID Cards/create.php:47
-msgid "Approved Requests"
-msgstr ""
-
-#: modules/ID Cards/create.php:55
-msgid "All done here! There are no cards waiting to be created."
-msgstr ""
-
-#: modules/ID Cards/create.php:65
-msgid "Approved By"
-msgstr ""
-
-#: modules/ID Cards/create.php:100
-msgid "Create All ID Cards"
-msgstr ""
-
-#: modules/ID Cards/index.php:82
-msgid "Batch Type"
-msgstr ""
-
-#: modules/ID Cards/index.php:83
-msgid "Create new cards"
-msgstr ""
-
-#: modules/ID Cards/index.php:83
-msgid "Update existing cards"
-msgstr ""
-
-#: modules/ID Cards/index.php:86
-msgid "Batch Number"
-msgstr ""
-
-#: modules/ID Cards/print.php:40
-#, php-format
-msgid "Successfully created %1$s card(s)."
-msgstr ""
-
-#: modules/ID Cards/print.php:41
-#, php-format
-msgid "Successfully created %1$s card(s), failed to create %2$s card(s)."
-msgstr ""
-
-#: modules/ID Cards/print.php:51
-msgid "Ready to Print"
-msgstr ""
-
-#: modules/ID Cards/print.php:59
-msgid "All done here! There are no cards waiting to be printed."
-msgstr ""
-
-#: modules/ID Cards/print.php:72 modules/ID Cards/print.php:124
-msgid "Pages"
-msgstr ""
-
-#: modules/ID Cards/print.php:75
-msgid "Created On"
-msgstr ""
-
-#: modules/ID Cards/print.php:78
-msgid "Created By"
-msgstr ""
-
-#: modules/ID Cards/print.php:99
-msgid "Mark as Printed"
-msgstr ""
-
-#: modules/ID Cards/print.php:111
-msgid "Recently Printed"
-msgstr ""
-
-#: modules/ID Cards/print.php:127
-msgid "Printed On"
-msgstr ""
-
-#: modules/ID Cards/print.php:130
-msgid "Printed By"
-msgstr ""
-
-#: modules/ID Cards/requests.php:44
-msgid "There are no requests waiting for approval."
-msgstr ""
-
-#: modules/ID Cards/requests.php:57 modules/ID Cards/requests.php:103
-msgid "Date Requested"
-msgstr ""
-
-#: modules/ID Cards/requests.php:90
-msgid ""
-"The following requests have been marked as having problems with the photos. "
-"Please check and update them, if everything looks good you can Approve the "
-"request."
-msgstr ""
-
-#: modules/ID Cards/requests.php:118 modules/ID Cards/search.php:125
-msgid "Edit Photos"
-msgstr ""
-
-#: modules/ID Cards/requests_view.php:78
-msgid "Additional People"
-msgstr ""
-
-#: modules/ID Cards/requests_view.php:94
-msgid "Photos need fixed"
-msgstr ""
-
-#: modules/ID Cards/requests_view.php:98
-msgid "Ready to print"
-msgstr ""
-
-#: modules/ID Cards/search.php:96
-msgid "Printed on"
-msgstr ""
-
-#: modules/ID Cards/search.php:100
-msgid "Approved on"
-msgstr ""
-
-#: modules/ID Cards/search.php:104
-msgid "Updated on"
-msgstr ""
-
-#: modules/ID Cards/search.php:108
-msgid "Requested on"
-msgstr ""
-
-#: modules/ID Cards/search.php:128
-msgid "Print Now"
-msgstr ""
-
-#: modules/ID Cards/search.php:135
-msgid "No ID card requests found"
-msgstr ""
-
-#: modules/ID Cards/search.php:137
-msgid "Request Cards"
-msgstr ""
-
-#: modules/ID Cards/search.php:149
-msgid "Update Family Photos"
-msgstr ""
-
 #: modules/Messenger/groups_manage.php:65
 msgid "Group Owner"
 msgstr ""
@@ -127574,14 +125837,6 @@ msgstr ""
 msgid "Select Groups"
 msgstr ""
 
-#: modules/PASI Export/export_generate.php:44
-msgid "Export Type"
-msgstr ""
-
-#: modules/PASI Export/export_generate.php:81
-msgid "Semester"
-msgstr ""
-
 #: modules/Planner/planner_add.php:1224 modules/Planner/planner_edit.php:1378
 msgid "Notify all class participants"
 msgstr ""
@@ -127598,225 +125853,6 @@ msgstr ""
 
 #: modules/Planner/resources_addQuick_ajax.php:76
 msgid "Upload"
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:386
-msgid "To manage criteria select an option from the right-hand sidebar."
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:401
-msgid "Copy Criteria from Report to Report"
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:403
-msgid ""
-"This tool is for setting up newly created reports by coping the criteria "
-"from a previous report. A report can only be copied to if it does not "
-"already have criteria."
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:412
-msgid "From Report"
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:422
-msgid "To Report"
-msgstr ""
-
-#: modules/Reporting/admin_criteria_function.php:428
-msgid "Criteria Types"
-msgstr ""
-
-#: modules/Reporting/archive.php:49 modules/Reporting/pastoral.php:60
-#: modules/Reporting/pdf.php:55
-msgid "Select a homeroom in the sidebar to get started."
-msgstr ""
-
-#: modules/Reporting/class_notes.php:45 modules/Reporting/subject.php:64
-msgid "Select a class in the sidebar to get started."
-msgstr ""
-
-#: modules/Reporting/credits_function.php:192
-msgid "Add Transfer Credit"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:236
-msgid "Equivalent Course"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:264
-msgid "Credit Type"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:269
-msgid "Transfer"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:270
-msgid "Retroactive"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:277
-msgid "Credits Awarded"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:325
-msgid "Transfer Credits"
-msgstr ""
-
-#: modules/Reporting/credits_function.php:329
-msgid ""
-"The following transfer or retroactive credits exist for the selected student."
-msgstr ""
-
-#: modules/Reporting/credits_function.php:407
-#: modules/Reporting/transcript_function.php:313
-msgid "Preferred, surname, username, student ID."
-msgstr ""
-
-#: modules/Reporting/credits_function.php:527
-msgid "Transfer Courses"
-msgstr ""
-
-#: modules/Reporting/gpa.php:16
-#, php-format
-msgid ""
-"Your request was completed successfully. %1$s student GPAs were calculated."
-msgstr ""
-
-#: modules/Reporting/pastoral_function.php:543
-msgid "Shared Comments:"
-msgstr ""
-
-#: modules/Reporting/pdf_batch.php:172
-#, php-format
-msgid "Generate failed for Report: %s, Roll Group: %s (%s students)<br/>"
-msgstr ""
-
-#: modules/Reporting/pdf_batch.php:197
-#, php-format
-msgid "Failed to merge Report: %s"
-msgstr ""
-
-#: modules/Reporting/pdf_batch.php:205
-msgid "No year groups assigned to the seleced report: "
-msgstr ""
-
-#: modules/Reporting/pdf_batch.php:214
-msgid "A Report Card Generation CLI script has run."
-msgstr ""
-
-#: modules/Reporting/pdf_function.php:281
-msgid "Processing"
-msgstr ""
-
-#: modules/Reporting/pdf_function.php:282
-#, php-format
-msgid ""
-"Report card generation in progress. Time elapsed %s<br/><br/>The user who "
-"started the PDF creation process will receive an email when the process is "
-"complete.<br/><br/>"
-msgstr ""
-
-#: modules/Reporting/pdf_function.php:352
-msgid "Generate Report Cards"
-msgstr ""
-
-#: modules/Reporting/reporting.php:45
-msgid "There are no active reporting periods."
-msgstr ""
-
-#: modules/Reporting/reporting.php:50
-msgid "Active Reports"
-msgstr ""
-
-#: modules/Reporting/reporting.php:189 modules/Reporting/reporting.php:284
-msgid "Write Reports"
-msgstr ""
-
-#: modules/Reporting/reporting.php:191
-msgid "View Reports"
-msgstr ""
-
-#: modules/Reporting/reporting.php:290
-msgid "Class Notes: Complete"
-msgstr ""
-
-#: modules/Reporting/reporting.php:294
-msgid "Class Notes: Incomplete"
-msgstr ""
-
-#: modules/Reporting/reporting.php:315
-msgid "You are not a current participant in any active reports."
-msgstr ""
-
-#: modules/Reporting/subject_function.php:784
-msgid "View Attendance"
-msgstr ""
-
-#: modules/Reporting/subject_function.php:790
-msgid "View Behaviour"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:150
-msgid "Create Transcript"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:192
-msgid "Transcript Note"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:201
-msgid "Grades to Include"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:205
-msgid "All Grades: 7-12"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:206
-msgid "Middle School: 7-9"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:207
-msgid "High School: 10-12"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:208
-msgid "High School US: 9-12"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:214
-msgid "Marks to Include"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:219
-msgid "Midterms"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:220
-msgid "Final Grades"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:221
-msgid "Diploma Exams"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:249
-#: modules/Reporting/transcript_function.php:433
-msgid "Transcripts"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:253
-msgid "The following transcripts exist for the selected student."
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:472
-msgid "Generate Transcript"
-msgstr ""
-
-#: modules/Reporting/transcript_function.php:475
-msgid "View Transcripts"
 msgstr ""
 
 #: modules/School Admin/yearGroup_manage.php:69
@@ -127877,11 +125913,6 @@ msgstr ""
 
 #: modules/Timetable/moduleFunctions.php:445
 msgid "This Week"
-msgstr ""
-
-#: src/FormsTemplate.php:63 src/FormsTemplate.php:73 src/FormsTemplate.php:78
-#: src/FormsTemplate.php:83 src/FormsTemplate.php:88 src/FormsTemplate.php:94
-msgid "Label"
 msgstr ""
 
 #: src/Tables/Renderer/PaginatedRenderer.php:166
