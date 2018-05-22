@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') == false) {
@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $table->addMetaData('filterOptions', [
         'all:on'          => __('All Staff'),
-        'type:teaching'   => __('Type').': '.__('Teaching'),
-        'type:support'    => __('Type').': '.__('Support'),
-        'type:other'      => __('Type').': '.__('Other'),
+        'type:teaching'   => __('Staff Type').': '.__('Teaching'),
+        'type:support'    => __('Staff Type').': '.__('Support'),
+        'type:other'      => __('Staff Type').': '.__('Other'),
         'status:full'     => __('Status').': '.__('Full'),
         'status:left'     => __('Status').': '.__('Left'),
         'status:expected' => __('Status').': '.__('Expected'),
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
                 .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
         });
 
-    $table->addColumn('type', __('Type'))->sortable()->width('20%');
+    $table->addColumn('type', __('Staff Type'))->sortable()->width('20%');
     $table->addColumn('status', __('Status'))->sortable()->width('10%');
     $table->addColumn('jobTitle', __('Job Title'))->sortable()->width('20%');
 
