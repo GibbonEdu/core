@@ -69,23 +69,13 @@ class StaffGateway extends QueryableGateway
                         ->bindValue('type', ucfirst($type));
                 }
             },
+            
             'status' => function ($query, $status) {
                 return $query
                     ->where('gibbonPerson.status = :status')
                     ->bindValue('status', ucfirst($status));
             },
         ]);
-
-
-
-        //     'date' => function ($query, $dateType) {
-        //         return $query
-        //             ->where(($dateType == 'starting')
-        //                 ? '(gibbonPerson.dateStart IS NOT NULL AND gibbonPerson.dateStart >= :today)'
-        //                 : '(gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd <= :today)')
-        //             ->bindValue('today', date('Y-m-d'));
-        //     },
-        // ]);
 
         return $this->runQuery($query, $criteria);
     }
