@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Staff\StaffGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') == false) {
     //Acess denied
@@ -66,114 +69,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo __($guid, 'View');
     echo '</h2>';
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $staffGateway = $container->get(StaffGateway::class);
 
-    try {
-        $data = array();
-        $where = '';
-        if ($allStaff != 'on') {
-            $where = "WHERE status='Full'";
-        }
-        $sql = "SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) $where ORDER BY surname, preferredName";
-        if ($search != '') {
-            if ($allStaff != 'on') {
-                $where = "AND status='Full'";
-            }
-            $data = array('search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-            $sql = "SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) $where ORDER BY surname, preferredName";
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // QUERY
+    $criteria = $staffGateway->newQueryCriteria()
+        ->searchBy($staffGateway->getSearchableColumns(), $search)
+        ->filterBy('all', $allStaff)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromArray($_POST);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_add.php&search=$search&allStaff=$allStaff'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $staff = $staffGateway->queryAllStaff($criteria);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "allStaff=$allStaff&search=$search");
-        }
+    // DATA TABLE
+    $table = DataTable::createPaginated('staffManage', $criteria);
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Initials').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Job Title');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Staff/staff_manage_add.php')
+        ->addParam('search', $search)
+        ->displayLabel();
 
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            if ($row['status'] != 'Full') {
-                $rowNum = 'error';
-            }
-            ++$count;
+    $table->addMetaData('filterOptions', [
+        'all:on'          => __('All Staff'),
+        'type:teaching'   => __('Type').': '.__('Teaching'),
+        'type:support'    => __('Type').': '.__('Support'),
+        'type:other'      => __('Type').': '.__('Other'),
+        'status:full'     => __('Status').': '.__('Full'),
+        'status:left'     => __('Status').': '.__('Left'),
+        'status:expected' => __('Status').': '.__('Expected'),
+    ]);
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['initials'].'</span>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['type'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['jobTitle'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+    // COLUMNS
+    $table->addColumn('fullName', __('Name'))
+        ->description(__('Initials'))
+        ->width('35%')
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($person) {
+            return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true)
+                .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
+        });
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "allStaff=$allStaff&search=$search");
-        }
-    }
+    $table->addColumn('type', __('Type'))->sortable()->width('20%');
+    $table->addColumn('status', __('Status'))->sortable()->width('10%');
+    $table->addColumn('jobTitle', __('Job Title'))->sortable()->width('20%');
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonStaffID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($person, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Staff/staff_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Staff/staff_manage_delete.php');
+        });
+
+    echo $table->render($staff);
 }
-?>
