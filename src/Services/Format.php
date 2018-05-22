@@ -59,6 +59,10 @@ class Format
         $settings['currency'] = $session->get('currency');
         $settings['currencySymbol'] = !empty(substr($settings['currency'], 4)) ? substr($settings['currency'], 4) : '';
         $settings['currencyName'] = substr($settings['currency'], 0, 3);
+        $settings['nameFormatStaffInformal'] = $session->get('nameFormatStaffInformal');
+        $settings['nameFormatStaffInformalReversed'] = $session->get('nameFormatStaffInformalReversed');
+        $settings['nameFormatStaffFormal'] = $session->get('nameFormatStaffFormal');
+        $settings['nameFormatStaffFormalReversed'] = $session->get('nameFormatStaffFormalReversed');
         
         static::setup($settings);
     }
