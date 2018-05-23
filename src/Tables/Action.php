@@ -36,6 +36,7 @@ class Action extends WebLink
     protected $params = array();
 
     protected $modal = false;
+    protected $direct = false;
     protected $displayLabel = false;
 
     public function __construct($name, $label = '')
@@ -147,6 +148,18 @@ class Action extends WebLink
     }
 
     /**
+     * The action link will not prepend an index.php?q=
+     *
+     * @return self
+     */
+    public function isDirect() 
+    {
+        $this->direct = true;
+
+        return $this;
+    }
+
+    /**
      * Renders the action as an icon and url, adding in any nessesary url parameters.
      *
      * @param array $data
@@ -163,7 +176,7 @@ class Action extends WebLink
             $this->getIcon()
         ));
 
-        $queryParams = array('q' => $this->url);
+        $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
         if (!empty($data)) {
             foreach (array_merge($params, $this->params) as $key => $value) {
@@ -171,7 +184,9 @@ class Action extends WebLink
             }
         }
 
-        if ($this->modal) {
+        if ($this->direct) {
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams));
+        } else if ($this->modal) {
             $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams));
         } else {
             $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams));
