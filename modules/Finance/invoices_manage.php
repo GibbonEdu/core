@@ -235,10 +235,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
                 if (is_null($totalFee)) return '';
 
-                $output = Format::currency($totalFee, 2);
+                $output = Format::currency($totalFee);
                 if (!empty($invoice['paidAmount'])) {
                     $class = Format::number($invoice['paidAmount']) != Format::number($totalFee)? 'textOverBudget' : '';
-                    $output .= '<br/><span class="small emphasis '.$class.'">'.Format::currency($invoice['paidAmount'], 2).'</span>';
+                    $output .= '<br/><span class="small emphasis '.$class.'">'.Format::currency($invoice['paidAmount']).'</span>';
                 }
                 return $output;
             });
