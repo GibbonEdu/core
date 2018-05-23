@@ -59,6 +59,10 @@ class Format
         $settings['currency'] = $session->get('currency');
         $settings['currencySymbol'] = !empty(substr($settings['currency'], 4)) ? substr($settings['currency'], 4) : '';
         $settings['currencyName'] = substr($settings['currency'], 0, 3);
+        $settings['nameFormatStaffInformal'] = $session->get('nameFormatStaffInformal');
+        $settings['nameFormatStaffInformalReversed'] = $session->get('nameFormatStaffInformalReversed');
+        $settings['nameFormatStaffFormal'] = $session->get('nameFormatStaffFormal');
+        $settings['nameFormatStaffFormalReversed'] = $session->get('nameFormatStaffFormalReversed');
         
         static::setup($settings);
     }
@@ -173,6 +177,25 @@ class Format
     }
 
     /**
+     * Formats a link from a url. Automatically adds target _blank to external links.
+     * 
+     * @param string $url
+     * @param string $text
+     * @param string $title
+     * @return string
+     */
+    public static function link($url, $text = '', $title = '')
+    {
+        if (!$text) $text = $url;
+
+        if (stripos($url, static::$settings['absoluteURL']) === false) {
+            return '<a href="'.$url.'" title="'.$title.'" target="_blank">'.$text.'</a>';
+        } else {
+            return '<a href="'.$url.'" title="'.$title.'">'.$text.'</a>';
+        }
+    }
+
+    /**
      * Formats a YYYY-MM-DD date as a relative age with years and months.
      *
      * @param string $dateString
@@ -228,6 +251,8 @@ class Format
     {
         $output = '';
 
+        if (empty($preferredName) && empty(empty($surname))) return '';
+
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
             $format = isset(static::$settings[$setting])? static::$settings[$setting] : '[title] [preferredName:1]. [surname]';
@@ -237,7 +262,7 @@ class Format
                     list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
                     return isset($$token)
                         ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
-                        : $matches[0];
+                        : '';
                 },
             $format);
 
@@ -249,7 +274,27 @@ class Format
             $output = sprintf($format, $preferredName, $surname);
         }
 
-        return trim($output);
+        return trim($output, ' ');
+    }
+
+    /**
+     * Formats a list of names from an array containing standard title, preferredName & surname fields.
+     * 
+     * @param array $list
+     * @param string $roleCategory
+     * @param bool $reverse
+     * @param bool $informal
+     * @return string
+     */
+    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
+    {
+        $output = '';
+        foreach ($list as $person) {
+            $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+            $output .= '<br/>';
+        }
+
+        return $output;
     }
 
     /**

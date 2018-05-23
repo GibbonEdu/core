@@ -41,6 +41,7 @@ class Column
     {
         $this->setID($id);
         $this->label = $label;
+        $this->sortable = [$id];
     }
 
     /**
@@ -107,7 +108,19 @@ class Column
      */
     public function sortable($value = null) 
     {
-        $this->sortable = is_null($value) ? array($this->getID()) : $value;
+        $this->sortable = is_null($value) ? [$this->getID()] : $value;
+
+        return $this;
+    }
+
+    /**
+     * Disables sorting for this column.
+     * 
+     * @return self
+     */
+    public function notSortable() 
+    {
+        $this->sortable = false;
 
         return $this;
     }

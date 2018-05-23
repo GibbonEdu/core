@@ -362,7 +362,7 @@ DataTable.prototype.init = function() {
     $(_.table).on('click', '.filter', function() {
         var filter = $(this).data('filter');
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = [''];
+            _.filters.filterBy = {};
             _.filters.searchBy.columns = [''];
         } else if (filter in _.filters.filterBy) {
             // Remove columns from search criteria if removing an in: filter
