@@ -1673,7 +1673,8 @@ table.smallIntBorder td.noPadding {
     margin: 0;
 }
 
-.dataTable small {
+.dataTable header small,
+.dataTable footer small {
     font-size: 12px;
     line-height: 32px;
 }

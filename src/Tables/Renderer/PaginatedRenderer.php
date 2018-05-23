@@ -72,31 +72,25 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output .= '<div id="'.$table->getID().'">';
         $output .= '<div class="dataTable">';
 
-        // Debug the AJAX $POST => Filters
-        // $output .= '<code>';
-        // $output .= 'POST: '.json_encode($_POST).'<br/>';
-        // $output .= '</code>';
-
-        // Debug the criteria
-        // $output .= '<code>';
-        // $output .= 'Criteria: '.$this->criteria->toJson();
-        // $output .= '</code>';
-
         $filterOptions = $table->getMetaData('filterOptions', []);
 
-        $output .= '<div>';
-        $output .= $this->renderPageCount($dataSet);
-        $output .= $this->renderPageFilters($dataSet, $filterOptions);
-        $output .= '</div>';
-        $output .= $this->renderFilterOptions($dataSet, $filterOptions);
-        $output .= $this->renderPageSize($dataSet);
-        $output .= $this->renderPagination($dataSet);
+        $output .= '<header>';
+            $output .= '<div>';
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPageFilters($dataSet, $filterOptions);
+            $output .= '</div>';
+            $output .= $this->renderFilterOptions($dataSet, $filterOptions);
+            $output .= $this->renderPageSize($dataSet);
+            $output .= $this->renderPagination($dataSet);
+        $output .= '</header>';
 
         $output .= parent::renderTable($table, $dataSet);
 
         if ($dataSet->getPageCount() > 1) {
+            $output .= '<footer>';
             $output .= $this->renderPageCount($dataSet);
             $output .= $this->renderPagination($dataSet);
+            $output .= '</footer>';
         }
 
         $output .= '</div></div><br/>';
