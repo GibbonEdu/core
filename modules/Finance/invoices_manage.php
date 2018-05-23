@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->filterBy('billingSchedule', $request['gibbonFinanceBillingScheduleID'])
             ->filterBy('feeCategory', $request['gibbonFinanceFeeCategoryID'])
             ->fromArray($_POST);
-        $invoices = $invoiceGateway->queryInvoices($criteria);
+        $invoices = $invoiceGateway->queryInvoicesByYear($criteria, $gibbonSchoolYearID);
 
         echo '<h3>';
         echo __($guid, 'View');
@@ -214,9 +214,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 return $output;
             });
 
-        $table->addColumn('rollGroup', __('Roll Group'))->sortable();
+        $table->addColumn('rollGroup', __('Roll Group'));
 
-        $table->addColumn('status', __('Status'))->sortable()->format(function ($invoice) {
+        $table->addColumn('status', __('Status'))->format(function ($invoice) {
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {
                 return 'Issued - Overdue';
             } else if ($invoice['status'] == 'Paid' && $invoice['invoiceDueDate'] < $invoice['paidDate']) {
@@ -226,10 +226,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             }
         });
 
-        $table->addColumn('billingSchedule', __('Schedule'))->sortable();
+        $table->addColumn('billingSchedule', __('Schedule'));
 
         $table->addColumn('total', __('Total').' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
             ->description(__('Paid').' ('.$_SESSION[$guid]['currency'].')')
+            ->notSortable()
             ->format(function ($invoice) use ($pdo) {
                 $totalFee = getInvoiceTotalFee($pdo, $invoice['gibbonFinanceInvoiceID'], $invoice['status']);
                 if (is_null($totalFee)) return '';
@@ -264,7 +265,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 if ($invoice['status'] == 'Pending') {
                     $col->addAction('issue', __('Issue'))
                         ->setURL('/modules/Finance/invoices_manage_issue.php')
-                        ->setIcon('page_right');
+                        ->setIcon('page_right')
+                        ->append('<br/>');
 
                     $col->addAction('delete', __('Delete'))
                         ->setURL('/modules/Finance/invoices_manage_delete.php');

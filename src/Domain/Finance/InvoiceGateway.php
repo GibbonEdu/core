@@ -41,7 +41,7 @@ class InvoiceGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryInvoices(QueryCriteria $criteria)
+    public function queryInvoicesByYear(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -72,7 +72,9 @@ class InvoiceGateway extends QueryableGateway
             ->innerJoin('gibbonPerson', 'gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID');
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $criteria->addFilterRules([
             'status' => function ($query, $status) {
