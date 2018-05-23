@@ -49,12 +49,25 @@ class Action extends WebLink
                             break;
             case 'edit':    $this->setIcon('config');
                             break;
-            case 'delete':  $this->setIcon('garbage')->isModal(true)->addParam('width', '650')->addParam('height', '135');
+            case 'delete':  $this->setIcon('garbage')->isModal(650, 135);
                             break;
             default:
             case 'view':    $this->setIcon('zoom');
                             break;
         }
+    }
+
+    /**
+     * Sets the internal url for this action.
+     * 
+     * @param string $url
+     * @return self
+     */
+    public function setURL($url)
+    {
+        $this->url = $url;
+
+        return $this;
     }
 
     /**
@@ -122,9 +135,13 @@ class Action extends WebLink
      * @param bool $value
      * @return self
      */
-    public function isModal($value = true) 
+    public function isModal($width = 650, $height = 650) 
     {
-        $this->modal = $value;
+        $this->modal = true;
+
+        $this->setClass('thickbox')
+            ->addParam('width', $width)
+            ->addParam('height', $height);
 
         return $this;
     }
@@ -140,7 +157,13 @@ class Action extends WebLink
     {
         global $guid; // :(
 
-        $queryParams = array();
+        $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" style="margin-left: 5px">', 
+            ($this->displayLabel? $this->getLabel() : ''),
+            $this->getLabel(), 
+            $this->getIcon()
+        ));
+
+        $queryParams = array('q' => $this->url);
 
         if (!empty($data)) {
             foreach (array_merge($params, $this->params) as $key => $value) {
@@ -149,22 +172,10 @@ class Action extends WebLink
         }
 
         if ($this->modal) {
-            $url = $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q='.$this->getURL();
-            $this->addClass('thickbox');
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams));
         } else {
-            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$this->getURL();
+            $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/index.php?'.http_build_query($queryParams));
         }
-
-        if (!empty($queryParams)) {
-            $url .= '&'.http_build_query($queryParams);
-        }
-
-        $this->setURL($url);
-        $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/Default/img/%3$s.png" style="margin-left: 5px">', 
-                ($this->displayLabel? $this->getLabel() : ''),
-                $this->getLabel(), 
-                $this->getIcon()
-            ));
 
         return parent::getOutput();
     }

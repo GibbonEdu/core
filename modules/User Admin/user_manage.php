@@ -99,6 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     // COLUMNS
     $table->addColumn('image_240', __('Photo'))
         ->width('10%')
+        ->notSortable()
         ->format(Format::using('userPhoto', 'image_240'));
 
     $table->addColumn('fullName', __('Name'))
@@ -106,15 +107,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('status', __('Status'))
-        ->width('10%')
-        ->sortable();
+    $table->addColumn('status', __('Status'))->width('10%');
 
-    $table->addColumn('primaryRole', __('Primary Role'))
-        ->width('16%')
-        ->sortable();
+    $table->addColumn('primaryRole', __('Primary Role'))->width('16%');
 
     $table->addColumn('family', __('Family'))
+        ->notSortable()
         ->format(function($person) use ($guid) {
             $output = '';
             foreach ($person['families'] as $family) {
@@ -123,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             return $output;
         });
 
-    $table->addColumn('username', __('Username'))->sortable();
+    $table->addColumn('username', __('Username'));
 
     // ACTIONS
     $table->addActionColumn()
