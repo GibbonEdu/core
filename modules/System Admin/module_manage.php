@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         $_SESSION[$guid]['moduleInstallError'] = null;
     }
 
-    echo "<div class='warning'>";
+    echo "<div class='message'>";
     echo sprintf(__($guid, 'To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
     echo '</div>';
 
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     echo '</h2>';
 
     //Get list of modules in /modules directory
-    $modulesFS = glob($_SESSION[$guid]['absolutePath'].'/modules/*', GLOB_ONLYDIR);
+    $moduleFolders = glob($_SESSION[$guid]['absolutePath'].'/modules/*', GLOB_ONLYDIR);
 
     // QUERY
     $moduleGateway = $container->get(ModuleGateway::class);
@@ -72,37 +72,33 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     $modules = $moduleGateway->queryModules($criteria);
     $moduleNames = $moduleGateway->getAllModuleNames();
-
     $orphans = array();
 
     // Build a set of module data, flagging orphaned modules that do not appear to be in the modules folder.
     // Also checks for available updates by comparing version numbers for Additional modules.
-    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$modulesFS) {
-        if (array_search($_SESSION[$guid]['absolutePath'].'/modules/'.$module['name'], $modulesFS) === false) {
+    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$moduleFolders) {
+        if (array_search($_SESSION[$guid]['absolutePath'].'/modules/'.$module['name'], $moduleFolders) === false) {
             $module['orphaned'] = true;
             $orphans[] = $module;
             return;
         }
 
         $module['status'] = __('Installed');
-
-        if ($module['type'] == 'Core') {
-            $module['name'] = __($module['name']);
-            $module['versionDisplay'] = 'v'.$version;
-        } else if ($module['type'] == 'Additional') {
-            $module['name'] = __($module['name'], $module['name']);
-            $module['versionDisplay'] = 'v'.$module['version'];
+        $module['name'] = $module['type'] == 'Core' ? __($module['name']) : __($module['name'], $module['name']);
+        $module['versionDisplay'] = $module['type'] == 'Core' ? 'v'.$version : 'v'.$module['version'];
+        
+        if ($module['type'] == 'Additional') {
             $versionFromFile = getModuleVersion($module['name'], $guid);
             if (version_compare($versionFromFile, $module['version'], '>')) {
                 $module['status'] = '<b>'.__('Update').' '.__('Available').'</b><br/>';
-                $module['update'] = $versionFromFile;
+                $module['update'] = true;
             }
         }
     });
 
     // Build a set of uninstalled modules by checking the $modules DataSet.
     // Validates the manifest file and grabs the module details from there.
-    $uninstalledModules = array_reduce($modulesFS, function($group, $modulePath) use ($guid, &$moduleNames) {
+    $uninstalledModules = array_reduce($moduleFolders, function($group, $modulePath) use ($guid, &$moduleNames) {
         $moduleName = substr($modulePath, strlen($_SESSION[$guid]['absolutePath'].'/modules/'));
         if (!in_array($moduleName, $moduleNames)) {
             $module = getModuleManifest($moduleName, $guid);
@@ -121,17 +117,23 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     }, array());
 
 
-    // DATA TABLE
+    // INSTALLED MODULES
     $table = DataTable::createPaginated('moduleManage', $criteria);
 
-    $table->setRowLogic(function (&$module, $row) {
+    $table->setRowLogic(function ($module, $row) {
         if (!empty($module['orphaned'])) return '';
         if (!empty($module['update'])) $row->addClass('current');
         if ($module['active'] == 'N') $row->addClass('error');
         return $row;
     });
 
-    // COLUMNS
+    $table->addMetaData('filterOptions', [
+        'type:core'       => __('Type').': '.__('Core'),
+        'type:additional' => __('Type').': '.__('Additional'),
+        'active:Y' => __('Active').': '.__('Yes'),
+        'active:N' => __('Active').': '.__('No'),
+    ]);
+
     $table->addColumn('name', __('Name'));
     $table->addColumn('status', __('Status'))->notSortable();
     $table->addColumn('description', __('Description'));
@@ -161,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
     echo $table->render($modules);
 
-    // UNINSTALLED
+    // UNINSTALLED MODULES
     if (!empty($uninstalledModules)) {
         echo '<h2>';
         echo __('Not Installed');
@@ -195,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         echo $table->render(new DataSet($uninstalledModules));
     }
 
-    // ORPHANS
+    // ORPHANED MODULES
     if ($orphans) {
         echo '<h2>';
         echo __('Orphaned Modules');

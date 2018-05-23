@@ -52,6 +52,20 @@ class ModuleGateway extends QueryableGateway
                 'gibbonModuleID', 'name', 'description', 'type', 'author', 'url', 'active', 'version'
             ]);
 
+        $criteria->addFilterRules([
+            'type' => function ($query, $type) {
+                return $query
+                    ->where('gibbonModule.type = :type')
+                    ->bindValue('type', ucfirst($type));
+            },
+
+            'active' => function ($query, $active) {
+                return $query
+                    ->where('gibbonModule.active = :active')
+                    ->bindValue('active', ucfirst($active));
+            },
+        ]);
+
         return $this->runQuery($query, $criteria);
     }
 
