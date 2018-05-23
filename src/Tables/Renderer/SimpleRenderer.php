@@ -84,7 +84,7 @@ class SimpleRenderer implements RendererInterface
             $cellLogic = $table->getCellLogic();
 
             foreach ($dataSet as $data) {
-                $row = $this->createTableRow($table);
+                $row = $this->createTableRow($table, $data);
 
                 $output .= '<tr '.$row->getAttributeString().'>';
                 $output .= $row->getPrepended();
@@ -137,7 +137,7 @@ class SimpleRenderer implements RendererInterface
      * @param DataTable $table
      * @return Element
      */
-    protected function createTableRow(DataTable $table)
+    protected function createTableRow(DataTable $table, array $data)
     {
         $row = new Element();
         if ($rowLogic = $table->getRowLogic()) {
