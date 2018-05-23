@@ -141,7 +141,7 @@ class SimpleRenderer implements RendererInterface
     {
         $row = new Element();
         if ($rowLogic = $table->getRowLogic()) {
-            $row = $rowLogic($row, $data);
+            $row = $rowLogic($data, $row);
         }
 
         return $row;
@@ -158,7 +158,7 @@ class SimpleRenderer implements RendererInterface
     {
         $cell = new Element();
         if ($cellLogic = $table->getCellLogic()) {
-            $cell = $cellLogic($cell, $data);
+            $cell = $cellLogic($row, $cell);
         }
 
         return $cell;
