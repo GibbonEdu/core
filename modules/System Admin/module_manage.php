@@ -17,6 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\ModuleGateway;
+
+include './modules/System Admin/moduleFunctions.php';
+
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -38,230 +46,180 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
-    if (isset($_SESSION[$guid]['moduleInstallError'])) {
-        if ($_SESSION[$guid]['moduleInstallError'] != '') {
-            echo "<div class='error'>";
-            echo __($guid, 'The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleInstallError'];
-            echo '</div>';
-        }
+    if (!empty($_SESSION[$guid]['moduleInstallError'])) {
+        echo "<div class='error'>";
+        echo __($guid, 'The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleInstallError'];
+        echo '</div>';
         $_SESSION[$guid]['moduleInstallError'] = null;
     }
-
-    //Get modules from database, and store in an array
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonModule ORDER BY name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
-    $modulesSQL = array();
-    while ($row = $result->fetch()) {
-        $modulesSQL[$row['name']][0] = $row;
-        $modulesSQL[$row['name']][1] = 'orphaned';
-    }
-
-    //Get list of modules in /modules directory
-    $modulesFS = glob($_SESSION[$guid]['absolutePath'].'/modules/*', GLOB_ONLYDIR);
 
     echo "<div class='warning'>";
     echo sprintf(__($guid, 'To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
     echo '</div>';
 
-    if (count($modulesFS) < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status');
-        echo '</th>';
-        echo "<th style='width: 200px;'>";
-        echo __($guid, 'Description');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Active');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Version');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Author');
-        echo '</th>';
-        echo "<th style='width: 140px!important'>";
-        echo __($guid, 'Action');
-        echo '</th>';
-        echo '</tr>';
+    echo '<h2>';
+    echo __('Installed');
+    echo '</h2>';
 
-        $count = 0;
-        $rowNum = 'odd';
-        foreach ($modulesFS as $moduleFS) {
-            $moduleName = substr($moduleFS, strlen($_SESSION[$guid]['absolutePath'].'/modules/'));
-            $modulesSQL[$moduleName][1] = 'present';
+    //Get list of modules in /modules directory
+    $modulesFS = glob($_SESSION[$guid]['absolutePath'].'/modules/*', GLOB_ONLYDIR);
 
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            if (isset($modulesSQL[$moduleName][0]) && $modulesSQL[$moduleName][0]['active']=='N') {
-                $rowNum = 'error';
-            }
-            $installed = true;
-            if (isset($modulesSQL[$moduleName][0]) == false) {
-                $installed = false;
-                $rowNum = 'warning';
-            }
+    // QUERY
+    $moduleGateway = $container->get(ModuleGateway::class);
+    $criteria = $moduleGateway->newQueryCriteria()
+        ->sortBy('name')
+        ->fromArray($_POST);
 
-            ++$count;
+    $modules = $moduleGateway->queryModules($criteria);
+    $moduleNames = $moduleGateway->getAllModuleNames();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            if ($installed && $modulesSQL[$moduleName][0]['type'] == 'Core')
-                echo __($guid, $moduleName);
-            else
-                echo __($guid, $moduleName, $moduleName);
-            echo '</td>';
-            if ($installed) {
-                echo '<td>';
-                echo __($guid, 'Installed');
-                echo '</td>';
-            } else {
-                //Check for valid manifest
-                $manifestOK = false;
-                if (include $_SESSION[$guid]['absolutePath']."/modules/$moduleName/manifest.php") {
-                    if ($name != '' and $description != '' and $version != '') {
-                        if ($name == $moduleName) {
-                            $manifestOK = true;
-                        }
-                    }
-                }
-                if ($manifestOK) {
-                    echo '<td colspan=6>';
-                    echo __($guid, 'Not Installed');
-                    echo '</td>';
-                } else {
-                    echo '<td colspan=7>';
-                    echo __($guid, 'Module error due to incorrect manifest file or folder name.');
-                    echo '</td>';
-                }
-            }
-            if ($installed) {
-                echo '<td>';
-                if ($modulesSQL[$moduleName][0]['type'] == 'Core')
-                    echo __($guid, __($guid, $modulesSQL[$moduleName][0]['description']));
-                else
-                    echo __($guid, __($guid, $modulesSQL[$moduleName][0]['description']), $moduleName);
-                echo '</td>';
-                echo '<td>';
-                echo __($guid, $modulesSQL[$moduleName][0]['type']);
-                echo '</td>';
-                echo '<td>';
-                echo ynExpander($guid, $modulesSQL[$moduleName][0]['active']);
-                echo '</td>';
-                echo '<td>';
-                if ($modulesSQL[$moduleName][0]['type'] == 'Additional') {
-                    echo 'v'.$modulesSQL[$moduleName][0]['version'];
-                } else {
-                    echo 'v'.$version;
-                }
-                echo '</td>';
-                echo '<td>';
-                if ($row['url'] != '') {
-                    echo "<a href='".$modulesSQL[$moduleName][0]['url']."'>".$modulesSQL[$moduleName][0]['author'].'</a>';
-                } else {
-                    echo $modulesSQL[$moduleName][0]['author'];
-                }
-                echo '</td>';
-                echo "<td style='width: 120px'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/module_manage_edit.php&gibbonModuleID='.$modulesSQL[$moduleName][0]['gibbonModuleID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                if ($modulesSQL[$moduleName][0]['type'] == 'Additional') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/module_manage_uninstall.php&gibbonModuleID='.$modulesSQL[$moduleName][0]['gibbonModuleID']."'><img title='Uninstall' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/module_manage_update.php&gibbonModuleID='.$modulesSQL[$moduleName][0]['gibbonModuleID']."'><img title='Update' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/delivery2.png'/></a>";
-                }
-                echo '</td>';
-            } else {
-                if ($manifestOK) {
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/module_manage_installProcess.php?name='.urlencode($moduleName)."'><img title='".__($guid, 'Install')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-                    echo '</td>';
-                }
-            }
-            echo '</tr>';
+    $orphans = array();
+
+    // Build a set of module data, flagging orphaned modules that do not appear to be in the modules folder.
+    // Also checks for available updates by comparing version numbers for Additional modules.
+    $modules->transform(function (&$module) use ($guid, $version, &$orphans, &$modulesFS) {
+        if (array_search($_SESSION[$guid]['absolutePath'].'/modules/'.$module['name'], $modulesFS) === false) {
+            $module['orphaned'] = true;
+            $orphans[] = $module;
+            return;
         }
-        echo '</table>';
-    }
 
-    //Find and display orphaned modules
-    $orphans = false;
-    foreach ($modulesSQL as $moduleSQL) {
-        if ($moduleSQL[1] == 'orphaned') {
-            $orphans = true;
+        $module['status'] = __('Installed');
+
+        if ($module['type'] == 'Core') {
+            $module['name'] = __($module['name']);
+            $module['versionDisplay'] = 'v'.$version;
+        } else if ($module['type'] == 'Additional') {
+            $module['name'] = __($module['name'], $module['name']);
+            $module['versionDisplay'] = 'v'.$module['version'];
+            $versionFromFile = getModuleVersion($module['name'], $guid);
+            if (version_compare($versionFromFile, $module['version'], '>')) {
+                $module['status'] = '<b>'.__('Update').' '.__('Available').'</b><br/>';
+                $module['update'] = $versionFromFile;
+            }
         }
-    }
+    });
 
-    if ($orphans) {
-        echo "<h2 style='margin-top: 40px'>";
-        echo __($guid, 'Orphaned Modules');
+    // Build a set of uninstalled modules by checking the $modules DataSet.
+    // Validates the manifest file and grabs the module details from there.
+    $uninstalledModules = array_reduce($modulesFS, function($group, $modulePath) use ($guid, &$moduleNames) {
+        $moduleName = substr($modulePath, strlen($_SESSION[$guid]['absolutePath'].'/modules/'));
+        if (!in_array($moduleName, $moduleNames)) {
+            $module = getModuleManifest($moduleName, $guid);
+            $module['status'] = __('Not Installed');
+            $module['versionDisplay'] = !empty($module['version']) ? 'v'.$module['version'] : '';
+
+            if (!$module || !$module['manifestOK']) {
+                $module['name'] = $moduleName;
+                $module['status'] = __('Error');
+                $module['description'] = __('Module error due to incorrect manifest file or folder name.');
+            }
+            $group[] = $module;
+        }
+
+        return $group;
+    }, array());
+
+
+    // DATA TABLE
+    $table = DataTable::createPaginated('moduleManage', $criteria);
+
+    $table->setRowLogic(function (&$module, $row) {
+        if (!empty($module['orphaned'])) return '';
+        if (!empty($module['update'])) $row->addClass('current');
+        if ($module['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
+    // COLUMNS
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('status', __('Status'))->notSortable();
+    $table->addColumn('description', __('Description'));
+    $table->addColumn('type', __('Type'));
+    $table->addColumn('active', __('Active'))
+          ->format(Format::using('yesNo', 'active'));
+    $table->addColumn('versionDisplay', __('Version'))->sortable(['version']);
+    $table->addColumn('author', __('Author'))
+          ->format(Format::using('link', ['url', 'author']));
+
+    $table->addActionColumn()
+        ->addParam('gibbonModuleID')
+        ->format(function ($row, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/System Admin/module_manage_edit.php');
+
+            if ($row['type'] != 'Core') {
+                $actions->addAction('uninstall', __('Uninstall'))
+                        ->setIcon('garbage')
+                        ->setURL('/modules/System Admin/module_manage_uninstall.php');
+
+                $actions->addAction('update', __('Update'))
+                        ->setIcon('delivery2')
+                        ->setURL('/modules/System Admin/module_manage_update.php');
+            }
+        });
+
+    echo $table->render($modules);
+
+    // UNINSTALLED
+    if (!empty($uninstalledModules)) {
+        echo '<h2>';
+        echo __('Not Installed');
         echo '</h2>';
+        
+        $table = DataTable::create('moduleInstall');
+
+        $table->setRowLogic(function ($module, $row) {
+            $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
+            return $row;
+        });
+
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('status', __('Status'))->notSortable();
+        $table->addColumn('description', __('Description'));
+        $table->addColumn('versionDisplay', __('Version'));
+        $table->addColumn('author', __('Author'))
+               ->format(Format::using('link', ['url', 'author']));
+
+        $table->addActionColumn()
+            ->addParam('name')
+            ->format(function ($row, $actions) {
+                if ($row['manifestOK']) {
+                    $actions->addAction('install', __('Install'))
+                            ->setIcon('page_new')
+                            ->isDirect()
+                            ->setURL('/modules/System Admin/module_manage_installProcess.php');
+                }
+            });
+
+        echo $table->render(new DataSet($uninstalledModules));
+    }
+
+    // ORPHANS
+    if ($orphans) {
+        echo '<h2>';
+        echo __('Orphaned Modules');
+        echo '</h2>';
+
         echo '<p>';
-        echo __($guid, 'These modules are installed in the database, but are missing from within the file system.');
+        echo __('These modules are installed in the database, but are missing from within the file system.');
         echo '</p>';
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo "<th style='width: 140px!important'>";
-        echo __($guid, 'Action');
-        echo '</th>';
-        echo '</tr>';
+        $table = DataTable::create('moduleOrphans');
 
-        $count = 0;
-        $rowNum = 'odd';
-        foreach ($modulesSQL as $moduleSQL) {
-            if ($moduleSQL[1] == 'orphaned') {
-                $moduleName = $moduleSQL[0]['name'];
+        $table->addColumn('name', __('Name'));
 
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
+        $table->addActionColumn()
+            ->addParam('gibbonModuleID')
+            ->format(function ($row, $actions) {
+                if ($row['type'] != 'Core') {
+                    $actions->addAction('uninstall', __('Remove Record'))
+                        ->setIcon('garbage')
+                        ->addParam('orphaned', 'true')
+                        ->setURL('/modules/System Admin/module_manage_uninstall.php');
                 }
+            });
 
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo __($guid, $moduleName);
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/module_manage_uninstall.php&gibbonModuleID='.$modulesSQL[$moduleName][0]['gibbonModuleID']."&orphaned=true'><img title='Remove Record' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                echo '</td>';
-                echo '</tr>';
-            }
-        }
-        echo '<tr>';
-        echo "<td colspan=7 class='right'>";
-        ?>
-					<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-					<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
-					<?php
-                echo '</td>';
-        echo '</tr>';
-        echo '</table>';
+        echo $table->render(new DataSet($orphans));
     }
 }
-?>
