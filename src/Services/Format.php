@@ -178,10 +178,11 @@ class Format
 
     /**
      * Formats a link from a url. Automatically adds target _blank to external links.
+     * 
      * @param string $url
      * @param string $text
      * @param string $title
-     * @return void
+     * @return string
      */
     public static function link($url, $text = '', $title = '')
     {
@@ -250,6 +251,8 @@ class Format
     {
         $output = '';
 
+        if (empty($preferredName) && empty(empty($surname))) return '';
+
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
             $format = isset(static::$settings[$setting])? static::$settings[$setting] : '[title] [preferredName:1]. [surname]';
@@ -271,7 +274,7 @@ class Format
             $output = sprintf($format, $preferredName, $surname);
         }
 
-        return trim($output, ' .');
+        return trim($output, ' ');
     }
 
     /**
