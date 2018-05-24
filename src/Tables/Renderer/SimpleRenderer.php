@@ -152,7 +152,7 @@ class SimpleRenderer implements RendererInterface
     }
 
     /**
-     * Creates the HTML object for the <tr> tag, applies optional rowLogic callable to modify the output.
+     * Creates the HTML object for the <td> tag, applies optional cellLogic callable to modify the output.
      * 
      * @param DataTable $table
      * @param array $data
