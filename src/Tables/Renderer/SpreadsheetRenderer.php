@@ -92,7 +92,7 @@ class SpreadsheetRenderer implements RendererInterface
         } else {
             // HEADER ROW
             $rowCount = 1;
-            $cellCount = 1;
+            $cellCount = 0;
 
             $sheet->getRowDimension($rowCount)->setRowHeight(24);
 
@@ -117,7 +117,7 @@ class SpreadsheetRenderer implements RendererInterface
                 $sheet->getRowDimension($rowCount)->setRowHeight(20);
 
                 // CELLS
-                $cellCount = 1;
+                $cellCount = 0;
                 foreach ($table->getColumns() as $columnName => $column) {
                     $alpha = $this->num2alpha($cellCount);
 
@@ -168,6 +168,10 @@ class SpreadsheetRenderer implements RendererInterface
 
     protected function num2alpha($n)
     {
-        return chr(64 + $n);
+        for ($r = ''; $n >= 0; $n = intval($n / 26) - 1) {
+            $r = chr($n % 26 + 0x41).$r;
+        }
+    
+        return $r;
     }
 }
