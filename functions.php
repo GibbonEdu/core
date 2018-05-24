@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 require_once dirname(__FILE__).'/gibbon.php';
 
@@ -1837,78 +1838,13 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
  */
 function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink)
 {
-    if ($moduleName == '') {
-        $moduleName = null;
-    }
+    global $pdo, $gibbon;
 
-    //Check for existence of notification in new status
-    $dataCheck = array('gibbonPersonID' => $gibbonPersonID, 'text' => $text, 'actionLink' => $actionLink, 'name' => $moduleName);
-    $sqlCheck = "SELECT * FROM gibbonNotification WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND actionLink=:actionLink AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
-    $resultCheck = $connection2->prepare($sqlCheck);
-    $resultCheck->execute($dataCheck);
+    $notificationGateway = new \Gibbon\Domain\System\NotificationGateway($pdo);
+    $notificationSender = new \Gibbon\Comms\NotificationSender($notificationGateway, $gibbon->session);
 
-    if ($resultCheck->rowCount() == 1) { //If exists, increment count
-        $rowCheck = $resultCheck->fetch();
-        $dataInsert = array('count' => ($rowCheck['count'] + 1), 'gibbonPersonID' => $gibbonPersonID, 'text' => $text, 'name' => $moduleName);
-        $sqlInsert = "UPDATE gibbonNotification SET count=:count, timestamp=now() WHERE gibbonPersonID=:gibbonPersonID AND text=:text AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name) AND status='New'";
-        $resultInsert = $connection2->prepare($sqlInsert);
-        $resultInsert->execute($dataInsert);
-    } else { //If not exists, create
-        $dataInsert = array('gibbonPersonID' => $gibbonPersonID, 'name' => $moduleName, 'text' => $text, 'actionLink' => $actionLink);
-        $sqlInsert = 'INSERT INTO gibbonNotification SET gibbonPersonID=:gibbonPersonID, gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name=:name), text=:text, actionLink=:actionLink, timestamp=now()';
-        $resultInsert = $connection2->prepare($sqlInsert);
-        $resultInsert->execute($dataInsert);
-    }
-
-    //Check for email notification preference and email address, and send if required
-    $dataSelect = array('gibbonPersonID' => $gibbonPersonID);
-    $sqlSelect = "SELECT email, receiveNotificationEmails FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID AND receiveNotificationEmails='Y' AND NOT email=''";
-    $resultSelect = $connection2->prepare($sqlSelect);
-    $resultSelect->execute($dataSelect);
-    if ($resultSelect->rowCount() == 1) {
-        $rowSelect = $resultSelect->fetch();
-
-        //Include mailer
-        $included = false;
-        $includes = get_included_files();
-        foreach ($includes as $include) {
-            if (strpos(str_replace('\\', '/', $include), '/lib/PHPMailer/PHPMailerAutoload.php') !== false) {
-                $included = true;
-            }
-        }
-        if ($included == false) {
-            require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
-        }
-
-        //Attempt email send
-        $subject = sprintf(__($guid, 'You have received a notification on %1$s at %2$s (%3$s %4$s)'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], date('H:i'), dateConvertBack($guid, date('Y-m-d')));
-        $body = __($guid, 'Notification').': '.$text.'<br/><br/>';
-        $body .= sprintf(__($guid, 'Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>", '</a>');
-        $body .= '<br/><br/>';
-        $body .= '<hr/>';
-        $body .= "<p style='font-style: italic; font-size: 85%'>";
-        $body .= sprintf(__($guid, 'If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:'), $_SESSION[$guid]['systemName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=preferences.php'>", '</a>');
-        $body .= '<br/><br/>';
-        $body .= sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
-        $body .= '</p>';
-        $bodyPlain = emailBodyConvert($body);
-
-        $mail = getGibbonMailer($guid);
-        if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
-            $mail->SetFrom($_SESSION[$guid]['organisationEmail'], $_SESSION[$guid]['organisationName']);
-        }
-        else {
-            $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationName']);
-        }
-        $mail->AddAddress($rowSelect['email']);
-        $mail->CharSet = 'UTF-8';
-        $mail->Encoding = 'base64';
-        $mail->IsHTML(true);
-        $mail->Subject = $subject;
-        $mail->Body = $body;
-        $mail->AltBody = $bodyPlain;
-        $mail->Send();
-    }
+    $notificationSender->addNotification($gibbonPersonID, $text, $moduleName, $actionLink);
+    $success = $notificationSender->sendNotifications();
 }
 
 /**
@@ -1916,21 +1852,7 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
  */
 function ynExpander($guid, $yn, $translation = true)
 {
-    $output = '';
-
-    if ($yn == 'Y' or $yn == 'y') {
-        $output = 'Yes';
-    } elseif ($yn == 'N' or $yn == 'n') {
-        $output = 'No';
-    } else {
-        $output = 'NA';
-    }
-
-    if ($translation == true) {
-        $output = __($guid, $output);
-    }
-
-    return $output;
+    return Format::yesNo($yn, $translation);
 }
 
 //Accepts birthday in mysql date (YYYY-MM-DD) ;
@@ -2428,46 +2350,7 @@ function getModuleEntry($address, $connection2, $guid)
  */
 function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
 {
-    global $guid;
-    $output = false;
-
-    if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
-
-        $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
-        $format = isset($_SESSION[$guid][$setting])? $_SESSION[$guid][$setting] : '[title] [preferredName:1]. [surname]';
-
-        $output = preg_replace_callback('/\[+([^\]]*)\]+/u',
-            function ($matches) use ($title, $preferredName, $surname) {
-                list($token, $length) = array_pad(explode(':', $matches[1], 2), 2, false);
-                return isset($$token)
-                    ? (!empty($length)? mb_substr($$token, 0, intval($length)) : $$token)
-                    : $matches[0];
-            },
-        $format);
-
-    } elseif ($roleCategory == 'Parent') {
-        if ($informal == false) {
-            if ($reverse == true) {
-                $output = $title.' '.$surname.', '.$preferredName;
-            } else {
-                $output = $title.' '.$preferredName.' '.$surname;
-            }
-        } else {
-            if ($reverse == true) {
-                $output = $surname.', '.$preferredName;
-            } else {
-                $output = $preferredName.' '.$surname;
-            }
-        }
-    } elseif ($roleCategory == 'Student') {
-        if ($reverse == true) {
-            $output = $surname.', '.$preferredName;
-        } else {
-            $output = $preferredName.' '.$surname;
-        }
-    }
-
-    return trim($output);
+    return Format::name($title, $preferredName, $surname, $roleCategory, $reverse, $informal);
 }
 
 //$tinymceInit indicates whether or not tinymce should be initialised, or whether this will be done else where later (this can be used to improve page load.
@@ -3305,19 +3188,7 @@ function sidebar($gibbon, $pdo)
  */
 function addressFormat($address, $addressDistrict, $addressCountry)
 {
-    $return = false;
-
-    if ($address != '') {
-        $return .= $address;
-        if ($addressDistrict != '') {
-            $return .= ', '.$addressDistrict;
-        }
-        if ($addressCountry != '') {
-            $return .= ', '.$addressCountry;
-        }
-    }
-
-    return $return;
+    return Format::address($address, $addressDistrict, $addressCountry);
 }
 
 //Print out, preformatted indicator of max file upload size
@@ -3383,20 +3254,7 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
  */
 function getAge($guid, $stamp, $short = false, $yearsOnly = false)
 {
-    $output = '';
-    $diff = time() - $stamp;
-    $years = floor($diff / 31556926);
-    $months = floor(($diff - ($years * 31556926)) / 2629743.83);
-    if ($short == true) {
-        $output = $years.__($guid, 'y').', '.$months.__($guid, 'm');
-    } else {
-        $output = $years.' '.__($guid, 'years').', '.$months.' '.__($guid, 'months');
-    }
-    if ($yearsOnly == true) {
-        $output = $years;
-    }
-
-    return $output;
+    return Format::age(date('Y-m-d', $stamp), $short);
 }
 
 //Looks at the grouped actions accessible to the user in the current module and returns the highest
@@ -3446,21 +3304,7 @@ function getRoleCategory($gibbonRoleID, $connection2)
  */
 function dateConvertToTimestamp($date)
 {
-    list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-    $timestamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-
-    return $timestamp;
-}
-
-/**
- * @deprecated in v16. Use Format::timestamp
- */
-function dateConvertToTimestampGM($date)
-{
-    list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
-    $timestamp = gmmktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-
-    return $timestamp;
+    return Format::timestamp($date);
 }
 
 //Checks to see if a specified date (YYYY-MM-DD) is a day where school is open in the current academic year. There is an option to search all years
@@ -3532,15 +3376,7 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
  */
 function printUserPhoto($guid, $path, $size)
 {
-    $sizeStyle = "style='width: 75px; height: 100px'";
-    if ($size == 240) {
-        $sizeStyle = "style='width: 240px; height: 320px'";
-    }
-    if ($path == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$path) == false) {
-        echo "<img $sizeStyle class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/anonymous_'.$size.".jpg'/><br/>";
-    } else {
-        echo "<img $sizeStyle class='user' src='".$_SESSION[$guid]['absoluteURL']."/$path'/><br/>";
-    }
+    echo Format::userPhoto($path, $size);
 }
 
 /**
@@ -3548,18 +3384,7 @@ function printUserPhoto($guid, $path, $size)
  */
 function getUserPhoto($guid, $path, $size)
 {
-    $output = '';
-    $sizeStyle = "style='width: 75px; height: 100px'";
-    if ($size == 240) {
-        $sizeStyle = "style='width: 240px; height: 320px'";
-    }
-    if ($path == '' or file_exists($_SESSION[$guid]['absolutePath'].'/'.$path) == false) {
-        $output = "<img $sizeStyle class='user' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/anonymous_'.$size.".jpg'/><br/>";
-    } else {
-        $output = "<img $sizeStyle class='user' src='".$_SESSION[$guid]['absoluteURL']."/$path'/><br/>";
-    }
-
-    return $output;
+    return Format::userPhoto($path, $size);
 }
 
 //Gets Members of a roll group and prints them as a table.
@@ -4025,19 +3850,7 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false )
  */
 function dateConvert($guid, $date)
 {
-    $output = false;
-
-    if ($date != '') {
-        if ($_SESSION[$guid]['i18n']['dateFormat'] == 'mm/dd/yyyy') {
-            $firstSlashPosition = 2;
-            $secondSlashPosition = 5;
-            $output = substr($date, ($secondSlashPosition + 1)).'-'.substr($date, 0, $firstSlashPosition).'-'.substr($date, ($firstSlashPosition + 1), 2);
-        } else {
-            $output = date('Y-m-d', strtotime(str_replace('/', '-', $date)));
-        }
-    }
-
-    return $output;
+    return Format::dateConvert($date);
 }
 
 /**
@@ -4047,18 +3860,7 @@ function dateConvert($guid, $date)
  */
 function dateConvertBack($guid, $date)
 {
-    $output = false;
-
-    if ($date != '') {
-        $timestamp = strtotime($date);
-        if ($_SESSION[$guid]['i18n']['dateFormatPHP'] != '') {
-            $output = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $timestamp);
-        } else {
-            $output = date('d/m/Y', $timestamp);
-        }
-    }
-
-    return $output;
+    return Format::date($date);
 }
 
 function isActionAccessible($guid, $connection2, $address, $sub = '')
@@ -4502,21 +4304,8 @@ class ExportToExcel
  * @deprecated in v16. Use Format::phone()
  */
 function formatPhone($num)
-{ //Function by Zeromatik on StackOverflow
-    $num = preg_replace('/[^0-9]/', '', $num);
-    $len = strlen($num);
-
-    if ($len == 7) {
-        $num = preg_replace('/([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 $2 $3', $num);
-    } elseif ($len == 8) {
-        $num = preg_replace('/([0-9]{4})([0-9]{4})/', '$1 $2', $num);
-    } elseif ($len == 9) {
-        $num = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{2})/', '$1 - $2 $3 $4', $num);
-    } elseif ($len == 10) {
-        $num = preg_replace('/([0-9]{3})([0-9]{2})([0-9]{2})([0-9]{3})/', '$1 - $2 $3 $4', $num);
-    }
-
-    return $num;
+{
+    return Format::phone($num);
 }
 
 function setLog($connection2, $gibbonSchoolYearID, $gibbonModuleID, $gibbonPersonID, $title, $array = null, $ip = null)

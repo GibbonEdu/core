@@ -142,6 +142,17 @@ class Format
     }
 
     /**
+     * Converts a YYYY-MM-DD date to a Unix timestamp;
+     *
+     * @return string
+     */
+    public static function timestamp($dateString)
+    {
+        $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        return $date ? $date->getTimestamp() : 0;
+    }
+
+    /**
      * Formats a number to an optional decimal points.
      *
      * @param int|string $value
