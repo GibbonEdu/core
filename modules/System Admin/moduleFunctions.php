@@ -134,44 +134,6 @@ function getModuleVersion($moduleName, $guid)
 }
 
 /**
- * Load the module manifest into an array. Handling the include in a function keeps the variable scope contained.
- * @param string $moduleName
- * @param string $guid
- * @return array
- */
-function getModuleManifest($moduleName, $guid)
-{
-    $name = $description = $entryURL = $type = $category = $version = $author = $url = '';
-    $manifestOK = false;
-
-    $manifestFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$moduleName.'/manifest.php';
-    if (is_file($manifestFile)) {
-        include $manifestFile;
-        $manifestOK = ($name == $moduleName);
-    }
-    
-    return compact('name', 'description', 'entryURL', 'type', 'category', 'version', 'author', 'url', 'manifestOK');
-}
-
-/**
- * Get the version number for a module from it's version.php file.
- *
- * @param string $moduleName
- * @param string $guid
- * @return string
- */
-function getModuleVersion($moduleName, $guid)
-{
-    $versionFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$moduleName.'/version.php';
-    if (is_file($versionFile)) {
-        include $versionFile;
-       return $moduleVersion;
-    } else {
-        return false;
-    }
-}
-
-/**
  * Load the theme manifest into an array. Handling the include in a function keeps the variable scope contained.
  * @param string $themeName
  * @param string $guid
