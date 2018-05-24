@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             $actions->addAction('edit', __('Edit'))
                     ->setURL('/modules/User Admin/user_manage_edit.php');
 
-            if ($person['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID']) {
+            if ($person['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] && $_SESSION[$guid]['gibbonRoleIDCurrent'] == '001') {
                 $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/User Admin/user_manage_delete.php');
             }
