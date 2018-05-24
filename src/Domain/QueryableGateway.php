@@ -93,10 +93,8 @@ abstract class QueryableGateway extends Gateway
 
         // Filter By
         if ($criteria->hasFilter()) {
-            foreach ($criteria->getFilterBy() as $name) {
-                list($name, $value) = array_pad(explode(':', $name, 2), 2, '');
+            foreach ($criteria->getFilterBy() as $name => $value) {
                 if ($callback = $criteria->getFilterRule($name)) {
-                    $value = str_replace('"', '', $value);
                     $query = $callback($query, $value);
                 }
             }
@@ -107,13 +105,13 @@ abstract class QueryableGateway extends Gateway
             $searchable = $this->getSearchableColumns();
 
             $query->where(function($query) use ($criteria, $searchable) {
-                $search = $criteria->getSearchBy();
-                foreach ($search['columns'] as $count => $column) {
+                $searchText = $criteria->getSearchText();
+                foreach ($criteria->getSearchColumns() as $count => $column) {
                     if (!in_array($column, $searchable)) continue;
 
                     $column = $this->escapeIdentifier($column);
                     $query->orWhere("{$column} LIKE :search{$count}");
-                    $query->bindValue(":search{$count}", "%{$search['text']}%");
+                    $query->bindValue(":search{$count}", "%{$searchText}%");
                 }
             });
         }

@@ -338,6 +338,7 @@ DataTable = (function(element, basePath, filters, totalCount) {
     _.totalCount = totalCount;
     
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
+    if (_.filters.filterBy.length == 0) _.filters.filterBy = {};
 
     _.init();
 });
@@ -369,20 +370,17 @@ DataTable.prototype.init = function() {
 
     // Remove Filter
     $(_.table).on('click', '.filter', function() {
-        var index = _.filters.filterBy.indexOf($(this).data('filter'));
+        var filter = $(this).data('filter');
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = [''];
+            _.filters.filterBy = {};
             _.filters.searchBy.columns = [''];
-        } else if (index !== -1) {
-            _.filters.filterBy.splice(index, 1);
-
-            // Remove columns from search criteria if using an in: filter
-            if ($(this).data('filter').startsWith('in:')) {
-                var columnName = $(this).data('filter').substr(3);
-                _.filters.searchBy.columns = _.filters.searchBy.columns.filter(function(item) {
-                    return item != columnName;
-                });
+        } else if (filter in _.filters.filterBy) {
+            // Remove columns from search criteria if removing an in: filter
+            if (filter == 'in') {
+                _.filters.searchBy.columns = [''];
             }
+
+            delete _.filters.filterBy[filter];
         }
         _.filters.page = 1;
         _.refresh();
@@ -390,10 +388,11 @@ DataTable.prototype.init = function() {
 
     // Add Filter
     $(_.table).on('change', '.filters', function() {
-        if (!_.filters.filterBy.includes($(this).val())) {
-            _.filters.filterBy.push( $(this).val() );
-            _.filters.page = 1;
-        }
+        var [filter, value] = $(this).val().split(':');
+
+        _.filters.filterBy[filter] = value;
+        _.filters.page = 1;
+
         _.refresh();
     });
 

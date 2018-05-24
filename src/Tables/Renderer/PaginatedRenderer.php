@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
+use Gibbon\Tables\Column;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\FormFactory;
-use Gibbon\Tables\DataTable;
-use Gibbon\Tables\ActionColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 
 /**
@@ -32,7 +32,7 @@ use Gibbon\Tables\Renderer\RendererInterface;
  * @version v16
  * @since   v16
  */
-class PaginatedRenderer implements RendererInterface
+class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 {
     protected $path;
     protected $criteria;
@@ -72,105 +72,26 @@ class PaginatedRenderer implements RendererInterface
         $output .= '<div id="'.$table->getID().'">';
         $output .= '<div class="dataTable">';
 
-        // Debug the AJAX $POST => Filters
-        // $output .= '<code>';
-        // $output .= 'POST: '.json_encode($_POST).'<br/>';
-        // $output .= '</code>';
-
-        // Debug the criteria
-        // $output .= '<code>';
-        // $output .= 'Criteria: '.$this->criteria->toJson();
-        // $output .= '</code>';
-
         $filterOptions = $table->getMetaData('filterOptions', []);
 
-        $output .= '<div>';
-        $output .= $this->renderPageCount($dataSet);
-        $output .= $this->renderPageFilters($dataSet, $filterOptions);
-        $output .= '</div>';
-        $output .= $this->renderFilterOptions($dataSet, $filterOptions);
-        $output .= $this->renderPageSize($dataSet);
-        $output .= $this->renderPagination($dataSet);
+        $output .= '<header>';
+            $output .= '<div>';
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPageFilters($dataSet, $filterOptions);
+            $output .= '</div>';
+            $output .= $this->renderFilterOptions($dataSet, $filterOptions);
+            $output .= $this->renderPageSize($dataSet);
+            $output .= $this->renderPagination($dataSet);
+        $output .= '</header>';
 
-        if ($dataSet->count() > 0) {
-            $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
+        $output .= parent::renderTable($table, $dataSet);
 
-            // HEADING
-            $output .= '<thead>';
-            $output .= '<tr class="head">';
-            foreach ($table->getColumns() as $columnName => $column) {
-                $classes = array('column');
-
-                if ($sortBy = $column->getSortable()) {
-                    $classes[] = 'sortable';
-
-                    foreach ($sortBy as $sortColumn) {
-                        if ($this->criteria->hasSort($sortColumn)) {
-                            $classes[] = 'sorting sort'.$this->criteria->getSortBy($sortColumn);
-                        }
-                    }
-                } else {
-                    $sortBy = array();
-                }
-
-                $output .= '<th title="'.$column->getTitle().'" style="width:'.$column->getWidth().'" class="'.implode(' ', $classes).'" data-sort="'.implode(',', $sortBy).'">';
-                $output .=  $column->getLabel();
-                $output .= '<br/><small><i>'.$column->getDescription().'</i></small>';
-                $output .= '</th>';
-            }
-            $output .= '</tr>';
-            $output .= '</thead>';
-
-            // ROWS
-            $output .= '<tbody>';
-
-            $rowLogic = $table->getRowLogic();
-            $cellLogic = $table->getCellLogic();
-
-            foreach ($dataSet as $data) {
-                $row = $this->factory->createTableCell();
-                if ($rowLogic) {
-                    $row = $rowLogic($row, $data);
-                }
-
-                $output .= '<tr '.$row->getAttributeString().'>';
-                $output .= $row->getPrepended();
-
-                foreach ($table->getColumns() as $columnName => $column) {
-                    $cell = $this->factory->createTableCell();
-                    if ($cellLogic) {
-                        $cell = $cellLogic($cell, $data);
-                    }
-
-                    $output .= '<td '.$row->getAttributeString().'>';
-                    $output .= $cell->getPrepended();
-                    $output .= $column->getOutput($data);
-                    $output .= $cell->getAppended();
-                    $output .= '</td>';
-                }
-
-                $output .= $row->getAppended();
-                $output .= '</tr>';
-            }
-
-            $output .= '</tbody>';
-            $output .= '</table>';
-
+        if ($dataSet->getPageCount() > 1) {
+            $output .= '<footer>';
             $output .= $this->renderPageCount($dataSet);
             $output .= $this->renderPagination($dataSet);
-        } else {
-            if ($dataSet->isSubset()) {
-                $output .= '<div class="warning">';
-                $output .= __('No results matched your search.');
-                $output .= '</div>';
-            } else {
-                $output .= '<div class="error">';
-                $output .= __('There are no records to display.');
-                $output .= '</div>';
-            }
+            $output .= '</footer>';
         }
-
-        
 
         $output .= '</div></div><br/>';
 
@@ -186,6 +107,29 @@ class PaginatedRenderer implements RendererInterface
     }
 
     /**
+     * Overrides the SimpleRenderer header to add sortable column classes & data attribute.
+     * @param Column $column
+     * @return Element
+     */
+    protected function createTableHeader(Column $column)
+    {
+        $th = parent::createTableHeader($column);
+
+        if ($sortBy = $column->getSortable()) {
+            $th->addClass('sortable');
+            $th->addData('sort', implode(',', $sortBy));
+
+            foreach ($sortBy as $sortColumn) {
+                if ($this->criteria->hasSort($sortColumn)) {
+                    $th->addClass('sorting sort'.$this->criteria->getSortBy($sortColumn));
+                }
+            }
+        }
+
+        return $th;
+    }
+
+    /**
      * Render the record count for this page, and total record count.
      *
      * @param DataSet $dataSet
@@ -193,14 +137,14 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageCount(DataSet $dataSet)
     {
-        $output = '<span class="small" style="line-height: 32px;margin-right: 10px;">';
+        $output = '<small style="margin-right: 10px;">';
 
         $output .= $this->criteria->hasSearchText()? __('Search').' ' : '';
         $output .= $dataSet->isSubset()? __('Results') : __('Records');
         $output .= $dataSet->count() > 0? ' '.$dataSet->getPageFrom().'-'.$dataSet->getPageTo().' '.__('of').' ' : ': ';
         $output .= $dataSet->isSubset()? $dataSet->getResultCount() : $dataSet->getTotalCount();
 
-        $output .= '</span>';
+        $output .= '</small>';
 
         return $output;
     }
@@ -214,22 +158,25 @@ class PaginatedRenderer implements RendererInterface
      */
     protected function renderPageFilters(DataSet $dataSet, array $filters)
     {
-        $output = '<span class="small" style="line-height: 32px;">';
+        $output = '<small>';
 
         if ($this->criteria->hasFilter()) {
             $output .= __('Filtered by').' ';
 
-            $criteriaUsed = array_reduce($this->criteria->getFilterBy(), function($group, $item) use ($filters) {
-                $group[$item] = isset($filters[$item])? $filters[$item] : ucwords(str_replace(':', ': ', $item));
-                return $group; 
-            }, array());
+            $criteriaUsed = array();
+            foreach ($this->criteria->getFilterBy() as $name => $value) {
+                $key = $name.':'.$value;
+                $criteriaUsed[$name] = isset($filters[$key]) ? $filters[$key] : __(ucfirst($name)).': '.__(ucfirst($value));
+            }
 
-            foreach ($criteriaUsed as $value => $label) {
-                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$value.'"> ';
+            foreach ($criteriaUsed as $name => $label) {
+                $output .= '<input type="button" class="filter" value="'.$label.'" data-filter="'.$name.'"> ';
             }
 
             $output .= '<input type="button" class="filter clear buttonLink" value="'.__('Clear').'">';
         }
+
+        $output .= '</small>';
 
         return $output;
     }

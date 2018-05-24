@@ -24,6 +24,7 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Action;
 use Gibbon\Tables\Column;
 use Gibbon\Tables\ActionColumn;
+use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Forms\OutputableInterface;
@@ -60,7 +61,7 @@ class DataTable implements OutputableInterface
     }
 
     /**
-     * Static create method, for ease of method chaining.
+     * Static create method, for ease of method chaining. Defaults to a simple table renderer.
      *
      * @param string $id
      * @param RendererInterface $renderer
@@ -68,7 +69,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new self($id, $renderer);
+        return new self($id, $renderer ? $renderer : new SimpleRenderer());
     }
 
     /**
@@ -80,7 +81,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?q='.$_GET['q']));
+        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
     }
 
     /**

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Domain\User\UserGateway;
@@ -97,26 +99,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     // COLUMNS
     $table->addColumn('image_240', __('Photo'))
         ->width('10%')
-        ->format(function($person) use ($guid) {
-            return getUserPhoto($guid, $person['image_240'], 75);
-        });
+        ->notSortable()
+        ->format(Format::using('userPhoto', 'image_240'));
 
     $table->addColumn('fullName', __('Name'))
         ->width('30%')
         ->sortable(['surname', 'preferredName'])
-        ->format(function($person) {
-            return formatName('', $person['preferredName'], $person['surname'], 'Student', true);
-        });
+        ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('status', __('Status'))
-        ->width('10%')
-        ->sortable();
+    $table->addColumn('status', __('Status'))->width('10%');
 
-    $table->addColumn('primaryRole', __('Primary Role'))
-        ->width('16%')
-        ->sortable();
+    $table->addColumn('primaryRole', __('Primary Role'))->width('16%');
 
     $table->addColumn('family', __('Family'))
+        ->notSortable()
         ->format(function($person) use ($guid) {
             $output = '';
             foreach ($person['families'] as $family) {
@@ -125,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
             return $output;
         });
 
-    $table->addColumn('username', __('Username'))->sortable();
+    $table->addColumn('username', __('Username'));
 
     // ACTIONS
     $table->addActionColumn()
