@@ -169,11 +169,14 @@ class Format
      * Formats a Y/N value as Yes or No in the current language.
      *
      * @param string $value
+     * @param bool   $translate
      * @return string
      */
-    public static function yesNo($value)
+    public static function yesNo($value, $translate = true)
     {
-        return ($value == 'Y' || $value == 'Yes') ? __('Yes') : __('No');
+        $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
+        
+        return $translate ? __($value) : $value;
     }
 
     /**
@@ -234,6 +237,21 @@ class Format
         }
 
         return ($type? $type.': ' : '') . ($countryCode? '+'.$countryCode.' ' : '') . $number;
+    }
+
+    /**
+     * Formats an address including optional district and country.
+     *
+     * @param string $address
+     * @param string $addressDistrict
+     * @param string $addressCountry
+     * @return string
+     */
+    public static function address($address, $addressDistrict, $addressCountry)
+    {
+        if (empty($address)) return '';
+
+        return $address . ($addressDistrict? ', '.$addressDistrict : '') . ($addressCountry? ', '.$addressCountry : '');
     }
 
     /**

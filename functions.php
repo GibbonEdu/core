@@ -54,18 +54,6 @@ function emailBodyConvert($body)
     return $return ;
 }
 
-/**
- * @deprecated Deprecated since version v13, to be removed in v14.
- */
-function setStringReplacementList($connection2, $guid)
-{
-    @trigger_error(sprintf('The %s() method is deprecated since version v13 and will be removed in v14. Use $gibbon->locale->setStringReplacementList() instead.', __METHOD__), E_USER_DEPRECATED);
-
-    global $gibbon, $pdo; // For backwards compatibilty
-
-    $gibbon->locale->setStringReplacementList($pdo);
-}
-
 //Custom translation function to allow custom string replacement
 function __($arg1, $arg2 = null, $arg3 = null)
 {
@@ -1844,7 +1832,9 @@ function archiveNotification($connection2, $guid, $gibbonPersonID, $actionLink)
     return $return;
 }
 
-//Sets a system-wide notification
+/**
+ * @deprecated in v16. Use NotificationSender class.
+ */
 function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleName, $actionLink)
 {
     if ($moduleName == '') {
@@ -1921,7 +1911,9 @@ function setNotification($connection2, $guid, $gibbonPersonID, $text, $moduleNam
     }
 }
 
-//Expands Y and N to Yes and No, with and without translation
+/**
+ * @deprecated in v16. Use Format::yesNo
+ */
 function ynExpander($guid, $yn, $translation = true)
 {
     $output = '';
@@ -2431,6 +2423,9 @@ function getModuleEntry($address, $connection2, $guid)
     return $output;
 }
 
+/**
+ * @deprecated in v16. Use Format::name
+ */
 function formatName($title, $preferredName, $surname, $roleCategory, $reverse = false, $informal = false)
 {
     global $guid;
@@ -3305,7 +3300,9 @@ function sidebar($gibbon, $pdo)
     }
 }
 
-//Format address according to supplied inputs
+/**
+ * @deprecated in v16. Use Format::address
+ */
 function addressFormat($address, $addressDistrict, $addressCountry)
 {
     $return = false;
@@ -3381,7 +3378,9 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
     return $output;
 }
 
-//Gets age from date of birth, in days and months, from Unix timestamp
+/**
+ * @deprecated in v16. Use Format::age
+ */
 function getAge($guid, $stamp, $short = false, $yearsOnly = false)
 {
     $output = '';
@@ -3442,7 +3441,9 @@ function getRoleCategory($gibbonRoleID, $connection2)
     return $output;
 }
 
-//Converts a specified date (YYYY-MM-DD) into a UNIX timestamp, factoring in timezones
+/**
+ * @deprecated in v16. Use Format::timestamp
+ */
 function dateConvertToTimestamp($date)
 {
     list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
@@ -3451,7 +3452,9 @@ function dateConvertToTimestamp($date)
     return $timestamp;
 }
 
-//Converts a specified date (YYYY-MM-DD) into a UNIX timestamp, at GMT
+/**
+ * @deprecated in v16. Use Format::timestamp
+ */
 function dateConvertToTimestampGM($date)
 {
     list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
@@ -3524,8 +3527,9 @@ function isSchoolOpen($guid, $date, $connection2, $allYears = '')
     return $isSchoolOpen;
 }
 
-//DEPRECATED IN VERSION 8 IN FAVOUR OF getUserPhoto
-//Prints a given user photo, or a blank if not available
+/**
+ * @deprecated in v16. Use Format::userPhoto
+ */
 function printUserPhoto($guid, $path, $size)
 {
     $sizeStyle = "style='width: 75px; height: 100px'";
@@ -3539,7 +3543,9 @@ function printUserPhoto($guid, $path, $size)
     }
 }
 
-//Gets a given user photo, or a blank if not available
+/**
+ * @deprecated in v16. Use Format::userPhoto
+ */
 function getUserPhoto($guid, $path, $size)
 {
     $output = '';
@@ -4012,7 +4018,11 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false )
     return false;
 }
 
-//Converts date from language-specific format to YYYY-MM-DD
+/**
+ * Converts date from language-specific format to YYYY-MM-DD. DEPRECATED.
+ * 
+ * @deprecated in v16. Use Format::dateConvert
+ */
 function dateConvert($guid, $date)
 {
     $output = false;
@@ -4030,7 +4040,11 @@ function dateConvert($guid, $date)
     return $output;
 }
 
-//Converts date from YYYY-MM-DD to language-specific format.
+/**
+ * Converts date from YYYY-MM-DD to language-specific format. DEPRECATED. 
+ * 
+ * @deprecated in v16. Use Format::date
+ */
 function dateConvertBack($guid, $date)
 {
     $output = false;
@@ -4111,6 +4125,9 @@ function isModuleAccessible($guid, $connection2, $address = '')
     return $output;
 }
 
+/**
+ * @deprecated in v16. Use DataTables::createdPaginated()
+ */
 function printPagination($guid, $total, $page, $pagination, $position, $get = '')
 {
     if ($position == 'bottom') {
@@ -4436,13 +4453,9 @@ function randomPassword($length)
     return $password;
 }
 
-//THESE EXCEL FUNCTIONS ARE DEPCREATED IN V11 FOR REMOVAL BY V13. They have been replaced by the PHPExcel library in /lib
-/*	Author: Raju Mazumder
-    email:rajuniit@gmail.com
-    Class:A simple class to export mysql query and whole html and php page to excel,doc etc
-    Downloaded from: http://webscripts.softpedia.com/script/PHP-Clases/Export-To-Excel-50394.html
-    License: GNU GPL
-*/
+/**
+ * @deprecated in v16. Use DataTables & SpreadsheetRenderer. To be removed in v17.
+ */
 class ExportToExcel
 {
     public function setHeader($excel_file_name)//this function used to set the header variable
@@ -4485,6 +4498,9 @@ class ExportToExcel
     }
 }
 
+/**
+ * @deprecated in v16. Use Format::phone()
+ */
 function formatPhone($num)
 { //Function by Zeromatik on StackOverflow
     $num = preg_replace('/[^0-9]/', '', $num);
@@ -4801,36 +4817,6 @@ function getGibbonMailer($guid) {
     }
 
     return $mail;
-}
-
-/**
- * Print an Object Alias (Dump).
- *
- * @version 16th February 2015
- *
- * @since   OLD
- *
- * @param   mixed The object to be printed
- * @param   bool Stop execution after printing object.
- * @param   bool Full print the Call Trace Stack
- */
-function dump($object, $stop = false, $full = false)
-{
-    $caller = debug_backtrace();
-    echo "<pre>\n";
-    echo $caller[0]['line'].': '.$caller[0]['file'];
-    echo "\n</pre>\n";
-    echo "<pre>\n";
-    print_r($object);
-    if ($full) {
-        print_r($caller);
-    }
-    echo "\n</pre>\n";
-    if ($stop) {
-        trigger_error('Object Print Stop', E_USER_ERROR);
-    }
-
-    return;
 }
 
 /**
