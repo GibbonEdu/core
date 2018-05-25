@@ -66,6 +66,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
 
+            // Provide a link back to edit the associated record
+            echo "<div class='linkTop'>";
+            if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=".$oldValues['gibbonPersonID']."'>".__('Edit User')."<img style='margin: 0 0 -4px 5px' title='".__('Edit User')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            }
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == true && getRoleCategory($oldValues['gibbonRoleIDPrimary'], $connection2) == 'Student') {
+                echo "&nbsp;&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$oldValues['gibbonPersonID']."'>".__('View Student')."<img style='margin: 0 0 -4px 5px' title='".__('View Student')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            }
+            echo '</div>';
+
             //Get categories
             $staff = false;
             $student = false;

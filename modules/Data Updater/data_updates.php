@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
                 if (!empty($dataUpdatesByType[$type])) {
                     foreach ($dataUpdatesByType[$type] as $dataUpdate) {
-                        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_'.strtolower($type).'.php&'.$dataUpdate['idType'].'='.$dataUpdate['id'].'">';
+                        $output .= '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_'.strtolower($type).'.php&'.$dataUpdate['idType'].'='.$dataUpdate['id'].'" style="display:block;">';
 
                         $lastUpdate = !empty($dataUpdate['lastUpdated'])? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) : '';
                         
