@@ -97,8 +97,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->description(__('Application Date'))
         ->sortable(['surname', 'preferredName'])
         ->format(function($row) {
-            return Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true)
-                .'<br/><span class="small emphasis">'.Format::dateTime($row['timestamp']).'</span>';
+            if (!empty($row['gibbonPersonID'])) {
+                $output = Format::name('', $row['preferredName'], $row['surname'], 'Staff', true, true);
+            } else {
+                $output = Format::name('', $row['applicationPreferredName'], $row['applicationSurname'], 'Staff', true, true);
+            }
+            return $output.'<br/><span class="small emphasis">'.Format::dateTime($row['timestamp']).'</span>';
         });
 
     $table->addColumn('jobTitle', __('Position'));
