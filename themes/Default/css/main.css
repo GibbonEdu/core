@@ -1679,6 +1679,44 @@ table.smallIntBorder td.noPadding {
     line-height: 32px;
 }
 
+.dataTable .expandable {
+    border-right: 0px !important;
+    padding: 0px !important;
+    overflow: visible;
+}
+
+.dataTable .expandable + td {
+    border-left: 0px !important;
+    padding-left: 4px !important;
+}
+
+.dataTable .expander {
+    display: block;
+    padding: 15px 10px;
+    cursor: pointer;
+}
+
+.dataTable .expander:before {
+    content: '';
+    border: solid #999;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transition: transform 0.2s;
+    pointer-events: none;
+}
+
+.dataTable .expander:hover:before {
+    border-color: #444;
+}
+
+.dataTable .expander.expanded:before {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
 button, input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }

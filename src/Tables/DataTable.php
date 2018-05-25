@@ -169,6 +169,30 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Add a checkbox column to the table, used for bulk-action tables.
+     *
+     * @return CheckboxColumn
+     */
+    public function addCheckboxColumn($id, $key = '')
+    {
+        $this->columns[$id] = new CheckboxColumn($id, $key);
+
+        return $this->columns[$id];
+    }
+
+    /**
+     * Add an expander arrow for 
+     *
+     * @return ExpandableColumn
+     */
+    public function addExpandableColumn($id)
+    {
+        $this->columns[$id] = new ExpandableColumn($id, $this);
+
+        return $this->columns[$id];
+    }
+
+    /**
      * Get all columns in the table.
      *
      * @return array
