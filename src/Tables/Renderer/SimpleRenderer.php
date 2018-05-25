@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Tables\Column;
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Layout\Element;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Forms\Layout\Element;
 
 /**
  * SimpleRenderer
