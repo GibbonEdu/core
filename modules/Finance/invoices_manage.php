@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         // DATA TABLE
         $table = $form->addRow()->addDataTable('invoices', $criteria)->withData($invoices);
 
-        $table->setRowLogic(function ($row, $invoice) {
+        $table->setRowLogic(function ($invoice, $row) {
             // Row Highlight
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
             else if ($invoice['status'] == 'Paid') $row->addClass('current');
