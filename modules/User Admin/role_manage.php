@@ -57,6 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     $table->addColumn('description', __('Description'));
     $table->addColumn('type', __('Type'));
     $table->addColumn('loginYear', __('Login Years'))
+        ->notSortable()
         ->format(function ($row) {
             if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
                 return __('All years');

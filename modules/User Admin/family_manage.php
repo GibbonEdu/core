@@ -89,22 +89,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
 
     $table->addColumn('name', __('Name'));
     $table->addColumn('status', __('Marital Status'));
-    $table->addColumn('adults', __('Adults'))->format(function($row) {
-        array_walk($row['adults'], function(&$person) {
-            if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
-                $person['surname'] .= ' <i>('.$person['status'].')</i>';
-            }
+    $table->addColumn('adults', __('Adults'))
+        ->notSortable()
+        ->format(function($row) {
+            array_walk($row['adults'], function(&$person) {
+                if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
+                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
+                }
+            });
+            return Format::nameList($row['adults'], 'Parent');
         });
-        return Format::nameList($row['adults'], 'Parent');
-    });
-    $table->addColumn('children', __('Children'))->format(function($row) {
-        array_walk($row['children'], function(&$person) {
-            if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
-                $person['surname'] .= ' <i>('.$person['status'].')</i>';
-            }
+    $table->addColumn('children', __('Children'))
+        ->notSortable()
+        ->format(function($row) {
+            array_walk($row['children'], function(&$person) {
+                if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
+                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
+                }
+            });
+            return Format::nameList($row['children'], 'Student');
         });
-        return Format::nameList($row['children'], 'Student');
-    });
 
     // ACTIONS
     $table->addActionColumn()
