@@ -196,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         // DATA TABLE
         $table = $form->addRow()->addDataTable('invoices', $criteria)->withData($invoices);
 
-        $table->setRowLogic(function ($invoice, $row) {
+        $table->modifyRows(function ($invoice, $row) {
             // Row Highlight
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
             else if ($invoice['status'] == 'Paid') $row->addClass('current');
@@ -216,17 +216,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $table->addColumn('rollGroup', __('Roll Group'));
 
-        $table->addColumn('status', __('Status'))->format(function ($invoice) {
-            if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {
-                return 'Issued - Overdue';
-            } else if ($invoice['status'] == 'Paid' && $invoice['invoiceDueDate'] < $invoice['paidDate']) {
-                return 'Paid - Late';
-            } else {
+        $table->addColumn('status', __('Status'))
+            ->format(function ($invoice) {
+                if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) {
+                    return 'Issued - Overdue';
+                } else if ($invoice['status'] == 'Paid' && $invoice['invoiceDueDate'] < $invoice['paidDate']) {
+                    return 'Paid - Late';
+                }
                 return $invoice['status'];
-            }
-        });
+            });
 
-        $table->addColumn('billingSchedule', __('Schedule'));
+        $table->addColumn('billingSchedule', __('Schedule'))
+            ->modifyCells(function($data, $cell) {
+                return $cell->addClass('current');
+            });
 
         $table->addColumn('total', __('Total').' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
             ->description(__('Paid').' ('.$_SESSION[$guid]['currency'].')')

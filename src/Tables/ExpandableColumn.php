@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Input\Checkbox;
 
 /**
@@ -32,10 +33,18 @@ class ExpandableColumn extends Column
     /**
      * Creates a pre-defined column for expanding rows with extra data.
      */
-    public function __construct($id)
+    public function __construct($id, DataTable $table)
     {
         parent::__construct($id);
         $this->sortable(false);
+
+        $table->modifyRows(function($data, $row, $columnCount) {
+            return $row->append($this->getExpandedContent($data, $columnCount));
+        });
+
+        $this->modifyCells(function($data, $cell) {
+            return $cell->addClass('expandable');
+        });
     }
 
     /**
