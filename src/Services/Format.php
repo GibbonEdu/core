@@ -186,6 +186,7 @@ class Format
      */
     public static function link($url, $text = '', $title = '')
     {
+        if (empty($url)) return $text;
         if (!$text) $text = $url;
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {

@@ -103,7 +103,7 @@ class Element implements OutputableInterface
      */
     public function getAppended()
     {
-        return $this->prepended;
+        return $this->appended;
     }
 
     /**
