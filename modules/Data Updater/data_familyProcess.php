@@ -24,6 +24,7 @@ include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
+$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
     $URL .= '&return=error0';
@@ -100,18 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 $event->sendNotifications($pdo, $gibbon->session);
 
-                // Redirect this user to the My Data Updates page if there are any required updates pending
-                $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
-                if ($requiredUpdates == 'Y') {
-                    $gateway = new DataUpdaterGateway($pdo);
-                    $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
-                    if ($updatesRequiredCount > 0) {
-                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php';
-                    }
-                }
-
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                $URLSuccess .= '&return=success0';
+                header("Location: {$URLSuccess}");
             }
         }
     }
