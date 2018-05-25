@@ -47,7 +47,7 @@ class StaffApplicationFormGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonStaffApplicationForm.gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.status', 'gibbonStaffApplicationForm.priority', 'gibbonStaffApplicationForm.timestamp', 'milestones', 'gibbonStaffJobOpening.jobTitle', 'gibbonPerson.surname', 'gibbonPerson.preferredName'
+                'gibbonStaffApplicationForm.gibbonStaffApplicationFormID', 'gibbonStaffApplicationForm.status', 'gibbonStaffApplicationForm.priority', 'gibbonStaffApplicationForm.timestamp', 'milestones', 'gibbonStaffJobOpening.jobTitle', 'gibbonStaffApplicationForm.gibbonPersonID', 'gibbonStaffApplicationForm.surname as applicationSurname', 'gibbonStaffApplicationForm.preferredName as applicationPreferredName', 'gibbonPerson.surname', 'gibbonPerson.preferredName'
             ])
             ->innerJoin('gibbonStaffJobOpening', 'gibbonStaffApplicationForm.gibbonStaffJobOpeningID=gibbonStaffJobOpening.gibbonStaffJobOpeningID')
             ->leftJoin('gibbonPerson', 'gibbonStaffApplicationForm.gibbonPersonID=gibbonPerson.gibbonPersonID');
