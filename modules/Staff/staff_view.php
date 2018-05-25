@@ -95,7 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
 
         if ($highestAction == 'View Staff Profile_full') {
             $table->addMetaData('filterOptions', [
-                'all:on'          => __('All Staff'),
+                'all:on'        => __('All Staff'),
+                'type:teaching' => __('Staff Type').': '.__('Teaching'),
+                'type:support'  => __('Staff Type').': '.__('Support'),
+                'type:other'    => __('Staff Type').': '.__('Other'),
             ]);
         }
 
