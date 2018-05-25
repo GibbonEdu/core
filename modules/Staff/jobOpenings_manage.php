@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffJobOpeningGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -32,78 +36,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonStaffJobOpening ORDER BY dateOpen, jobTitle';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $jobGateway = $container->get(StaffJobOpeningGateway::class);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/jobOpenings_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // QUERY
+    $criteria = $jobGateway->newQueryCriteria()
+        ->sortBy(['dateOpen', 'jobTitle'])
+        ->fromArray($_POST);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Job Title');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Opening Date');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Active');
-        echo '</th>';
-        echo "<th style='width:110px'>";
-        echo __($guid, 'Action');
-        echo '</th>';
-        echo '</tr>';
+    $jobs = $jobGateway->queryJobOpenings($criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    // DATA TABLE
+    $table = DataTable::createPaginated('jobOpeningsManage', $criteria);
 
-            if ($row['active'] == 'N') {
-                $rowNum = 'error';
-            }
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Staff/jobOpenings_manage_add.php')
+        ->displayLabel();
 
-            ++$count;
+    $table->addMetaData('filterOptions', [
+        'active:Y' => __('Active').': '.__('Yes'),
+        'active:N' => __('Active').': '.__('No'),
+    ]);
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo __($guid, $row['type']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['jobTitle']);
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, $row['dateOpen']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['active']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/jobOpenings_manage_edit.php&gibbonStaffJobOpeningID='.$row['gibbonStaffJobOpeningID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/jobOpenings_manage_delete.php&gibbonStaffJobOpeningID='.$row['gibbonStaffJobOpeningID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+    // COLUMNS
+    $table->addColumn('type', __('Type'));
+    $table->addColumn('jobTitle', __('Job Title'));
+    $table->addColumn('dateOpen', __('Opening Date'))
+        ->format(Format::using('date', 'dateOpen'));
+    $table->addColumn('active', __('Active'))
+        ->format(Format::using('yesNo', 'active'));
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonStaffJobOpeningID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($person, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Staff/jobOpenings_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Staff/jobOpenings_manage_delete.php');
+        });
+
+    echo $table->render($jobs);
 }
