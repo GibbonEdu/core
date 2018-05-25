@@ -116,6 +116,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $th = parent::createTableHeader($column);
 
         if ($sortBy = $column->getSortable()) {
+            $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
             $th->addClass('sortable');
             $th->addData('sort', implode(',', $sortBy));
 

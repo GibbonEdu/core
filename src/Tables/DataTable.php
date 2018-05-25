@@ -45,8 +45,7 @@ class DataTable implements OutputableInterface
     protected $header = array();
     protected $meta = array();
 
-    protected $rowLogic;
-    protected $cellLogic;
+    protected $rowModifiers = [];
 
     /**
      * Create a data table with optional renderer.
@@ -180,6 +179,16 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Count all columns in the table.
+     *
+     * @return int
+     */
+    public function getColumnCount()
+    {
+        return count($this->columns);
+    }
+
+    /**
      * Add an action to the table, generally displayed in the header right-hand side.
      *
      * @param string $name
@@ -230,49 +239,26 @@ class DataTable implements OutputableInterface
     }
 
     /**
-     * Set a callable function that can modify each row based on that row's data.
+     * Add a callable function that can modify each row based on that row's data.
      *
      * @param callable $callable
      * @return self
      */
-    public function setRowLogic(callable $callable)
+    public function modifyRows(callable $callable)
     {
-        $this->rowLogic = $callable;
+        $this->rowModifiers[] = $callable;
 
         return $this;
     }
 
     /**
-     * Get the row logic callable.
+     * Get the row logic array of callables.
      *
-     * @return callable
+     * @return array
      */
-    public function getRowLogic()
+    public function getRowModifiers()
     {
-        return $this->rowLogic;
-    }
-
-    /**
-     * Set a callable function that can modify each cell based on that row's data.
-     *
-     * @param callable $callable
-     * @return self
-     */
-    public function setCellLogic(callable $callable)
-    {
-        $this->cellLogic = $callable;
-
-        return $this;
-    }
-
-    /**
-     * Get the cell logic callable.
-     *
-     * @return callable
-     */
-    public function getCellLogic()
-    {
-        return $this->cellLogic;
+        return $this->rowModifiers;
     }
 
     /**

@@ -37,6 +37,8 @@ class Column
     protected $sortable = false;
     protected $formatter;
 
+    protected $cellModifiers = [];
+
     public function __construct($id, $label = '')
     {
         $this->setID($id);
@@ -156,6 +158,29 @@ class Column
     public function hasFormatter() 
     {
         return !empty($this->formatter) && is_callable($this->formatter);
+    }
+
+    /**
+     * Set a callable function that can modify each cell and/or row based on that row's data.
+     *
+     * @param callable $callable
+     * @return self
+     */
+    public function modifyCells(callable $callable)
+    {
+        $this->cellModifiers[] = $callable;
+
+        return $this;
+    }
+
+    /**
+     * Get the array of column logic callables.
+     *
+     * @return callable
+     */
+    public function getCellModifiers()
+    {
+        return $this->cellModifiers;
     }
 
     /**
