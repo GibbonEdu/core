@@ -1635,22 +1635,22 @@ table.smallIntBorder td.noPadding {
 	height: 0px;
 	border: 5px solid transparent;
 	position: absolute;
-	top: 18px;
+	top: 15px;
 	right: 6px;
 }
 
 .dataTable .sortable:not(.sorting):hover:after {
-	border-top: 5px solid #666666;
+	border-bottom: 5px solid #666666;
 	opacity: 0.4;
 }
 
 .dataTable .sortASC:after {
 	border-bottom: 5px solid #666666;
-	top: 15px;
 }
 
 .dataTable .sortDESC:after {
-	border-top: 5px solid #666666;
+    border-top: 5px solid #666666;
+    top: 18px;
 }
 
 .dataTable input[type="button"],
