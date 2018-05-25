@@ -27,6 +27,7 @@ include '../User Admin/moduleFunctions.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_personal.php&gibbonPersonID=$gibbonPersonID";
+$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
     $URL .= '&return=error0';
@@ -356,22 +357,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                         $event->sendNotifications($pdo, $gibbon->session);
 
-                        // Redirect this user to the My Data Updates page if there are any required updates pending
-                        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
-                        if ($requiredUpdates == 'Y') {
-                            $gateway = new DataUpdaterGateway($pdo);
-                            $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
-                            if ($updatesRequiredCount > 0) {
-                                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php';
-                            }
-                        }
 
                         if ($partialFail == true) {
                             $URL .= '&return=warning1';
                             header("Location: {$URL}");
                         } else {
-                            $URL .= '&return=success0';
-                            header("Location: {$URL}");
+                            $URLSuccess .= '&return=success0';
+                            header("Location: {$URLSuccess}");
                         }
                     }
                 }
