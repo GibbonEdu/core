@@ -27,6 +27,10 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
 $I->seeSuccessMessage();
+
+$gibbonFamilyID = $I->grabValueFromURL('gibbonFamilyID');
+
+$I->amOnModulePage('Data Updater', 'data_family.php', ['gibbonFamilyID' => $gibbonFamilyID]);
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
 $gibbonFamilyUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");

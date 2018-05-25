@@ -21,6 +21,9 @@ $I->selectOption('invoiceTo', 'Family');
 $I->click('#content form[method="post"] input[type=submit]');
 $I->seeSuccessMessage();
 
+$gibbonFinanceInvoiceeID = $I->grabValueFromURL('gibbonFinanceInvoiceeID');
+$I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID]);
+
 // Complex Update ------------------------------------------
 $I->selectOption('invoiceTo', 'Company');
 
@@ -38,6 +41,10 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
 $I->seeSuccessMessage();
+
+$gibbonFinanceInvoiceeID = $I->grabValueFromURL('gibbonFinanceInvoiceeID');
+
+$I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID]);
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
 $gibbonFinanceInvoiceeUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
