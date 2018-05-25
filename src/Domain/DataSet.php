@@ -289,7 +289,16 @@ class DataSet implements \Countable, \IteratorAggregate
         array_walk($this->data, function(&$item) use ($keyName, $columnName, &$columnData){
             $key = $item[$keyName];
             $item[$columnName] = isset($columnData[$key])? $columnData[$key] : array();
-            return $item;
         });
+    }
+
+    /**
+     * Transform a data set by applying a callback to each row.
+     *
+     * @param callable $callable
+     */
+    public function transform(callable $callable)
+    {
+        array_walk($this->data, $callable);
     }
 }

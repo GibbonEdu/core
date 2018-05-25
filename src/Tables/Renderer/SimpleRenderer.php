@@ -86,6 +86,8 @@ class SimpleRenderer implements RendererInterface
             foreach ($dataSet as $data) {
                 $row = $this->createTableRow($table, $data);
 
+                if (!$row) continue; // Can be removed by rowLogic
+
                 $output .= '<tr '.$row->getAttributeString().'>';
                 $output .= $row->getPrepended();
 
@@ -93,7 +95,9 @@ class SimpleRenderer implements RendererInterface
                 foreach ($table->getColumns() as $columnName => $column) {
                     $cell = $this->createTableCell($table, $data);
 
-                    $output .= '<td '.$row->getAttributeString().'>';
+                    if (!$cell) continue; // Can be removed by cellLogic
+
+                    $output .= '<td '.$cell->getAttributeString().'>';
                     $output .= $cell->getPrepended();
                     $output .= $column->getOutput($data);
                     $output .= $cell->getAppended();
@@ -141,7 +145,7 @@ class SimpleRenderer implements RendererInterface
     {
         $row = new Element();
         if ($rowLogic = $table->getRowLogic()) {
-            $row = $rowLogic($row, $data);
+            $row = $rowLogic($data, $row);
         }
 
         return $row;
@@ -158,7 +162,7 @@ class SimpleRenderer implements RendererInterface
     {
         $cell = new Element();
         if ($cellLogic = $table->getCellLogic()) {
-            $cell = $cellLogic($cell, $data);
+            $cell = $cellLogic($data, $cell);
         }
 
         return $cell;
