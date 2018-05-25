@@ -226,10 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 return $invoice['status'];
             });
 
-        $table->addColumn('billingSchedule', __('Schedule'))
-            ->modifyCells(function($data, $cell) {
-                return $cell->addClass('current');
-            });
+        $table->addColumn('billingSchedule', __('Schedule'));
 
         $table->addColumn('total', __('Total').' <small><i>('.$_SESSION[$guid]['currency'].')</i></small>')
             ->description(__('Paid').' ('.$_SESSION[$guid]['currency'].')')
@@ -246,9 +243,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                 return $output;
             });
 
-        $table->addColumn('issueDate', __('Issue Date'))
+        $table->addColumn('invoiceIssueDate', __('Issue Date'))
             ->description(__('Due Date'))
-            ->sortable('invoiceIssueDate')
             ->format(function ($invoice) use ($guid) {
                 $output = !is_null($invoice['invoiceIssueDate'])? Format::date($invoice['invoiceIssueDate']) : __('N/A');
                 $output .= '<br/><span class="small emphasis">'.Format::date($invoice['invoiceDueDate']).'</span>';
@@ -275,7 +271,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                         ->setURL('/modules/Finance/invoices_manage_delete.php');
 
                     $col->addAction('preview', __('Preview Invoice'))
-                        ->setURL('/modules/Finance/invoices_manage_print_print.php&type=invoice')
+                        ->setURL('/modules/Finance/invoices_manage_print_print.php')
+                        ->addParam('type', 'invoice')
                         ->addParam('preview', 'true')
                         ->setIcon('print');
                 }
