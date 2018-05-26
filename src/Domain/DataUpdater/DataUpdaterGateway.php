@@ -17,7 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\DataUpdater\Domain;
+namespace Gibbon\Domain\DataUpdater;
+
+use Gibbon\Domain\Gateway;
 
 /**
  * Data Updater Gateway
@@ -25,15 +27,8 @@ namespace Gibbon\DataUpdater\Domain;
  * @version v16
  * @since   v16
  */
-class DataUpdaterGateway
+class DataUpdaterGateway extends Gateway
 {
-    protected $db;
-
-    public function __construct($db)
-    {
-        $this->db = $db;
-    }
-
     /**
      * Gets a list of users this person can update data for, checking by family. Always returns the user themself even if not in a family.
      * 
@@ -67,7 +62,7 @@ class DataUpdaterGateway
         ORDER BY sequenceNumber, surname, preferredName
         ";
 
-        return $this->db->executeQuery($data, $sql);
+        return $this->db()->executeQuery($data, $sql);
     }
 
     /**
@@ -112,7 +107,7 @@ class DataUpdaterGateway
             WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID GROUP BY gibbonFamily.gibbonFamilyID ORDER BY timestamp DESC)
         ";
 
-        return $this->db->executeQuery($data, $sql);
+        return $this->db()->executeQuery($data, $sql);
     }
 
     public function countAllRequiredUpdatesByPerson($gibbonPersonID)
@@ -121,8 +116,8 @@ class DataUpdaterGateway
 
         if ($updatablePeople->rowCount() == 0) return 0;
 
-        $cutoffDate = getSettingByScope($this->db->getConnection(), 'Data Updater', 'cutoffDate');
-        $requiredUpdatesByType = getSettingByScope($this->db->getConnection(), 'Data Updater', 'requiredUpdatesByType');
+        $cutoffDate = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'cutoffDate');
+        $requiredUpdatesByType = getSettingByScope($this->db()->getConnection(), 'Data Updater', 'requiredUpdatesByType');
         $requiredUpdatesByType = explode(',', $requiredUpdatesByType);
 
         if (empty($requiredUpdatesByType) || empty($cutoffDate)) return 0;

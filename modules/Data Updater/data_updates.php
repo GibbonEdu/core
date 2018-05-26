@@ -18,8 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
