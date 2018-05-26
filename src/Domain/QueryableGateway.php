@@ -95,7 +95,7 @@ abstract class QueryableGateway extends Gateway
         if ($criteria->hasFilter()) {
             foreach ($criteria->getFilterBy() as $name => $value) {
                 if ($callback = $criteria->getFilterRule($name)) {
-                    $query = $callback($query, $value);
+                    $callback($query, $value);
                 }
             }
         }

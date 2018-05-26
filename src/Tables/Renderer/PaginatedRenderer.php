@@ -35,6 +35,7 @@ use Gibbon\Forms\FormFactory;
 class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 {
     protected $path;
+    protected $post = [];
     protected $criteria;
     protected $factory;
     
@@ -50,6 +51,19 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $this->path = $path;
         $this->criteria = $criteria;
         $this->factory = FormFactory::create();
+    }
+
+    /**
+     * Add an array of $_POST data to be passed between the paginated renderer and AJAX.
+     * 
+     * @param array $values
+     * @return self
+     */
+    public function addPostData(array $values)
+    {
+        $this->post = array_replace($this->post, $values);
+        
+        return $this;
     }
 
     /**
@@ -70,7 +84,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output .= '</div>';
 
         $output .= '<div id="'.$table->getID().'">';
-        $output .= '<div class="dataTable">';
+        $output .= '<div class="dataTable" data-results="'.$dataSet->getResultCount().'">';
 
         $filterOptions = $table->getMetaData('filterOptions', []);
 
@@ -95,11 +109,17 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         $output .= '</div></div><br/>';
 
+        if (!empty($this->post)) {
+            $postData = json_encode(array_replace($this->post, $this->criteria->toArray()));
+        } else {
+            $postData = $this->criteria->toJson();
+        }
+        
         // Initialize the jQuery Data Table functionality
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$this->criteria->toJson().", ".$dataSet->getResultCount().");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$postData.");
         });
         </script>";
 
