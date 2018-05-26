@@ -67,9 +67,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $table->addHeaderAction('add', __('Add'))
             ->setURL('/modules/Timetable/spaceBooking_manage_add.php')
             ->displayLabel();
+
         $table->addColumn('date', __('Date'))
             ->format(Format::using('date', 'date'));
-        $table->addColumn('name', __('Facility'));
+        $table->addColumn('name', __('Facility'))
+            ->format(function($row) {
+                return $row['name'].'<br/><small><i>'
+                     .($row['foreignKey'] == 'gibbonLibraryItemID'? __('Library') :'').'</i></small>';
+            });
         $table->addColumn('time', __('Time'))
             ->sortable(['timeStart', 'timeEnd'])
             ->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
