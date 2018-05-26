@@ -38,6 +38,11 @@ class FormatTest extends TestCase
         $this->assertEquals('18/05/2018', Format::date('2018-05-18'));
     }
 
+    public function testFormatsDatesFromTimestamp()
+    {
+        $this->assertEquals('18/05/2018', Format::date('2018-05-18 09:00:15'));
+    }
+
     public function testFormatsDatesWithOptionalFormat()
     {
         $this->assertEquals('Sunday April 1st 2018', Format::date('2018-04-01', 'l F jS Y'));
@@ -51,7 +56,12 @@ class FormatTest extends TestCase
 
     public function testFormatsDateTime()
     {
-        $this->assertEquals('May 18, 2018 5:16 pm', Format::dateTime('2018-05-18 17:16:18'));
+        $this->assertEquals('18/05/2018 17:16', Format::dateTime('2018-05-18 17:16:18'));
+    }
+
+    public function testFormatsDateTimeWithFormat()
+    {
+        $this->assertEquals('May 18, 2018 5:16 pm', Format::dateTime('2018-05-18 17:16:18', 'F j, Y g:i a'));
     }
 
     public function testFormatsReadableDates()
@@ -67,6 +77,36 @@ class FormatTest extends TestCase
     public function testFormatsDateFromTimestamps()
     {
         $this->assertEquals('18/05/2018', Format::dateFromTimestamp('1526615872'));
+    }
+
+    public function testFormatsUnixTimestamps()
+    {
+        $this->assertEquals('1526572800', Format::timestamp('2018-05-18'));
+    }
+
+    public function testFormatsUnixTimestampsFromMysqlTimestamps()
+    {
+        $this->assertEquals('1526607015', Format::timestamp('2018-05-18 09:30:15'));
+    }
+
+    public function testFormatsTimes()
+    {
+        $this->assertEquals('09:30', Format::time('09:30:15'));
+    }
+
+    public function testFormatsTimesFromTimestamp()
+    {
+        $this->assertEquals('09:30', Format::time('2018-05-18 09:30:15'));
+    }
+
+    public function testFormatsTimesWithFormat()
+    {
+        $this->assertEquals('9:30 am', Format::time('09:30:15', 'g:i a'));
+    }
+
+    public function testFormatsTimeRanges()
+    {
+        $this->assertEquals('9:30 am - 1:45 pm', Format::timeRange('09:30:15', '13:45:42', 'g:i a'));
     }
 
     public function testFormatsNumbers()
