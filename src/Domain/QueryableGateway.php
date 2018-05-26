@@ -56,7 +56,7 @@ abstract class QueryableGateway extends Gateway
      */
     protected function newQuery()
     {
-        return $this->getQueryFactory()->newSelect();
+        return $this->getQueryFactory()->newSelect()->calcFoundRows();
     }
 
     /**
@@ -87,8 +87,6 @@ abstract class QueryableGateway extends Gateway
      */
     private function applyCriteria(SelectInterface $query, QueryCriteria $criteria)
     {
-        $query->calcFoundRows();
-
         $criteria->addFilterRules($this->getDefaultFilterRules($criteria));
 
         // Filter By
