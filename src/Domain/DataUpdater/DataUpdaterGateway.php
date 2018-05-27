@@ -71,9 +71,9 @@ class DataUpdaterGateway extends Gateway
      * @param string $gibbonPersonID
      * @return \PDOStatement
      */
-    public function selectDataUpdatesByPerson($gibbonPersonID)
+    public function selectDataUpdatesByPerson($gibbonPersonID, $gibbonPersonIDSource = '')
     {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $data = array('gibbonPersonID' => $gibbonPersonID, 'gibbonPersonIDSource' => $gibbonPersonIDSource);
         $sql = "
         (SELECT 'Personal' as type, gibbonPerson.gibbonPersonID as id, 'gibbonPersonID' as idType, IFNULL(timestamp, 0) as lastUpdated, '' as name
             FROM gibbonPerson 
@@ -103,8 +103,10 @@ class DataUpdaterGateway extends Gateway
         (SELECT 'Family' as type, gibbonFamilyChild.gibbonFamilyID as id, 'gibbonFamilyID' as idType, IFNULL(timestamp, 0) as lastUpdated, gibbonFamily.name
             FROM gibbonFamilyChild 
             JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
+            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             LEFT JOIN gibbonFamilyUpdate ON (gibbonFamilyUpdate.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID) 
-            WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID GROUP BY gibbonFamily.gibbonFamilyID ORDER BY timestamp DESC)
+            WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID AND gibbonFamilyAdult.gibbonPersonID=:gibbonPersonIDSource 
+            GROUP BY gibbonFamilyAdult.gibbonFamilyID ORDER BY timestamp DESC)
         ";
 
         return $this->db()->executeQuery($data, $sql);
@@ -126,7 +128,7 @@ class DataUpdaterGateway extends Gateway
 
         // Loop over each updatable person to look for required updates
         foreach ($updatablePeople as $person) {
-            $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'])->fetchAll(\PDO::FETCH_GROUP);
+            $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
 
             foreach ($requiredUpdatesByType as $type) {
                 // Skip data update types not applicable to this user
