@@ -35,7 +35,6 @@ use Gibbon\Forms\FormFactory;
 class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 {
     protected $path;
-    protected $post = [];
     protected $criteria;
     protected $factory;
     
@@ -54,19 +53,6 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     }
 
     /**
-     * Add an array of $_POST data to be passed between the paginated renderer and AJAX.
-     * 
-     * @param array $values
-     * @return self
-     */
-    public function addPostData(array $values)
-    {
-        $this->post = array_replace($this->post, $values);
-        
-        return $this;
-    }
-
-    /**
      * Render the table to HTML. TODO: replace with Twig.
      *
      * @param DataTable $table
@@ -77,51 +63,54 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        $output .= '<div class="linkTop">';
-        foreach ($table->getHeader() as $header) {
-            $output .= $header->getOutput();
-        }
-        $output .= '</div>';
-
         $output .= '<div id="'.$table->getID().'">';
         $output .= '<div class="dataTable" data-results="'.$dataSet->getResultCount().'">';
 
-        $filterOptions = $table->getMetaData('filterOptions', []);
-
-        $output .= '<header>';
-            $output .= '<div>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPageFilters($dataSet, $filterOptions);
-            $output .= '</div>';
-            $output .= $this->renderFilterOptions($dataSet, $filterOptions);
-            $output .= $this->renderPageSize($dataSet);
-            $output .= $this->renderPagination($dataSet);
-        $output .= '</header>';
-
         $output .= parent::renderTable($table, $dataSet);
-
-        if ($dataSet->getPageCount() > 1) {
-            $output .= '<footer>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPagination($dataSet);
-            $output .= '</footer>';
-        }
 
         $output .= '</div></div><br/>';
 
-        if (!empty($this->post)) {
-            $postData = json_encode(array_replace($this->post, $this->criteria->toArray()));
-        } else {
-            $postData = $this->criteria->toJson();
-        }
+        $postData = $table->getMetaData('post');
+        $jsonData = !empty($postData) 
+            ? json_encode(array_replace($postData, $this->criteria->toArray()))
+            : $this->criteria->toJson();
         
         // Initialize the jQuery Data Table functionality
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$postData.");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$jsonData.");
         });
         </script>";
+
+        return $output;
+    }
+
+    protected function renderHeader(DataTable $table, DataSet $dataSet) 
+    {
+        $output = parent::renderHeader($table, $dataSet);
+
+        $filterOptions = $table->getMetaData('filterOptions', []);
+
+        $output .= '<div>';
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPageFilters($dataSet, $filterOptions);
+        $output .= '</div>';
+        $output .= $this->renderFilterOptions($dataSet, $filterOptions);
+        $output .= $this->renderPageSize($dataSet);
+        $output .= $this->renderPagination($dataSet);
+
+        return $output;
+    }
+
+    protected function renderFooter(DataTable $table, DataSet $dataSet)
+    {
+        $output = parent::renderFooter($table, $dataSet);
+
+        if ($dataSet->getPageCount() > 1) {
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPagination($dataSet);
+        }
 
         return $output;
     }
