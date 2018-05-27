@@ -51,7 +51,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     $table->addHeaderAction('assign', __('Assign Houses'))
         ->setIcon('attendance')
         ->setURL('/modules/School Admin/house_manage_assign.php')
-        ->displayLabel(__('Assign Houses'));
+        ->displayLabel(__('Assign Houses'))
+        ->append('&nbsp|&nbsp');
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/house_manage_add.php')
