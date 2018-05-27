@@ -319,14 +319,12 @@ $.prototype.gibbonCustomBlocks = function(settings) {
  */
 var DataTable = window.DataTable || {};
 
-DataTable = (function(element, basePath, filters, totalCount) {
+DataTable = (function(element, basePath, filters) {
     var _ = this;
 
     _.table = $(element);
     _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
     _.filters = filters;
-    _.totalCount = totalCount;
-    
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
     if (_.filters.filterBy.length == 0) _.filters.filterBy = {};
 
@@ -338,7 +336,8 @@ DataTable.prototype.init = function() {
 
     // Pagination
     $(_.table).on('click', '.paginate', function() {
-        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        var resultCount = $('.dataTable', _.table).data('results');
+        _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min($(this).data('page'), _.filters.pageMax);
         _.refresh();
     });
@@ -367,10 +366,7 @@ DataTable.prototype.init = function() {
             _.filters.searchBy.columns = [''];
         } else if (filter in _.filters.filterBy) {
             // Remove columns from search criteria if removing an in: filter
-            if (filter == 'in') {
-                _.filters.searchBy.columns = [''];
-            }
-            
+            if (filter == 'in') _.filters.searchBy.columns = [''];
             delete _.filters.filterBy[filter];
         }
 
@@ -392,8 +388,9 @@ DataTable.prototype.init = function() {
 
     // Page Size
     $(_.table).on('change', '.limit', function() {
+        var resultCount = $('.dataTable', _.table).data('results');
         _.filters.pageSize = parseInt($(this).val());
-        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
     });
@@ -413,6 +410,6 @@ DataTable.prototype.refresh = function() {
     });
 };
 
-$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
-    this.gibbonDataTable = new DataTable(this, basePath, filters, totalCount);
+$.prototype.gibbonDataTable = function(basePath, filters) {
+    this.gibbonDataTable = new DataTable(this, basePath, filters);
 };

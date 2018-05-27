@@ -166,6 +166,9 @@ class QueryCriteria
         $columns = array_filter($columns);
 
         if (!empty($columns)) {
+            $columns = array_map(function($item){ 
+                return preg_replace('/[^a-zA-Z0-9\.\_]/', '', $item); 
+            }, $columns);
             $this->criteria['searchBy']['columns'] =  $columns;
         }
 
@@ -271,6 +274,7 @@ class QueryCriteria
         }
 
         if (!empty($value)) {
+            $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name);
             $this->criteria['filterBy'][$name] = $value;
         }
 
@@ -328,6 +332,7 @@ class QueryCriteria
         $columns = is_array($column) ? $column : array($column);
 
         foreach ($columns as $column) {
+            $column = preg_replace('/[^a-zA-Z0-9\.\_]/', '', $column);
             $this->criteria['sortBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
         }
 

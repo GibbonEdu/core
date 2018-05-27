@@ -51,6 +51,10 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
+        $output .= '<header>';
+        $output .= $this->renderHeader($table, $dataSet);
+        $output .= '</header>';
+
         if ($dataSet->count() == 0) {
             if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
@@ -110,7 +114,31 @@ class SimpleRenderer implements RendererInterface
             $output .= '</table>';
         }
 
+        $output .= '<footer>';
+        $output .= $this->renderFooter($table, $dataSet);
+        $output .= '</footer>';
+
         return $output;
+    }
+
+    protected function renderHeader(DataTable $table, DataSet $dataSet)
+    {
+        $output = '';
+
+        if ($headerActions = $table->getHeader()) {
+            $output .= '<div class="linkTop">';
+            foreach ($headerActions as $header) {
+                $output .= $header->getOutput();
+            }
+            $output .= '</div>';
+        }
+
+        return $output;
+    }
+
+    protected function renderFooter(DataTable $table, DataSet $dataSet)
+    {
+        return '';
     }
 
     /**

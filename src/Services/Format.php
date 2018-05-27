@@ -32,7 +32,11 @@ class Format
 {
     use FormatResolver;
 
-    protected static $settings = [];
+    protected static $settings = [
+        'dateFormatPHP'     => 'd/m/Y',
+        'dateTimeFormatPHP' => 'd/m/Y H:i',
+        'timeFormatPHP'     => 'H:i',
+    ];
 
     /**
      * Sets the internal formatting options from an array.
@@ -76,7 +80,7 @@ class Format
      */
     public static function date($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
     }
 
@@ -93,7 +97,7 @@ class Format
     }
 
     /**
-     * Formats a YYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
+     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
      *
      * @param string $dateString
      * @param string $format
@@ -102,7 +106,7 @@ class Format
     public static function dateTime($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
-        return $date ? $date->format($format ? $format : 'F j, Y g:i a') : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : '';
     }
     
     /**
@@ -142,14 +146,42 @@ class Format
     }
 
     /**
-     * Converts a YYYY-MM-DD date to a Unix timestamp;
+     * Converts a YYYY-MM-DD date to a Unix timestamp.
      *
      * @return string
      */
     public static function timestamp($dateString)
     {
-        $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
         return $date ? $date->getTimestamp() : 0;
+    }
+
+    /**
+     * Formats a time from a given MySQL time or timestamp value.
+     * 
+     * @param string $timeString
+     * @param string|bool $format
+     * @return string
+     */
+    public static function time($timeString, $format = false)
+    {
+        $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
+        $date = DateTime::createFromFormat($convertFormat, $timeString);
+        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : '';
+    }
+
+    /**
+     * Formats a range of times from two given MySQL time or timestamp values.
+     * 
+     * @param string $timeFrom
+     * @param string $timeTo
+     * @param string|bool $format
+     * @return string
+     */
+    public static function timeRange($timeFrom, $timeTo, $format = false)
+    {
+        return static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format);
     }
 
     /**

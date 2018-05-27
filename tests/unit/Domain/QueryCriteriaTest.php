@@ -262,4 +262,25 @@ class QueryCriteriaTest extends TestCase
 
         $this->assertEquals($closure, $this->criteria->getFilterRule('foo'));
     }
+
+    public function testWillRemoveSpecialCharactersFromSearchColumns()
+    {
+        $this->criteria->searchBy('c&o+lu^mnN`ame`;', 'foo bar');
+        $this->assertTrue($this->criteria->hasSearchColumn('columnName'));
+
+        $this->criteria->searchBy(['c(o;l`umn`1)', 'co+lu"mn2"'], 'foo bar');
+        $this->assertTrue($this->criteria->hasSearchColumn('column1'));
+    }
+
+    public function testWillRemoveSpecialCharactersFromFilterNames()
+    {
+        $this->criteria->filterBy('f&+o^`o`;', 'bar');
+        $this->assertTrue($this->criteria->hasFilter('foo', 'bar'));
+    }
+
+    public function testWillRemoveSpecialCharactersFromSortColumns()
+    {
+        $this->criteria->sortBy('f"&+o^`o`";', 'bar');
+        $this->assertTrue($this->criteria->hasSort('foo'));
+    }
 }
