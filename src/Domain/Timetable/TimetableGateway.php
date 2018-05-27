@@ -43,8 +43,23 @@ class TimetableGateway extends Gateway
     public function getTTByID($gibbonTTID)
     {
         $data = array('gibbonTTID' => $gibbonTTID);
-        $sql = "SELECT gibbonTTID, name, nameShort FROM gibbonTTID WHERE gibbonTTID=:gibbonTTID";
+        $sql = "SELECT gibbonTT.gibbonTTID, gibbonTT.name, gibbonTT.nameShort, gibbonTT.nameShortDisplay, gibbonTT.active, gibbonTT.gibbonYearGroupIDList, gibbonSchoolYear.name as schoolYear
+                FROM gibbonTT 
+                JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=gibbonTT.gibbonSchoolYearID)
+                WHERE gibbonTT.gibbonTTID=:gibbonTTID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function getNonTimetabledYearGroups($gibbonSchoolYearID, $gibbonTTID = null)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTID' => $gibbonTTID);
+        $sql = "SELECT gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.name
+                FROM gibbonYearGroup
+                LEFT JOIN gibbonTT ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonTT.gibbonYearGroupIDList) AND gibbonTT.gibbonSchoolYearID=:gibbonSchoolYearID AND (gibbonTT.active='Y' OR gibbonTT.gibbonTTID=:gibbonTTID))
+                WHERE gibbonTT.gibbonTTID IS NULL OR gibbonTT.gibbonTTID=:gibbonTTID
+                ORDER BY gibbonYearGroup.sequenceNumber";
+
+        return $this->db()->select($sql, $data)->fetchKeyPair();
     }
 }
