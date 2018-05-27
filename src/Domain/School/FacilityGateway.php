@@ -45,7 +45,7 @@ class FacilityGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonSpaceID', 'name', 'type'
+                'gibbonSpaceID', 'name', 'type', 'capacity', 'computer', 'computerStudent', 'projector', 'tv', 'dvd', 'hifi', 'speakers', 'iwb', 'phoneInternal', 'phoneExternal'
             ]);
 
         return $this->runQuery($query, $criteria);
