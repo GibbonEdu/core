@@ -48,6 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     // DATA TABLE
     $table = DataTable::createPaginated('userFieldManage', $criteria);
 
+    $table->modifyRows(function ($userField, $row) {
+        if ($userField['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/User Admin/userFields_add.php')
         ->displayLabel();
