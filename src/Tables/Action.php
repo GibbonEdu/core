@@ -178,10 +178,8 @@ class Action extends WebLink
 
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
-        if (!empty($data)) {
-            foreach (array_merge($params, $this->params) as $key => $value) {
-                $queryParams[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
-            }
+        foreach (array_merge($params, $this->params) as $key => $value) {
+            $queryParams[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
         }
 
         if ($this->direct) {
