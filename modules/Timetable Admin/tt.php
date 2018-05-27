@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Timetable\TTGateway;
+use Gibbon\Domain\Timetable\TimetableGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
     //Acess denied
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
         echo '</div>';
 
 
-        $timetableGateway = $container->get(TTGateway::class);
+        $timetableGateway = $container->get(TimetableGateway::class);
         $timetables = $timetableGateway->selectTimetablesBySchoolYear($gibbonSchoolYearID);
 
         // DATA TABLE

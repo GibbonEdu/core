@@ -25,7 +25,7 @@ use Gibbon\Domain\Gateway;
  * @version v16
  * @since   v16
  */
-class TTGateway extends Gateway
+class TimetableGateway extends Gateway
 {
     public function selectTimetablesBySchoolYear($gibbonSchoolYearID) 
     {
@@ -38,5 +38,13 @@ class TTGateway extends Gateway
                 ORDER BY gibbonTT.name";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getTTByID($gibbonTTID)
+    {
+        $data = array('gibbonTTID' => $gibbonTTID);
+        $sql = "SELECT gibbonTTID, name, nameShort FROM gibbonTTID WHERE gibbonTTID=:gibbonTTID";
+
+        return $this->db()->selectOne($sql, $data);
     }
 }
