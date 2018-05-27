@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage.php') == false) {
     //Acess denied
@@ -84,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         echo '</div>';
 
         echo '<h3>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h3>';
 
         $search = isset($_GET['search'])? $_GET['search'] : '';
@@ -105,115 +108,60 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
         echo '<p>';
-        echo __($guid, "Students highlighted in red are marked as 'Full' but have either not reached their start date, or have exceeded their end date.");
+        echo __("Students highlighted in red are marked as 'Full' but have either not reached their start date, or have exceeded their end date.");
         echo '<p>';
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $studentGateway = $container->get(StudentGateway::class);
 
-        $search = '';
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd, status, rollOrder FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName';
-            if ($search != '') {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-                $sql = 'SELECT gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd, status, rollOrder FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) ORDER BY surname, preferredName';
-            }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $criteria = $studentGateway->newQueryCriteria()
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromArray($_POST);
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+        $students = $studentGateway->queryStudentEnrolmentBySchoolYear($criteria, $gibbonSchoolYearID);
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
+        // DATA TABLE
+        $table = DataTable::createPaginated('students', $criteria);
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Year Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Roll Group').'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Roll Order').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Students/studentEnrolment_manage_add.php')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $criteria->getSearchText(true))
+            ->displayLabel();
+    
+        $table->modifyRows(function($student, $row) {
+            if ($student['status'] != 'Full') $row->addClass('error');
+            if (!($student['dateStart'] == '' || $student['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
+            if (!($student['dateEnd'] == '' || $student['dateEnd'] >= date('Y-m-d'))) $row->addClass('error');
+            return $row;
+        });
 
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
+        // COLUMNS
+        $table->addColumn('student', __('Student'))
+            ->sortable(['surname', 'preferredName'])
+            ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+        $table->addColumn('yearGroup', __('Year Group'));
+        $table->addColumn('rollGroup', __('Roll Group'))
+            ->description(__('Roll Order'))
+            ->format(function($row) {
+                return $row['rollGroup'] . (!empty($row['rollOrder']) ? '<br/><span class="small emphasis">'.$row['rollOrder'].'</span>' : '');
+            });
 
-				//Color rows based on start and end date
-				if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d')) or $row['status'] != 'Full') {
-					$rowNum = 'error';
-				}
+        $table->addActionColumn()
+            ->addParam('gibbonStudentEnrolmentID')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($row, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Students/studentEnrolment_manage_edit.php');
 
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-                echo '</td>';
-                echo '<td>';
-                echo __($guid, $row['yearGroup']);
-                echo '</td>';
-                echo '<td>';
-                echo $row['rollGroup'];
-                if ($row['rollOrder'] != '') {
-                    echo "<br/><span style='font-size: 85%; font-style: italic'>".$row['rollOrder'].'</span>';
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage_edit.php&gibbonStudentEnrolmentID='.$row['gibbonStudentEnrolmentID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage_delete.php&gibbonStudentEnrolmentID='.$row['gibbonStudentEnrolmentID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Students/studentEnrolment_manage_delete.php');
+            });
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
-        }
+        echo $table->render($students);
     }
 }
-?>
