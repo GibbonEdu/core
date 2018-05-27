@@ -20,7 +20,7 @@ jQuery(function($){
     /**
      * Form Class: generic check All/None checkboxes
      */
-    $('.checkall').click(function () {
+    $(document).on('click', '.checkall', function () {
         $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
     });
 
@@ -361,17 +361,21 @@ DataTable.prototype.init = function() {
     // Remove Filter
     $(_.table).on('click', '.filter', function() {
         var filter = $(this).data('filter');
+        
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = {};
+            _.filters.filterBy = {'':''};
             _.filters.searchBy.columns = [''];
         } else if (filter in _.filters.filterBy) {
             // Remove columns from search criteria if removing an in: filter
             if (filter == 'in') {
                 _.filters.searchBy.columns = [''];
             }
-
+            
             delete _.filters.filterBy[filter];
         }
+
+        if (jQuery.isEmptyObject(_.filters.filterBy)) _.filters.filterBy = {'':''};
+
         _.filters.page = 1;
         _.refresh();
     });
@@ -392,6 +396,12 @@ DataTable.prototype.init = function() {
         _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
         _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
+    });
+
+    // Expandable Rows
+    $(_.table).on('click', '.expander', function() {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
     });
 };
 

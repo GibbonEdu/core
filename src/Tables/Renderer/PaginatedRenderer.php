@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Tables\Column;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Forms\FormFactory;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Forms\FormFactory;
 
 /**
  * PaginatedRenderer
@@ -116,6 +116,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $th = parent::createTableHeader($column);
 
         if ($sortBy = $column->getSortable()) {
+            $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
             $th->addClass('sortable');
             $th->addData('sort', implode(',', $sortBy));
 
