@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Tables;
+namespace Gibbon\Tables\Columns;
 
 use Gibbon\Forms\Traits\BasicAttributesTrait;
 
@@ -36,6 +36,8 @@ class Column
     protected $width = 'auto';
     protected $sortable = false;
     protected $formatter;
+
+    protected $cellModifiers = [];
 
     public function __construct($id, $label = '')
     {
@@ -156,6 +158,29 @@ class Column
     public function hasFormatter() 
     {
         return !empty($this->formatter) && is_callable($this->formatter);
+    }
+
+    /**
+     * Set a callable function that can modify each cell and/or row based on that row's data.
+     *
+     * @param callable $callable
+     * @return self
+     */
+    public function modifyCells(callable $callable)
+    {
+        $this->cellModifiers[] = $callable;
+
+        return $this;
+    }
+
+    /**
+     * Get the array of column logic callables.
+     *
+     * @return callable
+     */
+    public function getCellModifiers()
+    {
+        return $this->cellModifiers;
     }
 
     /**

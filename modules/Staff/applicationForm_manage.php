@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     // DATA TABLE
     $table = DataTable::createPaginated('applicationsManage', $criteria);
 
-    $table->setRowLogic(function($application, $row) {
+    $table->modifyRows(function($application, $row) {
         // Highlight rows based on status
         if ($application['status'] == 'Accepted') {
             $row->addClass('current');

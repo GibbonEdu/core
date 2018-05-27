@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     // INSTALLED MODULES
     $table = DataTable::createPaginated('moduleManage', $criteria);
 
-    $table->setRowLogic(function ($module, $row) {
+    $table->modifyRows(function ($module, $row) {
         if (!empty($module['orphaned'])) return '';
         if (!empty($module['update'])) $row->addClass('current');
         if ($module['active'] == 'N') $row->addClass('error');
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
         
         $table = DataTable::create('moduleInstall');
 
-        $table->setRowLogic(function ($module, $row) {
+        $table->modifyRows(function ($module, $row) {
             $row->addClass($module['manifestOK'] == false ? 'error' : 'warning');
             return $row;
         });
