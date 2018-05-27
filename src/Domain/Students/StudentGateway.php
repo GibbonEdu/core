@@ -45,7 +45,7 @@ class StudentGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status'
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status'
             ])
             ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
@@ -73,6 +73,23 @@ class StudentGateway extends QueryableGateway
                 ->leftJoin('gibbonPerson as parent2', "(parent2.gibbonPersonID=adult2.gibbonPersonID AND parent2.status='Full' AND parent2.email LIKE :searchFamily)")
                 ->bindValue('searchFamily', $criteria->getSearchText());
         }
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentEnrolmentBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status'
+            ])
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         return $this->runQuery($query, $criteria);
     }

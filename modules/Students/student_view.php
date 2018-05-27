@@ -135,13 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
             $criteria = $studentGateway->newQueryCriteria()
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
-                ->sortBy(explode(',', $sort))
+                ->sortBy(array_filter(explode(',', $sort)))
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')
                 ->fromArray($_POST);
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
 
-             // DATA TABLE
+            // DATA TABLE
             $table = DataTable::createPaginated('students', $criteria);
     
             $table->modifyRows(function($student, $row) {
