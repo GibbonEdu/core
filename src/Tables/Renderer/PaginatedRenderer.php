@@ -176,7 +176,9 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
             $criteriaUsed = array();
             foreach ($this->criteria->getFilterBy() as $name => $value) {
                 $key = $name.':'.$value;
-                $criteriaUsed[$name] = isset($filters[$key]) ? $filters[$key] : __(ucfirst($name)).': '.__(ucfirst($value));
+                $criteriaUsed[$name] = isset($filters[$key]) 
+                    ? $filters[$key] 
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))); // camelCase => Title Case
             }
 
             foreach ($criteriaUsed as $name => $label) {
@@ -217,7 +219,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderPageSize(DataSet $dataSet)
     {
-        if ($dataSet->getPageSize() <= 0 || $dataSet->getPageCount() <= 1) return '';
+        if ($dataSet->getPageSize() <= 0 || $dataSet->getResultCount() <= 25) return '';
 
         return $this->factory->createSelect('limit')
             ->fromArray(array(10, 25, 50, 100))
@@ -235,7 +237,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderPagination(DataSet $dataSet)
     {
-        if ($dataSet->getPageCount() <= 1) return '';
+        if ($dataSet->getResultCount() <= 25) return '';
 
         $pageNumber = $dataSet->getPage();
 
