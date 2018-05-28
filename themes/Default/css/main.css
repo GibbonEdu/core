@@ -852,8 +852,8 @@ div.paginationBottom {
 }
 div.linkTop {
 	text-align: right;
-	font-size: 12px;
-	margin: 15px 0px 5px 0px
+    font-size: 12px;
+    line-height: 32px;
 }
 div.linkTopLeft {
 	text-align: left;
@@ -1619,6 +1619,10 @@ table.smallIntBorder td.noPadding {
 }
 
 /* v16 NEW CLASSES */
+
+.displayNone {
+    display: none;
+}
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
 .dataTable .sortable {

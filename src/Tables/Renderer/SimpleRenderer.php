@@ -126,7 +126,7 @@ class SimpleRenderer implements RendererInterface
         $output = '';
 
         if ($headerActions = $table->getHeader()) {
-            $output .= '<div class="linkTop">';
+            $output .= '<div class="linkTop column inline">';
             foreach ($headerActions as $header) {
                 $output .= $header->getOutput();
             }

@@ -88,14 +88,20 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
-        $output = parent::renderHeader($table, $dataSet);
+        $output = ''; 
 
         $filterOptions = $table->getMetaData('filterOptions', []);
+
+        $output .= '<div style="display : flex;flex-flow: row nowrap;align-items: flex-end;justify-content: space-between;margin-bottom: 5px;">';
 
         $output .= '<div>';
             $output .= $this->renderPageCount($dataSet);
             $output .= $this->renderPageFilters($dataSet, $filterOptions);
         $output .= '</div>';
+
+        $output .= parent::renderHeader($table, $dataSet);
+        $output .= '</div>';
+
         $output .= $this->renderFilterOptions($dataSet, $filterOptions);
         $output .= $this->renderPageSize($dataSet);
         $output .= $this->renderPagination($dataSet);
