@@ -54,7 +54,14 @@ class BulkActionForm extends Form
     public function addBulkActionRow($actions = array())
     {
         $row = $this->addRow()->setClass('right');
-        $col = $row->addColumn()->addClass('inline right');
+        $col = $row->addElement($this->createBulkActionSelect($actions));
+
+        return $col;
+    }
+
+    public function createBulkActionSelect($actions = array())
+    {
+        $col = $this->getFactory()->createColumn()->addClass('inline right');
 
         $col->addSelect('action')
             ->fromArray($actions)

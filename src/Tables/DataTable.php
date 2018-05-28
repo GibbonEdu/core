@@ -229,6 +229,20 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Add any outputtable object to display in the header right-hand side.
+     *
+     * @param string $name
+     * @param OutputableInterface $element
+     * @return Action
+     */
+    public function addHeaderElement($name, OutputableInterface $element)
+    {
+        $this->header[$name] = $element;
+
+        return $this->header[$name];
+    }
+
+    /**
      * Get all header content in the table.
      *
      * @return array
