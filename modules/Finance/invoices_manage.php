@@ -161,18 +161,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo __($guid, 'View');
         echo '</h3>';
 
-        echo "<div class='linkTop'>";
-        echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_manage_add.php&".http_build_query($request)."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a><br/>";
-        echo '</div>';
-
         // FORM
         $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($request));
         $form->setFactory(FinanceFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+        // Load the current status from the filters rather than $_GET so it changes on the data table reload.
+        $status = $criteria->getFilterValue('status'); 
+
+        // BULK ACTIONS
         $bulkActions = array('export' => __('Export'));
-        switch($request['status']) {
+        switch($status) {
             case 'Pending':
                 $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions; break;
             case 'Issued - Overdue':
@@ -188,20 +188,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $row = $form->addRow()->addClass('bulkPaid');
             $row->addContent(__('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.'))->wrap('<p>', '</p>');
 
-        $row = $form->addBulkActionRow($bulkActions);
-            $row->addSelectPaymentMethod('paymentType')->setClass('bulkPaid shortWidth')->isRequired()->placeholder(__('Payment Type').'...');
-            $row->addDate('paidDate')->setClass('bulkPaid shortWidth')->isRequired()->placeholder(__('Date Paid'));
-            $row->addSubmit(__('Go'));
+        $col = $form->createBulkActionColumn($bulkActions);
+        $col->addSelectPaymentMethod('paymentType')
+            ->setClass('bulkPaid shortWidth displayNone')
+            ->isRequired()
+            ->placeholder(__('Payment Type').'...');
+        $col->addDate('paidDate')
+            ->setClass('bulkPaid shortWidth displayNone')
+            ->isRequired()
+            ->placeholder(__('Date Paid'));
+        $col->addSubmit(__('Go'));
 
         // DATA TABLE
         $table = $form->addRow()->addDataTable('invoices', $criteria)->withData($invoices);
 
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Finance/invoices_manage_add.php')
+            ->setIcon('page_new_multi')
+            ->addParams($request)
+            ->displayLabel()
+            ->append('<br/>');
+
+        $table->addHeaderObject('bulkActions', $col);
+
         $table->modifyRows(function ($invoice, $row) {
-            // Row Highlight
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
             else if ($invoice['status'] == 'Paid') $row->addClass('current');
             return $row;
         });
+
+        $table->addMetaData('filterOptions', [
+            'status:Pending'          => __('Status').': '.__('Pending'),
+            'status:Issued'           => __('Status').': '.__('Issued'),
+            'status:Issued - Overdue' => __('Status').': '.__('Issued - Overdue'),
+            'status:Paid'             => __('Status').': '.__('Paid'),
+            'status:Paid - Partial'   => __('Status').': '.__('Paid - Partial'),
+            'status:Paid - Late'      => __('Status').': '.__('Paid - Late'),
+            'status:Cancelled'        => __('Status').': '.__('Cancelled'),
+            'status:Refunded'         => __('Status').': '.__('Refunded'),
+        ]);
 
         // COLUMNS
         $table->addExpandableColumn('notes');
@@ -255,36 +280,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $table->addActionColumn()
             ->addParam('gibbonFinanceInvoiceID')
             ->addParams($request)
-            ->format(function ($invoice, $col) {
+            ->format(function ($invoice, $actions) {
                 if ($invoice['status'] != 'Cancelled' && $invoice['status'] != 'Refunded') {
-                    $col->addAction('edit', __('Edit'))
+                    $actions->addAction('edit', __('Edit'))
                         ->setURL('/modules/Finance/invoices_manage_edit.php');
                 }
 
                 if ($invoice['status'] == 'Pending') {
-                    $col->addAction('issue', __('Issue'))
+                    $actions->addAction('issue', __('Issue'))
                         ->setURL('/modules/Finance/invoices_manage_issue.php')
-                        ->setIcon('page_right')
-                        ->append('<br/>');
+                        ->setIcon('page_right');
 
-                    $col->addAction('delete', __('Delete'))
+                    $actions->addAction('delete', __('Delete'))
                         ->setURL('/modules/Finance/invoices_manage_delete.php');
 
-                    $col->addAction('preview', __('Preview Invoice'))
+                    $actions->addAction('preview', __('Preview Invoice'))
                         ->setURL('/modules/Finance/invoices_manage_print_print.php')
                         ->addParam('type', 'invoice')
                         ->addParam('preview', 'true')
                         ->setIcon('print');
-                }
-
-                if ($invoice['status'] != 'Pending') {
-                    $col->addAction('print', __('Print Invoices, Receipts & Reminders'))
+                } else {
+                    $actions->addAction('print', __('Print Invoices, Receipts & Reminders'))
                         ->setURL('/modules/Finance/invoices_manage_print.php')
                         ->setIcon('print');
                 }
             });
             
-        // BULK-ACTION
         $table->addCheckboxColumn('gibbonFinanceInvoiceIDs', 'gibbonFinanceInvoiceID');
 
         echo $form->getOutput();

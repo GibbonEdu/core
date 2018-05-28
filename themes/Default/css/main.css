@@ -1683,6 +1683,14 @@ table.smallIntBorder td.noPadding {
     line-height: 32px;
 }
 
+.dataTable .flexRow {
+    display : flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
 .dataTable .expandable {
     border-right: 0px !important;
     padding: 0px !important;

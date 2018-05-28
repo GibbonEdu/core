@@ -122,7 +122,7 @@ class DataTable implements OutputableInterface
     }
 
     /**
-     * Set the renderer for the data table. Cal also be supplied ad hoc in the render method.
+     * Set the renderer for the data table. Can also be supplied ad hoc in the render method.
      *
      * @param RendererInterface $renderer
      * @return self
@@ -223,21 +223,19 @@ class DataTable implements OutputableInterface
      */
     public function addHeaderAction($name, $label = '')
     {
-        $this->header[$name] = new Action($name, $label);
-
-        return $this->header[$name];
+        return $this->addHeaderObject($name, new Action($name, $label));
     }
 
     /**
      * Add any outputtable object to display in the header right-hand side.
      *
      * @param string $name
-     * @param OutputableInterface $element
+     * @param OutputableInterface $object
      * @return Action
      */
-    public function addHeaderElement($name, OutputableInterface $element)
+    public function addHeaderObject($name, OutputableInterface $object)
     {
-        $this->header[$name] = $element;
+        $this->header[$name] = $object;
 
         return $this->header[$name];
     }
@@ -251,7 +249,6 @@ class DataTable implements OutputableInterface
     {
         return $this->header;
     }
-
 
     /**
      * Add a piece of meta data to the table. Can be used for renderer-specific details.
@@ -315,6 +312,11 @@ class DataTable implements OutputableInterface
         return $renderer->renderTable($this, $dataSet);
     }
 
+    /**
+     * Implement the OutputtableInterface to combine DataTables + Forms.
+     *
+     * @return string
+     */
     public function getOutput()
     {
         return $this->renderer->renderTable($this, $this->data);

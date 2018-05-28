@@ -121,6 +121,13 @@ class SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Render a pre-table header section. Defaults to any header actions added to the table.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderHeader(DataTable $table, DataSet $dataSet)
     {
         $output = '';
@@ -136,6 +143,13 @@ class SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Render a post-table footer section.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
         return '';

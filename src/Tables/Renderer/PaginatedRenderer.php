@@ -86,20 +86,24 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Adds the pagination and filter controls to the pre-table header.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
-        $output = ''; 
-
         $filterOptions = $table->getMetaData('filterOptions', []);
 
-        $output .= '<div style="display : flex;flex-flow: row nowrap;align-items: flex-end;justify-content: space-between;margin-bottom: 5px;">';
+        $output = '<div class="flexRow">';
+            $output .= '<div>';
+                $output .= $this->renderPageCount($dataSet);
+                $output .= $this->renderPageFilters($dataSet, $filterOptions);
+            $output .= '</div>';
 
-        $output .= '<div>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPageFilters($dataSet, $filterOptions);
-        $output .= '</div>';
-
-        $output .= parent::renderHeader($table, $dataSet);
+            $output .= parent::renderHeader($table, $dataSet);
         $output .= '</div>';
 
         $output .= $this->renderFilterOptions($dataSet, $filterOptions);
@@ -109,6 +113,13 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Optionally adds the pagination to the post-table footer.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
         $output = parent::renderFooter($table, $dataSet);
