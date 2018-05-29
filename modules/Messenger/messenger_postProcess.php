@@ -2031,16 +2031,23 @@ else {
 
 							$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword . "&senderid=" . rawurlencode($_SESSION[$guid]["organisationNameShort"]) . "&mobileno=" . rawurlencode(substr($numCache,0,-1)) . "&message=" . rawurlencode(stripslashes(strip_tags($body))) . "&languagetype=1" ;
 							$result=@implode('', file($smsURL . $query)) ;
+							$smsStatus = 'OK';
 
 							if ($result) {
 								if ($result<=0) {
-									//error held in $result if needed
 									$partialFail=TRUE ;
+									$smsStatus = 'Not OK';
 								}
 							}
 							else {
 								$partialFail=TRUE ;
+								$smsStatus = 'Not OK';
+								$result = 'N/A';
 							}
+
+							//Set log
+							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => $result, 'Recipients' => substr($numCache,0,-1)));
+
 							$smsBatchCount++ ;
 						}
 					}
