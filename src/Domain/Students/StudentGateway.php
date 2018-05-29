@@ -43,25 +43,29 @@ class StudentGateway extends QueryableGateway
     {
         $query = $this
             ->newQuery()
+            ->distinct()
             ->from('gibbonPerson')
             ->cols([
                 'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status'
             ])
-            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID');
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         if ($criteria->hasFilter('all')) {
             $query->innerJoin('gibbonRole', 'FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)')
                   ->where("gibbonRole.category='Student'");
         } else {
+            $query->where("gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL")
+                  ->where("gibbonPerson.status = 'Full'")
+                  ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+                  ->bindValue('today', date('Y-m-d'));
             $query->where("gibbonPerson.status = 'Full'")
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
                   ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
                   ->bindValue('today', date('Y-m-d'));
-            
-            $query->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
-                  ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
         }
 
         if ($searchFamilyDetails && $criteria->hasSearchText()) {
