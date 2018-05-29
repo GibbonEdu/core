@@ -3273,6 +3273,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__($guid, 'Behaviour').'</a></li>';
                         ++$studentMenuCount;
                     }
+                    if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php')) {
+                        $style = '';
+                        if ($subpage == 'Notes') {
+                            $style = "style='font-weight: bold'";
+                        }
+                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Behaviour'];
+                        $studentMenuName[$studentMenuCount] = __($guid, 'Student Notes');
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Notes'>".__($guid, 'Student Notes').'</a></li>';
+                        ++$studentMenuCount;
+                    }
                     
 
                     //Check for hooks, and slot them into array
