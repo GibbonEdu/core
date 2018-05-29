@@ -34,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo "<div class='error'>";
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
+        return;
     } else {
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = null;
@@ -53,6 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';
+            return;
         } else {
             $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
             $skipBrief = false;
@@ -70,8 +72,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my') and $gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
-                $skipBrief = true;
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
+                if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                    $skipBrief = true;
+                } else if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
+                    $highestAction = 'View Student Profile_brief';
+                } else {
+                    //Acess denied
+                    echo "<div class='error'>";
+                    echo __($guid, 'You do not have access to this action.');
+                    echo '</div>';
+                    return;
+                }
             }
 
             if ($highestAction == 'View Student Profile_brief' and $skipBrief == false) {
@@ -259,6 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
                 }
+                return;
             } else {
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
@@ -275,13 +288,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND childDataAccess='Y'";
                     }
                     else if ($highestAction == 'View Student Profile_my') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'today' => date('Y-m-d'));
+                        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                         $sql = "SELECT gibbonPerson.* FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                    } else {
+                    }
+                    else if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
@@ -295,17 +310,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
                         }
+                    } else {
+                        //Acess denied
+                        echo "<div class='error'>";
+                        echo __($guid, 'You do not have access to this action.');
+                        echo '</div>';
+                        return;
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
+                    return;
                 }
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
+                    return;
                 } else {
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
