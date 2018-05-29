@@ -70,6 +70,7 @@ v16.0.00
         Messenger: added the ability to resend in By Roll Group view in View Send Report
         Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
         Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
+        Messenger: added SMS send logging to allow missing messages to be tracked
         Planner: added "Notify" feature to lesson creating and editing
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
