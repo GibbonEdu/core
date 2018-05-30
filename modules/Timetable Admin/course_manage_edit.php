@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
             $table->addColumn('nameShort', __('Short Name'))->width('20%');
             $table->addColumn('name', __('Name'))->width('20%');
-            $table->addColumn('participants', __('Participants'));
+            $table->addColumn('participantsTotal', __('Participants'));
             $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
             // ACTIONS

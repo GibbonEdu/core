@@ -67,13 +67,13 @@ class CourseGateway extends QueryableGateway
     public function selectClassesByCourseID($gibbonCourseID)
     {
         $data = array('gibbonCourseID' => $gibbonCourseID);
-        $sql = "SELECT gibbonCourseClass.*, COUNT(gibbonCourseClassPersonID) as participants 
+        $sql = "SELECT gibbonCourseClass.*, COUNT(CASE WHEN gibbonPerson.status='Full' THEN gibbonPerson.status END) as participantsActive, COUNT(CASE WHEN gibbonPerson.status='Expected' THEN gibbonPerson.status END) as participantsExpected, COUNT(DISTINCT gibbonPerson.gibbonPersonID) as participantsTotal 
             FROM gibbonCourseClass 
             LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND NOT gibbonCourseClassPerson.role LIKE '% - Left') 
-            LEFT JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonPerson.status='Full') 
+            LEFT JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')) 
             WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID
             GROUP BY gibbonCourseClass.gibbonCourseClassID
-            ORDER BY gibbonCourseClass.name";
+            ORDER BY gibbonCourseClass.nameShort";
 
         return $this->db()->select($sql, $data);
     }
