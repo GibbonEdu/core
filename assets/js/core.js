@@ -44,7 +44,6 @@ jQuery(function($){
         $(this).parents('tr').toggleClass('selected', $(this).prop('checked'));
         
     });
-    });
 
     /**
      * Column Highlighting
@@ -435,3 +434,15 @@ DataTable.prototype.refresh = function() {
 $.prototype.gibbonDataTable = function(basePath, filters) {
     this.gibbonDataTable = new DataTable(this, basePath, filters);
 };
+
+/**
+ * Disable the submit button once a form has started submitting. 
+ * Add a spinning indicator for forms that take longer than 0.5s to submit.
+ */
+function gibbonFormSubmitted(form) {
+    var submitButton = $('input[type="submit"]', $(form));
+    submitButton.prop('disabled', true);
+    setTimeout(function() {
+        submitButton.wrap('<span class="submitted"></span>');
+    }, 500);
+}

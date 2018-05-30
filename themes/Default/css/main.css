@@ -1784,3 +1784,32 @@ button[disabled], input[disabled], textarea[disabled] {
 	box-shadow: none;
 	opacity: .45;
 }
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+.submitted::before {
+    content: " ";
+    display: inline-block;
+    background: url("../img/refresh.png") no-repeat 0 0;
+    background-size: 100%;
+    animation: spin 2s infinite linear;
+    position: relative;
+    top: 3px;
+    right: 5px;
+    height: 14px;
+    width: 14px;
+    opacity: 0.65;
+}
