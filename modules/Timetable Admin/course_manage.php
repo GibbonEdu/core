@@ -94,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
 
         echo '<h3>';
-        echo __($guid, 'Filters');
+        echo __('Filters');
         echo '</h3>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
 
         $courseGateway = $container->get(CourseGateway::class);
