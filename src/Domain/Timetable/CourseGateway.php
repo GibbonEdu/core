@@ -77,4 +77,18 @@ class CourseGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectCourseEnrolmentByRollGroup($gibbonRollGroupID)
+    {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.name as rollGroup, (SELECT COUNT(*) FROM gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) as classCount
+                FROM gibbonPerson 
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
+                WHERE gibbonRollGroup.gibbonRollGroupID=:gibbonRollGroupID 
+                AND gibbonPerson.status='Full' 
+                ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }
