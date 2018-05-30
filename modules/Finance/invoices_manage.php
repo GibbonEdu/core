@@ -144,6 +144,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         echo $form->getOutput();
 
+        echo '<h3>';
+        echo __($guid, 'View');
+        echo '</h3>';
+
         // QUERY
         $invoiceGateway = $container->get(InvoiceGateway::class);
 
@@ -157,22 +161,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->fromArray($_POST);
         $invoices = $invoiceGateway->queryInvoicesByYear($criteria, $gibbonSchoolYearID);
 
-        echo '<h3>';
-        echo __($guid, 'View');
-        echo '</h3>';
-
         // FORM
         $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/invoices_manage_processBulk.php?'.http_build_query($request));
         $form->setFactory(FinanceFormFactory::create($pdo));
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-        // Load the current status from the filters rather than $_GET so it changes on the data table reload.
-        $status = $criteria->getFilterValue('status'); 
-
         // BULK ACTIONS
         $bulkActions = array('export' => __('Export'));
-        switch($status) {
+        switch($criteria->getFilterValue('status')) {
             case 'Pending':
                 $bulkActions = array('delete' => __('Delete'), 'issue' => __('Issue'), 'issueNoEmail' => __('Issue (Without Email)')) + $bulkActions; break;
             case 'Issued - Overdue':
@@ -189,15 +186,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             $row->addContent(__('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.'))->wrap('<p>', '</p>');
 
         $col = $form->createBulkActionColumn($bulkActions);
-        $col->addSelectPaymentMethod('paymentType')
-            ->setClass('bulkPaid shortWidth displayNone')
-            ->isRequired()
-            ->placeholder(__('Payment Type').'...');
-        $col->addDate('paidDate')
-            ->setClass('bulkPaid shortWidth displayNone')
-            ->isRequired()
-            ->placeholder(__('Date Paid'));
-        $col->addSubmit(__('Go'));
+            $col->addSelectPaymentMethod('paymentType')
+                ->setClass('bulkPaid shortWidth displayNone')
+                ->isRequired()
+                ->placeholder(__('Payment Type').'...');
+            $col->addDate('paidDate')
+                ->setClass('bulkPaid shortWidth displayNone')
+                ->isRequired()
+                ->placeholder(__('Date Paid'));
+            $col->addSubmit(__('Go'));
 
         // DATA TABLE
         $table = $form->addRow()->addDataTable('invoices', $criteria)->withData($invoices);
