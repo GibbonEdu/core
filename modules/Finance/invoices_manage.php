@@ -209,13 +209,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->displayLabel()
             ->append('<br/>');
 
-        $table->addHeaderObject('bulkActions', $col);
-
         $table->modifyRows(function ($invoice, $row) {
             if ($invoice['status'] == 'Issued' && $invoice['invoiceDueDate'] < date('Y-m-d')) $row->addClass('error');
             else if ($invoice['status'] == 'Paid') $row->addClass('current');
             return $row;
         });
+
+        $table->addMetaData('bulkActions', $col);
 
         $table->addMetaData('filterOptions', [
             'status:Pending'          => __('Status').': '.__('Pending'),

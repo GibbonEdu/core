@@ -1624,6 +1624,13 @@ table.smallIntBorder td.noPadding {
     display: none;
 }
 
+tr.selected, tr.selected td, div.selected, td.selected {
+    background: none!important ;
+    background-color: #e2ccf6!important ;
+    border-bottom-color: #d2b8ec;
+    border-top-color: #f7edff;
+}
+
 /* Gibbon Data Table CSS - Will be moved to core.css */
 .dataTable .sortable {
 	cursor: pointer;
@@ -1668,13 +1675,13 @@ table.smallIntBorder td.noPadding {
 .dataTable .filters {
     width: 70px;
     height: 26px;
-    margin: 0 5px 0 0;
+    margin: 2px 5px 4px 0;
 }
 
 .dataTable .limit {
     width: 50px;
     height: 26px;
-    margin: 0;
+    margin: 2px 0px 4px 0;
 }
 
 .dataTable header small,
@@ -1729,13 +1736,45 @@ table.smallIntBorder td.noPadding {
     -webkit-transform: rotate(45deg);
 }
 
+.dataTable .bulkActionPanel {
+    position:absolute;
+    z-index:1;
+    bottom: -8px;
+    right: 0;
+    width: 100%;background: #9d7cc6;
+    padding: 5px;
+    box-sizing: border-box;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.dataTable .bulkActionCount {
+    position: relative; 
+    right: 10px;
+    font-size:13px;
+    line-height:32px;
+    color:#fff
+}
+
+.dataTable .bulkCheckbox {
+    position: relative;
+    text-align: center;
+}
+
+.dataTable .bulkCheckbox label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
 button, input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }
 
 button.active, input[type="submit"].active, input[type="button"].active {
 	background-color: #bbbbbb;
-	/* background-color: #A88EDB; */
 }
 
 button[disabled], input[disabled], textarea[disabled] {

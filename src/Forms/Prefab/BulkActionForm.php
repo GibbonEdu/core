@@ -31,7 +31,7 @@ use Gibbon\Forms\FormRenderer;
  */
 class BulkActionForm extends Form
 {
-    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth standardForm')
+    public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth bulkActionForm')
     {
         $factory = FormFactory::create();
         $renderer = FormRenderer::create();

@@ -51,7 +51,7 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        $output .= '<header>';
+        $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';
 

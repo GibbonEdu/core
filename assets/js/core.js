@@ -21,7 +21,29 @@ jQuery(function($){
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
-        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+    });
+
+    /**
+     * Bluk Actions: show/hide the bulk action panel, highlight selected
+     */
+    $(document).on('click, change', '.dataTable .bulkCheckbox :checkbox', function () {
+        var checkboxes = $(this).parents('.dataTable').find('.bulkCheckbox :checkbox');
+        var checkedCount = checkboxes.filter(':checked').length;
+
+        if (checkedCount > 0) {
+            $('.bulkActionCount span').html(checkedCount);
+            $('.bulkActionPanel').fadeIn(150);
+        } else {
+            $('.bulkActionPanel').fadeOut(75);
+        }
+        
+        $('.checkall').prop('checked', checkedCount > 0 );
+        $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
+
+        $(this).parents('tr').toggleClass('selected', $(this).prop('checked'));
+        
+    });
     });
 
     /**
