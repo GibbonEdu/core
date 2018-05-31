@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\Timetable\TimetableGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -64,6 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         } else {
             $values = $result->fetch();
 
+            $timetableGateway = $container->get(TimetableGateway::class);
+
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_addProcess.php');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -89,19 +92,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->isRequired();
 
-            $yearGroups = getNonTTYearGroups($connection2, $gibbonSchoolYearID);
+            $yearGroupsOptions = $timetableGateway->getNonTimetabledYearGroups($gibbonSchoolYearID);
             $row = $form->addRow();
                 $row->addLabel('active', __('Year Groups'))->description(__('Groups not in an active TT this year.'));
-                if ($yearGroups == '') {
+                if (empty($yearGroupsOptions)) {
                     $row->addContent('<i>'.__($guid, 'No year groups available.').'</i>')->addClass('right');
                 } else {
-                    $yearGroupsOptions = array();
-                    for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                        $yearGroupsOptions[$yearGroups[$i]] = __($yearGroups[$i+1]) ;
-                    }
                     $row->addCheckbox('gibbonYearGroupID')->fromArray($yearGroupsOptions);
                 }
-            $form->addHiddenValue('count', (count($yearGroups)/2));
+            $form->addHiddenValue('count',count($yearGroupsOptions));
 
             $row = $form->addRow();
                 $row->addFooter();
