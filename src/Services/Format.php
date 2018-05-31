@@ -377,6 +377,19 @@ class Format
         return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$settings['absoluteURL'].'/'.$path);
     }
 
+    public static function userStatusInfo($person = [])
+    {
+        if (!empty($person['status']) && $person['status'] != 'Full') return __($person['status']);
+        if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
+            if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) return __('Before Start Date');
+            if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) return __('After End Date');
+            if (empty($person['yearGroup'])) return __('Not Enroled');
+        } else {
+            if (!empty($person['staffType'])) return $person['staffType'];
+        }
+        return '';
+    }
+
     /**
      * Returns the course and class name concatenated with a . (dot). The separator could become a setting at some point?
      *
