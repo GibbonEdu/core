@@ -18,8 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -67,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo '</p>';
 
     if ($requiredUpdates == 'Y') {
-        $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+        $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($gibbonPersonID);
 
         if ($updatesRequiredCount > 0) {
             echo '<div class="warning">';
@@ -118,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
             echo formatName('', $person['preferredName'], $person['surname'], 'Student', true);
             echo '</td>';
 
-            $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'])->fetchAll(\PDO::FETCH_GROUP);
+            $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
 
             foreach ($updatableDataTypes as $type) {
                 $updateRequired = false;

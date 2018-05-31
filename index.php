@@ -139,8 +139,7 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
                 $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
 
                 if (in_array($roleCategory, $redirectByRoleCategory)) { //Are we the right role category?
-                    include $_SESSION[$guid]['absolutePath'].'/modules/Data Updater/Domain/DataUpdaterGateway.php';
-                    $gateway = new Gibbon\DataUpdater\Domain\DataUpdaterGateway($pdo);
+                    $gateway = new Gibbon\Domain\DataUpdater\DataUpdaterGateway($pdo);
 
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
                     if ($updatesRequiredCount > 0) {
