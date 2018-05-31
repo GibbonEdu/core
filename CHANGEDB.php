@@ -869,3 +869,14 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'nameFormatStaffInformalReversed', 'Informal Name Reversed', '', '[surname], [preferredName]');end
 UPDATE gibboni18n SET active='Y' WHERE code='pt_BR';end
 ";
+
+//v15.0.01
+++$count;
+$sql[$count][0] = '15.0.01';
+$sql[$count][1] = "
+UPDATE gibbonAction SET precedence=0 WHERE name='View Student Profile_brief' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET precedence=1 WHERE name='View Student Profile_myChildren' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET precedence=1 WHERE name='View Student Profile_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET precedence=2 WHERE name='View Student Profile_fullNoNotes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET precedence=3 WHERE name='View Student Profile_full' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+";
