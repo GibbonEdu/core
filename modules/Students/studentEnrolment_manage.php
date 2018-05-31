@@ -132,17 +132,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
             ->addParam('search', $criteria->getSearchText(true))
             ->displayLabel();
     
-        $table->modifyRows(function($student, $row) {
-            if ($student['status'] != 'Full') $row->addClass('error');
-            if (!($student['dateStart'] == '' || $student['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
-            if (!($student['dateEnd'] == '' || $student['dateEnd'] >= date('Y-m-d'))) $row->addClass('error');
-            return $row;
-        });
+        $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+
+        $table->addMetaData('filterOptions', [
+            'status:full'     => __('Status').': '.__('Full'),
+            'status:left'     => __('Status').': '.__('Left'),
+            'status:expected' => __('Status').': '.__('Expected'),
+            'date:starting'   => __('Before Start Date'),
+            'date:ended'      => __('After End Date'),
+        ]);
 
         // COLUMNS
         $table->addColumn('student', __('Student'))
             ->sortable(['surname', 'preferredName'])
-            ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+            ->format(function ($person) {
+                return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+            });
         $table->addColumn('yearGroup', __('Year Group'));
         $table->addColumn('rollGroup', __('Roll Group'))
             ->description(__('Roll Order'))
