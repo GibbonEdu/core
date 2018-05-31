@@ -38,6 +38,10 @@ class CheckboxColumn extends Column
         parent::__construct($id);
         $this->sortable(false);
         $this->key = isset($key)? $key : $id;
+
+        $this->modifyCells(function($data, $cell) {
+            return $cell->addClass('bulkCheckbox');
+        });
     }
 
     /**
@@ -63,8 +67,8 @@ class CheckboxColumn extends Column
         $value = isset($data[$this->key])? $data[$this->key] : '';
 
         return (new Checkbox($this->getID().'[]'))
+            ->setID($this->getID().$value)
             ->setValue($value)
-            ->setClass('textCenter')
             ->getOutput();
     }
 }

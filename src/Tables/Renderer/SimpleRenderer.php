@@ -51,7 +51,7 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        $output .= '<header>';
+        $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';
 
@@ -121,12 +121,19 @@ class SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Render a pre-table header section. Defaults to any header actions added to the table.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderHeader(DataTable $table, DataSet $dataSet)
     {
         $output = '';
 
         if ($headerActions = $table->getHeader()) {
-            $output .= '<div class="linkTop">';
+            $output .= '<div class="linkTop column inline">';
             foreach ($headerActions as $header) {
                 $output .= $header->getOutput();
             }
@@ -136,6 +143,13 @@ class SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Render a post-table footer section.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
         return '';
