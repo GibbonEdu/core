@@ -86,23 +86,41 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         return $output;
     }
 
+    /**
+     * Adds the pagination and filter controls to the pre-table header.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
-        $output = parent::renderHeader($table, $dataSet);
-
         $filterOptions = $table->getMetaData('filterOptions', []);
 
-        $output .= '<div>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPageFilters($dataSet, $filterOptions);
+        $output = '<div class="flexRow">';
+            $output .= '<div>';
+                $output .= $this->renderPageCount($dataSet);
+                $output .= $this->renderPageFilters($dataSet, $filterOptions);
+            $output .= '</div>';
+
+            $output .= parent::renderHeader($table, $dataSet);
         $output .= '</div>';
+
         $output .= $this->renderFilterOptions($dataSet, $filterOptions);
         $output .= $this->renderPageSize($dataSet);
         $output .= $this->renderPagination($dataSet);
+        $output .= $this->renderBulkActions($table);
 
         return $output;
     }
 
+    /**
+     * Optionally adds the pagination to the post-table footer.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
         $output = parent::renderFooter($table, $dataSet);
@@ -254,6 +272,29 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
             }
 
             $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getNextPageNumber().'" '.($dataSet->isLastPage()? 'disabled' : '').' value="'.__('Next').'">';
+        $output .= '</div>';
+
+        return $output;
+    }
+
+    /**
+     * Display the bulk action panel.
+     *
+     * @param OutputtableInterface $bulkActions
+     * @return string
+     */
+    protected function renderBulkActions(DataTable $table)
+    {
+        $bulkActions = $table->getMetaData('bulkActions');
+
+        if (empty($bulkActions)) return '';
+
+        $output = '<div class="column bulkActionPanel inline right displayNone">';
+        $output .= '<div class="bulkActionCount"><span>0</span> '.__('Selected').'</div>';
+        $output .= $bulkActions->getOutput();
+        $output .= '<script>';
+        $output .= $bulkActions->getValidationOutput();
+        $output .= '</script>';
         $output .= '</div>';
 
         return $output;

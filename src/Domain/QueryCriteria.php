@@ -306,6 +306,16 @@ class QueryCriteria
     }
 
     /**
+     * Get a filter value by name, if it exists.
+     *
+     * @return array
+     */
+    public function getFilterValue($name)
+    {
+        return isset($this->criteria['filterBy'][$name])? $this->criteria['filterBy'][$name] : '';
+    }
+
+    /**
      * Returns the current filter array as a string of name:value filters.
      *
      * @return string

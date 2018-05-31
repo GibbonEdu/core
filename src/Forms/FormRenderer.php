@@ -68,7 +68,7 @@ class FormRenderer implements FormRendererInterface
 
         $totalColumns = $this->getColumnCount($form, $form->getRows());
 
-        $output .= '<form '.$form->getAttributeString().'>';
+        $output .= '<form '.$form->getAttributeString().' onsubmit="gibbonFormSubmitted(this)">';
 
         // Output hidden values
         foreach ($form->getHiddenValues() as $values) {

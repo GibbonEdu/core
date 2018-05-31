@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Tables\DataTable;
 
 /**
  * FormFactory
@@ -55,6 +56,11 @@ class FormFactory implements FormFactoryInterface
     public function createTable($id = '')
     {
         return new Layout\Table($this, $id);
+    }
+
+    public function createDataTable($id, $criteria)
+    {
+        return DataTable::createPaginated($id, $criteria);
     }
 
     public function createTableCell($content = '')
