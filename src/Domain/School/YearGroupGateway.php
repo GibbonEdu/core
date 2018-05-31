@@ -24,29 +24,27 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
+ * YearGroup Gateway
+ *
  * @version v16
  * @since   v16
  */
-class FacilityGateway extends QueryableGateway
+class YearGroupGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonSpace';
+    private static $tableName = 'gibbonYearGroup';
+    private static $searchableColumns = [];
 
-    private static $searchableColumns = ['name', 'type'];
-    
-    /**
-     * @param QueryCriteria $criteria
-     * @return DataSet
-     */
-    public function queryFacilities(QueryCriteria $criteria)
+    public function queryYearGroups(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonSpaceID', 'name', 'type', 'capacity', 'computer', 'computerStudent', 'projector', 'tv', 'dvd', 'hifi', 'speakers', 'iwb', 'phoneInternal', 'phoneExternal'
-            ]);
+                'gibbonYearGroupID', 'name', 'nameShort', 'sequenceNumber', 'gibbonPersonIDHOY', 'preferredName', 'surname'
+            ])
+            ->leftJoin('gibbonPerson', 'gibbonYearGroup.gibbonPersonIDHOY=gibbonPerson.gibbonPersonID');
 
         return $this->runQuery($query, $criteria);
     }

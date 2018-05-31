@@ -27,25 +27,25 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class FacilityGateway extends QueryableGateway
+class HouseGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonSpace';
+    private static $tableName = 'gibbonHouse';
 
-    private static $searchableColumns = ['name', 'type'];
+    private static $searchableColumns = ['name', 'nameShort'];
     
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryFacilities(QueryCriteria $criteria)
+    public function queryHouses(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonSpaceID', 'name', 'type', 'capacity', 'computer', 'computerStudent', 'projector', 'tv', 'dvd', 'hifi', 'speakers', 'iwb', 'phoneInternal', 'phoneExternal'
+                'gibbonHouseID', 'name', 'nameShort', 'logo'
             ]);
 
         return $this->runQuery($query, $criteria);

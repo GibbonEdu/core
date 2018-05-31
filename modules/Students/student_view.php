@@ -168,6 +168,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->addParam('gibbonPersonID')
                 ->addParam('search', $criteria->getSearchText(true))
                 ->addParam('sort', $sort)
+                ->addParam('allStudents', $allStudents)
                 ->format(function ($row, $actions) {
                     $actions->addAction('view', __('View Details'))
                         ->setURL('/modules/Students/student_view_details.php');
