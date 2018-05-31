@@ -52,4 +52,61 @@ class PersonUpdateGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryStudentUpdaterHistory(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDList)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.gibbonPersonID', 'gibbonRollGroup.name as rollGroupName', 
+                'MAX(gibbonPersonUpdate.timestamp) as personalUpdate', 
+                'MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate'
+            ])
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonPersonUpdate', 'gibbonPersonUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonPersonMedicalUpdate', 'gibbonPersonMedicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->where("gibbonPerson.status = 'Full'")
+            ->where("FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)")
+            ->where("gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID")
+            ->bindValue('gibbonPersonIDList', implode(',', $gibbonPersonIDList))
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->groupBy(['gibbonPerson.gibbonPersonID'])
+            ;
+
+        $criteria->addFilterRules([
+            'cutoff' => function ($query, $cutoffDate) {
+                $query->where(function($query) {
+                    $query->where('(gibbonPersonUpdateID IS NULL OR gibbonPersonUpdate.timestamp < :cutoffDate)')
+                          ->orWhere('(gibbonPersonMedicalUpdateID IS NULL OR gibbonPersonMedicalUpdate.timestamp < :cutoffDate)');
+                });
+
+                $query->bindValue('cutoffDate', $cutoffDate);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectParentEmailsByPersonID($gibbonPersonIDList)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonIDList) ? implode(',', $gibbonPersonIDList) : $gibbonPersonIDList;
+        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
+        $sql = "SELECT gibbonFamilyChild.gibbonPersonID, adult.email 
+            FROM gibbonFamilyChild
+            LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
+            LEFT JOIN gibbonPerson as adult ON (adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID)
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)
+            AND adult.status='Full' AND adult.email <> ''
+            AND gibbonFamilyAdult.contactEmail<>'N' 
+            AND gibbonFamilyAdult.childDataAccess='Y'
+            ORDER BY gibbonFamilyAdult.contactPriority, adult.surname, adult.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }

@@ -18,7 +18,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
 
 include '../../gibbon.php';
 
