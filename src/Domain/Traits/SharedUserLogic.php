@@ -57,7 +57,7 @@ trait SharedUserLogic
             if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
                 if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) $highlight = 'error';
                 if (!(empty($person['dateEnd'] ) || $person['dateEnd'] >= date('Y-m-d'))) $highlight = 'error';
-                if (isset($person['yearGroup']) && empty($person['yearGroup'])) $highlight = 'error';
+                if (empty($person['gibbonStudentEnrolmentID'])) $highlight = 'error';
             }
             return $row->addClass($highlight);
         };
