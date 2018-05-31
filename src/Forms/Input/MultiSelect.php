@@ -73,6 +73,11 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->addClass("floatNone");
     }
 
+    public function getID()
+    {
+        return $this->name;
+    }
+
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
@@ -131,6 +136,8 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             });
 
             sortSelects(name);
+
+            select1.change().focus();
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -153,6 +160,13 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
                 var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
+
+                // Select all options on submit so we can validate this select input.
+                $("input[type=\'Submit\']", form).click(function() {
+                    $(\'option\', destinationSelect).each(function() {
+                        $(this).prop("selected", true);
+                    });
+                });
 
                 form.submit(function(){
                     var options = $(\'option\', destinationSelect);
