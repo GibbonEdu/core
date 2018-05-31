@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -73,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -128,92 +131,45 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Edit Classes');
+            echo __('Edit Classes');
             echo '</h2>';
 
-            //Set pagination variable
-            try {
-                $data = array('gibbonCourseID' => $gibbonCourseID);
-                $sql = 'SELECT * FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID ORDER BY name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $courseGateway = $container->get(CourseGateway::class);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_add.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonCourseID=$gibbonCourseID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            $classes = $courseGateway->selectClassesByCourseID($gibbonCourseID);
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Short Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Participants');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Reportable');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            // DATA TABLE
+            $table = DataTable::create('courseClassManage');
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Timetable Admin/course_manage_class_add.php')
+                ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
+                ->addParam('gibbonCourseID', $gibbonCourseID)
+                ->displayLabel();
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['name'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['nameShort'];
-                    echo '</td>';
-                    echo '<td>';
-                    try {
-                        $dataClasses = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                        $sqlClasses = 'SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status=\'Full\' AND gibbonCourseClassID=:gibbonCourseClassID AND NOT role LIKE \'% - Left\'';
-                        $resultClasses = $connection2->prepare($sqlClasses);
-                        $resultClasses->execute($dataClasses);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultClasses->rowCount() >= 0) {
-                        echo $resultClasses->rowCount();
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['reportable'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_class_delete.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            $table->addColumn('nameShort', __('Short Name'))->width('20%');
+            $table->addColumn('name', __('Name'))->width('20%');
+            $table->addColumn('participantsTotal', __('Participants'));
+            $table->addColumn('reportable', __('Reportable'))->format(Format::using('yesNo', 'reportable'));
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonSchoolYearID', $values['gibbonSchoolYearID'])
+                ->addParam('gibbonCourseID', $gibbonCourseID)
+                ->addParam('gibbonCourseClassID')
+                ->format(function ($class, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/course_manage_class_edit.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable Admin/course_manage_class_delete.php');
+
+                    $actions->addAction('enrolment', __('Enrolment'))
+                        ->setIcon('attendance')
+                        ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit.php');
+                });
+
+            echo $table->render($classes->toDataSet());
         }
     }
 }
-?>

@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     //Acess denied
@@ -91,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
 
         echo '<h3>';
-        echo __($guid, 'Filters');
+        echo __('Filters');
         echo '</h3>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
@@ -116,147 +119,61 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $courseGateway = $container->get(CourseGateway::class);
 
-        try {
-            $sqlFilters = array();
+        // QUERY
+        $criteria = $courseGateway->newQueryCriteria()
+            ->searchBy($courseGateway->getSearchableColumns(), $search)
+            ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
+            ->filterBy('yearGroup', $gibbonYearGroupID)
+            ->fromArray($_POST);
 
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT gibbonCourseID, gibbonDepartmentID, name, nameShort FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
+        $courses = $courseGateway->queryCoursesBySchoolYear($criteria, $gibbonSchoolYearID);
 
-            if (!empty($search)) {
-                $data['search1'] = "%$search%";
-                $data['search2'] = "%$search%";
-                $sqlFilters[] = '(name LIKE :search1 OR nameShort LIKE :search2)';
-            }
+        // DATA TABLE
+        $table = DataTable::createPaginated('courseManage', $criteria);
 
-            if (!empty($gibbonYearGroupID)) {
-                $data['gibbonYearGroupID'] = '%'.str_pad($gibbonYearGroupID, 3, '0').'%';
-                $sqlFilters[] = '(gibbonYearGroupIDList LIKE :gibbonYearGroupID)';
-            }
-
-            if (!empty($sqlFilters)) {
-                $sql .= ' AND ('. implode(' AND ', $sqlFilters) .')';
-            }
-
-            $sql .= ' ORDER BY nameShort, name';
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        echo "<div class='linkTop'>";
         if ($nextYear != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/modules/Timetable Admin/course_manage_copyProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonSchoolYearIDNext=$nextYear' onclick='return confirm(\"Are you sure you want to do this? All courses and classes, but not their participants, will be copied.\")'>".__($guid, 'Copy All To Next Year')."<img style='margin-left: 5px' title='".__($guid, 'Copy All To Next Year')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> | ";
+            $table->addHeaderAction('copy', __('Copy All To Next Year'))
+                ->setURL('/modules/Timetable Admin/course_manage_copyProcess.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonSchoolYearIDNext', $nextYear)
+                ->addParam('search', $search)
+                ->setIcon('copy')
+                ->onCLick('return confirm("Are you sure you want to do this? All courses and classes, but not their participants, will be copied.");')
+                ->displayLabel()
+                ->isDirect()
+                ->append('&nbsp;|&nbsp;');
         }
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/course_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
-            }
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Timetable Admin/course_manage_add.php')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $search)
+            ->displayLabel();
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Short Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Learning Area');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Classes');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
+        // COLUMNS
+        $table->addColumn('nameShort', __('Short Name'));
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('department', __('Learning Area'));
+        $table->addColumn('classCount', __('Classes'));
 
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
+        // ACTIONS
+        $table->addActionColumn()
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('gibbonCourseID')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($course, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/course_manage_edit.php');
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $row['nameShort'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['name'];
-                echo '</td>';
-                echo '<td>';
-                if ($row['gibbonDepartmentID'] != '') {
-                    try {
-                        $dataLA = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                        $sqlLA = 'SELECT name FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                        $resultLA = $connection2->prepare($sqlLA);
-                        $resultLA->execute($dataLA);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    if ($resultLA->rowCount() >= 0) {
-                        echo $resultLA->fetchColumn(0);
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                try {
-                    $dataClasses = array('gibbonCourseID' => $row['gibbonCourseID']);
-                    $sqlClasses = 'SELECT COUNT(*) FROM gibbonCourseClass WHERE gibbonCourseID=:gibbonCourseID';
-                    $resultClasses = $connection2->prepare($sqlClasses);
-                    $resultClasses->execute($dataClasses);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultClasses->rowCount() >= 0) {
-                    echo $resultClasses->fetchColumn(0);
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_edit.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage_delete.php&gibbonCourseID='.$row['gibbonCourseID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable Admin/course_manage_delete.php');
+            });
 
-                ++$count;
-            }
-            echo '</table>';
-
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&gibbonYearGroupID=$gibbonYearGroupID");
-            }
-        }
+        echo $table->render($courses);
     }
 }
