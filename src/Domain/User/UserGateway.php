@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\User;
 
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\SharedUserLogic;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
@@ -32,6 +33,7 @@ use Gibbon\Domain\QueryableGateway;
 class UserGateway extends QueryableGateway
 {
     use TableAware;
+    use SharedUserLogic;
 
     private static $tableName = 'gibbonPerson';
 
@@ -54,27 +56,7 @@ class UserGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonRole', 'gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID');
 
-        $criteria->addFilterRules([
-            'role' => function ($query, $roleCategory) {
-                return $query
-                    ->where('gibbonRole.category = :roleCategory')
-                    ->bindValue('roleCategory', ucfirst($roleCategory));
-            },
-
-            'status' => function ($query, $status) {
-                return $query
-                    ->where('gibbonPerson.status = :status')
-                    ->bindValue('status', ucfirst($status));
-            },
-
-            'date' => function ($query, $dateType) {
-                return $query
-                    ->where(($dateType == 'starting')
-                        ? '(gibbonPerson.dateStart IS NOT NULL AND gibbonPerson.dateStart >= :today)'
-                        : '(gibbonPerson.dateEnd IS NOT NULL AND gibbonPerson.dateEnd <= :today)')
-                    ->bindValue('today', date('Y-m-d'));
-            },
-        ]);
+        $criteria->addFilterRules($this->getSharedUserFilterRules());
 
         return $this->runQuery($query, $criteria);
     }
