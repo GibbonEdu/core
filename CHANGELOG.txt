@@ -16,6 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v15.0.01
+--------
+	Security
+		Fixed privacy-related issue in Student Profile permissions
+        
 v15.0.00
 --------
 	Headlines
