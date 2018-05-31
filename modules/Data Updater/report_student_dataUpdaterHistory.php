@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
 
         // DATA TABLE
         $table = DataTable::createPaginated('studentUpdaterHistory', $criteria);
-        $table->getRenderer()->addPostData(['members' => $choices]);
+        $table->addMetaData('post', ['members' => $choices]);
 
         $count = $dataUpdates->getPageFrom();
         $table->addColumn('count', '')
