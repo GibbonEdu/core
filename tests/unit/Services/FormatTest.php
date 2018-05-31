@@ -139,13 +139,13 @@ class FormatTest extends TestCase
 
     public function testFormatsAge()
     {
-        $date = date('Y-m-d', strtotime('-12 years -6 months'));
+        $date = date('Y-m-d', strtotime('-12 years -6 months -1 day'));
         $this->assertEquals('12 years, 6 months', Format::age($date));
     }
 
     public function testFormatsShortAge()
     {
-        $date = date('Y-m-d', strtotime('-24 years -0 months'));
+        $date = date('Y-m-d', strtotime('-24 years -0 months -1 day'));
         $this->assertEquals('24y, 0m', Format::age($date, true));
     }
 
