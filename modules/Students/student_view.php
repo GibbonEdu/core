@@ -34,7 +34,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        if ($highestAction == 'View Student Profile_myChildren' || $highestAction == 'View Student Profile_my') {
+        $skipBrief = false;
+
+        //Skip brief for those with _full or _fullNoNotes, and _brief
+        if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+            $skipBrief = true;
+        }
+
+        if ( ($highestAction == 'View Student Profile_myChildren' || $highestAction == 'View Student Profile_my') && isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') == false )  {
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Profiles').'</div>';
             echo '</div>';
@@ -115,7 +122,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo '</table>';
             }
         }
-        if ($highestAction == 'View Student Profile_brief') {
+
+        if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') && $skipBrief == false) {
             //Proceed!
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Profiles').'</div>';
