@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
-            $ttDayRowClassExceptions = $timetableDayGateway->selectTTDayRowsClassExceptionsByID($gibbonTTDayRowClassID);
+            $ttDayRowClassExceptions = $timetableDayGateway->selectTTDayRowClassExceptionsByID($gibbonTTDayRowClassID);
 
             // DATA TABLE
             $table = DataTable::create('timetableDayRowClassExceptions');

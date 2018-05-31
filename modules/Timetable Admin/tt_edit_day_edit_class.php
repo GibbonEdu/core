@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo '</tr>';
             echo '</table>';
 
-            $ttDayRowClasses = $timetableDayGateway->selectTTDayRowsClassesByID($gibbonTTDayID, $gibbonTTColumnRowID);
+            $ttDayRowClasses = $timetableDayGateway->selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID);
 
             // DATA TABLE
             $table = DataTable::create('timetableDayRowClasses');

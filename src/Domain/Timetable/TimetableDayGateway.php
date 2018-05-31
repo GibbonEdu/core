@@ -33,8 +33,7 @@ class TimetableDayGateway extends Gateway
         $sql = "SELECT gibbonTTDay.*, gibbonTTColumn.name AS columnName 
                 FROM gibbonTTDay 
                 JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) 
-                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID 
-                ORDER BY gibbonTTDay.name";
+                WHERE gibbonTTDay.gibbonTTID=:gibbonTTID";
 
         return $this->db()->select($sql, $data);
     }
@@ -53,7 +52,7 @@ class TimetableDayGateway extends Gateway
         return $this->db()->select($sql, $data);  
     }
 
-    public function selectTTDayRowsClassesByID($gibbonTTDayID, $gibbonTTColumnRowID) {
+    public function selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID) {
         $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID);
         $sql = "SELECT gibbonTTDayRowClassID, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className, gibbonSpace.gibbonSpaceID, gibbonSpace.name as location
                 FROM gibbonTTDayRowClass 
@@ -67,7 +66,24 @@ class TimetableDayGateway extends Gateway
         return $this->db()->select($sql, $data);  
     }
 
-    public function selectTTDayRowsClassExceptionsByID($gibbonTTDayRowClassID) {
+    public function selectTTDayRowClassTeachersByID($gibbonTTDayRowClassID) {
+        $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
+        $sql = "SELECT DISTINCT title, surname, preferredName, gibbonTTDayRowClassException.gibbonPersonID AS exception 
+                FROM gibbonPerson 
+                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+                JOIN gibbonTTDayRowClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+                LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID 
+                    AND gibbonTTDayRowClassException.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                WHERE gibbonCourseClassPerson.role='Teacher' 
+                AND gibbonTTDayRowClass.gibbonTTDayRowClassID=:gibbonTTDayRowClassID 
+                AND gibbonTTDayRowClassExceptionID IS NULL
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);  
+    }
+
+    public function selectTTDayRowClassExceptionsByID($gibbonTTDayRowClassID) {
         $data = array('gibbonTTDayRowClassID' => $gibbonTTDayRowClassID);
         $sql = "SELECT gibbonTTDayRowClassExceptionID, gibbonPerson.gibbonPersonID, surname, preferredName 
                 FROM gibbonTTDayRowClassException 
