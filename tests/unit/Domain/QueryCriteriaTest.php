@@ -93,7 +93,7 @@ class QueryCriteriaTest extends TestCase
     {
         $this->criteria->pageSize(-42);
 
-        $this->assertEquals(1, $this->criteria->getPageSize());
+        $this->assertEquals(0, $this->criteria->getPageSize());
     }
 
     public function testCanSearchByOneColumn()

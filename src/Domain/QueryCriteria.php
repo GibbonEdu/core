@@ -136,7 +136,7 @@ class QueryCriteria
      */
     public function pageSize($pageSize)
     {
-        $this->criteria['pageSize'] = max(1, intval($pageSize));
+        $this->criteria['pageSize'] = max(0, intval($pageSize));
 
         return $this;
     }
