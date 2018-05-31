@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\FirstAidGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
     //Acess denied
@@ -45,21 +47,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             returnProcess($guid, $_GET['return'], null, null);
         }
 
-        $gibbonPersonID = null;
-        if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
-        }
-        $gibbonRollGroupID = null;
-        if (isset($_GET['gibbonRollGroupID'])) {
-            $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-        }
-        $gibbonYearGroupID = null;
-        if (isset($_GET['gibbonYearGroupID'])) {
-            $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
-        }
+        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
 
         echo '<h3>';
-        echo __($guid, 'Filter');
+        echo __('Filter');
         echo '</h3>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -88,156 +81,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'First Aid Records');
+        echo __('First Aid Records');
         echo '</h3>';
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
 
-        //Search with filters applied
-        try {
-            $data = array();
-            $sqlWhere = 'AND ';
-            if ($gibbonPersonID != '') {
-                $data['gibbonPersonID'] = $gibbonPersonID;
-                $sqlWhere .= 'gibbonFirstAid.gibbonPersonIDPatient=:gibbonPersonID AND ';
-            }
-            if ($gibbonRollGroupID != '') {
-                $data['gibbonRollGroupID'] = $gibbonRollGroupID;
-                $sqlWhere .= 'gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND ';
-            }
-            if ($gibbonYearGroupID != '') {
-                $data['gibbonYearGroupID'] = $gibbonYearGroupID;
-                $sqlWhere .= 'gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID AND ';
-            }
-            if ($sqlWhere == 'AND ') {
-                $sqlWhere = '';
-            } else {
-                $sqlWhere = substr($sqlWhere, 0, -5);
-            }
-            $data['gibbonSchoolYearID'] = $_SESSION[$guid]['gibbonSchoolYearID'];
-            $sql = "SELECT gibbonFirstAid.*, patient.surname AS surnamePatient, patient.preferredName AS preferredNamePatient, firstAider.title, firstAider.surname AS surnameFirstAider, firstAider.preferredName AS preferredNameFirstAider
-                FROM gibbonFirstAid
-                    JOIN gibbonPerson AS patient ON (gibbonFirstAid.gibbonPersonIDPatient=patient.gibbonPersonID)
-                    JOIN gibbonPerson AS firstAider ON (gibbonFirstAid.gibbonPersonIDFirstAider=firstAider.gibbonPersonID)
-                    JOIN gibbonStudentEnrolment ON (patient.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                    JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere
-                ORDER BY date DESC, timeIn DESC";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
+        $firstAidGateway = $container->get(FirstAidGateway::class);
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_add.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__($guid, 'Add')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+        $criteria = $firstAidGateway->newQueryCriteria()
+            ->sortBy(['surnamePatient', 'preferredNamePatient'])
+            ->filterBy('student', $gibbonPersonID)
+            ->filterBy('rollGroup', $gibbonRollGroupID)
+            ->filterBy('yearGroup', $gibbonYearGroupID)
+            ->fromArray($_POST);
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-            }
+        $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Student & Date');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'First Aider');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Time');
-            echo '</th>';
-            echo "<th style='min-width: 110px'>";
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
+        // DATA TABLE
+        $table = DataTable::createPaginated('firstAidRecords', $criteria);
 
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Students/firstAidRecord_add.php')
+            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+            ->displayLabel();
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$row['gibbonPersonIDPatient']."&subpage=Behaviour&search=&allStudents=&sort=surname, preferredName'>".formatName('', $row['preferredNamePatient'], $row['surnamePatient'], 'Student', true).'</a><br/></div>';
-                echo dateConvertBack($guid, $row['date']).'<br/>';
-                echo '</td>';
-                echo '<td>';
-                echo formatName($row['title'], $row['preferredNameFirstAider'], $row['surnameFirstAider'], 'Student').'</b><br/>';
-                echo '</td>';
-                echo '<td>';
-                echo substr($row['timeIn'], 0, -3);
-                if (!is_null($row['timeOut'])) {
-                  echo ' - '.substr($row['timeOut'], 0, -3);
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/firstAidRecord_edit.php&gibbonFirstAidID='.$row['gibbonFirstAidID']."&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<script type='text/javascript'>";
-                echo '$(document).ready(function(){';
-                echo "\$(\".comment-$count\").hide();";
-                echo "\$(\".show_hide-$count\").fadeIn(1000);";
-                echo "\$(\".show_hide-$count\").click(function(){";
-                echo "\$(\".comment-$count\").fadeToggle(1000);";
-                echo '});';
-                echo '});';
-                echo '</script>';
-                if ($row['actionTaken'] != '' or $row['followUp'] != '' or $row['description'] != '') {
-                    echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
-                }
-                echo '</td>';
-                echo '</tr>';
-                if ($row['actionTaken'] != '' or $row['followUp'] != '' or $row['description'] != '') {
-                    echo "<tr class='comment-$count' id='comment-$count'>";
-                    echo "<td colspan=6>";
-                    if ($row['description'] != '') {
-                        echo '<b>'.__($guid, 'Description').'</b><br/>';
-                        echo nl2brr($row['description']).'<br/><br/>';
-                    }
-                    if ($row['actionTaken'] != '') {
-                        echo '<b>'.__($guid, 'Action Taken').'</b><br/>';
-                        echo nl2brr($row['actionTaken']).'<br/><br/>';
-                    }
-                    if ($row['followUp'] != '') {
-                        echo '<b>'.__($guid, 'Follow Up').'</b><br/>';
-                        echo nl2brr($row['followUp']).'<br/><br/>';
-                    }
-                    echo '</td>';
-                    echo '</tr>';
-                }
-            }
-            echo '</table>';
+        // COLUMNS
+        $table->addExpandableColumn('details')->format(function($person) {
+            $output = '';
+            if ($person['description'] != '') $output .= '<b>'.__('Description').'</b><br/>'.nl2brr($person['description']).'<br/><br/>';
+            if ($person['actionTaken'] != '') $output .= '<b>'.__('Action Taken').'</b><br/>'.nl2brr($person['actionTaken']).'<br/><br/>';
+            if ($person['followUp'] != '') $output .= '<b>'.__('Follow Up').'</b><br/>'.nl2brr($person['followUp']);
+            return $output;
+        });
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-            }
-        }
+        $table->addColumn('patient', __('Student'))
+            ->description(__('Roll Group'))
+            ->sortable(['surnamePatient', 'preferredNamePatient'])
+            ->format(function($person) use ($guid) {
+                $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonIDPatient'].'&subpage=Medical&search=&allStudents=&sort=surname,preferredName';
+                return Format::link($url, Format::name('', $person['preferredNamePatient'], $person['surnamePatient'], 'Student', true))
+                      .'<br/><small><i>'.$person['rollGroup'].'</i></small>';
+            });
+
+        $table->addColumn('firstAider', __('First Aider'))
+            ->sortable(['surnameFirstAider', 'preferredNameFirstAider'])
+            ->format(Format::using('name', ['', 'preferredNameFirstAider', 'surnameFirstAider', 'Staff', false, true]));
+
+        $table->addColumn('date', __('Date'))
+            ->format(Format::using('date', ['date']));
+
+        $table->addColumn('time', __('Time'))
+            ->sortable(['timeIn', 'timeOut'])
+            ->format(Format::using('timeRange', ['timeIn', 'timeOut']));
+
+        $table->addActionColumn()
+            ->addParam('gibbonPersonID', $gibbonPersonID)
+            ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+            ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+            ->addParam('gibbonFirstAidID')
+            ->format(function ($person, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Students/firstAidRecord_edit.php');
+            });
+        
+        echo $table->render($firstAidRecords);
     }
 }
-?>
