@@ -296,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     else if ($highestAction == 'View Student Profile_my') {
                         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-                        $sql = "SELECT gibbonPerson.* FROM gibbonPerson
+                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
