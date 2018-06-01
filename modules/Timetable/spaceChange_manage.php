@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\FacilityChangeGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -46,108 +50,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
             returnProcess($guid, $_GET['return'], null, null);
         }
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $facilityChangeGateway = $container->get(FacilityChangeGateway::class);
 
-        try {
-            if ($highestAction == 'Manage Facility Changes_allClasses') {
-                $data = array('date' => date('Y-m-d'));
-                $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonTTSpaceChangeID, gibbonTTSpaceChange.date, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, spaceOld.name AS spaceOld, spaceNew.name AS spaceNew FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID) JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) LEFT JOIN gibbonSpace AS spaceOld ON (gibbonTTDayRowClass.gibbonSpaceID=spaceOld.gibbonSpaceID) LEFT JOIN gibbonSpace AS spaceNew ON (gibbonTTSpaceChange.gibbonSpaceID=spaceNew.gibbonSpaceID) WHERE date>=:date ORDER BY date, course, class';
-            } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
-                $data = array('date' => date('Y-m-d'), 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'date2' => date('Y-m-d'), 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = '(SELECT gibbonCourseClass.gibbonCourseClassID, gibbonTTSpaceChangeID, gibbonTTSpaceChange.date, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, spaceOld.name AS spaceOld, spaceNew.name AS spaceNew  FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonSpace AS spaceOld ON (gibbonTTDayRowClass.gibbonSpaceID=spaceOld.gibbonSpaceID) LEFT JOIN gibbonSpace AS spaceNew ON (gibbonTTSpaceChange.gibbonSpaceID=spaceNew.gibbonSpaceID) WHERE date>=:date AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID)
-                UNION
-                (SELECT gibbonCourseClass.gibbonCourseClassID, gibbonTTSpaceChangeID, gibbonTTSpaceChange.date, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, spaceOld.name AS spaceOld, spaceNew.name AS spaceNew FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonDepartment ON (gibbonCourse.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) LEFT JOIN gibbonSpace AS spaceOld ON (gibbonTTDayRowClass.gibbonSpaceID=spaceOld.gibbonSpaceID) LEFT JOIN gibbonSpace AS spaceNew ON (gibbonTTSpaceChange.gibbonSpaceID=spaceNew.gibbonSpaceID) WHERE date>=:date2 AND gibbonSchoolYearID=:gibbonSchoolYearID2 AND (gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID2 AND role=\'Coordinator\'))
-                ORDER BY date, course, class';
-            } else {
-                $data = array('date' => date('Y-m-d'), 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonTTSpaceChangeID, gibbonTTSpaceChange.date, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, spaceOld.name AS spaceOld, spaceNew.name AS spaceNew FROM gibbonTTSpaceChange JOIN gibbonTTDayRowClass ON (gibbonTTSpaceChange.gibbonTTDayRowClassID=gibbonTTDayRowClass.gibbonTTDayRowClassID)  JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonSpace AS spaceOld ON (gibbonTTDayRowClass.gibbonSpaceID=spaceOld.gibbonSpaceID) LEFT JOIN gibbonSpace AS spaceNew ON (gibbonTTSpaceChange.gibbonSpaceID=spaceNew.gibbonSpaceID) WHERE date>=:date AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID ORDER BY date, course, class';
-            }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $criteria = $facilityChangeGateway->newQueryCriteria()
+            ->sortBy(['date', 'courseName', 'className'])
+            ->fromArray($_POST);
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/spaceChange_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
-
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
+        if ($highestAction == 'Manage Facility Changes_allClasses') {
+            $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria);
+        } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
+            $facilityChanges = $facilityChangeGateway->queryFacilityChangesByDepartment($criteria, $_SESSION[$guid]['gibbonPersonID']);
         } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
-            }
-
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Date');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Class');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Original Facility');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'New Facility');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo dateConvertBack($guid, $row['date']);
-                echo '</td>';
-                echo '<td>';
-                echo $row['course'].'.'.$row['class'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['spaceOld'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['spaceNew'];
-                echo '</td>';
-                echo '<td>';
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']."/fullscreen.php?q=/modules/".$_SESSION[$guid]['module']."/spaceChange_manage_delete.php&gibbonTTSpaceChangeID=".$row['gibbonTTSpaceChangeID']."&gibbonCourseClassID=".$row['gibbonCourseClassID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
-
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
-            }
+            $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria, $_SESSION[$guid]['gibbonPersonID']);
         }
+
+        // DATA TABLE
+        $table = DataTable::createPaginated('facilityChanges', $criteria);
+
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Timetable/spaceChange_manage_add.php')
+            ->displayLabel();
+
+        $table->addColumn('date', __('Date'))
+            ->format(Format::using('date', 'date'));
+        $table->addColumn('courseClass', __('Class'))
+            ->sortable(['courseName', 'className'])
+            ->format(Format::using('courseClassName', ['courseName', 'className']));
+        $table->addColumn('spaceOld', __('Original Facility'));
+        $table->addColumn('spaceNew', __('New Facility'));
+        $table->addColumn('person', __('Person'))
+            ->sortable(['preferredName', 'surname'])
+            ->format(Format::using('name', ['', 'preferredName', 'surname', 'Staff', false, true]));
+        
+        $table->addActionColumn()
+            ->addParam('gibbonTTSpaceChangeID')
+            ->addParam('gibbonCourseClassID')
+            ->format(function ($row, $actions) {
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable/spaceChange_manage_delete.php');
+            });
+
+        echo $table->render($facilityChanges);
     }
 }

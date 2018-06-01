@@ -19,12 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Tables\Column;
-use Gibbon\Tables\DataTable;
-use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Forms\FormFactory;
+use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Forms\FormFactory;
 
 /**
  * PaginatedRenderer
@@ -63,45 +63,72 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        $output .= '<div class="linkTop">';
-        foreach ($table->getHeader() as $header) {
-            $output .= $header->getOutput();
-        }
-        $output .= '</div>';
-
         $output .= '<div id="'.$table->getID().'">';
-        $output .= '<div class="dataTable">';
-
-        $filterOptions = $table->getMetaData('filterOptions', []);
-
-        $output .= '<header>';
-            $output .= '<div>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPageFilters($dataSet, $filterOptions);
-            $output .= '</div>';
-            $output .= $this->renderFilterOptions($dataSet, $filterOptions);
-            $output .= $this->renderPageSize($dataSet);
-            $output .= $this->renderPagination($dataSet);
-        $output .= '</header>';
+        $output .= '<div class="dataTable" data-results="'.$dataSet->getResultCount().'">';
 
         $output .= parent::renderTable($table, $dataSet);
 
-        if ($dataSet->getPageCount() > 1) {
-            $output .= '<footer>';
-            $output .= $this->renderPageCount($dataSet);
-            $output .= $this->renderPagination($dataSet);
-            $output .= '</footer>';
-        }
-
         $output .= '</div></div><br/>';
 
+        $postData = $table->getMetaData('post');
+        $jsonData = !empty($postData) 
+            ? json_encode(array_replace($postData, $this->criteria->toArray()))
+            : $this->criteria->toJson();
+        
         // Initialize the jQuery Data Table functionality
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$this->criteria->toJson().", ".$dataSet->getResultCount().");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$jsonData.");
         });
         </script>";
+
+        return $output;
+    }
+
+    /**
+     * Adds the pagination and filter controls to the pre-table header.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
+    protected function renderHeader(DataTable $table, DataSet $dataSet) 
+    {
+        $filterOptions = $table->getMetaData('filterOptions', []);
+
+        $output = '<div class="flexRow">';
+            $output .= '<div>';
+                $output .= $this->renderPageCount($dataSet);
+                $output .= $this->renderPageFilters($dataSet, $filterOptions);
+            $output .= '</div>';
+
+            $output .= parent::renderHeader($table, $dataSet);
+        $output .= '</div>';
+
+        $output .= $this->renderFilterOptions($dataSet, $filterOptions);
+        $output .= $this->renderPageSize($dataSet);
+        $output .= $this->renderPagination($dataSet);
+        $output .= $this->renderBulkActions($table);
+
+        return $output;
+    }
+
+    /**
+     * Optionally adds the pagination to the post-table footer.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
+    protected function renderFooter(DataTable $table, DataSet $dataSet)
+    {
+        $output = parent::renderFooter($table, $dataSet);
+
+        if ($dataSet->getPageCount() > 1) {
+            $output .= $this->renderPageCount($dataSet);
+            $output .= $this->renderPagination($dataSet);
+        }
 
         return $output;
     }
@@ -116,6 +143,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $th = parent::createTableHeader($column);
 
         if ($sortBy = $column->getSortable()) {
+            $sortBy = !is_array($sortBy)? array($sortBy) : $sortBy;
             $th->addClass('sortable');
             $th->addData('sort', implode(',', $sortBy));
 
@@ -166,7 +194,9 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
             $criteriaUsed = array();
             foreach ($this->criteria->getFilterBy() as $name => $value) {
                 $key = $name.':'.$value;
-                $criteriaUsed[$name] = isset($filters[$key]) ? $filters[$key] : __(ucfirst($name)).': '.__(ucfirst($value));
+                $criteriaUsed[$name] = isset($filters[$key]) 
+                    ? $filters[$key] 
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))); // camelCase => Title Case
             }
 
             foreach ($criteriaUsed as $name => $label) {
@@ -207,7 +237,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderPageSize(DataSet $dataSet)
     {
-        if ($dataSet->getPageSize() <= 0 || $dataSet->getPageCount() <= 1) return '';
+        if ($dataSet->getPageSize() <= 0 || $dataSet->getResultCount() <= 25) return '';
 
         return $this->factory->createSelect('limit')
             ->fromArray(array(10, 25, 50, 100))
@@ -225,7 +255,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderPagination(DataSet $dataSet)
     {
-        if ($dataSet->getPageCount() <= 1) return '';
+        if ($dataSet->getResultCount() <= 25) return '';
 
         $pageNumber = $dataSet->getPage();
 
@@ -242,6 +272,29 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
             }
 
             $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getNextPageNumber().'" '.($dataSet->isLastPage()? 'disabled' : '').' value="'.__('Next').'">';
+        $output .= '</div>';
+
+        return $output;
+    }
+
+    /**
+     * Display the bulk action panel.
+     *
+     * @param OutputtableInterface $bulkActions
+     * @return string
+     */
+    protected function renderBulkActions(DataTable $table)
+    {
+        $bulkActions = $table->getMetaData('bulkActions');
+
+        if (empty($bulkActions)) return '';
+
+        $output = '<div class="column bulkActionPanel inline right displayNone">';
+        $output .= '<div class="bulkActionCount"><span>0</span> '.__('Selected').'</div>';
+        $output .= $bulkActions->getOutput();
+        $output .= '<script>';
+        $output .= $bulkActions->getValidationOutput();
+        $output .= '</script>';
         $output .= '</div>';
 
         return $output;

@@ -18,9 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-use Gibbon\DataUpdater\Domain\DataUpdaterGateway;
-use Modules\IDCards\Domain\UpdaterGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -35,6 +33,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('My Data Updates').'</div>';
     echo '</div>';
+
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return']);
+    }
 
     $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
 
@@ -88,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     }
 
     if ($requiredUpdates == 'Y') {
-        $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+        $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($gibbonPersonID);
 
         if ($updatesRequiredCount > 0) {
             echo '<div class="warning">';
@@ -139,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
             echo formatName('', $person['preferredName'], $person['surname'], 'Student', true);
             echo '</td>';
 
-            $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'])->fetchAll(\PDO::FETCH_GROUP);
+            $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
 
             foreach ($updatableDataTypes as $type) {
                 $updateRequired = false;

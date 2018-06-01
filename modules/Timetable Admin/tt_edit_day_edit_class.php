@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class.php') == false) {
     //Acess denied
@@ -37,22 +40,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         echo '</div>';
     } else {
         //Timetable, day, period
-        try {
-            $data = array('gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID);
-            $sql = 'SELECT gibbonTT.name AS ttName, gibbonTTDay.name AS dayName, gibbonTTColumnRow.name AS rowName FROM gibbonTT JOIN gibbonTTDay ON (gibbonTT.gibbonTTID=gibbonTTDay.gibbonTTID) JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTColumnRow ON (gibbonTTColumn.gibbonTTColumnID=gibbonTTColumnRow.gibbonTTColumnID) WHERE gibbonTTDay.gibbonTTDayID=:gibbonTTDayID AND gibbonTT.gibbonTTID=:gibbonTTID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonTTColumnRowID=:gibbonTTColumnRowID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
-        if ($result->rowCount() != 1) {
+        $timetableDayGateway = $container->get(TimetableDayGateway::class);
+        $values = $timetableDayGateway->getTTDayRowByID($gibbonTTDayID, $gibbonTTColumnRowID);
+
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
-            $row = $result->fetch();
-
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Edit Timetable Day')."</a> > </div><div class='trailEnd'>".__($guid, 'Classes in Period').'</div>';
             echo '</div>';
@@ -65,92 +61,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Timetable').'</span><br/>';
-            echo $row['ttName'];
+            echo $values['ttName'];
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Day').'</span><br/>';
-            echo $row['dayName'];
+            echo $values['dayName'];
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Period').'</span><br/>';
-            echo $row['rowName'];
+            echo $values['rowName'];
             echo '</td>';
             echo '</tr>';
             echo '</table>';
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_add.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            $ttDayRowClasses = $timetableDayGateway->selectTTDayRowClassesByID($gibbonTTDayID, $gibbonTTColumnRowID);
 
-            try {
-                $data = array('gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayID' => $gibbonTTDayID);
-                $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonTTDayRowClassID, gibbonSpaceID FROM gibbonTTDayRowClass JOIN gibbonCourseClass ON (gibbonTTDayRowClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonTTColumnRowID=:gibbonTTColumnRowID AND gibbonTTDayID=:gibbonTTDayID ORDER BY course, class';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            // DATA TABLE
+            $table = DataTable::create('timetableDayRowClasses');
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no classes associated with this period on this day.');
-                echo '</div>';
-            } else {
-                //Let's go!
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Class');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Location');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_add.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->addParam('gibbonTTDayID', $gibbonTTDayID)
+                ->addParam('gibbonTTColumnRowID', $gibbonTTColumnRowID)
+                ->displayLabel();
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            $table->addColumn('class', __('Class'))->format(Format::using('courseClassName', ['courseName', 'className']));
+            $table->addColumn('location', __('Location'));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['course'].'.'.$row['class'];
-                    echo '</td>';
-                    echo '<td>';
-                    if ($row['gibbonSpaceID'] != '') {
-                        try {
-                            $dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
-                            $sqlSpace = 'SELECT name FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
-                            $resultSpace = $connection2->prepare($sqlSpace);
-                            $resultSpace->execute($dataSpace);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        if ($resultSpace->rowCount() == 1) {
-                            $rowSpace = $resultSpace->fetch();
-                            echo $rowSpace['name'];
-                        }
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=".$row['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$row['gibbonCourseClassID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_delete.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=".$row['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$row['gibbonCourseClassID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=".$row['gibbonTTDayRowClassID'].'&gibbonCourseClassID='.$row['gibbonCourseClassID']."'><img title='".__($guid, 'Exceptions')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->addParam('gibbonTTDayID', $gibbonTTDayID)
+                ->addParam('gibbonTTColumnRowID', $gibbonTTColumnRowID)
+                ->addParam('gibbonTTDayRowClassID')
+                ->addParam('gibbonCourseClassID')
+                ->format(function ($values, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_edit.php');
+                        
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_delete.php');
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+                    $actions->addAction('exceptions', __('Exceptions'))
+                        ->setIcon('attendance')
+                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit_class_exception.php');
+                });
+
+            echo $table->render($ttDayRowClasses->toDataSet());
         }
     }
 }

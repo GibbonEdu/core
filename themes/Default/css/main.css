@@ -217,7 +217,7 @@ div.sidebarExtra {
 	z-index: 9999;
 	margin-top: -82px;
 	margin-left: 850px;
-	opacity: 0.8; 
+	opacity: 0.8;
 }
 div.minorLinks {
 	text-align: right;
@@ -852,8 +852,8 @@ div.paginationBottom {
 }
 div.linkTop {
 	text-align: right;
-	font-size: 12px;
-	margin: 15px 0px 5px 0px
+    font-size: 12px;
+    line-height: 32px;
 }
 div.linkTopLeft {
 	text-align: left;
@@ -1620,6 +1620,17 @@ table.smallIntBorder td.noPadding {
 
 /* v16 NEW CLASSES */
 
+.displayNone {
+    display: none;
+}
+
+tr.selected, tr.selected td, div.selected, td.selected {
+    background: none!important ;
+    background-color: #e2ccf6!important ;
+    border-bottom-color: #d2b8ec;
+    border-top-color: #f7edff;
+}
+
 /* Gibbon Data Table CSS - Will be moved to core.css */
 .dataTable .sortable {
 	cursor: pointer;
@@ -1631,26 +1642,26 @@ table.smallIntBorder td.noPadding {
 .dataTable .sortASC:after,
 .dataTable .sortDESC:after {
 	content: '';
-	width: 0px; 
-	height: 0px; 
+	width: 0px;
+	height: 0px;
 	border: 5px solid transparent;
 	position: absolute;
-	top: 18px;
+	top: 15px;
 	right: 6px;
 }
 
 .dataTable .sortable:not(.sorting):hover:after {
-	border-top: 5px solid #666666;
+	border-bottom: 5px solid #666666;
 	opacity: 0.4;
 }
 
 .dataTable .sortASC:after {
-	border-top: 5px solid #666666;
+	border-bottom: 5px solid #666666;
 }
 
 .dataTable .sortDESC:after {
-	border-bottom: 5px solid #666666;
-	top: 15px;
+    border-top: 5px solid #666666;
+    top: 18px;
 }
 
 .dataTable input[type="button"],
@@ -1664,13 +1675,13 @@ table.smallIntBorder td.noPadding {
 .dataTable .filters {
     width: 70px;
     height: 26px;
-    margin: 0 5px 0 0;
+    margin: 2px 5px 4px 0;
 }
 
 .dataTable .limit {
     width: 50px;
     height: 26px;
-    margin: 0;
+    margin: 2px 0px 4px 0;
 }
 
 .dataTable header small,
@@ -1679,13 +1690,91 @@ table.smallIntBorder td.noPadding {
     line-height: 32px;
 }
 
+.dataTable .flexRow {
+    display : flex;
+    flex-flow: row nowrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.dataTable .expandable {
+    border-right: 0px !important;
+    padding: 0px !important;
+    overflow: visible;
+}
+
+.dataTable .expandable + td {
+    border-left: 0px !important;
+    padding-left: 4px !important;
+}
+
+.dataTable .expander {
+    display: block;
+    padding: 15px 10px;
+    cursor: pointer;
+}
+
+.dataTable .expander:before {
+    content: '';
+    border: solid #999;
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 4px;
+    transform: rotate(-45deg);
+    -webkit-transform: rotate(-45deg);
+    transition: transform 0.2s;
+    pointer-events: none;
+}
+
+.dataTable .expander:hover:before {
+    border-color: #444;
+}
+
+.dataTable .expander.expanded:before {
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+}
+
+.dataTable .bulkActionPanel {
+    position:absolute;
+    z-index:1;
+    bottom: -8px;
+    right: 0;
+    width: 100%;background: #9d7cc6;
+    padding: 5px;
+    box-sizing: border-box;
+    border-top-right-radius: 3px;
+    border-top-left-radius: 3px;
+}
+
+.dataTable .bulkActionCount {
+    position: relative; 
+    right: 10px;
+    font-size:13px;
+    line-height:32px;
+    color:#fff
+}
+
+.dataTable .bulkCheckbox {
+    position: relative;
+    text-align: center;
+}
+
+.dataTable .bulkCheckbox label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+}
+
 button, input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }
 
 button.active, input[type="submit"].active, input[type="button"].active {
 	background-color: #bbbbbb;
-	/* background-color: #A88EDB; */
 }
 
 button[disabled], input[disabled], textarea[disabled] {
@@ -1694,4 +1783,33 @@ button[disabled], input[disabled], textarea[disabled] {
 	-webkit-box-shadow: none;
 	box-shadow: none;
 	opacity: .45;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
+}
+
+.submitted::before {
+    content: " ";
+    display: inline-block;
+    background: url("../img/refresh.png") no-repeat 0 0;
+    background-size: 100%;
+    animation: spin 2s infinite linear;
+    position: relative;
+    top: 3px;
+    right: 5px;
+    height: 14px;
+    width: 14px;
+    opacity: 0.65;
 }

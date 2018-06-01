@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\DataUpdater\PersonUpdateGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -42,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo '</h2>';
 
     $choices = isset($_POST['members'])? $_POST['members'] : null;
-    $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : null;
+    $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26)));
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php');
@@ -75,166 +78,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
         echo __($guid, 'Report Data');
         echo '</h2>';
 
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sqlWhere = ' AND (';
-            for ($i = 0; $i < count($choices); ++$i) {
-                $data[$choices[$i]] = $choices[$i];
-                $sqlWhere = $sqlWhere.'gibbonPerson.gibbonPersonID=:'.$choices[$i].' OR ';
-            }
-            $sqlWhere = substr($sqlWhere, 0, -4);
-            $sqlWhere = $sqlWhere.')';
-            $sql = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID, gibbonRollGroup.name AS name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $gateway = $container->get(PersonUpdateGateway::class);
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
+        // QUERY
+        $criteria = $gateway->newQueryCriteria()
+            ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
+            ->fromArray($_POST);
 
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Student');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Roll Group');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Personal Data');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Medical Data');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Parent Emails');
-        echo '</th>';
-        echo '</tr>';
+        $dataUpdates = $gateway->queryStudentUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $choices);
+        
+        // Join a set of parent emails per student
+        $people = $dataUpdates->getColumn('gibbonPersonID');
+        $parentEmails = $gateway->selectParentEmailsByPersonID($people)->fetchGrouped();
+        $dataUpdates->joinColumn('gibbonPersonID', 'parentEmails', $parentEmails);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            //Calculate personal
-                $personal = '';
-            $personalFail = false;
-            try {
-                $dataPersonal = array('gibbonPersonID' => $row['gibbonPersonID']);
-                $sqlPersonal = "SELECT * FROM gibbonPersonUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
-                $resultPersonal = $connection2->prepare($sqlPersonal);
-                $resultPersonal->execute($dataPersonal);
-            } catch (PDOException $e) {
-            }
-            if ($resultPersonal->rowCount() > 0) {
-                $rowPersonal = $resultPersonal->fetch();
-                if (dateConvert($guid, $date) <= substr($rowPersonal['timestamp'], 0, 10)) {
-                    $personal = dateConvertBack($guid, substr($rowPersonal['timestamp'], 0, 10));
-                } else {
-                    $personal = "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowPersonal['timestamp'], 0, 10)).'</span>';
-                    $personalFail = true;
-                }
-            } else {
-                $personal = "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'No data').'</span>';
-                $personalFail = true;
-            }
+        // Function to display the updated date based on the cutoff date
+        $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
+        $dataChecker = function($dateUpdated) use ($dateCutoff) {
+            $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
+            $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
 
-                //Calculate medical
-                $medical = '';
-            $medicalFail = false;
-            try {
-                $dataMedical = array('gibbonPersonID' => $row['gibbonPersonID']);
-                $sqlMedical = "SELECT * FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=:gibbonPersonID AND status='Complete' ORDER BY timestamp DESC";
-                $resultMedical = $connection2->prepare($sqlMedical);
-                $resultMedical->execute($dataMedical);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultMedical->rowCount() > 0) {
-                $rowMedical = $resultMedical->fetch();
-                if (dateConvert($guid, $date) <= substr($rowMedical['timestamp'], 0, 10)) {
-                    $medical = dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10));
-                } else {
-                    $medical = "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
-                    $medicalFail = true;
-                }
-            } else {
-                $medical = "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'No data').'</span>';
-                $medicalFail = true;
-            }
+            return empty($dateUpdated) || $dateCutoff > $date
+                ? '<span style="color: #ff0000; font-weight: bold">'.$dateDisplay.'</span>'
+                : $dateDisplay;
+        };
 
-            if ($personalFail or $medicalFail or $nonCompliant == '') {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
+        // DATA TABLE
+        $table = DataTable::createPaginated('studentUpdaterHistory', $criteria);
+        $table->addMetaData('post', ['members' => $choices]);
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $count;
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
-                echo '</td>';
-                echo '<td>';
-                echo $row['name'];
-                echo '</td>';
-                echo '<td>';
-                echo $personal;
-                echo '</td>';
-                echo '<td>';
-                echo $medical;
-                echo '</td>';
-                echo '<td>';
-                try {
-                    $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
-                    $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
-                    $resultFamily = $connection2->prepare($sqlFamily);
-                    $resultFamily->execute($dataFamily);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                while ($rowFamily = $resultFamily->fetch()) {
-                    try {
-                        $dataFamily2 = array('gibbonFamilyID' => $rowFamily['gibbonFamilyID']);
-                        $sqlFamily2 = 'SELECT * FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                        $resultFamily2 = $connection2->prepare($sqlFamily2);
-                        $resultFamily2->execute($dataFamily2);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    $emails = '';
-                    while ($rowFamily2 = $resultFamily2->fetch()) {
-                        if ($rowFamily2['contactPriority'] == 1) {
-                            if ($rowFamily2['email'] != '') {
-                                $emails .= $rowFamily2['email'].', ';
-                            }
-                        } elseif ($rowFamily2['contactEmail'] == 'Y') {
-                            if ($rowFamily2['email'] != '') {
-                                $emails .= $rowFamily2['email'].', ';
-                            }
-                        }
-                    }
-                    if ($emails != '') {
-                        echo substr($emails, 0, -2);
-                    }
-                }
-                echo '</td>';
+        $count = $dataUpdates->getPageFrom();
+        $table->addColumn('count', '')
+            ->notSortable()
+            ->format(function ($row) use (&$count) {
+                return $count++;
+            });
 
-                echo '</tr>';
-            }
-        }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=6>';
-            echo __($guid, 'There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+        $table->addColumn('student', __('Student'))
+            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->format(function ($row) use ($guid) {
+                $name = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
+                return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'], $name);
+            });
+
+        $table->addColumn('rollGroupName', __('Roll Group'));
+
+        $table->addColumn('personalUpdate', __('Personal Data'))
+            ->format(function($row) use ($dataChecker) {
+                return $dataChecker($row['personalUpdate']);
+            });
+
+        $table->addColumn('medicalUpdate', __('Medical Data'))
+            ->format(function($row) use ($dataChecker) {
+                return $dataChecker($row['medicalUpdate']);
+            });
+
+        $table->addColumn('parentEmails', __('Parent Emails'))
+            ->notSortable()
+            ->format(function ($row) {
+                return is_array($row['parentEmails'])? implode('<br/>', array_column($row['parentEmails'], 'email')) : '';
+            });
+
+        echo $table->render($dataUpdates);
     }
 }
-?>

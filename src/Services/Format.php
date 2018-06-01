@@ -32,7 +32,11 @@ class Format
 {
     use FormatResolver;
 
-    protected static $settings = [];
+    protected static $settings = [
+        'dateFormatPHP'     => 'd/m/Y',
+        'dateTimeFormatPHP' => 'd/m/Y H:i',
+        'timeFormatPHP'     => 'H:i',
+    ];
 
     /**
      * Sets the internal formatting options from an array.
@@ -76,7 +80,7 @@ class Format
      */
     public static function date($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d', $dateString);
+        $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
     }
 
@@ -93,7 +97,7 @@ class Format
     }
 
     /**
-     * Formats a YYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
+     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
      *
      * @param string $dateString
      * @param string $format
@@ -102,7 +106,7 @@ class Format
     public static function dateTime($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
-        return $date ? $date->format($format ? $format : 'F j, Y g:i a') : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : '';
     }
     
     /**
@@ -142,6 +146,45 @@ class Format
     }
 
     /**
+     * Converts a YYYY-MM-DD date to a Unix timestamp.
+     *
+     * @return string
+     */
+    public static function timestamp($dateString)
+    {
+        if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        return $date ? $date->getTimestamp() : 0;
+    }
+
+    /**
+     * Formats a time from a given MySQL time or timestamp value.
+     * 
+     * @param string $timeString
+     * @param string|bool $format
+     * @return string
+     */
+    public static function time($timeString, $format = false)
+    {
+        $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
+        $date = DateTime::createFromFormat($convertFormat, $timeString);
+        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : '';
+    }
+
+    /**
+     * Formats a range of times from two given MySQL time or timestamp values.
+     * 
+     * @param string $timeFrom
+     * @param string $timeTo
+     * @param string|bool $format
+     * @return string
+     */
+    public static function timeRange($timeFrom, $timeTo, $format = false)
+    {
+        return static::time($timeFrom, $format) . ' - ' . static::time($timeTo, $format);
+    }
+
+    /**
      * Formats a number to an optional decimal points.
      *
      * @param int|string $value
@@ -169,11 +212,14 @@ class Format
      * Formats a Y/N value as Yes or No in the current language.
      *
      * @param string $value
+     * @param bool   $translate
      * @return string
      */
-    public static function yesNo($value)
+    public static function yesNo($value, $translate = true)
     {
-        return ($value == 'Y' || $value == 'Yes') ? __('Yes') : __('No');
+        $value = ($value == 'Y' || $value == 'Yes') ? 'Yes' : 'No';
+        
+        return $translate ? __($value) : $value;
     }
 
     /**
@@ -235,6 +281,21 @@ class Format
         }
 
         return ($type? $type.': ' : '') . ($countryCode? '+'.$countryCode.' ' : '') . $number;
+    }
+
+    /**
+     * Formats an address including optional district and country.
+     *
+     * @param string $address
+     * @param string $addressDistrict
+     * @param string $addressCountry
+     * @return string
+     */
+    public static function address($address, $addressDistrict, $addressCountry)
+    {
+        if (empty($address)) return '';
+
+        return $address . ($addressDistrict? ', '.$addressDistrict : '') . ($addressCountry? ', '.$addressCountry : '');
     }
 
     /**
@@ -314,6 +375,19 @@ class Format
         }
 
         return sprintf('<img class="user" style="%1$s" src="%2$s"><br/>', $sizeStyle, static::$settings['absoluteURL'].'/'.$path);
+    }
+
+    public static function userStatusInfo($person = [])
+    {
+        if (!empty($person['status']) && $person['status'] != 'Full') return __($person['status']);
+        if (!empty($person['roleCategory']) && $person['roleCategory'] == 'Student') {
+            if (!(empty($person['dateStart']) || $person['dateStart'] <= date('Y-m-d'))) return __('Before Start Date');
+            if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) return __('After End Date');
+            if (empty($person['yearGroup'])) return __('Not Enroled');
+        } else {
+            if (!empty($person['staffType'])) return $person['staffType'];
+        }
+        return '';
     }
 
     /**

@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\ValidatableInterface;
 
 /**
  * Multi Select
@@ -28,7 +29,7 @@ use Gibbon\Forms\FormFactoryInterface;
  * @version v14
  * @since   v14
  */
-class MultiSelect implements OutputableInterface
+class MultiSelect implements OutputableInterface, ValidatableInterface
 {
 
     protected $name;
@@ -72,6 +73,11 @@ class MultiSelect implements OutputableInterface
             ->addClass("floatNone");
     }
 
+    public function getID()
+    {
+        return $this->name;
+    }
+
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
@@ -83,6 +89,26 @@ class MultiSelect implements OutputableInterface
         $this->sourceSelect->setSize($size);
         $this->destinationSelect->setSize($size);
         return $this;
+    }
+
+    /**
+     * Set the multi-select to required.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function isRequired($required = true)
+    {
+        $this->destinationSelect->setRequired($required);
+        return $this;
+    }
+
+    /**
+     * Gets the multi-select's required state.
+     * @return  bool
+     */
+    public function getRequired()
+    {
+        return $this->destinationSelect->getRequired();
     }
 
     public function source() {
@@ -110,6 +136,8 @@ class MultiSelect implements OutputableInterface
             });
 
             sortSelects(name);
+
+            select1.change().focus();
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -132,6 +160,13 @@ class MultiSelect implements OutputableInterface
                 var sourceSelect = $(\'#'.$this->sourceSelect->getID().'\');
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
+
+                // Select all options on submit so we can validate this select input.
+                $("input[type=\'Submit\']", form).click(function() {
+                    $(\'option\', destinationSelect).each(function() {
+                        $(this).prop("selected", true);
+                    });
+                });
 
                 form.submit(function(){
                     var options = $(\'option\', destinationSelect);
@@ -198,6 +233,25 @@ class MultiSelect implements OutputableInterface
         $output .= '</tr></table>';
 
         return $output;
+    }
+
+    /**
+     * Add a LiveValidation setting to the right-hand select by type (eg: Validate.Presence)
+     * @param  string  $type
+     * @param  string  $params
+     */
+    public function addValidation($type, $params = '')
+    {
+        return $this->destinationSelect->addValidation($type, $params);
+    }
+
+    /**
+     * Get the combined validation output from the right-hand select.
+     * @return  string
+     */
+    public function getValidationOutput()
+    {
+        return $this->destinationSelect->getValidationOutput();
     }
 
     public function getClass() {

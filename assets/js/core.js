@@ -20,8 +20,29 @@ jQuery(function($){
     /**
      * Form Class: generic check All/None checkboxes
      */
-    $('.checkall').click(function () {
-        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', this.checked);
+    $(document).on('click', '.checkall', function () {
+        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+    });
+
+    /**
+     * Bluk Actions: show/hide the bulk action panel, highlight selected
+     */
+    $(document).on('click, change', '.dataTable .bulkCheckbox :checkbox', function () {
+        var checkboxes = $(this).parents('.dataTable').find('.bulkCheckbox :checkbox');
+        var checkedCount = checkboxes.filter(':checked').length;
+
+        if (checkedCount > 0) {
+            $('.bulkActionCount span').html(checkedCount);
+            $('.bulkActionPanel').fadeIn(150);
+        } else {
+            $('.bulkActionPanel').fadeOut(75);
+        }
+        
+        $('.checkall').prop('checked', checkedCount > 0 );
+        $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
+
+        $(this).parents('tr').toggleClass('selected', $(this).prop('checked'));
+        
     });
 
     /**
@@ -329,14 +350,12 @@ $.prototype.gibbonCustomBlocks = function(settings) {
  */
 var DataTable = window.DataTable || {};
 
-DataTable = (function(element, basePath, filters, totalCount) {
+DataTable = (function(element, basePath, filters) {
     var _ = this;
 
     _.table = $(element);
     _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
     _.filters = filters;
-    _.totalCount = totalCount;
-    
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
     if (_.filters.filterBy.length == 0) _.filters.filterBy = {};
 
@@ -348,7 +367,8 @@ DataTable.prototype.init = function() {
 
     // Pagination
     $(_.table).on('click', '.paginate', function() {
-        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        var resultCount = $('.dataTable', _.table).data('results');
+        _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min($(this).data('page'), _.filters.pageMax);
         _.refresh();
     });
@@ -371,17 +391,18 @@ DataTable.prototype.init = function() {
     // Remove Filter
     $(_.table).on('click', '.filter', function() {
         var filter = $(this).data('filter');
+        
         if ($(this).hasClass('clear')) {
-            _.filters.filterBy = {};
+            _.filters.filterBy = {'':''};
             _.filters.searchBy.columns = [''];
         } else if (filter in _.filters.filterBy) {
             // Remove columns from search criteria if removing an in: filter
-            if (filter == 'in') {
-                _.filters.searchBy.columns = [''];
-            }
-
+            if (filter == 'in') _.filters.searchBy.columns = [''];
             delete _.filters.filterBy[filter];
         }
+
+        if (jQuery.isEmptyObject(_.filters.filterBy)) _.filters.filterBy = {'':''};
+
         _.filters.page = 1;
         _.refresh();
     });
@@ -398,10 +419,17 @@ DataTable.prototype.init = function() {
 
     // Page Size
     $(_.table).on('change', '.limit', function() {
+        var resultCount = $('.dataTable', _.table).data('results');
         _.filters.pageSize = parseInt($(this).val());
-        _.filters.pageMax = Math.ceil(_.totalCount / _.filters.pageSize);
+        _.filters.pageMax = Math.ceil(resultCount / _.filters.pageSize);
         _.filters.page = Math.min(_.filters.page, _.filters.pageMax);
         _.refresh();
+    });
+
+    // Expandable Rows
+    $(_.table).on('click', '.expander', function() {
+        $(this).toggleClass('expanded');
+        $(this).parents('tr').next('tr').toggle();
     });
 };
 
@@ -413,6 +441,18 @@ DataTable.prototype.refresh = function() {
     });
 };
 
-$.prototype.gibbonDataTable = function(basePath, filters, totalCount) {
-    this.gibbonDataTable = new DataTable(this, basePath, filters, totalCount);
+$.prototype.gibbonDataTable = function(basePath, filters) {
+    this.gibbonDataTable = new DataTable(this, basePath, filters);
 };
+
+/**
+ * Disable the submit button once a form has started submitting. 
+ * Add a spinning indicator for forms that take longer than 0.5s to submit.
+ */
+function gibbonFormSubmitted(form) {
+    var submitButton = $('input[type="submit"]', $(form));
+    submitButton.prop('disabled', true);
+    setTimeout(function() {
+        submitButton.wrap('<span class="submitted"></span>');
+    }, 500);
+}

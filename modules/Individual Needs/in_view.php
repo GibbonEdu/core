@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
     //Acess denied
@@ -42,6 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = isset($_GET['search'])? $_GET['search'] : '';
+        $allStudents = (isset($_GET['allStudents']) ? $_GET['allStudents'] : '');
 
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
@@ -51,6 +55,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
             $row->addTextField('search')->setValue($search);
+
+        $row = $form->addRow();
+            $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
+            $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -64,101 +72,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __($guid, 'This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
         echo '</p>';
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $studentGateway = $container->get(StudentGateway::class);
 
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-            $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            if ($search != '') {
-                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-                $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR username LIKE :search3) AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
-            }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $criteria = $studentGateway->newQueryCriteria()
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->filterBy('all', $allStudents)
+            ->fromArray($_POST);
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
-            }
+        $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Year Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Roll Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
+        // DATA TABLE
+        $table = DataTable::createPaginated('inView', $criteria);
 
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
+        $table->addMetaData('filterOptions', [
+            'all:on'        => __('All Students')
+        ]);
 
-				//Color rows based on start and end date
-				if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
-					$rowNum = 'error';
-				}
+        $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-                echo '</td>';
-                echo '<td>';
-                echo __($guid, $row['yearGroup']);
-                echo '</td>';
-                echo '<td>';
-                echo $row['rollGroup'];
-                echo '</td>';
-                echo '<td>';
+        // COLUMNS
+        $table->addColumn('student', __('Student'))
+            ->sortable(['surname', 'preferredName'])
+            ->format(function ($person) {
+                return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+            });
+        $table->addColumn('yearGroup', __('Year Group'));
+        $table->addColumn('rollGroup', __('Roll Group'));
+
+        $table->addActionColumn()
+            ->addParam('gibbonPersonID')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($row, $actions) use ($highestAction) {
                 if ($highestAction == 'Individual Needs Records_view') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/in_edit.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search'><img title='View Individual Needs Details' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                } elseif ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/in_edit.php&gibbonPersonID='.$row['gibbonPersonID']."&search=$search'><img title='Edit Individual Needs Details' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    $actions->addAction('view', __('View Individual Needs Details'))
+                            ->setURL('/modules/Individual Needs/in_edit.php');
+                } else if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+                    $actions->addAction('edit', __('Edit Individual Needs Details'))
+                            ->setURL('/modules/Individual Needs/in_edit.php');
                 }
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
+            });
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "&search=$search");
-            }
-        }
+        echo $table->render($students);
     }
 }
-?>

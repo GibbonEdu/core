@@ -136,7 +136,7 @@ class QueryCriteria
      */
     public function pageSize($pageSize)
     {
-        $this->criteria['pageSize'] = max(1, intval($pageSize));
+        $this->criteria['pageSize'] = max(0, intval($pageSize));
 
         return $this;
     }
@@ -166,6 +166,9 @@ class QueryCriteria
         $columns = array_filter($columns);
 
         if (!empty($columns)) {
+            $columns = array_map(function($item){ 
+                return preg_replace('/[^a-zA-Z0-9\.\_]/', '', $item); 
+            }, $columns);
             $this->criteria['searchBy']['columns'] =  $columns;
         }
 
@@ -271,6 +274,7 @@ class QueryCriteria
         }
 
         if (!empty($value)) {
+            $name = preg_replace('/[^a-zA-Z0-9\.\-\_]/', '', $name);
             $this->criteria['filterBy'][$name] = $value;
         }
 
@@ -302,6 +306,16 @@ class QueryCriteria
     }
 
     /**
+     * Get a filter value by name, if it exists.
+     *
+     * @return array
+     */
+    public function getFilterValue($name)
+    {
+        return isset($this->criteria['filterBy'][$name])? $this->criteria['filterBy'][$name] : '';
+    }
+
+    /**
      * Returns the current filter array as a string of name:value filters.
      *
      * @return string
@@ -328,6 +342,7 @@ class QueryCriteria
         $columns = is_array($column) ? $column : array($column);
 
         foreach ($columns as $column) {
+            $column = preg_replace('/[^a-zA-Z0-9\.\_]/', '', $column);
             $this->criteria['sortBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
         }
 

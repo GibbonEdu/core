@@ -22,8 +22,10 @@ namespace Gibbon\Tables;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Tables\Action;
-use Gibbon\Tables\Column;
-use Gibbon\Tables\ActionColumn;
+use Gibbon\Tables\Columns\Column;
+use Gibbon\Tables\Columns\ActionColumn;
+use Gibbon\Tables\Columns\CheckboxColumn;
+use Gibbon\Tables\Columns\ExpandableColumn;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
 use Gibbon\Tables\Renderer\RendererInterface;
@@ -45,8 +47,7 @@ class DataTable implements OutputableInterface
     protected $header = array();
     protected $meta = array();
 
-    protected $rowLogic;
-    protected $cellLogic;
+    protected $rowModifiers = [];
 
     /**
      * Create a data table with optional renderer.
@@ -121,7 +122,7 @@ class DataTable implements OutputableInterface
     }
 
     /**
-     * Set the renderer for the data table. Cal also be supplied ad hoc in the render method.
+     * Set the renderer for the data table. Can also be supplied ad hoc in the render method.
      *
      * @param RendererInterface $renderer
      * @return self
@@ -170,6 +171,30 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Add a checkbox column to the table, used for bulk-action tables.
+     *
+     * @return CheckboxColumn
+     */
+    public function addCheckboxColumn($id, $key = '')
+    {
+        $this->columns[$id] = new CheckboxColumn($id, $key);
+
+        return $this->columns[$id];
+    }
+
+    /**
+     * Add an expander arrow for 
+     *
+     * @return ExpandableColumn
+     */
+    public function addExpandableColumn($id)
+    {
+        $this->columns[$id] = new ExpandableColumn($id, $this);
+
+        return $this->columns[$id];
+    }
+
+    /**
      * Get all columns in the table.
      *
      * @return array
@@ -177,6 +202,16 @@ class DataTable implements OutputableInterface
     public function getColumns()
     {
         return $this->columns;
+    }
+
+    /**
+     * Count all columns in the table.
+     *
+     * @return int
+     */
+    public function getColumnCount()
+    {
+        return count($this->columns);
     }
 
     /**
@@ -203,7 +238,6 @@ class DataTable implements OutputableInterface
         return $this->header;
     }
 
-
     /**
      * Add a piece of meta data to the table. Can be used for renderer-specific details.
      *
@@ -213,7 +247,7 @@ class DataTable implements OutputableInterface
      */
     public function addMetaData($name, $value)
     {
-        $this->meta[$name] = $value;
+        $this->meta[$name] = isset($this->meta[$name])? array_replace($this->meta[$name], $value) : $value;
 
         return $this;
     }
@@ -230,49 +264,26 @@ class DataTable implements OutputableInterface
     }
 
     /**
-     * Set a callable function that can modify each row based on that row's data.
+     * Add a callable function that can modify each row based on that row's data.
      *
      * @param callable $callable
      * @return self
      */
-    public function setRowLogic(callable $callable)
+    public function modifyRows(callable $callable)
     {
-        $this->rowLogic = $callable;
+        $this->rowModifiers[] = $callable;
 
         return $this;
     }
 
     /**
-     * Get the row logic callable.
+     * Get the row logic array of callables.
      *
-     * @return callable
+     * @return array
      */
-    public function getRowLogic()
+    public function getRowModifiers()
     {
-        return $this->rowLogic;
-    }
-
-    /**
-     * Set a callable function that can modify each cell based on that row's data.
-     *
-     * @param callable $callable
-     * @return self
-     */
-    public function setCellLogic(callable $callable)
-    {
-        $this->cellLogic = $callable;
-
-        return $this;
-    }
-
-    /**
-     * Get the cell logic callable.
-     *
-     * @return callable
-     */
-    public function getCellLogic()
-    {
-        return $this->cellLogic;
+        return $this->rowModifiers;
     }
 
     /**
@@ -289,6 +300,11 @@ class DataTable implements OutputableInterface
         return $renderer->renderTable($this, $dataSet);
     }
 
+    /**
+     * Implement the OutputtableInterface to combine DataTables + Forms.
+     *
+     * @return string
+     */
     public function getOutput()
     {
         return $this->renderer->renderTable($this, $this->data);

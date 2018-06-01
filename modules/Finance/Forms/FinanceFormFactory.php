@@ -100,7 +100,7 @@ class FinanceFormFactory extends DatabaseFormFactory
         $statuses = array();
         if ($currentStatus == 'All') {
             $statuses = array(
-                '%'                => __('All'),
+                ''                => __('All'),
                 'Pending'          => __('Pending'),
                 'Issued'           => __('Issued'),
                 'Issued - Overdue' => __('Issued - Overdue'),

@@ -19,9 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Renderer;
 
-use Gibbon\Tables\Column;
-use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataSet;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Forms\Layout\Element;
 
@@ -51,6 +51,10 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
+        $output .= '<header style="position:relative">';
+        $output .= $this->renderHeader($table, $dataSet);
+        $output .= '</header>';
+
         if ($dataSet->count() == 0) {
             if ($dataSet->isSubset()) {
                 $output .= '<div class="warning">';
@@ -62,7 +66,7 @@ class SimpleRenderer implements RendererInterface
                 $output .= '</div>';
             }
         } else {
-            $output .= '<table class="fullWidth colorOddEven" cellspacing="0">';
+            $output .= '<table class="fullWidth" cellspacing="0">';
 
             // HEADER
             $output .= '<thead>';
@@ -80,11 +84,9 @@ class SimpleRenderer implements RendererInterface
             // ROWS
             $output .= '<tbody>';
 
-            $rowLogic = $table->getRowLogic();
-            $cellLogic = $table->getCellLogic();
-
-            foreach ($dataSet as $data) {
-                $row = $this->createTableRow($table, $data);
+            foreach ($dataSet as $index => $data) {
+                $row = $this->createTableRow($data, $table);
+                $row->addClass($index % 2 == 0? 'odd' : 'even');
 
                 if (!$row) continue; // Can be removed by rowLogic
 
@@ -93,7 +95,7 @@ class SimpleRenderer implements RendererInterface
 
                 // CELLS
                 foreach ($table->getColumns() as $columnName => $column) {
-                    $cell = $this->createTableCell($table, $data);
+                    $cell = $this->createTableCell($data, $table, $column);
 
                     if (!$cell) continue; // Can be removed by cellLogic
 
@@ -112,7 +114,45 @@ class SimpleRenderer implements RendererInterface
             $output .= '</table>';
         }
 
+        $output .= '<footer>';
+        $output .= $this->renderFooter($table, $dataSet);
+        $output .= '</footer>';
+
         return $output;
+    }
+
+    /**
+     * Render a pre-table header section. Defaults to any header actions added to the table.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
+    protected function renderHeader(DataTable $table, DataSet $dataSet)
+    {
+        $output = '';
+
+        if ($headerActions = $table->getHeader()) {
+            $output .= '<div class="linkTop column inline">';
+            foreach ($headerActions as $header) {
+                $output .= $header->getOutput();
+            }
+            $output .= '</div>';
+        }
+
+        return $output;
+    }
+
+    /**
+     * Render a post-table footer section.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return string
+     */
+    protected function renderFooter(DataTable $table, DataSet $dataSet)
+    {
+        return '';
     }
 
     /**
@@ -141,11 +181,12 @@ class SimpleRenderer implements RendererInterface
      * @param DataTable $table
      * @return Element
      */
-    protected function createTableRow(DataTable $table, array $data)
+    protected function createTableRow(array $data, DataTable $table)
     {
         $row = new Element();
-        if ($rowLogic = $table->getRowLogic()) {
-            $row = $rowLogic($data, $row);
+
+        foreach ($table->getRowModifiers() as $callable) {
+            $row = $callable($data, $row, $table->getColumnCount());
         }
 
         return $row;
@@ -158,11 +199,12 @@ class SimpleRenderer implements RendererInterface
      * @param array $data
      * @return Element
      */
-    protected function createTableCell(DataTable $table, array $data)
+    protected function createTableCell(array $data, DataTable $table, Column $column)
     {
         $cell = new Element();
-        if ($cellLogic = $table->getCellLogic()) {
-            $cell = $cellLogic($data, $cell);
+
+        foreach ($column->getCellModifiers() as $callable) {
+            $cell = $callable($data, $cell, $table->getColumnCount());
         }
 
         return $cell;

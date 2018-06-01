@@ -18,6 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableGateway;
+use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -37,31 +41,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $timetableGateway = $container->get(TimetableGateway::class);
+
     //Check if school year specified
     $gibbonTTID = $_GET['gibbonTTID'];
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' || $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonTTID' => $gibbonTTID);
-            $sql = 'SELECT gibbonTT.*, gibbonSchoolYear.name as schoolYear FROM gibbonTT JOIN gibbonSchoolYear ON (gibbonTT.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE gibbonTTID=:gibbonTTID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $values = $timetableGateway->getTTByID($gibbonTTID);
 
-        if ($result->rowCount() != 1) {
+        if (empty($values)) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/tt_editProcess.php');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -88,23 +85,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
                 $row->addLabel('active', __('Active'));
                 $row->addYesNo('active')->isRequired();
 
-            $yearGroups = getNonTTYearGroups($connection2, $_GET['gibbonSchoolYearID'], $gibbonTTID);
+            $yearGroupsOptions = $timetableGateway->getNonTimetabledYearGroups($gibbonSchoolYearID, $gibbonTTID);
             $row = $form->addRow();
                 $row->addLabel('active', __('Year Groups'))->description(__('Groups not in an active TT this year.'));
-                if ($yearGroups == '') {
-                    $row->addContent('<i>'.__($guid, 'No year groups available.').'</i>')->addClass('right');
+                if (empty($yearGroupsOptions)) {
+                    $row->addContent('<i>'.__('No year groups available.').'</i>')->addClass('right');
                 } else {
-                    $yearGroupsOptions = array();
-                    for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-                        $yearGroupsOptions[$yearGroups[$i]] = __($yearGroups[$i+1]) ;
-                    }
                     $gibbonYearGroupIDList = explode(',', $values['gibbonYearGroupIDList']);
-                    $gibbonYearGroupIDList = array_combine($gibbonYearGroupIDList, $gibbonYearGroupIDList);
-                    $checked = array_intersect_key($gibbonYearGroupIDList, $yearGroupsOptions);
-                    $checked = array_filter($checked);
-                    $row->addCheckbox('gibbonYearGroupID')->fromArray($yearGroupsOptions)->checked(array_keys($checked));
+                    $checked = array_filter(array_keys($yearGroupsOptions), function ($item) use ($gibbonYearGroupIDList) {
+                        return in_array($item, $gibbonYearGroupIDList);
+                    });
+
+                    $row->addCheckbox('gibbonYearGroupID')->fromArray($yearGroupsOptions)->checked($checked);
                 }
-            $form->addHiddenValue('count', (count($yearGroups)/2));
+            $form->addHiddenValue('count', count($yearGroupsOptions));
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -115,74 +109,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit.ph
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Edit Timetable Days');
+            echo __('Edit Timetable Days');
             echo '</h2>';
 
-            try {
-                $data = array('gibbonTTID' => $gibbonTTID);
-                $sql = 'SELECT gibbonTTDay.*, gibbonTTColumn.name AS columnName FROM gibbonTTDay JOIN gibbonTTColumn ON (gibbonTTDay.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) WHERE gibbonTTID=:gibbonTTID ORDER BY gibbonTTDay.name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $timetableDayGateway = $container->get(TimetableDayGateway::class);
+            $ttDays = $timetableDayGateway->selectTTDaysByID($gibbonTTID);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_add.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonTTID=$gibbonTTID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            // DATA TABLE
+            $table = DataTable::create('timetableDays');
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Short Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Column');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Timetable Admin/tt_edit_day_add.php')
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->displayLabel();
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('nameShort', __('Short Name'));
+            $table->addColumn('columnName', __('Column'));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['name'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['nameShort'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['columnName'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_edit.php&gibbonTTDayID='.$row['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_edit_day_delete.php&gibbonTTDayID='.$row['gibbonTTDayID']."&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+                ->addParam('gibbonTTID', $gibbonTTID)
+                ->addParam('gibbonTTDayID')
+                ->format(function ($values, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/tt_edit_day_edit.php');
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable Admin/tt_edit_day_delete.php');
+                });
+
+            echo $table->render($ttDays->toDataSet());
         }
     }
 }
-?>

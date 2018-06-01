@@ -65,7 +65,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $criteria = $stringGateway->newQueryCriteria()
         ->searchBy($stringGateway->getSearchableColumns(), $search)
-        ->sortBy('original')
         ->sortBy('priority', 'DESC')
         ->fromArray($_POST);
 
