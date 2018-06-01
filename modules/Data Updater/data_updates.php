@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo '</p>';
 
     include './modules/ID Cards/src/Domain/UpdaterGateway.php';
-    $updaterGateway = new UpdaterGateway($pdo);
+    $updaterGateway = new Modules\IDCards\Domain\UpdaterGateway($pdo);
 
     $gibbonFamilyID = $updaterGateway->selectFamilyIDByPerson($gibbonPersonID);
     if (!empty($gibbonFamilyID)) {
