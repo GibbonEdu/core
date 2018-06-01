@@ -49,17 +49,20 @@ trait FormatResolver
         throw new \InvalidArgumentException(sprintf('Unknown formatter "%s"', $method));
     }
 
-    public static function using($method, $param)
+    public static function using($method, $param = null)
     {
         $callable = static::getFormatter($method);
-        $params = is_array($param)? $param : array($param);
+        $params = !is_null($param)? (is_array($param)? $param : array($param)) : false;
 
         return function ($data) use ($callable, $params) {
-            $args = array_map(function($key) use (&$data) {
-                return isset($data[$key])? $data[$key] : $key;
-            }, $params);
-
-            return $callable(...$args);
+            if ($params) {
+                $args = array_map(function($key) use (&$data) {
+                    return isset($data[$key])? $data[$key] : $key;
+                }, $params);
+                return $callable(...$args);
+            } else {
+                return $callable($data);
+            }
         };
     }
 

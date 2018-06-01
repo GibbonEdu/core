@@ -18,7 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\QueryCriteria;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_class_edit.php') == false) {
     //Acess denied
@@ -137,6 +141,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
+                Format::addFormatter('linkedName', function ($person) use ($guid) {
+                    $isStudent = stripos($person['role'], 'Student') !== false;
+                    $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
+                    return $isStudent 
+                        ? Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name)
+                        : $name;
+                });
+
+                $courseEnrolmentGateway = $container->get(CourseEnrolmentGateway::class);
+
+                // QUERY
+                $criteria = $courseEnrolmentGateway->newQueryCriteria()
+                    ->sortBy('roleSortOrder')
+                    ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                    ->fromArray($_POST);
+
+                $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByClass($criteria, $gibbonSchoolYearID, $gibbonCourseClassID);
+
+
                 $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_class_editProcessBulk.php');
                 $form->addHiddenValue('gibbonCourseID', $gibbonCourseID);
                 $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
@@ -154,49 +177,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                     'Delete'        => __('Delete'),
                 );
 
-                $row = $form->addBulkActionRow($bulkActions);
+                $col = $form->createBulkActionColumn($bulkActions);
                     $data= array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                     $sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) AS name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClass.gibbonCourseClassID<>:gibbonCourseClassID ORDER BY gibbonCourse.nameShort, gibbonCourseClass.nameShort";
-                    $row->addSelect('gibbonCourseClassIDCopyTo')->fromQuery($pdo, $sql, $data)->setClass('shortWidth copyTo');
-                $row->addSubmit(__('Go'));
+                    $col->addSelect('gibbonCourseClassIDCopyTo')->fromQuery($pdo, $sql, $data)->setClass('shortWidth copyTo');
+                    $col->addSubmit(__('Go'));
 
                 $form->toggleVisibilityByClass('copyTo')->onSelect('action')->when('Copy to class');
 
-                $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
+                // DATA TABLE
+                $table = $form->addRow()->addDataTable('enrolment', $criteria)->withData($enrolment);
 
-                $header = $table->addHeaderRow();
-                $header->addContent(__('Name'));
-                $header->addContent(__('Email'));
-                $header->addContent(__('Role'));
-                $header->addContent(__('Reportable'));
-                $header->addContent(__('Actions'));
-                $header->addCheckAll();
+                $table->addMetaData('bulkActions', $col);
 
-                while ($student = $result->fetch()) {
-                    $row = $table->addRow();
-                    $name = formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', true);
-                    if ($student['role'] == 'Student') {
-                        $row->addWebLink($name)
-                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='. $student['gibbonPersonID'].'&subpage=Timetable');
-                    } else {
-                        $row->addContent($name);
-                    }
-                    
-                    $row->addContent($student['email']);
-                    $row->addContent($student['role']);
-                    $row->addContent($student['reportable']);
-                    $col = $row->addColumn()->addClass('inline');
-                    $col->addWebLink('<img title="' . __('Edit') . '" src="./themes/' . $_SESSION[$guid]['gibbonThemeName'] . '/img/config.png"/>')
-                        ->setURL($_SESSION[$guid]['absoluteURL'] . '/index.php?q=/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_class_edit_edit.php')
-                        ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                        ->addParams($linkParams);
-                    $col->addWebLink('<img title="' . __('Delete') . '" src="./themes/' . $_SESSION[$guid]['gibbonThemeName'] . '/img/garbage.png"/>')
-                        ->setURL($_SESSION[$guid]['absoluteURL'] . '/fullscreen.php?q=/modules/' . $_SESSION[$guid]['module'] . '/courseEnrolment_manage_class_edit_delete.php&width=650&height=135')
-                        ->setClass('thickbox')
-                        ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                        ->addParams($linkParams);
-                    $row->addCheckbox('gibbonPersonID[]')->setValue($student['gibbonPersonID'])->setClass('textCenter');
-                }
+                $table->addColumn('name', __('Name'))
+                    ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                    ->format(Format::using('linkedName'));
+                $table->addColumn('email', __('Email'));
+                $table->addColumn('role', __('Class Role'));
+                $table->addColumn('reportable', __('Reportable'))
+                    ->format(Format::using('yesNo', 'reportable'));
+
+                // ACTIONS
+                $table->addActionColumn()
+                    ->addParam('gibbonPersonID')
+                    ->addParams($linkParams)
+                    ->format(function ($person, $actions) {
+                        $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php');
+                        $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
+                    });
+
+                $table->addCheckboxColumn('gibbonPersonID');
 
                 echo $form->getOutput();
             }
@@ -219,56 +232,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 echo __($guid, 'There are no records to display.');
                 echo '</div>';
             } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Email');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Class Role');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+                $table = DataTable::create('enrolmentLeft');
 
-                            //COLOR ROW BY STATUS!
-                            echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    if ($row['role'] == 'Student - Left') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
-                    } else {
-                        echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['email'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['role'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=".$row['gibbonPersonID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
+                $table->addColumn('name', __('Name'))
+                    ->sortable(['surname', 'preferredName'])
+                    ->format(Format::using('linkedName'));
+                $table->addColumn('email', __('Email'));
+                $table->addColumn('role', __('Class Role'));
+
+                // ACTIONS
+                $table->addActionColumn()
+                    ->addParam('gibbonPersonID')
+                    ->addParams($linkParams)
+                    ->format(function ($person, $actions) {
+                        $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_edit.php');
+                        $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/Timetable Admin/courseEnrolment_manage_class_edit_delete.php');
+                    });
+
+                echo $table->render($result->toDataSet());
             }
         }
     }
 }
-?>
