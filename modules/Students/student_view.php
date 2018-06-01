@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             
             if ($highestAction == 'View Student Profile_myChildren') {
                 echo '<h2>';
-                echo __('View Children');
+                echo __('My Children');
                 echo '</h2>';
                 
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
