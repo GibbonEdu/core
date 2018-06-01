@@ -58,6 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         } else {
             $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
             $skipBrief = false;
+
+            //Skip brief for those with _full or _fullNoNotes, and _brief
+            if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                $skipBrief = true;
+            }
+
             //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
                 try {
@@ -86,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
             }
 
-            if ($highestAction == 'View Student Profile_brief' and $skipBrief == false) {
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
                 try {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -290,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     else if ($highestAction == 'View Student Profile_my') {
                         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-                        $sql = "SELECT gibbonPerson.* FROM gibbonPerson
+                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
