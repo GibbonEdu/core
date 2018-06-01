@@ -44,12 +44,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         $gibbonSchoolYearID = $_SESSION[$guid]['gibbonSchoolYearID'];
         $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
 
+        $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
+        $canViewBriefProfile = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief');
+
         if ($highestAction == 'View Student Profile_myChildren' or $highestAction == 'View Student Profile_my') {
             
             if ($highestAction == 'View Student Profile_myChildren') {
-                //Get child list
+                echo '<h2>';
+                echo __('View Children');
+                echo '</h2>';
+                
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
             } else if ($highestAction == 'View Student Profile_my') {
+                echo '<h2>';
+                echo __('View Student Profile');
+                echo '</h2>';
+
                 $result = $studentGateway->selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID);
             }
 
@@ -75,17 +85,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
 
                 echo $table->render($result->toDataSet());
             }
-        } else if ($highestAction == 'View Student Profile_brief' 
-                or $highestAction == 'View Student Profile_full' 
-                or $highestAction == 'View Student Profile_fullNoNotes') {
+        }
+        
+        if ($canViewBriefProfile || $canViewFullProfile) {
             
             //Proceed!
             echo '<h2>';
-            echo __($guid, 'Filter');
+            echo __('Filter');
             echo '</h2>';
-
-            $canViewFullProfile = ($highestAction == 'View Student Profile_full' or $highestAction == 'View Student Profile_fullNoNotes');
-
+            
             $search = isset($_GET['search'])? $_GET['search'] : '';
             $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname,preferredName';
 
@@ -174,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->addParam('gibbonPersonID')
                 ->addParam('search', $criteria->getSearchText(true))
                 ->addParam('sort', $sort)
-                ->addParam('allStudents', $allStudents)
+                ->addParam('allStudents', $canViewFullProfile ? $allStudents : '')
                 ->format(function ($row, $actions) {
                     $actions->addAction('view', __('View Details'))
                         ->setURL('/modules/Students/student_view_details.php');
