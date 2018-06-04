@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo '</div>';
 	    } else {
             $values = $resultPerson->fetch();
-            
             $currentDate = dateConvertBack($guid, $values['date']);
 
 			$form = Form::create('attendanceEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byPerson_editProcess.php');
