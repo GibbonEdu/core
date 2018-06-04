@@ -39,7 +39,7 @@ class CourseEnrolmentGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID)
+    public function queryCourseEnrolmentByClass(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonCourseClassID, $left = false)
     {
         $query = $this
             ->newQuery()
@@ -55,32 +55,75 @@ class CourseEnrolmentGateway extends QueryableGateway
             ->where('gibbonCourseClassPerson.gibbonCourseClassID = :gibbonCourseClassID')
             ->bindValue('gibbonCourseClassID', $gibbonCourseClassID);
 
-        // $criteria->addFilterRules([
-        //     'yearGroup' => function ($query, $gibbonYearGroupID) {
-        //         return $query
-        //             ->where('FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)')
-        //             ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
-        //     },
-        // ]);
+        if ($left) {
+            $query->where("gibbonCourseClassPerson.role LIKE '%Left'");
+        } else {
+            $query->where("gibbonCourseClassPerson.role NOT LIKE '%Left'");
+        }
 
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryCourseEnrolmentByPerson(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    public function queryCourseEnrolmentByPerson(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID, $left = false)
     {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonCourseClass.gibbonCourseClassID', 'gibbonCourse.name AS courseName', 'gibbonCourse.nameShort AS course', 'gibbonCourseClass.nameShort AS class', 'gibbonCourseClassPerson.reportable', 'gibbonCourseClassPerson.role', "(CASE WHEN gibbonCourseClassPerson.role NOT LIKE 'Student%' THEN 0 ELSE 1 END) as roleSortOrder"
+            ])
+            ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
+            ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+            ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonCourseClassPerson.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
 
+        if ($left) {
+            $query->where("gibbonCourseClassPerson.role LIKE '%Left'");
+        } else {
+            $query->where("gibbonCourseClassPerson.role NOT LIKE '%Left'");
+        }
+
+        return $this->runQuery($query, $criteria);
     }
 
-    public function selectClassesByCourseID($gibbonCourseID)
+    public function selectEnrolableClassesByYearGroup($gibbonSchoolYearID, $gibbonYearGroupID)
     {
-        $data = array('gibbonCourseID' => $gibbonCourseID);
-        $sql = "SELECT gibbonCourseClass.*, COUNT(CASE WHEN gibbonPerson.status='Full' THEN gibbonPerson.status END) as participantsActive, COUNT(CASE WHEN gibbonPerson.status='Expected' THEN gibbonPerson.status END) as participantsExpected, COUNT(DISTINCT gibbonPerson.gibbonPersonID) as participantsTotal 
-            FROM gibbonCourseClass 
-            LEFT JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND NOT gibbonCourseClassPerson.role LIKE '% - Left') 
-            LEFT JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND (gibbonPerson.status='Full' OR gibbonPerson.status='Expected')) 
-            WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID
-            GROUP BY gibbonCourseClass.gibbonCourseClassID
-            ORDER BY gibbonCourseClass.nameShort";
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupID' => $gibbonYearGroupID);
+        $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.name as courseName, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, 
+                    teacher.surname, teacher.preferredName,
+                    (SELECT count(*) FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                    WHERE gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND (status='Full' OR status='Expected') AND role='Student') 
+                    AS studentCount
+                FROM gibbonCourse
+                JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                LEFT JOIN 
+                    (SELECT gibbonCourseClassID, title, surname, preferredName FROM gibbonCourseClassPerson 
+                    JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                    WHERE gibbonPerson.status='Full' AND gibbonCourseClassPerson.role = 'Teacher') 
+                    AS teacher ON (teacher.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList) 
+                GROUP BY gibbonCourseClass.gibbonCourseClassID
+                ORDER BY course, class";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectEnrolableStudentsByYearGroup($gibbonSchoolYearID, $gibbonYearGroupID)
+    {
+        $gibbonYearGroupIDList = is_array($gibbonYearGroupID)? implode(',', $gibbonYearGroupID) : $gibbonYearGroupID;
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonYearGroupIDList' => $gibbonYearGroupIDList);
+        $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname, username, gibbonRollGroup.name AS rollGroupName
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID 
+                AND gibbonPerson.status='Full' 
+                AND FIND_IN_SET(gibbonStudentEnrolment.gibbonYearGroupID, :gibbonYearGroupIDList)
+                ORDER BY rollGroupName, surname, preferredName";
 
         return $this->db()->select($sql, $data);
     }
