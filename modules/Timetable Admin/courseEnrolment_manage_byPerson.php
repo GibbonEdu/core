@@ -73,6 +73,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $allUsers = isset($_GET['allUsers'])? $_GET['allUsers'] : '';
         $search = isset($_GET['search'])? $_GET['search'] : '';
 
+        // CRITERIA
+        $studentGateway = $container->get(StudentGateway::class);
+
+        $criteria = $studentGateway->newQueryCriteria()
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->filterBy('all', $allUsers)
+            ->fromArray($_POST);
+
         echo '<h3>';
         echo __($guid, 'Filters');
         echo '</h3>'; 
@@ -85,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-            $row->addTextField('search')->setValue($search);
+            $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
             $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
@@ -99,14 +108,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo '<h3>';
         echo __($guid, 'View');
         echo '</h3>';
-
-        $studentGateway = $container->get(StudentGateway::class);
-
-        $criteria = $studentGateway->newQueryCriteria()
-            ->searchBy($studentGateway->getSearchableColumns(), $search)
-            ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
-            ->filterBy('all', $allUsers)
-            ->fromArray($_POST);
             
         $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID);
 

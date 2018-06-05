@@ -38,19 +38,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    echo '<h2>';
-    echo __($guid, 'Search');
-    echo '</h2>';
-
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
-    // QUERY
+    // CRITERIA
     $userGateway = $container->get(UserGateway::class);
     $criteria = $userGateway->newQueryCriteria()
         ->searchBy($userGateway->getSearchableColumns(), $search)
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
 
+
+    echo '<h2>';
+    echo __($guid, 'Search');
+    echo '</h2>';
+    
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
@@ -69,6 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo __($guid, 'View');
     echo '</h2>';
 
+    // QUERY
     $dataSet = $userGateway->queryAllUsers($criteria);
 
     // Join a set of family data per user
