@@ -81,7 +81,7 @@ class Format
     public static function date($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
-        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
     /**
@@ -93,7 +93,7 @@ class Format
     public static function dateConvert($dateString)
     {
         $date = DateTime::createFromFormat(static::$settings['dateFormatPHP'], $dateString);
-        return $date ? $date->format('Y-m-d') : '';
+        return $date ? $date->format('Y-m-d') : $dateString;
     }
 
     /**
@@ -106,7 +106,7 @@ class Format
     public static function dateTime($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
-        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
     
     /**
@@ -168,7 +168,7 @@ class Format
     public static function dateFromTimestamp($timestamp, $format = false)
     {
         $date = DateTime::createFromFormat('U', $timestamp);
-        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
 
     /**
@@ -194,7 +194,7 @@ class Format
     {
         $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
         $date = DateTime::createFromFormat($convertFormat, $timeString);
-        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
 
     /**
