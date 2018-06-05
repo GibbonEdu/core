@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\Timetable\CourseGateway;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         echo __($guid, 'Report Data');
         echo '</h2>';
 
-        $courseGateway = $container->get(CourseGateway::class);
+        $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
         $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonRollGroupID);
 

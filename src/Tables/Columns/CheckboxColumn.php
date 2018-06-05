@@ -36,8 +36,8 @@ class CheckboxColumn extends Column
     public function __construct($id, $key = null)
     {
         parent::__construct($id);
-        $this->sortable(false);
-        $this->key = isset($key)? $key : $id;
+        $this->sortable(false)->width('6%');
+        $this->key = !empty($key)? $key : $id;
 
         $this->modifyCells(function($data, $cell) {
             return $cell->addClass('bulkCheckbox');

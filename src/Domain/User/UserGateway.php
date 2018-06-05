@@ -85,4 +85,16 @@ class UserGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectUserNamesByStatus($status = 'Full')
+    {
+        $data = array('statusList' => is_array($status) ? implode(',', $status) : $status );
+        $sql = "SELECT gibbonPersonID, surname, preferredName, status, username, gibbonRole.category as roleCategory
+                FROM gibbonPerson 
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                WHERE FIND_IN_SET(gibbonPerson.status, :statusList) 
+                ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
 }

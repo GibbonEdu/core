@@ -313,7 +313,7 @@ class Format
     {
         $output = '';
 
-        if (empty($preferredName) && empty(empty($surname))) return '';
+        if (empty($preferredName) && empty($surname)) return '';
 
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');
