@@ -25,7 +25,7 @@ include './moduleFunctions.php';
 
 $gibbonAttendanceLogPersonID = isset($_GET['gibbonAttendanceLogPersonID'])? $_GET['gibbonAttendanceLogPersonID'] : '';
 $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
-$currentDate = isset($_GET['currentDate'])? dateConvertBack($guid, $_GET['currentDate']) : '';
+$currentDate = isset($_GET['currentDate'])? $_GET['currentDate'] : '';
 
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 
