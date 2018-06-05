@@ -31,11 +31,23 @@ trait FormatResolver
 {
     protected static $formatters;
 
+    /**
+     * Add a callable as an available format during runtime. Useful for additional modules.
+     *
+     * @param string $method
+     * @param callable $callable
+     */
     public static function addFormatter($method, callable $callable)
     {
         static::$formatters[$method] = $callable;
     }
 
+    /**
+     * Get the callable function or method for a format by name.
+     *
+     * @param string $method
+     * @return callable
+     */
     public static function getFormatter($method)
     {
         if (method_exists(static::class, $method)) {
@@ -49,20 +61,61 @@ trait FormatResolver
         throw new \InvalidArgumentException(sprintf('Unknown formatter "%s"', $method));
     }
 
-    public static function using($method, $param)
+    /**
+     * Returns a callable function that can be used to format a bulk array of data.
+     * 
+     * The callable returned takes a single array of data and returns the formatted string.
+     *
+     * @param string $method
+     * @param array $param
+     * @return callable
+     */
+    public static function using($method, $param = null)
     {
         $callable = static::getFormatter($method);
-        $params = is_array($param)? $param : array($param);
+        $params = !is_null($param)? (is_array($param)? $param : array($param)) : false;
 
         return function ($data) use ($callable, $params) {
-            $args = array_map(function($key) use (&$data) {
-                return isset($data[$key])? $data[$key] : $key;
-            }, $params);
-
-            return $callable(...$args);
+            if ($params) {
+                $args = array_map(function($key) use (&$data) {
+                    return isset($data[$key])? $data[$key] : $key;
+                }, $params);
+                return $callable(...$args);
+            } else {
+                return $callable($data);
+            }
         };
     }
 
+    /**
+     * Formats an array of data into key => value pairs by applying a format method to each returned value.
+     *
+     * @param array $data
+     * @param string $key
+     * @param string $method
+     * @param array $param
+     * @return array
+     */
+    public static function keyValue($data, $key, $method, $param = null) 
+    {
+        $values = array();
+        $callable = is_callable($method)? $method : static::using($method, $param);
+
+        foreach ($data as $row) {
+            if (!isset($row[$key])) continue;
+            $values[$row[$key]] = $callable($row);
+        }
+
+        return $values;
+    }
+
+    /**
+     * Calls a format method by name, allowing pre-defined formatters to be used.
+     *
+     * @param string $method
+     * @param array $arguments
+     * @return mixed
+     */
     public static function __callStatic($method, $arguments = array())
     {
         return call_user_func_array(static::getFormatter($method), $arguments);
