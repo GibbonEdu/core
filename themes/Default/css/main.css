@@ -853,7 +853,7 @@ div.paginationBottom {
 div.linkTop {
 	text-align: right;
     font-size: 12px;
-    line-height: 32px;
+    margin: 15px 0px 5px 0px;
 }
 div.linkTopLeft {
 	text-align: left;
@@ -1767,6 +1767,11 @@ tr.selected, tr.selected td, div.selected, td.selected {
     left: 0;
     height: 100%;
     width: 100%;
+}
+
+.dataTable .linkTop {
+    margin: 0;
+    line-height: 32px;
 }
 
 button, input[type="submit"], input[type="button"] {
