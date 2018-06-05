@@ -39,8 +39,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
+    $applicationGateway = $container->get(StaffApplicationFormGateway::class);
+
+    // CRITERIA
+    $criteria = $applicationGateway->newQueryCriteria()
+        ->searchBy($applicationGateway->getSearchableColumns(), $search)
+        ->sortBy('gibbonStaffApplicationForm.status')
+        ->sortBy(['priority', 'timestamp'], 'DESC')
+        ->fromArray($_POST);
+
     echo '<h4>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -52,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Application ID, preferred, surname'));
-        $row->addTextField('search')->setValue($search)->maxLength(20);
+        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
     $row = $form->addRow();
         $row->addFooter();
@@ -61,17 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     echo $form->getOutput();
 
     echo '<h4>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
-
-    $applicationGateway = $container->get(StaffApplicationFormGateway::class);
-
-    // QUERY
-    $criteria = $applicationGateway->newQueryCriteria()
-        ->searchBy($applicationGateway->getSearchableColumns(), $search)
-        ->sortBy('gibbonStaffApplicationForm.status')
-        ->sortBy(['priority', 'timestamp'], 'DESC')
-        ->fromArray($_POST);
 
     $applications = $applicationGateway->queryApplications($criteria);
 
