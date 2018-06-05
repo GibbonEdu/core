@@ -126,13 +126,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     });
 
     $table->addMetaData('filterOptions', [
-        'active:Y'       => __('Active').': '.__('Yes'),
-        'active:N'       => __('Active').': '.__('No'),
-        'registration:Y' => __('Registration').': '.__('Yes'),
-        'registration:N' => __('Registration').': '.__('No'),
-        'enrolment:<'    => __('Enrolment').': &lt; '.__('Full'),
-        'enrolment:='    => __('Enrolment').': '.__('Full'),
-        'enrolment:>'    => __('Enrolment').': &gt; '.__('Full'),
+        'active:Y'          => __('Active').': '.__('Yes'),
+        'active:N'          => __('Active').': '.__('No'),
+        'registration:Y'    => __('Registration').': '.__('Yes'),
+        'registration:N'    => __('Registration').': '.__('No'),
+        'enrolment:less'    => __('Enrolment').': &lt; '.__('Full'),
+        'enrolment:full'    => __('Enrolment').': '.__('Full'),
+        'enrolment:greater' => __('Enrolment').': &gt; '.__('Full'),
     ]);
 
     if ($enrolmentType == 'Competitive') {

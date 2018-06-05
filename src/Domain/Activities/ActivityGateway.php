@@ -76,9 +76,9 @@ class ActivityGateway extends QueryableGateway
                     ->bindValue('registration', $registration);
             },
             'enrolment' => function ($query, $enrolment) {
-                if ($enrolment == '<') $query->having('enrolment < gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
-                if ($enrolment == '=') $query->having('enrolment = gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
-                if ($enrolment == '>') $query->having('enrolment > gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                if ($enrolment == 'less') $query->having('enrolment < gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                if ($enrolment == 'full') $query->having('enrolment = gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
+                if ($enrolment == 'greater') $query->having('enrolment > gibbonActivity.maxParticipants AND gibbonActivity.maxParticipants > 0');
                 return $query;
             },
             'status' => function ($query, $status) {
