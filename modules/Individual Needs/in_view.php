@@ -39,13 +39,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Records').'</div>';
         echo '</div>';
 
-        echo '<h2>';
-        echo __($guid, 'Search');
-        echo '</h2>';
+        $studentGateway = $container->get(StudentGateway::class);
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = isset($_GET['search'])? $_GET['search'] : '';
         $allStudents = (isset($_GET['allStudents']) ? $_GET['allStudents'] : '');
+
+        // CRITERIA
+        $criteria = $studentGateway->newQueryCriteria()
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->filterBy('all', $allStudents)
+            ->fromArray($_POST);
+
+        echo '<h2>';
+        echo __('Search');
+        echo '</h2>';
 
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
@@ -54,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-            $row->addTextField('search')->setValue($search);
+            $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
             $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
@@ -66,19 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo $form->getOutput();
 
         echo '<h2>';
-        echo __($guid, 'Choose A Student');
+        echo __('Choose A Student');
         echo '</h2>';
         echo '<p>';
-        echo __($guid, 'This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
+        echo __('This page displays all students enroled in the school, including those who have not yet met their start date. With the right permissions, you can set Individual Needs status and Individual Education Plan details for any student.');
         echo '</p>';
-
-        $studentGateway = $container->get(StudentGateway::class);
-
-        $criteria = $studentGateway->newQueryCriteria()
-            ->searchBy($studentGateway->getSearchableColumns(), $search)
-            ->sortBy(['surname', 'preferredName'])
-            ->filterBy('all', $allStudents)
-            ->fromArray($_POST);
 
         $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

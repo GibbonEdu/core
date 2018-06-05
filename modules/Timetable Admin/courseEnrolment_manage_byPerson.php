@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->fromArray($_POST);
 
         echo '<h3>';
-        echo __($guid, 'Filters');
+        echo __('Filters');
         echo '</h3>'; 
         
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
             
         $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $gibbonSchoolYearID);

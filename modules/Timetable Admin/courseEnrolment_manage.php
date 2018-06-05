@@ -73,8 +73,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         $search = (isset($_GET['search']))? $_GET['search'] : '';
         $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
 
+        $courseGateway = $container->get(CourseGateway::class);
+        
+        // CRITERIA
+        $criteria = $courseGateway->newQueryCriteria()
+            ->searchBy($courseGateway->getSearchableColumns(), $search)
+            ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
+            ->filterBy('yearGroup', $gibbonYearGroupID)
+            ->pageSize(0)
+            ->fromArray($_POST);
+
         echo '<h3>';
-        echo __($guid, 'Filters');
+        echo __('Filters');
         echo '</h3>'; 
         
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -87,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
-            $row->addTextField('search')->setValue($search);
+            $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
             $row->addLabel('gibbonYearGroupID', __('Year Group'));
@@ -99,16 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         echo $form->getOutput();
 
-        $courseGateway = $container->get(CourseGateway::class);
-
         // QUERY
-        $criteria = $courseGateway->newQueryCriteria()
-            ->searchBy($courseGateway->getSearchableColumns(), $search)
-            ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
-            ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->pageSize(0)
-            ->fromArray($_POST);
-
         $courses = $courseGateway->queryCoursesBySchoolYear($criteria, $gibbonSchoolYearID);
 
         if (count($courses) == 0) {

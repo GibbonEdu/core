@@ -39,8 +39,16 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
 
+    $stringGateway = $container->get(StringGateway::class);
+
+    // CRITERIA
+    $criteria = $stringGateway->newQueryCriteria()
+        ->searchBy($stringGateway->getSearchableColumns(), $search)
+        ->sortBy('priority', 'DESC')
+        ->fromArray($_POST);
+
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
     
     $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -50,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Original string, replacement string.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
     
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -58,15 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
-
-    $stringGateway = $container->get(StringGateway::class);
-
-    $criteria = $stringGateway->newQueryCriteria()
-        ->searchBy($stringGateway->getSearchableColumns(), $search)
-        ->sortBy('priority', 'DESC')
-        ->fromArray($_POST);
 
     $strings = $stringGateway->queryStrings($criteria);
 

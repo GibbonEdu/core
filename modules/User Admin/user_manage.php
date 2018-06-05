@@ -47,7 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortBy(['surname', 'preferredName'])
         ->fromArray($_POST);
 
-
     echo '<h2>';
     echo __($guid, 'Search');
     echo '</h2>';
