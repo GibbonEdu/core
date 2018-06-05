@@ -50,7 +50,7 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
             ->setSize(8)
             ->setClass('mediumWidth')
             ->addClass("floatNone");
-        $this->destinationSelect = $factory->createSelect($name . "Destination")
+        $this->destinationSelect = $factory->createSelect($name)
             ->selectMultiple(true)
             ->setSize(8)
             ->setClass('mediumWidth');
@@ -127,8 +127,8 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
         $output .= '<script type="text/javascript">';
         $output .= 'var '.$this->name.'sortBy = null;';
         $output .= 'function optionTransfer(name, add) {
-            var select0 = $(\'#\'+name+(add ? \'Source\' : \'Destination\'));
-            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'Destination\'));
+            var select0 = $(\'#\'+name+(add ? \'Source\' : \'\'));
+            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'\'));
 
             select0.find(\'option:selected\').each(function(){
                 select1.append($(this).clone());
@@ -168,17 +168,6 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
                     });
                 });
 
-                form.submit(function(){
-                    var options = $(\'option\', destinationSelect);
-
-                    for (var i = 0; i < options.length; i++) {
-                        $(\'<input>\').attr({
-                            type: \'hidden\',
-                            name: \'' . $this->name . '[]\'
-                        }).val(options[i].value).appendTo(form);
-                    }
-                });
-
                 $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
                     '.$this->name.'sortBy = $(this).val();
                     sortSelects("'.$this->name.'");
@@ -205,13 +194,13 @@ class MultiSelect implements OutputableInterface, ValidatableInterface
                 }
 
                 sortSelect($(\'#\' + name + "Source"), values);
-                sortSelect($(\'#\' + name + "Destination"), values);
+                sortSelect($(\'#\' + name), values);
             }
 
         ';
         $output .= '</script>';
 
-        $output .= '<table id="'.$this->name.'" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
+        $output .= '<table id="'.$this->name.'Container" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
 
         $output .= '<td style="width:35%; vertical-align:top;">';
             $output .= $this->sourceSelect->getOutput();
