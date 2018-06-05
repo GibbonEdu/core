@@ -41,12 +41,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Timetable by Facility').'</div>';
         echo '</div>';
 
-        echo '<h2>';
-        echo __($guid, 'Search');
-        echo '</h2>';
+        $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
+        $search = isset($_GET['search'])? $_GET['search'] : '';
 
-        $gibbonPersonID =isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
-        $search = isset($_GET['search'])? $_GET['search'] : null;
+        $facilityGateway = $container->get(FacilityGateway::class);
+
+        // CRITERIA
+        $criteria = $facilityGateway->newQueryCriteria()
+            ->searchBy($facilityGateway->getSearchableColumns(), $search)
+            ->sortBy('name')
+            ->fromArray($_POST);
+
+        echo '<h2>';
+        echo __('Search');
+        echo '</h2>';
 
         $form = Form::create('ttSpace', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
@@ -55,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'));
-            $row->addTextField('search')->setValue($search);
+            $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -63,15 +71,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         echo $form->getOutput();
 
         echo '<h2>';
-        echo __($guid, 'Choose A Facility');
+        echo __('Choose A Facility');
         echo '</h2>';
-
-        $facilityGateway = $container->get(FacilityGateway::class);
-
-        $criteria = $facilityGateway->newQueryCriteria()
-            ->searchBy($facilityGateway->getSearchableColumns(), $search)
-            ->sortBy('name')
-            ->fromArray($_POST);
 
         $facilities = $facilityGateway->queryFacilities($criteria);
 
@@ -82,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $table->addColumn('type', __('Type'));
 
         $table->addActionColumn()
-        ->addParam('gibbonSpaceID')
-        ->format(function ($row, $actions) {
-            $actions->addAction('delete', __('Delete'))
-                    ->setURL('/modules/System Admin/stringReplacement_manage_delete.php');
-        });
+            ->addParam('gibbonSpaceID')
+            ->format(function ($row, $actions) {
+                $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Timetable/tt_space_view.php');
+            });
 
         echo $table->render($facilities);
     }

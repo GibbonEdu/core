@@ -38,11 +38,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
+    $familyGateway = $container->get(FamilyGateway::class);
+
+    // QUERY
+    $criteria = $familyGateway->newQueryCriteria()
+        ->searchBy($familyGateway->getSearchableColumns(), $search)
+        ->sortBy(['name'])
+        ->fromArray($_POST);
+
     echo '<h2>';
     echo __($guid, 'Search');
     echo '</h2>';
-
-    $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -51,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description('Family name.');
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -62,14 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     echo __($guid, 'View');
     echo '</h2>';
 
-    $familyGateway = $container->get(FamilyGateway::class);
-
     // QUERY
-    $criteria = $familyGateway->newQueryCriteria()
-        ->searchBy($familyGateway->getSearchableColumns(), $search)
-        ->sortBy(['name'])
-        ->fromArray($_POST);
-
     $families = $familyGateway->queryFamilies($criteria);
 
     $familyIDs = $families->getColumn('gibbonFamilyID');

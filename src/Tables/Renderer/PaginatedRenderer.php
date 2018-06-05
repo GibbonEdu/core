@@ -196,7 +196,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
                 $key = $name.':'.$value;
                 $criteriaUsed[$name] = isset($filters[$key]) 
                     ? $filters[$key] 
-                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))); // camelCase => Title Case
+                    : __(ucwords(preg_replace('/(?<=[a-z])(?=[A-Z])/', ' $0', $name))) . ($name == 'in'? ': '.ucfirst($value) : ''); // camelCase => Title Case
             }
 
             foreach ($criteriaUsed as $name => $label) {

@@ -86,11 +86,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
         echo '</div>';
 
+        $search = isset($_GET['search'])? $_GET['search'] : '';
+
+        $studentGateway = $container->get(StudentGateway::class);
+
+        $criteria = $studentGateway->newQueryCriteria()
+            ->searchBy($studentGateway->getSearchableColumns(), $search)
+            ->sortBy(['surname', 'preferredName'])
+            ->fromArray($_POST);
+
         echo '<h3>';
         echo __('Search');
         echo '</h3>';
-
-        $search = isset($_GET['search'])? $_GET['search'] : '';
 
         $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
         $form->setClass('noIntBorder fullWidth');
@@ -100,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
         $row = $form->addRow();
             $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-            $row->addTextField('search')->setValue($search);
+            $row->addTextField('search')->setValue($criteria->getSearchText());
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
@@ -113,13 +120,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         echo '<p>';
         echo __("Students highlighted in red are marked as 'Full' but have either not reached their start date, or have exceeded their end date.");
         echo '<p>';
-
-        $studentGateway = $container->get(StudentGateway::class);
-
-        $criteria = $studentGateway->newQueryCriteria()
-            ->searchBy($studentGateway->getSearchableColumns(), $search)
-            ->sortBy(['surname', 'preferredName'])
-            ->fromArray($_POST);
 
         $students = $studentGateway->queryStudentEnrolmentBySchoolYear($criteria, $gibbonSchoolYearID);
 

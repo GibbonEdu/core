@@ -40,8 +40,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
 
+    $staffGateway = $container->get(StaffGateway::class);
+
+    // CRITERIA
+    $criteria = $staffGateway->newQueryCriteria()
+        ->searchBy($staffGateway->getSearchableColumns(), $search)
+        ->filterBy('all', $allStaff)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromArray($_POST);
+
     echo '<h2>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h2>';
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
@@ -53,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-        $row->addTextField('search')->setValue($search)->maxLength(20);
+        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
     $row = $form->addRow();
         $row->addLabel('allStaff', __('All Staff'))->description('Include Expected and Left.');
@@ -66,17 +75,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
-
-    $staffGateway = $container->get(StaffGateway::class);
-
-    // QUERY
-    $criteria = $staffGateway->newQueryCriteria()
-        ->searchBy($staffGateway->getSearchableColumns(), $search)
-        ->filterBy('all', $allStaff)
-        ->sortBy(['surname', 'preferredName'])
-        ->fromArray($_POST);
 
     $staff = $staffGateway->queryAllStaff($criteria);
 
