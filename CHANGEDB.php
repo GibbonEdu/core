@@ -936,6 +936,8 @@ UPDATE gibbonAction SET precedence=1 WHERE name='View Student Profile_my' AND gi
 UPDATE gibbonAction SET precedence=2 WHERE name='View Student Profile_fullNoNotes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 UPDATE gibbonAction SET precedence=3 WHERE name='View Student Profile_full' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`);end
+ALTER TABLE `gibbonCourseClassPerson` DROP INDEX `gibbonPersonID`;end
+ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`, `role`);end
 ";
 
 
