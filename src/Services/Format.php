@@ -133,6 +133,32 @@ class Format
     }
 
     /**
+     * Formats two YYYY-MM-DD dates as a readable string, collapsing same months and same years.
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return string
+     */
+    public static function dateRangeReadable($dateFrom, $dateTo)
+    {
+        $output = '';
+        if (empty($dateFrom) || empty($dateTo)) return $output;
+
+        $startDate = ($dateFrom instanceof DateTime)? $dateFrom : new DateTime($dateFrom);
+        $endDate = ($dateTo instanceof DateTime)? $dateTo : new DateTime($dateTo);
+
+        if ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+            $output = $startDate->format('M Y');
+        } else if ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = $startDate->format('M').' - '.$endDate->format('M Y');
+        } else {
+            $output = $startDate->format('M Y').' - '.$endDate->format('M Y');
+        }
+
+        return $output;
+    }  
+
+    /**
      * Formats a Unix timestamp as the language-specific format. Optionally provide a format string to use instead.
      *
      * @param string|int $timestamp
