@@ -40,6 +40,8 @@ class NotificationSender
     protected $gateway;
     protected $session;
 
+    protected $bccMode = false;
+
     /**
      * Injects a gateway and session dependency, used for database inserts and email formatting.
      *
@@ -59,6 +61,7 @@ class NotificationSender
      * @param  string  $text
      * @param  string  $moduleName
      * @param  string  $actionLink
+     * @return self
      */
     public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink)
     {
@@ -68,6 +71,31 @@ class NotificationSender
             'moduleName'     => $moduleName,
             'actionLink'     => $actionLink
         );
+
+        return $this;
+    }
+
+    /**
+     * Recipients will be added to BCC and only one email will be sent. Useful to help speed up mass emailing.
+     *
+     * @return self
+     */
+    public function enableBccMode()
+    {
+        return $this->setBccMode(true);
+    }
+
+    /**
+     * Toggle BCC mode on/off.
+     *
+     * @param bool $value
+     * @return self
+     */
+    public function setBccMode($value)
+    {
+        $this->bccMode = $value;
+
+        return $this;
     }
 
     /**
@@ -99,6 +127,8 @@ class NotificationSender
             return $sendReport;
         }
 
+        $mail = $this->setupEmail();
+
         foreach ($this->notifications as $notification) {
             // Check for existence of notification in new status
             $result = $this->gateway->selectNotificationByStatus($notification, 'New');
@@ -116,34 +146,68 @@ class NotificationSender
             $emailPreference = $this->gateway->getNotificationPreference($notification['gibbonPersonID']);
 
             if (!empty($emailPreference) && $emailPreference['receiveNotificationEmails'] == 'Y') {
-                $organisationName = $this->session->get('organisationName');
-                $organisationEmail = $this->session->get('organisationEmail');
-                $organisationAdministratorEmail = $this->session->get('organisationAdministratorEmail');
-
                 // Format the email content
                 $body = __('Notification').': '.$notification['text'].'<br/><br/>';
                 $body .= $this->getNotificationLink();
                 $body .= $this->getNotificationFooter();
 
-                $mail = new GibbonMailer($this->session);
-
-                $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
-                $mail->SetFrom($fromEmail, $organisationName);
-                $mail->AddAddress($emailPreference['email']);
-                $mail->Subject = $this->getNotificationSubject();
                 $mail->Body = $body;
                 $mail->AltBody = emailBodyConvert($body);
-
-                // Attempt email send
-                if ($mail->Send()) {
-                    $sendReport['emailSent']++;
+                
+                // Add the recipients
+                if ($this->bccMode == true) {
+                    $mail->AddBcc($emailPreference['email']);
                 } else {
-                    $sendReport['emailFailed']++;
+                    $mail->clearAllRecipients();
+                    $mail->AddAddress($emailPreference['email']);
+                }
+
+                // Not BCC mode? Send one email per recipient
+                if ($this->bccMode == false) {
+                    if ($mail->Send()) {
+                        $sendReport['emailSent']++;
+                    } else {
+                        $sendReport['emailFailed']++;
+                    }
                 }
             }
         }
 
+        // BCC mode? Send only one email, after the foreach loop. Set the To: address to avoid spam filters.
+        if ($this->bccMode == true) {
+            // $mail->AddAddress('noreply' . strrchr($this->session->get('organisationEmail'), '@'), __('Notification Recipients'));
+
+            if ($mail->Send()) {
+                $sendReport['emailSent']++;
+            } else {
+                $sendReport['emailFailed']++;
+            }
+        }
+
+        $this->notifications = [];
+
         return $sendReport;
+    }
+
+    /**
+     * Create a mailer and setup the email subject and sender.
+     *
+     * @return GibbonMailer
+     */
+    protected function setupEmail()
+    {
+        $mail = new GibbonMailer($this->session);
+
+        // Format the sender
+        $organisationName = $this->session->get('organisationName');
+        $organisationEmail = $this->session->get('organisationEmail');
+        $organisationAdministratorEmail = $this->session->get('organisationAdministratorEmail');
+        $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
+
+        $mail->SetFrom($fromEmail, $organisationName);
+        $mail->Subject = $this->getNotificationSubject();
+
+        return $mail;
     }
 
     /**

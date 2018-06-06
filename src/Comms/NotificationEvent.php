@@ -131,18 +131,33 @@ class NotificationEvent
     /**
      * Collects and sends all notifications for this event, returning a send report array.
      *
-     * @param   NotificationGateway  $gateway
-     * @param   NotificationSender   $sender
+     * @param   Connection  $pdo
+     * @param   session     $session
+     * @param   bool        $bccMode
      * @return  array Send report with success/fail counts.
      */
-    public function sendNotifications(Connection $pdo, session $session)
+    public function sendNotifications(Connection $pdo, session $session, $bccMode = false)
     {
         $gateway = new NotificationGateway($pdo);
         $sender = new NotificationSender($gateway, $session);
 
         $this->pushNotifications($gateway, $sender);
 
+        if ($bccMode) $sender->enableBccMode();
+
         return $sender->sendNotifications();
+    }
+
+    /**
+     * Send notifications for this event as BCC. Helper method to clarify the intent of the sending option.
+     *
+     * @param Connection $pdo
+     * @param session $session
+     * @return array Send report with success/fail counts.
+     */
+    public function sendNotificationsAsBcc(Connection $pdo, session $session)
+    {
+        return $this->sendNotifications($pdo, $session, true);
     }
 
     /**
