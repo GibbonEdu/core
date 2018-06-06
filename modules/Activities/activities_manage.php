@@ -160,6 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
         ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
         ->format(function($activity) use ($dateType, $schoolTerms) {
+            if (empty($schoolTerms)) return '';
             if ($dateType != 'Date') {
                 $dateRange = '';
                 if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
