@@ -989,11 +989,22 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
     $allDay = 0;
 
     if ($schoolOpen == false) {
+        try {
+            $dataSpecialDay = array('date' => $date);
+            $sqlSpecialDay = "SELECT name, description FROM gibbonSchoolYearSpecialDay WHERE date=:date";
+            $resultSpecialDay = $connection2->prepare($sqlSpecialDay);
+            $resultSpecialDay->execute($dataSpecialDay);
+        } catch (PDOException $e) {
+        }
+
+        $specialDay = $resultSpecialDay->rowCount() > 0? $resultSpecialDay->fetch() : array('name' => '', 'description' => '');
+
         $output .= "<td style='text-align: center; vertical-align: top; font-size: 11px'>";
         $output .= "<div style='position: relative'>";
         $output .= "<div class='ttClosure' style='z-index: $zCount; position: absolute; width: $width ; height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; opacity: $ttAlpha'>";
-        $output .= "<div style='position: relative; top: 50%'>";
-        $output .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
+        $output .= "<div style='position: relative; top: 50%' title='".$specialDay['description']."'>";
+        $output .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed');
+        $output .= '<br/><br/>'.$specialDay['name'].'</span>';
         $output .= '</div>';
         $output .= '</div>';
 
