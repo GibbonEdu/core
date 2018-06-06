@@ -131,7 +131,13 @@ class CourseEnrolmentGateway extends QueryableGateway
     public function selectCourseEnrolmentByRollGroup($gibbonRollGroupID)
     {
         $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.name as rollGroup, (SELECT COUNT(*) FROM gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) as classCount
+        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonRollGroup.name as rollGroup, 
+                    (SELECT COUNT(*) FROM gibbonCourseClassPerson 
+                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                    JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) 
+                    WHERE gibbonCourseClassPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID 
+                    AND gibbonCourse.gibbonSchoolYearID=gibbonRollGroup.gibbonSchoolYearID 
+                    AND gibbonCourseClassPerson.role = 'Student') AS classCount
                 FROM gibbonPerson 
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) 
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) 
