@@ -40,8 +40,6 @@ class NotificationSender
     protected $gateway;
     protected $session;
 
-    protected $bccMode = false;
-
     /**
      * Injects a gateway and session dependency, used for database inserts and email formatting.
      *
@@ -76,29 +74,6 @@ class NotificationSender
     }
 
     /**
-     * Recipients will be added to BCC and only one email will be sent. Useful to help speed up mass emailing.
-     *
-     * @return self
-     */
-    public function enableBccMode()
-    {
-        return $this->setBccMode(true);
-    }
-
-    /**
-     * Toggle BCC mode on/off.
-     *
-     * @param bool $value
-     * @return self
-     */
-    public function setBccMode($value)
-    {
-        $this->bccMode = $value;
-
-        return $this;
-    }
-
-    /**
      * Gets the current notification count.
      *
      * @return  int
@@ -113,7 +88,7 @@ class NotificationSender
      *
      * @return  array Send report with success/fail counts.
      */
-    public function sendNotifications()
+    public function sendNotifications($bccMode = false)
     {
         $sendReport = array(
             'count' => $this->getNotificationCount(),
@@ -129,7 +104,11 @@ class NotificationSender
 
         $mail = $this->setupEmail();
 
-        foreach ($this->notifications as $notification) {
+        // Clear the internal notification list before sending. In case there's an error we don't want to double-send.
+        $notificationsToSend = $this->notifications;
+        $this->notifications = [];
+
+        foreach ($notificationsToSend as $notification) {
             // Check for existence of notification in new status
             $result = $this->gateway->selectNotificationByStatus($notification, 'New');
 
@@ -155,7 +134,7 @@ class NotificationSender
                 $mail->AltBody = emailBodyConvert($body);
                 
                 // Add the recipients
-                if ($this->bccMode == true) {
+                if ($bccMode == true) {
                     $mail->AddBcc($emailPreference['email']);
                 } else {
                     $mail->clearAllRecipients();
@@ -163,7 +142,7 @@ class NotificationSender
                 }
 
                 // Not BCC mode? Send one email per recipient
-                if ($this->bccMode == false) {
+                if ($bccMode == false) {
                     if ($mail->Send()) {
                         $sendReport['emailSent']++;
                     } else {
@@ -173,10 +152,8 @@ class NotificationSender
             }
         }
 
-        // BCC mode? Send only one email, after the foreach loop. Set the To: address to avoid spam filters.
-        if ($this->bccMode == true) {
-            // $mail->AddAddress('noreply' . strrchr($this->session->get('organisationEmail'), '@'), __('Notification Recipients'));
-
+        // BCC mode? Send only one email, after the foreach loop.
+        if ($bccMode == true) {
             if ($mail->Send()) {
                 $sendReport['emailSent']++;
             } else {
@@ -184,9 +161,17 @@ class NotificationSender
             }
         }
 
-        $this->notifications = [];
-
         return $sendReport;
+    }
+
+    /**
+     * Delivers all notifications. Helper method to clarify the intent of the Bcc sending option.
+     *
+     * @return array Send report with success/fail counts.
+     */
+    public function sendNotificationsAsBcc()
+    {
+        return $this->sendNotifications(true);
     }
 
     /**

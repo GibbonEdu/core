@@ -96,8 +96,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $notificationGateway = new NotificationGateway($pdo);
                 $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
 
-                $notificationSender->enableBccMode();
-
                 //Create notification for all people in class except me
                 $dataClassGroup = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
                 $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
@@ -111,14 +109,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     }
                 }
 
-                $notificationSender->sendNotifications();
+                $notificationSender->sendNotificationsAsBcc();
 
                 //Create notification to person I am replying to
                 if (is_null($replyToID) == false) {
                     $notificationText = sprintf(__($guid, 'Someone has replied to a comment you made on lesson plan "%1$s".'), $row['name']);
                     $notificationSender->addNotification($replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
 
-                    $notificationSender->sendNotifications();
+                    $notificationSender->sendNotificationsAsBcc();
                 }
 
                 $URL .= '&return=success0';

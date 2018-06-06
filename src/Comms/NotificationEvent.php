@@ -143,9 +143,7 @@ class NotificationEvent
 
         $this->pushNotifications($gateway, $sender);
 
-        if ($bccMode) $sender->enableBccMode();
-
-        return $sender->sendNotifications();
+        return $sender->sendNotifications($bccMode);
     }
 
     /**
