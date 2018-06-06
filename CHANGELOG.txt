@@ -92,6 +92,7 @@ v16.0.00
         Timetable: added highlight to the current day column in Timetable by Person and Facility
         Timetable: fixed error is specification of gibbonTT database table
         Timetable: added index on gibbonPersonID for table gibbonCourseClassPerson
+        Timetable: added the special day name to the timetable for school closures
         Timetable Admin: added school year selector to Sync Course Enrolment
         User Admin: fixed Child's Name list in Edit Family to include all students
         User Admin: fixed bug preventing some family links from showing up in Manage Users
