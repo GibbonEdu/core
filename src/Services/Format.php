@@ -81,7 +81,7 @@ class Format
     public static function date($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
-        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
     /**
@@ -93,7 +93,7 @@ class Format
     public static function dateConvert($dateString)
     {
         $date = DateTime::createFromFormat(static::$settings['dateFormatPHP'], $dateString);
-        return $date ? $date->format('Y-m-d') : '';
+        return $date ? $date->format('Y-m-d') : $dateString;
     }
 
     /**
@@ -106,7 +106,7 @@ class Format
     public static function dateTime($dateString, $format = false)
     {
         $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
-        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
     
     /**
@@ -133,6 +133,32 @@ class Format
     }
 
     /**
+     * Formats two YYYY-MM-DD dates as a readable string, collapsing same months and same years.
+     *
+     * @param string $dateFrom
+     * @param string $dateTo
+     * @return string
+     */
+    public static function dateRangeReadable($dateFrom, $dateTo)
+    {
+        $output = '';
+        if (empty($dateFrom) || empty($dateTo)) return $output;
+
+        $startDate = ($dateFrom instanceof DateTime)? $dateFrom : new DateTime($dateFrom);
+        $endDate = ($dateTo instanceof DateTime)? $dateTo : new DateTime($dateTo);
+
+        if ($startDate->format('Y-m') == $endDate->format('Y-m')) {
+            $output = $startDate->format('M Y');
+        } else if ($startDate->format('Y') == $endDate->format('Y')) {
+            $output = $startDate->format('M').' - '.$endDate->format('M Y');
+        } else {
+            $output = $startDate->format('M Y').' - '.$endDate->format('M Y');
+        }
+
+        return $output;
+    }  
+
+    /**
      * Formats a Unix timestamp as the language-specific format. Optionally provide a format string to use instead.
      *
      * @param string|int $timestamp
@@ -142,7 +168,7 @@ class Format
     public static function dateFromTimestamp($timestamp, $format = false)
     {
         $date = DateTime::createFromFormat('U', $timestamp);
-        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
 
     /**
@@ -168,7 +194,7 @@ class Format
     {
         $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
         $date = DateTime::createFromFormat($convertFormat, $timeString);
-        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : '';
+        return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
 
     /**
@@ -313,7 +339,7 @@ class Format
     {
         $output = '';
 
-        if (empty($preferredName) && empty(empty($surname))) return '';
+        if (empty($preferredName) && empty($surname)) return '';
 
         if ($roleCategory == 'Staff' or $roleCategory == 'Other') {
             $setting = 'nameFormatStaff' . ($informal? 'Informal' : 'Formal') . ($reverse? 'Reversed' : '');

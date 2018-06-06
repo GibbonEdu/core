@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             
             if ($highestAction == 'View Student Profile_myChildren') {
                 echo '<h2>';
-                echo __('View Children');
+                echo __('My Children');
                 echo '</h2>';
                 
                 $result = $studentGateway->selectActiveStudentsByFamilyAdult($gibbonSchoolYearID, $gibbonPersonID);
@@ -88,14 +88,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         }
         
         if ($canViewBriefProfile || $canViewFullProfile) {
-            
             //Proceed!
+            $search = isset($_GET['search'])? $_GET['search'] : '';
+            $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname,preferredName';
+            $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
+            
+            $studentGateway = $container->get(StudentGateway::class);
+
+            $criteria = $studentGateway->newQueryCriteria()
+                ->searchBy($studentGateway->getSearchableColumns(), $search)
+                ->sortBy(array_filter(explode(',', $sort)))
+                ->filterBy('all', $canViewFullProfile ? $allStudents : '')
+                ->fromArray($_POST);
+
             echo '<h2>';
             echo __('Filter');
             echo '</h2>';
-            
-            $search = isset($_GET['search'])? $_GET['search'] : '';
-            $sort = isset($_GET['sort'])? $_GET['sort'] : 'surname,preferredName';
 
             $sortOptions = array(
                 'surname,preferredName' => __('Surname'),
@@ -117,14 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 $row->addLabel('search', __('Search For'))
                     ->setClass('mediumWidth')
                     ->description($searchDescription);
-                $row->addTextField('search')->setValue($search);
+                $row->addTextField('search')->setValue($criteria->getSearchText());
 
             $row = $form->addRow();
                 $row->addLabel('sort', __('Sort By'));
                 $row->addSelect('sort')->fromArray($sortOptions)->selected($sort);
 
             if ($canViewFullProfile) {
-                $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
                 $row = $form->addRow();
                     $row->addLabel('allStudents', __('All Students'))->description(__('Include all students, regardless of status and current enrolment. Some data may not display.'));
                     $row->addCheckbox('allStudents')->setValue('on')->checked($allStudents);
@@ -138,14 +145,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             echo '<h2>';
             echo __('Choose A Student');
             echo '</h2>';
-
-            $studentGateway = $container->get(StudentGateway::class);
-
-            $criteria = $studentGateway->newQueryCriteria()
-                ->searchBy($studentGateway->getSearchableColumns(), $search)
-                ->sortBy(array_filter(explode(',', $sort)))
-                ->filterBy('all', $canViewFullProfile ? $allStudents : '')
-                ->fromArray($_POST);
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $gibbonSchoolYearID, $canViewFullProfile);
 

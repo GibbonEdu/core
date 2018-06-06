@@ -38,11 +38,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
+    $medicalGateway = $container->get(MedicalGateway::class);
+
+    // CRITERIA
+    $criteria = $medicalGateway->newQueryCriteria()
+        ->searchBy($medicalGateway->getSearchableColumns(), $search)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromArray($_POST);
+
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
-
-    $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -51,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -61,13 +69,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo '<h2>';
     echo __('View');
     echo '</h2>';
-
-    $medicalGateway = $container->get(MedicalGateway::class);
-
-    $criteria = $medicalGateway->newQueryCriteria()
-        ->searchBy($medicalGateway->getSearchableColumns(), $search)
-        ->sortBy(['surname', 'preferredName'])
-        ->fromArray($_POST);
 
     $medicalForms = $medicalGateway->queryMedicalFormsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
