@@ -46,6 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
     $enrolmentType = getSettingByScope($connection2, 'Activities', 'enrolmentType');
     $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $yearGroups = getYearGroups($connection2);
 
     $activityGateway = $container->get(ActivityGateway::class);
     
@@ -155,7 +156,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             return implode(', ', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
         });
 
-    $table->addColumn('yearGroups', __('Years'));
+    $table->addColumn('yearGroups', __('Years'))
+        ->format(function($activity) use ($yearGroups) {
+            return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
+        });
 
     $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
         ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
