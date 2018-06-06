@@ -124,6 +124,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
             if (!empty($houses) && $result->rowCount() > 0) {
 
                 while ($student = $result->fetch()) {
+                    if ($student['gender'] == 'Other' || $student['gender'] == 'Unspecified') {
+                        $student['gender'] = random_int(0, 1) == 1? 'M' : 'F';
+                    }
 
                     // Use the closure to grab the next house to fill
                     $group = ($balanceGender == 'Y')? 'total'.$student['gender'] : 'total';
