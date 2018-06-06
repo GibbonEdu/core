@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationSender;
+use Gibbon\Domain\System\NotificationGateway;
+
 //Gibbon system-wide includes
 include '../../gibbon.php';
 
@@ -89,6 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $replyToID = $rowClassGroup['gibbonPersonID'];
                 }
 
+                // Initialize the notification sender & gateway objects
+                $notificationGateway = new NotificationGateway($pdo);
+                $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
+
+                $notificationSender->enableBccMode();
+
                 //Create notification for all people in class except me
                 $dataClassGroup = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
                 $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";
@@ -97,14 +106,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 while ($rowClassGroup = $resultClassGroup->fetch()) {
                     if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] and $rowClassGroup['gibbonPersonID'] != $replyToID) {
                         $notificationText = sprintf(__($guid, 'Someone has commented on your lesson plan "%1$s".'), $row['name']);
-                        setNotification($connection2, $guid, $rowClassGroup['gibbonPersonID'], $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
+
+                        $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
                     }
                 }
+
+                $notificationSender->sendNotifications();
 
                 //Create notification to person I am replying to
                 if (is_null($replyToID) == false) {
                     $notificationText = sprintf(__($guid, 'Someone has replied to a comment you made on lesson plan "%1$s".'), $row['name']);
-                    setNotification($connection2, $guid, $replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
+                    $notificationSender->addNotification($replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
+
+                    $notificationSender->sendNotifications();
                 }
 
                 $URL .= '&return=success0';
