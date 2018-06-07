@@ -71,6 +71,7 @@ v16.0.00
         Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
         Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
         Messenger: added SMS send logging to allow missing messages to be tracked
+        Messenger: improvement to protection against big/slow email sends
         Planner: added "Notify" feature to lesson creating and editing
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
@@ -92,6 +93,7 @@ v16.0.00
         Timetable: added highlight to the current day column in Timetable by Person and Facility
         Timetable: fixed error is specification of gibbonTT database table
         Timetable: added index on gibbonPersonID for table gibbonCourseClassPerson
+        Timetable: added the special day name to the timetable for school closures
         Timetable Admin: added school year selector to Sync Course Enrolment
         User Admin: fixed Child's Name list in Edit Family to include all students
         User Admin: fixed bug preventing some family links from showing up in Manage Users
