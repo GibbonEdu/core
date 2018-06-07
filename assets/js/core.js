@@ -442,7 +442,7 @@ $.prototype.gibbonDataTable = function(basePath, filters) {
 function gibbonFormSubmitted(form) {
     var submitButton = $('input[type="submit"]', $(form));
     submitButton.prop('disabled', true);
-    if ($(this).hasClass('standardForm')) {
+    if ($(form).hasClass('standardForm')) {
         setTimeout(function() {
             submitButton.wrap('<span class="submitted"></span>');
         }, 500);
