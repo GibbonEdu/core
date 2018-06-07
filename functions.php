@@ -156,6 +156,8 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
             include './modules/Messenger/moduleFunctions.php';
 
+            $q = (isset($_GET['q'])) ? $_GET['q'] : '';
+
             $addReturn = null;
             if (isset($_GET['addReturn'])) {
                 $addReturn = $_GET['addReturn'];
@@ -168,7 +170,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
             if (isset($_GET['deleteReturn'])) {
                 $deleteReturn = $_GET['deleteReturn'];
             }
-            if ($cacheLoad or (@$_GET['q'] == '/modules/Messenger/messenger_post.php' and $addReturn == 'success0') or (@$_GET['q'] == '/modules/Messenger/messenger_postQuickWall.php' and $addReturn == 'success0') or (@$_GET['q'] == '/modules/Messenger/messenger_manage_edit.php' and $updateReturn == 'success0') or (@$_GET['q'] == '/modules/Messenger/messenger_manage.php' and $deleteReturn == 'success0')) {
+            if ($cacheLoad or ($q == '') or ($q == '/modules/Messenger/messenger_post.php' and $addReturn == 'success0') or ($q == '/modules/Messenger/messenger_postQuickWall.php' and $addReturn == 'success0') or ($q == '/modules/Messenger/messenger_manage_edit.php' and $updateReturn == 'success0') or ($q == '/modules/Messenger/messenger_manage.php' and $deleteReturn == 'success0')) {
                 $messages = getMessages($guid, $connection2, 'result');
                 $messages = unserialize($messages);
                 try {
