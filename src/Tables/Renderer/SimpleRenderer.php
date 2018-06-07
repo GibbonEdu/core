@@ -23,6 +23,7 @@ use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
+use Gibbon\Forms\Traits\BasicAttributesTrait;
 use Gibbon\Forms\Layout\Element;
 
 /**
@@ -33,6 +34,8 @@ use Gibbon\Forms\Layout\Element;
  */
 class SimpleRenderer implements RendererInterface
 {
+    use BasicAttributesTrait;
+    
     /**
      * So simple ...
      */
@@ -66,7 +69,9 @@ class SimpleRenderer implements RendererInterface
                 $output .= '</div>';
             }
         } else {
-            $output .= '<table class="fullWidth" cellspacing="0">';
+            $this->addClass('fullWidth');
+
+            $output .= '<table '.$this->getAttributeString().' cellspacing="0">';
 
             // HEADER
             $output .= '<thead>';
