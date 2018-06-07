@@ -20,7 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Increase max execution time, as this stuff gets big
-ini_set('max_execution_time', 600);
+ini_set('max_execution_time', 1200);
+ini_set('memory_limit','1024M');
+set_time_limit(1200);
 
 //Module includes
 include "./moduleFunctions.php" ;
