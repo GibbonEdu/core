@@ -50,6 +50,7 @@ class CourseEnrolmentGateway extends QueryableGateway
             ->innerJoin('gibbonCourseClass', 'gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID')
             ->innerJoin('gibbonCourse', 'gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID')
+            ->where("(gibbonPerson.status = 'Full' OR gibbonPerson.status = 'Expected')")
             ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonCourseClassPerson.gibbonCourseClassID = :gibbonCourseClassID')
