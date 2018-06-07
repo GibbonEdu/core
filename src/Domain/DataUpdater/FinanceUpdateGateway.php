@@ -39,7 +39,7 @@ class FinanceUpdateGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryDataUpdates(QueryCriteria $criteria)
+    public function queryDataUpdates(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -49,7 +49,9 @@ class FinanceUpdateGateway extends QueryableGateway
             ])
             ->leftJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoicee.gibbonFinanceInvoiceeID=gibbonFinanceInvoiceeUpdate.gibbonFinanceInvoiceeID')
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonFinanceInvoicee.gibbonPersonID')
-            ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonFinanceInvoiceeUpdate.gibbonPersonIDUpdater');
+            ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonFinanceInvoiceeUpdate.gibbonPersonIDUpdater')
+            ->where('gibbonFinanceInvoiceeUpdate.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         return $this->runQuery($query, $criteria);
     }

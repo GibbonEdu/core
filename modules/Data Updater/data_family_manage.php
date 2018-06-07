@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         ->sortBy('timestamp', 'DESC')
         ->fromArray($_POST);
 
-    $dataUpdates = $gateway->queryDataUpdates($criteria);
+    $dataUpdates = $gateway->queryDataUpdates($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
     // DATA TABLE
     $table = DataTable::createPaginated('familyUpdateManage', $criteria);

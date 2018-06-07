@@ -39,7 +39,7 @@ class PersonUpdateGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryDataUpdates(QueryCriteria $criteria)
+    public function queryDataUpdates(QueryCriteria $criteria, $gibbonSchoolYearID)
     {
         $query = $this
             ->newQuery()
@@ -48,7 +48,9 @@ class PersonUpdateGateway extends QueryableGateway
                 'gibbonPersonUpdateID', 'gibbonPersonUpdate.status', 'gibbonPersonUpdate.timestamp', 'target.preferredName', 'target.surname', 'updater.title as updaterTitle', 'updater.preferredName as updaterPreferredName', 'updater.surname as updaterSurname'
             ])
             ->leftJoin('gibbonPerson AS target', 'target.gibbonPersonID=gibbonPersonUpdate.gibbonPersonID')
-            ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonUpdate.gibbonPersonIDUpdater');
+            ->leftJoin('gibbonPerson AS updater', 'updater.gibbonPersonID=gibbonPersonUpdate.gibbonPersonIDUpdater')
+            ->where('gibbonPersonUpdate.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         return $this->runQuery($query, $criteria);
     }
