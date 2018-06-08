@@ -108,7 +108,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                     }
                 }
 
-                $URL .= "&return=success0&editID=$AI";
+                $URL .= "&return=success0&editID=$gibbonFinanceExpenseID";
                 header("Location: {$URL}");
             }
         }
