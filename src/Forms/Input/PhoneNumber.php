@@ -130,10 +130,11 @@ class PhoneNumber extends Input
         $this->phoneNumber->setSize($this->getSize());
         $this->phoneNumber->setDisabled($this->getDisabled());
 
-        $output = '';
+        $output = '<div class="phoneInputs">';
         $output .= $this->phoneNumber->getOutput();
         $output .= $this->phoneCodes->getOutput();
         $output .= $this->phoneType->getOutput();
+        $output .= '</div>';
 
         return $output;
     }
