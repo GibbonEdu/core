@@ -72,6 +72,7 @@ v16.0.00
         Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
         Messenger: added SMS send logging to allow missing messages to be tracked
         Messenger: improvement to protection against big/slow email sends
+        Messenger: removed caching for messanger count on homepage, so count is always accurate
         Planner: added "Notify" feature to lesson creating and editing
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
