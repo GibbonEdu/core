@@ -1322,6 +1322,10 @@ select[multiple] {
 	width: 70px;
 }
 
+.phoneNumber .phoneInputs {
+    position: relative;
+}
+
 .column > div:after {
   content: "";
   display: table;
@@ -1390,7 +1394,10 @@ table.columnHighlight .hover:not(:first-child) {
 /* Unfloat validation preceded by a phone input, adjust line height for vertical alignment */
 input[name*="phone"] ~ .LV_invalid {
     float: none;
-    line-height: 30px;
+    position: absolute;
+    left: calc(-100% - 6px);
+    text-align: right;
+    width: 100%;
 }
 
 /* Hide validation preceded by another validation message in the same parent element */
