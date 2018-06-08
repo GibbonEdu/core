@@ -310,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                     }
                                     if ($resultAssessment->rowCount() != 1) {
                                         echo "<div class='error'>";
-                                        echo sprintf(__($guid, 'External Assessment with name %1$s in import cannot be found.'), $result['columnName']);
+                                        echo sprintf(__($guid, 'Internal Assessment with name %1$s in import cannot be found.'), $result['columnName']);
                                         echo '</div>';
                                         $assessments[$result['columnName']] = null;
                                     } else {
@@ -328,7 +328,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_i
                                 }
 
                                 //If we have gibbonExternalAssessmentID, , we can proceed
-                                if (is_array($assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']])) {
+                                if (!empty($assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']]) && is_array($assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']])) {
                                     $gibbonPersonID = $users[$result['username']];
                                     $gibbonCourseID = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][0] ;
                                     $gibbonCourseClassID = $assessments[$result['courseName'] . '.' . $result['className'] . '-' . $result['columnName']][1] ;
