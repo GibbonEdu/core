@@ -1684,7 +1684,7 @@ function getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBud
         (SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))";
     $result = $pdo->executeQuery($data, $sql);
 
-    $budgetAllocated = __('N/A');
+    $budgetAllocated = 0;
     if ($result->rowCount() > 0) {
         $budgetAllocated = array_reduce($result->fetchAll(), function($sum, $item) {
             $sum += $item['cost'];
