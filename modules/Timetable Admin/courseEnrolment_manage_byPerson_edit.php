@@ -150,10 +150,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo __('Current Enrolment');
             echo '</h2>';
 
+            $secondaryStudent = empty($values['gibbonYearGroupID']) || $values['gibbonYearGroupID'] >= 14;
+
             // QUERY
             $criteria = $courseEnrolmentGateway->newQueryCriteria()
-                ->sortBy('roleSortOrder')
-                ->sortBy(['course', 'class'])
+                ->sortBy($secondaryStudent? 'class' : ['course', 'class'])
                 ->fromArray($_POST);
 
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID);
@@ -185,8 +186,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table->addMetaData('bulkActions', $col);
 
+            if ($secondaryStudent) $table->addColumn('class', __('Period'));
             $table->addColumn('courseClass', __('Class Code'))
-                  ->sortable(['course', 'class'])
+                  ->sortable($secondaryStudent? 'course' : ['course', 'class'])
                   ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
             $table->addColumn('role', __('Class Role'));
@@ -236,7 +238,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $table = DataTable::createPaginated('enrolmentLeft', $criteria);
 
-            $table->addColumn('courseClass', __('Class Code'))->format(Format::using('courseClassName', ['course', 'class']));
+            if ($secondaryStudent) $table->addColumn('class', __('Period'));
+            $table->addColumn('courseClass', __('Class Code'))
+                ->sortable($secondaryStudent? 'course' : ['course', 'class'])
+                ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
             $table->addColumn('role', __('Class Role'));
 
