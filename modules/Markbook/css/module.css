@@ -25,14 +25,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	margin-left: 5px;
 }
 
-table.colorOddEven tr:nth-of-type(even) td {
-	background: -webkit-gradient(linear, center top, center bottom, from(#F2F2F2), to(#F0F0F0));
-	background: -webkit-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: -o-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: -moz-linear-gradient(center top , #F2F2F2, #F0F0F0);
-	background: linear-gradient(center top , #F2F2F2, #F0F0F0);
-}
-
 tr.odd:target td,
 tr.even:target td {
 	background: #EDF7FF;
