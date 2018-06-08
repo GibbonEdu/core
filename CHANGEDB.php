@@ -940,6 +940,8 @@ ALTER TABLE `gibbonCourseClassPerson` DROP INDEX `gibbonPersonID`;end
 ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`, `role`);end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonActivityStudent` ADD INDEX(`gibbonActivityID`, `status`);end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Individual Needs'), 'Individual Needs Overview', 1, 'Visualise', 'Provides a visual graph of individual needs school-wide.', 'report_graph_overview.php', 'report_graph_overview.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'Y', 'Y', 'Y');end
+INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`) VALUES (NULL , '001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Individual Needs' AND gibbonAction.name='Individual Needs Overview'));end
 ";
 
 
