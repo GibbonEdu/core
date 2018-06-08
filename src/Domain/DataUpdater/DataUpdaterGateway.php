@@ -39,13 +39,13 @@ class DataUpdaterGateway extends Gateway
     {
         $data = array('gibbonPersonID' => $gibbonPersonID);
         $sql = "
-        (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, 0 as sequenceNumber
+        (SELECT GROUP_CONCAT(gibbonFamily.gibbonFamilyID ORDER BY gibbonFamily.name SEPARATOR ',') as gibbonFamilyID, gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.image_240, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, 0 as sequenceNumber
             FROM gibbonPerson 
             LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             LEFT JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID AND gibbonPerson.status='Full' GROUP BY gibbonPerson.gibbonPersonID)
         UNION ALL 
-        (SELECT gibbonFamilyAdult.gibbonFamilyID, child.surname, child.preferredName, child.image_240, child.gibbonPersonID, 1 as sequenceNumber
+        (SELECT gibbonFamilyAdult.gibbonFamilyID, child.surname, child.preferredName, child.image_240, child.gibbonPersonID, child.dateStart, 1 as sequenceNumber
             FROM gibbonFamilyAdult 
             JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) 
             JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -53,7 +53,7 @@ class DataUpdaterGateway extends Gateway
             WHERE gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID 
             AND gibbonFamilyAdult.childDataAccess='Y' AND child.status='Full') 
         UNION ALL 
-        (SELECT gibbonFamily.gibbonFamilyID, adult.surname, adult.preferredName, adult.image_240, adult.gibbonPersonID, 2 as sequenceNumber
+        (SELECT gibbonFamily.gibbonFamilyID, adult.surname, adult.preferredName, adult.image_240, adult.gibbonPersonID, adult.dateStart, 2 as sequenceNumber
             FROM gibbonFamilyAdult 
             JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
             JOIN gibbonFamilyAdult as familyAdult ON (familyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID AND familyAdult.gibbonPersonID<>:gibbonPersonID)
@@ -129,6 +129,9 @@ class DataUpdaterGateway extends Gateway
         // Loop over each updatable person to look for required updates
         foreach ($updatablePeople as $person) {
             $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
+
+            // Skip users who started after the cutoff date
+            if (!empty($person['dateStart']) && $person['dateStart'] >= $cutoffDate) continue;
 
             foreach ($requiredUpdatesByType as $type) {
                 // Skip data update types not applicable to this user
