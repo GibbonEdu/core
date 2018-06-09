@@ -365,8 +365,8 @@
 
             $info .= '</ul>';
 
-            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='text-align: center; padding: 0px !important'>";
-            echo "<div class='dragtable-drag-handle'></div>";
+            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top;'>";
+
             echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
             echo "<span title='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
@@ -385,8 +385,8 @@
 
 
             echo '</span>';
-            echo '<div class="columnActions">';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+                echo '<div class="columnActions">';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
 
                 echo "<a class='miniIcon' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/> ";
