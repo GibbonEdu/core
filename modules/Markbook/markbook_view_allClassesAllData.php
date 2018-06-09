@@ -367,6 +367,7 @@
 
             echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='text-align: center; padding: 0px !important'>";
             echo "<div class='dragtable-drag-handle'></div>";
+            echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
             echo "<span title='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
             echo "<span class='details'>";
