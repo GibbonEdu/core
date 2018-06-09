@@ -43,10 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
-    $choices = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $choices = $_POST['gibbonPersonID'];
-    }
+    $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_medicalSummary.php");
 
