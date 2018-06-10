@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		//Column B
         $x = $row['name'];
         if ($row['producer'] != '') {
-            $x .= "\r\n".$row['producer'];
+            $x .= "; ".$row['producer'];
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, $x);
 		//Column C
@@ -125,7 +125,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $x);
 		//Column D
-        if ($row['gibbonSpaceID'] != '') {
+		$x = '';
+		if ($row['gibbonSpaceID'] != '') {
 			$dataSpace = array('gibbonSpaceID' => $row['gibbonSpaceID']);
 			$sqlSpace = 'SELECT * FROM gibbonSpace WHERE gibbonSpaceID=:gibbonSpaceID';
 			if (is_null($resultSpace = $pdo->executeQuery($dataSpace, $sqlSpace))) {
@@ -137,24 +138,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
             }
         }
         if ($row['locationDetail'] != '') {
-            $x .=  " ; ".$row['locationDetail'];
+            $x .=  "; ".$row['locationDetail'];
         }
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $row['id']);
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $x);
 		//Column E
-        if ($row['ownershipType'] == 'School') {
-            echo $_SESSION[$guid]['organisationNameShort'];
+		$x = '';
+		if ($row['ownershipType'] == 'School') {
+            $x = $_SESSION[$guid]['organisationNameShort'];
         } elseif ($row['ownershipType'] == 'Individual') {
-            echo 'Individual';
+            $x = 'Individual';
         }
         if ($row['gibbonPersonIDOwnership'] != '') {
 			$dataPerson = array('gibbonPersonID' => $row['gibbonPersonIDOwnership']);
 			$sqlPerson = 'SELECT title, preferredName, surname FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
 			if (is_null($resultPerson = $pdo->executeQuery($dataPerson, $sqlPerson))) {
-				$x = $pdo->getError();
+				$x .= $pdo->getError();
 			}
             if ($resultPerson->rowCount() == 1) {
                 $rowPerson = $resultPerson->fetch();
-                $x = "; ".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
+                $x .= "; ".formatName($rowPerson['title'], $rowPerson['preferredName'], $rowPerson['surname'], 'Staff', false, true);
             }
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, $x);
@@ -165,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         if ($row['purchaseDate'] == '') {
             $x .= __($guid, 'Unknown');
         } else {
-            $x .= dateConvertBack($guid, $row['purchaseDate']).' ; ';
+            $x .= dateConvertBack($guid, $row['purchaseDate']);
         }
         if ($row['vendor'] != '') {
             $x .= "; ".$row['vendor'];
