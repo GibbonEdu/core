@@ -173,9 +173,13 @@ class MenuModule
 
 									// Avoid duplicates (esp. from grouped actions)
 									if ($currentName!=$lastName) {
+										$URLList =  explode(",", $row['URLList']);
 										$selected="";
-										if ($_GET['q']=="/modules/" . $row['moduleName'] . "/" . $row['entryURL']) {
-											$selected=" selected";
+										foreach ($URLList AS $url) {
+											$url = trim($url);
+											if ($_GET['q']=="/modules/" . $row['moduleName'] . "/" . $url) {
+												$selected=" selected";
+											}
 										}
 
 										$menu .= "<option value='" . $absoluteURL . "/index.php?q=/modules/" . $row['moduleName'] . "/" . $row['entryURL'] . "'$selected>" . __($currentName, $moduleDomain) . "</option>";
