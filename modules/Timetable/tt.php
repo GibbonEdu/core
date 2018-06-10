@@ -127,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             }
         }
 
-        if (count($users) == 0) {
+        if (!$canViewAllTimetables && count($users) == 0) {
             echo '<div class="error">';
             echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';

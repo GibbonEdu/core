@@ -61,7 +61,7 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
         }
         $resultTheme = $connection2->prepare($sqlTheme);
         $resultTheme->execute($dataTheme);
-        if (count($resultTheme) == 1) {
+        if ($resultTheme->rowCount() == 1) {
             $rowTheme = $resultTheme->fetch();
             $themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
             if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {

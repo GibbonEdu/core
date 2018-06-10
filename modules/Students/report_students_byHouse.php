@@ -115,6 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
                     // Append the current totals to the running totals for each house
                     $totals[$data['house']] = array_reduce(array_keys($data), function ($carry, $key) use ($data) {
+                        if (stripos($key, 'total') === false) return $carry;
                         $carry[$key] = (isset($carry[$key]))? $carry[$key] + $data[$key] : $data[$key];
                         return $carry;
                     }, $totals[$data['house']]);
