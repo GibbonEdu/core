@@ -91,9 +91,9 @@ class SimpleRenderer implements RendererInterface
 
             foreach ($dataSet as $index => $data) {
                 $row = $this->createTableRow($data, $table);
-                $row->addClass($index % 2 == 0? 'odd' : 'even');
-
                 if (!$row) continue; // Can be removed by rowLogic
+                
+                $row->addClass($index % 2 == 0? 'odd' : 'even');
 
                 $output .= '<tr '.$row->getAttributeString().'>';
                 $output .= $row->getPrepended();
