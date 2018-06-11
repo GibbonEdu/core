@@ -81,6 +81,8 @@ class Date extends TextField
         global $guid;
 
         $validationFormat = '';
+        
+        $this->setAttribute('autocomplete', 'off');
 
         if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
             $validationFormat .= "pattern: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
