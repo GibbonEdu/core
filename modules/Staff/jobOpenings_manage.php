@@ -52,6 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
         ->setURL('/modules/Staff/jobOpenings_manage_add.php')
         ->displayLabel();
 
+    $table->modifyRows(function ($values, $row) {
+        if ($values['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
     $table->addMetaData('filterOptions', [
         'active:Y' => __('Active').': '.__('Yes'),
         'active:N' => __('Active').': '.__('No'),
