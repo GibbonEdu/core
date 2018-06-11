@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     } else {
         $form = Form::create('themeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
 
-        $form->setClass('fullWidth');
+        $form->setClass('fullWidth colorOddEven');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $row = $form->addRow()->setClass('heading head');
