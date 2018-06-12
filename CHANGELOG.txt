@@ -88,6 +88,7 @@ v16.0.00
         Students: added View option to Students by Form Group report, allowing Basic or Extended view
         Students: changed School Attendance sub page to Attendance to improve UI consistency
         Students: adjusted logic in student enrolment visualisation to include students who are not 'Full'
+        Students: adjusted layout of Uploaded Response link in Markbook in Student Profile view
         School Admin: updated Finance Settings email to default to organisation email if blank
         School Admin: extend length of name field in Manage Houses to 30 chars
         School Admin: added Head of Year to Manage Year Groups and integrated into Students
