@@ -124,6 +124,7 @@
                 JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) 
                 WHERE gibbonMarkbookEntry.gibbonPersonIDStudent=:gibbonPersonIDStudent 
                 AND gibbonMarkbookColumn.gibbonCourseClassID=:gibbonCourseClassID 
+                AND gibbonMarkbookColumn.viewableStudents='Y'
                 AND complete='Y' AND completeDate<=:today $and2  
                 ORDER BY completeDate";
                 $resultEntry = $connection2->prepare($sqlEntry);
