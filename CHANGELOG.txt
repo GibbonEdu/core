@@ -70,6 +70,7 @@ v16.0.00
         Library: simplified interface for Duplicate in Manage Catalog
         Library: fixed PHP warning in Library's type-specific fields AJAX script
         Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
+        Markbook: fixed parent/student access issues when viewing markbook columns
         Messenger: added the ability to resend in By Roll Group view in View Send Report
         Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
         Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
