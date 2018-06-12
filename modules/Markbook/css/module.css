@@ -25,9 +25,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	margin-left: 5px;
 }
 
-tr.odd:target td,
-tr.even:target td {
-	background: #EDF7FF;
+tr:target td {
+	background: #EDF7FF !important;
 }
 
 .details {

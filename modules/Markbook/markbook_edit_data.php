@@ -395,7 +395,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $form->addHiddenValue($count.'-attainmentValueRaw', $student['attainmentValueRaw']);
                         }
 
-                        $row = $table->addRow();
+                        $row = $table->addRow()->setID($student['gibbonPersonID']);
 
                         $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
