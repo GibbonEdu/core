@@ -64,7 +64,8 @@ v16.0.00
         Finance: add a Mark as Paid bulk action in Manage Invoices
         Finance: add Credit Card payment type to gibbonPayment table
         Finance: added ability to issue reminders (individually and in bulk) for invocies with status Paid - Partial
-        Form Group: added link to print listing of students in form group detail view
+        Form Groups: added link to print listing of students in form group detail view
+        Form Groups: fixed bug offering non-permissioned users the opportunity to print
         Formal Assessment: fixed PHP Notice and interface string issues
         Library: simplified interface for Duplicate in Manage Catalog
         Library: fixed PHP warning in Library's type-specific fields AJAX script

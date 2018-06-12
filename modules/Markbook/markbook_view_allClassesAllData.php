@@ -771,13 +771,24 @@
                         }
                         echo '</td>';
                     } else {
-                        echo "<td>";
-
+                        $editLink = '';
                         if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                            print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
+                            $editLink = "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
                         }
 
-                        echo "</td>";
+                        if ($column->displayAttainment()) {
+                            echo '<td class="medColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayEffort()) {
+                            echo '<td class="medColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayComment()) {
+                            echo '<td class="largeColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayUploadedResponse()) {
+                            echo '<td class="smallColumn"></td>';
+                        }
+                            
                     }
 
                     if ($column->displaySubmission()) {
