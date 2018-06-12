@@ -3398,8 +3398,8 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
     }
-    if ($print && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php')) {
-        $print = true ;
+    if ($print && (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup.php') == false && isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup_print.php') == false)) {
+        $print = false ;
     }
 
     try {
