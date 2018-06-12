@@ -360,6 +360,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $action = $_GET['action'];
                     }
 
+                    // When viewing left students, they won't have a year group ID
+                    if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
+
                     if ($subpage == '' and ($hook == '' or $module == '' or $action == '')) {
                         $subpage = 'Overview';
                     }

@@ -61,6 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     foreach ($dateRange as $date) {
         $weeks[$date->format('W')] = __('Week').' '.$date->format('W').': '.$date->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
+    $weeks = array_reverse($weeks, true);
 
     $row = $form->addRow();
         $row->addLabel('weekOfYear', __('Calendar Week'));

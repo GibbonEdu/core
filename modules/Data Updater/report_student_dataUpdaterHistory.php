@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
-    $choices = isset($_POST['members'])? $_POST['members'] : null;
+    $choices = isset($_POST['members'])? $_POST['members'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26)));
 
