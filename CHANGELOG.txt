@@ -102,6 +102,7 @@ v16.0.00
         Timetable: added index on gibbonPersonID for table gibbonCourseClassPerson
         Timetable: added the special day name to the timetable for school closures
         Timetable Admin: added school year selector to Sync Course Enrolment
+        Timetable Admin: made search persistent on return from course delete
         User Admin: fixed Child's Name list in Edit Family to include all students
         User Admin: fixed bug preventing some family links from showing up in Manage Users
         User Admin: removed Back link from child and adult delete modals in Manage Families
