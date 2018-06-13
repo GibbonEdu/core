@@ -167,18 +167,20 @@ function getAnyTaughtClass( $pdo, $gibbonPersonID, $gibbonSchoolYearID ) {
     return ($result->rowCount() > 0)? $result->fetch() : NULL;
 }
 
-function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction = '' ) {
+function getClass( $pdo, $gibbonPersonID, $gibbonCourseClassID, $highestAction ) {
     try {
         if ($highestAction == 'View Markbook_allClassesAllData') {
             $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = 'SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID, gibbonCourse.gibbonDepartmentID, gibbonYearGroupIDList FROM gibbonCourse, gibbonCourseClass WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class';
-        } else {
+        } else if ($highestAction == 'View Markbook_myClasses') {
             $data = array( 'gibbonPersonID' => $gibbonPersonID, 'gibbonCourseClassID' => $gibbonCourseClassID);
             $sql = "SELECT gibbonCourse.nameShort AS course, gibbonCourse.name AS courseName, gibbonCourseClass.nameShort AS class, gibbonCourse.gibbonYearGroupIDList, gibbonCourseClass.gibbonCourseClassID FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson WHERE gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Teacher' AND gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID ORDER BY course, class";
+        } else {
+            return null;
         }
         $result = $pdo->executeQuery($data, $sql);
     } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+        return null;
     }
 
     return ($result->rowCount() > 0)? $result->fetch() : NULL;

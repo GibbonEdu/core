@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../config.php';
 
+//Module includes
+include './moduleFunctions.php';
+
 //Get settings
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
@@ -39,6 +42,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
+    // Check existence of and access to this class.
+    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction);
+    
+    if (empty($class)) {
+        echo '<div class="error">';
+        echo __('You do not have access to this action.');
+        echo '</div>';
+        return;
+    }
+
     $alert = getAlert($guid, $connection2, 002);
 
     //Count number of columns
