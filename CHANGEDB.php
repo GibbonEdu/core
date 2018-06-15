@@ -940,6 +940,10 @@ ALTER TABLE `gibbonCourseClassPerson` DROP INDEX `gibbonPersonID`;end
 ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`, `role`);end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonActivityStudent` ADD INDEX(`gibbonActivityID`, `status`);end
+ALTER TABLE `gibbonApplicationForm` ADD `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NULL AFTER `dateStart`;end
+ALTER TABLE `gibbonApplicationForm` ADD `parent2gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL AFTER `parent1employer`;end
+UPDATE gibbonAction SET urlList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php, applicationForm_manage_family.php' WHERE name='Manage Applications_editDelete' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET urlList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php, applicationForm_manage_family.php' WHERE name='Manage Applications_edit' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 ";
 
 
