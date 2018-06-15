@@ -22,6 +22,9 @@ namespace Gibbon\Domain;
 use Gibbon\Domain\QueryCriteria;
 use Aura\SqlQuery\QueryFactory;
 use Aura\SqlQuery\Common\SelectInterface;
+use Aura\SqlQuery\Common\InsertInterface;
+use Aura\SqlQuery\Common\UpdateInterface;
+use Aura\SqlQuery\Common\DeleteInterface;
 
 /**
  * Queryable Gateway
@@ -59,6 +62,26 @@ abstract class QueryableGateway extends Gateway
         return $this->getQueryFactory()->newSelect()->calcFoundRows();
     }
 
+    protected function newSelect()
+    {
+        return $this->getQueryFactory()->newSelect();
+    }
+
+    protected function newInsert()
+    {
+        return $this->getQueryFactory()->newInsert();
+    }
+
+    protected function newUpdate()
+    {
+        return $this->getQueryFactory()->newUpdate();
+    }
+
+    protected function newDelete()
+    {
+        return $this->getQueryFactory()->newDelete();
+    }
+
     /**
      * Runs a query with a defined set of criteria and returns the result as a data set with pagination info.
      *
@@ -76,6 +99,26 @@ abstract class QueryableGateway extends Gateway
         $totalRows = $this->countAll();
 
         return $result->toDataSet()->setResultCount($foundRows, $totalRows)->setPagination($criteria->getPage(), $criteria->getPageSize());
+    }
+
+    protected function runSelect(SelectInterface $query)
+    {
+        return $this->db()->select($query->getStatement(), $query->getBindValues());
+    }
+
+    protected function runInsert(InsertInterface $query)
+    {
+        return $this->db()->insert($query->getStatement(), $query->getBindValues());
+    }
+
+    protected function runUpdate(UpdateInterface $query)
+    {
+        return $this->db()->update($query->getStatement(), $query->getBindValues());
+    }
+
+    protected function runDelete(DeleteInterface $query)
+    {
+        return $this->db()->delete($query->getStatement(), $query->getBindValues());
     }
 
     /**
