@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Domain\Students\ApplicationFormGateway;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -47,15 +50,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         return;
     }
 
-    $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
-    $sql = "SELECT *, gibbonApplicationForm.status AS 'applicationStatus', gibbonPayment.status AS 'paymentStatus' FROM gibbonApplicationForm LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonApplicationFormID=:gibbonApplicationFormID";
-    $result = $pdo->executeQuery($data, $sql);
-    $application = ($result->rowCount() > 0)? $result->fetch() : array();
+    $applicationGateway = $container->get(ApplicationFormGateway::class);
+    $familyGateway = $container->get(FamilyGateway::class);
 
-    $data = array('gibbonFamilyID' => $gibbonFamilyIDExisting);
-    $sql = "SELECT name FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID";
-    $result = $pdo->executeQuery($data, $sql);
-    $family = ($result->rowCount() > 0)? $result->fetch() : array();
+    $application = $applicationGateway->getApplicationFormByID($gibbonApplicationFormID);
+    $family = $familyGateway->getFamilyByID($gibbonFamilyIDExisting);
 
     if (empty($application) || empty($family)) {
         echo "<div class='error'>";
@@ -71,31 +70,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     //Let's go!
     $proceed = true;
 
-    // Grab family children
-    $data = array('gibbonFamilyID' => $gibbonFamilyIDExisting);
-    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, status
-        FROM gibbonFamilyChild 
-        JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-        WHERE gibbonFamilyChild.gibbonFamilyID=:gibbonFamilyID";
-    $result = $pdo->executeQuery($data, $sql);
-    $familyChildren = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
-    $familyChildren = array_map(function($item){
-        return formatName('', $item['preferredName'], $item['surname'], 'Student').' ('.$item['status'].')';
-    }, $familyChildren);
+    $familyGateway = $container->get(FamilyGateway::class);
 
-    // Grab family adults
-    $data = array('gibbonFamilyID' => $gibbonFamilyIDExisting);
-    $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, status
-        FROM gibbonFamilyAdult 
-        JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-        WHERE gibbonFamilyAdult.gibbonFamilyID=:gibbonFamilyID";
-    $result = $pdo->executeQuery($data, $sql);
-    $familyAdults = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
-    $familyAdults = array_map(function($item){
-        return formatName('', $item['preferredName'], $item['surname'], 'Student').' ('.$item['status'].')';
-    }, $familyAdults);
+    $familyAdults = $familyGateway->selectAdultsByFamily($gibbonFamilyIDExisting)->fetchAll();
+    $familyAdults = Format::keyValue($familyAdults, 'gibbonPersonID', 'name', ['title', 'preferredName', 'surname', 'Parent']);
 
-
+    $familyChildren = $familyGateway->selectChildrenByFamily($gibbonFamilyIDExisting)->fetchAll();
+    $familyChildren = Format::keyValue($familyChildren, 'gibbonPersonID', 'name', ['', 'preferredName', 'surname', 'Student']);
+    
     $form = Form::create('applicationFamily', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_familyProcess.php?search='.$search);
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
@@ -112,17 +94,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addTextField('familyName')->isRequired()->readonly()->setValue($family['name']);
 
     $row = $form->addRow();
-        $row->addHeading(__('Assign Users'))->append(__('If the student or parent(s) already exist in this family you can connect them here and their personal data will be updated on submit. Otherwise you can choose to add new users to this family.'));
+        $row->addHeading(__('Assign Users'))
+            ->append(__('If the student or parent(s) already exist in this family you can connect them here. Otherwise they will be added as new users in this family.'))
+            ->append('<div class="warning">'.__('Connecting a family member to an existing user will update the personal details for that account.').'</div>');
 
     $form->addRow()->addSubheading(__('Student'));
 
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDStudent', __('Student'));
+        $row->addLabel('studentName', __('Student'));
         $row->addTextField('studentName')->readonly()->setValue(formatName('', $application['preferredName'], $application['surname'], 'Student'));
 
+    $userOptions = array('new' => __('New User'), 'existing' => __('Existing User'));
     $row = $form->addRow();
-        $row->addLabel('gibbonPersonIDStudent', __('User'));    
-        $row->addSelect('gibbonPersonIDStudent')->fromArray(array('new' => __('New Student')))->fromArray($familyChildren)->isRequired()->placeholder();
+        $row->addLabel('studentUserType', __('User Type'));
+        $row->addSelect('studentUserType')->fromArray($userOptions)->isRequired();
+
+    $form->toggleVisibilityByClass('studentUserType')->onSelect('studentUserType')->when('existing');
+    $row = $form->addRow()->addClass('studentUserType');
+        $row->addLabel('gibbonPersonIDStudent', __('User Account'));    
+        $row->addSelect('gibbonPersonIDStudent')->fromArray($familyChildren)->isRequired()->placeholder();
 
     $form->addRow()->addSubheading(__('Parent/Guardian').' 1');
 
@@ -131,13 +121,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addTextField('parent1name')->readonly()->setValue(formatName($application['parent1title'], $application['parent1preferredName'], $application['parent1surname'], 'Parent'));
         
     $row = $form->addRow();
-        $row->addLabel('parent1gibbonPersonID', __('User'));    
-        $row->addSelect('parent1gibbonPersonID')->fromArray(array('new' => __('New Parent/Guardian')))->fromArray($familyAdults)->isRequired()->placeholder();
+        $row->addLabel('parent1relationship', __('Relationship'));
+        $row->addSelectRelationship('parent1relationship')->isRequired()->selected($application['parent1relationship']);
 
     $row = $form->addRow();
-        $row->addLabel('parent1relationship', __('Relationship'));
-        $row->addSelectRelationship('parent1relationship')->isRequired();
+        $row->addLabel('parent1UserType', __('User Type'));
+        $row->addSelect('parent1UserType')->fromArray($userOptions)->isRequired();
 
+    $form->toggleVisibilityByClass('parent1UserType')->onSelect('parent1UserType')->when('existing');
+    $row = $form->addRow()->addClass('parent1UserType');
+        $row->addLabel('parent1gibbonPersonID', __('User Account'));    
+        $row->addSelect('parent1gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+    
     if (!empty($application['parent2surname'])) {
         $form->addRow()->addSubheading(__('Parent/Guardian').' 2');
 
@@ -146,12 +141,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addTextField('parent2name')->readonly()->setValue(formatName($application['parent2title'], $application['parent2preferredName'], $application['parent2surname'], 'Parent'));
 
         $row = $form->addRow();
-            $row->addLabel('parent2gibbonPersonID', __('User'));
-            $row->addSelect('parent2gibbonPersonID')->fromArray(array('new' => __('New Parent/Guardian')))->fromArray($familyAdults)->isRequired()->placeholder();
+            $row->addLabel('parent2relationship', __('Relationship'));
+            $row->addSelectRelationship('parent2relationship')->isRequired()->selected($application['parent2relationship']);
 
         $row = $form->addRow();
-            $row->addLabel('parent2relationship', __('Relationship'));
-            $row->addSelectRelationship('parent2relationship')->isRequired();
+            $row->addLabel('parent2UserType', __('User Type'));
+            $row->addSelect('parent2UserType')->fromArray($userOptions)->isRequired();
+    
+        $form->toggleVisibilityByClass('parent2UserType')->onSelect('parent2UserType')->when('existing');
+        $row = $form->addRow()->addClass('parent2UserType');
+            $row->addLabel('parent2gibbonPersonID', __('User Account'));
+            $row->addSelect('parent2gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
     }
 
     $row = $form->addRow();
