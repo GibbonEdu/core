@@ -1921,6 +1921,7 @@ else {
 				//Set up email
 				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
+				$mail->SMTPKeepAlive = true;
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');
 				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school
@@ -1972,6 +1973,7 @@ else {
 				}
 
 				//Send to each recipient
+				$pauseCount = 0;
 				foreach ($report as $reportEntry) {
 					if ($reportEntry[3] == 'Email') {
 						$emailCount ++;
@@ -1996,8 +1998,14 @@ else {
 							$partialFail = TRUE ;
 							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
 						}
+						
+						$pauseCount++;
+						if ($_SESSION[$guid]['enableMailerSMTP'] == 'Y' && $pauseCount % 20 == 0) {
+							sleep(10);
+						}
 					}
 				}
+				$mail->smtpClose();
 			}
 
 			if ($sms=="Y") {
