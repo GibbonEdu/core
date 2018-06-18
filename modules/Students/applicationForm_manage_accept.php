@@ -708,11 +708,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                 } elseif ($result->rowCount() == 1) {
-                                    $values = $result->fetch();
+                                    $existingRelationship = $result->fetch();
 
-                                    if ($values['relationship'] != $relationship) {
+                                    if ($existingRelationship['relationship'] != $relationship) {
                                         try {
-                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $values['gibbonFamilyRelationshipID']);
+                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $existingRelationship['gibbonFamilyRelationshipID']);
                                             $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);
