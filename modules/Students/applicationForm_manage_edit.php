@@ -394,7 +394,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
         $row->addSubheading(__('Student Personal Data'))
-            ->append(sprintf(__('The applying student is already a member of %1$s.'), $_SESSION[$guid]['organisationName']));
+            ->append(sprintf(__('The applying %1$s is already a member of %2$s.'), __('Student'), $_SESSION[$guid]['organisationName']));
 
         $row = $form->addRow();
             $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
@@ -523,7 +523,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row = $form->addRow();
             $row->addCheckbox('attachToFamily')->setValue('Y')->prepend(__('Attach this application to an existing family'));
             $form->toggleVisibilityByClass('existingFamily')->onCheckbox('attachToFamily')->when('Y');
-            $form->toggleVisibilityByClass('newFamily')->onCheckbox('attachToFamily')->whenNot('Y');
 
         $row = $form->addRow()->addClass('existingFamily');
             $row->addLabel('gibbonFamilyIDExisting', __('Family'))->description(__('Search by family, parent or student names.'));
@@ -565,7 +564,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         if ($resultFamily->rowCount() != 1) {
             $proceed = false;
-            $form->addRow()->addTextField('gibbonFamilyError')->readOnly()->setValue(__('There is an error with this form!'));
+            $form->addRow()->addAlert(__('There is an error with this form!').' '.__('The family record for this application could not be found. Select a family below to re-connect this application before it can be accepted.'), 'error');
+
+            $form->addHiddenValue('attachToFamily', 'Y');
+
+            // Attach to Family
+            $row = $form->addRow()->addClass('existingFamily');
+                $row->addLabel('gibbonFamilyIDExisting', __('Family'))->description(__('Search by family, parent or student names.'));
+                $row->addFinder('gibbonFamilyIDExisting')
+                    ->fromAjax($_SESSION[$guid]['absoluteURL'].'/modules/Students/applicationForm_manage_familyAjax.php')
+                    ->isRequired()
+                    ->setParameter('tokenLimit', 1)
+                    ->setParameter('minChars', 2);
+
+            $row = $form->addRow()->addClass('existingFamily');
+                $row->addSubmit(__('Go'));
         } else {
             $rowFamily = $resultFamily->fetch();
 
@@ -595,13 +608,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 
+    $start = 1;
+    
     // PARENT 1 - IF EXISTS
     if (!empty($application['parent1gibbonPersonID']) ) {
 
         $form->addRow()->addHeading(__('Parent/Guardian').' 1');
 
         $form->addHiddenValue('parent1email', $application['parent1email']);
-        $email = $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
+        $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
 
         $row = $form->addRow();
             $row->addLabel('parent1surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
@@ -633,8 +648,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
 
         $start = 2;
-    } else {
-        $start = 1;
+    }
+    
+    // PARENT 2 - IF EXISTS
+    if (!empty($application['parent2gibbonPersonID']) ) {
+
+        $form->addRow()->addHeading(__('Parent/Guardian').' 2');
+
+        $form->addHiddenValue('parent2email', $application['parent2email']);
+        $form->addHiddenValue('parent2gibbonPersonID', $application['parent2gibbonPersonID']);
+
+        $row = $form->addRow();
+            $row->addLabel('parent2surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
+            $row->addTextField('parent2surname')->maxLength(30)->readOnly();
+
+        $row = $form->addRow();
+            $row->addLabel('parent2preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+            $row->addTextField('parent2preferredName')->maxLength(30)->readOnly();
+
+        $row = $form->addRow();
+            $row->addLabel('parent2relationship', __('Relationship'));
+            $row->addSelectRelationship('parent2relationship')->isRequired();
+
+        // CUSTOM FIELDS FOR PARENT 2 WITH FAMILY
+        $existingFields = (isset($application["parent2fields"]))? unserialize($application["parent2fields"]) : null;
+        $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
+        if ($resultFields->rowCount() > 0) {
+            $row = $form->addRow();
+            $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
+
+            while ($rowFields = $resultFields->fetch()) {
+                $name = "parent2custom".$rowFields['gibbonPersonFieldID'];
+                $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+
+                $row = $form->addRow();
+                    $row->addLabel($name, $rowFields['name']);
+                    $row->addCustomField($name, $rowFields)->setValue($value);
+            }
+        }
+
+        $start = 3;
     }
 
     // PARENTS

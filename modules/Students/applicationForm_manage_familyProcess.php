@@ -112,12 +112,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         if ($parentUserType == 'existing' && !empty($gibbonPersonIDParent)) {
             $parent = $userGateway->getUserByID($gibbonPersonIDParent);
 
-            // Insert the parent's application relationship
-            $applicationGateway->insertApplicationFormRelationship([
-                'gibbonApplicationFormID' => $gibbonApplicationFormID,
-                'gibbonPersonID'          => $gibbonPersonIDParent,
-                'relationship'            => $parentRelationship,
-            ]);
+            // Insert the parent's application form relationship, if it doesn't exist
+            $relationship = $applicationGateway->getApplicationFormRelationship($gibbonApplicationFormID, $gibbonPersonIDParent);
+            if (empty($relationship)) {
+                $applicationGateway->insertApplicationFormRelationship([
+                    'gibbonApplicationFormID' => $gibbonApplicationFormID,
+                    'gibbonPersonID'          => $gibbonPersonIDParent,
+                    'relationship'            => $parentRelationship,
+                ]);
+            }
 
             // Merge the new custom fields into the existing field data
             $existingFields = !empty($parent['fields']) ? unserialize($parent['fields']) : []; 

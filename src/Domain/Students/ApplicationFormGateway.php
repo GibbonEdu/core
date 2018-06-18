@@ -58,6 +58,14 @@ class ApplicationFormGateway extends QueryableGateway
         return $this->updateRow('gibbonApplicationFormRelationship', 'gibbonApplicationFormRelationshipID', $data);
     }
 
+    public function getApplicationFormRelationship($gibbonApplicationFormID, $gibbonPersonID)
+    {
+        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID, 'gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT * FROM gibbonApplicationFormRelationship WHERE gibbonApplicationFormID=:gibbonApplicationFormID AND gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
     public function insertApplicationFormRelationship($data)
     {
         return $this->insertRow('gibbonApplicationFormRelationship', 'gibbonApplicationFormRelationshipID', $data);

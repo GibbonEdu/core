@@ -124,14 +124,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('parent1relationship', __('Relationship'));
         $row->addSelectRelationship('parent1relationship')->isRequired()->selected($application['parent1relationship']);
 
-    $row = $form->addRow();
-        $row->addLabel('parent1UserType', __('User Type'));
-        $row->addSelect('parent1UserType')->fromArray($userOptions)->isRequired();
+    if (!empty($application['parent1gibbonPersonID'])) {
+        $form->addHiddenValue('parent1UserType', 'existing');
+        $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
 
-    $form->toggleVisibilityByClass('parent1UserType')->onSelect('parent1UserType')->when('existing');
-    $row = $form->addRow()->addClass('parent1UserType');
-        $row->addLabel('parent1gibbonPersonID', __('User Account'));    
-        $row->addSelect('parent1gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+        $row = $form->addRow();
+            $row->addLabel('parent1UserTypeLabel', __('User Type'));
+            $row->addTextField('parent1UserTypeLabel')->isRequired()->readOnly()->setValue(__('Existing User'));
+    } else {
+        $row = $form->addRow();
+            $row->addLabel('parent1UserType', __('User Type'));
+            $row->addSelect('parent1UserType')->fromArray($userOptions)->isRequired();
+
+        $form->toggleVisibilityByClass('parent1UserType')->onSelect('parent1UserType')->when('existing');
+        $row = $form->addRow()->addClass('parent1UserType');
+            $row->addLabel('parent1gibbonPersonID', __('User Account'));    
+            $row->addSelect('parent1gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+    }
     
     if (!empty($application['parent2surname'])) {
         $form->addRow()->addSubheading(__('Parent/Guardian').' 2');
@@ -143,15 +152,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row = $form->addRow();
             $row->addLabel('parent2relationship', __('Relationship'));
             $row->addSelectRelationship('parent2relationship')->isRequired()->selected($application['parent2relationship']);
-
-        $row = $form->addRow();
-            $row->addLabel('parent2UserType', __('User Type'));
-            $row->addSelect('parent2UserType')->fromArray($userOptions)->isRequired();
+            
+        if (!empty($application['parent2gibbonPersonID'])) {
+            $form->addHiddenValue('parent2UserType', 'existing');
+            $form->addHiddenValue('parent2gibbonPersonID', $application['parent2gibbonPersonID']);
     
-        $form->toggleVisibilityByClass('parent2UserType')->onSelect('parent2UserType')->when('existing');
-        $row = $form->addRow()->addClass('parent2UserType');
-            $row->addLabel('parent2gibbonPersonID', __('User Account'));
-            $row->addSelect('parent2gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+            $row = $form->addRow();
+                $row->addLabel('parent2UserTypeLabel', __('User Type'));
+                $row->addTextField('parent2UserTypeLabel')->isRequired()->readOnly()->setValue(__('Existing User'));
+        } else {
+            $row = $form->addRow();
+                $row->addLabel('parent2UserType', __('User Type'));
+                $row->addSelect('parent2UserType')->fromArray($userOptions)->isRequired();
+        
+            $form->toggleVisibilityByClass('parent2UserType')->onSelect('parent2UserType')->when('existing');
+            $row = $form->addRow()->addClass('parent2UserType');
+                $row->addLabel('parent2gibbonPersonID', __('User Account'));
+                $row->addSelect('parent2gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+        }
     }
 
     $row = $form->addRow();

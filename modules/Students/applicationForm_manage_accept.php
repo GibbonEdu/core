@@ -917,9 +917,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     //CREATE PARENT 1
                     $failParent1 = true;
                     if (!empty($values['parent1gibbonPersonID'])) {
+                        // EXISTING USER
                         $gibbonPersonIDParent1 = $values['parent1gibbonPersonID'];
                         echo '<h4>';
-                        echo 'Parent 1';
+                        echo __('Parent 1');
                         echo '</h4>';
                         echo '<ul>';
                         echo '<li>'.__($guid, 'Parent 1 already exists in Gibbon, and so does not need a new account.').'</li>';
@@ -931,31 +932,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $failFamily = true;
                         if ($gibbonFamilyID != '' && empty($values['gibbonFamilyID'])) {
                             try {
-                                $dataFamily = array('gibbonFamilyID' => $gibbonFamilyID);
-                                $sqlFamily = 'SELECT * FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
+                                $dataFamily = array('gibbonPersonID' => $gibbonPersonIDParent1, 'gibbonFamilyID' => $gibbonFamilyID);
+                                $sqlFamily = 'SELECT * FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID=:gibbonPersonID';
                                 $resultFamily = $connection2->prepare($sqlFamily);
                                 $resultFamily->execute($dataFamily);
                             } catch (PDOException $e) {
                                 echo "<div class='error'>".$e->getMessage().'</div>';
                             }
-                            if ($resultFamily->rowCount() == 1) {
-                                $rowFamily = $resultFamily->fetch();
-                                $familyName = $rowFamily['name'];
-                                if ($familyName != '') {
-                                    $insertOK = true;
-                                    try {
-                                        $data = array('gibbonPersonID' => $gibbonPersonIDParent1, 'gibbonFamilyID' => $gibbonFamilyID);
-                                        $sql = "INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall='Y', contactSMS='Y', contactEmail='Y', contactMail='Y'";
-                                        $result = $connection2->prepare($sql);
-                                        $result->execute($data);
-                                    } catch (PDOException $e) {
-                                        $insertOK = false;
-                                        echo "<div class='error'>".$e->getMessage().'</div>';
-                                    }
-                                    if ($insertOK == true) {
-                                        $failFamily = false;
-                                    }
+                            if ($resultFamily->rowCount() != 1) {
+                                $insertOK = true;
+                                try {
+                                    $data = array('gibbonPersonID' => $gibbonPersonIDParent1, 'gibbonFamilyID' => $gibbonFamilyID);
+                                    $sql = "INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=1, contactCall='Y', contactSMS='Y', contactEmail='Y', contactMail='Y'";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
+                                } catch (PDOException $e) {
+                                    $insertOK = false;
+                                    echo "<div class='error'>".$e->getMessage().'</div>';
                                 }
+                                if ($insertOK == true) {
+                                    $failFamily = false;
+                                }
+                            
                             }
 
                             if ($failFamily == true) {
@@ -1114,7 +1112,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
 
                     //CREATE PARENT 2
-                    if (empty($values['parent2gibbonPersonID']) && $values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
+                    if (!empty($values['parent2gibbonPersonID'])) {
+                        // EXISTING USER
+                        $gibbonPersonIDParent2 = $values['parent2gibbonPersonID'];
+                        echo '<h4>';
+                        echo __('Parent 2');
+                        echo '</h4>';
+                        echo '<ul>';
+                        echo '<li>'.__($guid, 'Parent 2 already exists in Gibbon, and so does not need a new account.').'</li>';
+                        echo "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent2</li>";
+                        echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['parent2preferredName'], $values['parent2surname'], 'Parent').'</li>';
+                        echo '</ul>';
+
+                        //LINK PARENT 2 INTO FAMILY
+                        $failFamily = true;
+                        if ($gibbonFamilyID != '' && empty($values['gibbonFamilyID'])) {
+                            try {
+                                $dataFamily = array('gibbonPersonID' => $gibbonPersonIDParent2, 'gibbonFamilyID' => $gibbonFamilyID);
+                                $sqlFamily = 'SELECT * FROM gibbonFamilyAdult WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPersonID=:gibbonPersonID';
+                                $resultFamily = $connection2->prepare($sqlFamily);
+                                $resultFamily->execute($dataFamily);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                            if ($resultFamily->rowCount() != 1) {
+                                $insertOK = true;
+                                try {
+                                    $data = array('gibbonPersonID' => $gibbonPersonIDParent2, 'gibbonFamilyID' => $gibbonFamilyID);
+                                    $sql = "INSERT INTO gibbonFamilyAdult SET gibbonPersonID=:gibbonPersonID, gibbonFamilyID=:gibbonFamilyID, contactPriority=2, contactCall='Y', contactSMS='Y', contactEmail='Y', contactMail='Y'";
+                                    $result = $connection2->prepare($sql);
+                                    $result->execute($data);
+                                } catch (PDOException $e) {
+                                    $insertOK = false;
+                                    echo "<div class='error'>".$e->getMessage().'</div>';
+                                }
+                                if ($insertOK == true) {
+                                    $failFamily = false;
+                                }
+                            }
+
+                            if ($failFamily == true) {
+                                echo "<div class='warning'>";
+                                echo __($guid, 'Parent 2 could not be linked to family!');
+                                echo '</div>';
+                            }
+
+                            //Set parent relationship
+                            try {
+                                $data = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID1' => $gibbonPersonIDParent2, 'gibbonPersonID2' => $gibbonPersonID, 'relationship' => $values['parent2relationship']);
+                                $sql = 'INSERT INTO gibbonFamilyRelationship SET gibbonFamilyID=:gibbonFamilyID, gibbonPersonID1=:gibbonPersonID1, gibbonPersonID2=:gibbonPersonID2, relationship=:relationship';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                echo "<div class='error'>".$e->getMessage().'</div>';
+                            }
+                        }
+
+                        
+                    } else if ($values['parent2preferredName'] != '' and $values['parent2surname'] != '') {
+                        // NEW PARENT 2
                         $failParent2 = true;
                         $lock = true;
                         try {
