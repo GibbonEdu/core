@@ -78,7 +78,7 @@ v16.0.00
         Messenger: improvement to protection against big/slow email sends
         Messenger: removed caching for messanger count on homepage, so count is always accurate
         Messenger: added email send failure logging to allow missing emails to be tracked
-        Messenger: added connection persistence and interval pause to SMTP sending
+        Messenger: added connection persistence to SMTP sending
         Planner: added "Notify" feature to lesson creating and editing
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
