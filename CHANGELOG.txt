@@ -22,7 +22,8 @@ v16.0.00
         Activated Simplified Chinese and Polish as available languages
         Added Croatian and Estonian as development languages
         Data Updater: added a My Data Updates overview and settings to redirect users on login
-        Messenger: new Groups action for custom mailing lists    
+        Messenger: new Groups action for custom mailing lists 
+        System: added new object-oriented table API, and implemented across 30% of the system
 
     Changes With Important Notices
         System: added tool for InnoDB database table storage engine migration: if you are already running InnoDB remove lines 906 and 907 from CHANGEDB.php before upgrading
