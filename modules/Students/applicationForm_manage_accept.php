@@ -623,14 +623,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $gibbonFinanceFeeCategoryIDList = null;
                     }
                     $paymentOK = true;
-                    try {
-                        $data = array('gibbonPersonID' => $gibbonPersonID, 'invoiceTo' => $invoiceTo, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList);
-                        $sql = 'INSERT INTO gibbonFinanceInvoicee SET gibbonPersonID=:gibbonPersonID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $paymentOK = false;
-                        echo "<div class='error'>".$e->getMessage().'</div>';
+
+                    $sql = "SELECT gibbonFinanceInvoiceeID FROM gibbonFinanceInvoicee WHERE gibbonPersonID=:gibbonPersonID";
+                    $existingInvoicee = $pdo->selectOne($sql, array('gibbonPersonID' => $gibbonPersonID));
+
+                    $data = array('gibbonPersonID' => $gibbonPersonID, 'invoiceTo' => $invoiceTo, 'companyName' => $companyName, 'companyContact' => $companyContact, 'companyAddress' => $companyAddress, 'companyEmail' => $companyEmail, 'companyPhone' => $companyPhone, 'companyAll' => $companyAll, 'gibbonFinanceFeeCategoryIDList' => $gibbonFinanceFeeCategoryIDList);
+
+                    if (!empty($existingInvoicee)) {
+                        $sql = "UPDATE gibbonFinanceInvoicee SET invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList WHERE gibbonPersonID=:gibbonPersonID";
+
+                        $pdo->update($sql, $data);
+                        $paymentOK = $pdo->getQuerySuccess();
+                    } else {
+                        $sql = "INSERT INTO gibbonFinanceInvoicee SET gibbonPersonID=:gibbonPersonID, invoiceTo=:invoiceTo, companyName=:companyName, companyContact=:companyContact, companyAddress=:companyAddress, companyEmail=:companyEmail, companyPhone=:companyPhone, companyAll=:companyAll, gibbonFinanceFeeCategoryIDList=:gibbonFinanceFeeCategoryIDList";
+
+                        $pdo->insert($sql, $data);
+                        $paymentOK = $pdo->getQuerySuccess();
                     }
 
                     if ($paymentOK == false) {
