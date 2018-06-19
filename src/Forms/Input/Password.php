@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Input;
 
+use Gibbon\Contracts\Database\Connection;
+
 /**
  * Password
  *
@@ -29,10 +31,10 @@ class Password extends TextField
 {
     /**
      * Attach the validation requirements for the system-wide password policy.
-     * @param sqlConnection $pdo
+     * @param Connection $pdo
      * @return self
      */
-    public function addPasswordPolicy($pdo)
+    public function addPasswordPolicy(Connection $pdo)
     {
         $connection2 = $pdo->getConnection();
 

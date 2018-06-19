@@ -1152,6 +1152,19 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
             $return .= '<b>'.number_format($feeTotal, 2, '.', ',').'</b>';
             $return .= '</td>';
             $return .= '</tr>';
+            if ($row['status'] == 'Paid - Partial') {
+                $return .= "<tr style='height: 35px' class='warning'>";
+                $return .= "<td colspan=3 style='text-align: right; $style2'>";
+                $return .= '<b>'.__($guid, 'Amount Outstanding:').'</b>';
+                $return .= '</td>';
+                $return .= "<td style='$style2'>";
+                if (substr($currency, 4) != '') {
+                    $return .= substr($currency, 4).' ';
+                }
+                $return .= '<b>'.number_format(($feeTotal-$row['paidAmount']), 2, '.', ',').'</b>';
+                $return .= '</td>';
+                $return .= '</tr>';
+            }
             $return .= '</table>';
         }
 
@@ -1161,7 +1174,7 @@ function invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
         $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
         $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
 
-        if ($enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
+        if (!$preview && $enablePayments == 'Y' and $paypalAPIUsername != '' and $paypalAPIPassword != '' and $paypalAPISignature != '' and $row['status'] != 'Paid' and $row['status'] != 'Cancelled' and $row['status'] != 'Refunded') {
             $financeOnlinePaymentEnabled = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentEnabled');
             $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
             if ($financeOnlinePaymentEnabled == 'Y') {
@@ -1654,4 +1667,52 @@ function receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSc
     }
 }
 
-?>
+function getBudgetAllocation($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBudgetID)
+{
+    $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+    $sql = "SELECT value FROM gibbonFinanceBudgetCycleAllocation WHERE gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID";
+    $result = $pdo->executeQuery($data, $sql);
+
+    return ($result->rowCount() == 1)? $result->fetchColumn(0) : __('N/A');
+}
+
+function getBudgetAllocated($pdo, $gibbonFinanceBudgetCycleID, $gibbonFinanceBudgetID)
+{
+    $data = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID, 'gibbonFinanceBudgetID' => $gibbonFinanceBudgetID);
+    $sql = "(SELECT cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Approved', 'Order'))
+        UNION
+        (SELECT paymentAmount AS cost FROM gibbonFinanceExpense WHERE countAgainstBudget='Y' AND gibbonFinanceBudgetCycleID=:gibbonFinanceBudgetCycleID AND gibbonFinanceBudgetID=:gibbonFinanceBudgetID AND FIELD(status, 'Paid'))";
+    $result = $pdo->executeQuery($data, $sql);
+
+    $budgetAllocated = 0;
+    if ($result->rowCount() > 0) {
+        $budgetAllocated = array_reduce($result->fetchAll(), function($sum, $item) {
+            $sum += $item['cost'];
+            return $sum;
+        }, 0);
+    }
+    return $budgetAllocated;
+}
+
+function getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $status)
+{
+    try {
+        $dataTotal = array('gibbonFinanceInvoiceID' => $gibbonFinanceInvoiceID);
+        if ($status == 'Pending') {
+            $sqlTotal = 'SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2 FROM gibbonFinanceInvoiceFee LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID) WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        } else {
+            $sqlTotal = 'SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2 FROM gibbonFinanceInvoiceFee WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID';
+        }
+        $resultTotal = $pdo->executeQuery($dataTotal, $sqlTotal);
+    } catch (PDOException $e) {
+        return null;
+    }
+
+    $totalFee = 0;
+
+    while ($rowTotal = $resultTotal->fetch()) {
+        $totalFee += is_numeric($rowTotal['fee2'])? $rowTotal['fee2'] : $rowTotal['fee'];
+    }
+
+    return $totalFee;
+}

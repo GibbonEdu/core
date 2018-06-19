@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 $status = $_GET['status'];
@@ -51,7 +44,7 @@ if ($gibbonSchoolYearID == '') { echo 'Fatal error loading this page!';
             $invoiceDueDate = $_POST['invoiceDueDate'];
         }
         $notes = $_POST['notes'];
-        $order = $_POST['order'];
+        $order = isset($_POST['order'])? $_POST['order'] : array();
 
         if (count($gibbonFinanceInvoiceeIDs) == 0 or $scheduling == '' or ($scheduling == 'Scheduled' and $gibbonFinanceBillingScheduleID == '') or ($scheduling == 'Ad Hoc' and $invoiceDueDate == '') or count($order) == 0) {
             $URL .= '&return=error1';

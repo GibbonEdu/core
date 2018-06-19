@@ -21,6 +21,9 @@ $I->selectOption('invoiceTo', 'Family');
 $I->click('#content form[method="post"] input[type=submit]');
 $I->seeSuccessMessage();
 
+$gibbonFinanceInvoiceeID = $I->grabValueFromURL('gibbonFinanceInvoiceeID');
+$I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID]);
+
 // Complex Update ------------------------------------------
 $I->selectOption('invoiceTo', 'Company');
 
@@ -28,7 +31,7 @@ $editFormValues = array(
     'companyName'     => 'McTest Ltd.',
     'companyContact'  => 'Testing McTest',
     'companyAddress'  => '123 Ficticious Lane',
-    'companyEmail'    => 'test@testing.local',
+    'companyEmail'    => 'test@testing.test',
     'companyCCFamily' => 'Y',
     'companyPhone'    => '12345678',
     'companyAll'      => 'Y',
@@ -38,6 +41,10 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
 $I->seeSuccessMessage();
+
+$gibbonFinanceInvoiceeID = $I->grabValueFromURL('gibbonFinanceInvoiceeID');
+
+$I->amOnModulePage('Data Updater', 'data_finance.php', ['gibbonFinanceInvoiceeID' => $gibbonFinanceInvoiceeID]);
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
 $gibbonFinanceInvoiceeUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
@@ -49,7 +56,7 @@ $I->seeBreadcrumb('Edit Request');
 $I->see('McTest Ltd.', 'td');
 $I->see('Testing McTest', 'td');
 $I->see('123 Ficticious Lane', 'td');
-$I->see('test@testing.local', 'td');
+$I->see('test@testing.test', 'td');
 $I->see('Y', 'td');
 $I->see('12345678', 'td');
 

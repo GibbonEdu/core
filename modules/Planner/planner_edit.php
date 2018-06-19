@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -1376,6 +1374,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 							</td>
 							<td class="right">
+							<input type="checkbox" name="notify" value="on">
+							<label for="notify"><?php echo __('Notify all class participants') ?></label>
 								<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 							</td>
 						</tr>

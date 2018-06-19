@@ -17,17 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 $gibbonFinanceBudgetCycleID = $_POST['gibbonFinanceBudgetCycleID'];
 $gibbonFinanceBudgetID2 = $_POST['gibbonFinanceBudgetID2'];
@@ -115,7 +108,7 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                     }
                 }
 
-                $URL .= "&return=success0&editID=$AI";
+                $URL .= "&return=success0&editID=$gibbonFinanceExpenseID";
                 header("Location: {$URL}");
             }
         }

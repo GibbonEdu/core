@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Data;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * @covers UsernameGenerator
@@ -30,8 +31,8 @@ class UsernameGeneratorTest extends TestCase
 
     public function setUp()
     {
-        // Create a stub for the Gibbon\sqlConnection class
-        $mockPDO = $this->createMock(\Gibbon\sqlConnection::class);
+        // Create a stub for the Gibbon\Contracts\Database\Connection class
+        $mockPDO = $this->createMock(Connection::class);
 
         // Defines a predefined list of usernames that will pass/fail uniqueness check
         $uniqueUsernameMap = array(

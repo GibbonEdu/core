@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
@@ -185,6 +183,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     } else { //Current address is not in range
         $form->addRow()->addAlert(sprintf(__('Your current IP address (%1$s) is not included in the saved list.'), "<b>".$realIP."</b>"), 'warning')->setClass('standardWidth');
     }
+
+    $setting = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+
 
     $row = $form->addRow()->addHeading(__('Attendance CLI'));
 

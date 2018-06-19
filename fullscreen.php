@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Gibbon system-wide includes
 include './gibbon.php';
-
-@session_start();
 $_SESSION[$guid]['sidebarExtra'] = '';
 
 //Check to see if system settings are set from databases
@@ -50,6 +48,7 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     $themeJS = "<script type='text/javascript' src='./themes/Default/js/common.js'></script>";
     $_SESSION[$guid]['gibbonThemeID'] = '001';
     $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+    $_SESSION[$guid]['address'] = $_GET['q'];
     $_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
     $_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
     try {
@@ -62,7 +61,7 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
         }
         $resultTheme = $connection2->prepare($sqlTheme);
         $resultTheme->execute($dataTheme);
-        if (count($resultTheme) == 1) {
+        if ($resultTheme->rowCount() == 1) {
             $rowTheme = $resultTheme->fetch();
             $themeCSS = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css' />";
             if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
@@ -112,7 +111,6 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
 		</head>
 		<body style='background-image: none'>
 			<?php
-            $_SESSION[$guid]['address'] = $_GET['q'];
     if ($_SESSION[$guid]['address'] == '') {
         echo '<h1>';
         echo __($guid, 'There is no content to display');

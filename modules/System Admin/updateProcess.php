@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
 $partialFail = false;
@@ -36,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 } else {
     //Proceed!
     $type = $_GET['type'];
-    if ($type != 'regularRelease' and $type != 'cuttingEdge') {
+    if ($type != 'regularRelease' && $type != 'cuttingEdge' && $type != 'InnoDB') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } elseif ($type == 'regularRelease') { //Do regular release update
@@ -200,5 +193,34 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 header("Location: {$URL}");
             }
         }
+    } elseif ($type == 'InnoDB') { //Do InnoDB migration work
+        //Update DB line count
+        try {
+            $data = array();
+            $sql = 'SHOW TABLE STATUS';
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $URL .= '&return=error2';
+            header("Location: {$URL}");
+            exit();
+        }
+        while ($row = $result->fetch()) {
+            if ($row['Engine'] != 'InnoDB') {
+                try {
+                    $dataUpdate = array();
+                    $sqlUpdate = "ALTER TABLE ".$row['Name']." ENGINE=InnoDB;";
+                    $resultUpdate = $connection2->prepare($sqlUpdate);
+                    $resultUpdate->execute($dataUpdate);
+                } catch (PDOException $e) {
+                    $URL .= '&return=error2';
+                    header("Location: {$URL}");
+                    exit();
+                }
+            }
+        }
+
+        $URL .= '&return=success0';
+        header("Location: {$URL}");
     }
 }

@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 //Module includes
 include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
@@ -68,6 +61,10 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 header("Location: {$URL}");
                 exit();
             }
+
+            //Set log
+            $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+            setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Deleted', array('gibbonPersonIDStudent' => $gibbonPersonID));
 
             $URLDelete = $URLDelete.'&return=success0';
             header("Location: {$URLDelete}");

@@ -11,45 +11,36 @@ the Free Software Foundation, either version 3 of the License, or
 This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more detgibbonMessengerIDls.
+GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include "../../functions.php" ;
-include "../../config.php" ;
+include '../../gibbon.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start() ;
-
-$gibbonMessengerID=$_GET["gibbonMessengerID"] ;
+$gibbonMessengerID=$_POST["gibbonMessengerID"] ;
 $search=NULL ;
 if (isset($_GET["search"])) {
 	$search=$_GET["search"] ;
 }
-$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
+$URL=$_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_POST["address"]) . "/messenger_manage_edit.php&sidebar=true&search=$search&gibbonMessengerID=" . $gibbonMessengerID ;
 $time=time() ;
 
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
-	//FgibbonMessengerIDl 0
-	$URL.="&updateReturn=fgibbonMessengerIDl0" ;
+	$URL.="&updateReturn=fail0" ;
 	header("Location: {$URL}");
 }
 else {
 	if (empty($_POST)) {
-		//FgibbonMessengerIDl 5
-		$URL.="&updateReturn=fgibbonMessengerIDl5" ;
+		//fail 5
+		$URL.="&updateReturn=fail5" ;
 		header("Location: {$URL}");
 	}
 	else {
-		$highestAction=getHighestGroupedAction($guid, $_GET["address"], $connection2) ;
+		$highestAction=getHighestGroupedAction($guid, $_POST["address"], $connection2) ;
 		if ($highestAction==FALSE) {
-			//FgibbonMessengerIDl 0
-			$URL.="&updateReturn=fgibbonMessengerIDl0$params" ;
+			$URL.="&updateReturn=fail0$params" ;
 			header("Location: {$URL}");
 		}
 		else {
@@ -78,8 +69,8 @@ else {
 			$body=$_POST["body"] ;
 
 			if ($subject=="" OR $body=="") {
-				//FgibbonMessengerIDl 3
-				$URL.="&updateReturn=fgibbonMessengerIDl3" ;
+				//fail 3
+				$URL.="&updateReturn=fail3" ;
 				header("Location: {$URL}");
 			}
 			else {
@@ -91,14 +82,14 @@ else {
 					$resultUpdate->execute($dataUpdate);
 				}
 				catch(PDOException $e) {
-					//FgibbonMessengerIDl 2
-					$URL.="&updateReturn=fgibbonMessengerIDl2" ;
+					//fail 2
+					$URL.="&updateReturn=fail2" ;
 					header("Location: {$URL}");
 					exit() ;
 				}
 
 				//TARGETS
-				$partialFgibbonMessengerIDl=FALSE ;
+				$partialfail=FALSE ;
 
 				try {
 					$dataRemove=array("gibbonMessengerID"=>$gibbonMessengerID);
@@ -107,7 +98,7 @@ else {
 					$resultRemove->execute($dataRemove);
 				}
 				catch(PDOException $e) {
-					$partialFgibbonMessengerIDl=TRUE;
+					$partialfail=TRUE;
 				}
 
 				//Roles
@@ -124,7 +115,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -145,7 +136,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -171,7 +162,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -197,7 +188,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -223,7 +214,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -249,7 +240,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -275,7 +266,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -295,7 +286,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -315,7 +306,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -341,7 +332,7 @@ else {
                           $result->execute($data);
                         }
                         catch(PDOException $e) {
-                          $partialFgibbonMessengerIDl=TRUE;
+                          $partialfail=TRUE;
                         }
                       }
                     }
@@ -363,7 +354,7 @@ else {
                           $result->execute($data);
                         }
                         catch(PDOException $e) {
-                          $partialFgibbonMessengerIDl=TRUE;
+                          $partialfail=TRUE;
                         }
                       }
                     }
@@ -383,7 +374,7 @@ else {
 									$result->execute($data);
 								}
 								catch(PDOException $e) {
-									$partialFgibbonMessengerIDl=TRUE;
+									$partialfail=TRUE;
 								}
 							}
 						}
@@ -391,9 +382,9 @@ else {
 				}
 
 
-				if ($partialFgibbonMessengerIDl==TRUE) {
-					//FgibbonMessengerIDl 4
-					$URL.="&updateReturn=fgibbonMessengerIDl4" ;
+				if ($partialfail==TRUE) {
+					//fail 4
+					$URL.="&updateReturn=fail4" ;
 					header("Location: {$URL}");
 				}
 				else {

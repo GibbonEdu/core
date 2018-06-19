@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $gibbonPersonID = $_GET['gibbonPersonID'];
@@ -59,6 +52,9 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $row = $result->fetch();
+                $statusOld = $row['status'];
+
                 //Write to database
                 try {
                     $data = array('gibbonActivityID' => $gibbonActivityID, 'gibbonPersonID' => $gibbonPersonID, 'status' => $status);
@@ -69,6 +65,12 @@ if ($gibbonActivityID == '' or $gibbonPersonID == '') { echo 'Fatal error loadin
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
+                }
+
+                //Set log
+                if ($statusOld != $status) {
+                    $gibbonModuleID = getModuleIDFromName($connection2, 'Activities') ;
+                    setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], $gibbonModuleID, $_SESSION[$guid]['gibbonPersonID'], 'Activities - Student Status Changed', array('gibbonPersonIDStudent' => $gibbonPersonID, 'statusOld' => $statusOld, 'statusNew' => $status));
                 }
 
                 $URL .= '&return=success0';

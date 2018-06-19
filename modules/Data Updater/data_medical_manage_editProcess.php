@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonPersonMedicalUpdateID = $_GET['gibbonPersonMedicalUpdateID'];
 $gibbonPersonID = $_POST['gibbonPersonID'];
@@ -109,6 +102,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 if ($_POST['tetanusWithin10YearsOn'] == 'on') {
                     $data['tetanusWithin10Years'] = $_POST['tetanusWithin10Years'];
                     $sqlSet .= 'tetanusWithin10Years=:tetanusWithin10Years, ';
+                }
+            }
+            if (isset($_POST['commentOn'])) {
+                if ($_POST['commentOn'] == 'on') {
+                    $data['comment'] = $_POST['comment'];
+                    $sqlSet .= 'comment=:comment, ';
                 }
             }
 

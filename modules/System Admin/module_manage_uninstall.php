@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
             $manifestFile = $_SESSION[$guid]['absolutePath'].'/modules/'.$values['name'].'/manifest.php';
             if (file_exists($manifestFile)) {
                 include $manifestFile;
-            } else {
+            } else if (!$orphaned) {
                 $form->addRow()->addAlert(__('An error has occurred.').' '.__('Module error due to incorrect manifest file or folder name.'), 'error');
             }
 

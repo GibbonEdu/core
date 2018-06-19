@@ -19,8 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-
-@session_start();
+use Gibbon\Domain\Students\MedicalGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_add.php') == false) {
     //Acess denied
@@ -49,26 +48,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-            $sql = 'SELECT gibbonPersonMedical.*, surname, preferredName
-                FROM gibbonPersonMedical
-                    JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
-        if ($result->rowCount() != 1) {
+        $medicalGateway = $container->get(MedicalGateway::class);
+        $values = $medicalGateway->getMedicalFormByID($gibbonPersonMedicalID);
+
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_edit.php&search=$search&gibbonPersonMedicalID=$gibbonPersonMedicalID'>".__($guid, 'Back').'</a>';
@@ -89,14 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
                 $row->addLabel('personName', __('Student'));
                 $row->addTextField('personName')->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
 
-            $data = array();
-            $sql = 'SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name';
+            $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('name', __('Condition Name'));
-                $row->addSelect('name')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+                $row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
 
-            $data = array();
-            $sql = 'SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name';
             $row = $form->addRow();
                 $row->addLabel('gibbonAlertLevelID', __('Risk'));
                 $row->addSelectAlert('gibbonAlertLevelID')->isRequired();

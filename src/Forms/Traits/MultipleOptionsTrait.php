@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms\Traits;
 
+use Gibbon\Contracts\Database\Connection;
+
 /**
  * MultipleOptions
  *
@@ -82,12 +84,12 @@ trait MultipleOptionsTrait
 
     /**
      * Build an internal options array from an SQL query with required value and name fields
-     * @param   \Gibbon\sqlConnection  $pdo
-     * @param   string                 $sql
-     * @param   array                  $data
+     * @param   Connection  $pdo
+     * @param   string      $sql
+     * @param   array      $data
      * @return  self
      */
-    public function fromQuery(\Gibbon\sqlConnection $pdo, $sql, $data = array(), $groupBy = false)
+    public function fromQuery(Connection $pdo, $sql, $data = array(), $groupBy = false)
     {
         $results = $pdo->executeQuery($data, $sql);
 
@@ -114,9 +116,9 @@ trait MultipleOptionsTrait
                 $option = array_map('trim', $option);
 
                 if ($groupBy !== false) {
-                    $this->options[$option[$groupBy]][$option['value']] = $option['name'];
+                    $this->options[$option[$groupBy]][$option['value']] = __($option['name']);
                 } else {
-                    $this->options[$option['value']] = $option['name'];
+                    $this->options[$option['value']] = __($option['name']);
                 }
             }
         }
@@ -128,7 +130,7 @@ trait MultipleOptionsTrait
      * Gets the internal options collection.
      * @return  array
      */
-    protected function getOptions()
+    public function getOptions()
     {
         return $this->options;
     }
@@ -137,7 +139,7 @@ trait MultipleOptionsTrait
      * Recursivly count the total options in the collection.
      * @return  int
      */
-    protected function getOptionCount()
+    public function getOptionCount()
     {
         return count($this->options, COUNT_RECURSIVE);
     }

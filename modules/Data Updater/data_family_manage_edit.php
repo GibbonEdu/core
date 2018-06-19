@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -67,6 +65,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
             //Let's go!
 			$oldValues = $result->fetch(); 
 			$newValues = $newResult->fetch();
+            
+            // Provide a link back to edit the associated record
+            if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == true) {
+                echo "<div class='linkTop'>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=".$oldValues['gibbonFamilyID']."'>".__('Edit Family')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Family')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo '</div>';
+            }
 
 			$compare = array(
 				'nameAddress'           => __('Address Name'),

@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -141,6 +139,7 @@ if ($proceed == false) {
     $paypalAPIUsername = getSettingByScope($connection2, 'System', 'paypalAPIUsername');
     $paypalAPIPassword = getSettingByScope($connection2, 'System', 'paypalAPIPassword');
     $paypalAPISignature = getSettingByScope($connection2, 'System', 'paypalAPISignature');
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 
     if ($applicationFee > 0 and is_numeric($applicationFee)) {
         echo "<div class='warning'>";
@@ -292,7 +291,10 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email')->maxLength(50);
+        if ($uniqueEmailAddress == 'Y') {
+            $email->isUnique('./publicRegistrationCheck.php');
+        }
 
     for ($i = 1; $i < 3; ++$i) {
         $row = $form->addRow();
@@ -438,7 +440,7 @@ if ($proceed == false) {
 
             $row = $form->addRow();
                 $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
-                $row->addTextField('homeAddress')->isRequired()->maxLength(255);
+                $row->addTextArea('homeAddress')->isRequired()->maxLength(255)->setRows(2);
 
             $row = $form->addRow();
                 $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
@@ -614,12 +616,15 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $row->addEmail("parent{$i}email")->isRequired()->maxLength(50)->loadFrom($application);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50)->loadFrom($application);
+                if ($uniqueEmailAddress == 'Y') {
+                    $email->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'email'));
+                }
 
             for ($y = 1; $y < 3; ++$y) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
                     $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
-                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($y == 1)->loadFrom($application);
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1)->loadFrom($application);
             }
 
             // PARENT EMPLOYMENT
@@ -628,7 +633,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired()->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(30)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));

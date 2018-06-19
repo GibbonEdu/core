@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -236,7 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                                 $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
                                      ->setURL('index.php?q=/modules/Students/student_view_details.php')
                                      ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                                     ->addParam('subpage', 'School Attendance')
+                                     ->addParam('subpage', 'Attendance')
                                      ->wrap('<b>', '</b>');
                                 $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
                                 $cell->addSelect($count.'-type')

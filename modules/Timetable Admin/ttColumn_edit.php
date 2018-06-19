@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableColumnGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -39,6 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $ttColumnGateway = $container->get(TimetableColumnGateway::class);
+
     //Check if school year specified
     $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
     if ($gibbonTTColumnID == '') {
@@ -46,23 +49,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonTTColumnID' => $gibbonTTColumnID);
-            $sql = 'SELECT * FROM gibbonTTColumn WHERE gibbonTTColumnID=:gibbonTTColumnID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
-        if ($result->rowCount() != 1) {
+        $values = $ttColumnGateway->getTTColumnByID($gibbonTTColumnID);
+
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttColumn_editProcess.php');
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -88,77 +83,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             echo __($guid, 'Edit Column Rows');
             echo '</h2>';
 
-            try {
-                $data = array('gibbonTTColumnID' => $gibbonTTColumnID);
-                $sql = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID ORDER BY timeStart, name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $rows = $ttColumnGateway->selectTTColumnRowsByID($gibbonTTColumnID);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttColumn_edit_row_add.php&gibbonTTColumnID=$gibbonTTColumnID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            // DATA TABLE
+            $table = DataTable::create('timetableColumnRows');
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Short Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Time');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Type');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Timetable Admin/ttColumn_edit_row_add.php')
+                ->addParam('gibbonTTColumnID', $gibbonTTColumnID)
+                ->displayLabel();
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('nameShort', __('Short Name'));
+            $table->addColumn('time', __('Time'))->format(Format::using('timeRange', ['timeStart', 'timeEnd']));
+            $table->addColumn('type', __('Type'));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo $row['name'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['nameShort'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo substr($row['timeStart'], 0, -3).' - '.substr($row['timeEnd'], 0, -3);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['type'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_edit.php&gibbonTTColumnRowID='.$row['gibbonTTColumnRowID']."&gibbonTTColumnID=$gibbonTTColumnID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit_row_delete.php&gibbonTTColumnRowID='.$row['gibbonTTColumnRowID']."&gibbonTTColumnID=$gibbonTTColumnID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonTTColumnID', $gibbonTTColumnID)
+                ->addParam('gibbonTTColumnRowID')
+                ->format(function ($values, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Timetable Admin/ttColumn_edit_row_edit.php');
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Timetable Admin/ttColumn_edit_row_delete.php');
+                });
+
+            echo $table->render($rows->toDataSet());
         }
     }
 }
-?>

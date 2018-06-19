@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -109,6 +107,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
     } else {
         //Produce array of roll groups
         $classes = $result->fetchAll();
+
+        echo "<div class='linkTop'>";
+        echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo '</div>';
 
         echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
         echo "<tr class='head'>";

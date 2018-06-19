@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\UsernameFormatGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.php') == false) {
     //Acess denied
@@ -44,52 +45,27 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/userSettings_usernameFormat_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
-    $sql = "SELECT gibbonUsernameFormatID, format, isDefault, GROUP_CONCAT(DISTINCT gibbonRole.name SEPARATOR '<br>') as roles FROM gibbonUsernameFormat JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonUsernameFormat.gibbonRoleIDList)) GROUP BY gibbonUsernameFormatID ORDER BY isDefault";
-    $result = $pdo->executeQuery(array(), $sql);
+    $gateway = $container->get(UsernameFormatGateway::class);
+    $usernameFormats = $gateway->selectUsernameFormats();
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo '<table class="fullWidth colorOddEven" cellspacing="0">';
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Roles');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Format');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Is Default?');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $table = DataTable::create('usernameFormats');
 
-        while ($usernameFormat = $result->fetch()) {
-            echo "<tr>";
-            echo '<td>';
-            echo $usernameFormat['roles'];
-            echo '</td>';
-            echo '<td>';
-            echo $usernameFormat['format'];
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $usernameFormat['isDefault']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_edit.php&gibbonUsernameFormatID='.$usernameFormat['gibbonUsernameFormatID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            if ($usernameFormat['isDefault'] == 'N') {
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/userSettings_usernameFormat_delete.php&gibbonUsernameFormatID='.$usernameFormat['gibbonUsernameFormatID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+    $table->addColumn('roles', __('Roles'));
+    $table->addColumn('format', __('Format'));
+    $table->addColumn('isDefault', __('Is Default?'))->format(Format::using('yesNo', 'isDefault'));
+
+    $table->addActionColumn()
+        ->addParam('gibbonUsernameFormatID')
+        ->format(function ($row, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/User Admin/userSettings_usernameFormat_edit.php');
+            if ($row['isDefault'] == 'N') {
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/User Admin/userSettings_usernameFormat_delete.php');
             }
-            echo '</td>';
-            echo '</tr>';
-        }
-
-        echo '</table>';
-    }
+        });
+    
+    echo $table->render($usernameFormats->toDataSet());
 
     echo '<br/>';
 

@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/User Admin/moduleFunctions.php';
 
@@ -67,6 +65,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             //Let's go!
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
+
+            // Provide a link back to edit the associated record
+            echo "<div class='linkTop'>";
+            if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == true) {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=".$oldValues['gibbonPersonID']."'>".__('Edit User')."<img style='margin: 0 0 -4px 5px' title='".__('Edit User')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            }
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php') == true && getRoleCategory($oldValues['gibbonRoleIDPrimary'], $connection2) == 'Student') {
+                echo "&nbsp;&nbsp;&nbsp;<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$oldValues['gibbonPersonID']."'>".__('View Student')."<img style='margin: 0 0 -4px 5px' title='".__('View Student')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            }
+            echo '</div>';
 
             //Get categories
             $staff = false;
@@ -164,10 +172,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $oldValue = isset($oldValues[$fieldName])? $oldValues[$fieldName] : '';
                 $newValue = isset($newValues[$fieldName])? $newValues[$fieldName] : '';
                 $isMatching = ($oldValue != $newValue);
+                $isNonUnique = false;
 
                 if ($fieldName == 'dob' || $fieldName == 'visaExpiryDate') {
                     $oldValue = dateConvertBack($guid, $oldValue);
                     $newValue = dateConvertBack($guid, $newValue);
+                }
+
+                if ($fieldName == 'email') {
+                    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+                    if ($uniqueEmailAddress == 'Y') {
+                        $data = array('gibbonPersonID' => $oldValues['gibbonPersonID'], 'email' => $newValues['email']);
+                        $sql = "SELECT COUNT(*) FROM gibbonPerson WHERE email=:email AND gibbonPersonID<>:gibbonPersonID";
+                        $result = $pdo->executeQuery($data, $sql);
+                        $isNonUnique = ($result && $result->rowCount() == 1)? $result->fetchColumn(0) > 0 : false;
+                    }
                 }
 
                 $row = $form->addRow();
@@ -175,7 +194,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 $row->addContent($oldValue);
                 $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
                 
-                if ($isMatching) {
+                if ($isNonUnique) {
+                    $row->addContent(__('Must be unique.'));
+                } else if ($isMatching) {
                     $row->addCheckbox('new'.$fieldName.'On')->checked(true)->setClass('textCenter');
                     $form->addHiddenValue('new'.$fieldName, $newValues[$fieldName]);
                 } else {

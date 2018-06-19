@@ -10,6 +10,7 @@ file that was distributed with this source code.
 namespace Gibbon;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * @covers FileUploader
@@ -30,8 +31,8 @@ class FileUploaderTest extends TestCase
         $mockResults->method('fetchAll')
                     ->willReturn(array(0 => 'foo', 1 => 'bar', 2 => 'baz'));
 
-        // Create a stub for the Gibbon\sqlConnection class using mock results
-        $this->mockPDO = $this->createMock(sqlConnection::class);
+        // Create a stub for the Gibbon\Contracts\Database\Connection class using mock results
+        $this->mockPDO = $this->createMock(Connection::class);
         $this->mockPDO->method('executeQuery')
                       ->willReturn($mockResults);
 
@@ -169,7 +170,7 @@ class FileUploaderTest extends TestCase
         $mockResults->method('rowCount')->willReturn(6);
         $mockResults->method('fetchAll')->willReturn(array('foo','php','bar','js','baz','py'));
 
-        $mockPDO = $this->createMock(sqlConnection::class);
+        $mockPDO = $this->createMock(Connection::class);
         $mockPDO->method('executeQuery')
                 ->willReturn($mockResults);
 

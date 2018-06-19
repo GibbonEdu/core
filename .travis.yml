@@ -42,8 +42,7 @@ cache:
 # Disable x-debug to speed up things
 before_install:
   - phpenv config-rm xdebug.ini
-  - touch composer.json; printf '{}' > composer.json;
-
+  
 # Install packages those will be required during build
 install:
   - travis_retry composer self-update

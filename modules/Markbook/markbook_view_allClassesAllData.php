@@ -365,8 +365,9 @@
 
             $info .= '</ul>';
 
-            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='text-align: center; padding: 0px !important'>";
-            echo "<div class='dragtable-drag-handle'></div>";
+            echo "<th class='marksColumn notdraggable' data-header='".$column->gibbonMarkbookColumnID."' style='padding: 0px 0px 30px 0px !important; text-align: center;vertical-align: top;'>";
+
+            echo ($canEditThisClass) ? "<div class='dragtable-drag-handle'></div>" :  "<br/>";
 
             echo "<span title='".htmlPrep( $info )."'>".$column->getData('name').'</span><br/>';
             echo "<span class='details'>";
@@ -384,8 +385,8 @@
 
 
             echo '</span>';
-            echo '<div class="columnActions">';
             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
+                echo '<div class="columnActions">';
                 echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
 
                 echo "<a class='miniIcon' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$column->gibbonMarkbookColumnID."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/> ";
@@ -753,7 +754,7 @@
                             echo "<td class='largeColumn'>";
                             $style = '';
                             if ($rowEntry['comment'] != '') {
-                                if (strlen($rowEntry['comment']) < 11) {
+                                if (mb_strlen($rowEntry['comment']) < 11) {
                                     echo htmlPrep($rowEntry['comment']);
                                 } else {
                                     echo "<span $style title='".htmlPrep($rowEntry['comment'])."'>".mb_substr($rowEntry['comment'], 0, 10).'...</span>';
@@ -770,13 +771,24 @@
                         }
                         echo '</td>';
                     } else {
-                        echo "<td>";
-
+                        $editLink = '';
                         if (isActionAccessible($guid, $connection2, "/modules/Markbook/markbook_edit.php") && $canEditThisClass) {
-                            print "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
+                            $editLink = "<a class='markbookQuickEdit' href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . $_SESSION[$guid]["module"] . "/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=" . $column->gibbonMarkbookColumnID . "#".$rowStudents["gibbonPersonID"]."'><img style='margin-top: 3px' title='" . __("Add") . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/page_new_mini.png'/></a> " ;
                         }
 
-                        echo "</td>";
+                        if ($column->displayAttainment()) {
+                            echo '<td class="medColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayEffort()) {
+                            echo '<td class="medColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayComment()) {
+                            echo '<td class="largeColumn">'.$editLink.'</td>';
+                        }
+                        if ($column->displayUploadedResponse()) {
+                            echo '<td class="smallColumn"></td>';
+                        }
+                            
                     }
 
                     if ($column->displaySubmission()) {

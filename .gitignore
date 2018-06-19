@@ -7,3 +7,4 @@ Thumb.db
 .DS_Store
 tests/log/*
 nbproject/
+/i18n/*.po

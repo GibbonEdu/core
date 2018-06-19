@@ -17,11 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -99,114 +99,52 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     echo __($guid, 'Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.');
     echo '</p>';
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $individualNeedsGateway = $container->get(INGateway::class);
 
-    try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sqlWhere = 'AND ';
-        if ($gibbonINDescriptorID != '') {
-            $data['gibbonINDescriptorID'] = $gibbonINDescriptorID;
-            $sqlWhere .= 'gibbonINPersonDescriptor.gibbonINDescriptorID=:gibbonINDescriptorID AND ';
-        }
-        if ($gibbonAlertLevelID != '') {
-            $data['gibbonAlertLevelID'] = $gibbonAlertLevelID;
-            $sqlWhere .= 'gibbonINPersonDescriptor.gibbonAlertLevelID=:gibbonAlertLevelID AND ';
-        }
-        if ($gibbonRollGroupID != '') {
-            $data['gibbonRollGroupID'] = $gibbonRollGroupID;
-            $sqlWhere .= 'gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID AND ';
-        }
-        if ($gibbonYearGroupID != '') {
-            $data['gibbonYearGroupID'] = $gibbonYearGroupID;
-            $sqlWhere .= 'gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID AND ';
-        }
-        if ($sqlWhere == 'AND ') {
-            $sqlWhere = '';
-        } else {
-            $sqlWhere = substr($sqlWhere, 0, -5);
-        }
-        $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, dateStart, dateEnd FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) JOIN gibbonINPersonDescriptor ON (gibbonINPersonDescriptor.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' $sqlWhere ORDER BY rollGroup, surname, preferredName";
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $criteria = $individualNeedsGateway->newQueryCriteria()
+        ->sortBy(['surname', 'preferredName'])
+        ->filterBy('descriptor', $gibbonINDescriptorID)
+        ->filterBy('alert', $gibbonAlertLevelID)
+        ->filterBy('rollGroup', $gibbonRollGroupID)
+        ->filterBy('yearGroup', $gibbonYearGroupID)
+        ->fromArray($_POST);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-        }
+    $individualNeeds = $individualNeedsGateway->queryINBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Year Group');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Roll Group');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    // DATA TABLE
+    $table = DataTable::createPaginated('inSummary', $criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+    $table->modifyRows(function($student, $row) {
+        if ($student['status'] != 'Full') $row->addClass('error');
+        if (!($student['dateStart'] == '' || $student['dateStart'] <= date('Y-m-d'))) $row->addClass('error');
+        if (!($student['dateEnd'] == '' || $student['dateEnd'] >= date('Y-m-d'))) $row->addClass('error');
+        return $row;
+    });
 
-			//Color rows based on start and end date
-			if (!($row['dateStart'] == '' or $row['dateStart'] <= date('Y-m-d')) and ($row['dateEnd'] == '' or $row['dateEnd'] >= date('Y-m-d'))) {
-				$rowNum = 'error';
-			}
+    $table->addMetaData('filterOptions', [
+        'alert:003'    => __('Alert Level').': '.__('Low'),
+        'alert:002' => __('Alert Level').': '.__('Medium'),
+        'alert:001'   => __('Alert Level').': '.__('High'),
+    ]);
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['yearGroup']);
-            echo '</td>';
-            echo '<td>';
-            echo $row['rollGroup'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/in_edit.php&gibbonPersonID='.$row['gibbonPersonID']."&source=summary&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'><img title='Edit Individual Needs Details' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+    // COLUMNS
+    $table->addColumn('student', __('Student'))
+        ->sortable(['surname', 'preferredName'])
+        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+    $table->addColumn('yearGroup', __('Year Group'));
+    $table->addColumn('rollGroup', __('Roll Group'));
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID");
-        }
-    }
+    $table->addActionColumn()
+        ->addParam('gibbonPersonID')
+        ->addParam('gibbonINDescriptorID', $gibbonINDescriptorID)
+        ->addParam('gibbonAlertLevelID', $gibbonAlertLevelID)
+        ->addParam('gibbonRollGroupID', $gibbonRollGroupID)
+        ->addParam('gibbonYearGroupID', $gibbonYearGroupID)
+        ->addParam('source', 'summary')
+        ->format(function ($row, $actions) {
+            $actions->addAction('edit', __('Edit Individual Needs Details'))
+                    ->setURL('/modules/Individual Needs/in_edit.php');
+        });
+
+    echo $table->render($individualNeeds);
 }
-?>

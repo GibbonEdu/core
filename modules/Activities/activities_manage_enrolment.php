@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -91,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             }
 
             $form = Form::create('activityEnrolment', $_SESSION[$guid]['absoluteURL'].'/index.php');
-            
+
             $row = $form->addRow();
                 $row->addLabel('nameLabel', __('Name'));
                 $row->addTextField('name')->readOnly()->setValue($values['name']);
@@ -111,23 +109,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
                 }, explode(',', $values['gibbonSchoolYearTermIDList'])));
                 $termList = (!empty($termList)) ? implode(', ', $termList) : '-';
-                                            
+
                 $row = $form->addRow();
                 $row->addLabel('termsLabel', __('Terms'));
                 $row->addTextField('terms')->readOnly()->setValue($termList);
             }
             echo $form->getOutput();
-            
+
 
             $enrolment = getSettingByScope($connection2, 'Activities', 'enrolmentType');
             try {
-                if ($enrolment == 'Competitive') {
-                    $data = array('gibbonActivityID' => $gibbonActivityID);
-                    $sql = "SELECT gibbonActivityStudent.*, surname, preferredName FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Pending' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY gibbonActivityStudent.status, timestamp";
-                } else {
-                    $data = array('gibbonActivityID' => $gibbonActivityID);
-                    $sql = "SELECT gibbonActivityStudent.*, surname, preferredName FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY gibbonActivityStudent.status, timestamp";
-                }
+                $data = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'), 'statusCheck' => ($enrolment == 'Competitive'? 'Pending' : 'Waiting List'));
+                $sql = "SELECT gibbonActivityStudent.*, surname, preferredName, gibbonRollGroup.nameShort as rollGroupNameShort
+                        FROM gibbonActivityStudent
+                        JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                        LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current'))
+                        LEFT JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+                        WHERE gibbonActivityID=:gibbonActivityID
+                        AND NOT gibbonActivityStudent.status=:statusCheck
+                        AND gibbonPerson.status='Full'
+                        AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
+                        ORDER BY gibbonActivityStudent.status, timestamp";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -149,6 +151,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __($guid, 'Student');
                 echo '</th>';
                 echo '<th>';
+                echo __($guid, 'Roll Group');
+                echo '</th>';
+                echo '<th>';
                 echo __($guid, 'Status');
                 echo '</th>';
                 echo '<th>';
@@ -158,6 +163,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                 echo __($guid, 'Actions');
                 echo '</th>';
                 echo '</tr>';
+
+                $canViewStudentDetails = isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php');
 
                 $count = 0;
                 $rowNum = 'odd';
@@ -172,7 +179,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student', true);
+                    if ($canViewStudentDetails) {
+                        echo sprintf('<a href="%2$s">%1$s</a>', $studentName, $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$values['gibbonPersonID'].'&subpage=Activities');
+                    } else {
+                        echo $studentName;
+                    }
+                    echo '</td>';
+                    echo '<td>';
+                    echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
                     echo $values['status'];

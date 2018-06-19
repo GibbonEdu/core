@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -40,11 +38,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     }
 
     //Check if params are specified
-    $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
+    $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
     $status = '';
-    $status2 = $_GET['status2'];
-    $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
+    $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
+    $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');

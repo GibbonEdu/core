@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -79,6 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $row = $form->addRow();
         $row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
         $row->addYesNo('tetanusWithin10Years')->placeholder();
+
+    $row = $form->addRow();
+        $row->addLabel('comment', __('Comment'));
+        $row->addTextArea('comment')->setRows(6);
 
     $row = $form->addRow();
         $row->addFooter();

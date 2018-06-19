@@ -12,7 +12,7 @@ $I->seeInFormFields('#content form', $originalFormValues);
 // Make Changes ------------------------------------------------
 
 $newFormValues = array(
-    'email'                         => 'test@testing.com',
+    'email'                         => 'test@testing.test',
     'financeOnlinePaymentEnabled'   => 'Y',
     'financeOnlinePaymentThreshold' => '100.00',
     'invoiceText'                   => 'Invoice Test',

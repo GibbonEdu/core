@@ -35,12 +35,14 @@ $I->click('Submit');
 // Update ------------------------------------------------
 $I->see('Update Data');
 
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+
 $editFormValues = array(
     'title'                     => 'Ms.',
-    'surname'                   => 'McTest',
-    'firstName'                 => 'Test',
-    'preferredName'             => 'Test',
-    'officialName'              => 'Test E. McTest',
+    'surname'                   => 'TestUser',
+    'firstName'                 => 'Student',
+    'preferredName'             => 'Student',
+    'officialName'              => 'Student A. TestUser',
     'nameInCharacters'          => 'TM',
     'dob'                       => '30/01/2001',
 
@@ -88,8 +90,12 @@ $editFormValues = array(
 
 $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
-// // Confirm ------------------------------------------------
+// Confirm ------------------------------------------------
 $I->seeSuccessMessage();
+
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+
+$I->amOnModulePage('Data Updater', 'data_personal.php', ['gibbonPersonID' => $gibbonPersonID]);
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
 $gibbonPersonUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");
@@ -97,12 +103,12 @@ $gibbonPersonUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']
 $I->click('Logout', 'a');
 $I->loginAsAdmin();
 
-// // Accept ------------------------------------------------
+// Accept ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_personal_manage_edit.php', array('gibbonPersonUpdateID' => $gibbonPersonUpdateID));
 $I->seeBreadcrumb('Edit Request');
 
-$I->see('McTest', 'td');
-$I->see('Test E. McTest', 'td');
+$I->see('TestUser', 'td');
+$I->see('Student A. TestUser', 'td');
 
 $I->click('Submit');
 $I->seeSuccessMessage();

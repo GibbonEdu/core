@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -39,7 +37,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
 
     if (isset($_GET['redirect']) && $_GET['redirect'] == 'true') {
         echo '<div class=\'warning\'>';
@@ -72,8 +69,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
             } catch (PDOException $e) {
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
-
-
 
             if ($result->rowCount() > 0) { //Records! Output current status
                 $row = $result->fetch();

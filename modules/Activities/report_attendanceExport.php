@@ -17,24 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Increase max execution time, as this stuff gets big
 ini_set('max_execution_time', 600);
 
 //System includes
-include '../../config.php';
-include '../../functions.php';
+include '../../gibbon.php';
 include '../../version.php';
-
-//New PDO DB connection
-try {
-    $connection2 = new PDO("mysql:host=$databaseServer;dbname=$databaseName;charset=utf8", $databaseUsername, $databasePassword);
-    $connection2->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $connection2->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo $e->getMessage();
-}
 
 //Module includes
 include './moduleFunctions.php';

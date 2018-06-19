@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -60,71 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
         echo __($guid, 'Report Data');
         echo '</h2>';
 
-        try {
-            $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
-            $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID, surname, preferredName, name FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE status='Full' AND gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID ORDER BY surname, preferredName";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
+        $courseGateway = $container->get(CourseEnrolmentGateway::class);
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Roll Group');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Student');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Class Count');
-        echo '</th>';
-        echo '</tr>';
+        $enrolment = $courseGateway->selectCourseEnrolmentByRollGroup($gibbonRollGroupID);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+        // DATA TABLE
+        $table = DataTable::create('courseEnrolment');
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID=".$row['gibbonPersonID']."'>".formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataCount = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlCount = "SELECT * FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND role='Student' AND gibbonSchoolYearID=:gibbonSchoolYearID";
-                $resultCount = $connection2->prepare($sqlCount);
-                $resultCount->execute($dataCount);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultCount->rowCount() >= 0) {
-                echo $resultCount->rowCount();
-            } else {
-                echo '<i>'.__($guid, 'NA').'</i>';
-            }
-            echo '</td>';
-            echo '</tr>';
-        }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=3>';
-            echo __($guid, 'There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+        $table->addColumn('rollGroup', __('Roll Group'));
+        $table->addColumn('student', __('Student'))
+            ->sortable(['surname', 'preferredName'])
+            ->format(function($person) use ($guid) {
+                return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_view.php&gibbonPersonID='.$person['gibbonPersonID'], Format::name('', $person['preferredName'], $person['surname'], 'Student', true) );
+            });
+        $table->addColumn('classCount', __('Class Count'));
+
+        echo $table->render($enrolment->toDataSet());
     }
 }
-?>

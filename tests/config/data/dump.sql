@@ -6,6 +6,8 @@
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Ms. ', 'TestUser', 'Admin', 'Admin', 'Admin TestUser', 'testingadmin', '', '015261d879c7fc2789d19b9193d189364baac34a98561fa205cd5f37b313cdb0', '/aBcEHKLnNpPrsStTUyz47', 'N', 'Full', 'Y', 001, '001,002,003,004,006') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();
 
+INSERT INTO `gibbonStaff` (`gibbonPersonID`, `type`, `jobTitle`, `smartWorkflowHelp`) VALUES ((SELECT `gibbonPersonID` FROM `gibbonPerson` WHERE `username`='testingadmin' LIMIT 1), 'Support', 'Test Admin', 'Y') ON DUPLICATE KEY UPDATE `jobTitle`='Test Admin';
+
 --- User: testingteacher     m86GVNLH7DbV
 INSERT INTO `gibbonPerson` (`title`, `surname`, `firstName`, `preferredName`, `officialName`, `username`, `password`, `passwordStrong`, `passwordStrongSalt`, `passwordForceReset`, `status`, `canLogin`, `gibbonRoleIDPrimary`, `gibbonRoleIDAll`) VALUES
 ('Mr. ', 'TestUser', 'Teacher', 'Teacher', 'Teacher TestUser Admin', 'testingteacher', '', '3ea8c6a760d223038a96c900994410950057390a0e4a48a39e760d50cab68040', '.aBdegGhlNoqRxzZ012369', 'N', 'Full', 'Y', 002, '002') ON DUPLICATE KEY UPDATE lastTimestamp=NOW();

@@ -35,9 +35,7 @@ class Element implements OutputableInterface
     protected $content;
     protected $appended;
     protected $prepended;
-    protected $before;
-    protected $after;
-
+    
     /**
      * Create a generic form element that only holds content.
      * @param  string  $content
@@ -45,6 +43,14 @@ class Element implements OutputableInterface
     public function __construct($content = '')
     {
         $this->content = $content;
+    }
+
+    public function __call($name, $arguments) 
+    {
+        if (!method_exists($this, $name)) {
+            trigger_error(sprintf('Undefined Method: Trying to call %1$s on %2$s. This is most likely caused by an incorrect or missing FormFactory.', $name, __CLASS__), E_USER_WARNING);
+        }
+        return $this;
     }
 
     /**
@@ -65,8 +71,18 @@ class Element implements OutputableInterface
      */
     public function prepend($value)
     {
-        $this->prepended .= $value;
+        $this->prepended = $value . $this->prepended;
         return $this;
+    }
+
+    /**
+     * Get the currently prepended string.
+     *
+     * @return string
+     */
+    public function getPrepended()
+    {
+        return $this->prepended;
     }
 
     /**
@@ -81,16 +97,23 @@ class Element implements OutputableInterface
     }
 
     /**
+     * Get the currently appended string.
+     *
+     * @return string
+     */
+    public function getAppended()
+    {
+        return $this->appended;
+    }
+
+    /**
      * Add strings before and after to wrap the current content.
      * @param  string  $value
      * @return self
      */
     public function wrap($before, $after)
     {
-        $this->before = $before . $this->before;
-        $this->after = $this->after . $after;
-
-        return $this;
+        return $this->prepend($before)->append($after);
     }
 
     /**
@@ -99,7 +122,7 @@ class Element implements OutputableInterface
      */
     public function getOutput()
     {
-        return $this->before.$this->prepended.$this->getElement().$this->appended.$this->after;
+        return $this->prepended.$this->getElement().$this->appended;
     }
 
     /**

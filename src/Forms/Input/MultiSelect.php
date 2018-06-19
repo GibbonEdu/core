@@ -21,6 +21,7 @@ namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\OutputableInterface;
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Forms\ValidatableInterface;
 
 /**
  * Multi Select
@@ -28,7 +29,7 @@ use Gibbon\Forms\FormFactoryInterface;
  * @version v14
  * @since   v14
  */
-class MultiSelect implements OutputableInterface
+class MultiSelect implements OutputableInterface, ValidatableInterface
 {
 
     protected $name;
@@ -49,7 +50,7 @@ class MultiSelect implements OutputableInterface
             ->setSize(8)
             ->setClass('mediumWidth')
             ->addClass("floatNone");
-        $this->destinationSelect = $factory->createSelect($name . "Destination")
+        $this->destinationSelect = $factory->createSelect($name)
             ->selectMultiple(true)
             ->setSize(8)
             ->setClass('mediumWidth');
@@ -72,6 +73,11 @@ class MultiSelect implements OutputableInterface
             ->addClass("floatNone");
     }
 
+    public function getID()
+    {
+        return $this->name;
+    }
+
     public function addSortableAttribute($attribute, $values)
     {
         $this->sortableAttributes[$attribute] = $values;
@@ -83,6 +89,26 @@ class MultiSelect implements OutputableInterface
         $this->sourceSelect->setSize($size);
         $this->destinationSelect->setSize($size);
         return $this;
+    }
+
+    /**
+     * Set the multi-select to required.
+     * @param   bool    $value
+     * @return  self
+     */
+    public function isRequired($required = true)
+    {
+        $this->destinationSelect->setRequired($required);
+        return $this;
+    }
+
+    /**
+     * Gets the multi-select's required state.
+     * @return  bool
+     */
+    public function getRequired()
+    {
+        return $this->destinationSelect->getRequired();
     }
 
     public function source() {
@@ -101,8 +127,8 @@ class MultiSelect implements OutputableInterface
         $output .= '<script type="text/javascript">';
         $output .= 'var '.$this->name.'sortBy = null;';
         $output .= 'function optionTransfer(name, add) {
-            var select0 = $(\'#\'+name+(add ? \'Source\' : \'Destination\'));
-            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'Destination\'));
+            var select0 = $(\'#\'+name+(add ? \'Source\' : \'\'));
+            var select1 = $(\'#\'+name+(!add ? \'Source\' : \'\'));
 
             select0.find(\'option:selected\').each(function(){
                 select1.append($(this).clone());
@@ -110,6 +136,8 @@ class MultiSelect implements OutputableInterface
             });
 
             sortSelects(name);
+
+            select1.change().focus();
         }' . "\n";
 
         $output .= 'function sortSelect(list, sortValues) {
@@ -133,15 +161,11 @@ class MultiSelect implements OutputableInterface
                 var destinationSelect = $(\'#'.$this->destinationSelect->getID().'\');
                 var form = destinationSelect.parents(\'form\');
 
-                form.submit(function(){
-                    var options = $(\'option\', destinationSelect);
-
-                    for (var i = 0; i < options.length; i++) {
-                        $(\'<input>\').attr({
-                            type: \'hidden\',
-                            name: \'' . $this->name . '[]\'
-                        }).val(options[i].value).appendTo(form);
-                    }
+                // Select all options on submit so we can validate this select input.
+                $("input[type=\'Submit\']", form).click(function() {
+                    $(\'option\', destinationSelect).each(function() {
+                        $(this).prop("selected", true);
+                    });
                 });
 
                 $(\'#'. $this->sortBySelect->getID() .'\').change(function(){
@@ -170,13 +194,13 @@ class MultiSelect implements OutputableInterface
                 }
 
                 sortSelect($(\'#\' + name + "Source"), values);
-                sortSelect($(\'#\' + name + "Destination"), values);
+                sortSelect($(\'#\' + name), values);
             }
 
         ';
         $output .= '</script>';
 
-        $output .= '<table id="'.$this->name.'" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
+        $output .= '<table id="'.$this->name.'Container" class="blank fullWidth" data-sortable="'.htmlentities(json_encode($this->sortableAttributes)).'"><tr>';
 
         $output .= '<td style="width:35%; vertical-align:top;">';
             $output .= $this->sourceSelect->getOutput();
@@ -198,6 +222,25 @@ class MultiSelect implements OutputableInterface
         $output .= '</tr></table>';
 
         return $output;
+    }
+
+    /**
+     * Add a LiveValidation setting to the right-hand select by type (eg: Validate.Presence)
+     * @param  string  $type
+     * @param  string  $params
+     */
+    public function addValidation($type, $params = '')
+    {
+        return $this->destinationSelect->addValidation($type, $params);
+    }
+
+    /**
+     * Get the combined validation output from the right-hand select.
+     * @return  string
+     */
+    public function getValidationOutput()
+    {
+        return $this->destinationSelect->getValidationOutput();
     }
 
     public function getClass() {

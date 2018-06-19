@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -58,6 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
         $row->addSequenceNumber('sequenceNumber', 'gibbonYearGroup')->isRequired()->maxLength(3);
 
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonIDHOY', __('Head of Year'));
+        $row->addSelectStaff('gibbonPersonIDHOY')->placeholder();
+        
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();

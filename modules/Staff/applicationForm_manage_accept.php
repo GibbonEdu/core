@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Data\UsernameGenerator;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
@@ -103,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     ->setClass('');
 
                 $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
-                $list = $col->addContent()->wrap('<ol>', '</ol>');
+                $list = $col->addContent();
 
                 if (empty($values['gibbonPersonID'])) {
                     $list->append('<li>'.__('Create a Gibbon user account for the applicant.').'</li>')
@@ -114,10 +112,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                          ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
                 }
 
+                $list->wrap('<ol>', '</ol>');
+
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
-                $col->addContent()->wrap('<ol>', '</ol>')
+                $col->addContent()
                     ->append('<li>'.__('Adjust the user\'s roles within the system.').'</li>')
-                    ->append('<li>'.__('Create a timetable for the applicant.').'</li>');
+                    ->append('<li>'.__('Create a timetable for the applicant.').'</li>')
+                    ->wrap('<ol>', '</ol>');
 
                 $form->addRow()->addSubmit(__('Accept'));
 

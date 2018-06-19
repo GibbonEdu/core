@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
-use Gibbon\sqlConnection;
-use Gibbon\session;
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Session;
 
 /**
  * File Upload Class
@@ -35,7 +35,7 @@ class FileUploader
     const FILE_SUFFIX_ALPHANUMERIC = 2;
 
     /**
-     * Gibbon/sqlConnection
+     * Gibbon\Contracts\Database\Connection
      */
     protected $pdo ;
 
@@ -71,10 +71,10 @@ class FileUploader
     /**
      * @version  v14
      * @since    v14
-     * @param    sqlConnection  $pdo
-     * @param    session        $session
+     * @param    Connection  $pdo
+     * @param    session     $session
      */
-    public function __construct(sqlConnection $pdo, session $session)
+    public function __construct(Connection $pdo, Session $session)
     {
         $this->pdo = $pdo;
         $this->session = $session;
@@ -179,7 +179,7 @@ class FileUploader
 
         // Optionally replace the filename, keeping the previous extension
         if (!empty($filenameChange)) {
-            $filename = $filenameChange.strrchr($filename, '.');
+            $filename = $filenameChange.mb_strrchr($filename, '.');
         }
 
         return $this->upload($filename, $sourcePath);
@@ -216,7 +216,7 @@ class FileUploader
 
         $extension = mb_substr(mb_strrchr(strtolower($filename), '.'), 1);
 
-        $name = mb_substr($filename, 0, mb_strpos($filename, '.'));
+        $name = mb_substr($filename, 0, mb_strrpos($filename, '.'));
         $name = preg_replace('/[^a-zA-Z0-9_-]/', '', $name);
 
         for ($count = 0; $count < 100; $count++) {

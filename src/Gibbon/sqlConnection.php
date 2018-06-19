@@ -19,13 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon ;
 
+use Gibbon\Contracts\Database\Connection as ConnectionInterface;
+
 /**
+ * @deprecated v16
  * Database Connection Class
  *
  * @version	v13
  * @since	v12
  */
-class sqlConnection
+class sqlConnection implements ConnectionInterface
 {
     /**
      * PDO Object
@@ -172,6 +175,41 @@ class sqlConnection
         }
 
         return $this->result ;
+    }
+
+    public function selectOne($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function select($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function insert($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function update($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function delete($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function statement($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
+    }
+
+    public function affectingStatement($query, $bindings = [])
+    {
+        return $this->executeQuery($bindings, $query);
     }
 
     /**

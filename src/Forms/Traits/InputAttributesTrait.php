@@ -88,6 +88,8 @@ trait InputAttributesTrait
                 $this->setAttribute('value', $value);
             }
         }
+
+        return $this;
     }
 
     /**
@@ -102,7 +104,7 @@ trait InputAttributesTrait
             $data[$name] = array_map(function($item) { return trim($item); }, explode(',', $data[$name]));
         }
 
-        $this->loadFrom($data);
+        return $this->loadFrom($data);
     }
 
     /**
