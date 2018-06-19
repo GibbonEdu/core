@@ -19,14 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include './functions.php';
-include './config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include './gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/publicRegistration.php';
 
@@ -72,7 +65,7 @@ if ($proceed == false) {
         $dob = dateConvert($guid, $dob);
     }
     $email = trim($_POST['email']);
-    $username = trim($_POST['username']);
+    $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'];
     $salt = getSalt();
     $passwordStrong = hash('sha256', $salt.$password);

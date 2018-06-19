@@ -21,8 +21,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\UsernameGenerator;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
@@ -101,16 +99,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 if ($search != '') {
                     echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
                 }
-                echo '</div>'; 
+                echo '</div>';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&step=2&gibbonApplicationFormID='.$gibbonApplicationFormID.'&gibbonSchoolYearID='.$gibbonSchoolYearID.'&search='.$search);
-                
+
                 $form->addHiddenValue('address', $_SESSION[$guid]['address']);
                 $form->addHiddenValue('gibbonApplicationFormID', $gibbonApplicationFormID);
                 $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
-                
+
                 $applicantName = formatName('', $values['preferredName'], $values['surname'], 'Student');
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
@@ -129,8 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     ->setClass('');
 
                 $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
-                $list = $col->addContent()->wrap('<ol>', '</ol>');
-                
+                $list = $col->addContent();
+
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
                 if (!empty($values['gibbonRollGroupID'])) {
@@ -147,6 +145,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $list->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
                      ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+
+                $list->wrap('<ol>', '</ol>');
 
                 // Handle optional auto-enrol feature
                 if (!empty($values['gibbonRollGroupID'])) {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
 
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
-                $list = $col->addContent()->wrap('<ol>', '</ol>');
+                $list = $col->addContent();
 
                 if (empty($values['gibbonRollGroupID'])) {
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
@@ -181,6 +181,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                      ->append('<li>'.__('Create an individual needs record for the student.').'</li>')
                      ->append('<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>')
                      ->append('<li>'.__('Create a timetable for the student.').'</li>');
+
+                $list->wrap('<ol>', '</ol>');
 
                 $form->addRow()->addSubmit(__('Accept'));
 
@@ -476,6 +478,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
                     }
 
+                    //Create medical record if possible
+                    try {
+                        $data = array('gibbonPersonID' => $gibbonPersonID, 'comment' => $values['medicalInformation']);
+                        $sql = 'INSERT INTO gibbonPersonMedical SET gibbonPersonID=:gibbonPersonID, comment=:comment';
+                        $result = $connection2->prepare($sql);
+                        $result->execute($data);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+
                     //Enrol student
                     $enrolmentOK = true;
                     if ($values['gibbonRollGroupID'] != '') {
@@ -696,11 +708,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                 } elseif ($result->rowCount() == 1) {
-                                    $values = $result->fetch();
+                                    $existingRelationship = $result->fetch();
 
-                                    if ($values['relationship'] != $relationship) {
+                                    if ($existingRelationship['relationship'] != $relationship) {
                                         try {
-                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $values['gibbonFamilyRelationshipID']);
+                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $existingRelationship['gibbonFamilyRelationshipID']);
                                             $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);

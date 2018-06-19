@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 namespace Gibbon;
+
+use Gibbon\Contracts\Database\Connection;
+
 /**
  * CSV Generator
  *
@@ -40,12 +43,12 @@ class csv
 	 *
 	 * @version	19th April 2016
 	 * @since	14th April 2016
-	 * @param	Object	Gibbon\sqlConnection
+	 * @param	Object	Connection
 	 * @param	string	Title
 	 * @param	string	Header (Must be formated in csv)
 	 * @return	void
 	 */
-	static public function generate( sqlConnection $pdo, $title, $header = NULL)
+	static public function generate( Connection $pdo, $title, $header = NULL)
 	{
 		self::$title = self::testTitle($title);
 		$start = true;

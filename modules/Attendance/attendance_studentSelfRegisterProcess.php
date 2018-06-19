@@ -18,17 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_studentSelfRegister.php";
 
@@ -85,15 +78,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                         header("Location: {$URL}");
                         exit();
                     }
-
-                    //Give student a like for their effort
-                    $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
-                    setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
-                    $_SESSION[$guid]['pageLoads'] = null;
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                    exit();
                 }
                 else if ($inRange && $status == 'Present') {
                     try {
@@ -106,20 +90,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
                         header("Location: {$URL}");
                         exit();
                     }
-
-                    //Give student a like for their effort
-                    $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
-                    setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
-                    $_SESSION[$guid]['pageLoads'] = null;
-
-                    $URL .= '&return=success0';
-                    header("Location: {$URL}");
-                    exit();
                 }
                 else {
                     $URL .= '&return=error0';
                     header("Location: {$URL}");
+                    exit();
                 }
+
+                //Give student a like for their effort
+                $gibbonAttendanceLogPersonID = $connection2->lastInsertId();
+                setLike($connection2, 'Attendance', $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonAttendanceLogPersonID', $gibbonAttendanceLogPersonID, $_SESSION[$guid]['gibbonPersonID'], $_SESSION[$guid]['gibbonPersonID'], 'Attendance - Self Registration');
+                $_SESSION[$guid]['pageLoads'] = null;
+
+                $selfRegistrationRedirect = getSettingByScope($connection2, 'Attendance', 'selfRegistrationRedirect');
+                if ($selfRegistrationRedirect == 'Y') {
+                    $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php&return=message0&status=$status";
+                }
+                else {
+                    $URL .= '&return=success0';
+                }
+                header("Location: {$URL}");
+                exit();
             }
         }
     }

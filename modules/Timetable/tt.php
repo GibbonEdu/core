@@ -17,9 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\StudentGateway;
+use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -41,23 +43,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Timetable by Person').'</div>';
         echo '</div>';
 
-        $gibbonPersonID = null;
-        if (isset($_GET['gibbonPersonID'])) {
-            $gibbonPersonID = $_GET['gibbonPersonID'];
-        }
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allUsers = null;
-        if (isset($_GET['allUsers'])) {
-            $allUsers = $_GET['allUsers'];
-        }
+        $gibbonPersonID = isset($_GET['gibbonPersonID']) ? $_GET['gibbonPersonID'] : null;
+        $search = isset($_GET['search']) ? $_GET['search'] : '';
+        $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
 
-        if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
+        $studentGateway = $container->get(StudentGateway::class);
+        $staffGateway = $container->get(StaffGateway::class);
+
+        $canViewAllTimetables = $highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears';
+
+        if ($canViewAllTimetables) {
+            $criteria = $studentGateway->newQueryCriteria()
+                ->searchBy($studentGateway->getSearchableColumns(), $search)
+                ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+                ->filterBy('all', $allUsers)
+                ->fromArray($_POST);
 
             echo '<h2>';
-            echo __($guid, 'Filters');
+            echo __('Filters');
             echo '</h2>';
 
             $form = Form::create('tt', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -67,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
             $row = $form->addRow();
                 $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-                $row->addTextField('search')->setValue($search);
+                $row->addTextField('search')->setValue($criteria->getSearchText());
 
             $row = $form->addRow();
                 $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
@@ -80,145 +83,85 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         }
 
         echo '<h2>';
-        echo __($guid, 'Choose A Person');
+        echo __('Choose A Person');
         echo '</h2>';
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
-
-        try {
-            if ($highestAction == 'View Timetable by Person_my') {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(
-                        SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
-                        FROM gibbonPerson
-                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                        WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
-                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND gibbonPerson.status='Full'
-                    ) UNION (
-                        SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type
-                        FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
-                        WHERE type='Teaching' AND gibbonPerson.status='Full' AND gibbonStaff.gibbonPersonID=:gibbonPersonID
-                    ) ORDER BY surname, preferredName";
-            } else if ($highestAction == 'View Timetable by Person_myChildren') {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type
-                        FROM gibbonPerson
-                        JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
-                        JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
-                        JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                        JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonPersonID=:gibbonPersonID)
-                        JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamilyChild.gibbonFamilyID=gibbonFamilyAdult.gibbonFamilyID)
-                        WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                        AND gibbonPerson.status='Full' AND gibbonFamilyAdult.childDataAccess='Y'
-                        GROUP BY gibbonPerson.gibbonPersonID
-                        ORDER BY surname, preferredName";
-            } else if ($highestAction == 'View Timetable by Person' || $highestAction == 'View Timetable by Person_allYears') {
-                if ($allUsers == 'on') {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPerson.status='Full' ORDER BY surname, preferredName";
-                    if ($search != '') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-                        $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) LEFT JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonPerson.status='Full' AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3)) ORDER BY surname, preferredName";
-                    }
-                } else {
-                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full') UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full') ORDER BY surname, preferredName";
-                    if ($search != '') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%", 'search4' => "%$search%", 'search5' => "%$search%", 'search6' => "%$search%");
-                        $sql = "(SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolmentID, surname, preferredName, title, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' AS type FROM gibbonPerson, gibbonStudentEnrolment, gibbonYearGroup, gibbonRollGroup WHERE (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) AND (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) AND (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND ((preferredName LIKE :search1) OR (surname LIKE :search2) OR (username LIKE :search3))) UNION (SELECT gibbonPerson.gibbonPersonID, NULL AS gibbonStudentEnrolmentID, surname, preferredName, title, NULL AS yearGroup, NULL AS rollGroup, 'Staff' as type FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE type='Teaching' AND gibbonPerson.status='Full' AND ((preferredName LIKE :search4) OR (surname LIKE :search5) OR (username LIKE :search6))) ORDER BY surname, preferredName";
-                    }
-                }
+        if ($highestAction == 'View Timetable by Person_my') {
+            $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDPrimary'], $connection2);
+            if ($role == 'Student') {
+                $result = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            } else {
+                $result = $staffGateway->selectStaffByID($_SESSION[$guid]['gibbonPersonID'], 'Teaching');
             }
+            $users = $result->toDataSet();
 
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+            $table = DataTable::create('timetables');
+
+        } else if ($highestAction == 'View Timetable by Person_myChildren') {
+            $result = $studentGateway->selectActiveStudentsByFamilyAdult($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+            $users = $result->toDataSet();
+
+            $table = DataTable::create('timetables');
+
+        } else if ($canViewAllTimetables) {
+            
+            $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+
+            $table = DataTable::createPaginated('timetables', $criteria);
+
+            $table->modifyRows($studentGateway->getSharedUserRowHighlighter());
+
+            $table->addMetaData('filterOptions', [
+                'all:on'          => __('All Users'),
+                'role:student'    => __('Role').': '.__('Student'),
+                'role:staff'      => __('Role').': '.__('Staff'),
+            ]);
+    
+            if ($criteria->hasFilter('all')) {
+                $table->addMetaData('filterOptions', [
+                    'status:full'     => __('Status').': '.__('Full'),
+                    'status:expected' => __('Status').': '.__('Expected'),
+                    'date:starting'   => __('Before Start Date'),
+                    'date:ended'      => __('After End Date'),
+                ]);
+            }
         }
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+        if (!$canViewAllTimetables && count($users) == 0) {
+            echo '<div class="error">';
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "allUsers=$allUsers&search=$search");
-            }
-
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Year Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Roll Group');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                if ($row['type'] == 'Staff') {
-                    echo formatName($row['title'], $row['preferredName'], $row['surname'], $row['type'], true);
-                }
-                if ($row['type'] == 'Student') {
-                    echo formatName($row['title'], $row['preferredName'], $row['surname'], $row['type'], true);
-                }
-                echo '</td>';
-                echo '<td>';
-                if ($row['yearGroup'] != '') {
-                    echo __($guid, $row['yearGroup']);
-                }
-                echo '</td>';
-                echo '<td>';
-                if ($row['rollGroup'] != '') {
-                    echo $row['rollGroup'];
-                }
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_view.php&gibbonPersonID='.$row['gibbonPersonID']."&allUsers=$allUsers&search=$search'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
-
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "allUsers=$allUsers&search=$search");
-            }
+            return;
         }
+
+        // COLUMNS
+        $table->addColumn('name', __('Name'))
+            ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
+            ->format(function ($person) {
+                $roleCategory = ($person['roleCategory'] == 'Student' || !empty($person['yearGroup']))? 'Student' : 'Staff';
+                return Format::name('', $person['preferredName'], $person['surname'], $roleCategory, true, true);
+            });
+        if ($canViewAllTimetables) {
+            $table->addColumn('roleCategory', __('Role Category'))
+                ->format(function($person) {
+                    return __($person['roleCategory']) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
+                });
+        }
+        $table->addColumn('yearGroup', __('Year Group'));
+        $table->addColumn('rollGroup', __('Roll Group'));
+
+        $actions = $table->addActionColumn()
+            ->addParam('gibbonPersonID')
+            ->format(function ($person, $actions) {
+                $actions->addAction('view', __('View Details'))
+                    ->setURL('/modules/Timetable/tt_view.php');
+            });
+
+        if ($canViewAllTimetables) {
+            $actions->addParam('search', $criteria->getSearchText(true))
+                    ->addParam('allUsers', $criteria->getFilterValue('all'));
+        }
+
+        echo $table->render($users);
     }
 }
-?>

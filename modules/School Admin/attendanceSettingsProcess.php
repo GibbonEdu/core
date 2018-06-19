@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/attendanceSettings.php';
 
@@ -94,16 +87,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
         $fail = true;
     }
 
-
     $studentSelfRegistrationIPAddresses = '';
     foreach (explode(',', $_POST['studentSelfRegistrationIPAddresses']) as $ipAddress) {
         $studentSelfRegistrationIPAddresses .= trim($ipAddress).',';
     }
     $studentSelfRegistrationIPAddresses = substr($studentSelfRegistrationIPAddresses, 0, -1);
-
     try {
         $data = array('value' => $studentSelfRegistrationIPAddresses);
         $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='studentSelfRegistrationIPAddresses'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
+    $selfRegistrationRedirect = (isset($_POST['selfRegistrationRedirect'])) ? $_POST['selfRegistrationRedirect'] : NULL;
+    try {
+        $data = array('value' => $selfRegistrationRedirect);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Attendance' AND name='selfRegistrationRedirect'";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {

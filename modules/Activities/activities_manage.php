@@ -17,10 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
+use Gibbon\Domain\Activities\ActivityGateway;
 use Gibbon\Forms\Prefab\BulkActionForm;
-
-@session_start();
+use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -40,18 +41,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+    $gibbonSchoolYearTermID = isset($_GET['gibbonSchoolYearTermID'])? $_GET['gibbonSchoolYearTermID'] : '';
+    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
+    $enrolmentType = getSettingByScope($connection2, 'Activities', 'enrolmentType');
+    $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $yearGroups = getYearGroups($connection2);
+
+    $activityGateway = $container->get(ActivityGateway::class);
+    
+    // CRITERIA
+    $criteria = $activityGateway->newQueryCriteria()
+        ->searchBy($activityGateway->getSearchableColumns(), $search)
+        ->filterBy('term', $gibbonSchoolYearTermID)
+        ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', 'DESC')
+        ->sortBy('name');
+
+    $criteria->fromArray($_POST);
+
     echo '<h2>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h2>';
 
-    $search = isset($_GET['search'])? $_GET['search'] : null;
-    $gibbonSchoolYearTermID = isset($_GET['gibbonSchoolYearTermID'])? $_GET['gibbonSchoolYearTermID'] : null;
-    $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
-
-    $paymentOn = true;
-    if (getSettingByScope($connection2, 'Activities', 'payment') == 'None' or getSettingByScope($connection2, 'Activities', 'payment') == 'Single') {
-        $paymentOn = false;
-    }
+    $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
 
     $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -60,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search'))->description('Activity name.');
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     if ($dateType != 'Date') {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -79,149 +91,137 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo __($guid, 'Activities');
     echo '</h2>';
 
-    //Set pagination variable
-    $page = isset($_GET['page'])? $_GET['page'] : 1;
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
+    $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
+    $form->addHiddenValue('search', $search);
+
+    $bulkActions = array(
+        'Duplicate' => __('Duplicate'),
+        'DuplicateParticipants' => __('Duplicate With Participants'),
+        'Delete' => __('Delete'),
+    );
+    $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
+
+    $col = $form->createBulkActionColumn($bulkActions);
+        $col->addSelect('gibbonSchoolYearIDCopyTo')
+            ->fromQuery($pdo, $sql)
+            ->setClass('shortWidth schoolYear');
+        $col->addSubmit(__('Go'));
+
+    $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
+
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('activities', $criteria)->withData($activities);
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Activities/activities_manage_add.php')
+        ->addParam('search', $search)
+        ->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+        ->displayLabel();
+
+    $table->modifyRows(function ($activity, $row) {
+        if ($activity['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
+    $table->addMetaData('filterOptions', [
+        'active:Y'          => __('Active').': '.__('Yes'),
+        'active:N'          => __('Active').': '.__('No'),
+        'registration:Y'    => __('Registration').': '.__('Yes'),
+        'registration:N'    => __('Registration').': '.__('No'),
+        'enrolment:less'    => __('Enrolment').': &lt; '.__('Full'),
+        'enrolment:full'    => __('Enrolment').': '.__('Full'),
+        'enrolment:greater' => __('Enrolment').': &gt; '.__('Full'),
+    ]);
+
+    if ($enrolmentType == 'Competitive') {
+        $table->addMetaData('filterOptions', ['status:waiting' => __('Waiting List')]);
+    } else {
+        $table->addMetaData('filterOptions', ['status:pending' => __('Pending')]);
     }
 
-    //Should we show date as term or date?
-    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-    $sqlOrderBy = 'ORDER BY programStart DESC, name';
-    if ($dateType != 'Date') {
-        $sqlOrderBy = 'ORDER BY gibbonSchoolYearTermIDList, name';
-    }
-    $sqlWhere = '';
-    if ($search != '') {
-        $data['search'] = "%$search%";
-        $sqlWhere = ' AND name LIKE :search';
-    }
-    if ($gibbonSchoolYearTermID != '') {
-        $data['gibbonSchoolYearTermID'] = "%$gibbonSchoolYearTermID%";
-        $sqlWhere .= ' AND gibbonSchoolYearTermIDList LIKE :gibbonSchoolYearTermID';
-    }
+    $table->addMetaData('bulkActions', $col);
 
-    $sql = "SELECT gibbonActivity.*, (SELECT COUNT(*) FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID AND gibbonActivityStudent.status='Waiting List' AND gibbonPerson.status='Full') AS waiting FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID $sqlWhere $sqlOrderBy";
+    // COLUMNS
+    $table->addColumn('name', __('Activity'))
+        ->format(function($activity) {
+            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+        });
 
-    $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-    try {
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>";
-        echo __($guid, 'Your request failed due to a database error.');
-        echo '</div>';
-    }
+    $table->addColumn('days', __('Days'))
+        ->notSortable()
+        ->format(function($activity) use ($activityGateway) {
+            return implode(', ', $activityGateway->selectWeekdayNamesByActivity($activity['gibbonActivityID'])->fetchAll(\PDO::FETCH_COLUMN));
+        });
 
-    if ($result) {
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_add.php&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+    $table->addColumn('yearGroups', __('Years'))
+        ->format(function($activity) use ($yearGroups) {
+            return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
+        });
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
-            }
-
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-            }
-
-            $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manageProcessBulk.php');
-            $form->addHiddenValue('search', $search);
-
-            $bulkActions = array(
-                'Duplicate' => __('Duplicate'),
-                'DuplicateParticipants' => __('Duplicate With Participants'),
-                'Delete' => __('Delete'),
-            );
-            $sql = "SELECT gibbonSchoolYearID as value, gibbonSchoolYear.name FROM gibbonSchoolYear WHERE (status='Upcoming' OR status='Current') ORDER BY sequenceNumber LIMIT 0, 2";
-
-            $row = $form->addBulkActionRow($bulkActions);
-                $row->addSelect('gibbonSchoolYearIDCopyTo')
-                    ->fromQuery($pdo, $sql)
-                    ->setClass('shortWidth schoolYear');
-                $row->addSubmit(__('Go'));
-
-            $form->toggleVisibilityByClass('schoolYear')->onSelect('action')->when(array('Duplicate', 'DuplicateParticipants'));
-
-            $table = $form->addRow()->addTable()->addClass('colorOddEven');
-
-            $header = $table->addHeaderRow();
-            $header->addContent(__('Activity'));
-            $header->addContent(__('Days'));
-            $header->addContent(__('Years'));
-            $header->addContent(($dateType != 'Date')? __('Term') : __('Dates'));
-            if ($paymentOn) {
-                $header->addContent(__('Cost'))->append('<br/><span class="small emphasis">'.$_SESSION[$guid]['currency'].'</span>');
-            }
-            $header->addContent(__('Provider'));
-            $header->addContent(__('Waiting'));
-            $header->addContent(__('Actions'));
-            $header->addCheckAll();
-
-            while ($activity = $resultPage->fetch()) {
-                $rowClass = ($activity['active'] == 'N')? 'error' : '';
-
-                $dataSlots = array('gibbonActivityID' => $activity['gibbonActivityID']);
-                $sqlSlots = "SELECT DISTINCT nameShort FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber";
-                $resultSlots = $pdo->executeQuery($dataSlots, $sqlSlots);
-                $timeSlots = ($resultSlots->rowCount() > 0)? $resultSlots->fetchAll(\PDO::FETCH_COLUMN, 0) : array('<i>'.__('None').'</i>');
-
-                if ($dateType != 'Date') {
-                    $schoolTerms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
-                    $dateRange = '';
-                    if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
-                        $termList = array_map(function ($item) use ($schoolTerms) {
-                            $index = array_search($item, $schoolTerms);
-                            return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
-                        }, explode(',', $activity['gibbonSchoolYearTermIDList']));
-                        $dateRange = implode('<br/>', $termList);
-                    }
-                } else {
-                    $dateRange = formatDateRange($activity['programStart'], $activity['programEnd']);
+    $table->addColumn('date', $dateType != 'Date'? __('Term') : __('Dates'))
+        ->sortable($dateType != 'Date' ? ['gibbonSchoolYearTermIDList'] : ['programStart', 'programEnd'])
+        ->format(function($activity) use ($dateType, $schoolTerms) {
+            if (empty($schoolTerms)) return '';
+            if ($dateType != 'Date') {
+                $dateRange = '';
+                if (!empty(array_intersect($schoolTerms, explode(',', $activity['gibbonSchoolYearTermIDList'])))) {
+                    $termList = array_map(function ($item) use ($schoolTerms) {
+                        $index = array_search($item, $schoolTerms);
+                        return ($index !== false && isset($schoolTerms[$index+1]))? $schoolTerms[$index+1] : '';
+                    }, explode(',', $activity['gibbonSchoolYearTermIDList']));
+                    return implode('<br/>', $termList);
                 }
-
-                $row = $table->addRow()->addClass($rowClass);
-                $row->addContent($activity['name'])->append('<br/><span class="small emphasis">'.$activity['type'].'</span>');
-                $row->addContent(implode(', ', $timeSlots));
-                $row->addContent(getYearGroupsFromIDList($guid, $connection2, $activity['gibbonYearGroupIDList']));
-                $row->addContent($dateRange);
-                if ($paymentOn) {
-                    if ($activity['payment'] == 0) {
-                        $row->addContent('<i>'.__('None').'</i>');
-                    } else {
-                        $payment = $row->addContent(number_format($activity['payment'], 2))->append('<br/>'.__($activity['paymentType']));
-                        if (substr($_SESSION[$guid]['currency'], 4) != '') {
-                            $payment->prepend(substr($_SESSION[$guid]['currency'], 4));
-                        }
-                        if ($activity['paymentFirmness'] != 'Finalised') {
-                            $payment->append('<br/>'.__($activity['paymentFirmness']));
-                        }
-                    }
-                }
-                $row->addContent(($activity['provider'] == 'School')? $_SESSION[$guid]['organisationNameShort'] : __('External'));
-                $row->addContent($activity['waiting']);
-                $column = $row->addColumn('actions')->addClass('inline');
-                    $column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_edit.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ");
-                    $column->addContent("<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_delete.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ");
-                    $column->addContent("<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$activity['gibbonActivityID'].'&search='.$search."&gibbonSchoolYearTermID=".$gibbonSchoolYearTermID."'><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ");
-
-                $row->addCheckbox('gibbonActivityID[]')->setValue($activity['gibbonActivityID'])->setClass('');
+            } else {
+                return Format::dateRangeReadable($activity['programStart'], $activity['programEnd']);
             }
+        });
 
-            echo $form->getOutput();
+    if ($paymentOn) {
+        $table->addColumn('payment', __('Cost'))
+            ->description($_SESSION[$guid]['currency'])
+            ->format(function($activity) {
+                $payment = ($activity['payment'] > 0) 
+                    ? Format::currency($activity['payment']) . '<br/>' . __($activity['paymentType'])
+                    : '<i>'.__('None').'</i>';
+                if ($activity['paymentFirmness'] != 'Finalised') $payment .= '<br/><i>'.__($activity['paymentFirmness']).'</i>';
 
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search");
-            }
-        }
+                return $payment;
+            });
     }
+
+    $table->addColumn('provider', __('Provider'))
+        ->format(function($activity) use ($guid){
+            return ($activity['provider'] == 'School')? $_SESSION[$guid]['organisationNameShort'] : __('External');
+        });
+
+    $table->addColumn('enrolment', __('Enrolment'))
+        ->format(function($activity) {
+            return $activity['enrolment'] 
+                . (!empty($activity['waiting'])? '<br><small><i>' .$activity['waiting'].' '.__('Waiting') .'</i></small>' : '')
+                . (!empty($activity['pending'])? '<br><small><i>' .$activity['pending'].' '.__('Pending') .'</i></small>' : '');
+        });
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonActivityID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->addParam('gibbonSchoolYearTermID', $gibbonSchoolYearTermID)
+        ->format(function ($activity, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Activities/activities_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Activities/activities_manage_delete.php');
+
+            $actions->addAction('enrolment', __('Enrolment'))
+                    ->setURL('/modules/Activities/activities_manage_enrolment.php')
+                    ->setIcon('attendance');
+        });
+
+    $table->addCheckboxColumn('gibbonActivityID');
+
+    echo $form->getOutput();
 }
-?>

@@ -17,16 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 $gibbonLibraryItemID = $_POST['gibbonLibraryItemID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/library_manage_catalog_edit.php&gibbonLibraryItemID=$gibbonLibraryItemID&name=".$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
@@ -130,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                 $fieldsIn = unserialize($row['fields']);
                 $fieldsOut = array();
                 foreach ($fieldsIn as $field) {
-                    $fieldName = preg_replace('/ /', '', $field['name']);
+                    $fieldName = preg_replace('/ |\(|\)/', '', $field['name']);
                     if ($field['type'] == 'Date') {
                         $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName]);
                     } else {

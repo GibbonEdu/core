@@ -22,12 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include 'functions.php';
 include 'config.php';
 
-@session_start();
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year

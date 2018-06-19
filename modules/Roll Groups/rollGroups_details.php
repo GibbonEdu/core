@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -156,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
             echo '<h3>';
             echo __($guid, 'Students');
             echo '</h3>';
-            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, true, $sortBy);
+            echo getRollGroupTable($guid, $gibbonRollGroupID, 5, $connection2, true, $sortBy, true);
 
             //Set sidebar
             $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $primaryTutor240, 240);

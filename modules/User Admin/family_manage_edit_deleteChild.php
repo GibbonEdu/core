@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_deleteChild.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -61,13 +59,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
         } else {
             //Let's go!
             $row = $result->fetch();
-
-            if ($search != '') {
-                echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__($guid, 'Back').'</a>';
-                echo '</div>';
-            }
-
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteChildProcess.php?gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=$gibbonPersonID&search=$search");
             echo $form->getOutput();
         }

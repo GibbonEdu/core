@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -216,10 +214,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromString('Monday, Sunday')->selected($setting['value'])->isRequired();
 
+    $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
+        $group[$item] = __($item);
+        return $group;
+    }, array());
     $setting = getSettingByScope($connection2, 'System', 'timezone', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($tzlist)->selected($setting['value'])->placeholder()->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'currency', true);
     $row = $form->addRow();

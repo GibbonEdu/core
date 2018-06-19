@@ -90,7 +90,7 @@ class Table implements OutputableInterface, ValidatableInterface
      * Get all rows in the table.
      * @return  array
      */
-    public function getRows()
+    public function getElements()
     {
         return $this->rows;
     }
@@ -124,7 +124,7 @@ class Table implements OutputableInterface, ValidatableInterface
 
         // Output table rows
         $output .= '<tbody>';
-        foreach ($this->getRows() as $row) {
+        foreach ($this->getElements() as $row) {
             $output .= '<tr '.$row->getAttributeString().'>';
 
             // Output each element inside the row
@@ -152,7 +152,7 @@ class Table implements OutputableInterface, ValidatableInterface
             $count = max($count, $row->getElementCount());
         }
 
-        foreach ($this->getRows() as $row) {
+        foreach ($this->getElements() as $row) {
             $count = max($count, $row->getElementCount());
         }
 
@@ -177,7 +177,7 @@ class Table implements OutputableInterface, ValidatableInterface
     {
         $output = '';
 
-        foreach ($this->getRows() as $row) {
+        foreach ($this->getElements() as $row) {
             foreach ($row->getElements() as $element) {
                 if ($element instanceof ValidatableInterface) {
                     $output .= $element->getValidationOutput();
@@ -195,7 +195,7 @@ class Table implements OutputableInterface, ValidatableInterface
      */
     public function loadFrom(&$data)
     {
-        foreach ($this->getRows() as $row) {
+        foreach ($this->getElements() as $row) {
             $row->loadFrom($data);
         }
 

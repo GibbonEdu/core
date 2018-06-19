@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-@session_start();
-
 $orphaned = '';
 if (isset($_GET['orphaned'])) {
     if ($_GET['orphaned'] == 'true') {

@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
@@ -73,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         // Grab the appropriate term ID if the date is provided and the term ID is not
         if (empty($gibbonSchoolYearTermID) && !empty($date)) {
             try {
-                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'] );
-                $sqlTerm = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND '$date' BETWEEN firstDay AND lastDay";
+                $dataTerm = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => $date);
+                $sqlTerm = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND :date BETWEEN firstDay AND lastDay";
                 $resultTerm = $connection2->prepare($sqlTerm);
                 $resultTerm->execute($dataTerm);
             } catch (PDOException $e) {

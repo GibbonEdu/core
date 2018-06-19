@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms\Input;
 
 use Gibbon\Forms\Traits\MultipleOptionsTrait;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Select
@@ -119,6 +120,32 @@ class Select extends Input
     }
 
     /**
+     * Build an internal options array from an SQL query with required value and name fields
+     * @param   Connection  $pdo
+     * @param   string                 $sql
+     * @param   array                  $data
+     * @return  self
+     */
+    public function fromQueryChained(Connection $pdo, $sql, $data = array(), $chainedToID = false, $groupBy = false)
+    {
+        $results = $pdo->executeQuery($data, $sql);
+        $this->fromResults($results, $groupBy);
+
+        $results = $pdo->executeQuery($data, $sql);
+
+        if ($results && $results->rowCount() > 0) {
+            $chainedOptions = array_reduce($results->fetchAll(), function($group, $item) {
+                $group[$item['value']] = isset($item['chainedTo'])? $item['chainedTo'] : '';
+                return $group;
+            }, array());
+
+            $this->chainedTo($chainedToID, $chainedOptions);
+        }
+
+        return $this;
+    }
+
+    /**
      * Return true if the value passed in is in the array of selected options.
      * @param   string  $value
      * @return  bool
@@ -132,7 +159,7 @@ class Select extends Input
         if (is_array($this->selected)) {
             return in_array($value, $this->selected);
         } else {
-            $selected = ($value == $this->selected);
+            $selected = strval($value) == strval($this->selected);
             if ($selected && $this->getAttribute('multiple') == false) $this->hasSelected = true;
             return $selected;
         }
@@ -164,7 +191,7 @@ class Select extends Input
 
         if (isset($this->placeholder) && $this->getAttribute('multiple') == false) {
             // Add a placeholder only if the first option is not already blank
-            if (count($this->getOptions()) == 0 || key($this->getOptions()) != '') {
+            if (count($this->getOptions()) == 0 || key($this->getOptions()) !== '') {
                 $output .= '<option value="'.$this->placeholder.'">'.$this->placeholder.'</option>';
             }
 
@@ -176,7 +203,7 @@ class Select extends Input
         if (!empty($this->getOptions()) && is_array($this->getOptions())) {
             foreach ($this->getOptions() as $value => $label) {
                 if (is_array($label)) {
-                    $output .= '<optgroup label="--'.$value.'--">';
+                    $output .= '<optgroup label="-- '.$value.' --">';
                     foreach ($label as $subvalue => $sublabel) {
                         $selected = ($this->isOptionSelected($subvalue))? 'selected' : '';
                         $output .= '<option value="'.$subvalue.'" '.$selected.'>'.$sublabel.'</option>';

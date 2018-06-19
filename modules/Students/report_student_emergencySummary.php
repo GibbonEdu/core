@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -45,10 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
-    $choices = null;
-    if (isset($_POST['gibbonPersonID'])) {
-        $choices = $_POST['gibbonPersonID'];
-    }
+    $choices = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : array();
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_student_emergencySummary.php");
 

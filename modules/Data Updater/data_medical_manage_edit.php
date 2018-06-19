@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -44,8 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     } else {
         try {
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = "SELECT gibbonPersonMedical.* FROM gibbonPersonMedicalUpdate 
-                    LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID) 
+            $sql = "SELECT gibbonPersonMedical.* FROM gibbonPersonMedicalUpdate
+                    LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID)
                     WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
             $result = $connection2->prepare($sql);
             $result->execute($data);
@@ -63,8 +61,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             }
 
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = "SELECT gibbonPersonMedicalUpdate.* FROM gibbonPersonMedicalUpdate 
-                    LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID) 
+            $sql = "SELECT gibbonPersonMedicalUpdate.* FROM gibbonPersonMedicalUpdate
+                    LEFT JOIN gibbonPersonMedical ON (gibbonPersonMedical.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID)
                     WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID";
             $newResult = $pdo->executeQuery($data, $sql);
 
@@ -72,11 +70,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
 
+            // Provide a link back to edit the associated record
+            if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == true && !empty($oldValues['gibbonPersonMedicalID'])) {
+                echo "<div class='linkTop'>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage_edit.php&gibbonPersonMedicalID=".$oldValues['gibbonPersonMedicalID']."&search='>".__('Edit Medical Form')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Medical Form')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo '</div>';
+            }
+
             $compare = array(
                 'bloodType'                 => __('Blood Type'),
                 'longTermMedication'        => __('Long-Term Medication?'),
                 'longTermMedicationDetails' => __('Medication Details'),
                 'tetanusWithin10Years'      => __('Tetanus Within Last 10 Years?'),
+                'comment'      => __('Comment'),
             );
 
             $compareCondition = array(
@@ -100,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             $alerts = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
             $form = Form::create('updateMedical', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_editProcess.php?gibbonPersonMedicalUpdateID='.$gibbonPersonMedicalUpdateID);
-            
+
             $form->setClass('fullWidth colorOddEven');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonID', $newValues['gibbonPersonID']);
@@ -137,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
                 $row->addLabel($fieldName.'On'.$count, $label);
                 $row->addContent($oldValue);
                 $row->addContent($newValue)->addClass($isMatching ? 'matchHighlightText' : '');
-                
+
                 if ($isMatching) {
                     $row->addCheckbox($fieldName.'On'.$count)->checked(true)->setClass('textCenter');
                     $form->addHiddenValue($fieldName.$count, $newValues[$fieldName]);
@@ -155,9 +161,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             // Existing Conditions
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = "SELECT * FROM gibbonPersonMedicalConditionUpdate 
-                    WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID 
-                    AND NOT gibbonPersonMedicalConditionID IS NULL 
+            $sql = "SELECT * FROM gibbonPersonMedicalConditionUpdate
+                    WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID
+                    AND NOT gibbonPersonMedicalConditionID IS NULL
                     ORDER BY gibbonPersonMedicalConditionUpdateID";
             $result = $pdo->executeQuery($data, $sql);
 
@@ -165,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             if ($result->rowCount() > 0) {
                 while ($newValues = $result->fetch()) {
                     $data = array('gibbonPersonMedicalConditionID' => $newValues['gibbonPersonMedicalConditionID']);
-                    $sql = "SELECT * FROM gibbonPersonMedicalCondition 
+                    $sql = "SELECT * FROM gibbonPersonMedicalCondition
                             WHERE gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID";
                     $oldResult = $pdo->executeQuery($data, $sql);
                     $oldValues = $oldResult->fetch();
@@ -183,8 +189,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
 
             // New Conditions
             $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
-            $sql = "SELECT * FROM gibbonPersonMedicalConditionUpdate 
-                    WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID 
+            $sql = "SELECT * FROM gibbonPersonMedicalConditionUpdate
+                    WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID
                     AND gibbonPersonMedicalConditionID IS NULL ORDER BY name";
             $result = $pdo->executeQuery($data, $sql);
 
@@ -192,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
             if ($result->rowCount() > 0) {
                 while ($newValues = $result->fetch()) {
                     $count2++;
-                    
+
                     $form->addRow()->addHeading(__('New Condition').' '.$count2);
                     $form->addHiddenValue('gibbonPersonMedicalConditionUpdateID'.($count+$count2), $newValues['gibbonPersonMedicalConditionUpdateID']);
 

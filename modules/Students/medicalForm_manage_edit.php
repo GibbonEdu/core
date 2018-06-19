@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\MedicalGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_edit.php') == false) {
     //Acess denied
@@ -38,36 +39,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     }
 
     //Check if person medical specified
-    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
+    $gibbonPersonMedicalID = isset($_GET['gibbonPersonMedicalID'])? $_GET['gibbonPersonMedicalID'] : '';
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
     if ($gibbonPersonMedicalID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
     } else {
-        try {
-            $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-            $sql = 'SELECT gibbonPersonMedical.*, surname, preferredName
-                FROM gibbonPersonMedical
-                    JOIN gibbonPerson ON (gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
-        if ($result->rowCount() != 1) {
+        $medicalGateway = $container->get(MedicalGateway::class);
+        $values = $medicalGateway->getMedicalFormByID($gibbonPersonMedicalID);
+
+        if (empty($values)) {
             echo "<div class='error'>";
             echo __($guid, 'The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
-            $values = $result->fetch();
-
             if ($search != '') {
                 echo "<div class='linkTop'>";
                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
@@ -97,13 +86,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $form->toggleVisibilityByClass('longTermMedicationDetails')->onSelect('longTermMedication')->when('Y');
 
-            $row = $form->addRow()->addClass('longTermMedicationDetails');;
+            $row = $form->addRow()->addClass('longTermMedicationDetails');
                 $row->addLabel('longTermMedicationDetails', __('Medication Details'));
                 $row->addTextArea('longTermMedicationDetails')->setRows(5);
 
             $row = $form->addRow();
                 $row->addLabel('tetanusWithin10Years', __('Tetanus Within Last 10 Years?'));
                 $row->addYesNo('tetanusWithin10Years')->placeholder();
+
+            $row = $form->addRow();
+                $row->addLabel('comment', __('Comment'));
+                $row->addTextArea('comment')->setRows(6);
 
             $row = $form->addRow();
                 $row->addFooter();
@@ -114,99 +107,47 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Medical Conditions');
+            echo __('Medical Conditions');
             echo '</h2>';
 
-            try {
-                $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-                $sql = 'SELECT gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk FROM gibbonPersonMedicalCondition JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY gibbonPersonMedicalCondition.name';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $conditions = $medicalGateway->selectMedicalConditionsByID($gibbonPersonMedicalID);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_condition_add.php&gibbonPersonMedicalID='.$values['gibbonPersonMedicalID']."&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            $table = DataTable::create('medicalConditions');
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Risk');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Details');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Medication');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Comment');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/Students/medicalForm_manage_condition_add.php')
+                ->addParam('gibbonPersonMedicalID', $gibbonPersonMedicalID)
+                ->addParam('search', $search)
+                ->displayLabel();
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
-                    ++$count;
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('risk', __('Risk'));
+            $table->addColumn('details', __('Details'))->format(function($condition){
+                $output = '';
+                if (!empty($condition['triggers'])) $output .= '<b>'.__('Triggers').':</b> '.$condition['triggers'].'<br/>';
+                if (!empty($condition['reaction'])) $output .= '<b>'.__('Reaction').':</b> '.$condition['reaction'].'<br/>';
+                if (!empty($condition['response'])) $output .= '<b>'.__('Response').':</b> '.$condition['response'].'<br/>';
+                if (!empty($condition['lastEpisode'])) $output .= '<b>'.__('Last Episode').':</b> '.Format::date($condition['lastEpisode']).'<br/>';
+                if (!empty($condition['lastEpisodeTreatment'])) $output .= '<b>'.__('Last Episode Treatment').':</b> '.$condition['lastEpisodeTreatment'].'<br/>';
+                return $output;
+            });
+            $table->addColumn('medication', __('Medication'));
+            $table->addColumn('comment', __('Comment'));
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo __($guid, $row['name']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo __($guid, $row['risk']);
-                    echo '</td>';
-                    echo '<td>';
-                    if ($row['triggers'] != '') {
-                        echo '<b>'.__($guid, 'Triggers').':</b> '.$row['triggers'].'<br/>';
-                    }
-                    if ($row['reaction'] != '') {
-                        echo '<b>'.__($guid, 'Reaction').':</b> '.$row['reaction'].'<br/>';
-                    }
-                    if ($row['response'] != '') {
-                        echo '<b>'.__($guid, 'Response').':</b> '.$row['response'].'<br/>';
-                    }
-                    if ($row['lastEpisode'] != '') {
-                        echo '<b>'.__($guid, 'Last Episode').':</b> '.dateConvertBack($guid, $row['lastEpisode']).'<br/>';
-                    }
-                    if ($row['lastEpisodeTreatment'] != '') {
-                        echo '<b>'.__($guid, 'Last Episode Treatment').':</b> '.$row['lastEpisodeTreatment'].'<br/>';
-                    }
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['medication'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['comment'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_condition_edit.php&gibbonPersonMedicalID='.$row['gibbonPersonMedicalID'].'&gibbonPersonMedicalConditionID='.$row['gibbonPersonMedicalConditionID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/medicalForm_manage_condition_delete.php&gibbonPersonMedicalID='.$row['gibbonPersonMedicalID'].'&gibbonPersonMedicalConditionID='.$row['gibbonPersonMedicalConditionID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo '</td>';
-                    echo '</tr>';
-                }
-                echo '</table>';
-            }
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonPersonMedicalID', $gibbonPersonMedicalID)
+                ->addParam('gibbonPersonMedicalConditionID')
+                ->addParam('search', $search)
+                ->format(function ($person, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Students/medicalForm_manage_condition_edit.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Students/medicalForm_manage_condition_delete.php');
+                });
+
+            echo $table->render($conditions->toDataSet());
         }
     }
 }
-?>

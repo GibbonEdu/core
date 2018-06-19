@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Data;
 
-use Gibbon\sqlConnection;
+use Gibbon\Contracts\Database\Connection;
 
 /**
  * Helper class to generate a username based on a supplied format. Guarantees the uniqueness of the returned username.
@@ -44,9 +44,9 @@ class UsernameGenerator
      * Class constructor with database dependancy injection.
      * @version  v15
      * @since    v15
-     * @param    sqlConnection  $pdo
+     * @param    Connection  $pdo
      */
-    public function __construct(sqlConnection $pdo)
+    public function __construct(Connection $pdo)
     {
         $this->pdo = $pdo;
         mb_internal_encoding("utf-8");

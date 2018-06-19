@@ -2,13 +2,7 @@
 
 use Gibbon\Comms\NotificationEvent;
 
-session_start();
-include "../../functions.php";
-include "../../config.php";
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection(false, '');
-$connection2 = $pdo->getConnection();
+include "../../gibbon.php";
 
 setCurrentSchoolYear($guid, $connection2);
 

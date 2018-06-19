@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -41,8 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Check if school year specified
-    $gibbonFirstAidID = $_GET['gibbonFirstAidID'];
+    $gibbonFirstAidID = isset($_GET['gibbonFirstAidID'])? $_GET['gibbonFirstAidID'] : null;
+    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
+
     if ($gibbonFirstAidID == '') {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             //Let's go!
             $values = $result->fetch();
 
-            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID']);
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/firstAidRecord_editProcess.php?gibbonFirstAidID=$gibbonFirstAidID&gibbonRollGroupID=".$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID);
 
             $form->setFactory(DatabaseFormFactory::create($pdo));
 

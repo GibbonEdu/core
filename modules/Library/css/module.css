@@ -16,3 +16,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+table.borderGrey {
+    border: 1px solid #444;
+}
+
+.quarterWidth {
+    width: 25%;
+}

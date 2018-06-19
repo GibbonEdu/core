@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableColumnGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.php') == false) {
     //Acess denied
@@ -39,76 +40,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonTTColumn ORDER BY name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $ttColumnGateway = $container->get(TimetableColumnGateway::class);
+    $columns = $ttColumnGateway->selectTTColumns();
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/ttColumn_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // DATA TABLE
+    $table = DataTable::create('timetableColumns');
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Short Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Rows');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Timetable Admin/ttColumn_add.php')
+        ->displayLabel();
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('rowCount', __('Rows'));
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['nameShort'];
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataRows = array('gibbonTTColumnID' => $row['gibbonTTColumnID']);
-                $sqlRows = 'SELECT * FROM gibbonTTColumnRow WHERE gibbonTTColumnID=:gibbonTTColumnID';
-                $resultRows = $connection2->prepare($sqlRows);
-                $resultRows->execute($dataRows);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            echo $resultRows->rowCount();
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_edit.php&gibbonTTColumnID='.$row['gibbonTTColumnID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/ttColumn_delete.php&gibbonTTColumnID='.$row['gibbonTTColumnID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonTTColumnID')
+        ->format(function ($values, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/Timetable Admin/ttColumn_edit.php');
 
-            ++$count;
-        }
-        echo '</table>';
-    }
+            $actions->addAction('delete', __('Delete'))
+                ->setURL('/modules/Timetable Admin/ttColumn_delete.php');
+        });
+
+    echo $table->render($columns->toDataSet());
 }

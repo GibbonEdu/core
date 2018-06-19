@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -107,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 }
                 ?>
 					<?php
-                    if ($row['status'] == 'Issued') {
+                    if ($row['status'] == 'Issued' || $row['status'] == 'Paid - Partial') {
                         if ($row['reminderCount'] >= 0) {
                             ?>
 							<tr class='<?php echo $rowNum ?>'>

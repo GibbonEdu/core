@@ -70,7 +70,7 @@ if (!isset($_SESSION[$guid]["username"])) {
         $values = $result->fetch();
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesPasswordProcess.php');
+    $form = Form::create('resetPassword', $_SESSION[$guid]['absoluteURL'].'/preferencesPasswordProcess.php');
 
     $form->addRow()->addHeading(__('Reset Password'));
 
@@ -114,7 +114,7 @@ if (!isset($_SESSION[$guid]["username"])) {
             $staff = $staff || ($roleCategory == 'Staff');
         }
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+        $form = Form::create('preferences', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
 
         $form->addRow()->addHeading(__('Settings'));
 

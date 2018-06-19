@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Get variables
 $gibbonFinanceInvoiceID = '';
@@ -96,13 +96,18 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
                         echo '<p>';
                         if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
                             echo sprintf(__($guid, 'Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]['systemName']).' ';
-                            echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/invoices_payOnlineProcess.php'>";
-                            echo "<input type='hidden' name='gibbonFinanceInvoiceID' value='$gibbonFinanceInvoiceID'>";
-                            echo "<input type='hidden' name='key' value='$key'>";
-                            echo "<div class='linkTop'>";
-                            echo $currency.$feeTotal." <input type='submit' value='Pay Online Now'>";
-                            echo '</div>';
-                            echo '</form>';
+
+                            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_payOnlineProcess.php');
+                
+                            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                            $form->addHiddenValue('gibbonFinanceInvoiceID', $gibbonFinanceInvoiceID);
+                            $form->addHiddenValue('key', $key);
+
+                            $row = $form->addRow();
+                                $row->addContent($currency.$feeTotal);
+                                $row->addSubmit(__('Pay Online Now'));
+
+                            echo $form->getOutput();
                         } else {
                             echo "<div class='error'>".__($guid, 'Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.').'</div>';
                         }

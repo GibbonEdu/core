@@ -24,6 +24,10 @@ $I->submitForm('#content form[method="post"]', $editFormValues, 'Submit');
 
 // Confirm ------------------------------------------------
 $I->seeSuccessMessage();
+
+$gibbonPersonID = $I->grabValueFromURL('gibbonPersonID');
+
+$I->amOnModulePage('Data Updater', 'data_medical.php', ['gibbonPersonID' => $gibbonPersonID]);
 $I->seeInFormFields('#content form[method="post"]', $editFormValues);
 
 $gibbonPersonMedicalUpdateID = $I->grabValueFrom("input[type='hidden'][name='existing']");

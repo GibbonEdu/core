@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -77,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     echo __($guid, 'Access denied.');
                     echo '</div>';
                 } elseif (count($options) == 1) {
-                    $_GET['search'] = $gibbonPersonID[0];
+                    $_GET['search'] = key($options);
                 } else {
                     echo '<h2>';
                     echo 'Choose Student';

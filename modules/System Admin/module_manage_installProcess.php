@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 //Get URL from calling page, and set returning URL
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/module_manage.php';
@@ -282,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                         }
 
                         //Update main menu
-                        $mainMenu = new Gibbon\menuMain($gibbon, $pdo);
+                        $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
                         $mainMenu->setMenu();
 
                         //We made it!
