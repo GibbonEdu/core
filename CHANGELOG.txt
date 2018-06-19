@@ -112,6 +112,11 @@ v16.0.00
         User Admin: fixed typo in description for Day-Type Text setting
         User Admin: fixed gibbonPersonID int length in gibbonFamilyAdult and gibbonFamilyChild
 
+v15.0.01
+--------
+	Security
+		Fixed privacy-related issue in Student Profile permissions
+        
 v15.0.00
 --------
     Headlines
