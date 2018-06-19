@@ -21,16 +21,13 @@ v16.0.00
     Headlines
         Activated Simplified Chinese and Polish as available languages
         Added Croatian and Estonian as development languages
-        Data Updater: added a My Data Updates overview and settings to redirect users on login
-        Messenger: new Groups action for custom mailing lists
-
-    Significant Changes
-        System: added tool for InnoDB database table storage engine migration
+        Added a My Data Updates overview and settings to redirect users to Data Updater on login
+        New Messenger Groups action for custom mailing lists 
+        Added new object-oriented table API, and implemented across 30% of the system
 
     Changes With Important Notices
+        System: added tool for InnoDB database table storage engine migration: if you are already running InnoDB remove lines 906 and 907 from CHANGEDB.php before upgrading
         System: fixed Cutting Edge detect/set issue in installer, impacting Cutting Edge installs from v15-16 (which may need to be reinstalled)
-
-    Security
 
     Tweaks & Bug Fixes
         System: improved IP address handling in setLog function
@@ -70,12 +67,15 @@ v16.0.00
         Library: simplified interface for Duplicate in Manage Catalog
         Library: fixed PHP warning in Library's type-specific fields AJAX script
         Markbook: fixed multi-byte string length issue causing automatic comment expansion in Markbook view
+        Markbook: fixed parent/student access issues when viewing markbook columns
         Messenger: added the ability to resend in By Roll Group view in View Send Report
         Messenger: added ability for uses with Manage Messages_all to resend on behalf of others
         Messenger: fixed bug causing non-Accepted applicant names to display with an error in Send Report
         Messenger: added SMS send logging to allow missing messages to be tracked
         Messenger: improvement to protection against big/slow email sends
         Messenger: removed caching for messanger count on homepage, so count is always accurate
+        Messenger: added email send failure logging to allow missing emails to be tracked
+        Messenger: added connection persistence to SMTP sending
         Planner: added "Notify" feature to lesson creating and editing
         Planner: fixed module name substitution in links in Lesson Planner
         Planner: added Smart Blocks tab to Unit Overview in Lesson Planner
@@ -87,6 +87,7 @@ v16.0.00
         Students: added View option to Students by Form Group report, allowing Basic or Extended view
         Students: changed School Attendance sub page to Attendance to improve UI consistency
         Students: adjusted logic in student enrolment visualisation to include students who are not 'Full'
+        Students: adjusted layout of Uploaded Response link in Markbook in Student Profile view
         School Admin: updated Finance Settings email to default to organisation email if blank
         School Admin: extend length of name field in Manage Houses to 30 chars
         School Admin: added Head of Year to Manage Year Groups and integrated into Students
@@ -100,6 +101,7 @@ v16.0.00
         Timetable: added index on gibbonPersonID for table gibbonCourseClassPerson
         Timetable: added the special day name to the timetable for school closures
         Timetable Admin: added school year selector to Sync Course Enrolment
+        Timetable Admin: made search persistent on return from course delete
         User Admin: fixed Child's Name list in Edit Family to include all students
         User Admin: fixed bug preventing some family links from showing up in Manage Users
         User Admin: removed Back link from child and adult delete modals in Manage Families

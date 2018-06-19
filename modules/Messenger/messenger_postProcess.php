@@ -1918,15 +1918,17 @@ else {
 				//Prep message
 				$bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 
+                if ( empty($emailReplyTo) ) {
+					$emailReplyTo = $from;
+                }
+                
 				//Set up email
 				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
-
-				if ( empty($emailReplyTo) ) {
-					$emailReplyTo = $from;
-				}
-
-				if ($from!=$_SESSION[$guid]["email"]) {	//If sender is using school-wide address, send from school
+				$mail->SMTPKeepAlive = true;
+				if ($emailReplyTo!="")
+					$mail->AddReplyTo($emailReplyTo, '');
+				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school
 					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
 					$mail->AddReplyTo($emailReplyTo, $_SESSION[$guid]["organisationName"] );
 				}
@@ -2003,9 +2005,11 @@ else {
 						$mail->AltBody = emailBodyConvert($bodyOut);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
+							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
 						}
 					}
 				}
+				$mail->smtpClose();
 			}
 
 			if ($sms=="Y") {

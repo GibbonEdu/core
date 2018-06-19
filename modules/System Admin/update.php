@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         echo getCurrentVersion($guid, $connection2, $version);
 
         if ($return == 'success0') {
+            $databaseUpdated = true;
             echo '<p>';
             echo '<b>'.__($guid, 'You seem to be all up to date, good work buddy!').'</b>';
             echo '</p>';
