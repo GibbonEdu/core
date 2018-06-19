@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 echo $table->render($result->toDataSet());
             }
         }
-        
+      
         if ($canViewBriefProfile || $canViewFullProfile) {
             //Proceed!
             $search = isset($_GET['search'])? $_GET['search'] : '';
