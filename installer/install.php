@@ -74,6 +74,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
         <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
         <link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
         <script type='text/javascript' src='../themes/Default/js/common.js'></script>
+        <script type='text/javascript' src='../assets/js/core.js'></script>
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
     </head>
