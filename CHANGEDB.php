@@ -878,7 +878,8 @@ UPDATE gibbonAction SET precedence=0 WHERE name='View Student Profile_brief' AND
 UPDATE gibbonAction SET precedence=1 WHERE name='View Student Profile_myChildren' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 UPDATE gibbonAction SET precedence=1 WHERE name='View Student Profile_my' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
 UPDATE gibbonAction SET precedence=2 WHERE name='View Student Profile_fullNoNotes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
-UPDATE gibbonAction SET precedence=3 WHERE name='View Student Profile_full' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end";
+UPDATE gibbonAction SET precedence=3 WHERE name='View Student Profile_full' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+";
 
 //v16.0.00
 ++$count;
@@ -951,6 +952,3 @@ ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`, `role`);end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonActivityStudent` ADD INDEX(`gibbonActivityID`, `status`);end
 ";
-
-
-

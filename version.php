@@ -22,7 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 $version = '16.0.00';
 
-
 /**
  * System Requirements
  */
