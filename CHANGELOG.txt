@@ -16,6 +16,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v16.0.01
+--------
+    Tweaks & Bug Fixes
+        System: fix PHP5.5 incompatibility in FormatResolver class
+
 v16.0.00
 --------
     Headlines
