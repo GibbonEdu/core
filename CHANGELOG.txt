@@ -28,6 +28,7 @@ v17.0.00
     Security
 
     Tweaks & Bug Fixes
+        Planner: added SMTP persistence to weekly summary CLI script
 
 
 v16.0.00
