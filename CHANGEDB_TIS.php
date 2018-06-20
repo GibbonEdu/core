@@ -47,3 +47,9 @@ INSERT INTO `gibbonPermission` (`permissionID` ,`gibbonRoleID` ,`gibbonActionID`
 // v16
 "DELETE FROM `gibbonPermission` WHERE gibbonActionID=(SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Update Family Photos_any');end
 DELETE FROM `gibbonAction` WHERE gibbonAction.name='Update Family Photos_any';end";
+
+// v17
+"ALTER TABLE `gibbonApplicationForm` ADD `gibbonPersonIDStudent` INT(10) UNSIGNED ZEROFILL NULL AFTER `dateStart`;end
+ALTER TABLE `gibbonApplicationForm` ADD `parent2gibbonPersonID` INT(10) UNSIGNED ZEROFILL NULL AFTER `parent1employer`;end
+UPDATE gibbonAction SET urlList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_delete.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php, applicationForm_manage_family.php' WHERE name='Manage Applications_editDelete' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end
+UPDATE gibbonAction SET urlList='applicationForm_manage.php, applicationForm_manage_edit.php, applicationForm_manage_accept.php, applicationForm_manage_reject.php, applicationForm_manage_add.php, applicationForm_manage_family.php' WHERE name='Manage Applications_edit' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Students');end";

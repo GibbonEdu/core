@@ -54,6 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             header("Location: {$URL}");
         } else {
             //Proceed!
+            $application = $result->fetch();
+
             //Get student fields
             $priority = $_POST['priority'];
             $status = $_POST['status'];
@@ -80,41 +82,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 $paymentMade = $_POST['paymentMade'];
             }
             $notes = $_POST['notes'];
-            $surname = trim($_POST['surname']);
-            $firstName = trim($_POST['firstName']);
-            $preferredName = trim($_POST['preferredName']);
-            $officialName = trim($_POST['officialName']);
-            $nameInCharacters = $_POST['nameInCharacters'];
-            $gender = $_POST['gender'];
-            $dob = $_POST['dob'];
+            $gibbonPersonIDStudent = isset($_POST['gibbonPersonIDStudent'])? trim($_POST['gibbonPersonIDStudent']) : $application['gibbonPersonIDStudent'];
+            $surname = isset($_POST['surname'])? trim($_POST['surname']) : $application['surname'];
+            $firstName = isset($_POST['firstName'])? trim($_POST['firstName']) : $application['firstName'];
+            $preferredName = isset($_POST['preferredName'])? trim($_POST['preferredName']) : $application['preferredName'];
+            $officialName = isset($_POST['officialName'])? trim($_POST['officialName']) : $application['officialName'];
+            $nameInCharacters = isset($_POST['nameInCharacters'])? $_POST['nameInCharacters'] : $application['nameInCharacters'];
+            $gender = isset($_POST['gender'])? $_POST['gender'] : $application['gender'];
+            $dob = isset($_POST['dob'])? $_POST['dob'] : $application['dob'];
             if ($dob == '') {
                 $dob = null;
             } else {
                 $dob = dateConvert($guid, $dob);
             }
-            $languageHomePrimary = $_POST['languageHomePrimary'];
-            $languageHomeSecondary = $_POST['languageHomeSecondary'];
-            $languageFirst = $_POST['languageFirst'];
-            $languageSecond = $_POST['languageSecond'];
-            $languageThird = $_POST['languageThird'];
-            $countryOfBirth = $_POST['countryOfBirth'];
-            $citizenship1 = $_POST['citizenship1'];
-            $citizenship1Passport = $_POST['citizenship1Passport'];
-            $nationalIDCardNumber = $_POST['nationalIDCardNumber'];
-            $residencyStatus = $_POST['residencyStatus'];
-            $visaExpiryDate = $_POST['visaExpiryDate'];
+            $languageHomePrimary = isset($_POST['languageHomePrimary']) ? $_POST['languageHomePrimary'] : $application['languageHomePrimary'];
+            $languageHomeSecondary = isset($_POST['languageHomeSecondary']) ? $_POST['languageHomeSecondary'] : $application['languageHomeSecondary'];
+            $languageFirst = isset($_POST['languageFirst']) ? $_POST['languageFirst'] : $application['languageFirst'];
+            $languageSecond = isset($_POST['languageSecond']) ? $_POST['languageSecond'] : $application['languageSecond'];
+            $languageThird = isset($_POST['languageThird']) ? $_POST['languageThird'] : $application['languageThird'];
+            $countryOfBirth = isset($_POST['countryOfBirth']) ? $_POST['countryOfBirth'] : $application['countryOfBirth'];
+            $citizenship1 = isset($_POST['citizenship1']) ? $_POST['citizenship1'] : $application['citizenship1'];
+            $citizenship1Passport = isset($_POST['citizenship1Passport']) ? $_POST['citizenship1Passport'] : $application['citizenship1Passport'];
+            $nationalIDCardNumber = isset($_POST['nationalIDCardNumber']) ? $_POST['nationalIDCardNumber'] : $application['nationalIDCardNumber'];
+            $residencyStatus = isset($_POST['residencyStatus']) ? $_POST['residencyStatus'] : $application['residencyStatus'];
+            $visaExpiryDate = isset($_POST['visaExpiryDate']) ? $_POST['visaExpiryDate'] : $application['visaExpiryDate'];
             if ($visaExpiryDate == '') {
                 $visaExpiryDate = null;
             } else {
                 $visaExpiryDate = dateConvert($guid, $visaExpiryDate);
             }
-            $email = trim($_POST['email']);
-            $phone1Type = $_POST['phone1Type'];
-            $phone1CountryCode = $_POST['phone1CountryCode'];
-            $phone1 = preg_replace('/[^0-9+]/', '', $_POST['phone1']);
-            $phone2Type = $_POST['phone2Type'];
-            $phone2CountryCode = $_POST['phone2CountryCode'];
-            $phone2 = preg_replace('/[^0-9+]/', '', $_POST['phone2']);
+            $email = isset($_POST['email']) ? trim($_POST['email']) : $application['email'];
+            $phone1Type = isset($_POST['phone1Type']) ? $_POST['phone1Type'] : $application['phone1Type'];
+            $phone1CountryCode = isset($_POST['phone1CountryCode']) ? $_POST['phone1CountryCode'] : $application['phone1CountryCode'];
+            $phone1 = isset($_POST['phone1']) ? preg_replace('/[^0-9+]/', '', $_POST['phone1']) : $application['phone1'];
+            $phone2Type = isset($_POST['phone2Type']) ? $_POST['phone2Type'] : $application['phone2Type'];
+            $phone2CountryCode = isset($_POST['phone2CountryCode']) ? $_POST['phone2CountryCode'] : $application['phone2CountryCode'];
+            $phone2 = isset($_POST['phone2']) ? preg_replace('/[^0-9+]/', '', $_POST['phone2']) : $application['phone2'];
             $medicalInformation = $_POST['medicalInformation'];
             $sen = $_POST['sen'];
             if ($sen == 'N') {
@@ -160,18 +163,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             } else {
                 $gibbonFamilyID = null;
             }
-            $homeAddress = null;
-            if (isset($_POST['homeAddress'])) {
-                $homeAddress = $_POST['homeAddress'];
-            }
-            $homeAddressDistrict = null;
-            if (isset($_POST['homeAddressDistrict'])) {
-                $homeAddressDistrict = $_POST['homeAddressDistrict'];
-            }
-            $homeAddressCountry = null;
-            if (isset($_POST['homeAddressCountry'])) {
-                $homeAddressCountry = $_POST['homeAddressCountry'];
-            }
+            $homeAddress = isset($_POST['homeAddress']) ? $_POST['homeAddress'] : $application['homeAddress'];
+            $homeAddressDistrict = isset($_POST['homeAddressDistrict']) ? $_POST['homeAddressDistrict'] : $application['homeAddressDistrict'];
+            $homeAddressCountry = isset($_POST['homeAddressCountry']) ? $_POST['homeAddressCountry'] : $application['homeAddressCountry'];
 
             //GET PARENT1 FEILDS
             $parent1gibbonPersonID = null;
@@ -703,6 +697,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $resultNewLink = $pdo->executeQuery($data, $sql);
                             }
                         }
+                    }
+
+                    // Redirect to a different page if we're attaching this application to an existing family
+                    $attachToFamily = isset($_POST['attachToFamily'])? $_POST['attachToFamily'] : '';
+                    if ($attachToFamily == 'Y') {
+                        $gibbonFamilyIDExisting = isset($_POST['gibbonFamilyIDExisting'])? $_POST['gibbonFamilyIDExisting'] : '';
+                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/applicationForm_manage_family.php&gibbonApplicationFormID=$gibbonApplicationFormID&gibbonFamilyIDExisting=$gibbonFamilyIDExisting&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search";
+                        
+                        header("Location: {$URL}");
+                        exit;
                     }
 
                     if ($partialFail == true) {

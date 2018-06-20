@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Domain\User;
 
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\TableQueryAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
@@ -30,8 +31,10 @@ use Gibbon\Domain\QueryableGateway;
 class FamilyGateway extends QueryableGateway
 {
     use TableAware;
+    use TableQueryAware;
 
     private static $tableName = 'gibbonFamily';
+    private static $primaryKey = 'gibbonFamilyID';
 
     private static $searchableColumns = ['name'];
     
@@ -55,7 +58,7 @@ class FamilyGateway extends QueryableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status
             FROM gibbonFamilyAdult
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE FIND_IN_SET(gibbonFamilyAdult.gibbonFamilyID, :gibbonFamilyIDList) 
@@ -68,12 +71,32 @@ class FamilyGateway extends QueryableGateway
     {
         $gibbonFamilyIDList = is_array($gibbonFamilyIDList) ? implode(',', $gibbonFamilyIDList) : $gibbonFamilyIDList;
         $data = array('gibbonFamilyIDList' => $gibbonFamilyIDList);
-        $sql = "SELECT gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonFamilyChild.gibbonFamilyID, '' as title, gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.status
             FROM gibbonFamilyChild
             JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE FIND_IN_SET(gibbonFamilyChild.gibbonFamilyID, :gibbonFamilyIDList) 
             ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getFamilyByID($gibbonFamilyID)
+    {
+        return $this->selectRow($this->getTableName(), $this->getPrimaryKey(), $gibbonFamilyID)->fetch();
+    }
+
+    public function updateFamily($data)
+    {
+        return $this->updateRow($this->getTableName(), $this->getPrimaryKey(), $data);
+    }
+
+    public function insertFamily($data)
+    {
+        return $this->insertRow($this->getTableName(), $this->getPrimaryKey(), $data);
+    }
+
+    public function insertFamilyAdult($data)
+    {
+        return $this->insertRow('gibbonFamilyAdult', 'gibbonFamilyAdultID', $data);
     }
 }

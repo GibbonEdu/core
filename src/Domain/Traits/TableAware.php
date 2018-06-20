@@ -28,13 +28,6 @@ namespace Gibbon\Domain\Traits;
 trait TableAware
 {
     /**
-     * Internal array of column name => data type.
-     *
-     * @var array
-     */
-    protected static $columns;
-
-    /**
      * Gets the database table name.
      *
      * @return string
@@ -46,6 +39,20 @@ trait TableAware
         }
 
         return static::$tableName;
+    }
+
+    /**
+     * Gets the primary key column name for the table.
+     *
+     * @return string
+     */
+    public function getPrimaryKey()
+    {
+        if (empty(static::$primaryKey)) {
+            throw new \BadMethodCallException(get_called_class().' must define a $primaryKey');
+        }
+
+        return static::$primaryKey;
     }
 
     /**
