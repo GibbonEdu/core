@@ -30,6 +30,10 @@ v17.0.00
     Tweaks & Bug Fixes
         Planner: added SMTP persistence to weekly summary CLI script
 
+v16.0.01
+--------
+    Tweaks & Bug Fixes
+        System: fix PHP5.5 incompatibility in FormatResolver class
 
 v16.0.00
 --------
