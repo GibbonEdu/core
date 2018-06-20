@@ -729,6 +729,11 @@ ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','
 ALTER TABLE `gibbonActivityStudent` ADD INDEX(`gibbonActivityID`, `status`);end
 ";
 
+//v16.0.01
+++$count;
+$sql[$count][0] = '16.0.01';
+$sql[$count][1] = "";
+
 //v17.0.00
 ++$count;
 $sql[$count][0] = '17.0.00';
