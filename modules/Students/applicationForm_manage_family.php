@@ -140,6 +140,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row = $form->addRow()->addClass('parent1UserType');
             $row->addLabel('parent1gibbonPersonID', __('User Account'));    
             $row->addSelect('parent1gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+            
+        $row = $form->addRow()->addClass('parent1UserType');
+            $row->addLabel('parent1UserUpdateData', __('Update Data?'));    
+            $row->addYesNo('parent1UserUpdateData');    
     }
     
     if (!empty($application['parent2surname'])) {
@@ -169,6 +173,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row = $form->addRow()->addClass('parent2UserType');
                 $row->addLabel('parent2gibbonPersonID', __('User Account'));
                 $row->addSelect('parent2gibbonPersonID')->fromArray($familyAdults)->isRequired()->placeholder();
+
+            $row = $form->addRow()->addClass('parent2UserType');
+                $row->addLabel('parent2UserUpdateData', __('Update Data?'));    
+                $row->addYesNo('parent2UserUpdateData');   
         }
     }
 

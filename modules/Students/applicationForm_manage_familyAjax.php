@@ -39,15 +39,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $data = array('search' => '%'.$searchTerm.'%', 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
     $sql = "SELECT gibbonFamily.gibbonFamilyID as id, gibbonFamily.name as familyName, GROUP_CONCAT(DISTINCT CONCAT(adult.title, ' ', adult.preferredName, ' ', adult.surname) SEPARATOR ', ') as parentNames, GROUP_CONCAT(DISTINCT CONCAT(child.preferredName, ' ', child.surname, ' ', gibbonRollGroup.nameShort) SEPARATOR ', ') as studentNames
             FROM gibbonFamily
-            JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            JOIN gibbonPerson AS adult ON (gibbonFamilyAdult.gibbonPersonID=adult.gibbonPersonID)
-            JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
-            JOIN gibbonPerson AS child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
-            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=child.gibbonPersonID)
-            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+            LEFT JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+            LEFT JOIN gibbonPerson AS adult ON (gibbonFamilyAdult.gibbonPersonID=adult.gibbonPersonID)
+            LEFT JOIN gibbonFamilyChild ON (gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
+            LEFT JOIN gibbonPerson AS child ON (gibbonFamilyChild.gibbonPersonID=child.gibbonPersonID)
+            LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=child.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
+            LEFT JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
             WHERE (gibbonFamily.name LIKE :search OR child.surname LIKE :search OR child.preferredName LIKE :search OR child.firstName LIKE :search 
                   OR adult.surname LIKE :search OR adult.preferredName LIKE :search OR adult.firstName LIKE :search)
-            AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
             GROUP BY gibbonFamily.gibbonFamilyID
             ORDER BY gibbonFamily.name
             LIMIT 50

@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $partialFail = false;
 
     $studentUserType = isset($_POST['studentUserType']) ? $_POST['studentUserType'] : '';
-    $gibbonPersonIDStudent = isset($_POST['gibbonPersonIDStudent']) ? $_POST['gibbonPersonIDStudent'] : '';
+    $gibbonPersonIDStudent = isset($_POST['gibbonPersonIDStudent']) ? $_POST['gibbonPersonIDStudent'] : null;
 
     // Update the student details if the user exists (returning student)
     if ($studentUserType == 'existing' && !empty($gibbonPersonIDStudent)) {
@@ -106,6 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     // Update users for parent1 and/or parent2 if they already exist
     for ($i = 1; $i <= 2; $i++) {
         $parentUserType = isset($_POST["parent{$i}UserType"]) ? $_POST["parent{$i}UserType"] : '';
+        $parentUserUpdateData = isset($_POST["parent{$i}UserUpdateData"]) ? $_POST["parent{$i}UserUpdateData"] : 'N';
         $parentRelationship = isset($_POST["parent{$i}relationship"]) ? $_POST["parent{$i}relationship"] : '';
         $gibbonPersonIDParent = isset($_POST["parent{$i}gibbonPersonID"]) ? $_POST["parent{$i}gibbonPersonID"] : '';
 
@@ -122,39 +123,41 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 ]);
             }
 
-            // Merge the new custom fields into the existing field data
-            $existingFields = !empty($parent['fields']) ? unserialize($parent['fields']) : []; 
-            $newFields = !empty($application["parent{$i}field"]) ? unserialize($application["parent{$i}field"]) : []; 
-            $newFields = array_replace($existingFields, $newFields);
+            if ($parentUserUpdateData == 'Y') {
+                // Merge the new custom fields into the existing field data
+                $existingFields = !empty($parent['fields']) ? unserialize($parent['fields']) : []; 
+                $newFields = !empty($application["parent{$i}field"]) ? unserialize($application["parent{$i}field"]) : []; 
+                $newFields = array_replace($existingFields, $newFields);
 
-            // Update the parent user details
-            $updated = $userGateway->updateUser([
-                'gibbonPersonID'       => $gibbonPersonIDParent,
-                'title'                => $application["parent{$i}title"],
-                'surname'              => $application["parent{$i}surname"],
-                'firstName'            => $application["parent{$i}firstName"],
-                'preferredName'        => $application["parent{$i}preferredName"],
-                'officialName'         => $application["parent{$i}officialName"],
-                'nameInCharacters'     => $application["parent{$i}nameInCharacters"],
-                'gender'               => $application["parent{$i}gender"],
-                'languageFirst'        => $application["parent{$i}languageFirst"],
-                'languageSecond'       => $application["parent{$i}languageSecond"],
-                'citizenship1'         => $application["parent{$i}citizenship1"],
-                'nationalIDCardNumber' => $application["parent{$i}nationalIDCardNumber"],
-                'residencyStatus'      => $application["parent{$i}residencyStatus"],
-                'visaExpiryDate'       => $application["parent{$i}visaExpiryDate"],
-                'email'                => $application["parent{$i}email"],
-                'phone1Type'           => $application["parent{$i}phone1Type"],
-                'phone1CountryCode'    => $application["parent{$i}phone1CountryCode"],
-                'phone1'               => $application["parent{$i}phone1"],
-                'phone2Type'           => $application["parent{$i}phone2Type"],
-                'phone2CountryCode'    => $application["parent{$i}phone2CountryCode"],
-                'phone2'               => $application["parent{$i}phone2"],
-                'profession'           => $application["parent{$i}profession"],
-                'employer'             => $application["parent{$i}employer"],
-                'fields'               => serialize($newFields),
-            ]);
-            $partialFail &= !$updated;
+                // Update the parent user details
+                $updated = $userGateway->updateUser([
+                    'gibbonPersonID'       => $gibbonPersonIDParent,
+                    'title'                => $application["parent{$i}title"],
+                    'surname'              => $application["parent{$i}surname"],
+                    'firstName'            => $application["parent{$i}firstName"],
+                    'preferredName'        => $application["parent{$i}preferredName"],
+                    'officialName'         => $application["parent{$i}officialName"],
+                    'nameInCharacters'     => $application["parent{$i}nameInCharacters"],
+                    'gender'               => $application["parent{$i}gender"],
+                    'languageFirst'        => $application["parent{$i}languageFirst"],
+                    'languageSecond'       => $application["parent{$i}languageSecond"],
+                    'citizenship1'         => $application["parent{$i}citizenship1"],
+                    'nationalIDCardNumber' => $application["parent{$i}nationalIDCardNumber"],
+                    'residencyStatus'      => $application["parent{$i}residencyStatus"],
+                    'visaExpiryDate'       => $application["parent{$i}visaExpiryDate"],
+                    'email'                => $application["parent{$i}email"],
+                    'phone1Type'           => $application["parent{$i}phone1Type"],
+                    'phone1CountryCode'    => $application["parent{$i}phone1CountryCode"],
+                    'phone1'               => $application["parent{$i}phone1"],
+                    'phone2Type'           => $application["parent{$i}phone2Type"],
+                    'phone2CountryCode'    => $application["parent{$i}phone2CountryCode"],
+                    'phone2'               => $application["parent{$i}phone2"],
+                    'profession'           => $application["parent{$i}profession"],
+                    'employer'             => $application["parent{$i}employer"],
+                    'fields'               => serialize($newFields),
+                ]);
+                $partialFail &= !$updated;
+            }
         }
     }
 
