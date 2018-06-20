@@ -952,3 +952,8 @@ ALTER TABLE `gibbonCourseClassPerson` ADD INDEX(`gibbonPersonID`, `role`);end
 ALTER TABLE `gibbonMessengerTarget` CHANGE `type` `type` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonActivityStudent` ADD INDEX(`gibbonActivityID`, `status`);end
 ";
+
+//v16.0.01
+++$count;
+$sql[$count][0] = '16.0.01';
+$sql[$count][1] = "";
