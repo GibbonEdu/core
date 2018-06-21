@@ -80,7 +80,7 @@ trait FormatResolver
                 $args = array_map(function($key) use (&$data) {
                     return isset($data[$key])? $data[$key] : $key;
                 }, $params);
-                return $callable(...$args);
+                return call_user_func_array($callable, $args);
             } else {
                 return $callable($data);
             }

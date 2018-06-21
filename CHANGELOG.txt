@@ -16,6 +16,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v17.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+        System: removed upgrade path for v11.0.00 and below
+
+    Security
+
+    Tweaks & Bug Fixes
+        Planner: added SMTP persistence to weekly summary CLI script
+
+v16.0.01
+--------
+    Tweaks & Bug Fixes
+        System: fix PHP5.5 incompatibility in FormatResolver class
+
 v16.0.00
 --------
     Headlines
@@ -112,6 +131,11 @@ v16.0.00
         User Admin: fixed typo in description for Day-Type Text setting
         User Admin: fixed gibbonPersonID int length in gibbonFamilyAdult and gibbonFamilyChild
 
+v15.0.01
+--------
+	Security
+		Fixed privacy-related issue in Student Profile permissions
+        
 v15.0.00
 --------
     Headlines
@@ -122,7 +146,7 @@ v15.0.00
     Changes With Important Notices
         Planner: integrated Resources into the Planner module (/modules/Resources needs to be manually removed)
 
-        Security
+    Security
         System: fixed security vulnerability in the installer
         System: added validation and output escaping to Personal Background URL in Preferences
 
@@ -727,166 +751,6 @@ v12.0.00
         User Admin: import interface fixes
         User Admin: fixed broken Other and Unspecified values in user add (and in Public Registration too)
 
-v11.0.00
---------
-    Headlines
-        New Tracking modules adds longitudinal graphing and data exports of student assessment data
-        New Formal Assessment module facilitates teacher-inputted, school-wide Internal Assessments, and incorporates old External Assessment module
-        New custom fields feature allows easy creation of new user fields for use in User Admin, Application Form, Data Updater and Students modules
-        Improved user import functionality allows operation in both sync and import modes
-        Additional parent interfaces give access to Behaviour and Finance information
-        Improved Class overview page within the Departments module
-
-    Changes With Important Notices
-        System: generalised stars, so that they are all in one table, with common methods, usable to additional modules.
-            NOTE: RESETS STARS/LIKES TO ZERO
-        System admin: changed administrator, DBA and admissions contacts to system users, not addresses.
-            NOTE: THIS MEANS ADMINS NEED TO BE RESET UNLESS THEY HAVE gibbonPersonID=1
-        Google: migrated OAuth authentication to use main Google libraries.
-            NOTE: REQUIRES REDIRECT URL RESET IN BOTH GOOGLE DEV CONSOLE AND IN GIBBON
-
-    Significant Changes
-        System: added module actions to Fast Finder, in order to allow quick access to any functionality in the system
-        System: set all current users, and future users, to have email notifications on by default (makes notifications more obvious)
-        Activities: enabled generation of Finance invoices, based on activity enrolment
-        Behaviour: added automated sending of pre-defined letters for behaviour
-        Individual Needs: added descriptors states to archive
-        Library: added ability, in Browse Library, to search all fields
-        Library: added a CLI script for notifying users with overdue loans
-        Rubrics: added ability to duplicate rubrics
-        School Admin: added logo field to houses and displayed it for users in house
-        School Admin: added ability to set a default grade for a grade scale, and applied across system
-        School Admin: added ability to copy all form/roll groups in a year, into the following year
-        Timetable Admin: added more visual editing to individual timetable, allowing quicker changes of spaces, exceptions, etc
-        Timetable Admin: added ability to copy all courses and classes to the next school year
-        Timetable Admin: added teacher and student enrolment rollover for courses
-        Timetable: added ability for those with coordinator/assistant coordinator permissions within a department to manage student enrolment. Off by default.
-        User Admin: enhanced granularity on login controles, so that roles can be prevented from logging into past and/or future years
-        User Admin: added option to automatically assign newly accepted students to a house
-
-    Security
-        Messenger: fixed reply-to bug causing multiple reply addresses
-        System: added system log of logins, both failed and successful
-        System: increased max password length to 30 characters (for the paranoid amongst us ; )
-
-    Tweaks & Bug Fixes
-        System Admin: added Saudi Riyal to the list of currencies
-        System: added Nepalese Rupee as currency option
-        System: added notification archive as default action, rather than deletion
-        System: improved notification icon in minor links area
-        System: improved star icon in minor links area
-        System: added Central African Francs as a currency
-        System: fixed broken links to gibbonedu.org
-        System: removed config-sample.php as it is a throw back to pre-installer days
-        System: added Romanian as active language (thanks to Iulian Ghetau for his translation)
-        System: migrated from email notifications to system notifications
-        System: migrated CLI notifications from email to system notifications
-        System: added classes to Fast Finder
-        System: updated jquery, jquery-ui and tinymce libraries
-        System: fixed date swap bug in homepage Parental Dashboard TT
-        System: removed white space before </script> across system
-        System: switched notification emails to HTML
-        System: added super and sub script to Visual text editor
-        System: added mysql fix to stop bug where actions appear multiple times in the database
-        System: fixed notification PHP notice error
-        System: fixed deprecation notice in Google Calendar integration
-        System: updated Google library to latest Version
-        System: added new library for export to Excel, not loaded by default (old functions have been deprecated)
-        System: fixed birthday alert bug causing leap year issues
-        System: fixed page expiry on back issue
-        System: increased lowest-upgrade-version to v8.3.00 to reduce file size
-        System: added new visualisation library (not loaded by default)
-        System: added Bangladeshi Taka as currency option
-        System: added minor link back to school home page when not logged in
-        System: added Russian and Ukranian as development languages (thanks to Oleg at Info Web for his offer of translation)
-        System: fixed typo in database field name and interface strings
-        System: made Gibbon logo in footer theme dependent
-        System: added Bangla as development language (thanks to Tarul Ahsan for his offer of translation)
-        System Admin: added extra section for settings in module installer, to avoid having to use module table bit as hack
-        System: fixed super/subscript bug relating to allowableHTML setting
-        System: added Egyptian Pound as new currency
-        System: cleaned up old tdOdd.png image from Default theme
-        System: improved layout and usability of the changelog (at last!)
-        System: set Romanian as an active language (75% complete)
-        Activities: UX improvements to parent sign ups
-        Activities: added Waiting List column to manage view
-        Activities: fixed bug preventing Activity add when type field is not in use
-        Activities: adjusted cost display and fixed PHP Notice errors
-        Activities: change attendance to only show accepted students (e.g. not kids on waiting list)
-        Activities: added waiting list to staff full view of an activity
-        Application Form: fixed bug causing failed PayPal payments to be marked as successful
-        Application Form: added JavaScript alert to give clear feedback when a form is accepted
-        Attendance: added absence count for each student when taking roll group attendance
-        Attendance: fixed SQL error in roll group attendance taking view
-        Attendance: added links from roll group attendance taking view to individual student profiles
-        Attendance: fixed PHP Notice issue in student report
-        Attendance: fixed interface string bug
-        Behaviour: added tutor notification for negative behaviour comments
-        Behaviour: made second step in behaviour record add optional, to reduce likelihood of record not being completely added
-        Data Updater: improved UX for adding medical conditions
-        Data Updater: added username to drop down to distinguish between students with same names
-        Finance: added switch to prevent adding expenses without going through the request procedure
-        Finance: added option to prevent request being counted against a budget
-        Finance: stopped filters from reseting themselves all the time
-        Finance: added ability for all involved parties to comment on an expense request
-        Finance: made expense approval request notification self destructing, when approval is carried out (in case notification was bypassed)
-        Finance: added ability to record partial payments, as well as a log to record payment
-        Finance: added ability to remove itemisation from invoices and receipts
-        Finance: made certain invoicee fields compulsory for company payment
-        Finance: fixed bug causing failed PayPal payments to be marked as successful
-        Formal Assessment: changed name of module External Assessment, getting ready to add formal Internal Assessments too
-        Formal Assessment: fixed error stopping categories from displaying correctly when no _ in the name
-        Library: fixed bug preventing library images from showing up in catalog browsing
-        Library: tweaked lending log view to include current borrower if item on loan
-        Library: added ability to edit overdue loans from the overdue report
-        Markbook: made access to Add Multiple Records one click quicker for admins with no classes
-        Messenger: added ability to Like messages
-        Messenger: added View Message Wall Link to homepage widget
-        Planner: added persistence to filter
-        Planner: improved reliability of lesson plan bumping
-        Planner: added ability to duplicate lesson plan to another year
-        Planner: changed "Manage Units" to "Unit Planner"
-        Planner: fixed chat box width issue in lesson plan Unit Overview
-        Planner: fixed bug in birthday title popup in class full view
-        Planner: fixed issue with duplicate lesson plans causing TT issues
-        Resources: fixed PHP Notice issue when adding a resource
-        Resources: slight tweak to UX for inserting images via editor
-        Resources: improved themability of resource tag cloud
-        School Admin: added interface to control ebabling/disabling of descriptors and levels in Behaviour
-        School Admin: changed External Assessment Settings to Formal Assessment Settings
-        School Admin: fixed issue preventing editing of current school year
-        School Admin: added custom space type setting to allow for flexible space typing
-        Students: fixed bug preventing module hooks from showing when there are multiple hooks present in the system
-        Students: added ability to add/edit/delete notes for students who have not yet reached their start date
-        Students: fixed bug preventing adding/editing/deleted a student note for a left/expected student
-        System Admin: fixed minor install bug relating to old manifests, not having category permissions set
-        System Admin: added feature to allow staff to confirm receipt of alarm, with report on current alarm for admins
-        System Admin: added custom alarm sound file as a setting in Sound Alarm
-        System Admin: added option to remove database tables/views when uninstalling module
-        System Admin: added "Lockdown" to Fast Finder as a shortcut to "Sound Alarm"
-        System Admin: added Vietnamese Dong as a currency
-        System Admin: increased size of alarm confirmation link text
-        Timetable: fixed a US-date bug which caused TT to jump to future date from Space Booking state clicked to change
-        Timetable: homepage timetable not showing multiple timetables correctly
-        Timetable: added View Master Timetable to allow all teachers and rooms to be seen in one go
-        Timetable: improved display of short time slots, and of tooltip on hover
-        Timetable: prevented deleted, improved ordering, labelling and linking of student enrolment editing
-        Timetable Admin: added order field to Courses, to allow them to be ordered in reports
-        Timetable Admin: added current student number beside class name in student enrolment view
-        Timetable Admin: improved ordering, labelling and linking of class enrolment editing
-        User Admin: added username to student selection list to help differentiate students with same name
-        User Admin: removed thumbnail image size (75 x 100px) to simplify image management, leaving browser to do resizing
-        User Admin: greater flexibility in acceptable image size for User Photo
-        User Admin: fixed date bug caused by erroneous data import
-        User Admin: fixed instances of gibbonAlertID set to 000 in data updates
-        User Admin: changed individual languages from text input to dropdown selection
-        User Admin: changed home language from text input to dropdown selection, added secondary home language
-        User Admin: added ability to specify password in user import
-        User Admin: improved acceptance of applications to us student note title
-        User Admin: added roll order field to student enrolment import
-        User Admin: fixed application status display bug in application form edit
-
-
-v10.0.00 and earlier
+v11.0.00 and earlier
 -------------------
 Removed to reduce file size
