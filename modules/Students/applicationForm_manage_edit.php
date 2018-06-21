@@ -607,199 +607,133 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
         }
     }
-
-    $start = 1;
     
-    // PARENT 1 - IF EXISTS
-    if (!empty($application['parent1gibbonPersonID']) ) {
-
-        $form->addRow()->addHeading(__('Parent/Guardian').' 1');
-
-        $form->addHiddenValue('parent1email', $application['parent1email']);
-        $form->addHiddenValue('parent1gibbonPersonID', $application['parent1gibbonPersonID']);
-
-        $row = $form->addRow();
-            $row->addLabel('parent1surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-            $row->addTextField('parent1surname')->maxLength(30)->readOnly();
-
-        $row = $form->addRow();
-            $row->addLabel('parent1preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-            $row->addTextField('parent1preferredName')->maxLength(30)->readOnly();
-
-        $row = $form->addRow();
-            $row->addLabel('parent1relationship', __('Relationship'));
-            $row->addSelectRelationship('parent1relationship')->isRequired();
-
-        // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
-        $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
-        $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-        if ($resultFields->rowCount() > 0) {
-            $row = $form->addRow();
-            $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
-
-            while ($rowFields = $resultFields->fetch()) {
-                $name = "parent1custom".$rowFields['gibbonPersonFieldID'];
-                $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
-
-                $row = $form->addRow();
-                    $row->addLabel($name, $rowFields['name']);
-                    $row->addCustomField($name, $rowFields)->setValue($value);
-            }
-        }
-
-        $start = 2;
-    }
-    
-    // PARENT 2 - IF EXISTS
-    if (!empty($application['parent2gibbonPersonID']) ) {
-
-        $form->addRow()->addHeading(__('Parent/Guardian').' 2');
-
-        $form->addHiddenValue('parent2email', $application['parent2email']);
-        $form->addHiddenValue('parent2gibbonPersonID', $application['parent2gibbonPersonID']);
-
-        $row = $form->addRow();
-            $row->addLabel('parent2surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-            $row->addTextField('parent2surname')->maxLength(30)->readOnly();
-
-        $row = $form->addRow();
-            $row->addLabel('parent2preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-            $row->addTextField('parent2preferredName')->maxLength(30)->readOnly();
-
-        $row = $form->addRow();
-            $row->addLabel('parent2relationship', __('Relationship'));
-            $row->addSelectRelationship('parent2relationship')->isRequired();
-
-        // CUSTOM FIELDS FOR PARENT 2 WITH FAMILY
-        $existingFields = (isset($application["parent2fields"]))? unserialize($application["parent2fields"]) : null;
-        $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-        if ($resultFields->rowCount() > 0) {
-            $row = $form->addRow();
-            $row->addSubheading(__('Parent/Guardian').' 1 '.__('Other Information'));
-
-            while ($rowFields = $resultFields->fetch()) {
-                $name = "parent2custom".$rowFields['gibbonPersonFieldID'];
-                $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
-
-                $row = $form->addRow();
-                    $row->addLabel($name, $rowFields['name']);
-                    $row->addCustomField($name, $rowFields)->setValue($value);
-            }
-        }
-
-        $start = 3;
-    }
-
     // PARENTS
-    for ($i = $start; $i < 3; ++$i) {
-        $subheading = '';
-        if ($i == 1) {
-            $subheading = '<span style="font-size: 75%">'.__('(e.g. mother)').'</span>';
-        } elseif ($i == 2) {
-            $subheading = '<span style="font-size: 75%">'.__('(e.g. father)').'</span>';
-        }
+    for ($i = 1; $i <= 2; ++$i) {
 
-        $form->addRow()->addHeading(__('Parent/Guardian').' '.$i)->append($subheading);
+        $heading = $form->addRow()->addHeading(__('Parent/Guardian').' '.$i);
+        $heading->append('<span style="font-size: 75%">'.($i == 1 ? __('(e.g. mother)') : __('(e.g. father)')).'</span>');
 
-        if ($i == 2) {
-            $checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']))? 'Yes' : 'No';
-            $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
-            $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
-        }
+        // PARENT - IF EXISTS
+        if (!empty($application["parent{$i}gibbonPersonID"])) {
 
-        // PARENT PERSONAL DATA
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
+            $heading->append('<br/>'.sprintf(__('The applying %1$s is already a member of %2$s.'), __('Parent'), $_SESSION[$guid]['organisationName']));
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}title", __('Title'));
-            $row->addSelectTitle("parent{$i}title")->isRequired();
+            $form->addHiddenValue("parent{$i}email", $application["parent{$i}email"]);
+            $form->addHiddenValue("parent{$i}gibbonPersonID", $application["parent{$i}gibbonPersonID"]);
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
-            $row->addTextField("parent{$i}surname")->isRequired()->maxLength(30);
+            $row = $form->addRow();
+                $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
+                $row->addTextField("parent{$i}surname")->maxLength(30)->readOnly();
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
-            $row->addTextField("parent{$i}firstName")->isRequired()->maxLength(30);
+            $row = $form->addRow();
+                $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+                $row->addTextField("parent{$i}preferredName")->maxLength(30)->readOnly();
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-            $row->addTextField("parent{$i}preferredName")->isRequired()->maxLength(30);
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
-            $row->addTextField("parent{$i}officialName")->isRequired()->maxLength(150);
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-            $row->addTextField("parent{$i}nameInCharacters")->maxLength(20);
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}gender", __('Gender'));
-            $row->addSelectGender("parent{$i}gender")->isRequired();
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}relationship", __('Relationship'));
-            $row->addSelectRelationship("parent{$i}relationship")->isRequired();
-
-        // PARENT PERSONAL BACKGROUND
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}languageFirst", __('First Language'));
-            $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}languageSecond", __('Second Language'));
-            $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
-            if (!empty($nationalityList)) {
-                $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder();
-            } else {
-                $row->addSelectCountry("parent{$i}citizenship1");
+            $row = $form->addRow();
+                $row->addLabel("parent{$i}relationship", __('Relationship'));
+                $row->addSelectRelationship("parent{$i}relationship")->isRequired();
+        } else {
+            // NEW PARENT - IF NOT EXISTS
+            if ($i == 2) {
+                $checked = (!empty($application['parent2gibbonPersonID']) || !empty($application['parent2surname']))? 'Yes' : 'No';
+                $form->addRow()->addCheckbox('secondParent')->setValue('No')->checked($checked)->prepend(__('Do not include a second parent/guardian'));
+                $form->toggleVisibilityByClass('parentSection2')->onCheckbox('secondParent')->whenNot('No');
             }
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
-            $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30);
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
-            if (!empty($residencyStatusList)) {
-                $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder();
-            } else {
-                $row->addTextField("parent{$i}residencyStatus")->maxLength(30);
-            }
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
-            $row->addDate("parent{$i}visaExpiryDate");
-
-        // PARENT CONTACT
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}email", __('Email'));
-            $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50);
-
-            if ($uniqueEmailAddress == 'Y') {
-                $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
-            }
-
-        for ($y = 1; $y < 3; ++$y) {
+            // PARENT PERSONAL DATA
             $row = $form->addRow()->setClass("parentSection{$i}");
-                $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
-                $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1);
-        }
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Data'));
 
-        // PARENT EMPLOYMENT
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}title", __('Title'));
+                $row->addSelectTitle("parent{$i}title")->isRequired();
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
+                $row->addTextField("parent{$i}surname")->isRequired()->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
+                $row->addTextField("parent{$i}firstName")->isRequired()->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
+                $row->addTextField("parent{$i}preferredName")->isRequired()->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
+                $row->addTextField("parent{$i}officialName")->isRequired()->maxLength(150);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
+                $row->addTextField("parent{$i}nameInCharacters")->maxLength(20);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}gender", __('Gender'));
+                $row->addSelectGender("parent{$i}gender")->isRequired();
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}relationship", __('Relationship'));
+                $row->addSelectRelationship("parent{$i}relationship")->isRequired();
+
+            // PARENT PERSONAL BACKGROUND
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Personal Background'));
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}languageFirst", __('First Language'));
+                $row->addSelectLanguage("parent{$i}languageFirst")->placeholder();
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}languageSecond", __('Second Language'));
+                $row->addSelectLanguage("parent{$i}languageSecond")->placeholder();
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}citizenship1", __('Citizenship'));
+                if (!empty($nationalityList)) {
+                    $row->addSelect("parent{$i}citizenship1")->fromString($nationalityList)->placeholder();
+                } else {
+                    $row->addSelectCountry("parent{$i}citizenship1");
+                }
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}nationalIDCardNumber", $countryName.__('National ID Card Number'));
+                $row->addTextField("parent{$i}nationalIDCardNumber")->maxLength(30);
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}residencyStatus", $countryName.__('Residency/Visa Type'));
+                if (!empty($residencyStatusList)) {
+                    $row->addSelect("parent{$i}residencyStatus")->fromString($residencyStatusList)->placeholder();
+                } else {
+                    $row->addTextField("parent{$i}residencyStatus")->maxLength(30);
+                }
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}visaExpiryDate", $countryName.__('Visa Expiry Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'))->append(__('If relevant.'));
+                $row->addDate("parent{$i}visaExpiryDate");
+
+            // PARENT CONTACT
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Contact'));
+
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}email", __('Email'));
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50);
+
+                if ($uniqueEmailAddress == 'Y') {
+                    $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
+                }
+
+            for ($y = 1; $y < 3; ++$y) {
+                $row = $form->addRow()->setClass("parentSection{$i}");
+                    $row->addLabel("parent{$i}phone{$y}", __('Phone').' '.$y)->description(__('Type, country code, number.'));
+                    $row->addPhoneNumber("parent{$i}phone{$y}")->setRequired($i == 1 && $y == 1);
+            }
+
+            // PARENT EMPLOYMENT
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
 
         $row = $form->addRow()->setClass("parentSection{$i}");
             $row->addLabel("parent{$i}profession", __('Profession'));
