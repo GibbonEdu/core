@@ -212,7 +212,7 @@ CustomBlocks.prototype.init = function() {
     _.refresh();
 };
 
-CustomBlocks.prototype.addBlock = function(data = {}) {
+CustomBlocks.prototype.addBlock = function(data) {
     var _ = this;
 
     _.blockCount++;
@@ -237,7 +237,7 @@ CustomBlocks.prototype.removeBlock = function(block) {
     });
 };
 
-CustomBlocks.prototype.initBlock = function(block, data = {}) {
+CustomBlocks.prototype.initBlock = function(block, data) {
     var _ = this;
 
     block.blockNumber = _.blockCount;
@@ -248,7 +248,7 @@ CustomBlocks.prototype.initBlock = function(block, data = {}) {
     _.addBlockEvents(block);
 };
 
-CustomBlocks.prototype.loadBlockInputData = function(block, data = {}) {
+CustomBlocks.prototype.loadBlockInputData = function(block, data) {
     var _ = this;
 
     for (key in data) {
@@ -399,7 +399,9 @@ DataTable.prototype.init = function() {
 
     // Add Filter
     $(_.table).on('change', '.filters', function() {
-        var [filter, value] = $(this).val().split(':');
+        var filterData = $(this).val().split(':');
+        var filter = filterData[0];
+        var value = filterData[1];
 
         _.filters.filterBy[filter] = value;
         _.filters.page = 1;
