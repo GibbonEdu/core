@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                         $sqlTokens = explode(';end', $version[1]);
                         if ($version[0] == $versionDB) { //Finish current version
                             foreach ($sqlTokens as $sqlToken) {
-                                if (version_compare($tokenCount[0], $cuttingEdgeCodeLine, '>=')) {
+                                if (version_compare($tokenCount, $cuttingEdgeCodeLine, '>=')) {
                                     if (trim($sqlToken) != '') { //Decide whether this has been run or not
                                         try {
                                             $result = $connection2->query($sqlToken);
