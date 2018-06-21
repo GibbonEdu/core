@@ -175,7 +175,7 @@ class Select extends Input
 
         if (!empty($this->getAttribute('multiple'))) {
             if (empty($this->getAttribute('size'))) {
-                $this->setAttribute('size', $this->getOptionCount());
+                $this->setAttribute('size', 8);
             }
 
             if (stripos($this->getName(), '[]') === false) {
