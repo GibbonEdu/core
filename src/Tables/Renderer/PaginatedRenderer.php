@@ -259,7 +259,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         $pageNumber = $dataSet->getPage();
 
-        $output = '<div class="floatRight">';
+        $output = '<div class="pagination floatRight">';
             $output .= '<input type="button" class="paginate" data-page="'.$dataSet->getPrevPageNumber().'" '.($dataSet->isFirstPage()? 'disabled' : '').' value="'.__('Prev').'">';
 
             foreach ($dataSet->getPaginatedRange() as $page) {
