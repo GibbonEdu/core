@@ -438,8 +438,13 @@ DataTable.prototype.init = function() {
 DataTable.prototype.refresh = function() {
     var _ = this;
 
+    var submitted = setTimeout(function() {
+        $('.pagination', _.table).prepend('<span class="submitted"></span>');
+    }, 500);
+
     $(_.table).load(_.path, _.filters, function(responseText, textStatus, jqXHR) { 
         tb_init('a.thickbox'); 
+        clearTimeout(submitted);
     });
 };
 
