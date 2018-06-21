@@ -1299,7 +1299,6 @@ table.standardForm td.standardWidth:last-child:nth-child(2) {
 
 select[multiple] {
 	height: auto;
-	max-height: 130px;
 }
 
 .shortWidth {
