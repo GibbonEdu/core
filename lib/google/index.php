@@ -173,7 +173,7 @@ if (isset($authUrl)){
 	//Start to collect User Info and test
 	try {
 		$data = array("email"=>$email);
-		$sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE email=:email AND status='Full'";
+		$sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, gibbonRole.canLogin AS canLoginRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE email=:email AND status='Full'";
 		$result = $connection2->prepare($sql);
 		$result->execute($data);
 	}
@@ -193,7 +193,7 @@ if (isset($authUrl)){
 		$row = $result->fetch();
 
         // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y') {
+        if ($row['canLogin'] != 'Y' || $row['canLoginRole'] != 'Y') {
             unset($_SESSION[$guid]['googleAPIAccessToken'] );
             unset($_SESSION[$guid]['gplusuer']);
             @session_destroy();

@@ -50,7 +50,7 @@ if (empty($username) or empty($password)) {
 else {
     try {
         $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, gibbonRole.canLogin AS canLoginRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -65,9 +65,9 @@ else {
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges / activation message if login not enabled
-        if ($row['canLogin'] != 'Y') {
-            $URL .= ($row['canLogin'] == 'A')? '?loginReturn=fail2b' : '?loginReturn=fail2';
+        // Insufficient privledges to login
+        if ($row['canLogin'] != 'Y' || $row['canLoginRole'] != 'Y') {
+            $URL .= '?loginReturn=fail2';
             header("Location: {$URL}");
             exit;
         }
@@ -217,7 +217,7 @@ else {
                         }
                         if ($resultLanguage->rowCount() == 1) {
                             $rowLanguage = $resultLanguage->fetch();
-                            setLanguageSession($guid, $rowLanguage, false);
+                            setLanguageSession($guid, $rowLanguage);
                         }
                     } else {
                         //If no language specified, get user preference if it exists
