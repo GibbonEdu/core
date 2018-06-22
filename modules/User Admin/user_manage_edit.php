@@ -219,7 +219,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('canLogin', __('Can Login?'));
-				$row->addYesNo('canLogin')->fromArray(array('A' => __('Activation Required')))->isRequired();
+				$row->addYesNo('canLogin')->isRequired();
 
 			$row = $form->addRow();
 				$row->addLabel('passwordForceReset', __('Force Reset Password?'))->description(__('User will be prompted on next login.'));
