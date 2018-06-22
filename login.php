@@ -50,7 +50,7 @@ if (empty($username) or empty($password)) {
 else {
     try {
         $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, gibbonPerson.canLogin, gibbonRole.canLogin AS canLoginRole FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -66,7 +66,7 @@ else {
         $row = $result->fetch();
 
         // Insufficient privledges to login
-        if ($row['canLogin'] != 'Y') {
+        if ($row['canLogin'] != 'Y' || $row['canLoginRole'] != 'Y') {
             $URL .= '?loginReturn=fail2';
             header("Location: {$URL}");
             exit;
