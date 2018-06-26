@@ -739,4 +739,6 @@ $sql[$count][1] = "";
 $sql[$count][0] = '17.0.00';
 $sql[$count][1] = "
 ALTER TABLE `gibbonRole` ADD `canLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `type`;end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='Data Updater'), 'Family Data Updater History', 0, 'Reports', 'Allows users to check, for active families, how recently they have been updated.', 'report_family_dataUpdaterHistory.php', 'report_family_dataUpdaterHistory.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'Y');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='Data Updater' AND gibbonAction.name='Family Data Updater History'));end
 ";
