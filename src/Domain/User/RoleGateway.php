@@ -45,7 +45,7 @@ class RoleGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonRoleID', 'name', 'nameShort', 'category', 'description', 'type', 'canLogin', 'futureYearsLogin', 'pastYearsLogin'
+                'gibbonRoleID', 'name', 'nameShort', 'category', 'description', 'type', 'canLoginRole', 'futureYearsLogin', 'pastYearsLogin'
             ]);
 
         return $this->runQuery($query, $criteria);

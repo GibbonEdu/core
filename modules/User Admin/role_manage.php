@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     $table->addColumn('loginYear', __('Login Years'))
         ->notSortable()
         ->format(function ($row) {
-            if ($row['canLogin'] == 'N') {
+            if ($row['canLoginRole'] == 'N') {
                 return __('None');
             } else if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
                 return __('All years');
