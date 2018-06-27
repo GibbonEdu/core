@@ -735,28 +735,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addSubheading(__('Parent/Guardian')." $i ".__('Employment'));
 
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}profession", __('Profession'));
-            $row->addTextField("parent{$i}profession")->maxLength(30);
-
-        $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addLabel("parent{$i}employer", __('Employer'));
-            $row->addTextField("parent{$i}employer")->isRequired()->maxLength(30);
-
-        // CUSTOM FIELDS FOR PARENTS
-        $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
-        $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
-        if ($resultFields->rowCount() > 0) {
             $row = $form->addRow()->setClass("parentSection{$i}");
-            $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
+                $row->addLabel("parent{$i}profession", __('Profession'));
+                $row->addTextField("parent{$i}profession")->maxLength(30);
 
-            while ($rowFields = $resultFields->fetch()) {
-                $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
-                $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+            $row = $form->addRow()->setClass("parentSection{$i}");
+                $row->addLabel("parent{$i}employer", __('Employer'));
+                $row->addTextField("parent{$i}employer")->isRequired()->maxLength(30);
 
+            // CUSTOM FIELDS FOR PARENTS
+            $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
+            $resultFields = getCustomFields($connection2, $guid, false, false, true, false, true, null);
+            if ($resultFields->rowCount() > 0) {
                 $row = $form->addRow()->setClass("parentSection{$i}");
-                    $row->addLabel($name, $rowFields['name']);
-                    $row->addCustomField($name, $rowFields)->setValue($value);
+                $row->addSubheading(__('Parent/Guardian')." $i ".__('Other Information'));
+
+                while ($rowFields = $resultFields->fetch()) {
+                    $name = "parent{$i}custom".$rowFields['gibbonPersonFieldID'];
+                    $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
+
+                    $row = $form->addRow()->setClass("parentSection{$i}");
+                        $row->addLabel($name, $rowFields['name']);
+                        $row->addCustomField($name, $rowFields)->setValue($value);
+                }
             }
         }
     }
