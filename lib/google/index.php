@@ -198,7 +198,7 @@ if (isset($authUrl)){
         $role = $pdo->selectOne($sql, $data);
 
         // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y' || (!empty($role['canLogin']) && $role['canLogin'] != 'Y')) {
+        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
             unset($_SESSION[$guid]['googleAPIAccessToken'] );
             unset($_SESSION[$guid]['gplusuer']);
             @session_destroy();

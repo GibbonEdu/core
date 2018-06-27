@@ -71,7 +71,7 @@ else {
         $role = $pdo->selectOne($sql, $data);
 
         // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y' || (!empty($role['canLogin']) && $role['canLogin'] != 'Y')) {
+        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
             $URL .= '?loginReturn=fail2';
             header("Location: {$URL}");
             exit;

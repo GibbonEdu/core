@@ -101,12 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                 $row->addTextField('type')->isRequired()->readonly()->setValue($role['type']);
 
             $row = $form->addRow();
-                $row->addLabel('canLogin', __('Can Login?'))->description(__('Are users with this primary role able to login?'));
+                $row->addLabel('canLoginRole', __('Can Login?'))->description(__('Are users with this primary role able to login?'));
                 if ($role['name'] == 'Administrator') {
-                    $row->addTextField('canLogin')->isRequired()->readonly()->setValue(__('Yes'));
+                    $row->addTextField('canLoginRole')->isRequired()->readonly()->setValue(__('Yes'));
                 } else {
-                    $row->addYesNo('canLogin')->isRequired()->selected($role['canLogin']);
-                    $form->toggleVisibilityByClass('loginOptions')->onSelect('canLogin')->when('Y');
+                    $row->addYesNo('canLoginRole')->isRequired()->selected($role['canLoginRole']);
+                    $form->toggleVisibilityByClass('loginOptions')->onSelect('canLoginRole')->when('Y');
                 }
 
             $row = $form->addRow()->addClass('loginOptions');

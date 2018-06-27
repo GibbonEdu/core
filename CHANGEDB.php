@@ -738,5 +738,5 @@ $sql[$count][1] = "";
 ++$count;
 $sql[$count][0] = '17.0.00';
 $sql[$count][1] = "
-ALTER TABLE `gibbonRole` ADD `canLogin` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `type`;end
+ALTER TABLE `gibbonRole` ADD `canLoginRole` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `type`;end
 ";
