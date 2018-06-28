@@ -346,7 +346,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
                                 $row = $form->addRow();
-                                    $row->addColumn()->addContent(formatName('', $student[2], $student[2], 'Student', true));
+                                    $row->addColumn()->addContent(formatName('', $student[1], $student[2], 'Student', true));
                                     $row->addColumn()->addContent(__($student[3]));
                                     $column = $row->addColumn();
                                         $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
