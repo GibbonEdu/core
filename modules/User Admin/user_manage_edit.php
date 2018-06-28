@@ -595,20 +595,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
 				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+                    $options = array_map('trim', explode(',', $privacyOptions));
+                    $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
 
 					$row = $form->addRow();
 						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-						$row->addCheckbox('privacyOptions[]')->fromArray($options);
+						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
 				}
 
 				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
 				if (!empty($studentAgreementOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
+                    $options = array_map('trim', explode(',', $studentAgreementOptions));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
 
 					$row = $form->addRow();
 					$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
-					$row->addCheckbox('studentAgreements[]')->fromArray($options);
+					$row->addCheckbox('studentAgreements[]')->fromArray($options)->checked($values['studentAgreements']);
 				}
 			}
 
