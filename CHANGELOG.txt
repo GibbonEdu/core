@@ -28,6 +28,7 @@ v17.0.00
     Security
 
     Tweaks & Bug Fixes
+        Data Updater: added a Family Data Updater History report
         Planner: added SMTP persistence to weekly summary CLI script
         System: fixed IE incompatibility with javascript and select inputs
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
