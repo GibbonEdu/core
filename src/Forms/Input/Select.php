@@ -65,13 +65,15 @@ class Select extends Input
 
     /**
      * Set the selected element(s) to include all available options.
-     * @param   bool    $value
+     * @param   bool    $onlyIfEmpty
      * @return  self
      */
-    public function selectAll()
+    public function selectAll($onlyIfEmpty = false)
     {
         if ($this->getAttribute('multiple') == true) {
-            $this->selected = array_keys($this->options);
+            if (!$onlyIfEmpty || ($onlyIfEmpty && empty($this->selected))) {
+                $this->selected = array_keys($this->options);
+            }
         }
 
         return $this;
