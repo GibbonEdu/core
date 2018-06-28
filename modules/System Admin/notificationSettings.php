@@ -58,6 +58,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
     $table = DataTable::create('notificationEvents');
 
+    $table->modifyRows(function($notification, $row) {
+        if ($notification['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
     $table->addColumn('moduleName', __('Module'));
     $table->addColumn('event', __('Name'))->format($nameFormat);
     $table->addColumn('listenerCount', __('Subscribers'));
