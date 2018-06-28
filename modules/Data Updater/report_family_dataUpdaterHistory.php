@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     echo '</div>';
 
     echo '<p>';
-    echo __('This report allows a user to select a range of families—with at least one child enroled in the target year group—and check whether or not they have had their family and personal data updated after a specified date.');
+    echo __('This report allows a user to select a range of families, with at least one child enroled in the target year group, and check whether or not they have had their family and personal data updated after a specified date.');
     echo '</p>';
 
     echo '<h2>';
