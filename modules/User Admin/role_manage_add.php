@@ -76,10 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
         $row->addTextField('type')->isRequired()->readonly()->setValue('Additional');
 
     $row = $form->addRow();
+        $row->addLabel('canLoginRole', __('Can Login?'))->description(__('Are users with this primary role able to login?'));
+        $row->addYesNo('canLoginRole')->isRequired()->selected('Y');
+
+    $form->toggleVisibilityByClass('loginOptions')->onSelect('canLoginRole')->when('Y');
+    $row = $form->addRow()->addClass('loginOptions');
         $row->addLabel('pastYearsLogin', __('Login To Past Years'));
         $row->addYesNo('pastYearsLogin')->isRequired();
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('loginOptions');
         $row->addLabel('futureYearsLogin', __('Login To Future Years'));
         $row->addYesNo('futureYearsLogin')->isRequired();
 
