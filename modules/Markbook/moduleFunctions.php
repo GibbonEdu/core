@@ -319,7 +319,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         if (date('Y-m-d H:i:s') < $markbookColumn['homeworkDueDateTime']) {
             $output .= "<span title='".__('Pending')."'>".__('Pen').'</span>';
         } else {
-            if ($student['dateStart'] > $markbookColumn['lessonDate']) {
+            if (!empty($student['dateStart']) && $student['dateStart'] > $markbookColumn['lessonDate']) {
                 $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
             } else {
                 if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {

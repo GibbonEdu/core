@@ -414,7 +414,11 @@
             	echo '<th>';
             	echo '</th>';
             } else {
-
+                if ($enableModifiedAssessment == 'Y') {
+                    echo "<th class='columnLabel smallColumn'>";
+                        echo __('Mod');
+                    echo '</th>';
+                }
                 if ($column->displayAttainment() ) {
 
                     echo "<th class='columnLabel medColumn'>";
@@ -664,6 +668,11 @@
                     if ($resultEntry->rowCount() == 1) {
                         $rowEntry = $resultEntry->fetch();
 
+                        if ($enableModifiedAssessment == 'Y') {
+                            echo "<td class='smallColumn'>";
+                                echo $rowEntry['modifiedAssessment'];
+                            echo "</td>";
+                        }
                         if ($column->displayAttainment()) {
 
                             echo "<td class='medColumn'>";

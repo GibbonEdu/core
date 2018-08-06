@@ -36,6 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
     $enableDisplayCumulativeMarks = (isset($_POST['enableDisplayCumulativeMarks']))? $_POST['enableDisplayCumulativeMarks'] : 'N';
     $enableRawAttainment = $_POST['enableRawAttainment'];
+    $enableModifiedAssessment = $_POST['enableModifiedAssessment'];
     $enableGroupByTerm = $_POST['enableGroupByTerm'];
     $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
     $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $personalisedWarnings = $_POST['personalisedWarnings'];
 
     //Validate Inputs
-    if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableGroupByTerm == '') {
+    if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableModifiedAssessment == '' or $enableGroupByTerm == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -109,6 +110,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         } catch (PDOException $e) {
             $fail = true;
         }
+
+        try {
+            $data = array('value' => $enableModifiedAssessment);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableModifiedAssessment'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
 
         try {
             $data = array('value' => $enableGroupByTerm);
