@@ -241,14 +241,14 @@
                             echo "<th style='width: 120px'>";
                                 echo __($guid, 'Assessment');
                             echo '</th>';
-							if ($enableEffort == 'Y') {
-	                            echo "<th style='width: 75px; text-align: center'>";
-	                                echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
-	                            echo '</th>';
-							}
                             echo "<th style='width: 75px; text-align: center'>";
-                                echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                                echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
                             echo '</th>';
+							if ($enableEffort == 'Y') {
+                                echo "<th style='width: 75px; text-align: center'>";
+                                    echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                                echo '</th>';
+                            }
                             echo '<th>';
                                 echo __($guid, 'Comment');
                             echo '</th>';

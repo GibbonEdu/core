@@ -21,6 +21,7 @@ include '../../gibbon.php';
 
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
+$enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
@@ -76,6 +77,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                 for ($i = 1;$i <= $count;++$i) {
                     $gibbonPersonIDStudent = $_POST["$i-gibbonPersonID"];
+                    //Modified Assessment
+                    if ($enableModifiedAssessment != 'Y') {
+                        $modifiedAssessment = NULL;
+                    }
+                    else {
+                        if (isset($_POST["$i-modifiedAssessmentEligible"])) { //Checkbox exists
+                            if (isset($_POST["$i-modifiedAssessment"])) {
+                                $modifiedAssessment = 'Y';
+                            }
+                            else {
+                                $modifiedAssessment = 'N';
+                            }
+                        }
+                        else { //Checkbox does not exist
+                            $modifiedAssessment = NULL;
+                        }                        
+                    }
                     //Attainment
                     if ($attainment == 'N') {
                         $attainmentValue = null;
@@ -119,58 +137,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                     //SET AND CALCULATE FOR ATTAINMENT
                     if ($attainment == 'Y' and $gibbonScaleIDAttainment != '') {
-                        //Check for target grade
-                        try {
-                            $dataTarget = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
-                            $sqlTarget = 'SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
-                            $resultTarget = $connection2->prepare($sqlTarget);
-                            $resultTarget->execute($dataTarget);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-
-                        //With personal warnings
-                        if ($personalisedWarnings == 'Y' and $resultTarget->rowCount() == 1 and $attainmentValue != '') {
+                        if ($modifiedAssessment == 'Y') {
                             $attainmentConcern = 'N';
-                            $attainmentDescriptor = '';
-                            $rowTarget = $resultTarget->fetch();
-
-                            //Get details of attainment grade (sequenceNumber)
-                            $scaleAttainment = $_POST['scaleAttainment'];
+                            $attainmentDescriptor = 'Modified Assessment';
+                        }
+                        else {
+                            //Check for target grade
                             try {
-                                $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
-                                $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
-                                $resultScale = $connection2->prepare($sqlScale);
-                                $resultScale->execute($dataScale);
+                                $dataTarget = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent);
+                                $sqlTarget = 'SELECT * FROM gibbonMarkbookTarget JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonPersonIDStudent=:gibbonPersonIDStudent';
+                                $resultTarget = $connection2->prepare($sqlTarget);
+                                $resultTarget->execute($dataTarget);
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
-                            if ($resultScale->rowCount() != 1) {
-                                $partialFail = true;
-                            } else {
-                                $rowScale = $resultScale->fetch();
-                                $target = $rowTarget['sequenceNumber'];
-                                $attainmentSequence = $rowScale['sequenceNumber'];
 
-                                //Test against target grade and set values accordingly
-                                //Below target
-                                if ($attainmentSequence > $target) {
-                                    $attainmentConcern = 'Y';
-                                    $attainmentDescriptor = sprintf(__($guid, 'Below personalised target of %1$s'), $rowTarget['value']);
-                                }
-                                //Above target
-                                elseif ($attainmentSequence <= $target) {
-                                    $attainmentConcern = 'P';
-                                    $attainmentDescriptor = sprintf(__($guid, 'Equal to or above personalised target of %1$s'), $rowTarget['value']);
-                                }
-                            }
-                        }
-                        //Without personal warnings
-                        else {
-                            $attainmentConcern = 'N';
-                            $attainmentDescriptor = '';
-                            if ($attainmentValue != '') {
-                                $lowestAcceptableAttainment = $_POST['lowestAcceptableAttainment'];
+                            //With personal warnings
+                            if ($personalisedWarnings == 'Y' and $resultTarget->rowCount() == 1 and $attainmentValue != '') {
+                                $attainmentConcern = 'N';
+                                $attainmentDescriptor = '';
+                                $rowTarget = $resultTarget->fetch();
+
+                                //Get details of attainment grade (sequenceNumber)
                                 $scaleAttainment = $_POST['scaleAttainment'];
                                 try {
                                     $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
@@ -184,13 +172,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                     $partialFail = true;
                                 } else {
                                     $rowScale = $resultScale->fetch();
-                                    $sequence = $rowScale['sequenceNumber'];
-                                    $attainmentDescriptor = $rowScale['descriptor'];
-                                }
+                                    $target = $rowTarget['sequenceNumber'];
+                                    $attainmentSequence = $rowScale['sequenceNumber'];
 
-                                if ($lowestAcceptableAttainment != '' and $sequence != '' and $attainmentValue != '') {
-                                    if ($sequence > $lowestAcceptableAttainment) {
+                                    //Test against target grade and set values accordingly
+                                    //Below target
+                                    if ($attainmentSequence > $target) {
                                         $attainmentConcern = 'Y';
+                                        $attainmentDescriptor = sprintf(__($guid, 'Below personalised target of %1$s'), $rowTarget['value']);
+                                    }
+                                    //Above target
+                                    elseif ($attainmentSequence <= $target) {
+                                        $attainmentConcern = 'P';
+                                        $attainmentDescriptor = sprintf(__($guid, 'Equal to or above personalised target of %1$s'), $rowTarget['value']);
+                                    }
+                                }
+                            }
+                            //Without personal warnings
+                            else {
+                                $attainmentConcern = 'N';
+                                $attainmentDescriptor = '';
+                                if ($attainmentValue != '') {
+                                    $lowestAcceptableAttainment = $_POST['lowestAcceptableAttainment'];
+                                    $scaleAttainment = $_POST['scaleAttainment'];
+                                    try {
+                                        $dataScale = array('attainmentValue' => $attainmentValue, 'scaleAttainment' => $scaleAttainment);
+                                        $sqlScale = 'SELECT * FROM gibbonScaleGrade JOIN gibbonScale ON (gibbonScaleGrade.gibbonScaleID=gibbonScale.gibbonScaleID) WHERE value=:attainmentValue AND gibbonScaleGrade.gibbonScaleID=:scaleAttainment';
+                                        $resultScale = $connection2->prepare($sqlScale);
+                                        $resultScale->execute($dataScale);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
+                                    }
+                                    if ($resultScale->rowCount() != 1) {
+                                        $partialFail = true;
+                                    } else {
+                                        $rowScale = $resultScale->fetch();
+                                        $sequence = $rowScale['sequenceNumber'];
+                                        $attainmentDescriptor = $rowScale['descriptor'];
+                                    }
+
+                                    if ($lowestAcceptableAttainment != '' and $sequence != '' and $attainmentValue != '') {
+                                        if ($sequence > $lowestAcceptableAttainment) {
+                                            $attainmentConcern = 'Y';
+                                        }
                                     }
                                 }
                             }
@@ -201,7 +225,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     if ($effort == 'Y' and $gibbonScaleIDEffort != '') {
                         $effortConcern = 'N';
                         $effortDescriptor = '';
-                        if ($effortValue != '') {
+                        if ($modifiedAssessment == 'Y') {
+                        $effortConcern = 'N';
+                            $effortConcern = 'N';
+                            $effortDescriptor = 'Modified Assessment';
+                        }
+                        else if ($effortValue != '') {
                             $lowestAcceptableEffort = $_POST['lowestAcceptableEffort'];
                             $scaleEffort = $_POST['scaleEffort'];
                             try {
@@ -262,8 +291,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     if (!($selectFail)) {
                         if ($result->rowCount() < 1) {
                             try {
-                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment);
-                                $sql = 'INSERT INTO gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment';
+                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment);
+                                $sql = 'INSERT INTO gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -273,8 +302,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $row = $result->fetch();
                             //Update
                             try {
-                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $row['gibbonMarkbookEntryID']);
-                                $sql = 'UPDATE gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment WHERE gibbonMarkbookEntryID=:gibbonMarkbookEntryID';
+                                $data = array('gibbonMarkbookColumnID' => $gibbonMarkbookColumnID, 'gibbonPersonIDStudent' => $gibbonPersonIDStudent, 'modifiedAssessment' => $modifiedAssessment, 'attainmentValue' => $attainmentValue, 'attainmentValueRaw' => $attainmentValueRaw, 'attainmentDescriptor' => $attainmentDescriptor, 'attainmentConcern' => $attainmentConcern, 'effortValue' => $effortValue, 'effortDescriptor' => $effortDescriptor, 'effortConcern' => $effortConcern, 'comment' => $commentValue, 'gibbonPersonIDLastEdit' => $gibbonPersonIDLastEdit, 'attachment' => $attachment, 'gibbonMarkbookEntryID' => $row['gibbonMarkbookEntryID']);
+                                $sql = 'UPDATE gibbonMarkbookEntry SET gibbonMarkbookColumnID=:gibbonMarkbookColumnID, gibbonPersonIDStudent=:gibbonPersonIDStudent, modifiedAssessment=:modifiedAssessment, attainmentValue=:attainmentValue, attainmentValueRaw=:attainmentValueRaw, attainmentDescriptor=:attainmentDescriptor, attainmentConcern=:attainmentConcern, effortValue=:effortValue, effortDescriptor=:effortDescriptor, effortConcern=:effortConcern, comment=:comment, gibbonPersonIDLastEdit=:gibbonPersonIDLastEdit, response=:attachment WHERE gibbonMarkbookEntryID=:gibbonMarkbookEntryID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
