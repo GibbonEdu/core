@@ -1218,6 +1218,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
     $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
     $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+    $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
     try {
         $dataEntry = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -1236,6 +1237,11 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $gradesOutput .= "<th style='width: 120px'>";
         $gradesOutput .= __($guid, 'Assessment');
         $gradesOutput .= '</th>';
+        if ($enableModifiedAssessment == 'Y') {
+            $gradesOutput .= "<th style='width: 75px'>";
+            $gradesOutput .= __($guid, 'Modified');
+            $gradesOutput .= '</th>';
+        }
         $gradesOutput .= "<th style='width: 75px'>";
         if ($attainmentAlternativeName != '') {
             $gradesOutput .= $attainmentAlternativeName;
@@ -1278,6 +1284,18 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $gradesOutput .= __($guid, 'Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
             $gradesOutput .= '</span>';
             $gradesOutput .= '</td>';
+            if ($enableModifiedAssessment == 'Y') {
+                if (!is_null($rowEntry['modifiedAssessment'])) {
+                    $gradesOutput .= "<td>";
+                    $gradesOutput .= ynExpander($guid, $rowEntry['modifiedAssessment']);
+                    $gradesOutput .= '</td>';
+                }
+                else {
+                    $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
+                    $gradesOutput .= __($guid, 'N/A');
+                    $gradesOutput .= '</td>';
+                }
+            }
             if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                 $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
                 $gradesOutput .= __($guid, 'N/A');
