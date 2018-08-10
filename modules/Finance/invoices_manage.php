@@ -122,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $row = $form->addRow();
             $row->addLabel('gibbonFinanceInvoiceeID', __('Student'));
-            $row->addSelectInvoicee('gibbonFinanceInvoiceeID', $gibbonSchoolYearID);
+            $row->addSelectInvoicee('gibbonFinanceInvoiceeID', $gibbonSchoolYearID, array('allStudents' => true));
 
         $row = $form->addRow();
             $row->addLabel('monthOfIssue', __('Month of Issue'));
