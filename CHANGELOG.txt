@@ -30,6 +30,7 @@ v17.0.00
     Tweaks & Bug Fixes
         Data Updater: added a Family Data Updater History report
         Departments: fixed bug displaying Left classes under My Classes in sidebar       
+        Finance: adjusted Student filter in Manage Invoices to show Left students
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs 
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Planner: added SMTP persistence to weekly summary CLI script
