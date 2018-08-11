@@ -35,6 +35,7 @@ v17.0.00
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Planner: added SMTP persistence to weekly summary CLI script
         System: fixed IE incompatibility with javascript and select inputs
+        System: added the option to display all records in a paginated table
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit

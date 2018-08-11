@@ -241,6 +241,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         return $this->factory->createSelect('limit')
             ->fromArray(array(10, 25, 50, 100))
+            ->fromArray(array($dataSet->getResultCount() => __('All')))
             ->setClass('limit floatNone')
             ->selected($dataSet->getPageSize())
             ->append('<small style="line-height: 30px;margin-left:5px;">'.__('Per Page').'</small>')
