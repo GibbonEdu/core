@@ -34,6 +34,9 @@ jQuery(function($){
         if (checkedCount > 0) {
             $('.bulkActionCount span').html(checkedCount);
             $('.bulkActionPanel').fadeIn(150);
+
+            // Trigger a showhide event on any nested inputs to update their visibility & validation state
+            $('.bulkActionPanel :input').trigger('showhide');
         } else {
             $('.bulkActionPanel').fadeOut(75);
         }
