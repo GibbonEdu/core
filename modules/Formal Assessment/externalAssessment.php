@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $search = isset($_GET['search'])? $_GET['search'] : '';
     $allStudents = isset($_GET['allStudents'])? $_GET['allStudents'] : '';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth standardForm');
     
     $form->addHiddenValue('q', '/modules/Formal Assessment/externalAssessment.php');

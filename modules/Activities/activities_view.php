@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             $search = isset($_GET['search'])? $_GET['search'] : null;
 
-            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_view.php");

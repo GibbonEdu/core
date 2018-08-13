@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         echo __($guid, 'Search');
         echo '</h2>';
 
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
         $form->setClass('noIntBorder fullWidth');
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php');
