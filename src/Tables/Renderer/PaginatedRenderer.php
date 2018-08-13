@@ -70,6 +70,9 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         $output .= '</div></div><br/>';
 
+        // Persist the bulk actions outside the AJAX-reloaded data table div
+        $output .= $this->renderBulkActions($table);
+
         $postData = $table->getMetaData('post');
         $jsonData = !empty($postData) 
             ? json_encode(array_replace($postData, $this->criteria->toArray()))
@@ -109,7 +112,6 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output .= $this->renderFilterOptions($dataSet, $filterOptions);
         $output .= $this->renderPageSize($dataSet);
         $output .= $this->renderPagination($dataSet);
-        $output .= $this->renderBulkActions($table);
 
         return $output;
     }
