@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         echo __('Filters');
         echo '</h3>'; 
         
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson.php');

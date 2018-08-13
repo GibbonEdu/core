@@ -273,7 +273,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo __($guid, 'Copy Weightings');
                 echo '</h3>';
 
-                $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
+                $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);
                 $form->setFactory(DatabaseFormFactory::create($pdo));
                 $form->setClass('noIntBorder fullWidth');
 

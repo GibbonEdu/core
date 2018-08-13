@@ -257,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                     echo __($guid, 'Copy Markbook Columns');
                     echo '</h1>';
 
-                    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
+                    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 

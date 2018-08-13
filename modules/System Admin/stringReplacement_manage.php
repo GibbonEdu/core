@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     echo __('Search');
     echo '</h2>';
     
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
     
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage.php');
