@@ -1742,19 +1742,29 @@ tr.selected, tr.selected td, div.selected, td.selected {
     -webkit-transform: rotate(45deg);
 }
 
-.dataTable .bulkActionPanel {
+.bulkActionForm {
+    position: relative;
+}
+
+.bulkActionForm .bulkActionPanel {
     position:absolute;
     z-index:1;
-    bottom: -8px;
+    top: 44px;
     right: 0;
-    width: 100%;background: #9d7cc6;
+    width: 100%;
+    background: #9d7cc6;
     padding: 5px;
     box-sizing: border-box;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
 
-.dataTable .bulkActionCount {
+.bulkActionForm .bulkActionPanel .LV_validation_message {
+    position: absolute;
+    bottom: -14px;
+}
+
+.bulkActionForm .bulkActionCount {
     position: relative; 
     right: 10px;
     font-size:13px;
@@ -1762,12 +1772,12 @@ tr.selected, tr.selected td, div.selected, td.selected {
     color:#fff
 }
 
-.dataTable .bulkCheckbox {
+.bulkActionForm .bulkCheckbox {
     position: relative;
     text-align: center;
 }
 
-.dataTable .bulkCheckbox label {
+.bulkActionForm .bulkCheckbox label {
     position: absolute;
     top: 0;
     left: 0;

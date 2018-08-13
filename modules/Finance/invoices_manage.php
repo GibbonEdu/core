@@ -148,6 +148,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo __($guid, 'View');
         echo '</h3>';
 
+        echo '<p class="bulkPaid">';
+        echo __('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.');
+        echo '</p>';
+
         // QUERY
         $invoiceGateway = $container->get(InvoiceGateway::class);
 
@@ -182,17 +186,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
         $form->toggleVisibilityByClass('bulkPaid')->onSelect('action')->when('paid');
 
-        $row = $form->addRow()->addClass('bulkPaid');
-            $row->addContent(__('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.'))->wrap('<p>', '</p>');
-
         $col = $form->createBulkActionColumn($bulkActions);
             $col->addSelectPaymentMethod('paymentType')
                 ->setClass('bulkPaid shortWidth displayNone')
                 ->isRequired()
+                ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Payment Type').'...');
             $col->addDate('paidDate')
                 ->setClass('bulkPaid shortWidth displayNone')
                 ->isRequired()
+                ->addValidationOption('onlyOnSubmit: true')
                 ->placeholder(__('Date Paid'));
             $col->addSubmit(__('Go'));
 
