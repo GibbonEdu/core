@@ -185,14 +185,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         returnProcess($guid, $_GET['return'], null, null);
                     }
 
-                    //Setup for WP Comment Push
-                    $wordpressCommentPush = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush');
-                    if ($wordpressCommentPush == 'On') {
-                        echo "<div class='warning'>";
-                        echo __($guid, 'WordPress Comment Push is enabled: this feature allows you to push comments to student work submitted using a WordPress site. If you wish to push a comment, just select the checkbox next to the submitted work.');
-                        echo '</div>';
-                    }
-
                     // Added an info message to let uers know about enter / automatic calculations
                     if ($values['attainment'] == 'Y' && $values['attainmentRaw'] == 'Y' && !empty($values['attainmentRawMax']) && $enableRawAttainment == 'Y') {
                         echo '<p>';
@@ -278,14 +270,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $submission = ($result->rowCount() > 0)? $result->fetch() : '';
 
                             $students[$gibbonPersonID]['submission'] = renderStudentSubmission($gibbonPersonID, $submission, $values);
-
-                            // Hook into WordpressCommentPush
-                            if (is_array($submission) && $wordpressCommentPush == 'On' && $submission['type'] == 'Link') {
-                                $students[$gibbonPersonID]['submission'] .= "<div id='wordpressCommentPush$count' style='float: right'></div>";
-                                $students[$gibbonPersonID]['submission'] .= '<script type="text/javascript">';
-                                $students[$gibbonPersonID]['submission'] .= "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$submission['location'].'", count: "'.$count.'" } );';
-                                $students[$gibbonPersonID]['submission'] .= '</script>';
-                            }
                         }
                     }
 

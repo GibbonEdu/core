@@ -42,7 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
     $effortAlternativeName = $_POST['effortAlternativeName'];
     $effortAlternativeNameAbrev = $_POST['effortAlternativeNameAbrev'];
-    $wordpressCommentPush = $_POST['wordpressCommentPush'];
     $showStudentAttainmentWarning = $_POST['showStudentAttainmentWarning'];
     $showStudentEffortWarning = $_POST['showStudentEffortWarning'];
     $showParentAttainmentWarning = $_POST['showParentAttainmentWarning'];
@@ -160,15 +159,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         try {
             $data = array('value' => $effortAlternativeNameAbrev);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('value' => $wordpressCommentPush);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='wordpressCommentPush'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

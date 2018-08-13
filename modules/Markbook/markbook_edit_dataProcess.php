@@ -130,12 +130,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         $commentValue = $_POST["comment$i"];
                     }
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
-                    $wordpressCommentPushID = null;
-                    $wordpressCommentPushAction = null;
-                    if (isset($_POST["$i-wordpressCommentPush"])) {
-                        $wordpressCommentPushID = substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"], '-'));
-                        $wordpressCommentPushAction = substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"], '-') + 1));
-                    }
 
                     //SET AND CALCULATE FOR ATTAINMENT
                     if ($attainment == 'Y' and $gibbonScaleIDAttainment != '') {
@@ -300,20 +294,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             } catch (PDOException $e) {
                                 $partialFail = true;
                             }
-                        }
-                    }
-
-                    //Attempt WordPress Comment Push
-                    if ($wordpressCommentPushAction != '' and $wordpressCommentPushID != '') {
-                        $data = 'comment_post_ID='.urlencode($wordpressCommentPushID).'&author='.urlencode(formatName($_SESSION[$guid]['title'], $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff')).'&email='.urlencode($_SESSION[$guid]['email']).'&url='.urlencode($_SESSION[$guid]['website']).'&comment='.urlencode($commentValue);
-                        $params = array('http' => array('method' => 'POST', 'content' => $data));
-                        $ctx = stream_context_create($params);
-                        $fp = @fopen($wordpressCommentPushAction, 'rb', false, $ctx);
-                        if (!$fp) {
-                            $partialFail = true;
-                        }
-                        if (@stream_get_contents($fp) === false) {
-                            $partialFail = true;
                         }
                     }
                 }

@@ -743,4 +743,5 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 ALTER TABLE `gibbonRole` ADD `canLoginRole` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `type`;end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Markbook', 'enableModifiedAssessment', 'Enable Modified Assessment', 'Allows teachers to specify \"Modified Assessment\" for students with individual needs.', 'N');end
 ALTER TABLE `gibbonMarkbookEntry` ADD `modifiedAssessment` ENUM('N','Y') NULL DEFAULT NULL AFTER `gibbonPersonIDStudent`;end
+DELETE FROM `gibbonSetting` WHERE `scope`='Markbook' AND `name`='wordpressCommentPush';end
 ";

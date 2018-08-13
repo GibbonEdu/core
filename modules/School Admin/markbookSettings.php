@@ -131,13 +131,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading(__('Miscellaneous'));
-
-    $setting = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush', true);
-    $row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('On, Off')->selected($setting['value'])->isRequired();
-
 	$row = $form->addRow();
 		$row->addFooter();
 		$row->addSubmit();
