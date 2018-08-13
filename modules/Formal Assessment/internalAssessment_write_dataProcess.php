@@ -93,12 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $commentValue = $_POST["comment$i"];
                     }
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
-                    $wordpressCommentPushID = null;
-                    $wordpressCommentPushAction = null;
-                    if (isset($_POST["$i-wordpressCommentPush"])) {
-                        $wordpressCommentPushID = substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"], '-'));
-                        $wordpressCommentPushAction = substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"], '-') + 1));
-                    }
 
                     //SET AND CALCULATE FOR ATTAINMENT
                     if ($attainment == 'Y' and $gibbonScaleIDAttainment != '') {
