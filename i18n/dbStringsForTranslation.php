@@ -2530,7 +2530,6 @@ __('Unique Email Address') ;
 __('Unit Outline Template') ;
 __('Username Format') ;
 __('Version') ;
-__('Wordpress Comment Push') ;
 
 //gibbonSetting - description
 __('A comma separated list of module categories in display order.') ;
@@ -2759,7 +2758,6 @@ __('Username to use for SMTP authentication. Leave blank for no authentication.'
 __('What line of SQL code did the last cutting edge update hit?') ;
 __('When adding lessons and deploying units, should sharing default for parents be Y or N?') ;
 __('When adding lessons and deploying units, should sharing default for students be Y or N?') ;
-__('Where student work is submitted via a WordPress website, the teacher can choose to push their Markbook comment to the site.') ;
 __('Which school years should be available to apply to?') ;
 __('Which type of data updates should be required.') ;
 __('Which types of users should be redirected to the Data Updater if updates are required.') ;
