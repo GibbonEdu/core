@@ -36,6 +36,7 @@ v17.0.00
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
         Planner: added SMTP persistence to weekly summary CLI script
+        Staff: added a Mark as Left bulk action to Manage Staff
         System: fixed IE incompatibility with javascript and select inputs
         System: added the option to display all records in a paginated table
         System: fixed an issue with hidden fields in bulk action forms after pagination
