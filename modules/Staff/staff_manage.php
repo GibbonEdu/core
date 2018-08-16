@@ -88,6 +88,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         ->addParam('search', $search)
         ->displayLabel();
 
+    $table->modifyRows(function($person, $row) {
+        if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
+        return $row;
+    });
+
     $table->addMetaData('filterOptions', [
         'all:on'          => __('All Staff'),
         'type:teaching'   => __('Staff Type').': '.__('Teaching'),
