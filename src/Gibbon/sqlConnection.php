@@ -179,7 +179,7 @@ class sqlConnection implements ConnectionInterface
 
     public function selectOne($query, $bindings = [])
     {
-        return $this->executeQuery($bindings, $query);
+        return $this->executeQuery($bindings, $query)->fetch();
     }
 
     public function select($query, $bindings = [])
