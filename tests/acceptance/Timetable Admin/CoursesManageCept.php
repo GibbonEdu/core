@@ -83,7 +83,7 @@ $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 
 // Delete ------------------------------------------------
-$I->amOnModulePage('Timetable Admin', 'course_manage_delete.php', array('gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
+$I->amOnModulePage('Timetable Admin', 'course_manage_delete.php', array('gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'search' => ''));
 $I->seeBreadcrumb('Delete Course');
 
 $I->click('Yes');

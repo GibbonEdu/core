@@ -26,7 +26,7 @@ $I->amOnModulePage('Markbook', 'markbook_view.php');
 $I->seeBreadcrumb('View Markbook');
 
 $I->selectFromDropdown('gibbonCourseClassID', 2);
-$I->click('Go', '#search');
+$I->click('Go', '#searchForm');
 
 
 // Add Column ------------------------------------------------

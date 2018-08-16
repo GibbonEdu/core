@@ -28,7 +28,6 @@ $I->amOnModulePage('Planner', 'resources_manage_edit.php', array('gibbonResource
 $I->seeBreadcrumb('Edit Resource');
 
 $I->seeInFormFields('#content form', $addFormValues);
-$I->see('TestTag');
 
 $editFormValues = array(
     'html'        => '<p>Testing Also</p>',

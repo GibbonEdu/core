@@ -111,7 +111,8 @@ class FormatTest extends TestCase
 
     public function testFormatsNumbers()
     {
-        $this->assertEquals('123.00', Format::number(123));
+        $this->assertEquals('123', Format::number(123));
+        $this->assertEquals('123.00', Format::number(123, 2));
     }
 
     public function testFormatsCurrency()
