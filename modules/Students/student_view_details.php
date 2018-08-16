@@ -2010,6 +2010,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
                                 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
                                 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+                                $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
                                 $alert = getAlert($guid, $connection2, 002);
                                 $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -2218,6 +2219,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo "<th style='width: 120px'>";
                                             echo __($guid, 'Assessment');
                                             echo '</th>';
+                                            if ($enableModifiedAssessment == 'Y') {
+                                                echo "<th style='width: 75px'>";
+                                                    echo __($guid, 'Modified');
+                                                echo '</th>';
+                                            }
                                             echo "<th style='width: 75px; text-align: center'>";
                                             if ($attainmentAlternativeName != '') {
                                                 echo $attainmentAlternativeName;
@@ -2276,6 +2282,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 }
                                                 echo '</span><br/>';
                                                 echo '</td>';
+                                                if ($enableModifiedAssessment == 'Y') {
+                                                    if (!is_null($rowEntry['modifiedAssessment'])) {
+                                                        echo "<td>";
+                                                        echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                                        echo '</td>';
+                                                    }
+                                                    else {
+                                                        echo "<td class='dull' style='color: #bbb; text-align: center'>";
+                                                        echo __($guid, 'N/A');
+                                                        echo '</td>';
+                                                    }
+                                                }
                                                 if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                                                     echo "<td class='dull' style='color: #bbb; text-align: center'>";
                                                     echo __($guid, 'N/A');

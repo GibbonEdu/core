@@ -27,13 +27,16 @@ jQuery(function($){
     /**
      * Bluk Actions: show/hide the bulk action panel, highlight selected
      */
-    $(document).on('click, change', '.dataTable .bulkCheckbox :checkbox', function () {
-        var checkboxes = $(this).parents('.dataTable').find('.bulkCheckbox :checkbox');
+    $(document).on('click, change', '.bulkActionForm .bulkCheckbox :checkbox', function () {
+        var checkboxes = $(this).parents('.bulkActionForm').find('.bulkCheckbox :checkbox');
         var checkedCount = checkboxes.filter(':checked').length;
 
         if (checkedCount > 0) {
             $('.bulkActionCount span').html(checkedCount);
             $('.bulkActionPanel').fadeIn(150);
+
+            // Trigger a showhide event on any nested inputs to update their visibility & validation state
+            $('.bulkActionPanel :input').trigger('showhide');
         } else {
             $('.bulkActionPanel').fadeOut(75);
         }
@@ -443,6 +446,7 @@ DataTable.prototype.refresh = function() {
     }, 500);
 
     $(_.table).load(_.path, _.filters, function(responseText, textStatus, jqXHR) { 
+        $('.bulkActionPanel').hide();
         tb_init('a.thickbox'); 
         clearTimeout(submitted);
     });
