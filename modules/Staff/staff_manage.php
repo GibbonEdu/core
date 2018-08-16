@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo __('Search & Filter');
     echo '</h2>';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
@@ -91,6 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addDate('dateEnd')
+            ->isRequired()
             ->placeholder(__('Date End'))
             ->setClass('shortWidth dateEnd');
         $col->addSubmit(__('Go'));
