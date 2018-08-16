@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $criteria = $activityGateway->newQueryCriteria()
         ->searchBy($activityGateway->getSearchableColumns(), $search)
         ->filterBy('term', $gibbonSchoolYearTermID)
-        ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', 'DESC')
+        ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
     $criteria->fromArray($_POST);
