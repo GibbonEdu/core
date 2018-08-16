@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Staff\StaffGateway;
 
@@ -80,13 +81,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $staff = $staffGateway->queryAllStaff($criteria);
 
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manageProcessBulk.php?search='.$search.'&allStaff='.$allStaff);
+    $form->addHiddenValue('search', $search);
+
+    $bulkActions = array(
+        'Left' => __('Mark as Left'),
+    );
+
+    $col = $form->createBulkActionColumn($bulkActions);
+        $col->addDate('dateEnd')
+            ->placeholder(__('Date End'))
+            ->setClass('shortWidth dateEnd');
+        $col->addSubmit(__('Go'));
+
+    $form->toggleVisibilityByClass('dateEnd')->onSelect('action')->when('Left');
+
+
     // DATA TABLE
-    $table = DataTable::createPaginated('staffManage', $criteria);
+    $table = $form->addRow()->addDataTable('staffManage', $criteria)->withData($staff);
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Staff/staff_manage_add.php')
         ->addParam('search', $search)
         ->displayLabel();
+
+    $table->modifyRows(function($person, $row) {
+        if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
+        return $row;
+    });
 
     $table->addMetaData('filterOptions', [
         'all:on'          => __('All Staff'),
@@ -97,6 +120,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
         'status:left'     => __('Status').': '.__('Left'),
         'status:expected' => __('Status').': '.__('Expected'),
     ]);
+
+    $table->addMetaData('bulkActions', $col);
 
     // COLUMNS
     $table->addColumn('fullName', __('Name'))
@@ -124,5 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
                     ->setURL('/modules/Staff/staff_manage_delete.php');
         });
 
-    echo $table->render($staff);
+    $table->addCheckboxColumn('gibbonStaffID');
+
+    echo $form->getOutput();
 }
