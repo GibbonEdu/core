@@ -113,3 +113,6 @@ msgfmt -cv -o ./i18n/hr_HR/LC_MESSAGES/gibbon.mo ./i18n/hr_HR/LC_MESSAGES/gibbon
 echo 'et_EE'
 xgettext --from-code=iso-8859-1 --omit-header -j --language=PHP --keyword=__:1,1t --keyword=__:2,2t -o ./i18n/et_EE/LC_MESSAGES/gibbon.po $(find . -type f -name "*.php" ! -path "./lib/*" ! -path "./tests/*" ! -path "./vendor/*" | sed 's/ /*/g')
 msgfmt -cv -o ./i18n/et_EE/LC_MESSAGES/gibbon.mo ./i18n/et_EE/LC_MESSAGES/gibbon.po
+echo 'he_IL'
+xgettext --from-code=iso-8859-1 --omit-header -j --language=PHP --keyword=__:1,1t --keyword=__:2,2t -o ./i18n/he_IL/LC_MESSAGES/gibbon.po $(find . -type f -name "*.php" ! -path "./lib/*" ! -path "./tests/*" ! -path "./vendor/*" | sed 's/ /*/g')
+msgfmt -cv -o ./i18n/he_IL/LC_MESSAGES/gibbon.mo ./i18n/he_IL/LC_MESSAGES/gibbon.po

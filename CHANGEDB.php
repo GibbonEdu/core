@@ -744,4 +744,5 @@ ALTER TABLE `gibbonRole` ADD `canLoginRole` ENUM('Y','N') NOT NULL DEFAULT 'Y' A
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('Markbook', 'enableModifiedAssessment', 'Enable Modified Assessment', 'Allows teachers to specify \"Modified Assessment\" for students with individual needs.', 'N');end
 ALTER TABLE `gibbonMarkbookEntry` ADD `modifiedAssessment` ENUM('N','Y') NULL DEFAULT NULL AFTER `gibbonPersonIDStudent`;end
 DELETE FROM `gibbonSetting` WHERE `scope`='Markbook' AND `name`='wordpressCommentPush';end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('he_IL','Hebrew - Israel', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'Y');end
 ";

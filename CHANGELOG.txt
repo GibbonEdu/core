@@ -28,6 +28,10 @@ v17.0.00
     Security
 
     Tweaks & Bug Fixes
+        System: added Hebrew as development language
+        System: fixed IE incompatibility with javascript and select inputs
+        System: added the option to display all records in a paginated table
+        System: fixed an issue with hidden fields in bulk action forms after pagination
         Data Updater: added a Family Data Updater History report
         Departments: fixed bug displaying Left classes under My Classes in sidebar       
         Departments: added Student ID field to class participants export
@@ -37,9 +41,6 @@ v17.0.00
         Markbook: removed WordPress Comment Push functionality
         Planner: added SMTP persistence to weekly summary CLI script
         Staff: added a Mark as Left bulk action to Manage Staff
-        System: fixed IE incompatibility with javascript and select inputs
-        System: added the option to display all records in a paginated table
-        System: fixed an issue with hidden fields in bulk action forms after pagination
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
