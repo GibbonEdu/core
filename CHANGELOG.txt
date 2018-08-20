@@ -40,6 +40,7 @@ v17.0.00
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
         Planner: added SMTP persistence to weekly summary CLI script
+        Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Staff: added a Mark as Left bulk action to Manage Staff
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
