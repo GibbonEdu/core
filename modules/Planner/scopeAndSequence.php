@@ -218,8 +218,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         echo '<td>';
                             if ($canEdit) {
                                 echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_edit.php&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                             }
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                         echo '</td>';
                         echo '</tr>';
                     }
