@@ -310,7 +310,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
 				$row->addLabel('staff', __('Staff'));
-				$row->addSelect('staff')->fromArray($people)->selectMultiple()->isRequired();
+				$row->addSelect('staff')->fromArray($people)->selectMultiple();
 			
 			$staffRoles = array(
 				'Organiser' => __('Organiser'),
