@@ -209,9 +209,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 	$form->addRow()->addHeading(__('Staff'));
 
+	$people = array();
+
+	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'date' => date('Y-m-d'));
+	$sql = "SELECT * FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE status='Full' ORDER BY surname, preferredName";
+	$result = $pdo->executeQuery($data, $sql);
+	if ($result->rowCount() > 0) {
+		$people[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
+			$group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true);
+			return $group;
+		}, array());
+	}
+
+	$sql = "SELECT gibbonPersonID, surname, preferredName, status, username FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
+	$result = $pdo->executeQuery(array(), $sql);
+	if ($result->rowCount() > 0) {
+		$people[__('All Users')] = array_reduce($result->fetchAll(), function($group, $item) {
+			$group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+			return $group;
+		}, array());
+	}
+
 	$row = $form->addRow();
-		$row->addLabel('staff', 'Staff');
-		$row->addSelectStaff('staff')->selectMultiple();
+		$row->addLabel('staff', __('Staff'));
+		$row->addSelect('staff')->fromArray($people)->selectMultiple()->isRequired();
 
 	$staffRoles = array(
 		'Organiser' => __('Organiser'),
