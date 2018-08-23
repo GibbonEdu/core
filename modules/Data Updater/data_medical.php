@@ -302,8 +302,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									$row->addTextField('lastEpisodeTreatment'.$count)->maxLength(255)->setValue($rowCond['lastEpisodeTreatment']);
 
 								$row = $form->addRow();
-									$row->addLabel('comment'.$count, __('Comment'));
-									$row->addTextArea('comment'.$count)->setValue($rowCond['comment']);
+									$row->addLabel('commentCond'.$count, __('Comment'));
+									$row->addTextArea('commentCond'.$count)->setValue($rowCond['comment']);
 
 								$count++;
 							}
@@ -353,8 +353,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 							$row->addTextField('lastEpisodeTreatment')->maxLength(255);
 
 						$row = $form->addRow()->addClass('addConditionRow');
-							$row->addLabel('comment', __('Comment'));
-							$row->addTextArea('comment');
+							$row->addLabel('commentCond', __('Comment'));
+							$row->addTextArea('commentCond');
 
 						$row = $form->addRow();
 							$row->addFooter();
