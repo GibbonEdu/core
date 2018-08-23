@@ -35,6 +35,7 @@ v17.0.00
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Data Updater: added a Family Data Updater History report
         Data Updater: fixed comment bug in Medical Updates
+        Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
         Departments: fixed bug displaying Left classes under My Classes in sidebar       
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
