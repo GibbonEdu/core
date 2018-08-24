@@ -135,6 +135,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'vehicleRegistration'    => __('Vehicle Registration'),
             );
 
+            //Adjust country in field label
+            if (!empty($_SESSION[$guid]['country'])) {
+                $compare['nationalIDCardNumber'] = $_SESSION[$guid]['country'].' '.__('ID Card Number');
+                $compare['residencyStatus'] = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
+                $compare['visaExpiryDate'] = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+            }
+
             if ($student || $staff) {
                 $compare['emergency1Name']         = __('Emergency 1 Name');
                 $compare['emergency1Number1']      = __('Emergency 1 Number 1');
