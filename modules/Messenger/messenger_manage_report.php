@@ -315,7 +315,7 @@ else {
                                 $col = $row->addColumn();
                                     $col->addContent(!empty($recipient['parent2surname'])? $parent2Name : __('N/A'));
                                     $col->addContent($confirmationIndicator($parent2Receipt));
-                                    $col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'])
+                                    $col->onlyIf($sender == true && !empty($parent2Receipt) && $parent2Receipt['confirmed'] == 'N')
                                         ->addCheckbox('gibbonMessengerReceiptIDs[]')
                                         ->setValue($parent2Receipt['gibbonMessengerReceiptID'])
                                         ->setClass('');
