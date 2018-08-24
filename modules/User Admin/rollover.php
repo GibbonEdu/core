@@ -349,11 +349,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                     $row->addColumn()->addContent(formatName('', $student[2], $student[1], 'Student', true));
                                     $row->addColumn()->addContent(__($student[3]));
                                     $column = $row->addColumn();
-                                        $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
+                                        $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked(!empty($rollGroupSelect)? 'Y' : 'N');
                                     $column = $row->addColumn();
                                         $column->addSelect($count."-enrolFull-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($yearGroupSelect);
                                     $column = $row->addColumn();
-                                        $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
+                                        $column->addSelect($count."-enrolFull-gibbonRollGroupID")->fromArray($rollGroups)->placeholder()->setClass('shortWidth floatNone')->selected($rollGroupSelect);
                             }
                             $form->addHiddenValue("enrolFull-count", $count);
                         }
@@ -418,7 +418,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $row->addColumn()->addContent(formatName('', $rowReenrol['preferredName'], $rowReenrol['surname'], 'Student', true));
                                 $row->addColumn()->addContent(__($rowReenrol['name']));
                                 $column = $row->addColumn();
-                                    $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked('Y');
+                                    $column->addCheckbox($count."-reenrol-enrol")->setValue('Y')->checked(!empty($enrolmentCheckRollGroup)? 'Y' : 'N');
                                 //If no enrolment, try and work out next year and roll group
                                 if (is_null($enrolmentCheckYearGroup)) {
                                     $enrolmentCheckYearGroup=getNextYearGroupID($rowReenrol['gibbonYearGroupID'], $connection2);
@@ -427,7 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                                 $column = $row->addColumn();
                                     $column->addSelect($count."-reenrol-gibbonYearGroupID")->fromArray($yearGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckYearGroup);
                                 $column = $row->addColumn();
-                                        $column->addSelect($count."-reenrol-gibbonRollGroupID")->fromArray($rollGroups)->isRequired()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
+                                        $column->addSelect($count."-reenrol-gibbonRollGroupID")->fromArray($rollGroups)->placeholder()->setClass('shortWidth floatNone')->selected($enrolmentCheckRollGroup);
                         }
                         $form->addHiddenValue("reenrol-count", $count);
                     }
