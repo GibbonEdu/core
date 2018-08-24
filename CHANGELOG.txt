@@ -36,6 +36,7 @@ v17.0.00
         Data Updater: added a Family Data Updater History report
         Data Updater: fixed comment bug in Medical Updates
         Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
+        Data Updater: fixed country-specific field label bug in Manage Personal Data Updates
         Departments: fixed bug displaying Left classes under My Classes in sidebar       
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
