@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -248,27 +250,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						// EXISTING CONDITIONS
 						$count = 0;
 						if ($values['gibbonPersonMedicalID'] != '' or $existing == true) {
-                            try {
-                                if ($existing == true) {
-                                    $dataCond = array('gibbonPersonMedicalUpdateID' => $values['gibbonPersonMedicalUpdateID']);
-                                    $sqlCond = 'SELECT * FROM gibbonPersonMedicalConditionUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID ORDER BY name';
-                                } else {
-                                    $dataCond = array('gibbonPersonMedicalID' => $values['gibbonPersonMedicalID']);
-                                    $sqlCond = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
-                                }
-                                $resultCond = $connection2->prepare($sqlCond);
-                                $resultCond->execute($dataCond);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+
+                            if ($existing == true) {
+                                $medicalUpdateGateway = $container->get(MedicalUpdateGateway::class);
+                                $conditions = $medicalUpdateGateway->selectMedicalConditionUpdatesByID($values['gibbonPersonMedicalUpdateID'])->fetchAll();
+                            } else {
+                                $medicalGateway = $container->get(MedicalGateway::class);
+                                $conditions = $medicalGateway->selectMedicalConditionsByID($values['gibbonPersonMedicalID'])->fetchAll();
                             }
 
-                            while ($rowCond = $resultCond->fetch()) {
+                            foreach ($conditions as $rowCond) {
 								$form->addHiddenValue('gibbonPersonMedicalConditionID'.$count, $rowCond['gibbonPersonMedicalConditionID']);
 								$form->addHiddenValue('gibbonPersonMedicalConditionUpdateID'.$count, $existing ? $rowCond['gibbonPersonMedicalConditionUpdateID'] : 0);
 
 								$form->addRow()->addHeading(__('Medical Condition').' '.($count+1) );
 
-								$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+								$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 								$row = $form->addRow();
 									$row->addLabel('name'.$count, __('Condition Name'));
 									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($rowCond['name']);
@@ -319,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$row = $form->addRow();
 							$row->addCheckbox('addCondition')->setValue('Yes')->description(__('Check the box to add a new medical condition'));
 
-						$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+						$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('name', __('Condition Name'));
 							$row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
