@@ -39,7 +39,7 @@ v17.0.00
         Data Updater: fixed country-specific field label bug in Manage Personal Data Updates
         Data Updater: fixed non-compliance indicator bug in Updater History reports
         Data Updater: implemented cutoff date prefill in Personal Updater History report
-        Date Updater: fixed name as gibbonMedicalConditionID bug
+        Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
         Departments: fixed bug displaying Left classes under My Classes in sidebar       
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
