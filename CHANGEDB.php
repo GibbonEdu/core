@@ -746,4 +746,6 @@ ALTER TABLE `gibbonMarkbookEntry` ADD `modifiedAssessment` ENUM('N','Y') NULL DE
 DELETE FROM `gibbonSetting` WHERE `scope`='Markbook' AND `name`='wordpressCommentPush';end
 INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('he_IL','Hebrew - Israel', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'Y');end
 UPDATE `gibboni18n` SET `name`='עברית - ישראל' WHERE `code`='he_IL';end
+UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalCondition.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalCondition.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
+UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionUpdate.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalConditionUpdate.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
 ";
