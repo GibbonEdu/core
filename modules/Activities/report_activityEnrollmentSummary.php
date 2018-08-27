@@ -109,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            if ($enrolmentCount < 0) {
+            if ($resultEnrollment->rowCount() < 0) {
                 echo '<i>'.__($guid, 'Unknown').'</i>';
             } else {
-                echo $enrolmentCount;
+                echo $resultEnrollment->rowCount();
             }
             echo '</td>';
             echo '<td>';
