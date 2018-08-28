@@ -32,6 +32,7 @@ v17.0.00
         System: fixed IE incompatibility with javascript and select inputs
         System: added the option to display all records in a paginated table
         System: fixed an issue with hidden fields in bulk action forms after pagination
+        System: fixed term date issue in gibbon.sql
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Data Updater: added a Family Data Updater History report
@@ -41,10 +42,10 @@ v17.0.00
         Data Updater: fixed non-compliance indicator bug in Updater History reports
         Data Updater: implemented cutoff date prefill in Personal Updater History report
         Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
-        Departments: fixed bug displaying Left classes under My Classes in sidebar       
+        Departments: fixed bug displaying Left classes under My Classes in sidebar
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
-        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs 
+        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
         Messenger: restricted Manage Groups view to display groups from the current school year only
@@ -68,7 +69,7 @@ v16.0.00
         Activated Simplified Chinese and Polish as available languages
         Added Croatian and Estonian as development languages
         Added a My Data Updates overview and settings to redirect users to Data Updater on login
-        New Messenger Groups action for custom mailing lists 
+        New Messenger Groups action for custom mailing lists
         Added new object-oriented table API, and implemented across 30% of the system
 
     Changes With Important Notices
@@ -162,7 +163,7 @@ v15.0.01
 --------
 	Security
 		Fixed privacy-related issue in Student Profile permissions
-        
+
 v15.0.00
 --------
     Headlines
