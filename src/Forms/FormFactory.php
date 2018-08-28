@@ -401,6 +401,7 @@ class FormFactory implements FormFactoryInterface
                 'TRY ₺' => 'Turkish Lira (₺)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'XCD $' => 'Eastern Caribbean Dollars ($)',
                 'XOF FCFA' => 'West African Francs (FCFA)'
             ),
         );
