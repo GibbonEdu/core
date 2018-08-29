@@ -258,24 +258,24 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = array())
     {
-        $params = array_replace(['includeStudents' => false], $params);
+        $params = array_replace(['includeStudents' => false, 'includeStaff' => false], $params);
 
         $users = array();
-        $allUsers = array();
 
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
-                FROM gibbonPerson
-                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
-                WHERE status='Full' OR status='Expected' 
-                ORDER BY surname, preferredName";
-
-        $result = $this->pdo->executeQuery(array(), $sql);
-
-        if ($result->rowCount() > 0) {
-            $allUsers = array_reduce($result->fetchAll(), function ($group, $item) {
-                $group[$item['gibbonPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['category'].')';
-                return $group;
-            }, array());
+        if ($params['includeStaff'] == true) {
+            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'date' => date('Y-m-d'));
+            $sql = "SELECT gibbonPerson.gibbonPersonID, preferredName, surname 
+                    FROM gibbonPerson 
+                    JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) 
+                    WHERE gibbonPerson.status='Full' 
+                    ORDER BY gibbonPerson.surname, gibbonPerson.preferredName";
+            $result = $this->pdo->executeQuery($data, $sql);
+            if ($result->rowCount() > 0) {
+                $users[__('Staff')] = array_reduce($result->fetchAll(), function ($group, $item) {
+                    $group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Staff', true, true);
+                    return $group;
+                }, array());
+            }
         }
 
         if ($params['includeStudents'] == true) {
@@ -297,10 +297,20 @@ class DatabaseFormFactory extends FormFactory
                     return $group;
                 }, array());
             }
+        }
 
-            $users[__('All Users')] = $allUsers;
-        } else {
-            $users = $allUsers;
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, username, gibbonRole.category
+                FROM gibbonPerson
+                JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPerson.gibbonRoleIDPrimary)
+                WHERE status='Full' OR status='Expected' 
+                ORDER BY surname, preferredName";
+        $result = $this->pdo->executeQuery(array(), $sql);
+
+        if ($result->rowCount() > 0) {
+            $users[__('All Users')] = array_reduce($result->fetchAll(), function ($group, $item) {
+                $group[$item['gibbonPersonID']] = formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['username'].', '.$item['category'].')';
+                return $group;
+            }, array());
         }
 
         return $this->createSelect($name)->fromArray($users);

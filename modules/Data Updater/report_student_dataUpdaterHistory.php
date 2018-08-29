@@ -44,9 +44,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo __($guid, 'Choose Students');
     echo '</h2>';
 
+    $cutoffDate = getSettingByScope($connection2, 'Data Updater', 'cutoffDate');
+    $cutoffDate = !empty($cutoffDate)? Format::date($cutoffDate) : Format::dateFromTimestamp(time() - (604800 * 26)); 
+
     $choices = isset($_POST['members'])? $_POST['members'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
-    $date = isset($_POST['date'])? $_POST['date'] : date($_SESSION[$guid]['i18n']['dateFormatPHP'], (time() - (604800 * 26)));
+    $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_student_dataUpdaterHistory.php');
     $form->setFactory(DatabaseFormFactory::create($pdo));

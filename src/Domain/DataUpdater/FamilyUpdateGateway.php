@@ -67,9 +67,12 @@ class FamilyUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonFamily')
             ->cols([
-                'gibbonFamily.gibbonFamilyID', 'gibbonFamily.name as familyName', 'gibbonFamilyUpdate.timestamp as familyUpdate', 
+                'gibbonFamily.gibbonFamilyID', 
+                'gibbonFamily.name as familyName', 
+                'MAX(gibbonFamilyUpdate.timestamp) as familyUpdate', 
                 "MIN(IFNULL(gibbonPerson.dateStart, '0000-00-00')) as earliestDateStart",
                 "MAX(IFNULL(gibbonPerson.dateEnd, NOW())) as latestEndDate",
+                'gibbonFamilyUpdate.gibbonFamilyUpdateID'
             ])
             ->innerJoin('gibbonFamilyChild', 'gibbonFamilyChild.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
             ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonFamilyChild.gibbonPersonID')
@@ -85,9 +88,8 @@ class FamilyUpdateGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'cutoff' => function ($query, $cutoffDate) {
-                $query->where('(gibbonFamilyUpdateID IS NULL OR gibbonFamilyUpdate.timestamp < :cutoffDate)');
+                $query->having("(gibbonFamilyUpdateID IS NULL OR familyUpdate < :cutoffDate) AND (earliestDateStart < :cutoffDate)");
                 $query->bindValue('cutoffDate', $cutoffDate);
-                $query->having('earliestDateStart < :cutoffDate');
             },
         ]);
 

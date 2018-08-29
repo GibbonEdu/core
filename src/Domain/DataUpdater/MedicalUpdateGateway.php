@@ -54,4 +54,17 @@ class MedicalUpdateGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function selectMedicalConditionUpdatesByID($gibbonPersonMedicalUpdateID)
+    {
+        $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID);
+        $sql = "SELECT gibbonPersonMedicalConditionUpdate.*, gibbonAlertLevel.name AS risk, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalConditionUpdate.name END) as name 
+                FROM gibbonPersonMedicalConditionUpdate
+                JOIN gibbonAlertLevel ON (gibbonPersonMedicalConditionUpdate.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID)
+                LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalConditionUpdate.name)
+                WHERE gibbonPersonMedicalConditionUpdate.gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID 
+                ORDER BY gibbonPersonMedicalConditionUpdate.name";
+
+        return $this->db()->select($sql, $data);
+    }
 }

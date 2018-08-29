@@ -28,18 +28,34 @@ v17.0.00
     Security
 
     Tweaks & Bug Fixes
-        Data Updater: added a Family Data Updater History report
-        Departments: fixed bug displaying Left classes under My Classes in sidebar       
-        Departments: added Student ID field to class participants export
-        Finance: adjusted Student filter in Manage Invoices to show Left students
-        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs 
-        Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
-        Markbook: removed WordPress Comment Push functionality
-        Planner: added SMTP persistence to weekly summary CLI script
-        Staff: added a Mark as Left bulk action to Manage Staff
+        System: added Hebrew as development language
         System: fixed IE incompatibility with javascript and select inputs
         System: added the option to display all records in a paginated table
         System: fixed an issue with hidden fields in bulk action forms after pagination
+        System: fixed term date issue in gibbon.sql
+        System: added Eastern Caribbean Dollars as currency
+        Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
+        Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
+        Data Updater: added a Family Data Updater History report
+        Data Updater: fixed comment bug in Medical Updates
+        Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
+        Data Updater: fixed country-specific field label bug in Manage Personal Data Updates
+        Data Updater: fixed non-compliance indicator bug in Updater History reports
+        Data Updater: implemented cutoff date prefill in Personal Updater History report
+        Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
+        Departments: fixed bug displaying Left classes under My Classes in sidebar
+        Departments: added Student ID field to class participants export
+        Finance: adjusted Student filter in Manage Invoices to show Left students
+        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
+        Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
+        Markbook: removed WordPress Comment Push functionality
+        Messenger: restricted Manage Groups view to display groups from the current school year only
+        Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
+        Messenger: added row colouring to By Roll Group report, and made it default view
+        Planner: added SMTP persistence to weekly summary CLI script
+        Planner: improved accessibility of link from Scope & Sequence to Dump Unit
+        Planner: fixed school year name on Edit Unit page
+        Staff: added a Mark as Left bulk action to Manage Staff
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
@@ -55,7 +71,7 @@ v16.0.00
         Activated Simplified Chinese and Polish as available languages
         Added Croatian and Estonian as development languages
         Added a My Data Updates overview and settings to redirect users to Data Updater on login
-        New Messenger Groups action for custom mailing lists 
+        New Messenger Groups action for custom mailing lists
         Added new object-oriented table API, and implemented across 30% of the system
 
     Changes With Important Notices
@@ -149,7 +165,7 @@ v15.0.01
 --------
 	Security
 		Fixed privacy-related issue in Student Profile permissions
-        
+
 v15.0.00
 --------
     Headlines
