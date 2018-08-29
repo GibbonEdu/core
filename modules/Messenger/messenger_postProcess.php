@@ -1926,9 +1926,8 @@ else {
 				$emailCount=0 ;
 				$mail=getGibbonMailer($guid);
 				$mail->SMTPKeepAlive = true;
-				if ($emailReplyTo!="")
-					$mail->AddReplyTo($emailReplyTo, '');
-				if ($from!=$_SESSION[$guid]["email"])	//If sender is using school-wide address, send from school
+
+				if ($from!=$_SESSION[$guid]["email"]) {	//If sender is using school-wide address, send from school
 					$mail->SetFrom($from, $_SESSION[$guid]["organisationName"]);
 					$mail->AddReplyTo($emailReplyTo, $_SESSION[$guid]["organisationName"] );
 				}
