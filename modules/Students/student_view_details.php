@@ -1517,11 +1517,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         //User photo
                                         echo getUserPhoto($guid, $rowMember['image_240'], 75);
                                         echo "<div style='padding-top: 5px'><b>";
-                                        if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=$allStudents'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
-                                        } else {
+                                        // if ($rowMember['status'] == 'Full') {
+                                        //     echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID']."&allStudents=$allStudents'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+                                        // } else {
                                             echo formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
-                                        }
+                                        // }
                                         echo "<span style='font-weight: normal; font-style: italic'>".__($guid, 'Status').': '.$rowMember['status'].'</span>';
                                         echo '</div>';
                                         echo '</td>';
