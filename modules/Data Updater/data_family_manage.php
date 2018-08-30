@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\School\SchoolYearGateway;
 use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_manage.php') == false) {
@@ -36,6 +37,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         returnProcess($guid, $_GET['return'], null, null);
     }
 
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
+    // School Year Picker
+    if (!empty($gibbonSchoolYearID)) {
+        $schoolYearGateway = $container->get(SchoolYearGateway::class);
+        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
+
+        echo '<h2>';
+        echo $targetSchoolYear['name'];
+        echo '</h2>';
+
+        echo "<div class='linkTop'>";
+            if ($prevSchoolYear = $schoolYearGateway->getPreviousSchoolYearByID($gibbonSchoolYearID)) {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&gibbonSchoolYearID='.$prevSchoolYear['gibbonSchoolYearID']."'>".__('Previous Year').'</a> ';
+            } else {
+                echo __('Previous Year').' ';
+            }
+			echo ' | ';
+			if ($nextSchoolYear = $schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID)) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&gibbonSchoolYearID='.$nextSchoolYear['gibbonSchoolYearID']."'>".__('Next Year').'</a> ';
+			} else {
+				echo __('Next Year').' ';
+			}
+        echo '</div>';
+    }
+
     $gateway = $container->get(FamilyUpdateGateway::class);
 
     // QUERY
@@ -44,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
         ->sortBy('timestamp', 'DESC')
         ->fromArray($_POST);
 
-    $dataUpdates = $gateway->queryDataUpdates($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+    $dataUpdates = $gateway->queryDataUpdates($criteria, $gibbonSchoolYearID);
 
     // DATA TABLE
     $table = DataTable::createPaginated('familyUpdateManage', $criteria);
@@ -64,6 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 
     // ACTIONS
     $table->addActionColumn()
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
         ->addParam('gibbonFamilyUpdateID')
         ->format(function ($update, $actions) {
             if ($update['status'] == 'Pending') {
