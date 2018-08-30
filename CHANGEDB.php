@@ -748,4 +748,5 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat
 UPDATE `gibboni18n` SET `name`='עברית - ישראל' WHERE `code`='he_IL';end
 UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalCondition.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalCondition.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
 UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionUpdate.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalConditionUpdate.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
+UPDATE gibbonCountry SET printable_name='Vietnam', iddCountryCode='84' WHERE printable_name='Viet Nam';end
 ";
