@@ -56,6 +56,7 @@ v17.0.00
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
         Staff: added a Mark as Left bulk action to Manage Staff
+        Timetable Admin: fixed course sync for courses with multiple year groups
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit

@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 if (!$pdo->getQuerySuccess()) $partialFail = true;
             } else {
                 // Not enabled or not set: delete record (if one exists)
-                $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = "DELETE FROM gibbonCourseClassMap WHERE gibbonCourseClassID=:gibbonCourseClassID";
+                $data = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonYearGroupID' => $gibbonYearGroupID);
+                $sql = "DELETE FROM gibbonCourseClassMap WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonYearGroupID=:gibbonYearGroupID";
                 $pdo->executeQuery($data, $sql);
 
                 if (!$pdo->getQuerySuccess()) $partialFail = true;
