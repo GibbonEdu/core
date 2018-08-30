@@ -223,6 +223,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     $row->addCheckbox($checkboxName)
                         ->description($values['companyEmail'])
                         ->setValue($values['companyEmail'])
+                        ->checked($values['companyEmail'])
                         ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$values['companyContact'].'">');
             }
         }
