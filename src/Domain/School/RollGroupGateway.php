@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\School;
 
-use Gibbon\Domain\Gateway;
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\QueryCriteria;
+use Gibbon\Domain\QueryableGateway;
 
 /**
  * RollGroup Gateway
@@ -28,12 +29,39 @@ use Gibbon\Domain\Traits\TableAware;
  * @version v16
  * @since   v16
  */
-class RollGroupGateway extends Gateway
+class RollGroupGateway extends QueryableGateway
 {
     use TableAware;
 
     private static $tableName = 'gibbonRollGroup';
     private static $searchableColumns = [];
+
+    public function queryRollGroups(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonSchoolYear.sequenceNumber',
+                'gibbonSchoolYear.gibbonSchoolYearID',
+                'gibbonRollGroup.gibbonRollGroupID',
+                'gibbonSchoolYear.name as yearName',
+                'gibbonRollGroup.name',
+                'gibbonRollGroup.nameShort',
+                'gibbonRollGroup.gibbonPersonIDTutor',
+                'gibbonRollGroup.gibbonPersonIDTutor2',
+                'gibbonRollGroup.gibbonPersonIDTutor3',
+                'gibbonSpace.name AS space',
+                'gibbonRollGroup.website' 
+
+            ])
+            ->innerJoin('gibbonSchoolYear', 'gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID')
+            ->leftJoin('gibbonSpace', 'gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID')
+            ->where('gibbonSchoolYear.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        return $this->runQuery($query, $criteria);
+    }
 
     public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
     {

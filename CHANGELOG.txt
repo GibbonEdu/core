@@ -34,6 +34,8 @@ v17.0.00
         System: fixed an issue with hidden fields in bulk action forms after pagination
         System: fixed term date issue in gibbon.sql
         System: added Eastern Caribbean Dollars as currency
+        System: added country code and correct spelling of Vietnam
+        System: updated vis.js library to v4.21.0
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Data Updater: added a Family Data Updater History report
@@ -47,6 +49,7 @@ v17.0.00
         Departments: fixed bug displaying Left classes under My Classes in sidebar
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
+        Finance: added default check to Company email checkbox when editing an invoice
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
@@ -57,6 +60,7 @@ v17.0.00
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
         Staff: added a Mark as Left bulk action to Manage Staff
+        Timetable Admin: fixed course sync for courses with multiple year groups
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit

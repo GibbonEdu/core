@@ -34,6 +34,18 @@ class SchoolYearGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonSchoolYear';
+
+    public function querySchoolYears(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonSchoolYearID', 'name', 'sequenceNumber', 'status', 'firstDay', 'lastDay'
+            ]);
+
+        return $this->runQuery($query, $criteria);
+    }
     
     public function getSchoolYearByID($gibbonSchoolYearID)
     {
