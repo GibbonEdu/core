@@ -72,6 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonStudentEnrolmentID', $gibbonStudentEnrolmentID);
+            $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
             $form->addHiddenValue('gibbonRollGroupIDOriginal', $values['gibbonRollGroupID']);
 
             $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
@@ -85,8 +86,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
                 $row->addTextField('yearName')->readOnly()->maxLength(20)->setValue($schoolYearName);
 
             $row = $form->addRow();
-                $row->addLabel('gibbonPersonID', __('Student'));
-                $row->addSelectStudent('gibbonPersonID', $gibbonSchoolYearID, array('allStudents' => true))->isRequired()->placeholder();
+                $row->addLabel('studentName', __('Student'));
+                $row->addTextField('studentName')->readOnly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonYearGroupID', __('Year Group'));
