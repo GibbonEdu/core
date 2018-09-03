@@ -21,9 +21,6 @@ require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 @session_start();
 
 getSystemSettings($guid, $connection2);
@@ -51,8 +48,8 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $result = $pdo->executeQuery(array(), $sql);
 
         // Update usernames to match studentID
-        $sql = "UPDATE `gibbonPerson` SET `username`=`studentID` WHERE `gibbonRoleIDPrimary`=003 AND LEFT(`username`, 1) <> '2' AND `studentID` <> ''";
-        $result = $pdo->executeQuery(array(), $sql);
+        // $sql = "UPDATE `gibbonPerson` SET `username`=`studentID` WHERE `gibbonRoleIDPrimary`=003 AND LEFT(`username`, 1) <> '2' AND `studentID` <> ''";
+        // $result = $pdo->executeQuery(array(), $sql);
 
         // Update student photos to match studentID/username
         $sql = "UPDATE `gibbonPerson` SET `image_240` = CONCAT( 'uploads/photos/', username, '.jpg') WHERE (image_240 = '' OR image_240 IS NULL) AND `gibbonRoleIDPrimary` = 003 AND LEFT(username, 1) = '2'";
@@ -66,6 +63,23 @@ if (php_sapi_name() != 'cli') { echo __($guid, 'This script cannot be run from a
         $sql = "UPDATE `gibbonPerson` JOIN `gibbonStudentEnrolment` ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) SET `canLogin`='N' WHERE gibbonStudentEnrolment.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current' LIMIT 1) AND gibbonStudentEnrolment.gibbonYearGroupID<011";
         $result = $pdo->executeQuery(array(), $sql);
 
+        // Set photo URL to blank if the photo does not exist!
+        $sql = "SELECT gibbonPerson.gibbonPersonID, gibbonPerson.image_240 
+                FROM gibbonPerson 
+                JOIN gibbonStudentEnrolment ON ( gibbonStudentEnrolment.gibbonPersonID = gibbonPerson.gibbonPersonID )
+                WHERE gibbonPerson.status = 'Full' 
+                AND gibbonStudentEnrolment.gibbonSchoolYearID = (SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE gibbonSchoolYear.status = 'Current')";
+        $result = $pdo->select($sql);
+
+        if ($result->rowCount() > 0) {
+            while ($student = $result->fetch()) {
+                if (file_exists($_SESSION[$guid]['absolutePath'].'/'.$student['image_240']) === false) {
+                    $sql = "UPDATE gibbonPerson SET image_240='' WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
+                    $data = array('gibbonPersonID' => $student['gibbonPersonID']);
+                    $pdo->update($sql, $data);
+                }
+            }
+        }
 
     } catch (PDOException $e) {
     }
