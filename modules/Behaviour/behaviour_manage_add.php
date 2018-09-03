@@ -135,6 +135,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 	$row->addSelect('level')->fromArray($optionsLevels)->placeholder();
             }
 
+            // MIDDLE SCHOOL - Requested by Dom
+            $row = $form->addRow();
+                $row->addLabel('links', __('Links'));
+                $row->addWebLink('Middle School Assignment Tracker')
+                    ->setURL('https://docs.google.com/spreadsheets/d/1joDUqirxmPvodSOWw1JmIMqhFmqnv6NjnDeGi9Mb0eI')
+                    ->addClass('right')
+                    ->setTarget('_blank');
+
 			//Incident
             $row = $form->addRow();
                 $column = $row->addColumn();
