@@ -18,6 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\GradeScaleGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -102,80 +105,44 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Edit Grades');
+            echo __('Edit Grades');
             echo '</h2>';
 
-            try {
-                $data = array('gibbonScaleID' => $gibbonScaleID);
-                $sql = 'SELECT * FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $gradeScaleGateway = $container->get(GradeScaleGateway::class);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/gradeScales_manage_edit_grade_add.php&gibbonScaleID=$gibbonScaleID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            // QUERY
+            $criteria = $gradeScaleGateway->newQueryCriteria()
+                ->sortBy('sequenceNumber')
+                ->fromArray($_POST);
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Value');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Descriptor');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Sequence Number');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Is Default?');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $grades = $gradeScaleGateway->queryGradeScaleGrades($criteria, $gibbonScaleID);
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            // DATA TABLE
+            $table = DataTable::createPaginated('gradeScaleManage', $criteria);
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo __($guid, $row['value']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo __($guid, $row['descriptor']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['sequenceNumber'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo ynExpander($guid, $row['isDefault']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_edit.php&gibbonScaleGradeID='.$row['gibbonScaleGradeID']."&gibbonScaleID=$gibbonScaleID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/gradeScales_manage_edit_grade_delete.php&gibbonScaleGradeID='.$row['gibbonScaleGradeID']."&gibbonScaleID=$gibbonScaleID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_add.php')
+                ->addParam('gibbonScaleID', $gibbonScaleID)
+                ->displayLabel();
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+            $table->addColumn('value', __('Value'));
+            $table->addColumn('descriptor', __('Descriptor'));
+            $table->addColumn('sequenceNumber', __('Sequence Number'));
+            $table->addColumn('isDefault', __('Is Default?'))->format(Format::using('yesNo', ['isDefault']));
+                
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonScaleID')
+                ->addParam('gibbonScaleGradeID')
+                ->format(function ($grade, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_edit.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/School Admin/gradeScales_manage_edit_grade_delete.php');
+                });
+
+            echo $table->render($grades);
         }
     }
 }
-?>
