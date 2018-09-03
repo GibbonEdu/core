@@ -97,6 +97,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
     $row = $form->addRow();
         $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
         $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->isRequired();
+    
+    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+    if ($enablePublicRegistration == 'Y') {
+        $row = $form->addRow();
+            $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
+            $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->isRequired();
+    }
 
     $row = $form->addRow();
         $row->addFooter();

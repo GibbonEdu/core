@@ -611,6 +611,7 @@ if ($proceed == false) {
             if ($customRequireFail) {
                 $URL .= '&return=error1';
                 header("Location: {$URL}");
+                exit();
             } else {
                 $fields = serialize($fields);
                 if (isset($parent1fields)) {

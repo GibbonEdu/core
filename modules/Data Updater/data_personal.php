@@ -589,7 +589,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 							$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 							$row = $form->addRow();
-							$row->addLabel($name, $rowFields['name']);
+							$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 							$row->addCustomField($name, $rowFields)->setValue($value);
 						}
 					}

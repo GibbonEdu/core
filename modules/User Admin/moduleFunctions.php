@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 //$student, $staff, $parent, $other, $applicationForm, $dataUpdater should all be TRUE/FALSE/NULL
 //Returns query result
-function getCustomFields($connection2, $guid, $student = null, $staff = null, $parent = null, $other = null, $applicationForm = null, $dataUpdater = null)
+function getCustomFields($connection2, $guid, $student = null, $staff = null, $parent = null, $other = null, $applicationForm = null, $dataUpdater = null, $publicRegistration = null)
 {
     $return = false;
 
@@ -49,6 +49,10 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
         if ($dataUpdater) {
             $data['dataUpdater'] = $dataUpdater;
             $where .= ' AND activeDataUpdater=:dataUpdater';
+        }
+        if ($publicRegistration) {
+            $data['publicRegistration'] = $publicRegistration;
+            $where .= ' AND activePublicRegistration=:publicRegistration';
         }
 
         if ($whereInner != '') {
