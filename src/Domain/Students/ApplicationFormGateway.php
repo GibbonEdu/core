@@ -25,8 +25,8 @@ use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v16
- * @since   v16
+ * @version v17
+ * @since   v17
  */
 class ApplicationFormGateway extends QueryableGateway
 {
@@ -36,7 +36,69 @@ class ApplicationFormGateway extends QueryableGateway
     private static $tableName = 'gibbonApplicationForm';
     private static $primaryKey = 'gibbonApplicationFormID';
 
-    private static $searchableColumns = ['gibbonApplicationFormID', 'preferredName', 'surname', 'username'];
+    private static $searchableColumns = ['gibbonApplicationFormID', 'preferredName', 'surname', 'paymentTransactionID'];
+
+    /**
+     * @param QueryCriteria $criteria
+     * @return DataSet
+     */
+    public function queryApplicationFormsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonApplicationFormID', 'gibbonApplicationForm.status', 'preferredName', 'surname', 'dob', 'priority', 'gibbonApplicationForm.timestamp', 'milestones', 'gibbonFamilyID', 'schoolName1', 'schoolDate1', 'schoolName2', 'schoolDate2', 'parent1title', 'parent1preferredName', 'parent1surname', 'parent1email', 'parent2title', 'parent2preferredName', 'parent2surname', 'parent2email', 'paymentMade','gibbonYearGroup.name AS yearGroup', 'gibbonPayment.paymentTransactionID'
+            ])
+            ->innerJoin('gibbonYearGroup', 'gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID')
+            ->leftJoin('gibbonPayment', "gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND gibbonPayment.foreignTable='gibbonApplicationForm'")
+            ->where('gibbonApplicationForm.gibbonSchoolYearIDEntry  = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        $criteria->addFilterRules([
+            'status' => function ($query, $status) {
+                return $query
+                    ->where('gibbonApplicationForm.status = :status')
+                    ->bindValue('status', ucwords($status));
+            },
+
+            'paid' => function ($query, $paymentMade) {
+                return $query
+                    ->where('gibbonApplicationForm.paymentMade = :paymentMade')
+                    ->bindValue('paymentMade', ucfirst($paymentMade));
+            },
+
+            'rollGroup' => function ($query, $value) {
+                return $query
+                    ->where(strtoupper($value) == 'Y'
+                        ? 'gibbonApplicationForm.gibbonRollGroupID IS NOT NULL'
+                        : 'gibbonApplicationForm.gibbonRollGroupID IS NULL');
+            },
+
+            'yearGroup' => function ($query, $gibbonYearGroupIDEntry) {
+                return $query
+                    ->where('gibbonApplicationForm.gibbonYearGroupIDEntry = :gibbonYearGroupIDEntry')
+                    ->bindValue('gibbonYearGroupIDEntry', $gibbonYearGroupIDEntry);
+            },
+
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectLinkedApplicationsByID($gibbonApplicationFormID)
+    {
+        $data = array('gibbonApplicationFormID' => $gibbonApplicationFormID);
+        $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status 
+                FROM gibbonApplicationForm
+                JOIN gibbonApplicationFormLink ON (
+                    gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
+                WHERE gibbonApplicationFormID1=:gibbonApplicationFormID
+                OR gibbonApplicationFormID2=:gibbonApplicationFormID 
+                ORDER BY gibbonApplicationFormID";
+
+        return $this->db()->select($sql, $data);
+    }
 
     public function getApplicationFormByID($gibbonApplicationFormID)
     {
