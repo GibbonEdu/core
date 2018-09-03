@@ -410,7 +410,7 @@ if ($proceed == false) {
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
             $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name']);
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields);
         }
     }
@@ -511,7 +511,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -651,7 +651,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
