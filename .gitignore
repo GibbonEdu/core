@@ -8,3 +8,4 @@ Thumb.db
 tests/log/*
 tests/config/support/_generated/*
 nbproject/
+/var
