@@ -41,6 +41,9 @@ if (isset($_SESSION[$guid]['cuttingEdgeCode']) == false) {
     $_SESSION[$guid]['cuttingEdgeCode'] = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
 }
 
+// common variables
+$siteURL = $_SESSION[$guid]['absoluteURL'];
+
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]['sidebarExtra'] = '';
 $_SESSION[$guid]['sidebarExtraPosition'] = '';
@@ -81,7 +84,7 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 //Check for force password reset flag
 if (isset($_SESSION[$guid]['passwordForceReset'])) {
     if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $_SESSION[$guid]['address'] != 'preferences.php') {
-        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
+        $URL = $siteURL.'/index.php?q=preferences.php';
         $URL = $URL.'&forceReset=Y';
         header("Location: {$URL}");
         exit();
@@ -121,7 +124,7 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
 
                             if ($result->rowCount() == 0) { //No registration yet
                                 //Redirect!
-                                $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_studentSelfRegister.php&redirect=true';
+                                $URL = $siteURL.'/index.php?q=/modules/Attendance/attendance_studentSelfRegister.php&redirect=true';
                                 $_SESSION[$guid]['pageLoads'] = null;
                                 header("Location: {$URL}");
                                 exit;
@@ -144,7 +147,7 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
 
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
                     if ($updatesRequiredCount > 0) {
-                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = $siteURL.'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
                         $_SESSION[$guid]['pageLoads'] = null;
                         header("Location: {$URL}");
                         exit;
@@ -192,7 +195,7 @@ if ($_SESSION[$guid]['address'] != '') {
 }
 
 // Set page scripts
-$datepicker_locale = is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js') ?
+$datepickerLocale = is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js') ?
     substr($_SESSION[$guid]['i18n']['code'], 0, 2) :
     str_replace('_', '-', $_SESSION[$guid]['i18n']['code']);
 $scripts = array(
@@ -200,7 +203,7 @@ $scripts = array(
     'lib/jquery/jquery.js',
     'lib/jquery/jquery-migrate.min.js',
     'lib/jquery-ui/js/jquery-ui.min.js',
-    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepicker_locale.'.js',
+    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
     'lib/jquery-jslatex/jquery.jslatex.js',
     'lib/jquery-form/jquery.form.js',
     'lib/chained/jquery.chained.min.js',
@@ -231,6 +234,9 @@ $head_extras = array();
 // Arrays for displaying notices
 $errors = array();
 $warnings = array();
+
+// Array for displaying main contents
+$contents = array();
 
 // Set theme CSS and JS
 if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
@@ -352,8 +358,6 @@ if ($_SESSION[$guid]['address'] == '') {
     }
 }
 
-$contents = array();
-
 if ($_SESSION[$guid]['address'] == '') {
     //Welcome message
     if (isset($_SESSION[$guid]['username']) == false) {
@@ -376,7 +380,7 @@ if ($_SESSION[$guid]['address'] == '') {
                 "<h2 style='margin-top: 30px'>".
                 __($guid, 'Student Applications').'</h2>'.
                 '<p>'.
-                sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Students/applicationForm.php'>", '</a>').
+                sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$siteURL."/?q=/modules/Students/applicationForm.php'>", '</a>').
                 '</p>';
         }
 
@@ -388,7 +392,7 @@ if ($_SESSION[$guid]['address'] == '') {
                 __($guid, 'Staff Applications') .
                 '</h2>'.
                 '<p>'.
-                sprintf(__($guid, 'Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
+                sprintf(__($guid, 'Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $_SESSION[$guid]['organisationName'], "<a href='".$siteURL."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
                 '</p>';
         }
 
@@ -400,7 +404,7 @@ if ($_SESSION[$guid]['address'] == '') {
                 __($guid, 'Departments').
                 '</h2>'.
                 '<p>'.
-                sprintf(__($guid, 'Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Departments/departments.php'>", '</a>', $_SESSION[$guid]['organisationName']).
+                sprintf(__($guid, 'Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$siteURL."/?q=/modules/Departments/departments.php'>", '</a>', $_SESSION[$guid]['organisationName']).
                 '</p>';
         }
 
@@ -412,7 +416,7 @@ if ($_SESSION[$guid]['address'] == '') {
                 __($guid, 'Learn With Us').
                 '</h2>'.
                 '<p>'.
-                sprintf(__($guid, 'We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $_SESSION[$guid]['organisationName']).
+                sprintf(__($guid, 'We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$siteURL."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $_SESSION[$guid]['organisationName']).
                 '</p>';
         }
 
@@ -516,10 +520,10 @@ if ($_SESSION[$guid]['address'] == '') {
                         getUserPhoto($guid, $students[$i][5], 75).
                         "<div style='height: 5px'></div>".
                         "<span style='font-size: 70%'>".
-                        "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__($guid, 'Student Profile').'</a><br/>';
+                        "<a href='".$siteURL.'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__($guid, 'Student Profile').'</a><br/>';
 
                     if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                        $contents[] = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__($guid, 'Roll Group').' ('.$students[$i][3].')</a><br/>';
+                        $contents[] = "<a href='".$siteURL.'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__($guid, 'Roll Group').' ('.$students[$i][3].')</a><br/>';
                     }
                     if ($students[$i][8] != '') {
                         $contents[] = "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__($guid, 'Website').'</a>';
@@ -598,6 +602,11 @@ if ($_SESSION[$guid]['address'] == '') {
     }
 }
 
+// Set header contents
+$hasTopGap = (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '');
+$headerLogoLink = $siteURL;
+$headerLogo = $siteURL.'/'.$_SESSION[$guid]['organisationLogo'];
+
 // Set footer contents
 $footerAuthor = __($guid, 'Powered by') . " <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> v{$version} " .
     (($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') ? 'dev' : '') . " | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-" . date('Y');
@@ -614,8 +623,7 @@ if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbo
         __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
 }
 
-$footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
-
+$footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
 
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -629,7 +637,7 @@ $footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibb
 
 		<!-- js stylesheets -->
 		<?php foreach ($stylesheets as $stylesheet) { ?>
-			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $stylesheet; ?>" type="text/css" media="screen" />
+			<link rel="stylesheet" href="<?php echo $siteURL . '/' . $stylesheet; ?>" type="text/css" media="screen" />
 		<?php } ?>
 		<?php if ($personalBackground !== null) { ?>
 			<style type="text/css">
@@ -642,15 +650,15 @@ $footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibb
 
 		<!-- js scripts -->
 		<?php foreach ($scripts as $script) { ?>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $script; ?>"></script>
+			<script type="text/javascript" src="<?php echo $siteURL . '/' . $script; ?>"></script>
 		<?php } ?>
 		<!-- js scripts end -->
 
 		<!-- js initialization -->
-		<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepicker_locale); ?>]);</script>
+		<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepickerLocale); ?>]);</script>
 		<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
 		<script type="text/javascript">$(function () { $(".latex").latex();});</script>
-		<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($_SESSION[$guid]['absoluteURL'] . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
+		<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($siteURL . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
 		<script type="text/javascript">
 		tinymce.init({
 			selector: "div#editorcontainer textarea",
@@ -705,13 +713,16 @@ $footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibb
 		<?php } ?>
 
 		<div id="wrapOuter">
-			<div class='minorLinks <?php echo (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '') ? 'minorLinksTopGap' : '' ?>'>
+			<div class='minorLinks<?php echo $hasTopGap ? ' minorLinksTopGap' : '' ?>'>
 				<?php echo getMinorLinks($connection2, $guid, $cacheLoad); ?>
 			</div>
 			<div id="wrap">
 				<div id="header">
 					<div id="header-logo">
-						<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/></a>
+						<a href='<?php echo $headerLogoLink ?>'><img
+							height='100px' width='400px' class="logo" alt="Logo"
+							src="<?php echo $headerLogo; ?>"
+						/></a>
 					</div>
 					<div id="header-finder">
 						<?php echo $fastFinder; ?>
