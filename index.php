@@ -627,6 +627,87 @@ if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbo
 
 $footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
 
+/**
+ * Variables to be used in the display logic below.
+ *
+ *
+ * Content arrays:
+ *
+ * @var $stylesheets array
+ *      Array of stylesheet paths string. Presumed to be based on site path.
+ * @var $scripts array
+ *      Array of script paths string. Presumed to be based on site path.
+ * @var $head_extras array
+ *      Array of extra HTML string in the HTML's head section that
+ *      will be print as-is.
+ * @var $errors array
+ *      Array of error strings to be displayed on top.
+ * @var $warnings array
+ *      Array of warning strings to be displayed on top.
+ * @var $contents array
+ *      Array of HTML string of the main body contents.
+ *
+ *
+ * Globals:
+ *
+ * @var $guid string
+ *      GUID of the Gibbon installation.
+ * @var $gibbon Gibbon\Core
+ *      The container core of Gibbon installation.
+ * @var $connection2 PDO
+ *      PDO connection object to default database.
+ *
+ *
+ * Boolean flags:
+ *
+ * @var $cacheLoad bool
+ *      Boolean flag if cache is loaded or not.
+ * @var $hasTopGap bool
+ *      Boolean flag if the top .minorLinks div should render with a gap.
+ * @var $sidebar bool
+ *      Wether if the page should render the sidebar.
+ *
+ *
+ * General contents:
+ *
+ * @var $title string
+ *      HTML page title.
+ * @var $siteURL string
+ *      String of the full base path of the Giddon installation.
+ * @var $personalBackground string
+ *      Path to personal background image.
+ * @var $datepickerLocale string
+ *      Locale code for datepicker.
+ * @var $pdo Gibbon\Database\Connection
+ *      Primary database connection object.
+ * @var $sessionDuration int
+ *      Number of seconds until session expire. If equal -1, session will
+ *      never expire.
+ * @var $headerLogoLink string
+ *      Path that the header logo would link to.
+ * @var $headerLogo string
+ *      URL of the header logo image.
+ * @var $headerFinder string?
+ *      HTML string of the header finder, or null.
+ * @var $headereMenu string
+ *      HTML string of the header menu.
+ * @var $notificationTray string
+ *      HTML string of the notification tray in header.
+ * @var $moduleMenu string?
+ *      HTML string of module menu, or null.
+ * @var $easyReturnHTML string?
+ *      HTML string of the easy return message, or null.
+ * @var $footerAuthor string
+ *      HTML string of auther credit.
+ * @var $footerLicense string
+ *      HTML string of license links and declaration.
+ * @var $footerThemeAuthor string?
+ *      HTML string of theme author information, if any. Or null.
+ * @var $footerLogo string
+ *      URL path to the footer logo.
+ *
+ */
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
