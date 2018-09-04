@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -47,7 +48,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         echo '</div>';
 	}
 
-	$search = isset($_GET['search'])? $_GET['search'] : null;
+    $search = isset($_GET['search'])? $_GET['search'] : null;
+    
+    $activityGateway = $container->get(ActivityGateway::class);
 
 	$form = Form::create('activity', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_manage_addProcess.php?search='.$search.'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']);
 	$form->setFactory(DatabaseFormFactory::create($pdo));
@@ -64,14 +67,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         $row->addLabel('provider', __('Provider'));
         $row->addSelect('provider')->isRequired()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
 	
-	$sql = "SELECT name as value, name FROM gibbonActivityType ORDER BY name";
-	$result = $pdo->executeQuery(array(), $sql);
-	if ($result->rowCount() > 0) {
-		$activityTypes = $result->fetchAll(\PDO::FETCH_KEY_PAIR);
-	} else {
-		$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
-		$activityTypes = array_map('trim', explode(',', $activityTypes));
-	}
+    $activityTypes = $activityGateway->selectActivityTypeOptions()->fetchKeyPair();
+    if (empty($activityTypes)) {
+        $activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
+        $activityTypes = array_map('trim', explode(',', $activityTypes));
+    }
 
 	if (!empty($activityTypes)) {
 		$row = $form->addRow();

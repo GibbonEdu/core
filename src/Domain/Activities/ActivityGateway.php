@@ -103,4 +103,11 @@ class ActivityGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function selectActivityTypeOptions()
+    {
+        $sql = "SELECT name as value, name FROM gibbonActivityType ORDER BY name";
+
+        return $this->db()->select($sql);
+    }
 }
