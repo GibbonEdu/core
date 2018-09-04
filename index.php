@@ -333,20 +333,20 @@ if (isset($_SESSION[$guid]['username'])) {
 }
 
 //Show student and staff quick finder
-$fastFinder = null;
+$headerFinder = null;
 if (isset($_SESSION[$guid]['username'])) {
     if ($cacheLoad) {
-        $fastFinder = getFastFinder($connection2, $guid);
+        $headerFinder = getFastFinder($connection2, $guid);
     }
 }
 
 // Set main menu HTML
 $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
 if ($cacheLoad) $mainMenu->setMenu();
-$mainMenuHTML = $mainMenu->getMenu();
+$headerMenu = $mainMenu->getMenu();
 
 // Set flash notification (temp_array)
-$flash = getNotificationTray($connection2, $guid, $cacheLoad);
+$notificationTray = getNotificationTray($connection2, $guid, $cacheLoad);
 
 // Set easy return message.
 $easyReturnHTML = null;
@@ -725,12 +725,12 @@ $footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logo
 						/></a>
 					</div>
 					<div id="header-finder">
-						<?php echo $fastFinder; ?>
+						<?php echo $headerFinder; ?>
 					</div>
 					<div id="header-menu">
-						<?php echo $mainMenuHTML; ?>
+						<?php echo $headerMenu; ?>
 						<div class='notificationTray'>
-							<?php echo $flash; ?>
+							<?php echo $notificationTray; ?>
 						</div>
 					</div>
 				</div><!--/#header-->
