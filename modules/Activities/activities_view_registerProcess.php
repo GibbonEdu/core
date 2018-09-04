@@ -338,8 +338,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                 //Count spaces
                                 try {
-                                    $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID);
-                                    $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
+                                    $dataNumberRegistered = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'));
+                                    $sqlNumberRegistered = "SELECT * FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonPerson.status='Full' AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
                                     $resultNumberRegistered = $connection2->prepare($sqlNumberRegistered);
                                     $resultNumberRegistered->execute($dataNumberRegistered);
                                 } catch (PDOException $e) {
@@ -350,14 +350,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                 if ($spaces > 0) {
                                     //Get top of waiting list
                                     try {
-                                        $dataBumps = array('gibbonActivityID' => $gibbonActivityID);
+                                        $dataBumps = array('gibbonActivityID' => $gibbonActivityID, 'today' => date('Y-m-d'));
                                         $sqlBumps = "SELECT gibbonActivityStudentID, name, gibbonPerson.gibbonPersonID, surname, preferredName
                                             FROM gibbonActivityStudent
                                             JOIN gibbonActivity ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID)
                                             JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                         WHERE gibbonPerson.status='Full'
-                                            AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."')
-                                            AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."')
+                                            AND (dateStart IS NULL OR dateStart<=:today)
+                                            AND (dateEnd IS NULL  OR dateEnd>=:today)
                                             AND gibbonActivityStudent.gibbonActivityID=:gibbonActivityID
                                             AND gibbonActivityStudent.status='Waiting List'
                                         ORDER BY timestamp ASC LIMIT 0, $spaces";
