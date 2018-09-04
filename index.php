@@ -44,16 +44,17 @@ if (isset($_SESSION[$guid]['cuttingEdgeCode']) == false) {
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]['sidebarExtra'] = '';
 $_SESSION[$guid]['sidebarExtraPosition'] = '';
-if (isset($_GET['sidebar'])) {
-    $sidebar = $_GET['sidebar'];
-} else {
-    $sidebar = '';
-}
+$sidebar = isset($_GET['sidebar']) ? $_GET['sidebar'] : '';
 
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
 }
+// If still false, only show warning and exit.
+if ($_SESSION[$guid]['systemSettingsSet'] == false) {
+    exit(__($guid, 'System Settings are not set: the system cannot be displayed'));
+}
+
 
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
@@ -169,159 +170,160 @@ if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     }
 }
 
-//If still false, show warning, otherwise display page
-if ($_SESSION[$guid]['systemSettingsSet'] == false) {
-    echo __($guid, 'System Settings are not set: the system cannot be displayed');
+
+// Set page title
+$title = $_SESSION[$guid]['organisationNameShort'].' - '.$_SESSION[$guid]['systemName'];
+if ($_SESSION[$guid]['address'] != '') {
+    if (strstr($_SESSION[$guid]['address'], '..') == false) {
+        if (getModuleName($_SESSION[$guid]['address']) != '') {
+            $title .= ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
+        }
+    }
+}
+
+// Set page scripts
+$datepicker_locale = is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js') ?
+    substr($_SESSION[$guid]['i18n']['code'], 0, 2) :
+    str_replace('_', '-', $_SESSION[$guid]['i18n']['code']);
+$scripts = array(
+    'lib/LiveValidation/livevalidation_standalone.compressed.js',
+    'lib/jquery/jquery.js',
+    'lib/jquery/jquery-migrate.min.js',
+    'lib/jquery-ui/js/jquery-ui.min.js',
+    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepicker_locale.'.js',
+    'lib/jquery-jslatex/jquery.jslatex.js',
+    'lib/jquery-form/jquery.form.js',
+    'lib/chained/jquery.chained.min.js',
+    'lib/thickbox/thickbox-compressed.js',
+    'lib/jquery-autosize/jquery.autosize.min.js',
+    'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
+    'lib/jquery-timepicker/jquery.timepicker.min.js',
+    'assets/js/core.js?v='.$version,
+);
+
+// Set page stylesheets
+$stylesheets = array(
+    'lib/jquery-ui/css/blitzer/jquery-ui.css',
+    'lib/thickbox/thickbox.css',
+    'lib/jquery-timepicker/jquery.timepicker.css',
+);
+
+// Set personal background
+$personalBackground = null;
+if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' and isset($_SESSION[$guid]['personalBackground'])) {
+    $personalBackground = ($_SESSION[$guid]['personalBackground'] != '') ?
+        htmlPrep($_SESSION[$guid]['personalBackground']) : null;
+}
+
+// Set head_extras, which will be rendered as-is in the head section
+$head_extras = array();
+
+// Arrays for displaying notices
+$errors = array();
+
+// Set theme CSS and JS
+if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
+    $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
+        'themes/Default/css/main.css?v='.$version :
+        'themes/Default/css/main_rtl.css?v='.$version;
+    $theme_script = 'themes/Default/js/common.js?v='.$version;
+
+    $_SESSION[$guid]['gibbonThemeID'] = '001';
+    $_SESSION[$guid]['gibbonThemeName'] = 'Default';
+    $_SESSION[$guid]['gibbonThemeAuthor'] = '';
+    $_SESSION[$guid]['gibbonThemeURL'] = '';
+    try {
+        if (isset($_SESSION[$guid]['gibbonThemeIDPersonal'])) {
+            $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
+            $sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
+        } else {
+            $dataTheme = array();
+            $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
+        }
+        $resultTheme = $connection2->prepare($sqlTheme);
+        $resultTheme->execute($dataTheme);
+        if ($resultTheme->rowCount() == 1) {
+            $rowTheme = $resultTheme->fetch();
+
+            $themeVersion = ($rowTheme['name'] != 'Default')? $rowTheme['version'] : $version;
+            $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
+                'themes/'.$rowTheme['name'].'/css/main.css?v='.$themeVersion :
+                'themes/'.$rowTheme['name'].'/css/main_rtl.css?v='.$themeVersion;
+            $theme_script = 'themes/'.$rowTheme['name'].'/js/common.js?v='.$themeVersion;
+
+            $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
+            $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
+            $_SESSION[$guid]['gibbonThemeAuthor'] = $rowTheme['author'];
+            $_SESSION[$guid]['gibbonThemeURL'] = $rowTheme['url'];
+        }
+    } catch (PDOException $e) {
+        $errors[] = $e->getMessage();
+    }
+
+    $stylesheets[] = $theme_stylesheet;
+    $scripts[] = $theme_script;
 } else {
-    ?>
+    $head_extras[] = $_SESSION[$guid]['themeCSS'];
+    $head_extras[] = $_SESSION[$guid]['themeJS'];
+}
+
+// Append module CSS & JS
+if (isset($_GET['q'])) {
+    if ($_GET['q'] != '') {
+        $moduleVersion = $version;
+        if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')){
+            include('./modules/'.$_SESSION[$guid]['module'].'/version.php');
+        }
+        $stylesheets[] = 'modules/'.$_SESSION[$guid]['module'].'/css/module.css?v='.$moduleVersion;
+        $scripts[] = 'modules/'.$_SESSION[$guid]['module'].'/js/module.js?v='.$moduleVersion;
+    }
+}
+
+// Set session duration for session timeout JS handling.
+$sessionDuration = -1;
+if (isset($_SESSION[$guid]['username'])) {
+    $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
+    if (is_numeric($sessionDuration) == false) $sessionDuration = 1200;
+    if ($sessionDuration < 1200) $sessionDuration = 1200;
+}
+
+// Set google analytics
+$head_extras[] = $_SESSION[$guid]['analytics'];
+
+?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml">
 		<head>
-			<title>
-				<?php
-                echo $_SESSION[$guid]['organisationNameShort'].' - '.$_SESSION[$guid]['systemName'];
-                if ($_SESSION[$guid]['address'] != '') {
-                    if (strstr($_SESSION[$guid]['address'], '..') == false) {
-                        if (getModuleName($_SESSION[$guid]['address']) != '') {
-                            echo ' - '.__($guid, getModuleName($_SESSION[$guid]['address']));
-                        }
-                    }
-                }
-                ?>
-			</title>
+			<title><?php echo $title; ?></title>
 			<meta charset="utf-8"/>
 			<meta name="author" content="Ross Parker, International College Hong Kong"/>
 
 			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
-			<script type="text/javascript" src="./lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
 
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery/jquery.js"></script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery/jquery-migrate.min.js"></script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/js/jquery-ui.min.js"></script>
-			<?php
-            if (isset($_SESSION[$guid]['i18n']['code'])) {
-                if (is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js')) {
-                    echo "<script type='text/javascript' src='".$_SESSION[$guid]['absoluteURL'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).".js'></script>";
-                    echo "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['".substr($_SESSION[$guid]['i18n']['code'], 0, 2)."']);</script>";
-                } elseif (is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.str_replace('_', '-', $_SESSION[$guid]['i18n']['code']).'.js')) {
-                    echo "<script type='text/javascript' src='".$_SESSION[$guid]['absoluteURL'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.str_replace('_', '-', $_SESSION[$guid]['i18n']['code']).".js'></script>";
-                    echo "<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional['".str_replace('_', '-', $_SESSION[$guid]['i18n']['code'])."']);</script>";
-                }
-            }
-   			?>
+			<!-- js stylesheets -->
+			<?php foreach ($stylesheets as $stylesheet) { ?>
+				<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $stylesheet; ?>" type="text/css" media="screen" />
+			<?php } ?>
+			<?php if ($personalBackground !== null) { ?>
+				<style type="text/css">
+				body {
+				    background: url(<?php echo json_encode($personalBackground); ?>) repeat scroll center top #A88EDB!important;
+				}
+				</style>
+			<?php } ?>
+			<!-- js stylesheets end -->
+
+			<!-- js scripts -->
+			<?php foreach ($scripts as $script) { ?>
+				<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $script; ?>"></script>
+			<?php } ?>
+			<!-- js scripts end -->
+
+			<!-- js initialization -->
+			<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepicker_locale); ?>]);</script>
 			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-jslatex/jquery.jslatex.js"></script>
 			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-form/jquery.form.js"></script>
-			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-ui/css/blitzer/jquery-ui.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/chained/jquery.chained.min.js"></script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox-compressed.js"></script>
-			<script type="text/javascript"> var tb_pathToImage="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/loadingAnimation.gif"</script>
-			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/thickbox/thickbox.css" type="text/css" media="screen" />
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-autosize/jquery.autosize.min.js"></script>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js"></script>
-            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.min.js"></script>
-            <link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-timepicker/jquery.timepicker.css" type="text/css" media="screen" />
-            <script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/assets/js/core.js?v=<?php echo $version; ?>"></script>
-			<?php
-            if (isset($_SESSION[$guid]['username'])) {
-                $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
-                if (is_numeric($sessionDuration) == false) {
-                    $sessionDuration = 1200;
-                }
-                if ($sessionDuration < 1200) {
-                    $sessionDuration = 1200;
-                }
-                ?>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$.sessionTimeout({
-							message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
-							keepAliveUrl: 'keepAlive.php' ,
-							redirUrl: 'logout.php?timeout=true',
-							logoutUrl: 'logout.php' ,
-							warnAfter: <?php echo $sessionDuration * 1000 ?>,
-							redirAfter: <?php echo($sessionDuration * 1000) + 600000 ?>
-			 			});
-					});
-				</script>
-			<?php
-
-            }
-            //Set theme
-            if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
-                $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css?v=".$version."' />";
-                if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-                    $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/Default/css/main_rtl.css?v=".$version."' />";
-                }
-                $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/Default/js/common.js?v=".$version."'></script>";
-                $_SESSION[$guid]['gibbonThemeID'] = '001';
-                $_SESSION[$guid]['gibbonThemeName'] = 'Default';
-                $_SESSION[$guid]['gibbonThemeAuthor'] = '';
-                $_SESSION[$guid]['gibbonThemeURL'] = '';
-                try {
-                    if (isset($_SESSION[$guid]['gibbonThemeIDPersonal'])) {
-                        $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
-                        $sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
-                    } else {
-                        $dataTheme = array();
-                        $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
-                    }
-                    $resultTheme = $connection2->prepare($sqlTheme);
-                    $resultTheme->execute($dataTheme);
-                    if ($resultTheme->rowCount() == 1) {
-                        $rowTheme = $resultTheme->fetch();
-                        $themeVersion = ($rowTheme['name'] != 'Default')? $rowTheme['version'] : $version;
-                        $_SESSION[$guid]['themeCSS'] = "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main.css?v=".$themeVersion."' />";
-                        if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-                            $_SESSION[$guid]['themeCSS'] .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css?v=".$themeVersion."' />";
-                        }
-                        $_SESSION[$guid]['themeJS'] = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js?v=".$themeVersion."'></script>";
-                        $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
-                        $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
-                        $_SESSION[$guid]['gibbonThemeAuthor'] = $rowTheme['author'];
-                        $_SESSION[$guid]['gibbonThemeURL'] = $rowTheme['url'];
-                    }
-                } catch (PDOException $e) {
-                    echo "<div class='error'>";
-                    echo $e->getMessage();
-                    echo '</div>';
-                }
-            }
-
-    		echo $_SESSION[$guid]['themeCSS'];
-    		echo $_SESSION[$guid]['themeJS'];
-
-            //Set module CSS & JS
-            if (isset($_GET['q'])) {
-                if ($_GET['q'] != '') {
-                    $moduleVersion = $version;
-                    if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')){
-                        include('./modules/'.$_SESSION[$guid]['module'].'/version.php');
-                    }
-
-                    $moduleCSS = "<link rel='stylesheet' type='text/css' href='./modules/".$_SESSION[$guid]['module']."/css/module.css?v=".$moduleVersion."' />";
-                    $moduleJS = "<script type='text/javascript' src='./modules/".$_SESSION[$guid]['module']."/js/module.js?v=".$moduleVersion."'></script>";
-                    echo $moduleCSS;
-                    echo $moduleJS;
-                }
-            }
-
-            //Set personalised background, if permitted
-            if ($personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' and isset($_SESSION[$guid]['personalBackground'])) {
-                if ($_SESSION[$guid]['personalBackground'] != '') {
-                    echo '<style type="text/css">';
-                    echo 'body {';
-                    echo 'background: url("'.htmlPrep($_SESSION[$guid]['personalBackground']).'") repeat scroll center top #A88EDB!important;';
-                    echo '}';
-                    echo '</style>';
-                }
-            }
-
-
-            //Initialise tinymce
-            ?>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/tinymce/tinymce.min.js"></script>
+			<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($_SESSION[$guid]['absoluteURL'] . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
 			<script type="text/javascript">
 			tinymce.init({
 				selector: "div#editorcontainer textarea",
@@ -329,29 +331,37 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				menubar : false,
 				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
 				plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-			 	statusbar: false,
-			 	valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
-                invalid_elements: '',
-                apply_source_formatting : true,
-			 	browser_spellcheck: true,
-			 	convert_urls: false,
-			 	relative_urls: false,
-                default_link_target: "_blank"
+				statusbar: false,
+				valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
+				invalid_elements: '',
+				apply_source_formatting : true,
+				browser_spellcheck: true,
+				convert_urls: false,
+				relative_urls: false,
+				default_link_target: "_blank"
 			 });
 			</script>
-			<style>
-				div.mce-listbox button, div.mce-menubtn button { padding-top: 2px!important ; padding-bottom: 2px!important }
-			</style>
-			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-tokeninput/src/jquery.tokeninput.js"></script>
-			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] ?>/lib/jquery-tokeninput/styles/token-input-facebook.css" type="text/css" />
+			<script type="text/javascript">
+			$(document).ready(function(){
+				var sessionDuration = <?php echo json_encode($sessionDuration); ?>;
+				if (sessionDuration > 0) {
+					$.sessionTimeout({
+						message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
+						keepAliveUrl: 'keepAlive.php' ,
+						redirUrl: 'logout.php?timeout=true',
+						logoutUrl: 'logout.php' ,
+						warnAfter: sessionDuration * 1000,
+						redirAfter: (sessionDuration * 1000) + 600000
+					});
+				}
+			});
+			</script>
+			<!-- js initialization end -->
 
-			<?php
-            //Analytics setting
-            if ($_SESSION[$guid]['analytics'] != '') {
-                echo $_SESSION[$guid]['analytics'];
-            }
+			<!-- head extras -->
+			<?php foreach ($head_extras as $head_extra) echo $head_extra; ?>
+			<!-- head extras end -->
 
-    	?>
 		</head>
 		<body>
 			<?php
@@ -721,7 +731,3 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 			</div>
 		</body>
 	</html>
-	<?php
-
-}
-?>
