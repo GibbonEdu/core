@@ -251,11 +251,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 $yearGroups = getYearGroups($connection2);
 
                 // Toggle Features
-                $canAccessRegistration = $allActivityAccess == 'Register' && !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
+                $canAccessRegistration = !empty($gibbonPersonID) && (($roleCategory == 'Student' && $highestAction == 'View Activities_studentRegister') || ($roleCategory == 'Parent' && $highestAction == 'View Activities_studentRegisterByParent' && $countChild > 0));
                 $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' && getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
 
                 // Registration Limit Check
-                if ($canAccessRegistration) {
+                if ($allActivityAccess == 'Register' && $canAccessRegistration) {
                     if ($dateType == 'Term' and $maxPerTerm > 0) {
                         echo "<div class='warning'>";
                         echo __($guid, "Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
