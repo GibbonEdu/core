@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
@@ -55,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             //Proceed!
             try {
                 $data = array();
-                $sql = "SELECT role, surname, preferredName, email FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY role DESC, surname, preferredName";
+                $sql = "SELECT role, surname, preferredName, email, studentID FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY role DESC, surname, preferredName";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

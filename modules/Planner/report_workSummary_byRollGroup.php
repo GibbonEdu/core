@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -45,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byRollGroup.php');

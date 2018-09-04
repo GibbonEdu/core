@@ -17,16 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
@@ -42,6 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
+        $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
         $alert = getAlert($guid, $connection2, 002);
 
         // Define a randomized lock for this script

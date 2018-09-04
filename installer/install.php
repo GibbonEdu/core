@@ -19,12 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Database\MySqlConnector;
+use Gibbon\Data\Validator;
 
 include '../version.php';
 include '../gibbon.php';
 
 // Sanitize the whole $_POST array
-$validator = new \Gibbon\Data\Validator();
+$validator = new Validator();
 $_POST = $validator->sanitize($_POST);
 
 // Get or set the current step
@@ -53,7 +55,6 @@ $nonce = hash('sha256', substr(mt_rand().date('zWy'), 0, 36));
 $_SESSION[$guid]['nonce'][$step+1] = $nonce;
 
 // Deal with non-existent stringReplacement session
-@session_start();
 $_SESSION[$guid]['stringReplacement'] = array();
 
 ?>
@@ -73,6 +74,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
         <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
         <link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
         <script type='text/javascript' src='../themes/Default/js/common.js'></script>
+        <script type='text/javascript' src='../assets/js/core.js'></script>
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
     </head>
@@ -208,12 +210,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     'es_ES' => 'Español',
                                     'fr_FR' => 'Français - France',
                                     'it_IT' => 'Italiano - Italia',
+                                    'pl_PL' => 'Język polski - Polska',
                                     'pt_BR' => 'Português - Brasil',
                                     'ro_RO' => 'Română',
                                     'sq_AL' => 'Shqip - Shqipëri',
                                     'vi_VN' => 'Tiếng Việt - Việt Nam',
                                     'ar_SA' => 'العربية - المملكة العربية السعودية',
                                     'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+                                    'zh_CN' => '汉语 - 中国',
                                     'zh_HK' => '體字 - 香港');
 
                                 $row = $form->addRow();
@@ -268,18 +272,20 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo $form->getOutput();
                             } elseif ($step == 2) {
 
-                                $connected1 = false;
-
                                 //Check for db values
                                 if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
                                     //Estabish db connection without database name
-                                    $pdo = new Gibbon\sqlConnection(true);
-                                    $pdo->installBypass($databaseServer, $databaseName, $databaseUsername, $databasePassword);
-                                    $connected1 = $pdo->getSuccess();
-                                    $connection2 = $pdo->getConnection();
+
+                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databasePort');
+                                    $mysqlConnector = new MySqlConnector();
+
+                                    if ($pdo = $mysqlConnector->connect($config)) {
+                                        $mysqlConnector->useDatabase($pdo, $databaseName);
+                                        $connection2 = $pdo->getConnection();
+                                    }
                                 }
 
-                                if ($connected1 == false) {
+                                if (empty($pdo)) {
                                     echo "<div class='error'>";
                                     echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                     echo '</div>';
@@ -503,6 +509,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected('Testing')->isRequired();
 
+                                                $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__($guid, 'Checking for Cutting Edge Code.')."</div></div>";
+                                                $row = $form->addRow();
+                                                    $row->addContent($statusInitial);
                                                 $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -522,8 +531,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 echo '}';
                                                 echo 'else {';
                                                 echo "$(\"#status\").html('".__('Cutting Edge Code check successful.')."') ;";
-                                                echo "$(\"#cuttingEdgeCode\").val('Y');";
-                                                echo "$(\"#cuttingEdgeCodeHidden\").val('Y');";
+                                                echo "$(\"#cuttingEdgeCode\").val('Yes');";
+                                                echo "$(\"input[name=cuttingEdgeCodeHidden]\").val('Y');";
                                                 echo '}';
                                                 echo '},';
                                                 echo 'error: function (data, textStatus, errorThrown) {';
@@ -575,10 +584,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addSelectCurrency($setting['name'])->isRequired();
 
+                                                $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
+                                                    $group[$item] = __($item);
+                                                    return $group;
+                                                }, array());
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue('Asia/Hong_Kong')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($tzlist)->isRequired()->placeholder();
 
                                                 $row = $form->addRow();
                                                     $row->addFooter();
@@ -591,10 +604,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 }
                             } elseif ($step == 3) {
                                 //New PDO DB connection
-                                $pdo = new Gibbon\sqlConnection();
-                                $connection2 = $pdo->getConnection();
+                                $mysqlConnector = new MySqlConnector();
 
-                                if ($pdo->getSuccess() == false) {
+                                if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+                                    $connection2 = $pdo->getConnection();
+                                }
+
+                                if (empty($pdo)) {
                                     echo "<div class='error'>";
                                     echo sprintf(__('A database connection could not be established. Please %1$stry again%2$s.'), "<a href='./install.php'>", '</a>');
                                     echo '</div>';
@@ -626,7 +642,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $country = $_POST['country'];
                                     $installType = $_POST['installType'];
                                     $statsCollection = $_POST['statsCollection'];
-                                    $cuttingEdgeCode = $_POST['cuttingEdgeCode'];
+                                    $cuttingEdgeCode = $_POST['cuttingEdgeCodeHidden'];
                                     $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
                                     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
 
@@ -815,6 +831,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 try {
                                                     $data = array('statsCollection' => $statsCollection);
                                                     $sql = "UPDATE gibbonSetting SET value=:statsCollection WHERE scope='System' AND name='statsCollection'";
+                                                    $result = $connection2->prepare($sql);
+                                                    $result->execute($data);
+                                                } catch (PDOException $e) {
+                                                    $settingsFail = true;
+                                                }
+
+                                                try {
+                                                    $data = array('email' => $email); //Use organisation email as finance email, initially
+                                                    $sql = "UPDATE gibbonSetting SET value=:email WHERE scope='Finance' AND name='email'";
                                                     $result = $connection2->prepare($sql);
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {

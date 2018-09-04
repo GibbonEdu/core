@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/yearGroup_manage_add.php';
 
@@ -37,6 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $name = $_POST['name'];
     $nameShort = $_POST['nameShort'];
     $sequenceNumber = $_POST['sequenceNumber'];
+    $gibbonPersonIDHOY = $_POST['gibbonPersonIDHOY'];
 
     if ($name == '' or $nameShort == '' or $sequenceNumber == '' or is_numeric($sequenceNumber) == false) {
         $URL .= '&return=error1';
@@ -60,8 +54,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber);
-                $sql = 'INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber';
+                $data = array('name' => $name, 'nameShort' => $nameShort, 'sequenceNumber' => $sequenceNumber, 'gibbonPersonIDHOY' => $gibbonPersonIDHOY);
+                $sql = 'INSERT INTO gibbonYearGroup SET name=:name, nameShort=:nameShort, sequenceNumber=:sequenceNumber, gibbonPersonIDHOY=:gibbonPersonIDHOY';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

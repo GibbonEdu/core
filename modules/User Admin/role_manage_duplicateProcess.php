@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
@@ -91,8 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_dup
             } else {
                 $row = $result->fetch();
                 try {
-                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description'], 'restriction' => $row['restriction']);
-                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', restriction=:restriction";
+                    $data = array('gibbonRoleID' => $AI, 'category' => $row['category'], 'name' => $name, 'nameShort' => $nameShort, 'description' => $row['description'], 'canLoginRole' => $row['canLoginRole'], 'futureYearsLogin' => $row['futureYearsLogin'], 'pastYearsLogin' => $row['pastYearsLogin'], 'restriction' => $row['restriction']);
+                    $sql = "INSERT INTO gibbonRole SET gibbonRoleID=:gibbonRoleID, category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', canLoginRole=:canLoginRole, futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction";
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {

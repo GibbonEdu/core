@@ -21,8 +21,6 @@ use Gibbon\Forms\Form;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\UsernameGenerator;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
@@ -129,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     ->setClass('');
 
                 $col->addContent(__('The system will perform the following actions:'))->wrap('<i><u>', '</u></i>');
-                $list = $col->addContent()->wrap('<ol>', '</ol>');
+                $list = $col->addContent();
 
                 $list->append('<li>'.__('Create a Gibbon user account for the student.').'</li>');
 
@@ -147,6 +145,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $list->append('<li>'.__('Save the student\'s payment preferences.').'</li>')
                      ->append('<li>'.__('Set the status of the application to "Accepted".').'</li>');
+
+                $list->wrap('<ol>', '</ol>');
 
                 // Handle optional auto-enrol feature
                 if (!empty($values['gibbonRollGroupID'])) {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 }
 
                 $col->addContent(__('But you may wish to manually do the following:'))->wrap('<i><u>', '</u></i>');
-                $list = $col->addContent()->wrap('<ol>', '</ol>');
+                $list = $col->addContent();
 
                 if (empty($values['gibbonRollGroupID'])) {
                     $list->append('<li>'.__('Enrol the student in the selected school year (as the student has been assigned to a roll group).').'</li>');
@@ -181,6 +181,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                      ->append('<li>'.__('Create an individual needs record for the student.').'</li>')
                      ->append('<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>')
                      ->append('<li>'.__('Create a timetable for the student.').'</li>');
+
+                $list->wrap('<ol>', '</ol>');
 
                 $form->addRow()->addSubmit(__('Accept'));
 
@@ -706,11 +708,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                     }
                                 } elseif ($result->rowCount() == 1) {
-                                    $values = $result->fetch();
+                                    $existingRelationship = $result->fetch();
 
-                                    if ($values['relationship'] != $relationship) {
+                                    if ($existingRelationship['relationship'] != $relationship) {
                                         try {
-                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $values['gibbonFamilyRelationshipID']);
+                                            $data = array('relationship' => $relationship, 'gibbonFamilyRelationshipID' => $existingRelationship['gibbonFamilyRelationshipID']);
                                             $sql = 'UPDATE gibbonFamilyRelationship SET relationship=:relationship WHERE gibbonFamilyRelationshipID=:gibbonFamilyRelationshipID';
                                             $result = $connection2->prepare($sql);
                                             $result->execute($data);

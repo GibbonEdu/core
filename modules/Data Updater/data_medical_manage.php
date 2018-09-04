@@ -17,7 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearGateway;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_manage.php') == false) {
     //Acess denied
@@ -34,111 +37,73 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
 
-    try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = 'SELECT gibbonPersonMedicalUpdateID, gibbonPerson.surname, gibbonPerson.preferredName, timestamp, gibbonPersonIDUpdater, gibbonPersonMedicalUpdate.status FROM gibbonPersonMedicalUpdate JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonPersonMedicalUpdate.gibbonPersonID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY status, timestamp';
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // School Year Picker
+    if (!empty($gibbonSchoolYearID)) {
+        $schoolYearGateway = $container->get(SchoolYearGateway::class);
+        $targetSchoolYear = $schoolYearGateway->getSchoolYearByID($gibbonSchoolYearID);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
-        }
+        echo '<h2>';
+        echo $targetSchoolYear['name'];
+        echo '</h2>';
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Target User');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Requesting User');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Date & Time');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status');
-        echo '</th>';
-        echo "<th style='width: 80px'>";
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
+        echo "<div class='linkTop'>";
+            if ($prevSchoolYear = $schoolYearGateway->getPreviousSchoolYearByID($gibbonSchoolYearID)) {
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&gibbonSchoolYearID='.$prevSchoolYear['gibbonSchoolYearID']."'>".__('Previous Year').'</a> ';
             } else {
-                $rowNum = 'odd';
+                echo __('Previous Year').' ';
             }
-
-            if ($row['status'] == 'Complete') {
-                $rowNum = 'current';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', false);
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataUpdater = array('gibbonPersonID' => $row['gibbonPersonIDUpdater']);
-                $sqlUpdater = 'SELECT gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-                $resultUpdater = $connection2->prepare($sqlUpdater);
-                $resultUpdater->execute($dataUpdater);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultUpdater->rowCount() == 1) {
-                $rowUpdater = $resultUpdater->fetch();
-                echo formatName($rowUpdater['title'], $rowUpdater['preferredName'], $rowUpdater['surname'], 'Parent', false);
-            }
-            echo '</td>';
-            echo '<td>';
-            echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)).' at '.substr($row['timestamp'], 11, 5);
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['status'] == 'Pending') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_edit.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/data_medical_manage_delete.php&gibbonPersonMedicalUpdateID='.$row['gibbonPersonMedicalUpdateID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            }
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
-        }
+			echo ' | ';
+			if ($nextSchoolYear = $schoolYearGateway->getNextSchoolYearByID($gibbonSchoolYearID)) {
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q'].'&gibbonSchoolYearID='.$nextSchoolYear['gibbonSchoolYearID']."'>".__('Next Year').'</a> ';
+			} else {
+				echo __('Next Year').' ';
+			}
+        echo '</div>';
     }
+
+    $gateway = $container->get(MedicalUpdateGateway::class);
+
+    // QUERY
+    $criteria = $gateway->newQueryCriteria()
+        ->sortBy('status')
+        ->sortBy('timestamp', 'DESC')
+        ->fromArray($_POST);
+
+    $dataUpdates = $gateway->queryDataUpdates($criteria, $gibbonSchoolYearID);
+
+    // DATA TABLE
+    $table = DataTable::createPaginated('medicalUpdateManage', $criteria);
+
+    $table->modifyRows(function ($update, $row) {
+        if ($update['status'] != 'Pending') $row->addClass('current');
+        return $row;
+    });
+
+    // COLUMNS
+    $table->addColumn('target', __('Target User'))
+        ->sortable(['target.surname', 'target.preferredName'])
+        ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student']));
+    $table->addColumn('updater', __('Requesting User'))
+        ->sortable(['updater.surname', 'updater.preferredName'])
+        ->format(Format::using('name', ['updaterTitle', 'updaterPreferredName', 'updaterSurname', 'Parent']));
+    $table->addColumn('timestamp', __('Date & Time'))->format(Format::using('dateTime', 'timestamp'));
+    $table->addColumn('status', __('Status'))->width('12%');
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+        ->addParam('gibbonPersonMedicalUpdateID')
+        ->format(function ($update, $actions) {
+            if ($update['status'] == 'Pending') {
+                $actions->addAction('edit', __('Edit'))
+                        ->setURL('/modules/Data Updater/data_medical_manage_edit.php');
+
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Data Updater/data_medical_manage_delete.php');
+            }
+        });
+
+    echo $table->render($dataUpdates);
 }

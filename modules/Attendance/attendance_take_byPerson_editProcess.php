@@ -18,21 +18,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Gibbon system-wide includes
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
-
 $gibbonAttendanceLogPersonID = isset($_POST['gibbonAttendanceLogPersonID'])? $_POST['gibbonAttendanceLogPersonID'] : '';
 $gibbonPersonID = isset($_POST['gibbonPersonID'])? $_POST['gibbonPersonID'] : '';
-$currentDate = isset($_POST['currentDate'])? dateConvert($guid, $_POST['currentDate']) : date('Y-m-d');
+$currentDate = isset($_POST['currentDate'])? $_POST['currentDate'] : dateConvertBack($guid, date('Y-m-d'));
 
 $URL = $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Attendance/attendance_take_byPerson.php&gibbonPersonID=$gibbonPersonID&currentDate=$currentDate";
 

@@ -19,9 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../config.php';
 
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
+//Module includes
+include './moduleFunctions.php';
 
 //Get settings
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -37,14 +36,23 @@ if ($enableEffort == 'Y')
 else
     $effortAdjust = 1 ;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
+    // Check existence of and access to this class.
+    $highestAction = getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2);
+    $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction);
+    
+    if (empty($class)) {
+        echo '<div class="error">';
+        echo __('You do not have access to this action.');
+        echo '</div>';
+        return;
+    }
+
     $alert = getAlert($guid, $connection2, 002);
 
     //Count number of columns

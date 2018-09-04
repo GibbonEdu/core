@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -82,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             echo 'Choose Student';
             echo '</h2>';
 
-            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/iep_view_myChildren.php');

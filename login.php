@@ -22,12 +22,6 @@ use Gibbon\Comms\NotificationEvent;
 include 'functions.php';
 include 'config.php';
 
-@session_start();
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
 setCurrentSchoolYear($guid, $connection2);
 
 //The current/actual school year info, just in case we are working in a different year
@@ -56,7 +50,7 @@ if (empty($username) or empty($password)) {
 else {
     try {
         $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -71,8 +65,13 @@ else {
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges to login
-        if ($row['canLogin'] != 'Y') {
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
+
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
             $URL .= '?loginReturn=fail2';
             header("Location: {$URL}");
             exit;

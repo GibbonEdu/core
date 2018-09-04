@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/userFields_add.php';
 
@@ -50,16 +43,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
     
     $activeDataUpdater = $_POST['activeDataUpdater'];
     $activeApplicationForm = $_POST['activeApplicationForm'];
+    $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+    $activePublicRegistration = ($enablePublicRegistration == 'Y' && isset($_POST['activePublicRegistration'])) ? $_POST['activePublicRegistration'] : '0' ;
 
     //Validate Inputs
-    if ($name == '' or $active == '' or $description == '' or $type == '' or $required == '' or $activeDataUpdater == '' or $activeApplicationForm == '') {
+    if ($name == '' or $active == '' or $description == '' or $type == '' or $required == '' or $activeDataUpdater == '' or $activeApplicationForm == '' or $activePublicRegistration == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
         //Write to database
         try {
-            $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm);
-            $sql = 'INSERT INTO gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm';
+            $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'activePublicRegistration' => $activePublicRegistration);
+            $sql = 'INSERT INTO gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration';
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {

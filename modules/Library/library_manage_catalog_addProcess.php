@@ -17,16 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
+include '../../gibbon.php';
 
 include './moduleFunctions.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/library_manage_catalog_add.php&name='.$_GET['name'].'&gibbonLibraryTypeID='.$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status'].'&gibbonPersonIDOwnership='.$_GET['gibbonPersonIDOwnership'].'&typeSpecificFields='.$_GET['typeSpecificFields'];
 
@@ -35,9 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     header("Location: {$URL}");
 } else {
     //Get general fields
-    $gibbonLibraryTypeID = $_POST['type'];
+    $gibbonLibraryTypeID = $_POST['gibbonLibraryTypeID'];
     $id = $_POST['idCheck'];
-    $name = $_POST['name2'];
+    $name = $_POST['name'];
     $producer = $_POST['producer'];
     $vendor = $_POST['vendor'];
     $purchaseDate = null;
@@ -100,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         $fieldsIn = unserialize($row['fields']);
         $fieldsOut = array();
         foreach ($fieldsIn as $field) {
-            $fieldName = preg_replace('/ /', '', $field['name']);
+            $fieldName = preg_replace('/ |\(|\)/', '', $field['name']);
             if ($field['type'] == 'Date') {
                 $fieldsOut[$field['name']] = dateConvert($guid, $_POST['field'.$fieldName]);
             } else {

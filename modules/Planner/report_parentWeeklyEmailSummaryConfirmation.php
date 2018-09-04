@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -46,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
     $weekOfYear = isset($_GET['weekOfYear'])? $_GET['weekOfYear'] : null;
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_parentWeeklyEmailSummaryConfirmation.php');
@@ -63,6 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
     foreach ($dateRange as $date) {
         $weeks[$date->format('W')] = __('Week').' '.$date->format('W').': '.$date->format($_SESSION[$guid]['i18n']['dateFormatPHP']);
     }
+    $weeks = array_reverse($weeks, true);
 
     $row = $form->addRow();
         $row->addLabel('weekOfYear', __('Calendar Week'));

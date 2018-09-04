@@ -17,48 +17,60 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-$basePath = dirname(__FILE__);
-$basePath = rtrim(str_replace('\\', '/', $basePath), '/');
+// Setup the composer autoloader
+$autoloader = require_once __DIR__.'/vendor/autoload.php';
+
+// Require the system-wide functions
+require_once __DIR__.'/functions.php';
+
+// Core Services
+$container = new League\Container\Container();
+$container->delegate(new League\Container\ReflectionContainer);
+
+$container->add('config', new Gibbon\Core(__DIR__));
+$container->add('session', new Gibbon\Session($container));
+$container->add('locale', new Gibbon\Locale($container));
+$container->add('autoloader', $autoloader);
+
+\Gibbon\Services\Format::setupFromSession($container->get('session'));
+
+// Globals for backwards compatibility
+$gibbon = $container->get('config');
+$gibbon->session = $container->get('session');
+$gibbon->locale = $container->get('locale');
+$guid = $gibbon->getConfig('guid');
+$caching = $gibbon->getConfig('caching');
+$version = $gibbon->getConfig('version');
 
 // Handle Gibbon installation redirect
-if (file_exists($basePath.'/config.php') == false || filesize($basePath.'/config.php') == 0) {
-    // Test if installer already invoked and ignore.
-    if (false === strpos($_SERVER['PHP_SELF'], 'installer/install.php')) {
-        $URL = './installer/install.php';
-        header("Location: {$URL}");
-        exit();
-    }
+if (!$gibbon->isInstalled() && !$gibbon->isInstalling()) {
+    header("Location: ./installer/install.php");
+    exit;
 }
 
-// Setup the composer autoloader
-$autoloader = require_once $basePath.'/vendor/autoload.php';
-
-// New configuration object
-$gibbon = new Gibbon\Core($basePath, $_SERVER['PHP_SELF']);
-
-
-// Set global config variables, for backwards compatability
-$guid = $gibbon->guid();
-$caching = $gibbon->getCaching();
-$version = $gibbon->getVersion();
-
 // Autoload the current module namespace
-if (isset($_SESSION[$guid]['module'])) {
-    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $_SESSION[$guid]['module']);
-    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', $basePath.'/modules/'.$_SESSION[$guid]['module']);
+if (!empty($gibbon->session->get('module'))) {
+    $moduleNamespace = preg_replace('/[^a-zA-Z0-9]/', '', $gibbon->session->get('module'));
+    $autoloader->addPsr4('Gibbon\\'.$moduleNamespace.'\\', realpath(__DIR__).'/modules/'.$gibbon->session->get('module'));
     $autoloader->register(true);
 }
 
-// Require the system-wide functions
-require_once $basePath.'/functions.php';
-
-
+// Initialize using the database connection
 if ($gibbon->isInstalled() == true) {
+    
+    $mysqlConnector = new Gibbon\Database\MySqlConnector();
+    if ($pdo = $mysqlConnector->connect($gibbon->getConfig())) {
+        $container->add('db', $pdo);
+        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
+        $connection2 = $pdo->getConnection();
 
-	// New PDO DB connection
-	$pdo = new Gibbon\sqlConnection();
-	$connection2 = $pdo->getConnection();
-
-	// Initialize using the database connection
-	$gibbon->initializeCore($pdo);
+        $gibbon->initializeCore($container);
+    } else {
+        // We need to handle failed database connections after install. Display an error if no connection 
+        // can be established. Needs a specific error page once header/footer is split out of index.
+        if (!$gibbon->isInstalling()) {
+            include('./error.php');
+            exit;
+        }
+    }
 }

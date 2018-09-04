@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -80,6 +78,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
                     ->isRequired()
                     ->maxLength(3)
                     ->setValue($values['sequenceNumber']);
+            
+            $row = $form->addRow();
+                $row->addLabel('gibbonPersonIDHOY', __('Head of Year'));
+                $row->addSelectStaff('gibbonPersonIDHOY')->placeholder()->selected($values['gibbonPersonIDHOY']);
 
             $row = $form->addRow();
                 $row->addFooter();

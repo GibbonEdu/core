@@ -20,7 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 $gibbonYearGroupIDList = (isset($_POST['gibbonYearGroupIDList']))? $_POST['gibbonYearGroupIDList'] : null;
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
+$gibbonSchoolYearID = (isset($_POST['gibbonSchoolYearID']))? $_POST['gibbonSchoolYearID'] : null;
+
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync_run.php&gibbonSchoolYearID='.$gibbonSchoolYearID.'&gibbonYearGroupIDList='.$gibbonYearGroupIDList;
 $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/courseEnrolment_sync.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_sync_run.php') == false) {
@@ -31,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     //Proceed!
     $syncData = (isset($_POST['syncData']))? $_POST['syncData'] : false;
 
-    if (empty($gibbonYearGroupIDList) || empty($syncData)) {
+    if (empty($gibbonYearGroupIDList) || empty($gibbonSchoolYearID) || empty($syncData)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
         exit;

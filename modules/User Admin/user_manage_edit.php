@@ -210,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 			}
 
 			$row = $form->addRow();
-				$row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
+				$row->addLabel('username', __('Username'));
 				$row->addTextField('username')->readOnly()->maxLength(20);
 
 			$row = $form->addRow();
@@ -234,8 +234,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 			if ($uniqueEmailAddress == 'Y') {
-                $emailLabel->description(__('Must be unique.'));
-                $email->append('<span></span><div class="LV_validation_message LV_invalid" id="email_availability_result"></div>');
+				$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
 			}
 
 			$row = $form->addRow();
@@ -260,7 +259,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
-				$row->addTextField('address1')->maxLength(255);
+				$row->addTextArea('address1')->maxLength(255)->setRows(2);
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
@@ -303,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
-				$row->addTextField('address2')->maxLength(255);
+                $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
 			$row = $form->addRow()->addClass('address');
 				$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
@@ -596,20 +595,22 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
 				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+                    $options = array_map('trim', explode(',', $privacyOptions));
+                    $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
 
 					$row = $form->addRow();
 						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-						$row->addCheckbox('privacyOptions[]')->fromArray($options);
+						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
 				}
 
 				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
 				if (!empty($studentAgreementOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
+                    $options = array_map('trim', explode(',', $studentAgreementOptions));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
 
 					$row = $form->addRow();
 					$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
-					$row->addCheckbox('studentAgreements[]')->fromArray($options);
+					$row->addCheckbox('studentAgreements[]')->fromArray($options)->checked($values['studentAgreements']);
 				}
 			}
 
@@ -624,7 +625,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 					$row = $form->addRow();
-						$row->addLabel($name, $rowFields['name']);
+						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 						$row->addCustomField($name, $rowFields)->setValue($value);
 				}
 			}
@@ -653,35 +654,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 						}
 						});
 				});
-
-				<?php if ($uniqueEmailAddress == 'Y') : ?>
-				// Email Uniqueness
-				$('#email').on('input', function(){
-					if (emailValidate.doValidations() == false || $('#email').val() == '') {
-						$('#email_availability_result').html('');
-						return;
-					}
-
-					$.ajax({
-						type : 'POST',
-						data : { email: $('#email').val(), gibbonPersonID: '<?php echo $gibbonPersonID; ?>' },
-						url: "./modules/User Admin/user_manage_emailAjax.php",
-						success: function(responseText){
-							if(responseText == 0){
-								$('#email + .LV_validation_message').hide();
-								$('#email_availability_result').html('<?php echo sprintf(__('%1$s available'), __('Email')); ?>');
-								$('#email_availability_result').switchClass('LV_invalid', 'LV_valid');
-							} else if(responseText > 0){
-								$('#email_availability_result').html('');
-								$('#email_availability_result').switchClass('LV_valid', 'LV_invalid');
-								// Prevent submitting form with a non-unique email
-								$('#email').switchClass('LV_valid_field', 'LV_invalid_field');
-								emailValidate.add(Validate.Exclusion, { within: [$('#email').val()], failureMessage: "<?php echo sprintf(__('%1$s already in use'), __('Email')); ?>" });
-							}
-						}
-					});
-				});
-				<?php endif; ?>
 			</script>
 
 			<?php

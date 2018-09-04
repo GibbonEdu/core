@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
@@ -36,6 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         echo "<div class='error'>";
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
+        return;
     } else {
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
         $search = null;
@@ -55,9 +54,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
             echo '</div>';
+            return;
         } else {
             $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
             $skipBrief = false;
+
+            //Skip brief for those with _full or _fullNoNotes, and _brief
+            if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
+                $skipBrief = true;
+            }
+
             //Test if View Student Profile_brief and View Student Profile_myChildren are both available and parent has access to this student...if so, skip brief, and go to full.
             if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_myChildren')) {
                 try {
@@ -72,11 +78,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 }
             }
 
-            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my') and $gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
-                $skipBrief = true;
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_my')) {
+                if ($gibbonPersonID == $_SESSION[$guid]['gibbonPersonID']) {
+                    $skipBrief = true;
+                } else if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief')) {
+                    $highestAction = 'View Student Profile_brief';
+                } else {
+                    //Acess denied
+                    echo "<div class='error'>";
+                    echo __($guid, 'You do not have access to this action.');
+                    echo '</div>';
+                    return;
+                }
             }
 
-            if ($highestAction == 'View Student Profile_brief' and $skipBrief == false) {
+            if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php', 'View Student Profile_brief') and $skipBrief == false) {
                 //Proceed!
                 try {
                     $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID);
@@ -261,6 +277,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     //Set sidebar
                     $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $row['image_240'], 240);
                 }
+                return;
             } else {
                 try {
                     if ($highestAction == 'View Student Profile_myChildren') {
@@ -277,13 +294,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             AND childDataAccess='Y'";
                     }
                     else if ($highestAction == 'View Student Profile_my') {
-                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'today' => date('Y-m-d'));
-                        $sql = "SELECT gibbonPerson.* FROM gibbonPerson
+                        $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
+                        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
+                        $sql = "SELECT gibbonPerson.*, gibbonStudentEnrolment.* FROM gibbonPerson
                             LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                             WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID
                             AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full'
                             AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
-                    } else {
+                    }
+                    else if ($highestAction == 'View Student Profile_full' || $highestAction == 'View Student Profile_fullNoNotes') {
                         if ($allStudents != 'on') {
                             $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
                             $sql = "SELECT * FROM gibbonPerson
@@ -297,17 +316,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 LEFT JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                                 WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID";
                         }
+                    } else {
+                        //Acess denied
+                        echo "<div class='error'>";
+                        echo __($guid, 'You do not have access to this action.');
+                        echo '</div>';
+                        return;
                     }
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
                     echo "<div class='error'>".$e->getMessage().'</div>';
+                    return;
                 }
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
                     echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
+                    return;
                 } else {
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
@@ -332,6 +359,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     if (isset($_GET['action'])) {
                         $action = $_GET['action'];
                     }
+
+                    // When viewing left students, they won't have a year group ID
+                    if (empty($row['gibbonYearGroupID'])) $row['gibbonYearGroupID'] = '';
 
                     if ($subpage == '' and ($hook == '' or $module == '' or $action == '')) {
                         $subpage = 'Overview';
@@ -407,7 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 if ($dayTypeOptions != '') {
                                     echo ' ('.$row['dayType'].')';
                                 }
-                                echo '</i>';
+                                echo '</i><br/>';
                             }
                         }
                         echo '</td>';
@@ -470,18 +500,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'House').'</span><br/>';
                         try {
-                            $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
-                            $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+                            $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                            $sqlDetail = "SELECT DISTINCT gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID";
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
                         } catch (PDOException $e) {
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         if ($resultDetail->rowCount() == 1) {
+                            echo "<span style='font-size: 115%; font-weight: bold;'>".__($guid, 'Head of Year').'</span><br/>';
                             $rowDetail = $resultDetail->fetch();
-                            echo $rowDetail['name'];
+                            if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                            } else {
+                                echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                            }
+                            echo '<br/>';
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -539,7 +574,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'House').'</span><br/>';
+                        try {
+                            $dataDetail = array('gibbonHouseID' => $row['gibbonHouseID']);
+                            $sqlDetail = 'SELECT * FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+                            $resultDetail = $connection2->prepare($sqlDetail);
+                            $resultDetail->execute($dataDetail);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultDetail->rowCount() == 1) {
+                            $rowDetail = $resultDetail->fetch();
+                            echo $rowDetail['name'];
+                        }
                         echo '</td>';
                         echo '</tr>';
                         $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
@@ -576,8 +623,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo __($guid, "Student's Teachers");
                         echo '</h4>';
                         try {
-                            $dataDetail = array('gibbonPersonID' => $gibbonPersonID);
-                            $sqlDetail = "SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
+                            $dataDetail = array('gibbonPersonID' => $gibbonPersonID, 'gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                            $sqlDetail = "
+                                (SELECT DISTINCT teacher.surname, teacher.preferredName, teacher.email FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email)
+                                UNION
+                                (SELECT DISTINCT surname, preferredName, email FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID)
+                                ORDER BY preferredName, surname, email";
                             $resultDetail = $connection2->prepare($sqlDetail);
                             $resultDetail->execute($dataDetail);
                         } catch (PDOException $e) {
@@ -1075,7 +1126,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo $row['studentID'];
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-
+                        try {
+                            $dataDetail = array('gibbonYearGroupID' => $row['gibbonYearGroupID']);
+                            $sqlDetail = "SELECT DISTINCT gibbonPersonID, title, surname, preferredName FROM gibbonPerson JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonPersonIDHOY=gibbonPersonID) WHERE status='Full' AND gibbonYearGroupID=:gibbonYearGroupID";
+                            $resultDetail = $connection2->prepare($sqlDetail);
+                            $resultDetail->execute($dataDetail);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultDetail->rowCount() == 1) {
+                            echo "<span style='font-size: 115%; font-weight: bold;'>".__($guid, 'Head of Year').'</span><br/>';
+                            $rowDetail = $resultDetail->fetch();
+                            if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                            } else {
+                                echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                            }
+                            echo '<br/>';
+                        }
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
@@ -1915,7 +1983,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 }
                             }
                         }
-                    } elseif ($subpage == 'School Attendance') {
+                    } elseif ($subpage == 'Attendance') {
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
                             echo "<div class='error'>";
                             echo __($guid, 'Your request failed because you do not have access to this action.');
@@ -1946,6 +2014,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 $attainmentAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeNameAbrev');
                                 $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
                                 $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effortAlternativeNameAbrev');
+                                $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
                                 $alert = getAlert($guid, $connection2, 002);
                                 $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -2100,6 +2169,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
                                             if ($highestAction == 'View Markbook_viewMyChildrensClasses') {
                                                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' $and2 ORDER BY completeDate";
+                                            } elseif ($highestAction == 'View Markbook_myMarks') {
+                                                $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' $and2 ORDER BY completeDate";
                                             } else {
                                                 $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' $and2 ORDER BY completeDate";
                                             }
@@ -2140,6 +2211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                             echo "<th style='width: 120px'>";
                                             echo __($guid, 'Assessment');
                                             echo '</th>';
+                                            if ($enableModifiedAssessment == 'Y') {
+                                                echo "<th style='width: 75px'>";
+                                                    echo __($guid, 'Modified');
+                                                echo '</th>';
+                                            }
                                             echo "<th style='width: 75px; text-align: center'>";
                                             if ($attainmentAlternativeName != '') {
                                                 echo $attainmentAlternativeName;
@@ -2198,6 +2274,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                 }
                                                 echo '</span><br/>';
                                                 echo '</td>';
+                                                if ($enableModifiedAssessment == 'Y') {
+                                                    if (!is_null($rowEntry['modifiedAssessment'])) {
+                                                        echo "<td>";
+                                                        echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                                        echo '</td>';
+                                                    }
+                                                    else {
+                                                        echo "<td class='dull' style='color: #bbb; text-align: center'>";
+                                                        echo __($guid, 'N/A');
+                                                        echo '</td>';
+                                                    }
+                                                }
                                                 if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                                                     echo "<td class='dull' style='color: #bbb; text-align: center'>";
                                                     echo __($guid, 'N/A');
@@ -2289,7 +2377,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                                             echo '<span>'.mb_substr($rowEntry['comment'], 0, 200).'...<br/>';
                                                             echo "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
                                                         } else {
-                                                            echo nl2br($rowEntry['comment']);
+                                                            echo nl2br($rowEntry['comment']).'<br/>';
                                                         }
                                                     }
                                                     if ($rowEntry['response'] != '') {
@@ -3173,6 +3261,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuName[$studentMenuCount] = __($guid, 'Timetable');
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Timetable'>".__($guid, 'Timetable').'</a></li>';
                         ++$studentMenuCount;
+                    }if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
+                        $style = '';
+                        if ($subpage == 'Attendance') {
+                            $style = "style='font-weight: bold'";
+                        }
+                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
+                        $studentMenuName[$studentMenuCount] = __($guid, 'Attendance');
+                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Attendance'>".__($guid, 'Attendance').'</a></li>';
+                        ++$studentMenuCount;
                     }
                     if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.php')) {
                         $style = '';
@@ -3184,16 +3281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=Behaviour'>".__($guid, 'Behaviour').'</a></li>';
                         ++$studentMenuCount;
                     }
-                    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php')) {
-                        $style = '';
-                        if ($subpage == 'School Attendance') {
-                            $style = "style='font-weight: bold'";
-                        }
-                        $studentMenuCategory[$studentMenuCount] = $mainMenu['Attendance'];
-                        $studentMenuName[$studentMenuCount] = __($guid, 'School Attendance');
-                        $studentMenuLink[$studentMenuCount] = "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&search=$search&allStudents=$allStudents&subpage=School Attendance'>".__($guid, 'School Attendance').'</a></li>';
-                        ++$studentMenuCount;
-                    }
+                    
 
                     //Check for hooks, and slot them into array
                     try {

@@ -90,6 +90,10 @@ class CustomField extends Input
             $this->isRequired();
         }
 
+        if (!empty($fields['default'])) {
+            $this->customField->setValue($fields['default']);
+        }
+
         parent::__construct($name);
     }
 

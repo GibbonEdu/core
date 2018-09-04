@@ -17,18 +17,11 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonCourseID = $_GET['gibbonCourseID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_delete.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
-$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage_delete.php&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&search='.$_POST['search'];
+$URLDelete = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&search='.$_POST['search'];
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_delete.php') == false) {
     $URL .= '&return=error0';

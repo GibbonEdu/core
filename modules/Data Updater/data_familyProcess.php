@@ -19,17 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
+$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
     $URL .= '&return=error0';
@@ -84,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 try {
                     if ($existing != 'N') {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonFamilyUpdateID' => $existing);
-                        $sql = 'UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
+                        $sql = 'UPDATE gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater, timestamp=NOW() WHERE gibbonFamilyUpdateID=:gibbonFamilyUpdateID';
                     } else {
                         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $gibbonFamilyID, 'nameAddress' => $nameAddress, 'homeAddress' => $homeAddress, 'homeAddressDistrict' => $homeAddressDistrict, 'homeAddressCountry' => $homeAddressCountry, 'languageHomePrimary' => $languageHomePrimary, 'languageHomeSecondary' => $languageHomeSecondary, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                         $sql = 'INSERT INTO gibbonFamilyUpdate SET gibbonSchoolYearID=:gibbonSchoolYearID, gibbonFamilyID=:gibbonFamilyID, nameAddress=:nameAddress, homeAddress=:homeAddress, homeAddressDistrict=:homeAddressDistrict, homeAddressCountry=:homeAddressCountry, languageHomePrimary=:languageHomePrimary, languageHomeSecondary=:languageHomeSecondary, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
@@ -106,8 +100,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
 
                 $event->sendNotifications($pdo, $gibbon->session);
 
-                $URL .= '&return=success0';
-                header("Location: {$URL}");
+                $URLSuccess .= '&return=success0';
+                header("Location: {$URLSuccess}");
             }
         }
     }

@@ -241,14 +241,19 @@
                             echo "<th style='width: 120px'>";
                                 echo __($guid, 'Assessment');
                             echo '</th>';
-							if ($enableEffort == 'Y') {
-	                            echo "<th style='width: 75px; text-align: center'>";
-	                                echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
-	                            echo '</th>';
-							}
+                            if ($enableModifiedAssessment == 'Y') {
+                                echo "<th style='width: 75px'>";
+                                    echo __($guid, 'Modified');
+                                echo '</th>';
+                            }
                             echo "<th style='width: 75px; text-align: center'>";
-                                echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                                echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
                             echo '</th>';
+							if ($enableEffort == 'Y') {
+                                echo "<th style='width: 75px; text-align: center'>";
+                                    echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                                echo '</th>';
+                            }
                             echo '<th>';
                                 echo __($guid, 'Comment');
                             echo '</th>';
@@ -289,6 +294,18 @@
                                 }
                                 echo '</span><br/>';
                                 echo '</td>';
+                                if ($enableModifiedAssessment == 'Y') {
+                                    if (!is_null($rowEntry['modifiedAssessment'])) {
+                                        echo "<td>";
+                                        echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                                        echo '</td>';
+                                    }
+                                    else {
+                                        echo "<td class='dull' style='color: #bbb; text-align: center'>";
+                                        echo __($guid, 'N/A');
+                                        echo '</td>';
+                                    }
+                                }
                                 if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                                     echo "<td class='dull' style='color: #bbb; text-align: center'>";
                                     echo __($guid, 'N/A');
@@ -486,7 +503,7 @@
 
                             try {
                                 $dataEntry2 = array('gibbonPersonIDStudent' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sqlEntry2 = "SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableStudents='Y' ORDER BY completeDate DESC, name";
+                                $sqlEntry2 = "SELECT gibbonMarkbookEntryID, gibbonMarkbookColumn.name, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) JOIN gibbonCourseClass ON (gibbonMarkbookColumn.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND complete='Y' AND completeDate<='".date('Y-m-d')."' AND viewableParents='Y' ORDER BY completeDate DESC, name";
                                 $resultEntry2 = $connection2->prepare($sqlEntry2);
                                 $resultEntry2->execute($dataEntry2);
                             } catch (PDOException $e) {

@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -31,8 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
     echo '</div>';
 } else {
     //Proceed!
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_finance_manage.php'>".__($guid, 'Finance Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Request').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_finance_manage.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__($guid, 'Finance Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Request').'</div>';
     echo '</div>';
 
     //Check if school year specified
@@ -67,6 +67,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_finance_
             //Let's go!
             $oldValues = $result->fetch();
             $newValues = $newResult->fetch();
+
+            // Provide a link back to edit the associated record
+            if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == true && !empty($oldValues['gibbonFinanceInvoiceeID'])) {
+                echo "<div class='linkTop'>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoicees_manage_edit.php&gibbonFinanceInvoiceeID=".$oldValues['gibbonFinanceInvoiceeID']."&search=&allUsers='>".__('Edit Invoicee')."<img style='margin: 0 0 -4px 5px' title='".__('Edit Invoicee')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo '</div>';
+            }
             
             // An array of common fields to compare in each data set, and the field label
             $compare = array(

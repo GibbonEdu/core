@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
@@ -67,7 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $setting = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+    
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment', true);
+    $row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $row = $form->addRow()->addHeading(__('Interface'));
 
@@ -127,13 +130,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
-
-    $row = $form->addRow()->addHeading(__('Miscellaneous'));
-
-    $setting = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush', true);
-    $row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('On, Off')->selected($setting['value'])->isRequired();
 
 	$row = $form->addRow();
 		$row->addFooter();

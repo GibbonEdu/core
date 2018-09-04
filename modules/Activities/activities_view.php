@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
 
 //Module includes
@@ -131,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             $search = isset($_GET['search'])? $_GET['search'] : null;
 
-            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_view.php");

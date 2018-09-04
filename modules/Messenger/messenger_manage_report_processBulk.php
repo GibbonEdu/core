@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 //PHPMailer include
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
@@ -32,8 +25,7 @@ require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 //Module includes
 include './moduleFunctions.php';
 
-$action = (!empty($_POST['action1']) ? $_POST['action1'] : null) ;
-$action = (is_null($action) && !empty($_POST['action2']) ? $_POST['action2'] : $action) ;
+$action = isset($_POST['action']) ? $_POST['action'] : '';
 $search = $_GET['search'];
 $gibbonMessengerID = $_GET['gibbonMessengerID'];
 

@@ -17,9 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
 use Gibbon\Domain\System\NotificationGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings.php') == false) {
@@ -48,52 +48,29 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     $gateway = new NotificationGateway($pdo);
     $result = $gateway->selectAllNotificationEvents();
 
-    if ($result->rowCount() == 0) {
-        echo "<div class='error'>";
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        echo '<table class="colorOddEven fullWidth" cellspacing="0">';
-        echo '<tr class="head">';
-        echo '<th>';
-        echo __('Module');
-        echo '</th>';
-        echo '<th>';
-        echo __('Name');
-        echo '</th>';
-        echo '<th>';
-        echo __('Subscribers');
-        echo '</th>';
-        echo '<th>';
-        echo __('Active');
-        echo '</th>';
-        echo '<th style="width: 80px;">';
-        echo __('Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        while ($row = $result->fetch()) {
-            echo '<tr class="'.(($row['active'] == 'N')? 'error' : '').'">';
-            echo '<td>';
-            echo $row['moduleName'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['event'];
-            if ($row['type'] == 'CLI') {
-                echo " <img title='".__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/ style='float: right; width:20px; height:20px;margin: -4px 0 -4px 4px;opacity: 0.6;'>";
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['listenerCount'];
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $row['active']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/notificationSettings_manage_edit.php&gibbonNotificationEventID='.$row['gibbonNotificationEventID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
+    $nameFormat = function ($row) use ($guid) {
+        $output = $row['event'];
+        if ($row['type'] == 'CLI') {
+            $output .= " <img title='".__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/ style='float: right; width:20px; height:20px;margin: -4px 0 -4px 4px;opacity: 0.6;'>";
         }
-        echo '</table>';
-    }
+        return $output;
+    };
+
+    $table = DataTable::create('notificationEvents');
+
+    $table->modifyRows(function($notification, $row) {
+        if ($notification['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
+    $table->addColumn('moduleName', __('Module'));
+    $table->addColumn('event', __('Name'))->format($nameFormat);
+    $table->addColumn('listenerCount', __('Subscribers'));
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
+
+    $actions = $table->addActionColumn()->addParam('gibbonNotificationEventID');
+    $actions->addAction('edit', __('Edit'))
+            ->setURL('/modules/System Admin/notificationSettings_manage_edit.php');
+
+    echo $table->render($result->toDataSet());
 }

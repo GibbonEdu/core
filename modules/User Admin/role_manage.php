@@ -17,7 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php') == false) {
     //Acess denied
@@ -34,96 +35,58 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonRole ORDER BY type, name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $roleGateway = $container->get(RoleGateway::class);
+    
+    // QUERY
+    $criteria = $roleGateway->newQueryCriteria()
+        ->sortBy(['type', 'name'])
+        ->fromArray($_POST);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/role_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $roles = $roleGateway->queryRoles($criteria);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Category');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Short Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Description');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Login Years');
-        echo '</th>';
-        echo "<th style='width:110px'>";
-        echo __($guid, 'Action');
-        echo '</th>';
-        echo '</tr>';
+    // DATA TABLE
+    $table = DataTable::createPaginated('roleManage', $criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/User Admin/role_manage_add.php')
+        ->displayLabel();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo __($guid, $row['category']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['name']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['nameShort']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['description']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['type']);
-            echo '</td>';
-            echo '<td>';
-            if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
-                echo __($guid, 'All years');
+    $table->addColumn('category', __('Category'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('description', __('Description'));
+    $table->addColumn('type', __('Type'));
+    $table->addColumn('loginYear', __('Login Years'))
+        ->notSortable()
+        ->format(function ($row) {
+            if ($row['canLoginRole'] == 'N') {
+                return __('None');
+            } else if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
+                return __('All years');
             } elseif ($row['futureYearsLogin'] == 'N' and $row['pastYearsLogin'] == 'N') {
-                echo __($guid, 'Current year only');
+                return __('Current year only');
             } elseif ($row['futureYearsLogin'] == 'N') {
-                echo __($guid, 'Current/past years only');
+                return __('Current/past years only');
             } elseif ($row['pastYearsLogin'] == 'N') {
-                echo __($guid, 'Current/future years only');
+                return __('Current/future years only');
             }
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_edit.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+        });
+
+    $table->addActionColumn()
+        ->addParam('gibbonRoleID')
+        ->format(function ($row, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                ->setURL('/modules/User Admin/role_manage_edit.php');
+
             if ($row['type'] == 'Additional') {
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_delete.php&gibbonRoleID='.$row['gibbonRoleID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/User Admin/role_manage_delete.php');
             }
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/role_manage_duplicate.php&gibbonRoleID='.$row['gibbonRoleID']."'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
-    }
+
+            $actions->addAction('duplciate', __('Duplicate'))
+                ->setIcon('copy')
+                ->setURL('/modules/User Admin/role_manage_duplicate.php');
+        });
+
+    echo $table->render($roles);
 }

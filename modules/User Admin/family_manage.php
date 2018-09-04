@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.php') == false) {
     //Acess denied
@@ -37,20 +38,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $search = isset($_GET['search'])? $_GET['search'] : '';
+
+    $familyGateway = $container->get(FamilyGateway::class);
+
+    // QUERY
+    $criteria = $familyGateway->newQueryCriteria()
+        ->searchBy($familyGateway->getSearchableColumns(), $search)
+        ->sortBy(['name'])
+        ->fromArray($_POST);
 
     echo '<h2>';
     echo __($guid, 'Search');
     echo '</h2>';
-
-    $search = isset($_GET['search'])? $_GET['search'] : '';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description('Family name.');
-        $row->addTextField('search')->setValue($search);
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Search'));
@@ -70,125 +70,58 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     echo __($guid, 'View');
     echo '</h2>';
 
-    $search = null;
-    if (isset($_GET['search'])) {
-        $search = $_GET['search'];
-    }
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonFamily ORDER BY name';
-        if ($search != '') {
-            $data = array('search' => "%$search%");
-            $sql = 'SELECT * FROM gibbonFamily WHERE (name LIKE :search) ORDER BY name';
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // QUERY
+    $families = $familyGateway->queryFamilies($criteria);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_add.php&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $familyIDs = $families->getColumn('gibbonFamilyID');
+    $adults = $familyGateway->selectAdultsByFamily($familyIDs)->fetchGrouped();
+    $families->joinColumn('gibbonFamilyID', 'adults', $adults);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "search=$search");
-        }
+    $children = $familyGateway->selectChildrenByFamily($familyIDs)->fetchGrouped();
+    $families->joinColumn('gibbonFamilyID', 'children', $children);
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Marital Status');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Adults');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Children');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    // DATA TABLE
+    $table = DataTable::createPaginated('familyManage', $criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/User Admin/family_manage_add.php')
+        ->addParam('search', $search)
+        ->displayLabel();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'];
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataAdult = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-                $sqlAdult = 'SELECT * FROM gibbonFamilyAdult, gibbonPerson WHERE gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName ';
-                $resultAdult = $connection2->prepare($sqlAdult);
-                $resultAdult->execute($dataAdult);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowAdult = $resultAdult->fetch()) {
-                echo formatName($rowAdult['title'],  $rowAdult['preferredName'], $rowAdult['surname'], 'Parent');
-                if ($rowAdult['status'] == 'Left' or $rowAdult['status'] == 'Expected') {
-                    echo ' <i>('.$rowAdult['status'].')</i>';
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('status', __('Marital Status'));
+    $table->addColumn('adults', __('Adults'))
+        ->notSortable()
+        ->format(function($row) {
+            array_walk($row['adults'], function(&$person) {
+                if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
+                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
                 }
-                echo '<br/>';
-            }
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-                $sqlChild = 'SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY surname, preferredName ';
-                $resultChild = $connection2->prepare($sqlChild);
-                $resultChild->execute($dataChild);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($rowChild = $resultChild->fetch()) {
-                echo formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
-                if ($rowChild['status'] == 'Left' or $rowChild['status'] == 'Expected') {
-                    echo ' <i>('.$rowChild['status'].')</i>';
+            });
+            return Format::nameList($row['adults'], 'Parent');
+        });
+    $table->addColumn('children', __('Children'))
+        ->notSortable()
+        ->format(function($row) {
+            array_walk($row['children'], function(&$person) {
+                if ($person['status'] == 'Left' || $person['status'] == 'Expected') {
+                    $person['surname'] .= ' <i>('.$person['status'].')</i>';
                 }
-                echo '<br/>';
-            }
-            echo '</td>';
-            echo "<td style='width: 60px'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/family_manage_delete.php&gibbonFamilyID='.$row['gibbonFamilyID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+            });
+            return Format::nameList($row['children'], 'Student');
+        });
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "search=$search");
-        }
-    }
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonFamilyID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($family, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/User Admin/family_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/User Admin/family_manage_delete.php');
+        });
+
+    echo $table->render($families);
 }
-?>

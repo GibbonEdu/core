@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
+//Module includes from User Admin (for custom fields)
+include './modules/User Admin/moduleFunctions.php';
 
 $proceed = false;
 
@@ -63,7 +64,7 @@ if ($proceed == false) {
         echo '</p>';
     }
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
+    $form = Form::create('publicRegistration', $_SESSION[$guid]['absoluteURL'].'/publicRegistrationProcess.php');
 
     $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -79,8 +80,13 @@ if ($proceed == false) {
         $row->addTextField('firstName')->isRequired()->maxLength(30);
 
     $row = $form->addRow();
-        $row->addLabel('email', __('Email'))->description(__('Must be unique.'));
-        $row->addEmail('email')->maxLength(50)->isRequired();
+        $row->addLabel('email', __('Email'));
+        $email = $row->addEmail('email')->maxLength(50)->isRequired();
+
+    $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+    if ($uniqueEmailAddress == 'Y') {
+        $email->isUnique('./publicRegistrationCheck.php');
+    }
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -91,11 +97,11 @@ if ($proceed == false) {
         $row->addDate('dob')->isRequired();
 
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'))->description(__('Must be unique.'));
-        $row->addTextField('username')
+        $row->addLabel('usernameCheck', __('Username'));
+        $row->addTextField('usernameCheck')
             ->maxLength(20)
             ->isRequired()
-            ->append('<span></span><div class="LV_validation_message LV_invalid" id="username_availability_result"></div><br/>');
+            ->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'username'));
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -109,6 +115,19 @@ if ($proceed == false) {
             ->addGeneratePasswordButton($form)
             ->isRequired()
             ->maxLength(30);
+    
+    // CUSTOM FIELDS
+    $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
+    if ($resultFields->rowCount() > 0) {
+        $heading = $form->addRow()->addHeading(__('Other Information'));
+
+        while ($rowFields = $resultFields->fetch()) {
+            $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+            $row = $form->addRow();
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
+                $row->addCustomField($name, $rowFields);
+        }
+    }
 
     $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {
@@ -132,33 +151,6 @@ if ($proceed == false) {
 
     echo $form->getOutput();
 
-    ?>
-    <script type="text/javascript">
-        $(document).ready(function(){
-            $('#username').on('input', function(){
-                if ($('#username').val() == '') {
-                    $('#username_availability_result').html('');
-                    return;
-                }
-                $('#username_availability_result').html('<?php echo __($guid, "Checking availability...") ?>');
-                $.ajax({
-                    type : 'POST',
-                    data : { username: $('#username').val() },
-                    url: "./publicRegistrationCheck.php",
-                    success: function(responseText){
-                        if(responseText == 0){
-                            $('#username_availability_result').html('<?php echo __('Username available'); ?>');
-                            $('#username_availability_result').switchClass('LV_invalid', 'LV_valid');
-                        }else if(responseText > 0){
-                            $('#username_availability_result').html('<?php echo __('Username already taken'); ?>');
-                            $('#username_availability_result').switchClass('LV_valid', 'LV_invalid');
-                        }
-                    }
-                });
-            });
-        });
-    </script>
-    <?php
     //Get postscrript
     $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');
     if ($postscript != '') {
@@ -170,4 +162,3 @@ if ($proceed == false) {
         echo '</p>';
     }
 }
-?>

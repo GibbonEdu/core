@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -44,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
     $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : null;
 
-	$form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+	$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
 	$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/curriculumMapping_outcomesByCourse.php');
 

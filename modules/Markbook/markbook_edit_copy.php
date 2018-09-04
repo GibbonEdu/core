@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Forms\Form;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
                 echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
-                $row = $result->fetch();
+                $course = $result->fetch();
 
 	        	//Get teacher list
 	            $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
@@ -83,15 +83,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 				    echo __($guid, 'You do not have access to this action.');
 				    echo '</div>';
 	            } else {
-
 	            	echo "<div class='trail'>";
-	            	echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Edit').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Copy Columns').'</div>';
+	            	echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Edit').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Copy Columns').'</div>';
                     echo '</div>';
-
 
 		            try {
 			            $data = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
-			            $sql = 'SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID';
+			            $sql = "SELECT * FROM gibbonMarkbookColumn WHERE gibbonCourseClassID=:gibbonCourseClassID";
 			            $result = $connection2->prepare($sql);
 			            $result->execute($data);
 			        } catch (PDOException $e) {
@@ -113,92 +111,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 		                    echo "<div class='error'>".$e->getMessage().'</div>';
 		                }
 
-		                $row2 = $result2->fetch();
+		                $courseFrom = $result2->fetch();
 
 	                	echo '<p>';
-	                	printf( __($guid, 'This action will copy the following columns from %s.%s to the current class %s.%s '), $row2['course'], $row2['class'], $row['course'], $row['class'] );
-	                	echo '</p>';
+	                	printf( __($guid, 'This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
+                        echo '</p>';
+                        
+                        echo '<fieldset>';
 
-	                	echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL']."/modules/Markbook/markbook_edit_copyProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookCopyClassID=$gibbonMarkbookCopyClassID'>";
+                        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookCopyClassID='.$gibbonMarkbookCopyClassID);
+                        $form->setClass('fullWidth');
 
-	                    echo "<table cellspacing='0' style='width: 100%' class='fullwidth colorOddEven'>";
-	                    echo "<tr class='head'>";
-	                    echo '<th style="width:40px; padding-left: 20px;">';
-                        ?>
-	                   <script type="text/javascript">
-                            $(function () {
-                                $('.checkall').click(function () {
-                                    $(this).parents('form').find('input[name^="copyColumnID"]:checkbox').attr('checked', this.checked);
-                                });
-                            });
-                        </script>
-                        <?php
-                        echo '<input class="checkall" type="checkbox" checked>';
-	                    echo '</th>';
-	                    echo '<th>';
-	                    echo __($guid, 'Name');
-	                    echo '</th>';
-	                    echo '<th>';
-	                    echo __($guid, 'Type');
-	                    echo '</th>';
-	                    echo '<th>';
-	                    echo __($guid, 'Description');
-	                    echo '</th>';
-	                    echo '<th>';
-	                    echo __($guid, 'Date<br/>Added');
-	                    echo '</th>';
-	                    echo '</tr>';
+                        $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-	                    $count = 0;
-	                    while ($row = $result->fetch()) {
+                        $table = $form->addRow()->addTable()->setClass('fullWidth colorOddEven noMargin noPadding noBorder');
+                        
+                        $header = $table->addHeaderRow();
+                            $header->addCheckAll()->checked(true);
+                            $header->addContent(__('Name'));
+                            $header->addContent(__('Type'));
+                            $header->addContent(__('Description'));
+                            $header->addContent(__('Date Added'));
 
-	                        //COLOR ROW BY STATUS!
-	                        echo "<tr>";
-	                        echo '<td>';
-	                        echo '<input type="checkbox" value="1" name="copyColumnID['.$row['gibbonMarkbookColumnID'].']" checked>';
-	                        echo '</td>';
-	                        echo '<td>';
-	                        echo '<b>'.$row['name'].'</b>';
-	                        echo '</td>';
-	                        echo '<td>';
-	                        echo $row['type'];
-	                        echo '</td>';
-	                        echo '<td>';
-	                        echo $row['description'];
-	                        echo '</td>';
-	                        echo '<td>';
-	                        if (!empty($row['date']) && $row['date'] != '0000-00-00') {
-	                            echo dateConvertBack($guid, $row['date']);
-	                        }
-	                        echo '</td>';
+                        while ($column = $result->fetch()) {
+                            $row = $table->addRow();
+                                $row->addCheckbox('copyColumnID['.$column['gibbonMarkbookColumnID'].']')->setClass('textCenter')->checked(true);
+                                $row->addContent($column['name'])->wrap('<strong>', '</strong>');
+                                $row->addContent($column['type']);
+                                $row->addContent($column['description']);
+                                $row->addContent(!empty($column['date'])? dateConvertBack($guid, $column['date']) : '');
+                        }
 
-	                        echo '</tr>';
+                        $row = $form->addRow();
+                            $row->addSubmit();
 
+                        echo $form->getOutput();
 
-
-							$count++;
-	                    }
-	                    echo '<tr>';
-							echo '<td colspan="7" class="right">';
-							echo '<input type="submit" value="'.__($guid, 'Submit').'">';
-							echo '</td>';
-						echo '</tr>';
-
-	                    echo '</table>';
-	                    echo '</form>';
+                        echo '</fieldset>';
 	                }
-
 	            }
-
-
 		    }
-
-
-
         }
     }
 
     // Print the sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit.php');
 }
-?>

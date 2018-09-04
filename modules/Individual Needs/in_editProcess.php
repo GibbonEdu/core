@@ -19,14 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonPersonID = $_POST['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/in_edit.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search'].'&source='.$_GET['source'].'&gibbonINDescriptorID='.$_GET['gibbonINDescriptorID'].'&gibbonAlertLevelID='.$_GET['gibbonAlertLevelID'].'&gibbonRollGroupID='.$_GET['gibbonRollGroupID'].'&gibbonYearGroupID='.$_GET['gibbonYearGroupID'];

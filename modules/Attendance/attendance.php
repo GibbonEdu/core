@@ -16,8 +16,6 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
-@session_start() ;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
@@ -208,7 +206,7 @@ else {
 
 			                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
 
-			                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.$lastNSchoolDays[$i];
+			                                $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
 
 			                                if (isset($logHistory[$lastNSchoolDays[$i]]) == false) {
 			                                    //$class = 'highlightNoData';
@@ -261,7 +259,7 @@ else {
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}
@@ -419,7 +417,7 @@ else {
 
 		                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
 
-		                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
+		                                $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
 
 		                                if (isset($logHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
 		                                	$class = 'highlightPresent';
@@ -486,7 +484,7 @@ else {
 								if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
 
 									print "<td style='text-align: center'>" ;
-										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . $currentDate . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
+										print "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>" ;
 									print "</td>" ;
 
 								}

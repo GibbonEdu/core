@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -42,8 +40,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $versionMessage = __($guid, '%s requires %s version %s or higher');
 
     $phpVersion = phpversion();
-    $mysqlVersion = $pdo->getVersion();
-    $mysqlCollation = $pdo->getCollation();
+    $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
+    $mysqlCollation = $pdo->selectOne("SELECT COLLATION('gibbon')");
 
     $phpRequirement = $gibbon->getSystemRequirement('php');
     $mysqlRequirement = $gibbon->getSystemRequirement('mysql');

@@ -2,13 +2,7 @@
 
 use Gibbon\Comms\NotificationEvent;
 
-session_start();
-include "../../functions.php";
-include "../../config.php";
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection(false, '');
-$connection2 = $pdo->getConnection();
+include "../../gibbon.php";
 
 setCurrentSchoolYear($guid, $connection2);
 
@@ -196,10 +190,15 @@ if (isset($authUrl)){
         exit;
 	}
 	else {
-		$row = $result->fetch();
+        $row = $result->fetch();
+        
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
 
         // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y') {
+        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
             unset($_SESSION[$guid]['googleAPIAccessToken'] );
             unset($_SESSION[$guid]['gplusuer']);
             @session_destroy();

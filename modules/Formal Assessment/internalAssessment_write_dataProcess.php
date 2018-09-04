@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
 $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
@@ -100,12 +93,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $commentValue = $_POST["comment$i"];
                     }
                     $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
-                    $wordpressCommentPushID = null;
-                    $wordpressCommentPushAction = null;
-                    if (isset($_POST["$i-wordpressCommentPush"])) {
-                        $wordpressCommentPushID = substr($_POST["$i-wordpressCommentPush"], 0, strpos($_POST["$i-wordpressCommentPush"], '-'));
-                        $wordpressCommentPushAction = substr($_POST["$i-wordpressCommentPush"], (strpos($_POST["$i-wordpressCommentPush"], '-') + 1));
-                    }
 
                     //SET AND CALCULATE FOR ATTAINMENT
                     if ($attainment == 'Y' and $gibbonScaleIDAttainment != '') {

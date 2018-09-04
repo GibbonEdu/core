@@ -59,6 +59,7 @@ class NotificationSender
      * @param  string  $text
      * @param  string  $moduleName
      * @param  string  $actionLink
+     * @return self
      */
     public function addNotification($gibbonPersonID, $text, $moduleName, $actionLink)
     {
@@ -68,6 +69,8 @@ class NotificationSender
             'moduleName'     => $moduleName,
             'actionLink'     => $actionLink
         );
+
+        return $this;
     }
 
     /**
@@ -85,7 +88,7 @@ class NotificationSender
      *
      * @return  array Send report with success/fail counts.
      */
-    public function sendNotifications()
+    public function sendNotifications($bccMode = false)
     {
         $sendReport = array(
             'count' => $this->getNotificationCount(),
@@ -99,7 +102,13 @@ class NotificationSender
             return $sendReport;
         }
 
-        foreach ($this->notifications as $notification) {
+        $mail = $this->setupEmail();
+
+        // Clear the internal notification list before sending. In case there's an error we don't want to double-send.
+        $notificationsToSend = $this->notifications;
+        $this->notifications = [];
+
+        foreach ($notificationsToSend as $notification) {
             // Check for existence of notification in new status
             $result = $this->gateway->selectNotificationByStatus($notification, 'New');
 
@@ -116,34 +125,74 @@ class NotificationSender
             $emailPreference = $this->gateway->getNotificationPreference($notification['gibbonPersonID']);
 
             if (!empty($emailPreference) && $emailPreference['receiveNotificationEmails'] == 'Y') {
-                $organisationName = $this->session->get('organisationName');
-                $organisationEmail = $this->session->get('organisationEmail');
-                $organisationAdministratorEmail = $this->session->get('organisationAdministratorEmail');
-
                 // Format the email content
                 $body = __('Notification').': '.$notification['text'].'<br/><br/>';
                 $body .= $this->getNotificationLink();
                 $body .= $this->getNotificationFooter();
 
-                $mail = new GibbonMailer($this->session);
-
-                $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
-                $mail->SetFrom($fromEmail, $organisationName);
-                $mail->AddAddress($emailPreference['email']);
-                $mail->Subject = $this->getNotificationSubject();
                 $mail->Body = $body;
                 $mail->AltBody = emailBodyConvert($body);
-
-                // Attempt email send
-                if ($mail->Send()) {
-                    $sendReport['emailSent']++;
+                
+                // Add the recipients
+                if ($bccMode == true) {
+                    $mail->AddBcc($emailPreference['email']);
                 } else {
-                    $sendReport['emailFailed']++;
+                    $mail->clearAllRecipients();
+                    $mail->AddAddress($emailPreference['email']);
+                }
+
+                // Not BCC mode? Send one email per recipient
+                if ($bccMode == false) {
+                    if ($mail->Send()) {
+                        $sendReport['emailSent']++;
+                    } else {
+                        $sendReport['emailFailed']++;
+                    }
                 }
             }
         }
 
+        // BCC mode? Send only one email, after the foreach loop.
+        if ($bccMode == true) {
+            if ($mail->Send()) {
+                $sendReport['emailSent']++;
+            } else {
+                $sendReport['emailFailed']++;
+            }
+        }
+
         return $sendReport;
+    }
+
+    /**
+     * Delivers all notifications. Helper method to clarify the intent of the Bcc sending option.
+     *
+     * @return array Send report with success/fail counts.
+     */
+    public function sendNotificationsAsBcc()
+    {
+        return $this->sendNotifications(true);
+    }
+
+    /**
+     * Create a mailer and setup the email subject and sender.
+     *
+     * @return GibbonMailer
+     */
+    protected function setupEmail()
+    {
+        $mail = new GibbonMailer($this->session);
+
+        // Format the sender
+        $organisationName = $this->session->get('organisationName');
+        $organisationEmail = $this->session->get('organisationEmail');
+        $organisationAdministratorEmail = $this->session->get('organisationAdministratorEmail');
+        $fromEmail = (!empty($organisationEmail))? $organisationEmail : $organisationAdministratorEmail;
+
+        $mail->SetFrom($fromEmail, $organisationName);
+        $mail->Subject = $this->getNotificationSubject();
+
+        return $mail;
     }
 
     /**

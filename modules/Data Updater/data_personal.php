@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
@@ -354,7 +352,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'));
-						$row->addEmail('email')->maxLength(50);
+						$email = $row->addEmail('email')->maxLength(50);
+
+					$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
+					if ($uniqueEmailAddress == 'Y') {
+						$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
+					}
 
 					$row = $form->addRow();
 						$row->addLabel('emailAlternate', __('Alternate Email'));
@@ -378,7 +381,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow()->addClass('address');
 						$row->addLabel('address1', __('Address 1'))->description(__('Unit, Building, Street'));
-						$row->addTextField('address1')->maxLength(255);
+                        $row->addTextArea('address1')->maxLength(255)->setRows(2);
 
 					$row = $form->addRow()->addClass('address');
 						$row->addLabel('address1District', __('Address 1 District'))->description(__('County, State, District'));
@@ -429,7 +432,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow()->addClass('address');
 						$row->addLabel('address2', __('Address 2'))->description(__('Unit, Building, Street'));
-						$row->addTextField('address2')->maxLength(255);
+                        $row->addTextArea('address2')->maxLength(255)->setRows(2);
 
 					$row = $form->addRow()->addClass('address');
 						$row->addLabel('address2District', __('Address 2 District'))->description(__('County, State, District'));
@@ -586,7 +589,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 							$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 							$row = $form->addRow();
-							$row->addLabel($name, $rowFields['name']);
+							$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 							$row->addCustomField($name, $rowFields)->setValue($value);
 						}
 					}

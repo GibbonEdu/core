@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\ExternalAssessmentGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -97,74 +98,43 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Edit Fields');
+            echo __('Edit Fields');
             echo '</h2>';
 
-            try {
-                $data = array('gibbonExternalAssessmentID' => $gibbonExternalAssessmentID);
-                $sql = 'SELECT * FROM gibbonExternalAssessmentField WHERE gibbonExternalAssessmentID=:gibbonExternalAssessmentID ORDER BY category, `order`';
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
+            $externalAssessmentGateway = $container->get(ExternalAssessmentGateway::class);
 
-            echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_edit_field_add.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-            echo '</div>';
+            // QUERY
+            $criteria = $externalAssessmentGateway->newQueryCriteria()
+                ->sortBy(['category', 'order'])
+                ->fromArray($_POST);
 
-            if ($result->rowCount() < 1) {
-                echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
-                echo '</div>';
-            } else {
-                echo "<table cellspacing='0' style='width: 100%'>";
-                echo "<tr class='head'>";
-                echo '<th>';
-                echo __($guid, 'Name');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Category');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Order');
-                echo '</th>';
-                echo '<th>';
-                echo __($guid, 'Actions');
-                echo '</th>';
-                echo '</tr>';
+            $externalAssessments = $externalAssessmentGateway->queryExternalAssessmentFields($criteria, $gibbonExternalAssessmentID);
 
-                $count = 0;
-                $rowNum = 'odd';
-                while ($row = $result->fetch()) {
-                    if ($count % 2 == 0) {
-                        $rowNum = 'even';
-                    } else {
-                        $rowNum = 'odd';
-                    }
+            // DATA TABLE
+            $table = DataTable::createPaginated('externalAssessmentManage', $criteria);
 
-                    //COLOR ROW BY STATUS!
-                    echo "<tr class=$rowNum>";
-                    echo '<td>';
-                    echo __($guid, $row['name']);
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['category'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo $row['order'];
-                    echo '</td>';
-                    echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_edit.php&gibbonExternalAssessmentFieldID='.$row['gibbonExternalAssessmentFieldID']."&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit_field_delete.php&gibbonExternalAssessmentFieldID='.$row['gibbonExternalAssessmentFieldID']."&gibbonExternalAssessmentID=$gibbonExternalAssessmentID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                    echo '</td>';
-                    echo '</tr>';
+            $table->addHeaderAction('add', __('Add'))
+                ->setURL('/modules/School Admin/externalAssessments_manage_edit_field_add.php')
+                ->addParam('gibbonExternalAssessmentID', $gibbonExternalAssessmentID)
+                ->displayLabel();
 
-                    ++$count;
-                }
-                echo '</table>';
-            }
+            $table->addColumn('name', __('Name'));
+            $table->addColumn('category', __('Category'));
+            $table->addColumn('order', __('Order'));
+                
+            // ACTIONS
+            $table->addActionColumn()
+                ->addParam('gibbonExternalAssessmentID', $gibbonExternalAssessmentID)
+                ->addParam('gibbonExternalAssessmentFieldID')
+                ->format(function ($externalAssessment, $actions) {
+                    $actions->addAction('edit', __('Edit'))
+                            ->setURL('/modules/School Admin/externalAssessments_manage_edit_field_edit.php');
+
+                    $actions->addAction('delete', __('Delete'))
+                            ->setURL('/modules/School Admin/externalAssessments_manage_edit_field_delete.php');
+                });
+
+            echo $table->render($externalAssessments);
         }
     }
 }
-?>

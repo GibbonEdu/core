@@ -17,85 +17,63 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\YearGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Year Groups').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Year Groups').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonYearGroup ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $yearGroupGateway = $container->get(YearGroupGateway::class);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/yearGroup_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // QUERY
+    $criteria = $yearGroupGateway->newQueryCriteria()
+        ->sortBy(['sequenceNumber'])
+        ->fromArray($_POST);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Sequence Number');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Short Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+    // DATA TABLE
+    $table = DataTable::createPaginated('yearGroupManage', $criteria);
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/School Admin/yearGroup_manage_add.php')
+        ->displayLabel();
+
+    $table->addColumn('sequenceNumber', __('sequenceNumber'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('nameShort', __('Short Name'));
+    $table->addColumn('gibbonPersonIDHOY', __('Head of Year'))
+        ->format(function($values) {
+            if (!empty($values['preferredName']) && !empty($values['surname'])) {
+                return Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
             }
+        });
+        
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonYearGroupID')
+        ->format(function ($facilities, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/School Admin/yearGroup_manage_edit.php');
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['sequenceNumber'];
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['name']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['nameShort']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/yearGroup_manage_edit.php&gibbonYearGroupID='.$row['gibbonYearGroupID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/yearGroup_manage_delete.php&gibbonYearGroupID='.$row['gibbonYearGroupID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/School Admin/yearGroup_manage_delete.php');
+        });
 
-            ++$count;
-        }
-        echo '</table>';
-    }
+    echo $table->render($yearGroups);
+
+    //echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
 }

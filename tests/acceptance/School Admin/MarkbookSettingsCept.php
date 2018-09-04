@@ -28,7 +28,6 @@ $newFormValues = array(
     'showParentAttainmentWarning'    => 'Y',
     'showParentEffortWarning'        => 'Y',
     'personalisedWarnings'           => 'Y',
-    'wordpressCommentPush'           => 'On',
 );
 
 $I->submitForm('#content form', $newFormValues, 'Submit');

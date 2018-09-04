@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -67,8 +65,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             echo __($guid, 'The specified record does not exist.');
             echo '</div>';
 	    } else {
-	    	$values = $resultPerson->fetch();
-	    	$currentDate = dateConvert($guid, $values['date']);
+            $values = $resultPerson->fetch();
+            $currentDate = dateConvertBack($guid, $values['date']);
 
 			$form = Form::create('attendanceEdit', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byPerson_editProcess.php');
 			$form->setAutocomplete('off');

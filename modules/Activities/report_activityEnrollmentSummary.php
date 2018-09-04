@@ -17,8 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -111,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
 
-            if ($enrolmentCount < 0) {
+            if ($resultEnrollment->rowCount() < 0) {
                 echo '<i>'.__($guid, 'Unknown').'</i>';
             } else {
-                echo $enrolmentCount;
+                echo $resultEnrollment->rowCount();
             }
             echo '</td>';
             echo '<td>';

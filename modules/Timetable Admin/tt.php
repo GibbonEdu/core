@@ -18,8 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Timetable\TimetableGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') == false) {
     //Acess denied
@@ -86,108 +87,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
 			}
         echo '</div>';
 
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonTT WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_add.php&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+        $timetableGateway = $container->get(TimetableGateway::class);
+        $timetables = $timetableGateway->selectTimetablesBySchoolYear($gibbonSchoolYearID);
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
-            echo '</div>';
-        } else {
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Short Name');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Year Groups');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Active');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
+        // DATA TABLE
+        $table = DataTable::create('timetables');
 
-            $count = 0;
-            $rowNum = 'odd';
-            while ($row = $result->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
-                }
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Timetable Admin/tt_add.php')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->displayLabel();
 
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo $row['name'];
-                echo '</td>';
-                echo '<td>';
-                echo $row['nameShort'];
-                echo '</td>';
-                echo '<td>';
-                if ($row['gibbonYearGroupIDList'] != '') {
-                    $years = explode(',', $row['gibbonYearGroupIDList']);
+        $table->modifyRows(function ($tt, $row) {
+            if ($tt['active'] == 'N') $row->addClass('error');
+            return $row;
+        });
 
-                    try {
-                        $dataYears = array();
-                        $sqlYearsWhere = '';
-                        for ($i = 0; $i < count($years); ++$i) {
-                            if ($i == 0) {
-                                $dataYears[$years[$i]] = $years[$i];
-                                $sqlYearsWhere .= 'gibbonYearGroupID=:'.$years[$i];
-                            } else {
-                                $dataYears[$years[$i]] = $years[$i];
-                                $sqlYearsWhere .= ' OR gibbonYearGroupID=:'.$years[$i];
-                            }
-                        }
-                        $sqlYears = "SELECT * FROM gibbonYearGroup WHERE $sqlYearsWhere";
-                        $resultYears = $connection2->prepare($sqlYears);
-                        $resultYears->execute($dataYears);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
+        $table->addColumn('name', __('Name'));
+        $table->addColumn('nameShort', __('Short Name'));
+        $table->addColumn('yearGroups', __('Year Groups'));
+        $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
-                    if ($resultYears->rowCount() > 0) {
-                        $count = 0;
-                        while ($rowYears = $resultYears->fetch()) {
-                            if ($count > 0) {
-                                echo ', ';
-                            }
-                            echo __($guid, $rowYears['nameShort']);
-                            ++$count;
-                        }
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                echo ynExpander($guid, $row['active']);
-                echo '</td>';
-                echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_edit.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_delete.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/tt_import.php&gibbonTTID='.$row['gibbonTTID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Import')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/upload.png'/></a> ";
-                echo '</td>';
-                echo '</tr>';
+        // ACTIONS
+        $table->addActionColumn()
+            ->addParam('gibbonTTID')
+            ->addParam('gibbonSchoolYearID')
+            ->format(function ($person, $actions) {
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Timetable Admin/tt_edit.php');
 
-                ++$count;
-            }
-            echo '</table>';
-        }
+                $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Timetable Admin/tt_delete.php');
+
+                $actions->addAction('import', __('Import'))
+                    ->setIcon('upload')
+                    ->setURL('/modules/Timetable Admin/tt_import.php');
+            });
+
+        echo $table->render($timetables->toDataSet());
     }
 }

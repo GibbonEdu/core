@@ -50,19 +50,6 @@ if (isset($_GET['sidebar'])) {
     $sidebar = '';
 }
 
-//Deal with address param q
-if (isset($_GET['q'])) {
-    $_SESSION[$guid]['address'] = $_GET['q'];
-} else {
-    $_SESSION[$guid]['address'] = '';
-}
-$_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
-$_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
-$q = null;
-if (isset($_GET['q'])) {
-    $q = $_GET['q'];
-}
-
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
@@ -92,7 +79,7 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 
 //Check for force password reset flag
 if (isset($_SESSION[$guid]['passwordForceReset'])) {
-    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $q != 'preferences.php') {
+    if ($_SESSION[$guid]['passwordForceReset'] == 'Y' and $_SESSION[$guid]['address'] != 'preferences.php') {
         $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=preferences.php';
         $URL = $URL.'&forceReset=Y';
         header("Location: {$URL}");
@@ -100,10 +87,13 @@ if (isset($_SESSION[$guid]['passwordForceReset'])) {
     }
 }
 
-//Deal with attendance self-registration redirect
+// USER REDIRECTS
 if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { //First page load, so proceed
     if (!empty($_SESSION[$guid]['username'])) { //Are we logged in?
-        if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') { //Are we a student?
+        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+
+        // Deal with attendance self-registration redirect
+        if ($roleCategory == 'Student') { //Are we a student?
             if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) { //Can we self register?
                 //Check to see if student is on site
                 $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
@@ -140,8 +130,31 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
                 }
             }
         }
+
+        // Deal with Data Updater redirect (if required updates are enabled)
+        $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
+        if ($requiredUpdates == 'Y') { 
+            if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { //Can we update data?
+                $redirectByRoleCategory = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory');
+                $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
+
+                if (in_array($roleCategory, $redirectByRoleCategory)) { //Are we the right role category?
+                    $gateway = new Gibbon\Domain\DataUpdater\DataUpdaterGateway($pdo);
+
+                    $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+                    if ($updatesRequiredCount > 0) {
+                        $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $_SESSION[$guid]['pageLoads'] = null;
+                        header("Location: {$URL}");
+                        exit;
+                    }
+                }
+            }
+        }
     }
 }
+
+
 
 if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     try {
@@ -702,7 +715,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 								}
 								?>
 						</span>
-						<img style='z-index: 9999; margin-top: -82px; margin-left: 850px; opacity: 0.8' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
+						<img id='footer-logo' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
 					</div>
 				</div>
 			</div>

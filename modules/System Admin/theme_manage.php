@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
         return $theme;
     }, $themesFS);
 
-    echo "<div class='warning'>";
+    echo "<div class='message'>";
     echo sprintf(__($guid, 'To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
     echo '</div>';
 
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     } else {
         $form = Form::create('themeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
 
-        $form->setClass('fullWidth');
+        $form->setClass('fullWidth colorOddEven');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
         $row = $form->addRow()->setClass('heading head');

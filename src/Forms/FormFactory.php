@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactoryInterface;
+use Gibbon\Tables\DataTable;
 
 /**
  * FormFactory
@@ -55,6 +56,11 @@ class FormFactory implements FormFactoryInterface
     public function createTable($id = '')
     {
         return new Layout\Table($this, $id);
+    }
+
+    public function createDataTable($id, $criteria)
+    {
+        return DataTable::createPaginated($id, $criteria);
     }
 
     public function createTableCell($content = '')
@@ -195,9 +201,9 @@ class FormFactory implements FormFactoryInterface
         return $button;
     }
 
-    public function createCustomBlocks($name, OutputableInterface $block, \Gibbon\Session $session)
+    public function createCustomBlocks($name, \Gibbon\Session $session)
     {
-        return new Input\CustomBlocks($this, $name, $block, $session);
+        return new Input\CustomBlocks($this, $name, $session);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
@@ -394,7 +400,9 @@ class FormFactory implements FormFactoryInterface
                 'TTD $' => 'Trinidad & Tobago Dollar (TTD)',
                 'TRY ₺' => 'Turkish Lira (₺)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
-                'VND ₫‎' => 'Vietnamese Dong (₫‎)'
+                'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'XCD $' => 'Eastern Caribbean Dollars ($)',
+                'XOF FCFA' => 'West African Francs (FCFA)'
             ),
         );
 

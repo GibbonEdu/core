@@ -20,8 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
-@session_start();
-
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -348,7 +346,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
 
                                 $form->addHiddenValue($count."-enrolFull-gibbonPersonID", $student[0]);
                                 $row = $form->addRow();
-                                    $row->addColumn()->addContent(formatName('', $student[2], $student[2], 'Student', true));
+                                    $row->addColumn()->addContent(formatName('', $student[2], $student[1], 'Student', true));
                                     $row->addColumn()->addContent(__($student[3]));
                                     $column = $row->addColumn();
                                         $column->addCheckbox($count."-enrolFull-enrol")->setValue('Y')->checked('Y');
@@ -463,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
                         $row = $form->addRow();
                             $row->addColumn()->addContent(formatName('', $rowFinal['preferredName'], $rowFinal['surname'], 'Student', true));
                             $row->addColumn()->addContent(__($rowFinal['name']));
-                            $row->addColumn()->addContent(__('Expected'));
+                            $row->addColumn()->addContent(__('Full'));
                             $column = $row->addColumn();
                                 $column->addSelect($count."-final-status")->fromArray($statuses)->isRequired()->setClass('shortWidth floatNone')->selected('Left');
                     }

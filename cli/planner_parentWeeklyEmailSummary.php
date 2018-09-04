@@ -19,14 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-require getcwd().'/../config.php';
-require getcwd().'/../functions.php';
+require getcwd().'/../gibbon.php';
 require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
-
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
 
 getSystemSettings($guid, $connection2);
 
@@ -64,6 +58,10 @@ else {
         if ($_SESSION[$guid]['organisationEmail'] == '') {
             echo __($guid, 'This script cannot be run, as no school email address has been set.');
         } else {
+            //Prep for email sending later
+            $mail = getGibbonMailer($guid);
+            $mail->SMTPKeepAlive = true;
+
             //Lock table
             $lock = true;
             try {
@@ -286,7 +284,6 @@ else {
                                                 $body .= "<p class='emphasis'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                                                 $bodyPlain = emailBodyConvert($body);
 
-                                                $mail = getGibbonMailer($guid);
                                                 if ($replyTo != '') {
                                                     $mail->AddReplyTo($replyTo, $replyToName);
                                                 }
@@ -306,6 +303,9 @@ else {
                                                     error_log(sprintf(__($guid, 'Planner Weekly Summary Email: an error (%1$s) occured sending an email to %2$s.'), '5', $rowMember['preferredName'].' '.$rowMember['surname']));
                                                     ++$sendFailCount;
                                                 }
+
+                                                //Clear addresses
+                                                $mail->ClearAllRecipients( ); // clear all
                                             }
                                         }
                                     }
@@ -315,6 +315,9 @@ else {
                     }
                 }
             }
+
+            //Close SMTP connection
+            $mail->smtpClose();
 
             //Unlock module table
             try {

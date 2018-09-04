@@ -118,7 +118,7 @@
             try {
                 $dataEntry['gibbonPersonIDStudent'] = $_SESSION[$guid]['gibbonPersonID'];
                 $dataEntry['gibbonCourseClassID'] = $rowList['gibbonCourseClassID'];
-                $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND complete='Y' AND completeDate<='".date('Y-m-d')."' $and2  ORDER BY completeDate";
+                $sqlEntry = "SELECT *, gibbonMarkbookColumn.comment AS commentOn, gibbonMarkbookColumn.uploadedResponse AS uploadedResponseOn, gibbonMarkbookEntry.comment AS comment FROM gibbonMarkbookEntry JOIN gibbonMarkbookColumn ON (gibbonMarkbookEntry.gibbonMarkbookColumnID=gibbonMarkbookColumn.gibbonMarkbookColumnID) WHERE gibbonPersonIDStudent=:gibbonPersonIDStudent AND gibbonCourseClassID=:gibbonCourseClassID AND gibbonMarkbookColumn.viewableStudents='Y' AND complete='Y' AND completeDate<='".date('Y-m-d')."' $and2  ORDER BY completeDate";
                 $resultEntry = $connection2->prepare($sqlEntry);
                 $resultEntry->execute($dataEntry);
             } catch (PDOException $e) {
@@ -155,14 +155,19 @@
                 echo "<th style='width: 120px'>";
                     echo __($guid, 'Assessment');
                 echo '</th>';
-				if ($enableEffort == 'Y') {
-	                echo "<th style='width: 75px; text-align: center'>";
-	                    echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
-	                echo '</th>';
-				}
+                if ($enableModifiedAssessment == 'Y') {
+                    echo "<th style='width: 75px'>";
+                        echo __($guid, 'Modified');
+                    echo '</th>';
+                }
                 echo "<th style='width: 75px; text-align: center'>";
-                    echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                    echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
                 echo '</th>';
+                if ($enableEffort == 'Y') {
+                    echo "<th style='width: 75px; text-align: center'>";
+                        echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                    echo '</th>';
+                }
                 echo '<th>';
                     echo __($guid, 'Comment');
                 echo '</th>';
@@ -204,6 +209,18 @@
                     }
                     echo '</span><br/>';
                     echo '</td>';
+                    if ($enableModifiedAssessment == 'Y') {
+                        if (!is_null($rowEntry['modifiedAssessment'])) {
+                            echo "<td>";
+                            echo ynExpander($guid, $rowEntry['modifiedAssessment']);
+                            echo '</td>';
+                        }
+                        else {
+                            echo "<td class='dull' style='color: #bbb; text-align: center'>";
+                            echo __($guid, 'N/A');
+                            echo '</td>';
+                        }
+                    }
                     if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                         echo "<td class='dull' style='color: #bbb; text-align: center'>";
                         echo __($guid, 'N/A');

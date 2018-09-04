@@ -18,8 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-
-@session_start();
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Staff\StaffGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') == false) {
     //Acess denied
@@ -39,11 +41,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $search = (isset($_GET['search']) ? $_GET['search'] : '');
     $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
 
+    $staffGateway = $container->get(StaffGateway::class);
+
+    // CRITERIA
+    $criteria = $staffGateway->newQueryCriteria()
+        ->searchBy($staffGateway->getSearchableColumns(), $search)
+        ->filterBy('all', $allStaff)
+        ->sortBy(['surname', 'preferredName'])
+        ->fromArray($_POST);
+
     echo '<h2>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h2>';
 
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
 
     $form->setClass('noIntBorder fullWidth');
 
@@ -52,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $row = $form->addRow();
         $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
-        $row->addTextField('search')->setValue($search)->maxLength(20);
+        $row->addTextField('search')->setValue($criteria->getSearchText())->maxLength(20);
 
     $row = $form->addRow();
         $row->addLabel('allStaff', __('All Staff'))->description('Include Expected and Left.');
@@ -65,117 +76,81 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $staff = $staffGateway->queryAllStaff($criteria);
 
-    try {
-        $data = array();
-        $where = '';
-        if ($allStaff != 'on') {
-            $where = "WHERE status='Full'";
-        }
-        $sql = "SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) $where ORDER BY surname, preferredName";
-        if ($search != '') {
-            if ($allStaff != 'on') {
-                $where = "AND status='Full'";
-            }
-            $data = array('search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%");
-            $sql = "SELECT gibbonStaffID, surname, preferredName, initials, type, gibbonStaff.jobTitle, status FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID) WHERE (preferredName LIKE :search1 OR surname LIKE :search2 OR (username LIKE :search3)) $where ORDER BY surname, preferredName";
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // FORM
+    $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manageProcessBulk.php?search='.$search.'&allStaff='.$allStaff);
+    $form->addHiddenValue('search', $search);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_add.php&search=$search&allStaff=$allStaff'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $bulkActions = array(
+        'Left' => __('Mark as Left'),
+    );
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "allStaff=$allStaff&search=$search");
-        }
+    $col = $form->createBulkActionColumn($bulkActions);
+        $col->addDate('dateEnd')
+            ->isRequired()
+            ->placeholder(__('Date End'))
+            ->setClass('shortWidth dateEnd');
+        $col->addSubmit(__('Go'));
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Initials').'</span>';
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Job Title');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $form->toggleVisibilityByClass('dateEnd')->onSelect('action')->when('Left');
 
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            if ($row['status'] != 'Full') {
-                $rowNum = 'error';
-            }
-            ++$count;
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Staff', true, true).'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".$row['initials'].'</span>';
-            echo '</td>';
-            echo '<td>';
-            echo $row['type'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['jobTitle'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_delete.php&gibbonStaffID='.$row['gibbonStaffID']."&search=$search&allStaff=$allStaff&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+    // DATA TABLE
+    $table = $form->addRow()->addDataTable('staffManage', $criteria)->withData($staff);
 
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "allStaff=$allStaff&search=$search");
-        }
-    }
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/Staff/staff_manage_add.php')
+        ->addParam('search', $search)
+        ->displayLabel();
+
+    $table->modifyRows(function($person, $row) {
+        if (!empty($person['status']) && $person['status'] != 'Full') $row->addClass('error');
+        return $row;
+    });
+
+    $table->addMetaData('filterOptions', [
+        'all:on'          => __('All Staff'),
+        'type:teaching'   => __('Staff Type').': '.__('Teaching'),
+        'type:support'    => __('Staff Type').': '.__('Support'),
+        'type:other'      => __('Staff Type').': '.__('Other'),
+        'status:full'     => __('Status').': '.__('Full'),
+        'status:left'     => __('Status').': '.__('Left'),
+        'status:expected' => __('Status').': '.__('Expected'),
+    ]);
+
+    $table->addMetaData('bulkActions', $col);
+
+    // COLUMNS
+    $table->addColumn('fullName', __('Name'))
+        ->description(__('Initials'))
+        ->width('35%')
+        ->sortable(['surname', 'preferredName'])
+        ->format(function($person) {
+            return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true)
+                .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
+        });
+
+    $table->addColumn('type', __('Staff Type'))->width('20%');
+    $table->addColumn('status', __('Status'))->width('10%');
+    $table->addColumn('jobTitle', __('Job Title'))->width('20%');
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonStaffID')
+        ->addParam('search', $criteria->getSearchText(true))
+        ->format(function ($person, $actions) use ($guid) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Staff/staff_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/Staff/staff_manage_delete.php');
+        });
+
+    $table->addCheckboxColumn('gibbonStaffID');
+
+    echo $form->getOutput();
 }
-?>

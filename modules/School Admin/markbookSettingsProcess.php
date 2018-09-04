@@ -17,14 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../functions.php';
-include '../../config.php';
-
-//New PDO DB connection
-$pdo = new Gibbon\sqlConnection();
-$connection2 = $pdo->getConnection();
-
-@session_start();
+include '../../gibbon.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/markbookSettings.php';
 
@@ -43,12 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $enableColumnWeighting = $_POST['enableColumnWeighting'];
     $enableDisplayCumulativeMarks = (isset($_POST['enableDisplayCumulativeMarks']))? $_POST['enableDisplayCumulativeMarks'] : 'N';
     $enableRawAttainment = $_POST['enableRawAttainment'];
+    $enableModifiedAssessment = $_POST['enableModifiedAssessment'];
     $enableGroupByTerm = $_POST['enableGroupByTerm'];
     $attainmentAlternativeName = $_POST['attainmentAlternativeName'];
     $attainmentAlternativeNameAbrev = $_POST['attainmentAlternativeNameAbrev'];
     $effortAlternativeName = $_POST['effortAlternativeName'];
     $effortAlternativeNameAbrev = $_POST['effortAlternativeNameAbrev'];
-    $wordpressCommentPush = $_POST['wordpressCommentPush'];
     $showStudentAttainmentWarning = $_POST['showStudentAttainmentWarning'];
     $showStudentEffortWarning = $_POST['showStudentEffortWarning'];
     $showParentAttainmentWarning = $_POST['showParentAttainmentWarning'];
@@ -56,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $personalisedWarnings = $_POST['personalisedWarnings'];
 
     //Validate Inputs
-    if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableGroupByTerm == '') {
+    if ($markbookType == '' or $enableRubrics == '' or $enableRubrics == '' or $enableColumnWeighting == '' or $enableRawAttainment == '' or $enableModifiedAssessment == '' or $enableGroupByTerm == '') {
         $URL .= '&return=error3';
         header("Location: {$URL}");
     } else {
@@ -118,6 +111,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         }
 
         try {
+            $data = array('value' => $enableModifiedAssessment);
+            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableModifiedAssessment'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+
+        try {
             $data = array('value' => $enableGroupByTerm);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='enableGroupByTerm'";
             $result = $connection2->prepare($sql);
@@ -156,15 +159,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
         try {
             $data = array('value' => $effortAlternativeNameAbrev);
             $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='effortAlternativeNameAbrev'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-
-        try {
-            $data = array('value' => $wordpressCommentPush);
-            $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Markbook' AND name='wordpressCommentPush'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
