@@ -64,6 +64,8 @@ v17.0.00
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
+        User Admin: added ability to include custom fields in public registration form
+        User Admin: added missing custom field description into OOified forms
 
 v16.0.01
 --------

@@ -258,7 +258,7 @@ if ($proceed == false) {
             while ($rowFields = $resultFields->fetch()) {
                 $name = 'custom'.$rowFields['gibbonPersonFieldID'];
                 $row = $form->addRow();
-                    $row->addLabel($name, $rowFields['name']);
+                    $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                     $row->addCustomField($name, $rowFields);
             }
         }

@@ -749,4 +749,5 @@ UPDATE `gibboni18n` SET `name`='עברית - ישראל' WHERE `code`='he_IL';en
 UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalCondition.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalCondition.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
 UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionUpdate.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalConditionUpdate.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
 UPDATE gibbonCountry SET printable_name='Vietnam', iddCountryCode='84' WHERE printable_name='Viet Nam';end
+ALTER TABLE `gibbonPersonField` ADD `activePublicRegistration` TINYINT(1) NOT NULL DEFAULT '0' AFTER `activeDataUpdater`;end
 ";
