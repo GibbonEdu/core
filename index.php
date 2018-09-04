@@ -618,133 +618,133 @@ $footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibb
 
 
 ?>
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-	<html xmlns="http://www.w3.org/1999/xhtml">
-		<head>
-			<title><?php echo $title; ?></title>
-			<meta charset="utf-8"/>
-			<meta name="author" content="Ross Parker, International College Hong Kong"/>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<title><?php echo $title; ?></title>
+		<meta charset="utf-8"/>
+		<meta name="author" content="Ross Parker, International College Hong Kong"/>
 
-			<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
+		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 
-			<!-- js stylesheets -->
-			<?php foreach ($stylesheets as $stylesheet) { ?>
-				<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $stylesheet; ?>" type="text/css" media="screen" />
+		<!-- js stylesheets -->
+		<?php foreach ($stylesheets as $stylesheet) { ?>
+			<link rel="stylesheet" href="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $stylesheet; ?>" type="text/css" media="screen" />
+		<?php } ?>
+		<?php if ($personalBackground !== null) { ?>
+			<style type="text/css">
+			body {
+			    background: url(<?php echo json_encode($personalBackground); ?>) repeat scroll center top #A88EDB!important;
+			}
+			</style>
+		<?php } ?>
+		<!-- js stylesheets end -->
+
+		<!-- js scripts -->
+		<?php foreach ($scripts as $script) { ?>
+			<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $script; ?>"></script>
+		<?php } ?>
+		<!-- js scripts end -->
+
+		<!-- js initialization -->
+		<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepicker_locale); ?>]);</script>
+		<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
+		<script type="text/javascript">$(function () { $(".latex").latex();});</script>
+		<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($_SESSION[$guid]['absoluteURL'] . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
+		<script type="text/javascript">
+		tinymce.init({
+			selector: "div#editorcontainer textarea",
+			width: '738px',
+			menubar : false,
+			toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
+			plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
+			statusbar: false,
+			valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
+			invalid_elements: '',
+			apply_source_formatting : true,
+			browser_spellcheck: true,
+			convert_urls: false,
+			relative_urls: false,
+			default_link_target: "_blank"
+		 });
+		</script>
+		<script type="text/javascript">
+		$(document).ready(function(){
+			var sessionDuration = <?php echo json_encode($sessionDuration); ?>;
+			if (sessionDuration > 0) {
+				$.sessionTimeout({
+					message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
+					keepAliveUrl: 'keepAlive.php' ,
+					redirUrl: 'logout.php?timeout=true',
+					logoutUrl: 'logout.php' ,
+					warnAfter: sessionDuration * 1000,
+					redirAfter: (sessionDuration * 1000) + 600000
+				});
+			}
+		});
+		</script>
+		<!-- js initialization end -->
+
+		<!-- head extras -->
+		<?php foreach ($head_extras as $head_extra) echo $head_extra; ?>
+		<!-- head extras end -->
+
+	</head>
+	<body>
+
+		<?php if (!empty($errors)) { ?>
+			<?php foreach ($errors as $error) { ?>
+				<div class='error'><?php echo $error; ?></div>
 			<?php } ?>
-			<?php if ($personalBackground !== null) { ?>
-				<style type="text/css">
-				body {
-				    background: url(<?php echo json_encode($personalBackground); ?>) repeat scroll center top #A88EDB!important;
-				}
-				</style>
+		<?php } ?>
+
+		<?php if (!empty($warnings)) { ?>
+			<?php foreach ($warnings as $warning) { ?>
+				<div class='warning' style='margin: 10px auto; width:1101px;'><?php echo $warning; ?></div>
 			<?php } ?>
-			<!-- js stylesheets end -->
+		<?php } ?>
 
-			<!-- js scripts -->
-			<?php foreach ($scripts as $script) { ?>
-				<script type="text/javascript" src="<?php echo $_SESSION[$guid]['absoluteURL'] . '/' . $script; ?>"></script>
-			<?php } ?>
-			<!-- js scripts end -->
-
-			<!-- js initialization -->
-			<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepicker_locale); ?>]);</script>
-			<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
-			<script type="text/javascript">$(function () { $(".latex").latex();});</script>
-			<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($_SESSION[$guid]['absoluteURL'] . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
-			<script type="text/javascript">
-			tinymce.init({
-				selector: "div#editorcontainer textarea",
-				width: '738px',
-				menubar : false,
-				toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-				plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-				statusbar: false,
-				valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
-				invalid_elements: '',
-				apply_source_formatting : true,
-				browser_spellcheck: true,
-				convert_urls: false,
-				relative_urls: false,
-				default_link_target: "_blank"
-			 });
-			</script>
-			<script type="text/javascript">
-			$(document).ready(function(){
-				var sessionDuration = <?php echo json_encode($sessionDuration); ?>;
-				if (sessionDuration > 0) {
-					$.sessionTimeout({
-						message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
-						keepAliveUrl: 'keepAlive.php' ,
-						redirUrl: 'logout.php?timeout=true',
-						logoutUrl: 'logout.php' ,
-						warnAfter: sessionDuration * 1000,
-						redirAfter: (sessionDuration * 1000) + 600000
-					});
-				}
-			});
-			</script>
-			<!-- js initialization end -->
-
-			<!-- head extras -->
-			<?php foreach ($head_extras as $head_extra) echo $head_extra; ?>
-			<!-- head extras end -->
-
-		</head>
-		<body>
-
-			<?php if (!empty($errors)) { ?>
-				<?php foreach ($errors as $error) { ?>
-					<div class='error'><?php echo $error; ?></div>
-				<?php } ?>
-			<?php } ?>
-
-			<?php if (!empty($warnings)) { ?>
-				<?php foreach ($warnings as $warning) { ?>
-					<div class='warning' style='margin: 10px auto; width:1101px;'><?php echo $warning; ?></div>
-				<?php } ?>
-			<?php } ?>
-
-			<div id="wrapOuter">
-				<div class='minorLinks <?php echo (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '') ? 'minorLinksTopGap' : '' ?>'>
-					<?php echo getMinorLinks($connection2, $guid, $cacheLoad); ?>
-				</div>
-				<div id="wrap">
-					<div id="header">
-						<div id="header-logo">
-							<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/></a>
-						</div>
-						<div id="header-finder">
-							<?php echo $fastFinder; ?>
-						</div>
-						<div id="header-menu">
-							<?php echo $mainMenuHTML; ?>
-							<div class='notificationTray'>
-								<?php echo $flash; ?>
-							</div>
-						</div>
-					</div>
-					<div id="content-wrap">
-						<div id='<?php echo ($sidebar == 'false') ? 'content-wide' : 'content'; ?>'>
-							<?php echo $moduleMenu; ?>
-							<?php echo $easyReturnHTML; ?>
-							<?php echo implode("\n", $contents); ?>
-						</div>
-						<?php if ($sidebar != 'false') { ?>
-							<div id="sidebar">
-								<?php sidebar($gibbon, $pdo);?>
-							</div>
-							<br style="clear: both">
-						<?php } ?>
-					</div>
-					<div id="footer">
-						<?php echo $footerAuthor; ?><br/>
-						<span style='font-size: 90%; '>
-							<?php echo $footerLicense; ?><br/>
-							<?php echo $footerThemeAuthor; ?><br/>
-						</span>
-						<img id='footer-logo' alt='Logo Small' src='<?php echo $footerLogo; ?>'/>
-					</div>
-				</div>
+		<div id="wrapOuter">
+			<div class='minorLinks <?php echo (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '') ? 'minorLinksTopGap' : '' ?>'>
+				<?php echo getMinorLinks($connection2, $guid, $cacheLoad); ?>
 			</div>
-		</body>
-	</html>
+			<div id="wrap">
+				<div id="header">
+					<div id="header-logo">
+						<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/></a>
+					</div>
+					<div id="header-finder">
+						<?php echo $fastFinder; ?>
+					</div>
+					<div id="header-menu">
+						<?php echo $mainMenuHTML; ?>
+						<div class='notificationTray'>
+							<?php echo $flash; ?>
+						</div>
+					</div>
+				</div><!--/#header-->
+				<div id="content-wrap">
+					<div id='<?php echo ($sidebar == 'false') ? 'content-wide' : 'content'; ?>'>
+						<?php echo $moduleMenu; ?>
+						<?php echo $easyReturnHTML; ?>
+						<?php echo implode("\n", $contents); ?>
+					</div>
+					<?php if ($sidebar != 'false') { ?>
+						<div id="sidebar">
+							<?php sidebar($gibbon, $pdo);?>
+						</div>
+						<br style="clear: both">
+					<?php } ?>
+				</div><!--/#content-wrap-->
+				<div id="footer">
+					<?php echo $footerAuthor; ?><br/>
+					<span style='font-size: 90%; '>
+						<?php echo $footerLicense; ?><br/>
+						<?php echo $footerThemeAuthor; ?><br/>
+					</span>
+					<img id='footer-logo' alt='Logo Small' src='<?php echo $footerLogo; ?>'/>
+				</div><!--/#footer-->
+			</div><!--/#wrap-->
+		</div><!--/.#wrapOuter-->
+	</body>
+</html>
