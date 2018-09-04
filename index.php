@@ -116,7 +116,7 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+                                $errors[] = $e->getMessage();
                             }
 
                             if ($result->rowCount() == 0) { //No registration yet
@@ -171,6 +171,16 @@ if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
 }
 
 
+// Set module menu
+$moduleMenu = null;
+if ($sidebar == 'false') {
+    //Invoke and show Module Menu
+    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
+
+    // Display the module menu
+    $moduleMenu = $menuModule->getMenu('mini');
+}
+
 // Set page title
 $title = $_SESSION[$guid]['organisationNameShort'].' - '.$_SESSION[$guid]['systemName'];
 if ($_SESSION[$guid]['address'] != '') {
@@ -220,6 +230,7 @@ $head_extras = array();
 
 // Arrays for displaying notices
 $errors = array();
+$warnings = array();
 
 // Set theme CSS and JS
 if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
@@ -289,6 +300,322 @@ if (isset($_SESSION[$guid]['username'])) {
 
 // Set google analytics
 $head_extras[] = $_SESSION[$guid]['analytics'];
+
+//Get house logo and set session variable, only on first load after login (for performance)
+if ($_SESSION[$guid]['pageLoads'] == 0 and isset($_SESSION[$guid]['username']) and $_SESSION[$guid]['gibbonHouseID'] != '') {
+    try {
+        $dataHouse = array('gibbonHouseID' => $_SESSION[$guid]['gibbonHouseID']);
+        $sqlHouse = 'SELECT logo, name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+        $resultHouse = $connection2->prepare($sqlHouse);
+        $resultHouse->execute($dataHouse);
+    } catch (PDOException $e) {
+    }
+
+    if ($resultHouse->rowCount() == 1) {
+        $rowHouse = $resultHouse->fetch();
+        $_SESSION[$guid]['gibbonHouseIDLogo'] = $rowHouse['logo'];
+        $_SESSION[$guid]['gibbonHouseIDName'] = $rowHouse['name'];
+    }
+    $resultHouse->closeCursor();
+}
+
+// Show warning if not in the current school year
+if (isset($_SESSION[$guid]['username'])) {
+    if ($_SESSION[$guid]['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearIDCurrent']) {
+        $warnings[] = '<b><u>'.sprintf(__($guid, 'Warning: you are logged into the system in school year %1$s, which is not the current year.'), $_SESSION[$guid]['gibbonSchoolYearName']).'</b></u>'.__($guid, 'Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.');
+    }
+}
+
+//Show student and staff quick finder
+$fastFinder = null;
+if (isset($_SESSION[$guid]['username'])) {
+    if ($cacheLoad) {
+        $fastFinder = getFastFinder($connection2, $guid);
+    }
+}
+
+// Set main menu HTML
+$mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
+if ($cacheLoad) $mainMenu->setMenu();
+$mainMenuHTML = $mainMenu->getMenu();
+
+// Set flash notification (temp_array)
+$flash = getNotificationTray($connection2, $guid, $cacheLoad);
+
+// Set easy return message.
+$easyReturnHTML = null;
+if ($_SESSION[$guid]['address'] == '') {
+    $returns = array();
+    $returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
+    if (isset($_GET['return'])) {
+        $easyReturnHTML = returnProcessHTML($guid, $_GET['return'], null, $returns);
+    }
+}
+
+$contents = array();
+
+if ($_SESSION[$guid]['address'] == '') {
+    //Welcome message
+    if (isset($_SESSION[$guid]['username']) == false) {
+        //Create auto timeout message
+        if (isset($_GET['timeout'])) {
+            if ($_GET['timeout'] == 'true') {
+                $warnings[] = __($guid, 'Your session expired, so you were automatically logged out of the system.');
+            }
+        }
+
+        // Set welcome message
+        $contents[] =
+            '<h2>'.__($guid, 'Welcome').'</h2>'.
+            "<p>{$_SESSION[$guid]['indexText']}</p>";
+
+        // Student public applications permitted?
+        $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
+        if ($publicApplications == 'Y') {
+            $contents[] =
+                "<h2 style='margin-top: 30px'>".
+                __($guid, 'Student Applications').'</h2>'.
+                '<p>'.
+                sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Students/applicationForm.php'>", '</a>').
+                '</p>';
+        }
+
+        //Staff public applications permitted?
+        $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
+        if ($staffApplicationFormPublicApplications == 'Y') {
+            $contents[] =
+                "<h2 style='margin-top: 30px'>" .
+                __($guid, 'Staff Applications') .
+                '</h2>'.
+                '<p>'.
+                sprintf(__($guid, 'Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
+                '</p>';
+        }
+
+        //Public departments permitted?
+        $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
+        if ($makeDepartmentsPublic == 'Y') {
+            $contents[] =
+                "<h2 style='margin-top: 30px'>".
+                __($guid, 'Departments').
+                '</h2>'.
+                '<p>'.
+                sprintf(__($guid, 'Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Departments/departments.php'>", '</a>', $_SESSION[$guid]['organisationName']).
+                '</p>';
+        }
+
+        //Public units permitted?
+        $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+        if ($makeUnitsPublic == 'Y') {
+            $contents[] =
+                "<h2 style='margin-top: 30px'>".
+                __($guid, 'Learn With Us').
+                '</h2>'.
+                '<p>'.
+                sprintf(__($guid, 'We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $_SESSION[$guid]['organisationName']).
+                '</p>';
+        }
+
+        //Get any elements hooked into public home page, checking if they are turned on
+        try {
+            $dataHook = array();
+            $sqlHook = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
+            $resultHook = $connection2->prepare($sqlHook);
+            $resultHook->execute($dataHook);
+        } catch (PDOException $e) {
+        }
+        while ($rowHook = $resultHook->fetch()) {
+            $options = unserialize(str_replace("'", "\'", $rowHook['options']));
+            $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
+            if ($check == $options['toggleSettingValue']) { //If its turned on, display it
+                $contents[] =
+                    "<h2 style='margin-top: 30px'>".
+                    $options['title'].
+                    '</h2>'.
+                    '<p>'.
+                    stripslashes($options['text']).
+                    '</p>';
+            }
+        }
+    } else {
+        //Custom content loader
+        if (isset($_SESSION[$guid]['index_custom.php']) == false) {
+            if (is_file('./index_custom.php')) {
+                $_SESSION[$guid]['index_custom.php'] = include './index_custom.php';
+            } else {
+                $_SESSION[$guid]['index_custom.php'] = null;
+            }
+        }
+        if (isset($_SESSION[$guid]['index_custom.php'])) {
+            $contents[] = $_SESSION[$guid]['index_custom.php'];
+        }
+
+        //DASHBOARDS!
+        //Get role category
+        $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+        if ($category == false) {
+            $contents[] =
+                "<div class='error'>".
+                __($guid, 'Your current role type cannot be determined.').
+                '</div>';
+        } elseif ($category == 'Parent') { //Display Parent Dashboard
+            $count = 0;
+            try {
+                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $errors[] = $e->getMessage();
+            }
+
+            if ($result->rowCount() > 0) {
+                //Get child list
+                $count = 0;
+                $options = '';
+                $students = array();
+                while ($row = $result->fetch()) {
+                    try {
+                        $dataChild = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
+                        $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.website AS rollGroupWebsite, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
+                        $resultChild = $connection2->prepare($sqlChild);
+                        $resultChild->execute($dataChild);
+                    } catch (PDOException $e) {
+                        $errors[] = $e->getMessage();
+                    }
+                    while ($rowChild = $resultChild->fetch()) {
+                        $students[$count][0] = $rowChild['surname'];
+                        $students[$count][1] = $rowChild['preferredName'];
+                        $students[$count][2] = $rowChild['yearGroup'];
+                        $students[$count][3] = $rowChild['rollGroup'];
+                        $students[$count][4] = $rowChild['gibbonPersonID'];
+                        $students[$count][5] = $rowChild['image_240'];
+                        $students[$count][6] = $rowChild['dateStart'];
+                        $students[$count][7] = $rowChild['gibbonRollGroupID'];
+                        $students[$count][8] = $rowChild['rollGroupWebsite'];
+                        ++$count;
+                    }
+                }
+            }
+
+            if ($count > 0) {
+                $contents[] =
+                    '<h2>'.
+                    __($guid, 'Parent Dashboard').
+                    '</h2>';
+                include './modules/Timetable/moduleFunctions.php';
+
+                for ($i = 0; $i < $count; ++$i) {
+                    $contents[] =
+                        '<h4>'.
+                        $students[$i][1].' '.$students[$i][0].
+                        '</h4>';
+
+                    $contents[] =
+                        "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
+                        getUserPhoto($guid, $students[$i][5], 75).
+                        "<div style='height: 5px'></div>".
+                        "<span style='font-size: 70%'>".
+                        "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__($guid, 'Student Profile').'</a><br/>';
+
+                    if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
+                        $contents[] = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__($guid, 'Roll Group').' ('.$students[$i][3].')</a><br/>';
+                    }
+                    if ($students[$i][8] != '') {
+                        $contents[] = "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__($guid, 'Website').'</a>';
+                    }
+
+                    $contents[] = '</span>';
+                    $contents[] = '</div>';
+                    $contents[] = "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
+                    $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
+                    if ($dashboardContents == false) {
+                        $contents[] =
+                            "<div class='error'>".
+                            __($guid, 'There are no records to display.').
+                            '</div>';
+                    } else {
+                        $contents[] = $dashboardContents;
+                    }
+                    $contents[] = '</div>';
+                }
+            }
+        } elseif ($category == 'Student') { //Display Student Dashboard
+            $contents[] =
+                '<h2>'.
+                __($guid, 'Student Dashboard').
+                '</h2>'.
+                "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
+            $dashboardContents = getStudentDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
+            if ($dashboardContents == false) {
+                $contents[] = 
+                    "<div class='error'>".
+                    __($guid, 'There are no records to display.').
+                    '</div>';
+            } else {
+                $contents[] = $dashboardContents;
+            }
+            $contents[] = '</div>';
+        } elseif ($category == 'Staff') { //Display Staff Dashboard
+            $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
+            if ($smartWorkflowHelp != false) {
+                $contents[] = $smartWorkflowHelp;
+            }
+
+            $contents[] =
+                '<h2>'.
+                __($guid, 'Staff Dashboard').
+                '</h2>'.
+                "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
+            $dashboardContents = getStaffDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
+            if ($dashboardContents == false) {
+                $contents[] = 
+                    "<div class='error'>".
+                    __($guid, 'There are no records to display.').
+                    '</div>';
+            } else {
+                $contents[] = $dashboardContents;
+            }
+            $contents[] = '</div>';
+        }
+    }
+} else {
+    if (strstr($_SESSION[$guid]['address'], '..') || strstr($_SESSION[$guid]['address'], 'installer') || strstr($_SESSION[$guid]['address'], 'uploads') || in_array($_SESSION[$guid]['address'] , array('index.php', '/index.php', './index.php')) || substr($_SESSION[$guid]['address'], -11) == '//index.php' || substr($_SESSION[$guid]['address'], -11) == './index.php') {
+        $contents[] =
+            "<div class='error'>".
+            __($guid, 'Illegal address detected: access denied.').
+            '</div>';
+    } else {
+        ob_start();
+        if (is_file('./'.$_SESSION[$guid]['address'])) {
+            //Include the page
+            include './'.$_SESSION[$guid]['address'];
+        } else {
+            include './error.php';
+        }
+        $contents[] = ob_get_contents();
+        ob_end_clean();
+    }
+}
+
+// Set footer contents
+$footerAuthor = __($guid, 'Powered by') . " <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> v{$version} " .
+    (($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') ? 'dev' : '') . " | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-" . date('Y');
+
+$footerLicense = __($guid, 'Created under the') . "<a target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> at ".
+    "<a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | ".
+    "<a target='_blank' href='https://gibbonedu.org/about/#ourTeam'>" . __($guid, 'Credits') . "</a> | ".
+    "<a target='_blank' href='https://gibbonedu.org/about/#translators'>" . __($guid, 'Translators') . '</a>';
+
+$footerThemeAuthor = null;
+if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
+    $footerThemeAuthor = ($_SESSION[$guid]['gibbonThemeURL'] != '') ?
+        __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>' :
+        __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
+}
+
+$footerLogo = $_SESSION[$guid]['absoluteURL'] . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
+
 
 ?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -364,368 +691,58 @@ $head_extras[] = $_SESSION[$guid]['analytics'];
 
 		</head>
 		<body>
-			<?php
-            //Get house logo and set session variable, only on first load after login (for performance)
-            if ($_SESSION[$guid]['pageLoads'] == 0 and isset($_SESSION[$guid]['username']) and $_SESSION[$guid]['gibbonHouseID'] != '') {
-                try {
-                    $dataHouse = array('gibbonHouseID' => $_SESSION[$guid]['gibbonHouseID']);
-                    $sqlHouse = 'SELECT logo, name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
-                    $resultHouse = $connection2->prepare($sqlHouse);
-                    $resultHouse->execute($dataHouse);
-                } catch (PDOException $e) {
-                }
 
-                if ($resultHouse->rowCount() == 1) {
-                    $rowHouse = $resultHouse->fetch();
-                    $_SESSION[$guid]['gibbonHouseIDLogo'] = $rowHouse['logo'];
-                    $_SESSION[$guid]['gibbonHouseIDName'] = $rowHouse['name'];
-                }
-            }
+			<?php if (!empty($errors)) { ?>
+				<?php foreach ($errors as $error) { ?>
+					<div class='error'><?php echo $error; ?></div>
+				<?php } ?>
+			<?php } ?>
 
-            //Show warning if not in the current school year
-            if (isset($_SESSION[$guid]['username'])) {
-                if ($_SESSION[$guid]['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearIDCurrent']) {
-                    echo "<div style='margin: 10px auto; width:1101px;' class='warning'>";
-                    echo '<b><u>'.sprintf(__($guid, 'Warning: you are logged into the system in school year %1$s, which is not the current year.'), $_SESSION[$guid]['gibbonSchoolYearName']).'</b></u>'.__($guid, 'Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.');
-                    echo '</div>';
-                }
-            }
-    		?>
+			<?php if (!empty($warnings)) { ?>
+				<?php foreach ($warnings as $warning) { ?>
+					<div class='warning' style='margin: 10px auto; width:1101px;'><?php echo $warning; ?></div>
+				<?php } ?>
+			<?php } ?>
 
 			<div id="wrapOuter">
-				<?php
-                if (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '') {
-                    echo "<div class='minorLinks minorLinksTopGap'>";
-                } else {
-                    echo "<div class='minorLinks'>";
-                }
-				echo getMinorLinks($connection2, $guid, $cacheLoad);
-				echo '</div>';?>
+				<div class='minorLinks <?php echo (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '') ? 'minorLinksTopGap' : '' ?>'>
+					<?php echo getMinorLinks($connection2, $guid, $cacheLoad); ?>
+				</div>
 				<div id="wrap">
 					<div id="header">
 						<div id="header-logo">
 							<a href='<?php echo $_SESSION[$guid]['absoluteURL'] ?>'><img height='100px' width='400px' class="logo" alt="Logo" src="<?php echo $_SESSION[$guid]['absoluteURL'].'/'.$_SESSION[$guid]['organisationLogo'];?>"/></a>
 						</div>
 						<div id="header-finder">
-							<?php
-                            //Show student and staff quick finder
-                            if (isset($_SESSION[$guid]['username'])) {
-                                if ($cacheLoad) {
-                                    $_SESSION[$guid]['studentFastFinder'] = getFastFinder($connection2, $guid);
-                                }
-                                if (isset($_SESSION[$guid]['studentFastFinder'])) {
-                                    echo $_SESSION[$guid]['studentFastFinder'];
-                                }
-                            }
-   				 			?>
+							<?php echo $fastFinder; ?>
 						</div>
 						<div id="header-menu">
-							<?php
-                            //Get main menu
-                            $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
-                            if ($cacheLoad) {
-                                $mainMenu->setMenu();
-                            }
-
-                            // Display the main menu
-							echo $mainMenu->getMenu();
-
-                            //Display notification temp_array
-                            echo "<div class='notificationTray'>";
-                                echo getNotificationTray($connection2, $guid, $cacheLoad);
-                            echo "</div>";
-
-							?>
+							<?php echo $mainMenuHTML; ?>
+							<div class='notificationTray'>
+								<?php echo $flash; ?>
+							</div>
 						</div>
 					</div>
 					<div id="content-wrap">
-						<?php
-                        //Allow for wide pages (no sidebar)
-                        if ($sidebar == 'false') {
-                            echo "<div id='content-wide'>";
-
-                            //Invoke and show Module Menu
-                            $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
-
-                            // Display the module menu
-                            echo $menuModule->getMenu('mini');
-
-                            //No closing </div> required here
-                        } else {
-                            echo "<div id='content'>";
-                        }
-
-						if ($_SESSION[$guid]['address'] == '') {
-                            $returns = array();
-                        	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
-                        	if (isset($_GET['return'])) {
-                        	    returnProcess($guid, $_GET['return'], null, $returns);
-                        	}
-						}
-
-                        //Show index page Content
-                            if ($_SESSION[$guid]['address'] == '') {
-                                //Welcome message
-                                if (isset($_SESSION[$guid]['username']) == false) {
-                                    //Create auto timeout message
-                                    if (isset($_GET['timeout'])) {
-                                        if ($_GET['timeout'] == 'true') {
-                                            echo "<div class='warning'>";
-                                            echo __($guid, 'Your session expired, so you were automatically logged out of the system.');
-                                            echo '</div>';
-                                        }
-                                    }
-
-                                    echo '<h2>';
-                                    echo __($guid, 'Welcome');
-                                    echo '</h2>';
-                                    echo '<p>';
-                                    echo $_SESSION[$guid]['indexText'];
-                                    echo '</p>';
-
-                                    //Student public applications permitted?
-                                    $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
-                                    if ($publicApplications == 'Y') {
-                                        echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Student Applications');
-                                        echo '</h2>';
-                                        echo '<p>';
-                                        echo sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Students/applicationForm.php'>", '</a>');
-                                        echo '</p>';
-                                    }
-
-                                    //Staff public applications permitted?
-                                    $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
-                                    if ($staffApplicationFormPublicApplications == 'Y') {
-                                        echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Staff Applications');
-                                        echo '</h2>';
-                                        echo '<p>';
-                                        echo sprintf(__($guid, 'Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $_SESSION[$guid]['organisationName'], "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>');
-                                        echo '</p>';
-                                    }
-
-                                    //Public departments permitted?
-                                    $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
-                                    if ($makeDepartmentsPublic == 'Y') {
-                                        echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Departments');
-                                        echo '</h2>';
-                                        echo '<p>';
-                                        echo sprintf(__($guid, 'Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Departments/departments.php'>", '</a>', $_SESSION[$guid]['organisationName']);
-                                        echo '</p>';
-                                    }
-
-                                    //Public units permitted?
-                                    $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
-                                    if ($makeUnitsPublic == 'Y') {
-                                        echo "<h2 style='margin-top: 30px'>";
-                                        echo __($guid, 'Learn With Us');
-                                        echo '</h2>';
-                                        echo '<p>';
-                                        echo sprintf(__($guid, 'We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $_SESSION[$guid]['organisationName']);
-                                        echo '</p>';
-                                    }
-
-                                    //Get any elements hooked into public home page, checking if they are turned on
-                                    try {
-                                        $dataHook = array();
-                                        $sqlHook = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
-                                        $resultHook = $connection2->prepare($sqlHook);
-                                        $resultHook->execute($dataHook);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowHook = $resultHook->fetch()) {
-                                        $options = unserialize(str_replace("'", "\'", $rowHook['options']));
-                                        $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
-                                        if ($check == $options['toggleSettingValue']) { //If its turned on, display it
-                                            echo "<h2 style='margin-top: 30px'>";
-                                            echo $options['title'];
-                                            echo '</h2>';
-                                            echo '<p>';
-                                            echo stripslashes($options['text']);
-                                            echo '</p>';
-                                        }
-                                    }
-                                } else {
-                                    //Custom content loader
-                                    if (isset($_SESSION[$guid]['index_custom.php']) == false) {
-                                        if (is_file('./index_custom.php')) {
-                                            $_SESSION[$guid]['index_custom.php'] = include './index_custom.php';
-                                        } else {
-                                            $_SESSION[$guid]['index_custom.php'] = null;
-                                        }
-                                    }
-                                    if (isset($_SESSION[$guid]['index_custom.php'])) {
-                                        echo $_SESSION[$guid]['index_custom.php'];
-                                    }
-
-                                    //DASHBOARDS!
-                                    //Get role category
-                                    $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-                                    if ($category == false) {
-                                        echo "<div class='error'>";
-                                        echo __($guid, 'Your current role type cannot be determined.');
-                                        echo '</div>';
-                                    } elseif ($category == 'Parent') { //Display Parent Dashboard
-                                        $count = 0;
-                                        try {
-                                            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                            $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
-                                            $result = $connection2->prepare($sql);
-                                            $result->execute($data);
-                                        } catch (PDOException $e) {
-                                            echo "<div class='error'>".$e->getMessage().'</div>';
-                                        }
-
-                                        if ($result->rowCount() > 0) {
-                                            //Get child list
-                                            $count = 0;
-                                            $options = '';
-                                            $students = array();
-                                            while ($row = $result->fetch()) {
-                                                try {
-                                                    $dataChild = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
-                                                    $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.website AS rollGroupWebsite, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
-                                                    $resultChild = $connection2->prepare($sqlChild);
-                                                    $resultChild->execute($dataChild);
-                                                } catch (PDOException $e) {
-                                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                                }
-                                                while ($rowChild = $resultChild->fetch()) {
-                                                    $students[$count][0] = $rowChild['surname'];
-                                                    $students[$count][1] = $rowChild['preferredName'];
-                                                    $students[$count][2] = $rowChild['yearGroup'];
-                                                    $students[$count][3] = $rowChild['rollGroup'];
-                                                    $students[$count][4] = $rowChild['gibbonPersonID'];
-                                                    $students[$count][5] = $rowChild['image_240'];
-                                                    $students[$count][6] = $rowChild['dateStart'];
-                                                    $students[$count][7] = $rowChild['gibbonRollGroupID'];
-                                                    $students[$count][8] = $rowChild['rollGroupWebsite'];
-                                                    ++$count;
-                                                }
-                                            }
-                                        }
-
-                                        if ($count > 0) {
-                                            echo '<h2>';
-                                            echo __($guid, 'Parent Dashboard');
-                                            echo '</h2>';
-                                            include './modules/Timetable/moduleFunctions.php';
-
-                                            for ($i = 0; $i < $count; ++$i) {
-                                                echo '<h4>';
-                                                echo $students[$i][1].' '.$students[$i][0];
-                                                echo '</h4>';
-
-                                                echo "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>";
-                                                echo getUserPhoto($guid, $students[$i][5], 75);
-                                                echo "<div style='height: 5px'></div>";
-                                                echo "<span style='font-size: 70%'>";
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__($guid, 'Student Profile').'</a><br/>';
-                                                if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__($guid, 'Roll Group').' ('.$students[$i][3].')</a><br/>';
-                                                }
-                                                if ($students[$i][8] != '') {
-                                                    echo "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__($guid, 'Website').'</a>';
-                                                }
-
-                                                echo '</span>';
-                                                echo '</div>';
-                                                echo "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
-                                                $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
-                                                if ($dashboardContents == false) {
-                                                    echo "<div class='error'>";
-                                                    echo __($guid, 'There are no records to display.');
-                                                    echo '</div>';
-                                                } else {
-                                                    echo $dashboardContents;
-                                                }
-                                                echo '</div>';
-                                            }
-                                        }
-                                    } elseif ($category == 'Student') { //Display Student Dashboard
-                                        echo '<h2>';
-                                        echo __($guid, 'Student Dashboard');
-                                        echo '</h2>';
-                                        echo "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
-                                        $dashboardContents = getStudentDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
-                                        if ($dashboardContents == false) {
-                                            echo "<div class='error'>";
-                                            echo __($guid, 'There are no records to display.');
-                                            echo '</div>';
-                                        } else {
-                                            echo $dashboardContents;
-                                        }
-                                        echo '</div>';
-                                    } elseif ($category == 'Staff') { //Display Staff Dashboard
-                                        $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
-                                        if ($smartWorkflowHelp != false) {
-                                            echo $smartWorkflowHelp;
-                                        }
-
-                                        echo '<h2>';
-                                        echo __($guid, 'Staff Dashboard');
-                                        echo '</h2>';
-                                        echo "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
-                                        $dashboardContents = getStaffDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
-                                        if ($dashboardContents == false) {
-                                            echo "<div class='error'>";
-                                            echo __($guid, 'There are no records to display.');
-                                            echo '</div>';
-                                        } else {
-                                            echo $dashboardContents;
-                                        }
-                                        echo '</div>';
-                                    }
-                                }
-                            } else {
-                                if (strstr($_SESSION[$guid]['address'], '..') || strstr($_SESSION[$guid]['address'], 'installer') || strstr($_SESSION[$guid]['address'], 'uploads') || in_array($_SESSION[$guid]['address'] , array('index.php', '/index.php', './index.php')) || substr($_SESSION[$guid]['address'], -11) == '//index.php' || substr($_SESSION[$guid]['address'], -11) == './index.php') {
-                                    echo "<div class='error'>";
-                                    echo __($guid, 'Illegal address detected: access denied.');
-                                    echo '</div>';
-                                } else {
-                                    if (is_file('./'.$_SESSION[$guid]['address'])) {
-                                        //Include the page
-                                        include './'.$_SESSION[$guid]['address'];
-                                    } else {
-                                        include './error.php';
-                                    }
-                                }
-                            }
-   				 			?>
+						<div id='<?php echo ($sidebar == 'false') ? 'content-wide' : 'content'; ?>'>
+							<?php echo $moduleMenu; ?>
+							<?php echo $easyReturnHTML; ?>
+							<?php echo implode("\n", $contents); ?>
 						</div>
-						<?php
-                        if ($sidebar != 'false') {
-                            ?>
+						<?php if ($sidebar != 'false') { ?>
 							<div id="sidebar">
 								<?php sidebar($gibbon, $pdo);?>
 							</div>
 							<br style="clear: both">
-							<?php
-                        }
-   				 		?>
+						<?php } ?>
 					</div>
 					<div id="footer">
-						<?php echo __($guid, 'Powered by') ?> <a target='_blank' href="https://gibbonedu.org">Gibbon</a> v<?php echo $version ?><?php if ($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') { echo 'dev';} ?> | &#169; <a target='_blank' href="http://rossparker.org">Ross Parker</a> 2010-<?php echo date('Y') ?><br/>
+						<?php echo $footerAuthor; ?><br/>
 						<span style='font-size: 90%; '>
-							<?php echo __($guid, 'Created under the') ?> <a target='_blank' href="https://www.gnu.org/licenses/gpl.html">GNU GPL</a> at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | <a target='_blank' href='https://gibbonedu.org/about/#ourTeam'><?php echo __($guid, 'Credits'); ?></a> | <a target='_blank' href='https://gibbonedu.org/about/#translators'><?php echo __($guid, 'Translators'); ?></a><br/>
-							<?php
-                                $thirdLine = false;
-								if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
-									if ($_SESSION[$guid]['gibbonThemeURL'] != '') {
-										echo __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>';
-									} else {
-										echo __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
-									}
-									$thirdLine = true;
-								}
-								if ($thirdLine == false) {
-									echo '<br/>';
-								}
-								?>
+							<?php echo $footerLicense; ?><br/>
+							<?php echo $footerThemeAuthor; ?><br/>
 						</span>
-						<img id='footer-logo' alt='Logo Small' src='./themes/<?php echo $_SESSION[$guid]['gibbonThemeName'] ?>/img/logoFooter.png'/>
+						<img id='footer-logo' alt='Logo Small' src='<?php echo $footerLogo; ?>'/>
 					</div>
 				</div>
 			</div>
