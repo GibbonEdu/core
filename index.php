@@ -47,7 +47,9 @@ $siteURL = $_SESSION[$guid]['absoluteURL'];
 //Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
 $_SESSION[$guid]['sidebarExtra'] = '';
 $_SESSION[$guid]['sidebarExtraPosition'] = '';
-$sidebar = isset($_GET['sidebar']) ? $_GET['sidebar'] : '';
+
+// $sidebar is true unless $_GET['sidebar'] explicitly set to 'false'
+$sidebar = !isset($_GET['sidebar']) || (strtolower($_GET['sidebar']) !== 'false');
 
 //Check to see if system settings are set from databases
 if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
@@ -169,14 +171,14 @@ if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     } catch (PDOException $e) {
     }
     if ($resultSidebar->rowCount() > 0) {
-        $sidebar = 'false';
+        $sidebar = false;
     }
 }
 
 
 // Set module menu
 $moduleMenu = null;
-if ($sidebar == 'false') {
+if (!$sidebar) {
     //Invoke and show Module Menu
     $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
 
@@ -735,12 +737,12 @@ $footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logo
 					</div>
 				</div><!--/#header-->
 				<div id="content-wrap">
-					<div id='<?php echo ($sidebar == 'false') ? 'content-wide' : 'content'; ?>'>
+					<div id='<?php echo (!$sidebar) ? 'content-wide' : 'content'; ?>'>
 						<?php echo $moduleMenu; ?>
 						<?php echo $easyReturnHTML; ?>
 						<?php echo implode("\n", $contents); ?>
 					</div>
-					<?php if ($sidebar != 'false') { ?>
+					<?php if ($sidebar) { ?>
 						<div id="sidebar">
 							<?php sidebar($gibbon, $pdo);?>
 						</div>
