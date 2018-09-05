@@ -19,17 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Action;
 use Gibbon\Tables\Columns\Column;
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
+use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
-use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Tables\Renderer\PrintableRenderer;
+use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
 /**
  * DataTable
@@ -83,6 +85,42 @@ class DataTable implements OutputableInterface
     public static function createPaginated($id, QueryCriteria $criteria)
     {
         return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+    }
+
+    /**
+     * Helper method to create a report data table, which can display as a table, printable page or export.
+     *
+     * @param string $id
+     * @param QueryCriteria $criteria
+     * @return self
+     */
+    public static function createReport($id, QueryCriteria $criteria, $viewMode, $guid)
+    {
+        if ($viewMode == 'report') {
+            $table = new self($id, new PrintableRenderer());
+        } else if ($viewMode == 'export') {
+            $table = new self($id, new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']));
+        } else {
+            $table = new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        }
+
+        $table->addMetaData('filename', basename(__FILE__, '.php'));
+        $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
+
+        $table->addHeaderAction('print', __('Print'))
+            ->setURL('/report.php')
+            ->addParam('q', $_GET['q'])
+            ->addParam('search', $criteria->getSearchText(true))
+            ->isDirect()
+            ->append('&nbsp;');
+
+        $table->addHeaderAction('export', __('Export'))
+            ->setURL('/export.php')
+            ->addParam('q', $_GET['q'])
+            ->addParam('search', $criteria->getSearchText(true))
+            ->isDirect();
+
+        return $table;
     }
 
     /**
