@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Activities\ActivityReportGateway;
+
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
 
@@ -27,99 +31,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
+
+    $viewMode = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'table';
+
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Enrolment Summary').'</div>';
     echo '</div>';
-    try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT * FROM gibbonActivity WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        $lastPerson = '';
+    $activityGateway = $container->get(ActivityReportGateway::class);
 
-        echo "<table cellspacing='0' class='fullWidth colorOddEven'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Activity');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Accepted');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Registered').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Excludes "Not Accepted"').'<span>';
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Max Participants');
-        echo '</th>';
-        echo '</tr>';
+    // CRITERIA
+    $criteria = $activityGateway->newQueryCriteria()
+        ->sortBy('gibbonActivity.name')
+        ->pageSize(0)
+        ->fromArray($_POST);
 
-        while ($row = $result->fetch()) {
-            try {
-                $dataEnrollment = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $row['gibbonActivityID']);
-                $sqlEnrollment = "SELECT gibbonActivityStudent.* FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='" . date('Y-m-d') . "') AND (dateEnd IS NULL  OR dateEnd>='" . date('Y-m-d') . "') AND gibbonActivityID=:gibbonActivityID AND gibbonActivityStudent.status='Accepted'";
-                $resultEnrollment = $connection2->prepare($sqlEnrollment);
-                $resultEnrollment->execute($dataEnrollment);
-            } catch (PDOException $e) {
-                echo "<div class='error'>" . $e->getMessage() . '</div>';
-            }
-            $enrolmentCount = $resultEnrollment->rowCount();
+    $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-            $rowClass = '';
-            if ($enrolmentCount == $row['maxParticipants'] && $row['maxParticipants'] > 0) {
-                $rowClass = 'current';
-            } else if ($enrolmentCount > $row['maxParticipants']) {
-                $rowClass = 'error';
-            } else if ($row['maxParticipants'] == 0) {
-                $rowClass = 'warning';
-            }
+    // DATA TABLE
+    $table = DataTable::createPaginated('activities', $criteria);
 
-            echo '<tr class="'.$rowClass.'">';
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-
-            if ($enrolmentCount < 0) {
-                echo '<i>'.__($guid, 'Unknown').'</i>';
-            } else {
-                if ($enrolmentCount > $row['maxParticipants']) {
-                    echo "<span style='color: #f00; font-weight: bold'>".$enrolmentCount.'</span>';
-                } else {
-                    echo $enrolmentCount;
-                }
-            }
-            echo '</td>';
-            echo '<td>';
-            try {
-                $dataEnrollment = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonActivityID' => $row['gibbonActivityID']);
-                $sqlEnrollment = "SELECT gibbonActivityStudent.* FROM gibbonActivityStudent JOIN gibbonPerson ON (gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonActivityID=:gibbonActivityID AND NOT gibbonActivityStudent.status='Not Accepted'";
-                $resultEnrollment = $connection2->prepare($sqlEnrollment);
-                $resultEnrollment->execute($dataEnrollment);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-
-            if ($resultEnrollment->rowCount() < 0) {
-                echo '<i>'.__($guid, 'Unknown').'</i>';
-            } else {
-                echo $resultEnrollment->rowCount();
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['maxParticipants'];
-            echo '</td>';
-            echo '</tr>';
+    $table->modifyRows(function($activity, $row) {
+        if ($activity['enrolment'] == $activity['maxParticipants'] && $activity['maxParticipants'] > 0) {
+            $row->addClass('current');
+        } else if ($activity['enrolment'] > $activity['maxParticipants']) {
+            $row->addClass('error');
+        } else if ($activity['maxParticipants'] == 0) {
+            $row->addClass('warning');
         }
-        echo '</table>';
-    }
+        return $row;
+    });
+
+    $table->addMetaData('filterOptions', [
+        'active:Y'          => __('Active').': '.__('Yes'),
+        'active:N'          => __('Active').': '.__('No'),
+        'registration:Y'    => __('Registration').': '.__('Yes'),
+        'registration:N'    => __('Registration').': '.__('No'),
+        'enrolment:less'    => __('Enrolment').': &lt; '.__('Full'),
+        'enrolment:full'    => __('Enrolment').': '.__('Full'),
+        'enrolment:greater' => __('Enrolment').': &gt; '.__('Full'),
+    ]);
+
+    $table->addColumn('name', __('Activity'))
+        ->format(function($activity) {
+            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+        });
+
+    $table->addColumn('enrolment', __('Accepted'));
+    $table->addColumn('registered', __('Registered'))->description(__('Excludes "Not Accepted"'));
+    $table->addColumn('maxParticipants', __('Max Participants'));
+
+    echo $table->render($activities);
 }
