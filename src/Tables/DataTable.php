@@ -89,6 +89,45 @@ class DataTable implements OutputableInterface
     }
 
     /**
+     * Helper method to create a report data table, which can display as a table, printable page or export.
+     *
+     * @param string $id
+     * @param QueryCriteria $criteria
+     * @param string $viewMode
+     * @param string $guid
+     * @return self
+     */
+    public static function createReport($id, QueryCriteria $criteria, $viewMode, $guid)
+    {
+        if ($viewMode == 'print') {
+            $table = new self($id, new PrintableRenderer());
+        } else if ($viewMode == 'export') {
+            $table = new self($id, new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']));
+        } else {
+            $table = new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        }
+
+        $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
+
+        $table->addHeaderAction('print', __('Print'))
+            ->setURL('/report.php')
+            ->addParam('q', $_GET['q'])
+            ->addParam('format', 'print')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->isDirect()
+            ->append('&nbsp;');
+
+        $table->addHeaderAction('export', __('Export'))
+            ->setURL('/export.php')
+            ->addParam('q', $_GET['q'])
+            ->addParam('format', 'export')
+            ->addParam('search', $criteria->getSearchText(true))
+            ->isDirect();
+
+        return $table;
+    }
+
+    /**
      * Set the table ID.
      *
      * @param string $id
@@ -222,13 +261,57 @@ class DataTable implements OutputableInterface
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns($maxDepth = null)
     {
-        return $this->columns;
+        $depth = 0;
+
+        $getNestedColumns = function($columns, &$allColumns = array()) use (&$getNestedColumns, &$depth, &$maxDepth) {
+            foreach ($columns as $column) {
+                if ($column->hasNestedColumns() && (is_null($maxDepth) || $column->getDepth() < $maxDepth) ) {
+                    $getNestedColumns($column->getColumns(), $allColumns);
+                } else {
+                    $allColumns[] = $column;
+                }
+            }
+
+            return $allColumns;
+        };
+
+        return $getNestedColumns($this->columns);
     }
 
     /**
-     * Count all columns in the table.
+     * Calculate how many layers deep the columns are nested.
+     *
+     * @return int
+     */
+    public function getTotalColumnDepth()
+    {
+        $depth = 1;
+        foreach ($this->columns as $column) {
+            $depth = max($depth, $column->getTotalDepth());
+        }
+
+        return $depth + 1;
+    }
+
+    /**
+     * Calculate the total span of the table, including nested columns.
+     *
+     * @return int
+     */
+    public function getTotalColumnSpan()
+    {
+        $count = 0;
+        foreach ($this->getColumns() as $column) {
+            $count += $column->getTotalSpan();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Count the columns in the table. Does not count nested columns.
      *
      * @return int
      */
