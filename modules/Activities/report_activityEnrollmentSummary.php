@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
@@ -31,25 +32,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
+    $viewMode = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
 
-    $viewMode = isset($_REQUEST['view']) ? $_REQUEST['view'] : 'table';
-
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Enrolment Summary').'</div>';
-    echo '</div>';
+    if ($viewMode == 'index') {
+        echo "<div class='trail'>";
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Enrolment Summary').'</div>';
+        echo '</div>';
+    }
 
     $activityGateway = $container->get(ActivityReportGateway::class);
 
     // CRITERIA
     $criteria = $activityGateway->newQueryCriteria()
+        ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy('gibbonActivity.name')
-        ->pageSize(0)
+        ->pageSize($viewMode != 'index' ? 0 : 50)
         ->fromArray($_POST);
 
     $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
     // DATA TABLE
-    $table = DataTable::createPaginated('activities', $criteria);
+    $table = DataTable::createReport('activities', $criteria, $viewMode, $guid);
 
     $table->modifyRows(function($activity, $row) {
         if ($activity['enrolment'] == $activity['maxParticipants'] && $activity['maxParticipants'] > 0) {
@@ -62,6 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         return $row;
     });
 
+    $table->addMetaData('name', __('Activity Enrolment Summary'));
     $table->addMetaData('filterOptions', [
         'active:Y'          => __('Active').': '.__('Yes'),
         'active:N'          => __('Active').': '.__('No'),
@@ -72,14 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         'enrolment:greater' => __('Enrolment').': &gt; '.__('Full'),
     ]);
 
-    $table->addColumn('name', __('Activity'))
-        ->format(function($activity) {
-            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
-        });
-
-    $table->addColumn('enrolment', __('Accepted'));
-    $table->addColumn('registered', __('Registered'))->description(__('Excludes "Not Accepted"'));
-    $table->addColumn('maxParticipants', __('Max Participants'));
+    $table->addColumn('name', __('Activity'));
+    $table->addColumn('enrolment', __('Accepted'))->width('20%');
+    $table->addColumn('registered', __('Registered'))->description(__('Excludes "Not Accepted"'))->width('20%');
+    $table->addColumn('maxParticipants', __('Max Participants'))->width('20%');
 
     echo $table->render($activities);
 }
