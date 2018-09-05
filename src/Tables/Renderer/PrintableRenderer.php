@@ -47,6 +47,12 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
 
         $output .= '<div class="printTable">';
 
+        if ($name = $table->getMetaData('name')) {
+            $output .= '<h2>';
+            $output .= $name;
+            $output .= '</h2>';
+        }
+
         $output .= parent::renderTable($table, $dataSet);
 
         $output .= '</div><br/>';

@@ -21,6 +21,7 @@ namespace Gibbon\Tables\Renderer;
 
 use Gibbon\Domain\DataSet;
 use Gibbon\Tables\DataTable;
+use Gibbon\Forms\Layout\Element;
 use Gibbon\Tables\Columns\Column;
 use Gibbon\Tables\Renderer\RendererInterface;
 
@@ -77,6 +78,10 @@ class SpreadsheetRenderer implements RendererInterface
             ],
         ];
 
+        $currentStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'B3EFC2'],]];
+        $errorStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'F6CECB'],]];
+        $warningStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'FFD2A9'],]];
+
         // Set document properties
         $excel->getProperties()->setCreator($table->getMetaData('creator'))
             ->setLastModifiedBy($table->getMetaData('creator'))
@@ -99,7 +104,7 @@ class SpreadsheetRenderer implements RendererInterface
             foreach ($table->getColumns() as $columnName => $column) {
                 $alpha = $this->num2alpha($cellCount);
 
-                $sheet->setCellValue($alpha.$rowCount, $columnName);
+                $sheet->setCellValue($alpha.$rowCount, $column->getLabel());
                 $sheet->getStyle($alpha.$rowCount)->applyFromArray($headerStyle);
                 
                 if ($column->getWidth() == 'auto') {
@@ -116,6 +121,9 @@ class SpreadsheetRenderer implements RendererInterface
             foreach ($dataSet as $data) {
                 $sheet->getRowDimension($rowCount)->setRowHeight(20);
 
+                $row = $this->createTableRow($data, $table);
+                $rowClass = $row->getClass();
+
                 // CELLS
                 $cellCount = 0;
                 foreach ($table->getColumns() as $columnName => $column) {
@@ -123,6 +131,13 @@ class SpreadsheetRenderer implements RendererInterface
 
                     $sheet->setCellValue( $alpha.$rowCount, $column->getOutput($data));
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
+
+                    $cellStyle = null;
+                    if (stripos($rowClass, 'current') !== false) $cellStyle = $currentStyle;
+                    if (stripos($rowClass, 'error') !== false) $cellStyle = $errorStyle;
+                    if (stripos($rowClass, 'warning') !== false) $cellStyle = $warningStyle;
+                    if (!empty($cellStyle)) $sheet->getStyle($alpha.$rowCount)->applyFromArray($cellStyle);
+                    
 
                     $cellCount++;
                 }
@@ -164,6 +179,17 @@ class SpreadsheetRenderer implements RendererInterface
         $objWriter->save('php://output');
 
         return;
+    }
+
+    protected function createTableRow(array $data, DataTable $table)
+    {
+        $row = new Element();
+
+        foreach ($table->getRowModifiers() as $callable) {
+            $row = $callable($data, $row, $table->getColumnCount());
+        }
+
+        return $row;
     }
 
     protected function num2alpha($n)
