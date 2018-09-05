@@ -79,6 +79,8 @@ class SimpleRenderer implements RendererInterface
             foreach ($table->getColumns() as $columnName => $column) {
                 $th = $this->createTableHeader($column);
 
+                if (!$th) continue; // Can be removed by tableHeader logic
+
                 $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'">';
                 $output .= $th->getOutput();
                 $output .= '</th>';

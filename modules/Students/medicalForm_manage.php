@@ -18,10 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
-use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Tables\Renderer\PrintableRenderer;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage.php') == false) {
     //Acess denied
@@ -70,10 +71,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo __('View');
     echo '</h2>';
 
+    
+    // DATA TABLE
+    
+    $isReport = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php')) == 'report';
+    if ($isReport) {
+        $table = DataTable::create('medicalForms', new PrintableRenderer());
+        $criteria->pageSize(0);
+    } else {
+        $table = DataTable::createPaginated('medicalForms', $criteria);
+    }
+
     $medicalForms = $medicalGateway->queryMedicalFormsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
-    // DATA TABLE
-    $table = DataTable::createPaginated('medicalForms', $criteria);
+
+    $table->addHeaderAction('print', __('Print'))
+        ->setIcon('print')
+        ->setURL('/report.php')
+        ->addParam('q', '/modules/Students/medicalForm_manage.php')
+        ->displayLabel()
+        ->isDirect()
+        ->append('&nbsp;|&nbsp;');
 
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/Students/medicalForm_manage_add.php')
