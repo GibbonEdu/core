@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
+use Gibbon\Tables\DataTable;
+use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
 include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
@@ -30,49 +33,94 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Spread by Roll Group').'</div>';
-    echo '</div>';
 
-    echo '<h2>';
-    echo __($guid, 'Choose Roll Group');
-    echo '</h2>';
+    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
+    $status = isset($_GET['status'])? $_GET['status'] : null;
 
-    $gibbonRollGroupID = null;
-    if (isset($_GET['gibbonRollGroupID'])) {
-        $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
+    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
+
+    if (empty($viewMode)) {
+        echo "<div class='trail'>";
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Activity Spread by Roll Group').'</div>';
+        echo '</div>';
+
+        echo '<h2>';
+        echo __('Choose Roll Group');
+        echo '</h2>';
+
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+
+        $form->setFactory(DatabaseFormFactory::create($pdo));
+        $form->setClass('noIntBorder fullWidth');
+
+        $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_rollGroup.php");
+
+        $row = $form->addRow();
+            $row->addLabel('gibbonRollGroupID', __('Roll Group'));
+            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired();
+
+        $row = $form->addRow();
+            $row->addLabel('status', __('Status'));
+            $row->addSelect('status')->fromArray(array('Accepted' => __('Accepted'), 'Registered' => __('Registered')))->selected($status)->isRequired();
+
+        $row = $form->addRow();
+            $row->addFooter();
+            $row->addSearchSubmit($gibbon->session);
+
+        echo $form->getOutput();
     }
-
-    $status = null;
-    if (isset($_GET['status'])) {
-        $status = $_GET['status'];
-    }
-
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/report_activitySpread_rollGroup.php");
-
-    $row = $form->addRow();
-        $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->isRequired();
-
-    $row = $form->addRow();
-        $row->addLabel('status', __('Status'));
-        $row->addSelect('status')->fromArray(array('Accepted' => __('Accepted'), 'Registered' => __('Registered')))->selected($status)->isRequired();
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
-
-    echo $form->getOutput();
 
     if ($gibbonRollGroupID != '') {
-        $output = '';
+
+        $activityGateway = $container->get(ActivityReportGateway::class);
+
+        // CRITERIA
+        $criteria = $activityGateway->newQueryCriteria()
+            ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
+            // ->sortBy('gibbonActivity.name')
+            ->pageSize(!empty($viewMode) ? 0 : 50)
+            ->fromArray($_POST);
+
+        $activities = $activityGateway->queryActivitySpreadByRollGroup($criteria, $gibbonRollGroupID);
+
+        // DATA TABLE
+        $table = DataTable::createReport('activities', $criteria, $viewMode, $guid);
+
+        $table->addColumn('rollGroup', __('Roll Group'));
+        $group = $table->addColumn('thing', __('Thing'));
+            $group->addColumn('A1', __('A1'));
+            $group->addColumn('A2', __('A2'));
+            $group->addColumn('A3', __('A3'));
+
+            $group2 = $group->addColumn('A4', __('A4'));
+                $group2->addColumn('B1', __('B1'));
+                $group2->addColumn('B2', __('B2'));
+
+                $group2B = $group2->addColumn('B3', __('B3'));
+                $group2B->addColumn('X1', __('X1'));
+                $group2B->addColumn('X2', __('X2'));
+
+        $table->addColumn('thing2', __('Thing2'));
+
+        $group3 = $table->addColumn('thing3', __('Thing3'));
+            $group3->addColumn('C1', __('C1'));
+            $group3->addColumn('C2', __('C2'));
+
+            $group3B = $group3->addColumn('C3', __('C3'));
+                $group3B->addColumn('E1', __('E1'));
+                $group3B->addColumn('E2', __('E2'));
+
+        $group4 = $table->addColumn('thing4', __('Thing4'));
+            $group4->addColumn('D1', __('D1'));
+            $group4->addColumn('D2', __('D2'));
+            $group4->addColumn('D3', __('D3'));
+
+        echo $table->render($activities);
+
+        $output = ''; 
+
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {

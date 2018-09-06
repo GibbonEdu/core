@@ -83,4 +83,20 @@ class ActivityReportGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryActivitySpreadByRollGroup(QueryCriteria $criteria, $gibbonRollGroupID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'surname', 'preferredName', 'gibbonRollGroup.name as rollGroup'
+            ])
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID')
+            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+
+        return $this->runQuery($query, $criteria);
+    }
 }
