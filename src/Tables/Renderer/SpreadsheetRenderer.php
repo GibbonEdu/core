@@ -61,8 +61,7 @@ class SpreadsheetRenderer implements RendererInterface
                 'color' => ['rgb' => 'eeeeee'],
             ],
             'borders' => [
-                'top' => ['style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => ['argb' => '444444'], ], 
-                'bottom' => ['style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => ['argb' => '444444'], ],
+                'allborders' => ['style' => \PHPExcel_Style_Border::BORDER_THIN, 'color' => ['argb' => '444444'], ], 
             ],
             'font' => [
                 'size' => 12,
@@ -97,27 +96,53 @@ class SpreadsheetRenderer implements RendererInterface
         } else {
             // HEADER ROW
             $rowCount = 1;
-            $cellCount = 0;
 
-            $sheet->getRowDimension($rowCount)->setRowHeight(24);
+            $totalColumnDepth = $table->getTotalColumnDepth();
 
-            foreach ($table->getColumns() as $columnName => $column) {
-                $alpha = $this->num2alpha($cellCount);
+            for ($i = 0; $i < $totalColumnDepth; $i++) {
+                $sheet->getRowDimension($rowCount)->setRowHeight(24);
 
-                $sheet->setCellValue($alpha.$rowCount, $column->getLabel());
-                $sheet->getStyle($alpha.$rowCount)->applyFromArray($headerStyle);
-                
-                if ($column->getWidth() == 'auto') {
-                    $sheet->getColumnDimension($alpha)->setAutoSize(true);
-                } else {
-                    $sheet->getColumnDimension($alpha)->setWidth($column->getWidth());
+                $cellCount = 0;
+                foreach ($table->getColumns($i) as $columnName => $column) {
+                    if ($column->getDepth() < $i) {
+                        $cellCount++;
+                        continue;
+                    }
+
+                    $alpha = $this->num2alpha($cellCount);
+                    $range = $alpha.$rowCount;
+
+                    $sheet->setCellValue($alpha.$rowCount, $column->getLabel());
+                    
+                    if ($column->getWidth() == 'auto') {
+                        $sheet->getColumnDimension($alpha)->setAutoSize(true);
+                    } else {
+                        $sheet->getColumnDimension($alpha)->setWidth(intval($column->getWidth()));
+                    }
+
+                    $colSpan = $column->getTotalSpan();
+                    if ($colSpan > 1) {
+                        $range = $alpha.$rowCount.':'.$this->num2alpha($cellCount+$colSpan-1).$rowCount;
+                        $sheet->mergeCells($range);
+                    }
+
+                    $rowspan = ($column->getTotalDepth() > 1) ? 1 : ($totalColumnDepth - $column->getDepth());
+                    if ($rowspan > 1) {
+                        $sheet->calculateColumnWidths();
+                        $sheet->getColumnDimension($alpha)->setAutoSize(false);
+
+                        $range = $alpha.$rowCount.':'.$alpha.($rowCount+$rowspan-1);
+                        $sheet->mergeCells($range);
+                    }
+
+                    $sheet->getStyle($range)->applyFromArray($headerStyle);
+                    
+                    $cellCount += $colSpan;
                 }
-
-                $cellCount++;
+                $rowCount++;
             }
 
             // TABLE ROWS
-            $rowCount = 2;
             foreach ($dataSet as $data) {
                 $sheet->getRowDimension($rowCount)->setRowHeight(-1);
 
