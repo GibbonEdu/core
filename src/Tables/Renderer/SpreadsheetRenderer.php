@@ -112,13 +112,7 @@ class SpreadsheetRenderer implements RendererInterface
                     $alpha = $this->num2alpha($cellCount);
                     $range = $alpha.$rowCount;
 
-                    $sheet->setCellValue($alpha.$rowCount, $column->getLabel());
-                    
-                    if ($column->getWidth() == 'auto') {
-                        $sheet->getColumnDimension($alpha)->setAutoSize(true);
-                    } else {
-                        $sheet->getColumnDimension($alpha)->setWidth(intval($column->getWidth()));
-                    }
+                    $sheet->setCellValue($alpha.$rowCount, $column->getLabel());  
 
                     $colSpan = $column->getTotalSpan();
                     if ($colSpan > 1) {
@@ -133,6 +127,12 @@ class SpreadsheetRenderer implements RendererInterface
 
                         $range = $alpha.$rowCount.':'.$alpha.($rowCount+$rowspan-1);
                         $sheet->mergeCells($range);
+                    }
+
+                    if ($column->getWidth() == 'auto') {
+                        $sheet->getColumnDimension($alpha)->setAutoSize(true);
+                    } else {
+                        $sheet->getColumnDimension($alpha)->setWidth(intval($column->getWidth()));
                     }
 
                     $sheet->getStyle($range)->applyFromArray($headerStyle);

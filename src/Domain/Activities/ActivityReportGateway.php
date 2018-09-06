@@ -84,19 +84,69 @@ class ActivityReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryActivitySpreadByRollGroup(QueryCriteria $criteria, $gibbonRollGroupID)
+    public function selectActivitySpreadByStudent($gibbonSchoolYearID, $gibbonPersonID, $dateType, $status = 'Accepted')
     {
         $query = $this
             ->newQuery()
-            ->from('gibbonPerson')
+            ->from($this->getTableName())
+            ->cols($dateType == 'Term' 
+                ? ["CONCAT(gibbonSchoolYearTerm.gibbonSchoolYearTermID, '-', gibbonActivitySlot.gibbonDaysOfWeekID) AS groupBy"]
+                : ['gibbonActivitySlot.gibbonDaysOfWeekID AS groupBy'] )
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'surname', 'preferredName', 'gibbonRollGroup.name as rollGroup'
+                'gibbonActivityStudent.gibbonPersonID', 
+                'COUNT(DISTINCT gibbonActivityStudent.gibbonActivityStudentID) AS count', 
+                "COUNT(DISTINCT CASE WHEN gibbonActivityStudent.status<>'Accepted' THEN gibbonActivityStudent.gibbonActivityStudentID END) AS notAccepted", 
+                "GROUP_CONCAT(DISTINCT gibbonActivity.name SEPARATOR ', ') AS activityNames"
             ])
-            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
-            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
-            ->where('gibbonStudentEnrolment.gibbonRollGroupID=:gibbonRollGroupID')
-            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID);
 
-        return $this->runQuery($query, $criteria);
+        if ($status == 'Accepted') {
+            $query->where("gibbonActivityStudent.status='Accepted'");
+        } else {
+            $query->where("gibbonActivityStudent.status<>'Not Accepted'");
+        }
+
+        if ($dateType == 'Term') {
+            $query->innerJoin('gibbonSchoolYearTerm', 'FIND_IN_SET(gibbonSchoolYearTerm.gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)')
+                ->groupBy(['gibbonSchoolYearTerm.gibbonSchoolYearTermID', 'gibbonActivitySlot.gibbonDaysOfWeekID']);
+        } else {
+            $query->groupBy(['gibbonActivitySlot.gibbonDaysOfWeekID']);
+        }
+
+        return $this->db()->select($query->getStatement(), $query->getBindValues());
+    }
+
+    public function selectActivityWeekdays($gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonDaysOfWeek.*
+                FROM gibbonDaysOfWeek 
+                JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) 
+                JOIN gibbonActivity ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) 
+                WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND schoolDay='Y' 
+                GROUP BY gibbonDaysOfWeek.gibbonDaysOfWeekID
+                ORDER BY gibbonDaysOfWeek.sequenceNumber";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectActivityWeekdaysPerTerm($gibbonSchoolYearID)
+    {
+        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
+        $sql = "SELECT gibbonSchoolYearTerm.name, gibbonDaysOfWeek.*, gibbonSchoolYearTerm.name as termName, gibbonSchoolYearTerm.gibbonSchoolYearTermID as gibbonSchoolYearTermID
+                FROM gibbonDaysOfWeek 
+                JOIN gibbonActivitySlot ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) 
+                JOIN gibbonActivity ON (gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID) 
+                JOIN gibbonSchoolYearTerm ON (gibbonSchoolYearTerm.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID)
+                WHERE gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID AND schoolDay='Y' 
+                GROUP BY gibbonDaysOfWeek.gibbonDaysOfWeekID, gibbonSchoolYearTerm.gibbonSchoolYearTermID
+                ORDER BY gibbonSchoolYearTerm.sequenceNumber, gibbonDaysOfWeek.sequenceNumber";
+
+        return $this->db()->select($sql, $data);
     }
 }
