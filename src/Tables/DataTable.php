@@ -111,7 +111,7 @@ class DataTable implements OutputableInterface
 
         $table->addHeaderAction('print', __('Print'))
             ->setURL('/report.php')
-            ->addParam('q', $_GET['q'])
+            ->addParams($_GET)
             ->addParam('format', 'print')
             ->addParam('search', $criteria->getSearchText(true))
             ->isDirect()
@@ -119,7 +119,7 @@ class DataTable implements OutputableInterface
 
         $table->addHeaderAction('export', __('Export'))
             ->setURL('/export.php')
-            ->addParam('q', $_GET['q'])
+            ->addParams($_GET)
             ->addParam('format', 'export')
             ->addParam('search', $criteria->getSearchText(true))
             ->isDirect();
