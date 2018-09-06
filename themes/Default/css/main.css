@@ -1835,13 +1835,9 @@ button[disabled], input[disabled], textarea[disabled] {
     opacity: 0.65;
 }
 
-
-.print div.trail,
-.print div.linkTop,
-.print #filter,
-.print #searchForm,
-.print *:not(#searchForm):not(#filter) + h2
-{
+/* PRINT STYLES */
+body.print div.trail,
+body.print div.linkTop {
     display: none;
 }
 

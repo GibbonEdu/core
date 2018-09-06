@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
-    $viewMode = strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
+    $viewMode = $gibbon->getPageType();
 
     if ($viewMode == 'index') {
         echo "<div class='trail'>";
@@ -66,6 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     });
 
     $table->addMetaData('name', __('Activity Enrolment Summary'));
+    $table->addMetaData('filename', basename(__FILE__, '.php'));
+    
     $table->addMetaData('filterOptions', [
         'active:Y'          => __('Active').': '.__('Yes'),
         'active:N'          => __('Active').': '.__('No'),
@@ -76,7 +78,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         'enrolment:greater' => __('Enrolment').': &gt; '.__('Full'),
     ]);
 
-    $table->addColumn('name', __('Activity'));
+    $table->addColumn('name', __('Activity'))
+        ->format(function($activity) {
+            return $activity['name'].'<br/><span class="small emphasis">'.$activity['type'].'</span>';
+        });
     $table->addColumn('enrolment', __('Accepted'))->width('20%');
     $table->addColumn('registered', __('Registered'))->description(__('Excludes "Not Accepted"'))->width('20%');
     $table->addColumn('maxParticipants', __('Max Participants'))->width('20%');

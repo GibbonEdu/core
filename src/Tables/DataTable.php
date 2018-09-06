@@ -92,6 +92,8 @@ class DataTable implements OutputableInterface
      *
      * @param string $id
      * @param QueryCriteria $criteria
+     * @param string $viewMode
+     * @param string $guid
      * @return self
      */
     public static function createReport($id, QueryCriteria $criteria, $viewMode, $guid)
@@ -104,7 +106,6 @@ class DataTable implements OutputableInterface
             $table = new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
         }
 
-        $table->addMetaData('filename', basename(__FILE__, '.php'));
         $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
 
         $table->addHeaderAction('print', __('Print'))

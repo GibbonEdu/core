@@ -119,23 +119,24 @@ class SpreadsheetRenderer implements RendererInterface
             // TABLE ROWS
             $rowCount = 2;
             foreach ($dataSet as $data) {
-                $sheet->getRowDimension($rowCount)->setRowHeight(20);
+                $sheet->getRowDimension($rowCount)->setRowHeight(-1);
 
                 $row = $this->createTableRow($data, $table);
-                $rowClass = $row->getClass();
 
                 // CELLS
                 $cellCount = 0;
                 foreach ($table->getColumns() as $columnName => $column) {
                     $alpha = $this->num2alpha($cellCount);
 
-                    $sheet->setCellValue( $alpha.$rowCount, $column->getOutput($data));
+                    $cellContent = $this->stripTags($column->getOutput($data));
+
+                    $sheet->setCellValue( $alpha.$rowCount, $cellContent);
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
-                    if (stripos($rowClass, 'current') !== false) $cellStyle = $currentStyle;
-                    if (stripos($rowClass, 'error') !== false) $cellStyle = $errorStyle;
-                    if (stripos($rowClass, 'warning') !== false) $cellStyle = $warningStyle;
+                    if (stripos($row->getClass(), 'current') !== false) $cellStyle = $currentStyle;
+                    if (stripos($row->getClass(), 'error') !== false) $cellStyle = $errorStyle;
+                    if (stripos($row->getClass(), 'warning') !== false) $cellStyle = $warningStyle;
                     if (!empty($cellStyle)) $sheet->getStyle($alpha.$rowCount)->applyFromArray($cellStyle);
                     
 
@@ -190,6 +191,12 @@ class SpreadsheetRenderer implements RendererInterface
         }
 
         return $row;
+    }
+
+    protected function stripTags($content)
+    {
+        $content = preg_replace('/\<br(\s*)?\/?\>/i', PHP_EOL, $content);
+        return strip_tags($content);
     }
 
     protected function num2alpha($n)

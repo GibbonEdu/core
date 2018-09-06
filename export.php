@@ -26,11 +26,16 @@ if (empty($_SESSION[$guid]['systemSettingsSet'])) {
     getSystemSettings($guid, $connection2);
 }
 
-$_SESSION[$guid]['address'] = $_GET['q'];
+if (empty($_SESSION[$guid]['systemSettingsSet']) || empty($_SESSION[$guid]['gibbonPersonID'])) {
+    header("HTTP/1.1 403 Forbidden");
+    exit;
+}
+
+$_SESSION[$guid]['address'] = isset($_GET['q'])? $_GET['q'] : '';
 $_SESSION[$guid]['module'] = getModuleName($_SESSION[$guid]['address']);
 $_SESSION[$guid]['action'] = getActionName($_SESSION[$guid]['address']);
 
-if (strstr($_SESSION[$guid]['address'], '..') != false) {
+if (empty($_SESSION[$guid]['address']) || strstr($_SESSION[$guid]['address'], '..') != false) {
     header("HTTP/1.1 403 Forbidden");
     exit;
 } else {
@@ -41,4 +46,3 @@ if (strstr($_SESSION[$guid]['address'], '..') != false) {
         exit;
     }
 }
-
