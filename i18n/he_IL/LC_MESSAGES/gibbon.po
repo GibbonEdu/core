@@ -119794,7 +119794,7 @@ msgstr ""
 #: modules/Messenger/messenger_manage_edit.php:198
 #: modules/Messenger/messenger_manage_edit.php:196
 #: modules/Messenger/messenger_post.php:255
-msgid "By clicking on this link I agree that I have read, and agree to, the text contained within this email."
+msgid "By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate."
 msgstr ""
 
 #: modules/Messenger/messenger_postQuickWall.php:50

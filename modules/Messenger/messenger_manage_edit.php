@@ -193,7 +193,7 @@ else {
 
 					$row = $form->addRow()->addClass('emailReceipt');
 						$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I agree that I have read, and agree to, the text contained within this email.'))->readonly();
+						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly();
 				}
 
 				//TARGETS
