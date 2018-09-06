@@ -32,9 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     echo '</div>';
 } else {
     //Proceed!
-    $viewMode = $gibbon->getPageType();
+    $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
-    if ($viewMode == 'index') {
+    if (empty($viewMode)) {
         echo "<div class='trail'>";
         echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Enrolment Summary').'</div>';
         echo '</div>';
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $criteria = $activityGateway->newQueryCriteria()
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy('gibbonActivity.name')
-        ->pageSize($viewMode != 'index' ? 0 : 50)
+        ->pageSize(!empty($viewMode) ? 0 : 50)
         ->fromArray($_POST);
 
     $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);

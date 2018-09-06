@@ -98,7 +98,7 @@ class DataTable implements OutputableInterface
      */
     public static function createReport($id, QueryCriteria $criteria, $viewMode, $guid)
     {
-        if ($viewMode == 'report') {
+        if ($viewMode == 'print') {
             $table = new self($id, new PrintableRenderer());
         } else if ($viewMode == 'export') {
             $table = new self($id, new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']));
@@ -111,6 +111,7 @@ class DataTable implements OutputableInterface
         $table->addHeaderAction('print', __('Print'))
             ->setURL('/report.php')
             ->addParam('q', $_GET['q'])
+            ->addParam('format', 'print')
             ->addParam('search', $criteria->getSearchText(true))
             ->isDirect()
             ->append('&nbsp;');
@@ -118,6 +119,7 @@ class DataTable implements OutputableInterface
         $table->addHeaderAction('export', __('Export'))
             ->setURL('/export.php')
             ->addParam('q', $_GET['q'])
+            ->addParam('format', 'export')
             ->addParam('search', $criteria->getSearchText(true))
             ->isDirect();
 

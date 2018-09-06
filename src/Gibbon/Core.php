@@ -161,17 +161,6 @@ class Core
     }
 
     /**
-     * Returns the front-controller used to access the current page.
-     * Currently one of: index, report, export, or fullscreen
-     *
-     * @return string
-     */
-    public function getPageType()
-    {
-        return strtolower(basename($_SERVER['SCRIPT_NAME'], '.php'));
-    }
-
-    /**
      * Load the current Gibbon version number
      *
      * @param    string  $versionFilePath
