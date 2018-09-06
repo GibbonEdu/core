@@ -35,17 +35,13 @@ use Gibbon\Tables\Renderer\RendererInterface;
 class PrintableRenderer extends SimpleRenderer implements RendererInterface
 {
     /**
-     * Render the table to HTML. TODO: replace with Twig.
-     *
      * @param DataTable $table
      * @param DataSet $dataSet
      * @return string
      */
-    public function renderTable(DataTable $table, DataSet $dataSet)
+    protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
         $output = '';
-
-        $output .= '<div class="printTable">';
 
         if ($name = $table->getMetaData('name')) {
             $output .= '<h2>';
@@ -53,21 +49,7 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
             $output .= '</h2>';
         }
 
-        $output .= parent::renderTable($table, $dataSet);
-
-        $output .= '</div><br/>';
-
         return $output;
-    }
-
-    /**
-     * @param DataTable $table
-     * @param DataSet $dataSet
-     * @return string
-     */
-    protected function renderHeader(DataTable $table, DataSet $dataSet) 
-    {
-        return '';
     }
 
     /**
