@@ -56,6 +56,7 @@ v17.0.00
         Messenger: restricted Manage Groups view to display groups from the current school year only
         Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
         Messenger: added row colouring to By Roll Group report, and made it default view
+        Messenger: amended default confirmLink text in New Message
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
