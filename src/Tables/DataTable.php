@@ -292,7 +292,7 @@ class DataTable implements OutputableInterface
             $depth = max($depth, $column->getTotalDepth());
         }
 
-        return $depth + 1;
+        return $depth;
     }
 
     /**

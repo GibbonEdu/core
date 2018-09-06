@@ -92,7 +92,7 @@ class SimpleRenderer implements RendererInterface
 
                     // Calculate colspan and rowspan to handle nested column headers
                     $colspan = $column->getTotalSpan();
-                    $rowspan = ($column->getTotalDepth() > 1) ? 1 : ($totalColumnDepth - $column->getDepth()) + 1;
+                    $rowspan = ($column->getTotalDepth() > 1) ? 1 : ($totalColumnDepth - $column->getDepth()) ;
 
                     if ($column->getDepth() < $i) continue;
 

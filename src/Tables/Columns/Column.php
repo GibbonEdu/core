@@ -240,11 +240,11 @@ class Column
     {
         if (!$this->hasNestedColumns()) return 1;
 
-        $depth = $this->getDepth();
+        $depth = 1;
         foreach ($this->getColumns() as $column) {
             $depth = max($depth, $column->getTotalDepth());
         }
-
+        
         return $depth + 1;
     }
 
