@@ -192,9 +192,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
                     echo $values['rollGroupNameShort'];
                     echo '</td>';
                     echo '<td>';
-                    echo $values['rollGroupNameShort'];
-                    echo '</td>';
-                    echo '<td>';
                     echo $values['status'];
                     echo '</td>';
                     echo '<td>';
