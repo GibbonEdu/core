@@ -64,4 +64,4 @@ script:
 
 # configure notifications (email, IRC, campfire etc)
 notifications:
-  email: "tests@gibbonedu.org"
+  email: $GIBBON_NOTIFICATION_EMAIL
