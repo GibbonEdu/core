@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
     $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
-    $emailOnly = isset($_POST['emailOnly'])? $_POST['emailOnly'] : '';
+    $hideDetails = isset($_POST['hideDetails'])? $_POST['hideDetails'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_family_dataUpdaterHistory.php');
@@ -70,8 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $row->addCheckbox('nonCompliant')->setValue('Y')->checked($nonCompliant);
     
     $row = $form->addRow();
-        $row->addLabel('emailOnly', __('Email Only?'))->description(__('Hide all details except parent emails.'));
-        $row->addCheckbox('emailOnly')->setValue('Y')->checked($emailOnly);
+        $row->addLabel('hideDetails', __('Hide Details?'));
+        $row->addCheckbox('hideDetails')->setValue('Y')->checked($hideDetails);
     
     $row = $form->addRow();
         $row->addSubmit();
@@ -119,23 +119,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         // DATA TABLE
         $table = DataTable::createPaginated('studentUpdaterHistory', $criteria);
-        $table->addMetaData('post', ['gibbonYearGroupIDList' => $gibbonYearGroupIDList]);
+        $table->addMetaData('post', ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'hideDetails' => $hideDetails]);
 
-        if ($emailOnly != 'Y') {
-            $count = $dataUpdates->getPageFrom();
-            $table->addColumn('count', '')
-                ->notSortable()
-                ->width('5%')
-                ->format(function ($row) use (&$count) {
-                    return $count++;
-                });
+        $count = $dataUpdates->getPageFrom();
+        $table->addColumn('count', '')
+            ->notSortable()
+            ->width('5%')
+            ->format(function ($row) use (&$count) {
+                return $count++;
+            });
 
-            $table->addColumn('familyName', __('Family'))
-                ->width('20%')
-                ->format(function($row) use ($guid) {
-                    return '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
-                });
-
+        $table->addColumn('familyName', __('Family'))
+            ->width('20%')
+            ->format(function($row) use ($guid) {
+                return '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
+            });
+        
+        if ($hideDetails != 'Y') {
             $table->addColumn('familyUpdate', __('Family Data'))
                 ->width('5%')
                 ->format(function($row) use ($dataChecker) {
