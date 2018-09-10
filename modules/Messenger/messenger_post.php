@@ -291,7 +291,7 @@ else {
 		//Year group
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
 			$row = $form->addRow();
-				$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; all staff.'));
+				$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
 				$row->addYesNoRadio('yearGroup')->checked('N')->isRequired();
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
