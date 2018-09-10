@@ -36,7 +36,7 @@ class Date extends TextField
     {
         $name = str_replace('[]', '', $this->getName());
 
-        if (!empty($data[$name])) {
+        if (!empty($data[$name]) && $data[$name] != '0000-00-00') {
             $this->setDateFromValue($data[$name]);
         }
 
