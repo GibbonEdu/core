@@ -50,6 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
     $gibbonYearGroupIDList = isset($_POST['gibbonYearGroupIDList'])? $_POST['gibbonYearGroupIDList'] : array();
     $nonCompliant = isset($_POST['nonCompliant'])? $_POST['nonCompliant'] : '';
+    $emailOnly = isset($_POST['emailOnly'])? $_POST['emailOnly'] : '';
     $date = isset($_POST['date'])? $_POST['date'] : $cutoffDate;
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_family_dataUpdaterHistory.php');
@@ -67,6 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     $row = $form->addRow();
         $row->addLabel('nonCompliant', __('Show Only Non-Compliant?'))->description(__('If not checked, show all. If checked, show only non-compliant students.'));
         $row->addCheckbox('nonCompliant')->setValue('Y')->checked($nonCompliant);
+    
+    $row = $form->addRow();
+        $row->addLabel('emailOnly', __('Email Only?'))->description(__('Hide all details except parent emails.'));
+        $row->addCheckbox('emailOnly')->setValue('Y')->checked($emailOnly);
     
     $row = $form->addRow();
         $row->addSubmit();
@@ -116,54 +121,66 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $table = DataTable::createPaginated('studentUpdaterHistory', $criteria);
         $table->addMetaData('post', ['gibbonYearGroupIDList' => $gibbonYearGroupIDList]);
 
-        $count = $dataUpdates->getPageFrom();
-        $table->addColumn('count', '')
-            ->notSortable()
-            ->width('5%')
-            ->format(function ($row) use (&$count) {
-                return $count++;
-            });
+        if ($emailOnly != 'Y') {
+            $count = $dataUpdates->getPageFrom();
+            $table->addColumn('count', '')
+                ->notSortable()
+                ->width('5%')
+                ->format(function ($row) use (&$count) {
+                    return $count++;
+                });
 
-        $table->addColumn('familyName', __('Family'))
-              ->width('20%')
-              ->format(function($row) use ($guid) {
-                  return '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
-              });
+            $table->addColumn('familyName', __('Family'))
+                ->width('20%')
+                ->format(function($row) use ($guid) {
+                    return '<a href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID='.$row['gibbonFamilyID'].'">'.$row['familyName'].'</a>';
+                });
 
-        $table->addColumn('familyUpdate', __('Family Data'))
-            ->width('5%')
-            ->format(function($row) use ($dataChecker) {
-                return $dataChecker($row['familyUpdate'], $row['earliestDateStart']);
-            });
+            $table->addColumn('familyUpdate', __('Family Data'))
+                ->width('5%')
+                ->format(function($row) use ($dataChecker) {
+                    return $dataChecker($row['familyUpdate'], $row['earliestDateStart']);
+                });
 
-        $table->addColumn('familyAdults', __('Adults'))
-            ->notSortable()
-            ->format(function($row) use ($dataChecker) {
-                $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
-                foreach ($row['familyAdults'] as $adult) {
-                    $output .= '<tr>';
-                    $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
-                    $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'], $row['earliestDateStart']).'</td>';
-                    $output .= '</tr>';
-                }
-                $output .= '</table>';
-                return $output;
-            });
+            $table->addColumn('familyAdults', __('Adults'))
+                ->notSortable()
+                ->format(function($row) use ($dataChecker) {
+                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    foreach ($row['familyAdults'] as $adult) {
+                        $output .= '<tr>';
+                        $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
+                        $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'], $row['earliestDateStart']).'</td>';
+                        $output .= '</tr>';
+                    }
+                    $output .= '</table>';
+                    return $output;
+                });
 
-        $table->addColumn('familyChildren', __('Children'))
-            ->notSortable()
-            ->format(function($row) use ($dataChecker) {
-                $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
-                foreach ($row['familyChildren'] as $child) {
-                    $output .= '<tr>';
-                    $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
-                    $output .= '<td style="width:10%">'.$child['rollGroup'].'</td>';
-                    $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], $child['dateStart']).'</td>';
-                    $output .= '</tr>';
-                }
-                $output .= '</table>';
-                return $output;
-            });
+            $table->addColumn('familyChildren', __('Children'))
+                ->notSortable()
+                ->format(function($row) use ($dataChecker) {
+                    $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
+                    foreach ($row['familyChildren'] as $child) {
+                        $output .= '<tr>';
+                        $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
+                        $output .= '<td style="width:10%">'.$child['rollGroup'].'</td>';
+                        $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], $child['dateStart']).'</td>';
+                        $output .= '</tr>';
+                    }
+                    $output .= '</table>';
+                    return $output;
+                });
+        }
+        
+        $table->addColumn('familyAdultsEmail', __('Parent Email'))
+        ->notSortable()
+        ->format(function($row) use ($dataChecker) {
+            $output = "";
+            foreach ($row['familyAdults'] as $adult) {
+                $output .= $adult['email'].", ";
+            }
+            return $output;
+        });
 
         echo $table->render($dataUpdates);
     }
