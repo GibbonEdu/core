@@ -19,17 +19,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Action;
 use Gibbon\Tables\Columns\Column;
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
+use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
-use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Forms\OutputableInterface;
+use Gibbon\Tables\Renderer\PrintableRenderer;
+use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
 /**
  * DataTable
@@ -40,6 +42,7 @@ use Gibbon\Forms\OutputableInterface;
 class DataTable implements OutputableInterface
 {
     protected $id;
+    protected $title;
     protected $data;
     protected $renderer;
 
@@ -70,7 +73,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new self($id, $renderer ? $renderer : new SimpleRenderer());
+        return new static($id, $renderer ? $renderer : new SimpleRenderer());
     }
 
     /**
@@ -82,7 +85,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        return new static($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
     }
 
     /**
@@ -106,6 +109,26 @@ class DataTable implements OutputableInterface
     public function getID()
     {
         return $this->id;
+    }
+
+    /**
+     * Get the table title.
+     * @return  string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the table title.
+     * @param  string  $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
     }
 
     /**
@@ -236,6 +259,13 @@ class DataTable implements OutputableInterface
     public function getHeader()
     {
         return $this->header;
+    }
+
+    public function setHeader($header)
+    {
+        $this->header = $header;
+
+        return $this;
     }
 
     /**

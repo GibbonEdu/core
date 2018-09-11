@@ -52,6 +52,12 @@ class Action extends WebLink
                             break;
             case 'delete':  $this->setIcon('garbage')->isModal(650, 135);
                             break;
+            case 'print':   $this->setIcon('print');
+                            break;
+            case 'export':  $this->setIcon('download');
+                            break;
+            case 'import':  $this->setIcon('upload');
+                            break;
             default:
             case 'view':    $this->setIcon('zoom');
                             break;

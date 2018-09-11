@@ -1834,3 +1834,14 @@ button[disabled], input[disabled], textarea[disabled] {
     width: 14px;
     opacity: 0.65;
 }
+
+/* PRINT STYLES */
+body.print div.trail {
+    display: none;
+}
+
+@media print {
+    table tr {
+        page-break-inside: avoid;
+    }
+}
