@@ -54,6 +54,10 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
+        if ($name = $table->getMetaData('name')) {
+            $output .= '<h2>'.$name.'</h2>';
+        }
+
         $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';

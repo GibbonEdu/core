@@ -43,12 +43,6 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
     {
         $output = '';
 
-        if ($name = $table->getMetaData('name')) {
-            $output .= '<h2>';
-            $output .= $name;
-            $output .= '</h2>';
-        }
-
         return $output;
     }
 

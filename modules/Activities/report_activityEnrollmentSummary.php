@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         return $row;
     });
 
-    $table->addMetaData('name', __('Activity Enrolment Summary'));
+    $table->addMetaData('name', !empty($viewMode) ? __('Activity Enrolment Summary') : __('Report Data'));
     $table->addMetaData('filename', basename(__FILE__, '.php'));
     
     $table->addMetaData('filterOptions', [
