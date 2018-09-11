@@ -73,7 +73,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new self($id, $renderer ? $renderer : new SimpleRenderer());
+        return new static($id, $renderer ? $renderer : new SimpleRenderer());
     }
 
     /**
@@ -85,46 +85,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
-    }
-
-    /**
-     * Helper method to create a report data table, which can display as a table, printable page or export.
-     *
-     * @param string $id
-     * @param QueryCriteria $criteria
-     * @param string $viewMode
-     * @param string $guid
-     * @return self
-     */
-    public static function createReport($id, QueryCriteria $criteria, $viewMode, $guid)
-    {
-        if ($viewMode == 'print') {
-            $table = new self($id, new PrintableRenderer());
-        } else if ($viewMode == 'export') {
-            $table = new self($id, new SpreadsheetRenderer($_SESSION[$guid]['absolutePath']));
-        } else {
-            $table = new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
-        }
-
-        $table->addMetaData('creator', formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff'));
-
-        $table->addHeaderAction('print', __('Print'))
-            ->setURL('/report.php')
-            ->addParam('q', $_GET['q'])
-            ->addParam('format', 'print')
-            ->addParam('search', $criteria->getSearchText(true))
-            ->isDirect()
-            ->append('&nbsp;');
-
-        $table->addHeaderAction('export', __('Export'))
-            ->setURL('/export.php')
-            ->addParam('q', $_GET['q'])
-            ->addParam('format', 'export')
-            ->addParam('search', $criteria->getSearchText(true))
-            ->isDirect();
-
-        return $table;
+        return new static($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
     }
 
     /**

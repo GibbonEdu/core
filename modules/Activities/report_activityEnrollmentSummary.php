@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
@@ -52,7 +52,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
     // DATA TABLE
-    $table = DataTable::createReport('activities', $criteria, $viewMode, $guid);
+    $table = ReportTable::createPaginated('activityEnrollmentSummary', $criteria)->setViewMode($viewMode, $gibbon->session);
+
+    $table->setTitle(__('Activity Enrolment Summary'));
 
     $table->modifyRows(function($activity, $row) {
         if ($activity['enrolment'] == $activity['maxParticipants'] && $activity['maxParticipants'] > 0) {
@@ -64,9 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         }
         return $row;
     });
-
-    $table->addMetaData('name', !empty($viewMode) ? __('Activity Enrolment Summary') : __('Report Data'));
-    $table->addMetaData('filename', basename(__FILE__, '.php'));
     
     $table->addMetaData('filterOptions', [
         'active:Y'          => __('Active').': '.__('Yes'),
