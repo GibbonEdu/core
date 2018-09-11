@@ -240,6 +240,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     LEFT JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID && gibbonFamilyRelationship.gibbonPersonID1=parent.gibbonPersonID && gibbonFamilyRelationship.gibbonPersonID2=student.gibbonPersonID)
                     WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID 
                     AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) 
+                    AND parent.status='Full'
                     GROUP BY parent.gibbonPersonID
                     ORDER BY contactPriority, surname, preferredName";
 
