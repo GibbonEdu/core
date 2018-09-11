@@ -249,6 +249,21 @@ class Format
     }
 
     /**
+     * Formats a long string by truncating after $length characters 
+     * and displaying the full string on hover.
+     *
+     * @param string $value
+     * @param int $length
+     * @return string
+     */
+    public static function truncate($value, $length = 40)
+    {
+        return strlen($value) > $length
+            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+            : $value;
+    }
+
+    /**
      * Formats a link from a url. Automatically adds target _blank to external links.
      * 
      * @param string $url

@@ -363,6 +363,21 @@ else {
 										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
 									}
 								}
+								else if ($rowTargets["type"]=="Group") {
+									try {
+										$dataTarget=array("gibbonGroupID"=>$rowTargets["id"]);
+										$sqlTarget="SELECT name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID" ;
+										$resultTarget=$connection2->prepare($sqlTarget);
+										$resultTarget->execute($dataTarget);
+									}
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
+									}
+									if ($resultTarget->rowCount()==1) {
+										$rowTarget=$resultTarget->fetch() ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
+									}
+								}
 							}
 							print $targets ;
 						print "</td>" ;

@@ -46,20 +46,25 @@ v17.0.00
         Data Updater: implemented cutoff date prefill in Personal Updater History report
         Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
         Data Updater: added school year navigation to Manage Updates
+        Data Updater: added parent email to Family Data Updater History 
         Departments: fixed bug displaying Left classes under My Classes in sidebar
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
         Finance: added default check to Company email checkbox when editing an invoice
+        Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
         Messenger: restricted Manage Groups view to display groups from the current school year only
         Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
         Messenger: added row colouring to By Roll Group report, and made it default view
+        Messenger: amended default confirmLink text in New Message
+        Messenger: added missing Group target information into Manage Messages view
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
         Staff: added a Mark as Left bulk action to Manage Staff
+        Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Timetable Admin: fixed course sync for courses with multiple year groups
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover

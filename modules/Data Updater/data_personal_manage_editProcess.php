@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
                 if (isset($_POST['newvisaExpiryDateOn'])) {
                     if ($_POST['newvisaExpiryDateOn'] == 'on') {
-                        $data['visaExpiryDate'] = $_POST['newvisaExpiryDate'];
+                        $data['visaExpiryDate'] = !empty($_POST['newvisaExpiryDate'])? $_POST['newvisaExpiryDate'] : null;
                         $set .= 'gibbonPerson.visaExpiryDate=:visaExpiryDate, ';
                     }
                 }
