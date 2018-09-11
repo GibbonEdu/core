@@ -42,6 +42,7 @@ use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 class DataTable implements OutputableInterface
 {
     protected $id;
+    protected $title;
     protected $data;
     protected $renderer;
 
@@ -147,6 +148,26 @@ class DataTable implements OutputableInterface
     public function getID()
     {
         return $this->id;
+    }
+
+    /**
+     * Get the table title.
+     * @return  string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the table title.
+     * @param  string  $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
     }
 
     /**
@@ -277,6 +298,13 @@ class DataTable implements OutputableInterface
     public function getHeader()
     {
         return $this->header;
+    }
+
+    public function setHeader($header)
+    {
+        $this->header = $header;
+
+        return $this;
     }
 
     /**

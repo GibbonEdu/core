@@ -41,9 +41,12 @@ class PrintableRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
-        $output = '';
+        $table->setHeader([]);
+        $table->addHeaderAction('print', __('Print'))
+            ->onClick('javascript:window.print(); return false;')
+            ->displayLabel();
 
-        return $output;
+        return parent::renderHeader($table, $dataSet);
     }
 
     /**
