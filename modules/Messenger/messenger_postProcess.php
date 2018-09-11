@@ -376,8 +376,27 @@ else {
 							if ($email=="Y") {
 								if ($staff=="Y") {
 									try {
-										$dataEmail=array();
-										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full'" ;
+										$dataEmail=array('gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID'=>$t);
+										$sqlEmail="(SELECT DISTINCT email, gibbonPerson.gibbonPersonID 
+                                            FROM gibbonPerson 
+                                            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+                                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                                            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                                            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                                            WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                                            AND FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)
+                                            AND NOT gibbonPerson.email='' 
+                                            AND gibbonPerson.status='Full')
+                                        UNION ALL (
+                                            SELECT DISTINCT email, gibbonPerson.gibbonPersonID 
+                                            FROM gibbonPerson 
+                                            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) 
+                                            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                                            AND NOT email='' AND status='Full' 
+                                            AND gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID
+                                            GROUP BY gibbonPerson.gibbonPersonID
+                                        )" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}

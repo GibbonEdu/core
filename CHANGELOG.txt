@@ -60,6 +60,7 @@ v17.0.00
         Messenger: added row colouring to By Roll Group report, and made it default view
         Messenger: amended default confirmLink text in New Message
         Messenger: added missing Group target information into Manage Messages view
+        Messenger: updated the Year Group target for Staff to only include tutors and teachers of courses in the same year group
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
