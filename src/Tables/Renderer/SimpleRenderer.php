@@ -54,6 +54,10 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
+        if ($title = $table->getTitle()) {
+            $output .= '<h2>'.$title.'</h2>';
+        }
+
         $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';
@@ -78,6 +82,8 @@ class SimpleRenderer implements RendererInterface
             $output .= '<tr class="head">';
             foreach ($table->getColumns() as $columnName => $column) {
                 $th = $this->createTableHeader($column);
+
+                if (!$th) continue; // Can be removed by tableHeader logic
 
                 $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'">';
                 $output .= $th->getOutput();

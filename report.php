@@ -89,7 +89,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
             }
    			 ?>
 		</head>
-		<body style="background: none">
+		<body style="background: none" class="print">
 			<div id="wrap-report" style="width:750px">
 				<div id="header-report">
 					<div style="width:400px; font-size: 100%; float: right">
