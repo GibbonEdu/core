@@ -182,7 +182,37 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         $dataPosts['date4'] = $date;
         $dataPosts['date5'] = $date;
         $dataPosts['date6'] = $date;
-        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source FROM gibbonMessenger JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE gibbonMessengerTarget.type='Year Group' AND (messageWall_date1=:date4 OR messageWall_date2=:date5 OR messageWall_date3=:date6) AND staff='Y')";
+        $dataPosts['gibbonSchoolYearID0'] = $_SESSION[$guid]['gibbonSchoolYearID'];
+        $dataPosts['gibbonPersonID0'] = $_SESSION[$guid]['gibbonPersonID'];
+        // Include staff by courses taught in the same year group.
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source 
+        FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+        JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+        JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+        WHERE gibbonStaff.gibbonPersonID=:gibbonPersonID0
+        AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID0
+        AND FIND_IN_SET(gibbonMessengerTarget.id, gibbonCourse.gibbonYearGroupIDList)
+        AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' AND
+        (messageWall_date1=:date4 OR messageWall_date2=:date5 OR messageWall_date3=:date6) )";
+        // Include staff who are tutors of any student in the same year group.
+        $sqlPosts .= "UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, 'Year Groups' AS source 
+        FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID)
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID)
+        JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+        WHERE gibbonPerson.gibbonPersonID=:gibbonPersonID0
+        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID0
+        AND gibbonStudentEnrolment.gibbonYearGroupID=gibbonMessengerTarget.id
+        AND gibbonMessengerTarget.type='Year Group' AND gibbonMessengerTarget.staff='Y' AND
+        (messageWall_date1=:date4 OR messageWall_date2=:date5 OR messageWall_date3=:date6) 
+        GROUP BY gibbonMessenger.gibbonMessengerID)";
     }
     if ($student) {
         $dataPosts['date7'] = $date;
