@@ -175,6 +175,7 @@ class Connection implements ConnectionInterface
             $this->querySuccess = $this->result->execute($bindings);
         } catch (\PDOException $e) {
             $this->result = $this->handleQueryException($e);
+            $this->querySuccess = false;
         }
 
         return $this->result;
