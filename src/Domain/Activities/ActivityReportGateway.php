@@ -84,6 +84,28 @@ class ActivityReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryParticipantsByActivity(QueryCriteria $criteria, $gibbonActivityID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonRollGroup.nameShort AS rollGroup'])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->where('gibbonActivity.gibbonActivityID = :gibbonActivityID')
+            ->bindValue('gibbonActivityID', $gibbonActivityID)
+            ->where("gibbonActivityStudent.status <> 'Not Accepted'")
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID')
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(dateStart IS NULL OR dateStart<=:today)')
+            ->where('(dateEnd IS NULL OR dateEnd>=:today)')
+            ->bindValue('today', date('Y-m-d'));
+
+        return $this->runQuery($query, $criteria);
+    }
+
     public function selectActivitySpreadByStudent($gibbonSchoolYearID, $gibbonPersonID, $dateType, $status = 'Accepted')
     {
         $query = $this
