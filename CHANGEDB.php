@@ -750,4 +750,5 @@ UPDATE gibbonPersonMedicalCondition SET gibbonPersonMedicalCondition.name=(SELEC
 UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalConditionUpdate.name=(SELECT name FROM gibbonMedicalCondition WHERE gibbonMedicalConditionID = gibbonPersonMedicalConditionUpdate.name) WHERE SUBSTRING(name, 1, 1) REGEXP '[[:digit:]]';end
 UPDATE gibbonCountry SET printable_name='Vietnam', iddCountryCode='84' WHERE printable_name='Viet Nam';end
 ALTER TABLE `gibbonPersonField` ADD `activePublicRegistration` TINYINT(1) NOT NULL DEFAULT '0' AFTER `activeDataUpdater`;end
+ALTER TABLE `gibbonMessengerReceipt` CHANGE `targetType` `targetType` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 ";
