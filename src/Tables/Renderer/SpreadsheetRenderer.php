@@ -80,6 +80,7 @@ class SpreadsheetRenderer implements RendererInterface
         $currentStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'B3EFC2'],]];
         $errorStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'F6CECB'],]];
         $warningStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'FFD2A9'],]];
+        $rowStripeStyle = ['fill' => [ 'type' => \PHPExcel_Style_Fill::FILL_SOLID, 'color' => ['rgb' => 'FAFAFA'],]];
 
         // Set document properties
         $excel->getProperties()->setCreator($table->getMetaData('creator'))
@@ -159,9 +160,11 @@ class SpreadsheetRenderer implements RendererInterface
                     $sheet->getStyle($alpha.$rowCount)->applyFromArray($rowStyle);
 
                     $cellStyle = null;
-                    if (stripos($row->getClass(), 'current') !== false) $cellStyle = $currentStyle;
                     if (stripos($row->getClass(), 'error') !== false) $cellStyle = $errorStyle;
-                    if (stripos($row->getClass(), 'warning') !== false) $cellStyle = $warningStyle;
+                    else if (stripos($row->getClass(), 'warning') !== false) $cellStyle = $warningStyle;
+                    else if (stripos($row->getClass(), 'current') !== false) $cellStyle = $currentStyle;
+                    else if ($rowCount % 2 != 0) $cellStyle = $rowStripeStyle;
+
                     if (!empty($cellStyle)) $sheet->getStyle($alpha.$rowCount)->applyFromArray($cellStyle);
                     
 
