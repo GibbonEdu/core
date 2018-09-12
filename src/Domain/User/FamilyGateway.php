@@ -85,6 +85,7 @@ class FamilyGateway extends QueryableGateway
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
             WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID
+            AND gibbonPerson.status='Full'
             ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
