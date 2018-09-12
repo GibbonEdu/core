@@ -106,6 +106,30 @@ class ActivityReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function selectActivitiesByStudent($gibbonSchoolYearID, $gibbonPersonID, $status = 'Accepted')
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivityStudent.gibbonPersonID', 'gibbonActivityStudent.status', 'gibbonActivity.*'
+            ])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->orderBy(['gibbonActivity.name']);
+
+        if ($status == 'Accepted') {
+            $query->where("gibbonActivityStudent.status='Accepted'");
+        } else {
+            $query->where("gibbonActivityStudent.status<>'Not Accepted'");
+        }
+
+        return $this->db()->select($query->getStatement(), $query->getBindValues());
+    }
+
     public function selectActivitySpreadByStudent($gibbonSchoolYearID, $gibbonPersonID, $dateType, $status = 'Accepted')
     {
         $query = $this
