@@ -64,7 +64,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 				if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
 					$themeCSS .= "<link rel='stylesheet' type='text/css' href='./themes/".$rowTheme['name']."/css/main_rtl.css' />";
 				}
-				$themeCJS = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js'></script>";
+				$themeJS = "<script type='text/javascript' src='./themes/".$rowTheme['name']."/js/common.js'></script>";
 				$_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
 				$_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
 			}
