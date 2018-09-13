@@ -22,7 +22,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Messenger/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonGroupID = isset($_GET['gibbonGroupID'])? $_GET['gibbonGroupID'] : '';
 

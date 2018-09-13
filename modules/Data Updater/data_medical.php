@@ -23,7 +23,7 @@ use Gibbon\Domain\Students\MedicalGateway;
 use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     //Acess denied
