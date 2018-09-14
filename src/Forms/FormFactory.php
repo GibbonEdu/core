@@ -382,6 +382,7 @@ class FormFactory implements FormFactoryInterface
                 'EGP £' => 'Egyptian Pound (£)',
                 'FJD $' => 'Fijian Dollar ($)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
+                'GTQ Q' => 'Guatemalan Quetzal (Q)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
