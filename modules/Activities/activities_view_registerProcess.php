@@ -22,7 +22,7 @@ use Gibbon\Comms\NotificationEvent;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $mode = $_POST['mode'];
 $gibbonActivityID = $_POST['gibbonActivityID'];

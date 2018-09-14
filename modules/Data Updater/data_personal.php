@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
@@ -611,4 +611,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         }
     }
 }
-?>

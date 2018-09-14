@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Setup variables
 $output = '';

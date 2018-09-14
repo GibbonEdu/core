@@ -25,7 +25,7 @@ use Gibbon\Domain\Finance\InvoiceGateway;
 use Gibbon\Finance\Forms\FinanceFormFactory;
 
 //Module includes
-include './modules/Finance/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
     //Acess denied

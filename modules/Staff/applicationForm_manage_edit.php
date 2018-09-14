@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';

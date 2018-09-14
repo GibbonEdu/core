@@ -24,7 +24,7 @@ use Gibbon\Domain\Timetable\TimetableGateway;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') == false) {
     //Acess denied

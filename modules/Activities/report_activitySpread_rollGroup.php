@@ -25,7 +25,7 @@ use Gibbon\Domain\Activities\ActivityReportGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activitySpread_rollGroup.php') == false) {
     //Acess denied

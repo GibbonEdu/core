@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\IndividualNeeds\INGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summary.php') == false) {
     //Acess denied

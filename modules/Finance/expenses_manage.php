@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
 
 //Module includes
-include './modules/Finance/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
     //Acess denied

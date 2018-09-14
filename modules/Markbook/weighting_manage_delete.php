@@ -21,7 +21,7 @@ use Gibbon\Forms\Prefab\DeleteForm;
 
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_delete.php') == false) {
     //Acess denied

@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php') == false) {
     //Acess denied

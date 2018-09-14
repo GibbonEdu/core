@@ -24,7 +24,7 @@ use Gibbon\Domain\Students\StudentGateway;
 use Gibbon\Domain\Staff\StaffGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied

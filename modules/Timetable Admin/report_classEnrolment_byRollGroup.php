@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byRollGroup.php') == false) {
     //Acess denied
