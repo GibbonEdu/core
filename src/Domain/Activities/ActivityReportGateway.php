@@ -84,6 +84,94 @@ class ActivityReportGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
+    public function queryParticipantsByActivity(QueryCriteria $criteria, $gibbonActivityID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols(['gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonRollGroup.nameShort AS rollGroup'])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->where('gibbonActivity.gibbonActivityID = :gibbonActivityID')
+            ->bindValue('gibbonActivityID', $gibbonActivityID)
+            ->where("gibbonActivityStudent.status <> 'Not Accepted'")
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID')
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(dateStart IS NULL OR dateStart<=:today)')
+            ->where('(dateEnd IS NULL OR dateEnd>=:today)')
+            ->bindValue('today', date('Y-m-d'));
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryActivityAttendanceByDate(QueryCriteria $criteria, $gibbonSchoolYearID, $dateType, $date)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivity.gibbonActivityID', 'gibbonActivity.name as activity', 'gibbonActivity.provider', 'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonActivityStudent.status', 'gibbonRollGroup.nameShort AS rollGroup',
+                "(CASE WHEN gibbonActivityAttendance.gibbonActivityAttendanceID IS NULL THEN 'Absent' ELSE 'Present' END) AS attendance"
+            ])
+            ->innerJoin('gibbonActivitySlot', 'gibbonActivitySlot.gibbonActivityID=gibbonActivity.gibbonActivityID')
+            ->innerJoin('gibbonDaysOfWeek', 'gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID')
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->innerJoin('gibbonPerson', "gibbonActivityStudent.gibbonPersonID=gibbonPerson.gibbonPersonID")
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->leftJoin('gibbonActivityAttendance', "gibbonActivityAttendance.gibbonActivityID=gibbonActivity.gibbonActivityID
+                AND gibbonActivityAttendance.date = :date
+                AND (gibbonActivityAttendance.attendance LIKE CONCAT('%', gibbonPerson.gibbonPersonID, '%') )")
+            ->where('gibbonActivity.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonActivity.active = 'Y'")
+            ->where('gibbonDaysOfWeek.name=:dayOfWeek')
+            ->bindValue('dayOfWeek', date('l', dateConvertToTimestamp($date)))
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonActivity.gibbonSchoolYearID')
+            ->where("gibbonActivityStudent.status='Accepted'")
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(dateStart IS NULL OR dateStart<=:today)')
+            ->where('(dateEnd IS NULL OR dateEnd>=:today)')
+            ->bindValue('today', date('Y-m-d'))
+            ->bindValue('date', $date)
+            ->groupBy(['gibbonActivity.gibbonActivityID', 'gibbonActivityStudent.gibbonPersonID']);
+
+        if ($dateType == 'Term') {
+            $query->innerJoin('gibbonSchoolYearTerm', "FIND_IN_SET(gibbonSchoolYearTermID, gibbonActivity.gibbonSchoolYearTermIDList)")
+                ->where('(:date BETWEEN gibbonSchoolYearTerm.firstDay AND gibbonSchoolYearTerm.lastDay)');
+        } else {
+            $query->where('(:date BETWEEN gibbonActivity.programStart AND gibbonActivity.programEnd)');
+        }
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function selectActivitiesByStudent($gibbonSchoolYearID, $gibbonPersonID, $status = 'Accepted')
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonActivityStudent.gibbonPersonID', 'gibbonActivityStudent.status', 'gibbonActivity.*'
+            ])
+            ->innerJoin('gibbonActivityStudent', 'gibbonActivity.gibbonActivityID=gibbonActivityStudent.gibbonActivityID')
+            ->where('gibbonActivity.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where('gibbonActivityStudent.gibbonPersonID=:gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->orderBy(['gibbonActivity.name']);
+
+        if ($status == 'Accepted') {
+            $query->where("gibbonActivityStudent.status='Accepted'");
+        } else {
+            $query->where("gibbonActivityStudent.status<>'Not Accepted'");
+        }
+
+        return $this->db()->select($query->getStatement(), $query->getBindValues());
+    }
+
     public function selectActivitySpreadByStudent($gibbonSchoolYearID, $gibbonPersonID, $dateType, $status = 'Accepted')
     {
         $query = $this
