@@ -79,17 +79,31 @@ class SimpleRenderer implements RendererInterface
 
             // HEADER
             $output .= '<thead>';
-            $output .= '<tr class="head">';
-            foreach ($table->getColumns() as $columnName => $column) {
-                $th = $this->createTableHeader($column);
+            
+            $totalColumnDepth = $table->getTotalColumnDepth();
 
-                if (!$th) continue; // Can be removed by tableHeader logic
+            for ($i = 0; $i < $totalColumnDepth; $i++) {
+                $output .= '<tr class="head">';
 
-                $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'">';
-                $output .= $th->getOutput();
-                $output .= '</th>';
+                foreach ($table->getColumns($i) as $columnName => $column) {
+                    $th = $this->createTableHeader($column);
+
+                    if (!$th) continue; // Can be removed by tableHeader logic
+
+                    // Calculate colspan and rowspan to handle nested column headers
+                    $colspan = $column->getTotalSpan();
+                    $rowspan = ($column->getTotalDepth() > 1) ? 1 : ($totalColumnDepth - $column->getDepth()) ;
+
+                    if ($column->getDepth() < $i) continue;
+
+                    $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'" colspan="'.$colspan.'" rowspan="'.$rowspan.'">';
+                    $output .= $th->getOutput();
+                    $output .= '</th>';
+                }
+
+                $output .= '</tr>';
             }
-            $output .= '</tr>';
+            
             $output .= '</thead>';
 
             // ROWS

@@ -222,13 +222,57 @@ class DataTable implements OutputableInterface
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns($maxDepth = null)
     {
-        return $this->columns;
+        $depth = 0;
+
+        $getNestedColumns = function($columns, &$allColumns = array()) use (&$getNestedColumns, &$depth, &$maxDepth) {
+            foreach ($columns as $column) {
+                if ($column->hasNestedColumns() && (is_null($maxDepth) || $column->getDepth() < $maxDepth) ) {
+                    $getNestedColumns($column->getColumns(), $allColumns);
+                } else {
+                    $allColumns[] = $column;
+                }
+            }
+
+            return $allColumns;
+        };
+
+        return $getNestedColumns($this->columns);
     }
 
     /**
-     * Count all columns in the table.
+     * Calculate how many layers deep the columns are nested.
+     *
+     * @return int
+     */
+    public function getTotalColumnDepth()
+    {
+        $depth = 1;
+        foreach ($this->columns as $column) {
+            $depth = max($depth, $column->getTotalDepth());
+        }
+
+        return $depth;
+    }
+
+    /**
+     * Calculate the total span of the table, including nested columns.
+     *
+     * @return int
+     */
+    public function getTotalColumnSpan()
+    {
+        $count = 0;
+        foreach ($this->getColumns() as $column) {
+            $count += $column->getTotalSpan();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Count the columns in the table. Does not count nested columns.
      *
      * @return int
      */
