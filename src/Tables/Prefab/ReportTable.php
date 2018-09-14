@@ -51,6 +51,7 @@ class ReportTable extends DataTable
             ->addParams($_GET)
             ->addParam('format', 'print')
             ->addParam('search', $criteria->getSearchText(true))
+            ->setTarget('_blank')
             ->isDirect()
             ->append('&nbsp;');
 
