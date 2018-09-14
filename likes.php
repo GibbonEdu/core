@@ -17,12 +17,85 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+// data table definition
+$table = Gibbon\Tables\DataTable::create('likes');
+
+$table->addColumn(
+        'photo',
+        __($guid, 'Photo')
+    )
+    ->width('90px')
+    ->format(function ($data) {
+        return Gibbon\Services\Format::userPhoto($data['image_240'], 75);
+    });
+
+$table->addColumn(
+        'giver',
+        __($guid, 'Giver') .
+        '<span style="font-size: 85%; font-style: italic">' .
+        __($guid, 'Role') .
+        '</span>'
+    )
+    ->width('180px')
+    ->format(function ($data) use ($guid, $connection2) {
+        // determine if the user can view the student
+        $roleCategory = getRoleCategory($data['gibbonRoleIDPrimary'], $connection2);
+        $canViewStudent = (
+            $roleCategory == 'Student'
+            and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php'));
+
+        // student link if useful, of false
+        $studentURL = $canViewStudent ?
+            $_SESSION[$guid]['absoluteURL'].'/index.php?' .
+            http_build_query([
+                'q' => '/modules/Students/student_view_details.php',
+                'gibbonPersonID' => $data['gibbonPersonID'],
+            ]) : false;
+        $studentName = formatName('', $data['preferredName'], $data['surname'], $roleCategory, false);
+        $roleCategory = __($guid, $roleCategory);
+
+        // format student name, if needed
+        $studentName = $studentURL ?
+            "<a href=\"{$studentURL}\">{$studentName}</a>" :
+            $studentName;
+
+        // format output
+        return "{$studentName}<span style=\"font-size: 85%; font-style: italic\">{$roleCategory}</span>";
+    });
+
+$table->addColumn(
+        'title',
+        __($guid, 'Title') .
+        '<span style="font-size: 85%; font-style: italic">' .
+        __($guid, 'Comment') .
+        '</span>'
+    )
+    ->width('90px')
+    ->format(function ($data) use ($guid) {
+        return __($guid, $data['title']) . "<br/>\n" .
+            '<span style="font-size: 85%; font-style: italic">' .
+            $data['comment'] .
+            '</span>';
+    });
+
+$table->addColumn('date', __($guid, 'Date'))
+    ->width('70px')
+    ->format(function ($data) use ($guid) {
+        return dateConvertBack($guid, substr($data['timestamp'], 0, 10));
+    });
+
+// query for like counts
 $resultLike = countLikesByRecipient(
     $connection2,
     $_SESSION[$guid]['gibbonPersonID'],
     'result',
     $_SESSION[$guid]['gibbonSchoolYearID']
 );
+
+// check if the page has any result
+$noResult = ($resultLike === false || $resultLike->rowCount() < 1) ?
+    __($guid, 'There are no records to display.') :
+    null;
 
 ?>
 
@@ -33,56 +106,8 @@ $resultLike = countLikesByRecipient(
     <?php echo __($guid, 'This page shows you a break down of all your likes in the current year, and they have been earned.'); ?>
 </p>
 
-<?php if ($resultLike == false) { ?>
-    <div class='error'><?php echo __($guid, 'An error has occurred.'); ?></div>
-<?php } elseif ($resultLike->rowCount() < 1) { ?>
-    <div class='error'>
-        <?php echo __($guid, 'There are no records to display.'); ?>
-    </div>
+<?php if ($noResult) { ?>
+    <div class='error'><?php echo $noResult; ?></div>
 <?php } else { ?>
-    <table cellspacing='0' style='width: 100%'>
-        <tr class='head'>
-            <th style='width: 90px'>
-                <?php echo __($guid, 'Photo'); ?>
-            </th>
-            <th style='width: 180px'>
-                <?php echo __($guid, 'Giver'); ?><br/>
-                <span style='font-size: 85%; font-style: italic'><?php echo __($guid, 'Role'); ?></span>
-            </th>
-            <th>
-                <?php echo __($guid, 'Title'); ?>
-                <span style='font-size: 85%; font-style: italic'><?php __($guid, 'Comment'); ?></span>
-            </th>
-            <th style='width: 70px'>
-                <?php echo __($guid, 'Date'); ?>
-            </th>
-        </tr>
-        <?php $count = 0; while ($row = $resultLike->fetch()) { ?>
-            <tr class='<?php echo ($count++ % 2 == 0) ? 'even' : 'odd'; ?>'>
-                <td>
-                    <?php echo getUserPhoto($guid, $row['image_240'], 75); ?>
-                </td>
-                <td>
-                    <?php
-                    $roleCategory = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
-                    if ($roleCategory == 'Student' and isActionAccessible($guid, $connection2, '/modules/Students/student_view_details.php')) {
-                    ?>
-                        <a href='<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']; ?>'
-                          ><?php formatName('', $row['preferredName'], $row['surname'], $roleCategory, false); ?></a><br/>
-                        <span style='font-size: 85%; font-style: italic'><?php echo __($guid, $roleCategory); ?></i>
-                    <?php } else { ?>
-                        <?php echo formatName('', $row['preferredName'], $row['surname'], $roleCategory, false); ?><br/>
-                        <span style='font-size: 85%; font-style: italic'><?php echo __($guid, $roleCategory); ?></i>
-                    <?php } ?>
-                </td>
-                <td>
-                    <?php echo __($guid, $row['title']); ?><br/>
-                    <span style='font-size: 85%; font-style: italic'><?php $row['comment']; ?></span>
-                </td>
-                <td>
-                    <?php echo dateConvertBack($guid, substr($row['timestamp'], 0, 10)); ?>
-                </td>
-            </tr>
-        <?php } ?>
-    </table>
+    <?php echo $table->render($resultLike->toDataSet()); ?>
 <?php } ?>
