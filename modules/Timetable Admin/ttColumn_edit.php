@@ -23,7 +23,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\TimetableColumnGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit.php') == false) {
     //Acess denied

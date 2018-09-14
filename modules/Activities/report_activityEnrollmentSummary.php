@@ -23,7 +23,7 @@ use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityEnrollmentSummary.php') == false) {
     //Acess denied

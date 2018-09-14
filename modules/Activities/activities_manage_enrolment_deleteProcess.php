@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/Activities/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonActivityID = $_GET['gibbonActivityID'];
 $gibbonPersonID = $_GET['gibbonPersonID'];

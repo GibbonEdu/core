@@ -22,7 +22,7 @@ use Gibbon\Comms\NotificationEvent;
 use Gibbon\Data\UsernameGenerator;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 
 
