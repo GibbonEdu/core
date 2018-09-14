@@ -116,7 +116,11 @@ class StudentGateway extends QueryableGateway
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
-            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID)
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+            ->bindValue('today', date('Y-m-d'));
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
