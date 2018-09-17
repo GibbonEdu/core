@@ -143,6 +143,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                         ->setURL('/modules/Rubrics/rubrics_duplicate.php')
                         ->setIcon('copy');
                 }
+
+                if ($rubric['active'] == 'Y') {
+                    $actions->addAction('view', __('View'))
+                        ->setURL('/modules/Rubrics/rubrics_view_full.php')
+                        ->isModal(1100, 550);
+                    }
             });
 
         echo $table->render($rubrics);
