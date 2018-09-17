@@ -17,25 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+
 // data table definition
-$table = Gibbon\Tables\DataTable::create('likes');
+$table = DataTable::create('likes');
 
-$table->addColumn(
-        'photo',
-        __($guid, 'Photo')
-    )
+$table->addColumn('photo', __('Photo'))
     ->width('90px')
-    ->format(function ($data) {
-        return Gibbon\Services\Format::userPhoto($data['image_240'], 75);
-    });
+    ->format(Format::using('userPhoto', ['image_240', 75]));
 
-$table->addColumn(
-        'giver',
-        __($guid, 'Giver') .
-        '<span style="font-size: 85%; font-style: italic">' .
-        __($guid, 'Role') .
-        '</span>'
-    )
+$table->addColumn('giver',__('Giver'))
+    ->description(__('Role'))
     ->width('180px')
     ->format(function ($data) use ($guid, $connection2) {
         // determine if the user can view the student
@@ -51,38 +44,31 @@ $table->addColumn(
                 'q' => '/modules/Students/student_view_details.php',
                 'gibbonPersonID' => $data['gibbonPersonID'],
             ]) : false;
-        $studentName = formatName('', $data['preferredName'], $data['surname'], $roleCategory, false);
-        $roleCategory = __($guid, $roleCategory);
+        $studentName = Format::name('', $data['preferredName'], $data['surname'], $roleCategory, false);
+        $roleCategory = __($roleCategory);
 
         // format student name, if needed
         $studentName = $studentURL ?
-            "<a href=\"{$studentURL}\">{$studentName}</a>" :
+            Format::link($studentURL, $studentName) :
             $studentName;
 
         // format output
-        return "{$studentName}<span style=\"font-size: 85%; font-style: italic\">{$roleCategory}</span>";
+        return "{$studentName}<br/><span style=\"font-size: 85%; font-style: italic\">{$roleCategory}</span>";
     });
 
-$table->addColumn(
-        'title',
-        __($guid, 'Title') .
-        '<span style="font-size: 85%; font-style: italic">' .
-        __($guid, 'Comment') .
-        '</span>'
-    )
+$table->addColumn('title', __('Title'))
+    ->description(__('Comment'))
     ->width('90px')
-    ->format(function ($data) use ($guid) {
-        return __($guid, $data['title']) . "<br/>\n" .
+    ->format(function ($data) {
+        return __($data['title']) . "<br/>\n" .
             '<span style="font-size: 85%; font-style: italic">' .
             $data['comment'] .
             '</span>';
     });
 
-$table->addColumn('date', __($guid, 'Date'))
+$table->addColumn('date', __('Date'))
     ->width('70px')
-    ->format(function ($data) use ($guid) {
-        return dateConvertBack($guid, substr($data['timestamp'], 0, 10));
-    });
+    ->format(Format::using('date', 'timestamp'));
 
 // query for like counts
 $resultLike = countLikesByRecipient(
@@ -92,22 +78,13 @@ $resultLike = countLikesByRecipient(
     $_SESSION[$guid]['gibbonSchoolYearID']
 );
 
-// check if the page has any result
-$noResult = ($resultLike === false || $resultLike->rowCount() < 1) ?
-    __($guid, 'There are no records to display.') :
-    null;
-
 ?>
 
 <div class='trail'>
-    <div class='trailHead'><a href='<?php echo $_SESSION[$guid]['absoluteURL']; ?>'><?php echo __($guid, 'Home'); ?></a> ></div><div class='trailEnd'><?php echo __($guid, 'Likes'); ?></div>
+    <div class='trailHead'><a href='<?php echo $_SESSION[$guid]['absoluteURL']; ?>'><?php echo __('Home'); ?></a> ></div><div class='trailEnd'><?php echo __('Likes'); ?></div>
 </div>
 <p>
-    <?php echo __($guid, 'This page shows you a break down of all your likes in the current year, and they have been earned.'); ?>
+    <?php echo __('This page shows you a break down of all your likes in the current year, and they have been earned.'); ?>
 </p>
 
-<?php if ($noResult) { ?>
-    <div class='error'><?php echo $noResult; ?></div>
-<?php } else { ?>
-    <?php echo $table->render($resultLike->toDataSet()); ?>
-<?php } ?>
+<?php echo $table->render($resultLike->toDataSet()); ?>
