@@ -124,6 +124,6 @@ switch (TRUE) {
 	</head>
 	<body style='background-image: none'>
 		<?php echo implode("\n", $contents); ?>
-		<?php echo $scripts->render('bottom'); ?>
+		<?php echo $scripts->render('bottom', $_SESSION[$guid]['absoluteURL']); ?>
 	</body>
 </html>
