@@ -264,6 +264,17 @@ class Format
     }
 
     /**
+     * Formats a string of additional details in a smaller font.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function small($value)
+    {
+        return '<span class="small emphasis">'.$value.'</span>';
+    }
+
+    /**
      * Formats a link from a url. Automatically adds target _blank to external links.
      * 
      * @param string $url
