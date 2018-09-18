@@ -452,7 +452,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                 //COLOR ROW BY STATUS!
                                 echo "<tr class=$rowNum>";
                                 echo '<td>';
-                                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Markbook#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
+                                echo "<div style='padding: 2px 0px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID'].'&subpage=Internal Assessment#'.$gibbonCourseClassID."'>".formatName('', $rowStudents['preferredName'], $rowStudents['surname'], 'Student', true).'</a><br/></div>';
                                 echo '</td>';
 
                                 if ($externalAssessment == true) {
