@@ -591,15 +591,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			if ($student) {
 				$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-					$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+				$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+				if ($privacySetting == 'Y' && !empty($privacyOptions)) {
                     $options = array_map('trim', explode(',', $privacyOptions));
                     $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
 
 					$row = $form->addRow();
-						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+						$row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
 						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
 				}
 
