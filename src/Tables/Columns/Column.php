@@ -34,16 +34,19 @@ class Column
     protected $label;
     protected $description;
     protected $width = 'auto';
+    protected $depth = 0;
     protected $sortable = false;
     protected $formatter;
 
+    protected $columns = array();
     protected $cellModifiers = [];
 
-    public function __construct($id, $label = '')
+    public function __construct($id, $label = '', $depth = 0)
     {
         $this->setID($id);
         $this->label = $label;
         $this->sortable = [$id];
+        $this->depth = $depth;
     }
 
     /**
@@ -77,6 +80,16 @@ class Column
     public function getWidth()
     {
         return $this->width;
+    }
+
+    /**
+     * Get the nested depth of the current column, counting from 0.
+     *
+     * @return int
+     */
+    public function getDepth()
+    {
+        return $this->depth;
     }
 
     /**
@@ -181,6 +194,75 @@ class Column
     public function getCellModifiers()
     {
         return $this->cellModifiers;
+    }
+
+    /**
+     * Add a nested column, by name and optional label. Returns the created column.
+     *
+     * @param string $name
+     * @param string $label
+     * @return Column
+     */
+    public function addColumn($id, $label = '')
+    {
+        $this->columns[$id] = new Column($id, $label, $this->depth + 1);
+        $this->sortable = false;
+
+        return $this->columns[$id];
+    }
+
+    /**
+     * Get all nested columns under this column.
+     *
+     * @return array
+     */
+    public function getColumns()
+    {
+        return $this->columns;
+    }
+
+    /**
+     * Returns true if this column has other columns nested under it.
+     *
+     * @return bool
+     */
+    public function hasNestedColumns()
+    {
+        return count($this->columns) > 0;
+    }
+
+    /**
+     * Gets the total column depth of all nested columns.
+     *
+     * @return int
+     */
+    public function getTotalDepth()
+    {
+        if (!$this->hasNestedColumns()) return 1;
+
+        $depth = 1;
+        foreach ($this->getColumns() as $column) {
+            $depth = max($depth, $column->getTotalDepth());
+        }
+        
+        return $depth + 1;
+    }
+
+    /**
+     * Gets the total column span of all nested columns.
+     *
+     * @return int
+     */
+    public function getTotalSpan()
+    {
+        if (!$this->hasNestedColumns()) return 1;
+
+        $count = 0;
+        foreach ($this->getColumns() as $column) {
+            $count += $column->getTotalSpan();
+        }
+
+        return $count;
     }
 
     /**

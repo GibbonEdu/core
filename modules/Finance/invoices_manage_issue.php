@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Finance\Forms\FinanceFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_issue.php') == false) {
     //Acess denied

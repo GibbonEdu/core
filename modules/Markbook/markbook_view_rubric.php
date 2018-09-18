@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Rubric includes
-include './modules/Rubrics/moduleFunctions.php';
+require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied

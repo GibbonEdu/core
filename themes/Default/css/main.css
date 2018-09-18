@@ -1638,6 +1638,10 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
+.dataTable {
+    overflow-x: auto;
+}
+
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;
@@ -1833,4 +1837,15 @@ button[disabled], input[disabled], textarea[disabled] {
     height: 14px;
     width: 14px;
     opacity: 0.65;
+}
+
+/* PRINT STYLES */
+body.print div.trail {
+    display: none;
+}
+
+@media print {
+    table tr {
+        page-break-inside: avoid;
+    }
 }

@@ -19,17 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-//Only include module include if it is not already included (which it may be been on the index page)
-$included=FALSE ;
-$includes=get_included_files() ;
-foreach ($includes AS $include) {
-	if (str_replace("\\","/",$include)==str_replace("\\","/",$_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php")) {
-		$included=TRUE ;
-	}
-}
-if ($included==FALSE) {
-	include_once "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
-}
+require_once __DIR__ . '/moduleFunctions.php';
+
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;

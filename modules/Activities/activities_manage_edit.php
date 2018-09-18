@@ -22,7 +22,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Activities\ActivityGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
     //Acess denied

@@ -23,7 +23,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\ModuleGateway;
 
-include './modules/System Admin/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
     //Acess denied

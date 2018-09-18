@@ -945,10 +945,13 @@ if ($proceed == false) {
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy Options'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
     }
 

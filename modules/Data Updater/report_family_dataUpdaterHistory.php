@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\DataUpdater\FamilyUpdateGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family_dataUpdaterHistory.php') == false) {
     //Acess denied

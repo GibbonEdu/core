@@ -70,7 +70,7 @@ class DataSet implements \Countable, \IteratorAggregate
     public function setPagination($page = 1, $pageSize = null)
     {
         $this->page = $page;
-        $this->pageSize = isset($pageSize)? $pageSize : $this->count();
+        $this->pageSize = !empty($pageSize)? $pageSize : $this->resultCount;
 
         return $this;
     }
