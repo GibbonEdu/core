@@ -565,15 +565,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					if ($student) {
 						$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-							$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-							$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+						$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+						$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
 						if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+                            $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
 							$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 							$values['privacyOptions'] = $values['privacy'];
 
 							$row = $form->addRow();
-								$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+								$row->addLabel('privacyOptions[]', __('Privacy Options'));
 								$row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values);
 						}
 					}
