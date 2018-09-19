@@ -101,4 +101,66 @@ class BehaviourGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryBehaviourPatternsBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID',
+                'gibbonStudentEnrolmentID',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonYearGroup.nameShort AS yearGroup',
+                'gibbonRollGroup.nameShort AS rollGroup',
+                'gibbonPerson.dateStart',
+                'gibbonPerson.dateEnd',
+                "COUNT(DISTINCT gibbonBehaviourID) AS count",
+            ])
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->innerJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->leftJoin('gibbonBehaviour', "gibbonBehaviour.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonBehaviour.type='Negative' 
+                AND gibbonBehaviour.gibbonSchoolYearID=gibbonStudentEnrolment.gibbonSchoolYearID")
+            ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonPerson.status = 'Full'")
+            ->groupBy(['gibbonPerson.gibbonPersonID']);
+
+        $criteria->addFilterRules([
+            'descriptor' => function ($query, $descriptor) {
+                return $query
+                    ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.descriptor = :descriptor)')
+                    ->bindValue('descriptor', $descriptor);
+            },
+            'level' => function ($query, $level) {
+                return $query
+                    ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.level = :level)')
+                    ->bindValue('level', $level);
+            },
+            'fromDate' => function ($query, $fromDate) {
+                return $query
+                    ->where('(gibbonBehaviourID IS NULL OR gibbonBehaviour.date >= :fromDate)')
+                    ->bindValue('fromDate', $fromDate);
+            },
+            'rollGroup' => function ($query, $gibbonRollGroupID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
+                    ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+            },
+            'yearGroup' => function ($query, $gibbonYearGroupID) {
+                return $query
+                    ->where('gibbonStudentEnrolment.gibbonYearGroupID = :gibbonYearGroupID')
+                    ->bindValue('gibbonYearGroupID', $gibbonYearGroupID);
+            },
+            'minimumCount' => function ($query, $minimumCount) {
+                return $query
+                    ->having('count >= :minimumCount')
+                    ->bindValue('minimumCount', $minimumCount);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }
