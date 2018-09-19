@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\DataTable;
-use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Services\Format;
 use Gibbon\Domain\Behaviour\BehaviourGateway;
 
@@ -96,10 +95,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->filterBy('type', $type)
             ->fromArray($_POST);
 
-        $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+        
+        if ($highestAction == 'Manage Behaviour Records_all') {
+            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
+        } else if ($highestAction == 'Manage Behaviour Records_my') {
+            $records = $behaviourGateway->queryBehaviourBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
+        } else {
+            return;
+        }
 
         // DATA TABLE
-        $table = DataTable::createPaginated('staffManage', $criteria);
+        $table = DataTable::createPaginated('behaviourManage', $criteria);
         $table->setTitle(__('Behaviour Records'));
 
         $table->addHeaderAction('add', __('Add'))

@@ -41,7 +41,7 @@ class BehaviourGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryBehaviourBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID)
+    public function queryBehaviourBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonIDCreator = null)
     {
         $query = $this
             ->newQuery()
@@ -70,6 +70,11 @@ class BehaviourGateway extends QueryableGateway
             ->where('gibbonBehaviour.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID=gibbonBehaviour.gibbonSchoolYearID');
+
+        if (!empty($gibbonPersonIDCreator)) {
+            $query->where('gibbonBehaviour.gibbonPersonIDCreator = :gibbonPersonIDCreator')
+                ->bindValue('gibbonPersonIDCreator', $gibbonPersonIDCreator);
+        }
 
         $criteria->addFilterRules([
             'student' => function ($query, $gibbonPersonID) {
