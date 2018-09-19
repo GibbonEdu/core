@@ -163,4 +163,35 @@ class BehaviourGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryBehaviourLettersBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonBehaviourLetter')
+            ->cols([
+                'gibbonBehaviourLetter.*',
+                'gibbonPerson.gibbonPersonID',
+                'gibbonPerson.surname',
+                'gibbonPerson.preferredName',
+                'gibbonRollGroup.nameShort AS rollGroup',
+            ])
+            ->innerJoin('gibbonPerson', 'gibbonBehaviourLetter.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonBehaviourLetter.gibbonSchoolYearID')
+            ->innerJoin('gibbonRollGroup', 'gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID')
+            ->where('gibbonBehaviourLetter.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->where("gibbonPerson.status = 'Full'");
+
+        $criteria->addFilterRules([
+            'student' => function ($query, $gibbonPersonID) {
+                return $query
+                    ->where('gibbonBehaviourLetter.gibbonPersonID = :gibbonPersonID')
+                    ->bindValue('gibbonPersonID', $gibbonPersonID);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }
