@@ -44,8 +44,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             exit;
         }
 
-        // Grab the file contents from GitHub repo
-        $gitHubURL = 'https://github.com/GibbonEdu/core/blob/master/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo?raw=true';
+        // Grab the file contents from the GibbonEdu i18n repository
+        $gitHubURL = 'https://github.com/GibbonEdu/i18n/blob/master/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo?raw=true';
         $gitHubContents = file_get_contents($gitHubURL);
 
         if (empty($gitHubContents)) {

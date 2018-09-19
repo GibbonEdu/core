@@ -52,7 +52,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         ->pageSize(0)
         ->fromArray($_POST);
 
-    $installed = $i18nGateway->queryI18n($criteria);
+
+    $languages = $i18nGateway->queryI18n($criteria);
+
+    $languages->transform(function(&$i18n) use ($guid)  {
+        $i18n['isInstalled'] = file_exists($_SESSION[$guid]['absolutePath'].'/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo');
+    });
 
     $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
 
@@ -61,14 +66,14 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'fieldset');
 
     // DATA TABLE
-    $table = $form->addRow()->addDataTable('i18n', $criteria)->withData($installed);
+    $table = $form->addRow()->addDataTable('i18n', $criteria)->withData($languages);
 
     $table->addMetaData('hidePagination', true);
 
-    $table->modifyRows(function ($i18n, $row) use ($guid) {
-        $isInstalled = file_exists($_SESSION[$guid]['absolutePath'].'/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo');
-        if (!$isInstalled) return null;
+    $table->modifyRows(function ($i18n, $row){
+        if (!$i18n['isInstalled']) return null;
         if ($i18n['active'] == 'N') $row->addClass('error');
+
         return $row;
     });
 
@@ -95,7 +100,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
     $table->addRow()->addSubmit();
 
-    echo $form->getOutput();
+    $installedCount = array_reduce($languages->toArray(), function ($count, $i18n) {
+        return ($i18n['isInstalled'])? $count + 1 : $count;
+    }, 0);
+
+    if ($installedCount == 0) {
+        echo '<div class="message">';
+        echo __('There are no language files installed. Your system is currently using the default language.').' '.__('Use the list below to install a new language.');
+        echo '</div><br/>';
+    } else {
+        echo $form->getOutput();
+    }
 
 
     echo '<h2>';
@@ -106,16 +121,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     echo __('Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.');
     echo '</p>';
 
-    $notInstalled = $i18nGateway->queryI18n($criteria);
-
     // DATA TABLE
     $table = DataTable::createPaginated('i18n', $criteria);
 
     $table->addMetaData('hidePagination', true);
 
     $table->modifyRows(function ($i18n, $row) use ($guid) {
-        $isInstalled = file_exists($_SESSION[$guid]['absolutePath'].'/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo');
-        if ($isInstalled) return null;
+        if ($i18n['isInstalled']) return null;
         if ($i18n['active'] == 'N') $row->addClass('error');
         return $row;
     });
@@ -136,5 +148,5 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             }
         });
 
-    echo $table->render($notInstalled);
+    echo $table->render($languages);
 }
