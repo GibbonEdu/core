@@ -68,7 +68,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
 
         $output .= parent::renderTable($table, $dataSet);
 
-        $output .= '</div></div><br/>';
+        $output .= '</div></div>';
 
         // Persist the bulk actions outside the AJAX-reloaded data table div
         $output .= $this->renderBulkActions($table);
@@ -98,6 +98,8 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
+        if ($table->getMetaData('hidePagination') == true) return '';
+        
         $filterOptions = $table->getMetaData('filterOptions', []);
 
         $output = '<div class="flexRow">';
@@ -125,6 +127,8 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
+        if ($table->getMetaData('hidePagination') == true) return '';
+        
         $output = parent::renderFooter($table, $dataSet);
 
         if ($dataSet->getPageCount() > 1) {
