@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             ->sortBy('gibbonApplicationForm.priority', 'DESC')
             ->sortBy('gibbonApplicationForm.timestamp', 'DESC')
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h4>';
         echo __('Search');

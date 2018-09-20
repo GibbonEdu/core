@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             // QUERY
             $criteria = $gradeScaleGateway->newQueryCriteria()
                 ->sortBy('sequenceNumber')
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $grades = $gradeScaleGateway->queryGradeScaleGrades($criteria, $gibbonScaleID);
 

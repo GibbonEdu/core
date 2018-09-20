@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     // QUERY
     $criteria = $userFieldGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $userFields = $userFieldGateway->queryUserFields($criteria);
 

@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         $criteria = $gateway->newQueryCriteria()
             ->sortBy(['gibbonFamily.name'])
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         $dataUpdates = $gateway->queryFamilyUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupIDList);
         $families = $dataUpdates->getColumn('gibbonFamilyID');

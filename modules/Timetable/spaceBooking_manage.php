@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         $criteria = $facilityBookingGateway->newQueryCriteria()
             ->sortBy(['date', 'name'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             $facilityBookings = $facilityBookingGateway->queryFacilityBookings($criteria);
