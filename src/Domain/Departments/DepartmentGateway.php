@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+namespace Gibbon\Domain\Departments;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -59,6 +59,19 @@ class DepartmentGateway extends QueryableGateway
                 JOIN gibbonPerson ON (gibbonDepartmentStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
                 WHERE gibbonPerson.status='Full' AND gibbonDepartmentID=:gibbonDepartmentID 
                 ORDER BY surname, preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectMemberOfDepartmentByRole($gibbonDepartmentID, $gibbonPersonID, array $roles = ['Teacher'])
+    {
+        $data = array('gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonPersonID' => $gibbonPersonID, 'roles' => implode(',', $roles));
+        $sql = "SELECT gibbonDepartmentStaff.* 
+                FROM gibbonDepartment 
+                JOIN gibbonDepartmentStaff ON (gibbonDepartmentStaff.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                WHERE gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID 
+                AND .gibbonDepartmentStaff.gibbonPersonID=:gibbonPersonID 
+                AND FIND_IN_SET(gibbonDepartmentStaff.role, :roles)";
 
         return $this->db()->select($sql, $data);
     }
