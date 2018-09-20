@@ -452,14 +452,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addTextField('vehicleRegistration')->maxLength(20);
 
     $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-        $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-        $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-    if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+    if ($privacySetting == 'Y' && !empty($privacyOptions)) {
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
     }
 
