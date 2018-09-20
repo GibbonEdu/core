@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(array_filter(explode(',', $sort)))
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')
-                ->fromArray($_POST);
+                ->fromPOST();
 
             echo '<h2>';
             echo __('Filter');

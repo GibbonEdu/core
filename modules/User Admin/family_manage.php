@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $criteria = $familyGateway->newQueryCriteria()
         ->searchBy($familyGateway->getSearchableColumns(), $search)
         ->sortBy(['name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h2>';
     echo __($guid, 'Search');

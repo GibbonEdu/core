@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage.
     $criteria = $facilityGateway->newQueryCriteria()
         ->searchBy($facilityGateway->getSearchableColumns(), $search)
         ->sortBy(['name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h3>';
     echo __('Search');

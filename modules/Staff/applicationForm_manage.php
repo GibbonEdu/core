@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         ->searchBy($applicationGateway->getSearchableColumns(), $search)
         ->sortBy('gibbonStaffApplicationForm.status')
         ->sortBy(['priority', 'timestamp'], 'DESC')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h4>';
     echo __('Search');

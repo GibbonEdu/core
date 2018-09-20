@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->filterBy('month', $request['monthOfIssue'])
             ->filterBy('billingSchedule', $request['gibbonFinanceBillingScheduleID'])
             ->filterBy('feeCategory', $request['gibbonFinanceFeeCategoryID'])
-            ->fromArray($_POST);
+            ->fromPOST();
         $invoices = $invoiceGateway->queryInvoicesByYear($criteria, $gibbonSchoolYearID);
 
         // FORM

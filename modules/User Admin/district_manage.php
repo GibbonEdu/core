@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     // QUERY
     $criteria = $districtGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $districts = $districtGateway->queryDistricts($criteria);
 

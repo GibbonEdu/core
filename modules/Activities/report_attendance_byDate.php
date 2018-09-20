@@ -105,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy($defaultSort)
         ->pageSize(!empty($viewMode) ? 0 : 50)
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $activityAttendance = $activityGateway->queryActivityAttendanceByDate($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $dateType, $date);
 

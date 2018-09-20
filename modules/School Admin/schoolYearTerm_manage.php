@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     // QUERY
     $criteria = $termGateway->newQueryCriteria()
         ->sortBy(['schoolYearSequence', 'sequenceNumber'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $terms = $termGateway->querySchoolYearTerms($criteria);
 

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_ma
     // QUERY
     $criteria = $schoolYearGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $schoolYears = $schoolYearGateway->querySchoolYears($criteria);
 

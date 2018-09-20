@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('all', $allUsers)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');

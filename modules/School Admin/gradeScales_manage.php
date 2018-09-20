@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     // QUERY
     $criteria = $gradeScaleGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $gradeScales = $gradeScaleGateway->queryGradeScales($criteria);
 

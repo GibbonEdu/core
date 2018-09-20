@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     // QUERY
     $criteria = $fileExtensionGateway->newQueryCriteria()
         ->sortBy('extension')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $fileExtensions = $fileExtensionGateway->queryFileExtensions($criteria);
 

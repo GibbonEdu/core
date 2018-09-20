@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
         ->searchBy($activityGateway->getSearchableColumns(), isset($_GET['search'])? $_GET['search'] : '')
         ->sortBy('gibbonActivity.name')
         ->pageSize(!empty($viewMode) ? 0 : 50)
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $activities = $activityGateway->queryActivityEnrollmentSummary($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

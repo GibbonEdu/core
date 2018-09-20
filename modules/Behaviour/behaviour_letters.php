@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     $criteria = $behaviourGateway->newQueryCriteria()
         ->sortBy('timestamp', 'DESC')
         ->filterBy('student', $gibbonPersonID)
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $letters = $behaviourGateway->queryBehaviourLettersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

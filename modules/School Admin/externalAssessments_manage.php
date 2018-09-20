@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     // QUERY
     $criteria = $externalAssessmentGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $externalAssessments = $externalAssessmentGateway->queryExternalAssessments($criteria);
 

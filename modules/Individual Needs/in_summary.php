@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
         ->filterBy('alert', $gibbonAlertLevelID)
         ->filterBy('rollGroup', $gibbonRollGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $individualNeeds = $individualNeedsGateway->queryINBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

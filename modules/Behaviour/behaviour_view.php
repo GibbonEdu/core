@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view.p
             $criteria = $studentGateway->newQueryCriteria()
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['surname', 'preferredName'])
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $students = $studentGateway->queryStudentsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], false);
 

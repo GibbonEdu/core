@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 ->searchBy($studentGateway->getSearchableColumns(), $search)
                 ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
                 ->filterBy('all', $allUsers)
-                ->fromArray($_POST);
+                ->fromPOST();
 
             echo '<h2>';
             echo __('Filters');

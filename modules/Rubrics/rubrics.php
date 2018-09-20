@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
             ->searchBy($rubricGateway->getSearchableColumns(), $search)
             ->sortBy(['scope', 'category', 'name'])
             ->filterBy('department', $department)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         // SEARCH
         $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics.php');

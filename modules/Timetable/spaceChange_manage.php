@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
         $criteria = $facilityChangeGateway->newQueryCriteria()
             ->sortBy(['date', 'courseName', 'className'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         if ($highestAction == 'Manage Facility Changes_allClasses') {
             $facilityChanges = $facilityChangeGateway->queryFacilityChanges($criteria);

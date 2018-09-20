@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             ->filterBy('rollGroup', $gibbonRollGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->filterBy('type', $type)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         
         if ($highestAction == 'Manage Behaviour Records_all') {

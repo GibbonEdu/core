@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->searchBy($staffGateway->getSearchableColumns(), $search)
             ->filterBy('all', $allStaff)
             ->sortBy(['surname', 'preferredName'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __($guid, 'Search');

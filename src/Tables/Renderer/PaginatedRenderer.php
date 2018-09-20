@@ -82,7 +82,7 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
         $output .="
         <script>
         $(function(){
-            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$jsonData.");
+            $('#".$table->getID()."').gibbonDataTable('.".str_replace(' ', '%20', $this->path)."', ".$jsonData.", '".$this->criteria->getIdentifier()."');
         });
         </script>";
 

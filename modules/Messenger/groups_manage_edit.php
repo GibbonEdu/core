@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             $criteria = $groupGateway->newQueryCriteria()
                 ->sortBy(['surname', 'preferredName'])
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $members = $groupGateway->queryGroupMembers($criteria, $gibbonGroupID);
 

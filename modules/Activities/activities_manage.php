@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
-    $criteria->fromArray($_POST);
+    $criteria->fromPOST();
 
     echo '<h2>';
     echo __('Search & Filter');
