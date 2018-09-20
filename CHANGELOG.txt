@@ -68,6 +68,7 @@ v17.0.00
         Staff: added a Mark as Left bulk action to Manage Staff
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
+        Students: updated how the Privacy section is displayed in application and data updater forms
         Timetable Admin: fixed course sync for courses with multiple year groups
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
