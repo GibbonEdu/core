@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letter
     echo $form->getOutput();
 
     echo '<h3>';
-    echo __('Behaviour Records');
+    echo __('Behaviour Letters');
     echo '</h3>';
     echo '<p>';
     echo __('This interface displays automated behaviour letters that have been issued within the current school year.');
