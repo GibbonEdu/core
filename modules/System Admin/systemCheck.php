@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
     $versionMessage = __('%s requires %s version %s or higher');
 
     $phpVersion = phpversion();
-    $apacheModules = apache_get_modules();
+    $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
     $mysqlVersion = $pdo->selectOne("SELECT VERSION()");
     $mysqlCollation = $pdo->selectOne("SELECT COLLATION('gibbon')");
 
@@ -88,9 +88,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemCheck.p
         $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
     // APACHE MODULES
-    if (apache_get_version() !== false) {
+    if ($apacheVersion !== false) {
         $form->addRow()->addHeading(__('Apache Modules'));
 
+        $apacheModules = @apache_get_modules();
         foreach ($apacheRequirement as $moduleName) {
             $active = @in_array($moduleName, $apacheModules);
             $row = $form->addRow();

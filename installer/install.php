@@ -171,8 +171,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $versionMessage = __('%s requires %s version %s or higher');
 
                                 $phpVersion = phpversion();
+                                $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
                                 $phpRequirement = $gibbon->getSystemRequirement('php');
-                                $apacheModules = apache_get_modules();
                                 $apacheRequirement = $gibbon->getSystemRequirement('apache');
                                 $extensions = $gibbon->getSystemRequirement('extensions');
 
@@ -192,7 +192,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
                                     $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
-                                if (apache_get_version() !== false) {
+                                if ($apacheVersion !== false) {
+                                    $apacheModules = @apache_get_modules();
+                                    
                                     foreach ($apacheRequirement as $moduleName) {
                                         $active = @in_array($moduleName, $apacheModules);
                                         $row = $form->addRow();
