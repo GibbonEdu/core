@@ -171,11 +171,12 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $versionMessage = __('%s requires %s version %s or higher');
 
                                 $phpVersion = phpversion();
-
                                 $phpRequirement = $gibbon->getSystemRequirement('php');
+                                $apacheModules = apache_get_modules();
+                                $apacheRequirement = $gibbon->getSystemRequirement('apache');
                                 $extensions = $gibbon->getSystemRequirement('extensions');
 
-                                $form = Form::create('action', "./install.php?step=1");
+                                $form = Form::create('installer', "./install.php?step=1");
 
                                 $form->addHiddenValue('guid', $guid);
                                 $form->addHiddenValue('nonce', $nonce);
@@ -191,11 +192,21 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
                                     $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
+                                if (apache_get_version() !== false) {
+                                    foreach ($apacheRequirement as $moduleName) {
+                                        $active = @in_array($moduleName, $apacheModules);
+                                        $row = $form->addRow();
+                                            $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
+                                            $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
+                                            $row->addContent(($active)? $trueIcon : $falseIcon);
+                                    }
+                                }
+
                                 if (!empty($extensions) && is_array($extensions)) {
                                     foreach ($extensions as $extension) {
                                         $installed = @extension_loaded($extension);
                                         $row = $form->addRow();
-                                            $row->addLabel('extensionLabel', __('Extension').' '. $extension);
+                                            $row->addLabel('extensionLabel', 'PHP ' .__('Extension').' '. $extension);
                                             $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
                                             $row->addContent(($installed)? $trueIcon : $falseIcon);
                                     }
@@ -231,7 +242,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo $form->getOutput();
 
                             } else if ($step == 1) { //Set database options
-                                $form = Form::create('action', "./install.php?step=2");
+                                $form = Form::create('installer', "./install.php?step=2");
 
                                 $form->addHiddenValue('guid', $guid);
                                 $form->addHiddenValue('nonce', $nonce);
@@ -412,7 +423,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 //Let's gather some more information
 
-                                                $form = Form::create('action', "./install.php?step=3");
+                                                $form = Form::create('installer', "./install.php?step=3");
 
                                                 $form->setFactory(DatabaseFormFactory::create($pdo));
                                                 $form->addHiddenValue('guid', $guid);
