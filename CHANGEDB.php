@@ -752,4 +752,5 @@ UPDATE gibbonCountry SET printable_name='Vietnam', iddCountryCode='84' WHERE pri
 ALTER TABLE `gibbonPersonField` ADD `activePublicRegistration` TINYINT(1) NOT NULL DEFAULT '0' AFTER `activeDataUpdater`;end
 ALTER TABLE `gibbonMessengerReceipt` CHANGE `targetType` `targetType` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 UPDATE `gibbonAction` SET `category` = 'Extend & Update', `name` = 'Manage Languages' WHERE `name` = 'Language Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
+UPDATE gibbonCountry SET printable_name='Russia', iddCountryCode='7' WHERE printable_name='Russian Federation';end
 ";
