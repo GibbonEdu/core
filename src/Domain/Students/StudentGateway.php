@@ -64,10 +64,6 @@ class StudentGateway extends QueryableGateway
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
                   ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
                   ->bindValue('today', date('Y-m-d'));
-            $query->where("gibbonPerson.status = 'Full'")
-                  ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
-                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
-                  ->bindValue('today', date('Y-m-d'));
         }
 
         if ($searchFamilyDetails && $criteria->hasSearchText()) {
