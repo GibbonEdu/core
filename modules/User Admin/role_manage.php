@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     // QUERY
     $criteria = $roleGateway->newQueryCriteria()
         ->sortBy(['type', 'name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $roles = $roleGateway->queryRoles($criteria);
 

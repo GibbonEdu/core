@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             ->searchBy($courseGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');

@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     // QUERY
     $criteria = $houseGateway->newQueryCriteria()
         ->sortBy(['name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $houses = $houseGateway->queryHouses($criteria);
 

@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         ->filterBy('rollGroup', $gibbonRollGroupID)
         ->filterBy('yearGroup', $gibbonYearGroupID)
         ->filterBy('minimumCount', $minimumCount)
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $records = $behaviourGateway->queryBehaviourPatternsBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
