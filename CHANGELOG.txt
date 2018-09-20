@@ -34,7 +34,7 @@ v17.0.00
         System: fixed an issue with hidden fields in bulk action forms after pagination
         System: fixed term date issue in gibbon.sql
         System: added Eastern Caribbean Dollars and Guatemalan Quetzal as currencies
-        System: added country code and correct spelling of Vietnam
+        System: added country code and correct spelling of Vietnam and Russia
         System: updated vis.js library to v4.21.0
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
