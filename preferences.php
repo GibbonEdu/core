@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (!isset($_SESSION[$guid]["username"])) {
     //Acess denied
@@ -115,6 +116,7 @@ if (!isset($_SESSION[$guid]["username"])) {
         }
 
         $form = Form::create('preferences', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addRow()->addHeading(__('Settings'));
 
@@ -129,18 +131,14 @@ if (!isset($_SESSION[$guid]["username"])) {
                 $password = $row->addURL('personalBackground');
         }
 
-        $data = array();
-        $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonThemeIDPersonal', __('Personal Theme'))->description(__('Override the system theme.'));
-            $row->addSelect('gibbonThemeIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+            $row->addSelectTheme('gibbonThemeIDPersonal');
 
 
-        $data = array();
-        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibboni18nIDPersonal', __('Personal Language'))->description(__('Override the system default language.'));
-            $row->addSelect('gibboni18nIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+            $row->addSelectI18n('gibboni18nIDPersonal');
 
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));
