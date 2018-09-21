@@ -194,4 +194,24 @@ class BehaviourGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryBehaviourRecordsByPerson(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonPersonID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonBehaviour.*',
+                'creator.title AS titleCreator',
+                'creator.surname AS surnameCreator',
+                'creator.preferredName AS preferredNameCreator',
+            ])
+            ->leftJoin('gibbonPerson AS creator', 'gibbonBehaviour.gibbonPersonIDCreator=creator.gibbonPersonID')
+            ->where('gibbonBehaviour.gibbonPersonID = :gibbonPersonID')
+            ->bindValue('gibbonPersonID', $gibbonPersonID)
+            ->where('gibbonBehaviour.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+            return $this->runQuery($query, $criteria);
+    }
 }
