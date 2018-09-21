@@ -59,10 +59,10 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
         ->fromArray($_POST);
 
 
-    $languages = $i18nGateway->queryI18n($criteria);
+    $languages = $i18nGateway->queryI18n($criteria, 'Y');
 
     $languages->transform(function(&$i18n) use ($guid)  {
-        $i18n['isInstalled'] = file_exists($_SESSION[$guid]['absolutePath'].'/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo');
+        $i18n['isInstalled'] = i18nFileExists($_SESSION[$guid]['absolutePath'], $i18n['code']);
     });
 
     $form = Form::create('i18n_manage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/i18n_manageProcess.php');
@@ -103,6 +103,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             return '';
         });
 
+    $table->addActionColumn()
+        ->addParam('gibboni18nID')
+        ->format(function ($i18n, $actions) use ($version) {
+            
+            if (version_compare($version, $i18n['version'], '>')) {
+                $actions->addAction('update', __('Update'))
+                    ->setIcon('delivery2')
+                    ->isModal(650, 135)
+                    ->addParam('mode', 'update')
+                    ->setURL('/modules/System Admin/i18n_manage_install.php');
+            }
+        });
+
     $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth standardForm');
     $table->addRow()->addSubmit();
 
@@ -127,13 +140,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     echo __('Inactive languages are not yet ready for use within the system as they are still under development. They cannot be set to default, nor selected by users.');
     echo '</p>';
 
+    $languages = $i18nGateway->queryI18n($criteria, 'N');
+
+    $languages->transform(function(&$i18n) use ($guid)  {
+        $i18n['isInstalled'] = i18nFileExists($_SESSION[$guid]['absolutePath'], $i18n['code']);
+    });
+
     // DATA TABLE
     $table = DataTable::createPaginated('i18n', $criteria);
 
     $table->addMetaData('hidePagination', true);
 
     $table->modifyRows(function ($i18n, $row) use ($guid) {
-        if ($i18n['isInstalled']) return null;
+        // if ($i18n['isInstalled']) return null;
         if ($i18n['active'] == 'N') $row->addClass('error');
         return $row;
     });
@@ -150,6 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
                 $actions->addAction('install', __('Install'))
                     ->setIcon('page_new')
                     ->isModal(650, 135)
+                    ->addParam('mode', 'install')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }
         });
