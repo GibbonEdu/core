@@ -39,16 +39,25 @@ class I18nGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryI18n(QueryCriteria $criteria)
+    public function queryI18n(QueryCriteria $criteria, $installed = 'Y')
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibboni18nID', 'name', 'code', 'active', 'systemDefault'
-            ]);
+                'gibboni18nID', 'name', 'code', 'active', 'version', 'systemDefault'
+            ])
+            ->where('installed = :installed')
+            ->bindValue('installed', $installed);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    public function selectActiveI18n()
+    {
+        $sql = "SELECT * FROM gibboni18n WHERE active='Y'";
+
+        return $this->db()->select($sql);
     }
 
     public function getI18nByID($gibboni18nID)
@@ -57,5 +66,13 @@ class I18nGateway extends QueryableGateway
         $sql = "SELECT * FROM gibboni18n WHERE gibboni18nID=:gibboni18nID";
 
         return $this->db()->selectOne($sql, $data);
+    }
+
+    public function updateI18nVersion($gibboni18nID, $installed, $version)
+    {
+        $data = array('gibboni18nID' => $gibboni18nID, 'installed' => $installed, 'version' => $version);
+        $sql = "UPDATE gibboni18n SET installed=:installed, version=:version WHERE gibboni18nID=:gibboni18nID";
+
+        return $this->db()->update($sql, $data);
     }
 }
