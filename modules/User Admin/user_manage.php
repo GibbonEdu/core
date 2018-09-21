@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     $criteria = $userGateway->newQueryCriteria()
         ->searchBy($userGateway->getSearchableColumns(), $search)
         ->sortBy(['surname', 'preferredName'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h2>';
     echo __($guid, 'Search');

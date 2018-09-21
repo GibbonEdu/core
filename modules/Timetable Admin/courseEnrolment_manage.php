@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->pageSize(0)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');

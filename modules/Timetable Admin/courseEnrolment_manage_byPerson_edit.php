@@ -155,7 +155,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             // QUERY
             $criteria = $courseEnrolmentGateway->newQueryCriteria()
                 ->sortBy($secondaryStudent? 'class' : ['course', 'class'])
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $enrolment = $courseEnrolmentGateway->queryCourseEnrolmentByPerson($criteria, $gibbonSchoolYearID, $gibbonPersonID);
 

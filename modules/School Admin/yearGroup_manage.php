@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     // QUERY
     $criteria = $yearGroupGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $yearGroups = $yearGroupGateway->queryYearGroups($criteria);
 

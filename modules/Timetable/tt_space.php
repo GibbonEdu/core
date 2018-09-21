@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $criteria = $facilityGateway->newQueryCriteria()
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
             ->sortBy('name')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');

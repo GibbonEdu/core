@@ -353,12 +353,13 @@ $.prototype.gibbonCustomBlocks = function(settings) {
  */
 var DataTable = window.DataTable || {};
 
-DataTable = (function(element, basePath, filters) {
+DataTable = (function(element, basePath, filters, identifier) {
     var _ = this;
 
     _.table = $(element);
     _.path = basePath + " #" + $(element).attr('id') + " .dataTable";
     _.filters = filters;
+    _.identifier = identifier;
     if (_.filters.sortBy.length == 0) _.filters.sortBy = {};
     if (_.filters.filterBy.length == 0) _.filters.filterBy = {};
 
@@ -444,16 +445,24 @@ DataTable.prototype.refresh = function() {
     var submitted = setTimeout(function() {
         $('.pagination', _.table).prepend('<span class="submitted"></span>');
     }, 500);
+    
+    var postData = {};
 
-    $(_.table).load(_.path, _.filters, function(responseText, textStatus, jqXHR) { 
+    if (_.identifier != '') {
+        postData[_.identifier] = _.filters;
+    } else {
+        postData = _.filters;
+    }
+
+    $(_.table).load(_.path, postData, function(responseText, textStatus, jqXHR) { 
         $('.bulkActionPanel').hide();
         tb_init('a.thickbox'); 
         clearTimeout(submitted);
     });
 };
 
-$.prototype.gibbonDataTable = function(basePath, filters) {
-    this.gibbonDataTable = new DataTable(this, basePath, filters);
+$.prototype.gibbonDataTable = function(basePath, filters, identifier) {
+    this.gibbonDataTable = new DataTable(this, basePath, filters, identifier);
 };
 
 /**
