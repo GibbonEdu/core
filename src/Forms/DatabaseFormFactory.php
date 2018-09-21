@@ -199,6 +199,22 @@ class DatabaseFormFactory extends FormFactory
         return $this->createSelect($name)->fromResults($results)->placeholder();
     }
 
+    public function createSelectTheme($name)
+    {
+        $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
+    public function createSelectI18n($name)
+    {
+        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE installed='Y' AND active='Y' ORDER BY code";
+        $results = $this->pdo->executeQuery(array(), $sql);
+
+        return $this->createSelect($name)->fromResults($results)->placeholder();
+    }
+
     public function createSelectLanguage($name)
     {
         $sql = "SELECT name as value, name FROM gibbonLanguage ORDER BY name";

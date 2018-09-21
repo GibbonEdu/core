@@ -19,6 +19,7 @@ CHANGELOG
 v17.0.00
 --------
     Headlines
+        Languages can now be installed and updated through Manage Languages in System Admin
 
     Changes With Important Notices
 

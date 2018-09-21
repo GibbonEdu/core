@@ -2760,8 +2760,7 @@ function sidebar($gibbon, $pdo)
 
             $row = $form->addRow()->setClass('loginOptions');
                 $row->addContent(sprintf($loginIcon, 'language', __('Language')));
-                $row->addSelect('gibboni18nID')
-                    ->fromQuery($pdo, "SELECT gibboni18nID as value, name FROM gibboni18n WHERE active='Y' ORDER BY name")
+                $row->addSelectI18n('gibboni18nID')
                     ->setClass('fullWidth')
                     ->placeholder(null)
                     ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);

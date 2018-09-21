@@ -32,7 +32,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
     }
 
     //Check if school year specified
-    $gibboni18nID = $_GET['gibboni18nID'];
+    $gibboni18nID = isset($_GET['gibboni18nID'])? $_GET['gibboni18nID'] : '';
+    $mode = isset($_GET['mode'])? $_GET['mode'] : 'install';
+
     if (empty($gibboni18nID)) {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -55,8 +57,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
             $row = $form->addRow();
                 $col = $row->addColumn();
-                $col->addContent(__('Install').' '.$i18n['name'])->wrap('<strong style="font-size: 18px;">', '</strong><br/><br/>');
-                $col->addContent(sprintf(__('Installing a new language will download the required files and place them in the %1$s folder on your server.'), '<b>'.$_SESSION[$guid]['absolutePath'].'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
+                $col->addContent( ($mode == 'update'? __('Update') : __('Install')).' '.$i18n['name'])->wrap('<strong style="font-size: 18px;">', '</strong><br/><br/>');
+                $col->addContent(sprintf(__('This action will download the required files and place them in the %1$s folder on your server.'), '<b>'.$_SESSION[$guid]['absolutePath'].'/i18n/'.'</b>').' '.__('Are you sure you want to continue?'));
 
             $form->addRow()->addConfirmSubmit();
 

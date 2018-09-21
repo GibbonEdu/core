@@ -21,6 +21,9 @@ use Gibbon\Domain\System\I18nGateway;
 
 include '../../gibbon.php';
 
+//Module includes
+require_once __DIR__ . '/moduleFunctions.php';
+
 $gibboni18nID = $_POST['gibboni18nID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/System Admin/i18n_manage.php';
 
@@ -44,28 +47,18 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             exit;
         }
 
-        // Grab the file contents from the GibbonEdu i18n repository
-        $gitHubURL = 'https://github.com/GibbonEdu/i18n/blob/master/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo?raw=true';
-        $gitHubContents = file_get_contents($gitHubURL);
+        // Download & install the required language files
+        $installed = i18nFileInstall($_SESSION[$guid]['absolutePath'], $i18n['code']);
 
-        if (empty($gitHubContents)) {
+        // Tag this i18n with the current version it was installed at
+        $updated = $i18nGateway->updateI18nVersion($gibboni18nID, 'Y', $version);
+
+        if (!$installed) {
             $URL .= '&return=error3';
             header("Location: {$URL}");
             exit;
-        }
-
-        // Locate where the i18n files will be copied to on the server
-        $localPath = $_SESSION[$guid]['absolutePath'].'/i18n/'.$i18n['code'].'/LC_MESSAGES/gibbon.mo';
-        $localDir = dirname($localPath);
-        if (!is_dir($localDir)) {
-            mkdir($localDir, 0755, true);
-        }
-
-        // Copy files
-        $bytesWritten = file_put_contents($localPath, $gitHubContents);
-
-        if ($bytesWritten === false) {
-            $URL .= '&return=error3';
+        } else if (!$updated) {
+            $URL .= '&return=warning1';
             header("Location: {$URL}");
             exit;
         } else {

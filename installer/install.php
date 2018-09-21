@@ -25,6 +25,11 @@ use Gibbon\Data\Validator;
 include '../version.php';
 include '../gibbon.php';
 
+//Module includes
+require_once '../modules/System Admin/moduleFunctions.php';
+
+$gibbon->session->set('absolutePath', realpath('../'));
+
 // Sanitize the whole $_POST array
 $validator = new Validator();
 $_POST = $validator->sanitize($_POST);
@@ -101,11 +106,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             $databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
                             $databasePassword = (isset($_POST['databasePassword']))? $_POST['databasePassword'] : '';
                             $demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
+                            $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
+
+                            // Attempt to download & install the required language files
+                            if ($step >= 1) {
+                                $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $code) 
+                                    ? i18nFileInstall($gibbon->session->get('absolutePath'), $code) 
+                                    : true;
+                            }
 
                             //Set language pre-install
-                            $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
-                            putenv('LC_ALL='.$code);
-                            setlocale(LC_ALL, $code);
+                            $gibbon->locale->setLocale($code);
                             bindtextdomain('gibbon', '../i18n');
                             textdomain('gibbon');
 
@@ -216,26 +227,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                 $form->addRow()->addHeading(__('Language Settings'));
 
-                                $languages = array(
-                                    'nl_NL' => 'Dutch - Nederland',
-                                    'en_GB' => 'English - United Kingdom',
-                                    'en_US' => 'English - United States',
-                                    'es_ES' => 'Español',
-                                    'fr_FR' => 'Français - France',
-                                    'it_IT' => 'Italiano - Italia',
-                                    'pl_PL' => 'Język polski - Polska',
-                                    'pt_BR' => 'Português - Brasil',
-                                    'ro_RO' => 'Română',
-                                    'sq_AL' => 'Shqip - Shqipëri',
-                                    'vi_VN' => 'Tiếng Việt - Việt Nam',
-                                    'ar_SA' => 'العربية - المملكة العربية السعودية',
-                                    'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
-                                    'zh_CN' => '汉语 - 中国',
-                                    'zh_HK' => '體字 - 香港');
-
                                 $row = $form->addRow();
                                     $row->addLabel('code', __('System Language'));
-                                    $row->addSelect('code')->fromArray($languages)->selected($code)->isRequired();
+                                    $row->addSelectSystemLanguage('code')->selected($code)->isRequired();
 
                                 $row = $form->addRow();
                                     $row->addFooter();
@@ -244,6 +238,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo $form->getOutput();
 
                             } else if ($step == 1) { //Set database options
+
+                                if (!$languageInstalled) {
+                                    echo "<div class='error'>";
+                                    echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$gibbon->session->get('absolutePath').'/i18n/</u></b>');
+                                    echo '</div>';
+                                }
+
                                 $form = Form::create('installer', "./install.php?step=2");
 
                                 $form->addHiddenValue('guid', $guid);
@@ -295,6 +296,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     if ($pdo = $mysqlConnector->connect($config)) {
                                         $mysqlConnector->useDatabase($pdo, $databaseName);
                                         $connection2 = $pdo->getConnection();
+                                        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
                                     }
                                 }
 
@@ -906,6 +908,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                         ++$tokenCount;
                                                     }
                                                 }
+
+                                                // Update DB version for existing languages (installed manually?)
+                                                i18nCheckAndUpdateVersion($container, $version);
 
                                                 //Deal with request to receive welcome email by calling gibbonedu.org iframe
                                                 if ($support == true) {

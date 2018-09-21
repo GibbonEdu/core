@@ -343,6 +343,29 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
+    public function createSelectSystemLanguage($name)
+    {
+        $languages = array(
+            'nl_NL' => 'Dutch - Nederland',
+            'en_GB' => 'English - United Kingdom',
+            'en_US' => 'English - United States',
+            'es_ES' => 'Español',
+            'fr_FR' => 'Français - France',
+            'it_IT' => 'Italiano - Italia',
+            'pl_PL' => 'Język polski - Polska',
+            'pt_BR' => 'Português - Brasil',
+            'ro_RO' => 'Română',
+            'sq_AL' => 'Shqip - Shqipëri',
+            'vi_VN' => 'Tiếng Việt - Việt Nam',
+            'ar_SA' => 'العربية - المملكة العربية السعودية',
+            'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'zh_CN' => '汉语 - 中国',
+            'zh_HK' => '體字 - 香港',
+        );
+        
+        return $this->createSelect($name)->fromArray($languages);
+    }
+
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
