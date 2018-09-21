@@ -753,4 +753,6 @@ ALTER TABLE `gibbonPersonField` ADD `activePublicRegistration` TINYINT(1) NOT NU
 ALTER TABLE `gibbonMessengerReceipt` CHANGE `targetType` `targetType` ENUM('Class','Course','Roll Group','Year Group','Activity','Role','Applicants','Individuals','Houses','Role Category','Transport','Attendance','Group') CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL;end
 UPDATE `gibbonAction` SET `category` = 'Extend & Update', `name` = 'Manage Languages' WHERE `name` = 'Language Settings' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin');end
 UPDATE gibbonCountry SET printable_name='Russia', iddCountryCode='7' WHERE printable_name='Russian Federation';end
+ALTER TABLE `gibboni18n` ADD `installed` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `active`;end
+ALTER TABLE `gibboni18n` ADD `version` VARCHAR(10) NULL AFTER `name`;end
 ";
