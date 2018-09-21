@@ -98,7 +98,9 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderHeader(DataTable $table, DataSet $dataSet) 
     {
-        if ($table->getMetaData('hidePagination') == true) return '';
+        if ($table->getMetaData('hidePagination') == true) {
+            return parent::renderHeader($table, $dataSet);
+        }
         
         $filterOptions = $table->getMetaData('filterOptions', []);
 
@@ -127,9 +129,9 @@ class PaginatedRenderer extends SimpleRenderer implements RendererInterface
      */
     protected function renderFooter(DataTable $table, DataSet $dataSet)
     {
-        if ($table->getMetaData('hidePagination') == true) return '';
-        
         $output = parent::renderFooter($table, $dataSet);
+
+        if ($table->getMetaData('hidePagination') == true) return $output;
 
         if ($dataSet->getPageCount() > 1) {
             $output .= $this->renderPageCount($dataSet);

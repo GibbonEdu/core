@@ -3057,7 +3057,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             include './modules/Behaviour/moduleFunctions.php';
 
                             //Print assessments
-                            getBehaviourRecord($guid, $gibbonPersonID, $connection2);
+                            echo getBehaviourRecord($container, $gibbonPersonID);
                         }
                     }
 

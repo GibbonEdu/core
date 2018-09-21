@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
             echo '</tr>';
             echo '</table>';
 
-            getBehaviourRecord($guid, $gibbonPersonID, $connection2);
+            echo getBehaviourRecord($container, $gibbonPersonID);
         }
     }
 }

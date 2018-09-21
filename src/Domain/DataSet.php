@@ -153,7 +153,7 @@ class DataSet implements \Countable, \IteratorAggregate
      */
     public function getPageCount()
     {
-        return ceil($this->resultCount / $this->pageSize);
+        return $this->pageSize > 0 ? ceil($this->resultCount / $this->pageSize) : 1;
     }
 
     /**
