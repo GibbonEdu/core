@@ -119,13 +119,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
                 while (date('D', $startDayStamp) != 'Mon') {
-                    $startDayStamp = $startDayStamp - 86400;
+					$startDayStamp = strtotime('-1 day', $startDayStamp);  
                 }
 
                 //Count forward to first Sunday after last day
                 $endDayStamp = $lastDayStamp;
                 while (date('D', $endDayStamp) != 'Sun') {
-                    $endDayStamp = $endDayStamp + 86400;
+					$endDayStamp = strtotime('+1 day', $endDayStamp);  
                 }
 
                 //Get the special days
@@ -186,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     $row->addCheckbox('checkall'.$dowShort.$values['nameShort'])->prepend(__($dowLong).'<br/>')->append($script)->addClass('textCenter');
                 }
 
-                for ($i = $startDayStamp; $i <= $endDayStamp; $i = $i + 86400) {
+                for ($i = $startDayStamp; $i <= $endDayStamp;$i = strtotime('+1 day', $i)) {
                     $date = date('Y-m-d', $i);
                     $dayOfWeek = date('D', $i);
                     $formattedDate = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i);
