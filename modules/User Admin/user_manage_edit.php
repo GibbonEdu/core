@@ -29,6 +29,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    //Get action with highest precendence
+    $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
+    if ($highestAction == false) {
+        echo "<div class='error'>";
+        echo __('The highest grouped action cannot be determined.');
+        echo '</div>';
+        return;
+    }
+
     //Proceed!
     echo "<div class='trail'>";
     echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage.php'>".__('Manage Users')."</a> > </div><div class='trailEnd'>".__('Edit User').'</div>';
@@ -209,9 +218,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 
-			$row = $form->addRow();
-				$row->addLabel('username', __('Username'));
-				$row->addTextField('username')->readOnly()->maxLength(20);
+            if ($highestAction == 'Manage Users_editDelete') {
+                $row = $form->addRow();
+                    $row->addLabel('username', __('Username'))->description(__('System login name.'));
+                    $row->addTextField('username')
+                        ->isRequired()
+                        ->maxLength(20)
+                        ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
+                        ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php', ['currentUsername' => $values['username']]);
+            } else {
+                $row = $form->addRow();
+				    $row->addLabel('usernameLabel', __('Username'))->description(__('System login name. Cannot be changed.'));
+				    $row->addTextField('username')->readOnly()->maxLength(20)->setValue($values['username']);
+				    $form->addHiddenValue('username', $values['username']);
+            }
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
