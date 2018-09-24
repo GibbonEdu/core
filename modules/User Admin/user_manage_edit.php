@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
     //Acess denied
@@ -591,24 +591,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			if ($student) {
 				$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-					$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+				$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+				if ($privacySetting == 'Y' && !empty($privacyOptions)) {
+                    $options = array_map('trim', explode(',', $privacyOptions));
+                    $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
 
 					$row = $form->addRow();
-						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-						$row->addCheckbox('privacyOptions[]')->fromArray($options);
+						$row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
+						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
 				}
 
 				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
 				if (!empty($studentAgreementOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
+                    $options = array_map('trim', explode(',', $studentAgreementOptions));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
 
 					$row = $form->addRow();
 					$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
-					$row->addCheckbox('studentAgreements[]')->fromArray($options);
+					$row->addCheckbox('studentAgreements[]')->fromArray($options)->checked($values['studentAgreements']);
 				}
 			}
 
@@ -623,7 +624,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 					$row = $form->addRow();
-						$row->addLabel($name, $rowFields['name']);
+						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 						$row->addCustomField($name, $rowFields)->setValue($value);
 				}
 			}

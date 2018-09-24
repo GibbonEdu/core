@@ -50,13 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');
         echo '</h2>';
 
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/in_view.php');

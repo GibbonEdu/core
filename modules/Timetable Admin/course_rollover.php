@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rollover.php') == false) {
     //Acess denied
@@ -172,11 +172,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     $header->addContent(__('New Class'));
 
                 foreach ($currentCourses as $gibbonCourseClassID => $course) {
+                    $gibbonCourseClassIDNext = isset($course['gibbonCourseClassIDNext'])? $course['gibbonCourseClassIDNext'] : '';
+
                     $row = $table->addRow();
                         $row->addContent($course['course'].'.'.$course['class']);
                         $row->addSelect('gibbonCourseClassIDNext['.$gibbonCourseClassID.']')
                             ->fromArray($nextCourses)
-                            ->selected($course['gibbonCourseClassIDNext'])
+                            ->selected($gibbonCourseClassIDNext)
                             ->placeholder()
                             ->setClass('mediumWidth');
                 }

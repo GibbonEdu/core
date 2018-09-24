@@ -22,7 +22,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\FacilityGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') == false) {
     //Acess denied
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $criteria = $facilityGateway->newQueryCriteria()
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
             ->sortBy('name')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');

@@ -21,6 +21,9 @@ use Gibbon\Comms\NotificationEvent;
 
 include './gibbon.php';
 
+//Module includes from User Admin (for custom fields)
+include './modules/User Admin/moduleFunctions.php';
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/publicRegistration.php';
 
 $proceed = false;
@@ -39,7 +42,7 @@ if ($proceed == false) {
     //Lock activities table
     try {
         $data = array();
-        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting READ, gibbonNotification WRITE, gibbonModule WRITE';
+        $sql = 'LOCK TABLES gibbonPerson WRITE, gibbonSetting READ, gibbonNotification WRITE, gibbonModule WRITE, gibbonPersonField WRITE';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -77,6 +80,36 @@ if ($proceed == false) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
+        $customRequireFail = false;
+        $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
+        $fields = array();
+        if ($resultFields->rowCount() > 0) {
+            while ($rowFields = $resultFields->fetch()) {
+                if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']])) {
+                    if ($rowFields['type'] == 'date') {
+                        $fields[$rowFields['gibbonPersonFieldID']] = dateConvert($guid, $_POST['custom'.$rowFields['gibbonPersonFieldID']]);
+                    } else {
+                        $fields[$rowFields['gibbonPersonFieldID']] = $_POST['custom'.$rowFields['gibbonPersonFieldID']];
+                    }
+                }
+                if ($rowFields['required'] == 'Y') {
+                    if (isset($_POST['custom'.$rowFields['gibbonPersonFieldID']]) == false) {
+                        $customRequireFail = true;
+                    } elseif ($_POST['custom'.$rowFields['gibbonPersonFieldID']] == '') {
+                        $customRequireFail = true;
+                    }
+                }
+            }
+        }
+
+        if ($customRequireFail) {
+            $URL .= '&return=error1';
+            header("Location: {$URL}");
+            exit();
+        } else {
+            $fields = serialize($fields);
+        }
+
         //Check strength of password
         $passwordMatch = doesPasswordMatchPolicy($connection2, $password);
 
@@ -116,8 +149,8 @@ if ($proceed == false) {
                 } else {
                     //Write to database
                     try {
-                        $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll);
-                        $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll";
+                        $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
+                        $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

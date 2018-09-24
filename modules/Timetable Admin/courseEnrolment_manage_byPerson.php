@@ -80,13 +80,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('all', $allUsers)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');
         echo '</h3>'; 
         
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/courseEnrolment_manage_byPerson.php');

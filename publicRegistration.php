@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
+//Module includes from User Admin (for custom fields)
+include './modules/User Admin/moduleFunctions.php';
+
 $proceed = false;
 
 if (isset($_SESSION[$guid]['username']) == false) {
@@ -112,6 +115,19 @@ if ($proceed == false) {
             ->addGeneratePasswordButton($form)
             ->isRequired()
             ->maxLength(30);
+    
+    // CUSTOM FIELDS
+    $resultFields = getCustomFields($connection2, $guid, null, null, null, null, null, null, true);
+    if ($resultFields->rowCount() > 0) {
+        $heading = $form->addRow()->addHeading(__('Other Information'));
+
+        while ($rowFields = $resultFields->fetch()) {
+            $name = 'custom'.$rowFields['gibbonPersonFieldID'];
+            $row = $form->addRow();
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
+                $row->addCustomField($name, $rowFields);
+        }
+    }
 
     $privacyStatement = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPrivacyStatement');
     if ($privacyStatement != '') {

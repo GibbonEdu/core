@@ -51,14 +51,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
         $activeDataUpdater = $_POST['activeDataUpdater'];
         $activeApplicationForm = $_POST['activeApplicationForm'];
 
-        if ($name == '' or $active == '' or $description == '' or $type == '' or $required == '' or $activeDataUpdater == '' or $activeApplicationForm == '') {
+        $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+        $activePublicRegistration = ($enablePublicRegistration == 'Y' && isset($_POST['activePublicRegistration'])) ? $_POST['activePublicRegistration'] : '0' ;
+
+
+        if ($name == '' or $active == '' or $description == '' or $type == '' or $required == '' or $activeDataUpdater == '' or $activeApplicationForm == '' or $activePublicRegistration == '') {
             $URL .= '&return=error3';
             header("Location: {$URL}");
         } else {
             //Write to database
             try {
-                $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'gibbonPersonFieldID' => $gibbonPersonFieldID);
-                $sql = 'UPDATE gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
+                $data = array('name' => $name, 'active' => $active, 'description' => $description, 'type' => $type, 'options' => $options, 'required' => $required, 'activePersonStudent' => $activePersonStudent, 'activePersonStaff' => $activePersonStaff, 'activePersonParent' => $activePersonParent, 'activePersonOther' => $activePersonOther, 'activeDataUpdater' => $activeDataUpdater, 'activeApplicationForm' => $activeApplicationForm, 'activePublicRegistration' => $activePublicRegistration, 'gibbonPersonFieldID' => $gibbonPersonFieldID);
+                $sql = 'UPDATE gibbonPersonField SET name=:name, active=:active, description=:description, type=:type, options=:options, required=:required, activePersonStudent=:activePersonStudent, activePersonStaff=:activePersonStaff, activePersonParent=:activePersonParent, activePersonOther=:activePersonOther, activeDataUpdater=:activeDataUpdater, activeApplicationForm=:activeApplicationForm, activePublicRegistration=:activePublicRegistration WHERE gibbonPersonFieldID=:gibbonPersonFieldID';
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

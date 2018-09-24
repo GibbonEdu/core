@@ -23,7 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied

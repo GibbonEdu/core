@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -461,7 +461,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
             $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name']);
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields)->setValue($value);
         }
     }
@@ -519,7 +519,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -660,7 +660,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -924,11 +924,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
         $options = array_map('trim', explode(',', $privacyOptions));
         $checked = array_map('trim', explode(',', $application['privacy']));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($checked);
     }
 

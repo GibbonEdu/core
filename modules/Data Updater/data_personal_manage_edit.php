@@ -29,8 +29,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
     echo '</div>';
 } else {
     //Proceed!
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_personal_manage.php'>".__($guid, 'Personal Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Request').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_personal_manage.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__($guid, 'Personal Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Request').'</div>';
     echo '</div>';
 
     //Check if school year specified
@@ -134,6 +136,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'visaExpiryDate'         => __('Visa Expiry Date'),
                 'vehicleRegistration'    => __('Vehicle Registration'),
             );
+
+            //Adjust country in field label
+            if (!empty($_SESSION[$guid]['country'])) {
+                $compare['nationalIDCardNumber'] = $_SESSION[$guid]['country'].' '.__('ID Card Number');
+                $compare['residencyStatus'] = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
+                $compare['visaExpiryDate'] = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+            }
 
             if ($student || $staff) {
                 $compare['emergency1Name']         = __('Emergency 1 Name');

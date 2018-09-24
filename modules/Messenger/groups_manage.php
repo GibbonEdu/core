@@ -40,13 +40,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $criteria = $groupGateway->newQueryCriteria()
         ->sortBy(['schoolYear', 'name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
     if ($highestAction == 'Manage Groups_all') {
-        $groups = $groupGateway->queryGroups($criteria);
+        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
     } else {
-        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonPersonID']);
+        $groups = $groupGateway->queryGroups($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID']);
     }
     
 
@@ -58,8 +58,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
         ->displayLabel();
 
     // COLUMNS
-    $table->addColumn('schoolYear', __('School Year'))->sortable();
-
     $table->addColumn('name', __('Name'))->sortable();
 
     $table->addColumn('owner', __('Group Owner'))

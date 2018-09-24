@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
 
 //Module includes
-include './modules/Finance/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
     //Acess denied
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         echo __($guid, 'Filters');
                         echo '</h3>';
 
-                        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+                        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
                         $form->setClass('noIntBorder fullWidth');
 
                         $form->addHiddenValue('q', '/modules/Finance/expenses_manage.php');

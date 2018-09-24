@@ -6,5 +6,5 @@ uploads/*
 Thumb.db
 .DS_Store
 tests/log/*
+tests/config/support/_generated/*
 nbproject/
-/i18n/*.po

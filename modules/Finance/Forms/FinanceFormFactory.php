@@ -41,21 +41,41 @@ class FinanceFormFactory extends DatabaseFormFactory
 
     public function createSelectInvoicee($name, $gibbonSchoolYearID = '', $params = array())
     {
+        // Check params and set defaults if not defined
+        $params = array_replace(array('allStudents' => false), $params);
+
         $values = array();
 
         // Opt Groups
-        $byRollGroup = __('All Enrolled Students by Roll Group');
-        $byName = __('All Enrolled Students by Alphabet');
+        if ($params['allStudents'] != true) {
+            $byRollGroup = __('All Enrolled Students by Roll Group');
+            $byName = __('All Enrolled Students by Alphabet');
+        }
+        else {
+            $byRollGroup = __('All Students by Roll Group');
+            $byName = __('All Students by Alphabet');
+        }
 
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-        $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
+        if ($params['allStudents'] != true) {
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                 JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
                 WHERE gibbonPerson.status='Full' 
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                ORDER BY LENGTH(gibbonRollGroup.name), gibbonRollGroup.name, surname, preferredName";
+                ORDER BY gibbonRollGroup.name, surname, preferredName";
+        }
+        else {
+            $sql = "SELECT gibbonFinanceInvoiceeID, preferredName, surname, gibbonRollGroup.nameShort AS rollGroupName, dayType 
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                ORDER BY gibbonRollGroup.name, surname, preferredName";
+        }
 
         $results = $this->pdo->executeQuery($data, $sql);
         $students = ($results->rowCount() > 0)? $results->fetchAll() : array();
@@ -203,6 +223,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     $row->addCheckbox($checkboxName)
                         ->description($values['companyEmail'])
                         ->setValue($values['companyEmail'])
+                        ->checked($values['companyEmail'])
                         ->append('<input type="hidden" name="'.$hiddenValueName.'" value="'.$values['companyContact'].'">');
             }
         }
@@ -219,6 +240,7 @@ class FinanceFormFactory extends DatabaseFormFactory
                     LEFT JOIN gibbonFamilyRelationship ON (gibbonFamilyRelationship.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID && gibbonFamilyRelationship.gibbonPersonID1=parent.gibbonPersonID && gibbonFamilyRelationship.gibbonPersonID2=student.gibbonPersonID)
                     WHERE gibbonFinanceInvoiceeID=:gibbonFinanceInvoiceeID 
                     AND (contactPriority=1 OR (contactPriority=2 AND contactEmail='Y')) 
+                    AND parent.status='Full'
                     GROUP BY parent.gibbonPersonID
                     ORDER BY contactPriority, surname, preferredName";
 

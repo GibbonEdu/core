@@ -562,7 +562,7 @@ table td {
 	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
 	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
 }
-table tr.even td {
+table tr.even > td {
 	background: #f0f0f0;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
 	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
@@ -1299,7 +1299,6 @@ table.standardForm td.standardWidth:last-child:nth-child(2) {
 
 select[multiple] {
 	height: auto;
-	max-height: 130px;
 }
 
 .shortWidth {
@@ -1639,6 +1638,10 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
+.dataTable {
+    overflow-x: auto;
+}
+
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;
@@ -1743,19 +1746,29 @@ tr.selected, tr.selected td, div.selected, td.selected {
     -webkit-transform: rotate(45deg);
 }
 
-.dataTable .bulkActionPanel {
+.bulkActionForm {
+    position: relative;
+}
+
+.bulkActionForm .bulkActionPanel {
     position:absolute;
     z-index:1;
-    bottom: -8px;
+    top: 44px;
     right: 0;
-    width: 100%;background: #9d7cc6;
+    width: 100%;
+    background: #9d7cc6;
     padding: 5px;
     box-sizing: border-box;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
 
-.dataTable .bulkActionCount {
+.bulkActionForm .bulkActionPanel .LV_validation_message {
+    position: absolute;
+    bottom: -14px;
+}
+
+.bulkActionForm .bulkActionCount {
     position: relative; 
     right: 10px;
     font-size:13px;
@@ -1763,12 +1776,12 @@ tr.selected, tr.selected td, div.selected, td.selected {
     color:#fff
 }
 
-.dataTable .bulkCheckbox {
+.bulkActionForm .bulkCheckbox {
     position: relative;
     text-align: center;
 }
 
-.dataTable .bulkCheckbox label {
+.bulkActionForm .bulkCheckbox label {
     position: absolute;
     top: 0;
     left: 0;
@@ -1824,4 +1837,15 @@ button[disabled], input[disabled], textarea[disabled] {
     height: 14px;
     width: 14px;
     opacity: 0.65;
+}
+
+/* PRINT STYLES */
+body.print div.trail {
+    display: none;
+}
+
+@media print {
+    table tr {
+        page-break-inside: avoid;
+    }
 }

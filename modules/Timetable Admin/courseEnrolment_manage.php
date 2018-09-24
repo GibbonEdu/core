@@ -81,13 +81,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)
             ->pageSize(0)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');
         echo '</h3>'; 
         
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->setClass('noIntBorder fullWidth');

@@ -31,7 +31,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
     $output .= __($guid, 'Choose A Class');
     $output .= '</h2>';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
     
@@ -59,7 +59,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output .= __($guid, 'Choose Class');
     $output .= '</h3>';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
@@ -319,7 +319,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         if (date('Y-m-d H:i:s') < $markbookColumn['homeworkDueDateTime']) {
             $output .= "<span title='".__('Pending')."'>".__('Pen').'</span>';
         } else {
-            if ($student['dateStart'] > $markbookColumn['lessonDate']) {
+            if (!empty($student['dateStart']) && $student['dateStart'] > $markbookColumn['lessonDate']) {
                 $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
             } else {
                 if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {

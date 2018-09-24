@@ -102,8 +102,7 @@ if (isset($authUrl)){
 
         $row = $form->addRow()->setClass('loginOptionsGoogle');
             $row->addContent(sprintf($loginIcon, 'language', __('Language')));
-            $row->addSelect('gibboni18nIDGoogle')
-                ->fromQuery($pdo, "SELECT gibboni18nID as value, name FROM gibboni18n WHERE active='Y' ORDER BY name")
+            $row->addSelectI18n('gibboni18nIDGoogle')
                 ->setClass('fullWidth')
                 ->placeholder(null)
                 ->selected($_SESSION[$guid]['i18n']['gibboni18nID']);
@@ -190,10 +189,15 @@ if (isset($authUrl)){
         exit;
 	}
 	else {
-		$row = $result->fetch();
+        $row = $result->fetch();
+        
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
 
         // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y') {
+        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
             unset($_SESSION[$guid]['googleAPIAccessToken'] );
             unset($_SESSION[$guid]['gplusuer']);
             @session_destroy();

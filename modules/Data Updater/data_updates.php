@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php') == false) {
     //Acess denied

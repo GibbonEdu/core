@@ -58,7 +58,7 @@ else {
 
 		$search = isset($_GET['search'])? $_GET['search'] : '';
 
-		$form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+		$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 		$form->setClass('noIntBorder fullWidth');
 
 		$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/messenger_manage.php');
@@ -361,6 +361,21 @@ else {
 									if ($resultTarget->rowCount()==1) {
 										$rowTarget=$resultTarget->fetch() ;
 										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . formatName("", $rowTarget["preferredName"], $rowTarget["surname"], "Student", true) . "<br/>" ;
+									}
+								}
+								else if ($rowTargets["type"]=="Group") {
+									try {
+										$dataTarget=array("gibbonGroupID"=>$rowTargets["id"]);
+										$sqlTarget="SELECT name FROM gibbonGroup WHERE gibbonGroupID=:gibbonGroupID" ;
+										$resultTarget=$connection2->prepare($sqlTarget);
+										$resultTarget->execute($dataTarget);
+									}
+									catch(PDOException $e) {
+										print "<div class='error'>" . $e->getMessage() . "</div>" ;
+									}
+									if ($resultTarget->rowCount()==1) {
+										$rowTarget=$resultTarget->fetch() ;
+										$targets.="<b>" . __($guid, $rowTargets["type"]) . "</b> - " . $rowTarget["name"] . "<br/>" ;
 									}
 								}
 							}

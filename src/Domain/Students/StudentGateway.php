@@ -64,10 +64,6 @@ class StudentGateway extends QueryableGateway
                   ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
                   ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
                   ->bindValue('today', date('Y-m-d'));
-            $query->where("gibbonPerson.status = 'Full'")
-                  ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
-                  ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
-                  ->bindValue('today', date('Y-m-d'));
         }
 
         if ($searchFamilyDetails && $criteria->hasSearchText()) {
@@ -98,6 +94,29 @@ class StudentGateway extends QueryableGateway
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->where('gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        $criteria->addFilterRules($this->getSharedUserFilterRules());
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentEnrolmentByRollGroup(QueryCriteria $criteria, $gibbonRollGroupID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory"
+            ])
+            ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
+            ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
+            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID)
+            ->where("gibbonPerson.status = 'Full'")
+            ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
+            ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
+            ->bindValue('today', date('Y-m-d'));
 
         $criteria->addFilterRules($this->getSharedUserFilterRules());
 
@@ -162,7 +181,7 @@ class StudentGateway extends QueryableGateway
     public function selectActiveStudentByPerson($gibbonSchoolYearID, $gibbonPersonID)
     {
         $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName, image_240, gibbonYearGroup.gibbonYearGroupID, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.nameShort AS rollGroup, 'Student' as roleCategory
                 FROM gibbonPerson
                 JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
                 JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
@@ -172,6 +191,18 @@ class StudentGateway extends QueryableGateway
                 AND (dateStart IS NULL OR dateStart<=:today) 
                 AND (dateEnd IS NULL  OR dateEnd>=:today)
                 AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectAllStudentEnrolmentsByPerson($gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT * 
+                FROM gibbonStudentEnrolment 
+                JOIN gibbonSchoolYear ON (gibbonStudentEnrolment.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) 
+                WHERE gibbonPersonID=:gibbonPersonID 
+                ORDER BY sequenceNumber DESC";
 
         return $this->db()->select($sql, $data);
     }

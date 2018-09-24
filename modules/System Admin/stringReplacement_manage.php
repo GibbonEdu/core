@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $criteria = $stringGateway->newQueryCriteria()
         ->searchBy($stringGateway->getSearchableColumns(), $search)
         ->sortBy('priority', 'DESC')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
     
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
     
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage.php');

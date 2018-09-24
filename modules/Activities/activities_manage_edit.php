@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_edit.php') == false) {
     //Acess denied
@@ -288,9 +288,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             $form->addRow()->addHeading(__('New Staff'));
 
 			$row = $form->addRow();
-				$row->addLabel('staff', 'Staff');
-				$row->addSelectStaff('staff')->selectMultiple();
-
+				$row->addLabel('staff', __('Staff'));
+				$row->addSelectUsers('staff', $_SESSION[$guid]['gibbonSchoolYearID'], array('includeStaff' => true))->selectMultiple();
+			
 			$staffRoles = array(
 				'Organiser' => __('Organiser'),
 				'Coach'     => __('Coach'),

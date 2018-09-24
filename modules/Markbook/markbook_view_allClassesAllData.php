@@ -2,8 +2,8 @@
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	require_once './modules/'.$_SESSION[$guid]['module'].'/src/markbookView.php';
-	require_once './modules/'.$_SESSION[$guid]['module'].'/src/markbookColumn.php';
+	require_once __DIR__ . '/src/markbookView.php';
+	require_once __DIR__ . '/src/markbookColumn.php';
 
     //Check for access to multiple column add
     $multiAdd = false;
@@ -414,7 +414,11 @@
             	echo '<th>';
             	echo '</th>';
             } else {
-
+                if ($enableModifiedAssessment == 'Y') {
+                    echo "<th class='columnLabel smallColumn'>";
+                        echo __('Mod');
+                    echo '</th>';
+                }
                 if ($column->displayAttainment() ) {
 
                     echo "<th class='columnLabel medColumn'>";
@@ -664,6 +668,11 @@
                     if ($resultEntry->rowCount() == 1) {
                         $rowEntry = $resultEntry->fetch();
 
+                        if ($enableModifiedAssessment == 'Y') {
+                            echo "<td class='smallColumn'>";
+                                echo $rowEntry['modifiedAssessment'];
+                            echo "</td>";
+                        }
                         if ($column->displayAttainment()) {
 
                             echo "<td class='medColumn'>";
