@@ -209,10 +209,14 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectI18n($name)
     {
-        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE installed='Y' AND active='Y' ORDER BY code";
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY code";
+        $results = $this->pdo->select($sql);
 
-        return $this->createSelect($name)->fromResults($results)->placeholder();
+        $values = array_filter($results->fetchKeyPair(), function ($item) {
+            return isset($item['installed']) && $item['installed'] == 'Y';
+        });
+
+        return $this->createSelect($name)->fromArray($values)->placeholder();
     }
 
     public function createSelectLanguage($name)
