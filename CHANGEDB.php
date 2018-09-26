@@ -755,4 +755,6 @@ UPDATE `gibbonAction` SET `category` = 'Extend & Update', `name` = 'Manage Langu
 UPDATE gibbonCountry SET printable_name='Russia', iddCountryCode='7' WHERE printable_name='Russian Federation';end
 ALTER TABLE `gibboni18n` ADD `installed` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `active`;end
 ALTER TABLE `gibboni18n` ADD `version` VARCHAR(10) NULL AFTER `name`;end
+UPDATE `gibbonAction` SET `name` = 'Manage Users_editDelete', `precedence` = 1 WHERE `name` = 'Manage Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin'), 'Manage Users_edit', 0, 'User Management', 'Allows admin to edit any user within the system, but not to delete them.', 'user_manage.php, user_manage_add.php, user_manage_edit.php, user_manage_password.php', 'user_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 ";
