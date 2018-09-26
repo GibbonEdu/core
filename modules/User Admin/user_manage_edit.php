@@ -209,9 +209,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 
-			$row = $form->addRow();
-				$row->addLabel('username', __('Username'));
-				$row->addTextField('username')->readOnly()->maxLength(20);
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'))->description(__('System login name.'));
+                $row->addTextField('username')
+                    ->isRequired()
+                    ->maxLength(20)
+                    ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
+                    ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php', ['currentUsername' => $values['username']]);
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
