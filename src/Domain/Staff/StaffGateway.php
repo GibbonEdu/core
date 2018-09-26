@@ -49,9 +49,11 @@ class StaffGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonStaff.gibbonStaffID', 'gibbonStaff.initials', 'gibbonStaff.type', 'gibbonStaff.jobTitle'
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.title', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.status', 'gibbonStaff.gibbonStaffID', 'gibbonStaff.initials', 'gibbonStaff.jobTitle',
+                '(CASE WHEN gibbonRoleID IS NOT NULL THEN gibbonRole.name ELSE gibbonStaff.type END) as type',
             ])
-            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID');
+            ->innerJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID')
+            ->leftJoin('gibbonRole', 'gibbonRole.gibbonRoleID=gibbonStaff.type');
 
         if (!$criteria->hasFilter('all')) {
             $query->where('gibbonPerson.status = "Full"');
