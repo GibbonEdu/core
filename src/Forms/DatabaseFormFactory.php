@@ -209,12 +209,15 @@ class DatabaseFormFactory extends FormFactory
 
     public function createSelectI18n($name)
     {
-        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY code";
+        $sql = "SELECT * FROM gibboni18n WHERE active='Y' ORDER BY code";
         $results = $this->pdo->select($sql);
 
-        $values = array_filter($results->fetchKeyPair(), function ($item) {
-            return isset($item['installed']) && $item['installed'] == 'Y';
-        });
+        $values = array_reduce($results->fetchAll(), function ($group, $item) {
+            if (isset($item['installed']) && $item['installed'] == 'Y') {
+                $group[$item['gibboni18nID']] = $item['systemDefault'] == 'Y'? $item['name'].' ('.__('System Default').')' : $item['name'];
+            }
+            return $group;
+        }, []);
 
         return $this->createSelect($name)->fromArray($values)->placeholder();
     }
