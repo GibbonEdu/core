@@ -76,6 +76,8 @@ v17.0.00
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
         User Admin: added ability to include custom fields in public registration form
         User Admin: added missing custom field description into OOified forms
+        User Admin: added a separate permission for Manage Users without the ability to delete user data
+        User Admin: added the ability to change usernames which will check to ensure it's still unique
 
 v16.0.01
 --------
