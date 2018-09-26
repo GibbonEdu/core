@@ -3743,14 +3743,14 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__($guid, 'P').'</div>';
         }
 
-        //Boarding Status
+        // Custom Field Flags
         try {
             $dataPersonField = array('gibbonPersonID' => $gibbonPersonID);
             $sqlPersonField = 'SELECT fields FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID LIMIT 1';
             $resultPersonField = $connection2->prepare($sqlPersonField);
             $resultPersonField->execute($dataPersonField);
-        } catch (PDOException $e) {
-        }
+        } catch (PDOException $e) {}
+
         if ($resultPersonField->rowCount() > 0) {
 
             $rowPersonField = $resultPersonField->fetch();
@@ -3758,23 +3758,42 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
             if (!empty($userFields)) {
                 try {
-                    $dataFields = array('name' => 'Boarding Status');
+                    $dataFields = array('name' => 'IB Registration Number');
                     $sqlFields = 'SELECT gibbonPersonFieldID FROM gibbonPersonField WHERE name=:name LIMIT 1';
                     $resultFields = $connection2->prepare($sqlFields);
                     $resultFields->execute($dataFields);
-                } catch (PDOException $e) {
-                }
+                } catch (PDOException $e) {}
 
                 if ($resultFields->rowCount() > 0) {
-                    $fields = $resultFields->fetch();
-                    $userField = (isset($userFields[ $fields['gibbonPersonFieldID'] ]))? $userFields[ $fields['gibbonPersonFieldID'] ] : '';
-                    if ( $userField == 'Current' || $userField == 'Potential' || $userField == 'Confirmed' ) {
-                        $color = "3B73AF";    //"390";  green
-                        $colorBG = "b3ceeb";  //"D4F6DC";  green
+                    $gibbonPersonFieldID = $resultFields->fetchColumn(0);
+                    $userField = (isset($userFields[$gibbonPersonFieldID]))? $userFields[$gibbonPersonFieldID] : '';
+                    if (!empty($userField)) {
+                        $color = "#3B73AF";    //"390";  green
+                        $colorBG = "#b3ceeb";  //"D4F6DC";  green
 
-                        $title = __($guid, "Boarding Student").': '.$userField;
+                        $title = __("IB Student");
 
-                        $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$color."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$color.'; margin-left: 2px; background-color: #'.$colorBG."'>".__($guid, 'B').'</div></a>';
+                        $output .= "<a style='font-size: ".$fontSize.'px; color: '.$color."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Internal Assessment'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid '.$color.'; margin-left: 2px; background-color: '.$colorBG.";'>".__($guid, 'IB').'</div></a>';
+                    }
+                }
+
+                try {
+                    $dataFields = array('name' => 'Paid Lunch');
+                    $sqlFields = 'SELECT gibbonPersonFieldID FROM gibbonPersonField WHERE name=:name LIMIT 1';
+                    $resultFields = $connection2->prepare($sqlFields);
+                    $resultFields->execute($dataFields);
+                } catch (PDOException $e) {}
+
+                if ($resultFields->rowCount() > 0) {
+                    $gibbonPersonFieldID = $resultFields->fetchColumn(0);
+                    $userField = (isset($userFields[$gibbonPersonFieldID]))? $userFields[$gibbonPersonFieldID] : '';
+                    if (!empty($userField) && $userField == 'Y') {
+                        $color = "#449045";
+                        $colorBG = "#b1ed81";
+
+                        $title = __("Paid Lunch");
+
+                        $output .= "<a style='font-size: ".$fontSize.'px; color: '.$color."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Personal'><div title='$title' style='float: right; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid '.$color.'; margin-left: 2px; background-color: '.$colorBG."'>".__($guid, 'L').'</div></a>';
                     }
                 }
             }
