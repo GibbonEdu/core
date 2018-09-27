@@ -755,4 +755,5 @@ UPDATE `gibbonAction` SET `category` = 'Extend & Update', `name` = 'Manage Langu
 UPDATE gibbonCountry SET printable_name='Russia', iddCountryCode='7' WHERE printable_name='Russian Federation';end
 ALTER TABLE `gibboni18n` ADD `installed` ENUM('Y','N') NOT NULL DEFAULT 'N' AFTER `active`;end
 ALTER TABLE `gibboni18n` ADD `version` VARCHAR(10) NULL AFTER `name`;end
+UPDATE gibbonStaff SET gibbonStaff.type=(SELECT name FROM gibbonRole WHERE gibbonRole.gibbonRoleID = gibbonStaff.type) WHERE SUBSTRING(gibbonStaff.type, 1, 1) REGEXP '[[:digit:]]';end
 ";
