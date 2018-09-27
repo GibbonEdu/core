@@ -33,17 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonSpaceID = $_GET['gibbonSpaceID'];
-
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-
-        $gibbonTTID = null;
-        if (isset($_GET['gibbonTTID'])) {
-            $gibbonTTID = $_GET['gibbonTTID'];
-        }
+        $gibbonSpaceID = isset($_REQUEST['gibbonSpaceID']) ? $_REQUEST['gibbonSpaceID'] : '';
+        $search = isset($_REQUEST['search']) ? $_REQUEST['search'] : null;
+        $gibbonTTID = isset($_REQUEST['gibbonTTID']) ? $_REQUEST['gibbonTTID'] : null;
 
         try {
             $data = array('gibbonSpaceID' => $gibbonSpaceID);
@@ -72,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             }
 
             $ttDate = null;
-            if (isset($_POST['ttDate'])) {
-                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_POST['ttDate']));
+            if (isset($_REQUEST['ttDate'])) {
+                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_REQUEST['ttDate']));
             }
 
             if (isset($_POST['fromTT'])) {
