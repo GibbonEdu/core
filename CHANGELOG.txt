@@ -70,12 +70,15 @@ v17.0.00
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
         Students: updated how the Privacy section is displayed in application and data updater forms
+        Timetable: added a facility booking button to the timetable in View Timetable by Facility
         Timetable Admin: fixed course sync for courses with multiple year groups
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
         User Admin: added ability to include custom fields in public registration form
         User Admin: added missing custom field description into OOified forms
+        User Admin: added a separate permission for Manage Users without the ability to delete user data
+        User Admin: added the ability to change usernames which will check to ensure it's still unique
 
 v16.0.01
 --------
