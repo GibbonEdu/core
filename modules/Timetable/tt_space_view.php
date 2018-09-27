@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo 'The specified room does not seem to exist.';
+            echo __('The specified room does not seem to exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -56,6 +56,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
             echo "<div class='trail'>";
             echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_space.php'>View Timetable by Facility</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
             echo '</div>';
+
+            if (isset($_GET['return'])) {
+                returnProcess($guid, $_GET['return'], null, null);
+            }
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
@@ -65,7 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             $ttDate = null;
             if (isset($_REQUEST['ttDate'])) {
-                $ttDate = dateConvertToTimestamp(dateConvert($guid, $_REQUEST['ttDate']));
+                $date = dateConvert($guid, $_REQUEST['ttDate']);
+                $ttDate = strtotime('last Sunday +1 day', strtotime($date));
             }
 
             if (isset($_POST['fromTT'])) {
