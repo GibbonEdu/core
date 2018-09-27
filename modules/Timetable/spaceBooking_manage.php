@@ -71,8 +71,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $table->addColumn('date', __('Date'))
             ->format(Format::using('date', 'date'));
         $table->addColumn('name', __('Facility'))
-            ->format(function($row) {
-                return $row['name'].'<br/><small><i>'
+            ->format(function($row) use ($guid) {
+                if ($row['foreignKey']=='gibbonSpaceID') {
+                    $output = Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.str_pad($row['foreignKeyID'], 10, '0', STR_PAD_LEFT).'&ttDate='.dateConvertBack($guid, $row['date']), $row['name']);
+                } else {
+                    $output = $row['name'];
+                }
+
+                return $output.'<br/><small><i>'
                      .($row['foreignKey'] == 'gibbonLibraryItemID'? __('Library') :'').'</i></small>';
             });
         $table->addColumn('time', __('Time'))
