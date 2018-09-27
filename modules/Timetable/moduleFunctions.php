@@ -2094,14 +2094,14 @@ function renderTTSpaceDay($guid, $connection2, $gibbonTTID, $startDayStamp, $cou
                     $output .= $rowPeriods['name'].'<br/>';
                     $output .= '<i>'.substr($effectiveStart, 0, 5).'-'.substr($effectiveEnd, 0, 5).'</i><br/>';
 
-                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php')) {
+                    if ($_SESSION[$guid]['viewCalendarSpaceBooking'] == 'Y' && isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') && $date >= date('Y-m-d')) {
                         $overlappingBookings = array_filter(is_array($eventsSpaceBooking)? $eventsSpaceBooking : [], 
                             function ($event) use ($date, $effectiveStart, $effectiveEnd) {
                                 return ($event[3] == $date) && ( ($event[4] >= $effectiveStart && $event[4] < $effectiveEnd) || ($effectiveStart >= $event[4] && $effectiveStart < $event[5]) );
                             }); 
 
                         if (empty($overlappingBookings)) {
-                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."'><img style='' title='".__('Add Facility Booking')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                            $output .= "<a style='pointer-events: auto; position: absolute; right: 5px; bottom: 5px;' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/spaceBooking_manage_add.php&gibbonSpaceID='.$gibbonSpaceID.'&date='.$date.'&timeStart='.$effectiveStart.'&timeEnd='.$effectiveEnd."&source=tt'><img style='' title='".__('Add Facility Booking')."' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         }
                     }
                 }
