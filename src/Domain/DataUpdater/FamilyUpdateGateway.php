@@ -59,7 +59,7 @@ class FamilyUpdateGateway extends QueryableGateway
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryFamilyUpdaterHistory(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonYearGroupIDList)
+    public function queryFamilyUpdaterHistory(QueryCriteria $criteria, $gibbonSchoolYearID, $gibbonYearGroupIDList, $requiredUpdatesByType)
     {
         $gibbonYearGroupIDList = is_array($gibbonYearGroupIDList)? implode(',', $gibbonYearGroupIDList) : $gibbonYearGroupIDList;
 
@@ -87,9 +87,31 @@ class FamilyUpdateGateway extends QueryableGateway
             ->having('latestEndDate >= NOW()');
 
         $criteria->addFilterRules([
-            'cutoff' => function ($query, $cutoffDate) {
-                $query->having("(gibbonFamilyUpdateID IS NULL OR familyUpdate < :cutoffDate) AND (earliestDateStart < :cutoffDate)");
-                $query->bindValue('cutoffDate', $cutoffDate);
+            'cutoff' => function ($query, $cutoffDate) use ($requiredUpdatesByType) {
+                $havingCutoff = "(gibbonFamilyUpdateID IS NULL OR familyUpdate < :cutoffDate)";
+
+                if (in_array('Personal', $requiredUpdatesByType)) {
+                    $query->cols([
+                        "MAX(IFNULL(studentUpdate.timestamp, '0000-00-00')) as earliestStudentUpdate", 
+                        "MAX(IFNULL(adultUpdate.timestamp, '0000-00-00')) as earliestAdultUpdate"
+                    ])
+                    ->leftJoin('gibbonPersonUpdate AS studentUpdate', 'studentUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                    ->leftJoin('gibbonFamilyAdult', 'gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
+                    ->leftJoin('gibbonPerson AS adult', "adult.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID AND adult.status='Full'")
+                    ->leftJoin('gibbonPersonUpdate AS adultUpdate', 'adultUpdate.gibbonPersonID=adult.gibbonPersonID');
+                    $havingCutoff .= " OR (earliestStudentUpdate < :cutoffDate) OR (earliestAdultUpdate < :cutoffDate)";
+                }
+
+                if (in_array('Medical', $requiredUpdatesByType)) {
+                    $query->cols([
+                        "MAX(IFNULL(medicalUpdate.timestamp, '0000-00-00')) as earliestMedicalUpdate", 
+                    ])
+                    ->leftJoin('gibbonPersonMedicalUpdate AS medicalUpdate', 'medicalUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID');
+                    $havingCutoff .= " OR (earliestMedicalUpdate < :cutoffDate)";
+                }
+
+                $query->having("($havingCutoff) AND (earliestDateStart < :cutoffDate)")
+                    ->bindValue('cutoffDate', $cutoffDate);
             },
         ]);
 

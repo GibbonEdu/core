@@ -83,6 +83,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         echo __('Report Data');
         echo '</h2>';
 
+        $requiredUpdatesByType = explode(',', getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType'));
+
         $gateway = $container->get(FamilyUpdateGateway::class);
 
         // QUERY
@@ -91,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
             ->fromPOST();
 
-        $dataUpdates = $gateway->queryFamilyUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupIDList);
+        $dataUpdates = $gateway->queryFamilyUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $gibbonYearGroupIDList, $requiredUpdatesByType);
         $families = $dataUpdates->getColumn('gibbonFamilyID');
 
         // Join a set of family adults & updater info
@@ -104,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         // Function to display the updater info based on the cutoff date
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
-        $dataChecker = function($dateUpdated, $dateStart) use ($dateCutoff, $guid) {
+        $dataChecker = function($dateUpdated, $dateStart, $title = '') use ($dateCutoff, $guid) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
 
@@ -113,8 +115,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             }
 
             return empty($dateUpdated) || $dateCutoff > $date
-                ? "<img title='".__('Update Required').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png' width='18' />"
-                : "<img title='".__('Up to date').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png' width='18' />";
+                ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png' width='18' />"
+                : "<img title='".$title.' '.__('Up to date').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png' width='18' />";
         };
 
         // DATA TABLE
@@ -139,17 +141,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyUpdate', __('Family Data'))
                 ->width('5%')
                 ->format(function($row) use ($dataChecker) {
-                    return $dataChecker($row['familyUpdate'], $row['earliestDateStart']);
+                    return $dataChecker($row['familyUpdate'], $row['earliestDateStart'],  __('Family'));
                 });
 
             $table->addColumn('familyAdults', __('Adults'))
                 ->notSortable()
-                ->format(function($row) use ($dataChecker) {
+                ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
                     $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
                     foreach ($row['familyAdults'] as $adult) {
                         $output .= '<tr>';
                         $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
-                        $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'], $row['earliestDateStart']).'</td>';
+                        if (in_array('Personal', $requiredUpdatesByType)) {
+                            $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'], $row['earliestDateStart'],  __('Personal')).'</td>';
+                        }
                         $output .= '</tr>';
                     }
                     $output .= '</table>';
@@ -158,13 +162,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
             $table->addColumn('familyChildren', __('Children'))
                 ->notSortable()
-                ->format(function($row) use ($dataChecker) {
+                ->format(function($row) use ($dataChecker, $requiredUpdatesByType) {
                     $output = '<table class="smallIntBorder fullWidth colorOddEven" cellspacing=0>';
                     foreach ($row['familyChildren'] as $child) {
                         $output .= '<tr>';
                         $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
                         $output .= '<td style="width:10%">'.$child['rollGroup'].'</td>';
-                        $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], $child['dateStart']).'</td>';
+                        if (in_array('Personal', $requiredUpdatesByType)) {
+                            $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], $child['dateStart'], __('Personal')).'</td>';
+                        }
+                        if (in_array('Medical', $requiredUpdatesByType)) {
+                            $output .= '<td style="width:10%">'.$dataChecker($child['medicalUpdate'], $child['dateStart'], __('Medical')).'</td>';
+                        }
                         $output .= '</tr>';
                     }
                     $output .= '</table>';

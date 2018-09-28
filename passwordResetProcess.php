@@ -42,7 +42,7 @@ if ($input == '' or ($step != 1 and $step != 2)) {
 else {
     try {
         $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username, canLogin FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username, canLogin, gibbonRoleIDPrimary FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -52,14 +52,26 @@ else {
     }
 
     if ($result->rowCount() != 1) {
-        $URL = $URL.'&return=error5';
+        $URL = $URL.'&return=error4';
         header("Location: {$URL}");
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges / activation message if login not enabled
+        // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
-            $URL .= ($row['canLogin'] == 'A')? '&return=error9' : '&return=error8';
+            $URL .= '&return=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
+
+        // Login not allowed for this role
+        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
+            $URL .= '&return=fail9';
             header("Location: {$URL}");
             exit;
         }
@@ -169,7 +181,7 @@ else {
                         } else {
                             //Check new passwords match
                             if ($passwordNew != $passwordConfirm) {
-                                $URL .= '&return=error4';
+                                $URL .= '&return=error5';
                                 header("Location: {$URL}");
                             } else {
                                 //Update password

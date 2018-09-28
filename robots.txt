@@ -1,2 +1,2 @@
-disallow: /uploads/*
-disallow: /uploads
+User-agent: *
+Disallow: /

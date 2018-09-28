@@ -37,6 +37,7 @@ v17.0.00
         System: added Eastern Caribbean Dollars and Guatemalan Quetzal as currencies
         System: added country code and correct spelling of Vietnam and Russia
         System: updated vis.js library to v4.21.0
+        System: updated robots.txt to disallow all indexing
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Data Updater: added a Family Data Updater History report
@@ -63,6 +64,7 @@ v17.0.00
         Messenger: added missing Group target information into Manage Messages view
         Messenger: updated the Year Group target for Staff to only include tutors and teachers of courses in the same year group
         Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
+        Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
@@ -70,7 +72,9 @@ v17.0.00
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
         Students: updated how the Privacy section is displayed in application and data updater forms
+        Timetable: added a facility booking button to the timetable in View Timetable by Facility
         Timetable Admin: fixed course sync for courses with multiple year groups
+        Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
