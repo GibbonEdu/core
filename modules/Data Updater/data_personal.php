@@ -286,15 +286,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-						$row->addTextField('surname')->maxLength(30);
+						$row->addTextField('surname')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-						$row->addTextField('firstName')->maxLength(30);
+						$row->addTextField('firstName')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-						$row->addTextField('preferredName')->maxLength(30);
+						$row->addTextField('preferredName')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -302,7 +302,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-						$row->addTextField('nameInCharacters')->maxLength(20);
+						$row->addTextField('nameInCharacters')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('dob', __('Date of Birth'));
@@ -316,7 +316,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 						$row->addLabel('emergency1Name', __('Contact 1 Name'));
-						$row->addTextField('emergency1Name')->maxLength(30);
+						$row->addTextField('emergency1Name')->maxLength(90);
 
 						$row = $form->addRow();
 						$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
@@ -332,7 +332,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 						$row->addLabel('emergency2Name', __('Contact 2 Name'));
-						$row->addTextField('emergency2Name')->maxLength(30);
+						$row->addTextField('emergency2Name')->maxLength(90);
 
 						$row = $form->addRow();
 						$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
@@ -545,15 +545,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 							$row->addLabel('profession', __('Profession'));
-							$row->addTextField('profession')->maxLength(30);
+							$row->addTextField('profession')->maxLength(90);
 
 						$row = $form->addRow();
 							$row->addLabel('employer', __('Employer'));
-							$row->addTextField('employer')->maxLength(30);
+							$row->addTextField('employer')->maxLength(90);
 
 						$row = $form->addRow();
 							$row->addLabel('jobTitle', __('Job Title'));
-							$row->addTextField('jobTitle')->maxLength(30);
+							$row->addTextField('jobTitle')->maxLength(90);
 					}
 
 					// MISCELLANEOUS
