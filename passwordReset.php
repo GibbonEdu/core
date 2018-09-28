@@ -43,6 +43,7 @@ if ($step == 1) {
     $returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
     $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
     $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
+    $returns['error8'] = __($guid, 'Your request failed because you do not have sufficient privileges to login.');
     $returns['success0'] = __($guid, 'Password reset request successfully initiated, please check your email.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);

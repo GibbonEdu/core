@@ -42,7 +42,7 @@ if ($input == '' or ($step != 1 and $step != 2)) {
 else {
     try {
         $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username, canLogin FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -56,6 +56,14 @@ else {
         header("Location: {$URL}");
     } else {
         $row = $result->fetch();
+
+        // Insufficient privledges message if login not enabled
+        if ($row['canLogin'] != 'Y') {
+            $URL .= '&return=error8';
+            header("Location: {$URL}");
+            exit;
+        }
+
         $gibbonPersonID = $row['gibbonPersonID'];
         $email = $row['email'];
         $username = $row['username'];
