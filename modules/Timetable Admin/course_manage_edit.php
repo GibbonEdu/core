@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(6);
+				$row->addTextField('nameShort')->isRequired()->maxLength(8);
 
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
