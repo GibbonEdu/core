@@ -55,23 +55,6 @@ if (@$_SESSION[$guid]['systemSettingsSet'] == false) {
     getSystemSettings($guid, $connection2);
 }
 
-// Allow the URL to override system default from the i18l param
-if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
-    try {
-        $data = array('code' => $_GET['i18n']);
-        $sql = "SELECT * FROM gibboni18n WHERE code=:code LIMIT 1";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {}
-
-    if ($result->rowCount() == 1) {
-        setLanguageSession($guid, $result->fetch(), false);
-        $gibbon->locale->setLocale($_GET['i18n']);
-        $gibbon->locale->setTextDomain($pdo);
-        $cacheLoad = true;
-    }
-}
-
 //Try to autoset user's calendar feed if not set already
 if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
     if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
@@ -467,15 +450,6 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						if ($_SESSION[$guid]['address'] == '') {
                             $returns = array();
                         	$returns['success1'] = __($guid, 'Password reset was successful: you may now log in.');
-
-                            if ($gibbon->locale->getLocale() == 'zh_HK') {
-                                $returns['success2'] = __($guid, '帳號已確認成功，請查看  閣下之電郵以獲取登入資訊。倘若未有收到確認電郵，請查看電子郵箱中的「垃圾郵件」。');
-                                $returns['success3'] = __($guid, '相片上載成功。  閣下之帳戶已確認成功，歡迎登入。');
-                            } else {
-                                $returns['success2'] = __($guid, 'Account confirmation was successful: you may now log in. Please check your email for login details. If you do not receive an email within a few minutes please check your spam folder as some emails may end up there.');
-                                $returns['success3'] = __($guid, 'Photo upload successful. Your account has already been confirmed: you may now log in with your existing account details.');
-                            }
-
                         	if (isset($_GET['return'])) {
                         	    returnProcess($guid, $_GET['return'], null, $returns);
                         	}
