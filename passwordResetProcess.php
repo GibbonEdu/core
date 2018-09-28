@@ -181,7 +181,7 @@ else {
                         } else {
                             //Check new passwords match
                             if ($passwordNew != $passwordConfirm) {
-                                $URL .= '&return=error4';
+                                $URL .= '&return=error5';
                                 header("Location: {$URL}");
                             } else {
                                 //Update password
