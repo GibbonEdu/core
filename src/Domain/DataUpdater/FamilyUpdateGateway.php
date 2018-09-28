@@ -88,8 +88,15 @@ class FamilyUpdateGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'cutoff' => function ($query, $cutoffDate) {
-                $query->having("(gibbonFamilyUpdateID IS NULL OR familyUpdate < :cutoffDate) AND (earliestDateStart < :cutoffDate)");
-                $query->bindValue('cutoffDate', $cutoffDate);
+                $query->cols([
+                    "MAX(IFNULL(studentUpdate.timestamp, '0000-00-00')) as earliestStudentUpdate", 
+                    "MAX(IFNULL(adultUpdate.timestamp, '0000-00-00')) as earliestAdultUpdate"
+                    ])
+                    ->leftJoin('gibbonPersonUpdate AS studentUpdate', 'studentUpdate.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                    ->leftJoin('gibbonFamilyAdult', 'gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID')
+                    ->leftJoin('gibbonPersonUpdate AS adultUpdate', 'adultUpdate.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID')
+                    ->having("((gibbonFamilyUpdateID IS NULL OR familyUpdate < :cutoffDate) OR (earliestStudentUpdate < :cutoffDate) OR (earliestAdultUpdate < :cutoffDate)) AND (earliestDateStart < :cutoffDate)")
+                    ->bindValue('cutoffDate', $cutoffDate);
             },
         ]);
 
