@@ -74,6 +74,7 @@ v17.0.00
         Students: updated how the Privacy section is displayed in application and data updater forms
         Timetable: added a facility booking button to the timetable in View Timetable by Facility
         Timetable Admin: fixed course sync for courses with multiple year groups
+        Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
         User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
