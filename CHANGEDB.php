@@ -764,4 +764,12 @@ ALTER TABLE `gibbonCourseClass` CHANGE `name` `name` VARCHAR(30) CHARACTER SET u
 ALTER TABLE `gibbonPerson` CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `nameInCharacters` `nameInCharacters` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `profession` `profession` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `employer` `employer` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `jobTitle` `jobTitle` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `emergency1Name` `emergency1Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `emergency2Name` `emergency2Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonHouse` CHANGE `nameShort` `nameShort` VARCHAR(10) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 ALTER TABLE `gibbonCourse` CHANGE `name` `name` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `nameShort` `nameShort` VARCHAR(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+ALTER TABLE `gibbonFamilyUpdate` ADD INDEX `gibbonFamilyIndex` (`gibbonFamilyID`,`gibbonSchoolYearID`);end
+ALTER TABLE `gibbonPersonUpdate` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`,`gibbonSchoolYearID`);end
+ALTER TABLE `gibbonPersonMedicalUpdate` ADD INDEX `gibbonMedicalIndex` (`gibbonPersonID`, `gibbonPersonMedicalID`,`gibbonSchoolYearID`);end
+ALTER TABLE `gibbonFinanceInvoiceeUpdate` ADD INDEX `gibbonInvoiceeIndex` (`gibbonFinanceInvoiceeID`,`gibbonSchoolYearID`);end
+ALTER TABLE `gibbonFamilyAdult` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`);end
+ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`);end
+ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonFamilyIndex` (`gibbonFamilyID`);end
+ALTER TABLE `gibbonStudentEnrolment` ADD KEY `gibbonPersonIndex` (`gibbonPersonID`,`gibbonSchoolYearID`);end
 ";

@@ -109,7 +109,7 @@ class FamilyUpdateGateway extends QueryableGateway
                     $havingCutoff .= " OR (earliestMedicalUpdate < :cutoffDate)";
                 }
 
-                $query->having("$havingCutoff")
+                $query->having($havingCutoff)
                     ->bindValue('cutoffDate', $cutoffDate);
             },
         ]);
