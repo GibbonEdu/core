@@ -70,7 +70,6 @@ class FamilyUpdateGateway extends QueryableGateway
                 'gibbonFamily.gibbonFamilyID', 
                 'gibbonFamily.name as familyName', 
                 'MAX(gibbonFamilyUpdate.timestamp) as familyUpdate', 
-                "MIN(IFNULL(gibbonPerson.dateStart, '0000-00-00')) as earliestDateStart",
                 "MAX(IFNULL(gibbonPerson.dateEnd, NOW())) as latestEndDate",
                 'gibbonFamilyUpdate.gibbonFamilyUpdateID'
             ])
@@ -110,7 +109,7 @@ class FamilyUpdateGateway extends QueryableGateway
                     $havingCutoff .= " OR (earliestMedicalUpdate < :cutoffDate)";
                 }
 
-                $query->having("($havingCutoff) AND (earliestDateStart < :cutoffDate)")
+                $query->having("$havingCutoff")
                     ->bindValue('cutoffDate', $cutoffDate);
             },
         ]);
