@@ -130,9 +130,6 @@ class DataUpdaterGateway extends Gateway
         foreach ($updatablePeople as $person) {
             $dataUpdatesByType = $this->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
 
-            // Skip users who started after the cutoff date
-            if (!empty($person['dateStart']) && $person['dateStart'] >= $cutoffDate) continue;
-
             foreach ($requiredUpdatesByType as $type) {
                 // Skip data update types not applicable to this user
                 if (empty($dataUpdatesByType[$type])) continue;
