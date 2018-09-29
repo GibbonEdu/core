@@ -106,13 +106,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
 
         // Function to display the updater info based on the cutoff date
         $dateCutoff = DateTime::createFromFormat('Y-m-d H:i:s', Format::dateConvert($date).' 00:00:00');
-        $dataChecker = function($dateUpdated, $dateStart, $title = '') use ($dateCutoff, $guid) {
+        $dataChecker = function($dateUpdated, $title = '') use ($dateCutoff, $guid) {
             $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateUpdated);
             $dateDisplay = !empty($dateUpdated)? Format::dateTime($dateUpdated) : __('No data');
-
-            if (DateTime::createFromFormat('Y-m-d', $dateStart) > $dateCutoff) {
-                return "<img title='".__('Start Date').': '.Format::date($dateStart)."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png' width='18' />";
-            }
 
             return empty($dateUpdated) || $dateCutoff > $date
                 ? "<img title='".$title.' '.__('Update Required').': '.$dateDisplay."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png' width='18' />"
@@ -141,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
             $table->addColumn('familyUpdate', __('Family Data'))
                 ->width('5%')
                 ->format(function($row) use ($dataChecker) {
-                    return $dataChecker($row['familyUpdate'], $row['earliestDateStart'],  __('Family'));
+                    return $dataChecker($row['familyUpdate'],  __('Family'));
                 });
 
             $table->addColumn('familyAdults', __('Adults'))
@@ -152,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
                         $output .= '<tr>';
                         $output .= '<td style="width:90%">'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</td>';
                         if (in_array('Personal', $requiredUpdatesByType)) {
-                            $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'], $row['earliestDateStart'],  __('Personal')).'</td>';
+                            $output .= '<td style="width:10%">'.$dataChecker($adult['personalUpdate'],  __('Personal')).'</td>';
                         }
                         $output .= '</tr>';
                     }
@@ -169,10 +165,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
                         $output .= '<td style="width:80%">'.Format::name('', $child['preferredName'], $child['surname'], 'Student').'</td>';
                         $output .= '<td style="width:10%">'.$child['rollGroup'].'</td>';
                         if (in_array('Personal', $requiredUpdatesByType)) {
-                            $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], $child['dateStart'], __('Personal')).'</td>';
+                            $output .= '<td style="width:10%">'.$dataChecker($child['personalUpdate'], __('Personal')).'</td>';
                         }
                         if (in_array('Medical', $requiredUpdatesByType)) {
-                            $output .= '<td style="width:10%">'.$dataChecker($child['medicalUpdate'], $child['dateStart'], __('Medical')).'</td>';
+                            $output .= '<td style="width:10%">'.$dataChecker($child['medicalUpdate'], __('Medical')).'</td>';
                         }
                         $output .= '</tr>';
                     }
@@ -182,14 +178,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
         }
         
         $table->addColumn('familyAdultsEmail', __('Parent Email'))
-        ->notSortable()
-        ->format(function($row) use ($dataChecker) {
-            $output = "";
-            foreach ($row['familyAdults'] as $adult) {
-                $output .= $adult['email'].", ";
-            }
-            return $output;
-        });
+            ->notSortable()
+            ->format(function($row) {
+                return implode(', ', array_column($row['familyAdults'], 'email'));
+            });
 
         echo $table->render($dataUpdates);
     }
