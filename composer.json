@@ -20,6 +20,7 @@
         "twig/twig": "^2.0"
     },
     "require-dev": {
+        "twbs/bootstrap": "^4.1"
     },
     "autoload": {
         "psr-4": { "Gibbon\\": ["src/", "src/Gibbon"] }
