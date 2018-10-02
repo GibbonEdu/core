@@ -9,6 +9,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     public static $files = array (
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -20,9 +21,11 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Slim\\' => 5,
         ),
         'P' => 
         array (
+            'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
         ),
         'L' => 
@@ -36,6 +39,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'G' => 
         array (
             'Gibbon\\' => 7,
+        ),
+        'F' => 
+        array (
+            'FastRoute\\' => 10,
         ),
         'A' => 
         array (
@@ -56,6 +63,14 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
+        'Slim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/slim/Slim',
+        ),
+        'Psr\\Http\\Message\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/http-message/src',
+        ),
         'Psr\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
@@ -72,6 +87,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/../..' . '/src',
             1 => __DIR__ . '/../..' . '/src/Gibbon',
+        ),
+        'FastRoute\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
         'Aura\\SqlQuery\\' => 
         array (
