@@ -1,10 +1,20 @@
-uploads/*
-!uploads/.htaccess
+# Core Files
 /config.php
 /index_custom.php
 /index_customSidebar.php
-Thumb.db
-.DS_Store
+
+# Uploads Folder
+uploads/*
+!uploads/.htaccess
+
+# Tests Folder
 tests/log/*
 tests/config/support/_generated/*
+
+# Misc Files
+Thumb.db
+.DS_Store
 nbproject/
+
+# Dev Dependencies
+/vendor/twbs
