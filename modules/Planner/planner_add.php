@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
+							<b><?php echo __($guid, 'Name of Lesson Plan') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
@@ -1220,7 +1220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 							<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
 						</td>
 						<td class="right">
-							<input type="checkbox" name="notify" value="on">
+							<input type="checkbox" name="notify" value="on" checked="true">
 							<label for="notify"><?php echo __('Notify all class participants') ?></label>
 							<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
 						</td>
