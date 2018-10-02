@@ -16,7 +16,8 @@
         "ext-gettext": "*",
         "ext-PDO": "*",
         "league/container": "^2.4",
-        "aura/sqlquery": "3.*-dev"
+        "aura/sqlquery": "3.*-dev",
+        "twig/twig": "^2.0"
     },
     "require-dev": {
     },
