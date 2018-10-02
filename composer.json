@@ -17,10 +17,14 @@
         "ext-PDO": "*",
         "league/container": "^2.4",
         "aura/sqlquery": "3.*-dev",
-        "twig/twig": "^2.0"
+        "twig/twig": "^2.0",
+        "slim/slim": "^3.0"
     },
     "require-dev": {
         "twbs/bootstrap": "^4.1"
+    },
+    "replace": {
+        "pimple/pimple": "*"
     },
     "autoload": {
         "psr-4": { "Gibbon\\": ["src/", "src/Gibbon"] }
