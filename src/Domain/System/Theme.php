@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
+use Gibbon\View\AssetBundle;
+
 /**
  * Gibbon Theme Model.
  *
@@ -27,6 +29,18 @@ namespace Gibbon\Domain\System;
  */
 class Theme
 {
+    protected $name;
+
+    protected $stylesheets;
+    protected $scripts;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->stylesheets = new AssetBundle();
+        $this->scripts = new AssetBundle();
+    }
+
     /**
      * Get the theme name, used in the folder path and database record.
      *
@@ -34,7 +48,7 @@ class Theme
      */
     public function getName()
     {
-
+        return $this->name;
     }
 
     /**
@@ -44,7 +58,7 @@ class Theme
      */
     public function stylesheets()
     {
-        
+        return $this->stylesheets;
     }
 
     /**
@@ -54,6 +68,6 @@ class Theme
      */
     public function scripts()
     {
-        
+        return $this->scripts;
     }
 }

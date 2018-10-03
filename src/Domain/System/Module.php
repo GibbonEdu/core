@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\System;
 
+use Gibbon\View\AssetBundle;
+
 /**
  * Gibbon Module Model.
  *
@@ -27,6 +29,18 @@ namespace Gibbon\Domain\System;
  */
 class Module
 {
+    protected $name;
+
+    protected $stylesheets;
+    protected $scripts;
+
+    public function __construct($name)
+    {
+        $this->name = $name;
+        $this->stylesheets = new AssetBundle();
+        $this->scripts = new AssetBundle();
+    }
+
     /**
      * Get the module name, used in the folder path and database record.
      *
@@ -34,7 +48,7 @@ class Module
      */
     public function getName()
     {
-        
+        return $this->name = $name;
     }
 
     /**
@@ -44,7 +58,7 @@ class Module
      */
     public function stylesheets()
     {
-        
+        return $this->stylesheets;
     }
 
     /**
@@ -54,6 +68,6 @@ class Module
      */
     public function scripts()
     {
-        
+        return $this->scripts;
     }
 }
