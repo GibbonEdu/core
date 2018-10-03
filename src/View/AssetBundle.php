@@ -27,6 +27,9 @@ namespace Gibbon\View;
  */
 class AssetBundle
 {
+    protected $registeredAssets = [];
+    protected $usedAssets = [];
+
     /**
      * Register a named asset for later use. Name should be unique.
      *
@@ -38,7 +41,11 @@ class AssetBundle
      */
     public function register($name, $src, $context, $version = null)
     {
-
+        $this->registeredAssets[$name] = [
+            'src'     => $src,
+            'context' => $context,
+            'version' => $version,
+        ];
     }
 
     /**
@@ -53,7 +60,16 @@ class AssetBundle
      */
     public function add($name, $src = null, $context = null, $version = null)
     {
-        
+        if (is_null($src) && isset($this->registeredAssets[$name])) {
+            $asset = $this->registeredAssets[$name];
+            return $this->add($name, $asset['src'], $asset['context'], $asset['version']);
+        }
+
+        $this->usedAssets[$name] = [
+            'src'     => $src,
+            'context' => $context,
+            'version' => $version,
+        ];
     }
 
     /**
@@ -64,6 +80,8 @@ class AssetBundle
      */
     public function getAssets($context = null)
     {
-        
+        return array_filter($this->usedAssets, function($item) use ($context) {
+            return empty($context) || $item['context'] == $context;
+        });
     }
 }
