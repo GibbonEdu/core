@@ -42,10 +42,24 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     }
 
     /**
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> System: add and implement interfaces for Session and Locale classes
      * The provides array is a way to let the container know that a service 
      * is provided by this service provider. Every service that is registered 
      * via this service provider must have an alias added to this array or 
      * it will be ignored.
+<<<<<<< HEAD
+=======
+     * The provides array is a way to let the container
+     * know that a service is provided by this service
+     * provider. Every service that is registered via
+     * this service provider must have an alias added
+     * to this array or it will be ignored.
+>>>>>>> System: add a CoreServiceProvider for initializing services
+=======
+>>>>>>> System: add and implement interfaces for Session and Locale classes
      *
      * @var array
      */
