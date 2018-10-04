@@ -80,7 +80,7 @@ class AssetBundle
     }
 
     /**
-     * Get all assets. Optionally filter returned assets by context.
+     * Get all assets sorted by weight, ascending. Optionally filter returned assets by context.
      *
      * @param string $context
      * @return array
@@ -88,6 +88,10 @@ class AssetBundle
     public function getAssets($context = null)
     {
         $usedAssets = array_intersect_key($this->allAssets, array_flip($this->usedAssetsByName));
+
+        uasort($usedAssets, function($a, $b) {
+            return $a['weight'] <=> $b['weight'];
+        });
 
         return array_filter($usedAssets, function($item) use ($context) {
             return empty($context) || $item['context'] == $context;
