@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
+							<b><?php echo __($guid, 'Lesson Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
