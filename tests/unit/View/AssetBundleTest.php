@@ -20,7 +20,7 @@ class AssetBundleTest extends TestCase
     {
         $assets = new AssetBundle();
 
-        $assets->register('foo', 'bar/baz', 'head');
+        $assets->register('foo', 'bar/baz');
 
         $this->assertArrayNotHasKey('foo', $assets->getAssets());
     }
@@ -29,7 +29,7 @@ class AssetBundleTest extends TestCase
     {
         $assets = new AssetBundle();
 
-        $assets->add('foo', 'bar/baz', 'head');
+        $assets->add('foo', 'bar/baz');
 
         $this->assertArrayHasKey('foo', $assets->getAssets());
     }
@@ -38,7 +38,7 @@ class AssetBundleTest extends TestCase
     {
         $assets = new AssetBundle();
 
-        $assets->register('foo', 'bar/baz', 'head');
+        $assets->register('foo', 'bar/baz');
         $assets->add('foo');
 
         $this->assertArrayHasKey('foo', $assets->getAssets());
@@ -48,9 +48,9 @@ class AssetBundleTest extends TestCase
     {
         $assets = new AssetBundle();
 
-        $assets->register('foo', 'bar/baz', 'head');
-        $assets->add('fiz', 'bar/baz', 'head');
-        $assets->add('bus', 'bar/baz', 'head');
+        $assets->register('foo', 'bar/baz');
+        $assets->add('fiz', 'bar/baz');
+        $assets->add('bus', 'bar/baz');
 
         $this->assertEquals(['fiz', 'bus'], array_keys($assets->getAssets()));
     }
@@ -59,10 +59,10 @@ class AssetBundleTest extends TestCase
     {
         $assets = new AssetBundle();
 
-        $assets->add('foo', 'bar/baz', 'head');
-        $assets->add('fiz', 'bar/baz', 'foot');
-        $assets->add('bus', 'bar/baz', 'head');
-        $assets->add('biz', 'bar/baz', 'foot');
+        $assets->add('foo', 'bar/baz', ['context' => 'head']);
+        $assets->add('fiz', 'bar/baz', ['context' => 'foot']);
+        $assets->add('bus', 'bar/baz', ['context' => 'head']);
+        $assets->add('biz', 'bar/baz', ['context' => 'foot']);
 
         $this->assertEquals(['foo', 'bus'], array_keys($assets->getAssets('head')));
     }

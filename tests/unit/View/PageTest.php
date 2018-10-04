@@ -102,7 +102,7 @@ class PageTest extends TestCase
     public function testCanAddStylesheets()
     {
         $page = new Page();
-        $page->stylesheets()->add('foo', 'bar/baz', 'screen');
+        $page->stylesheets()->add('foo', 'bar/baz');
 
         $this->assertArrayHasKey('foo',  $page->getAllStylesheets());
     }
@@ -111,9 +111,9 @@ class PageTest extends TestCase
     {
         $page = new Page(['module' => $this->mockModule, 'theme' => $this->mockTheme]);
 
-        $page->stylesheets()->add('foo', 'bar/baz', 'screen');
-        $page->getModule()->stylesheets()->add('fiz', 'bar/baz', 'screen');
-        $page->getTheme()->stylesheets()->add('buz', 'bar/baz', 'screen');
+        $page->stylesheets()->add('foo', 'bar/baz');
+        $page->getModule()->stylesheets()->add('fiz', 'bar/baz');
+        $page->getTheme()->stylesheets()->add('buz', 'bar/baz');
 
         $this->assertEquals(['foo', 'fiz', 'buz'], array_keys($page->getAllStylesheets()));
     }
@@ -121,7 +121,7 @@ class PageTest extends TestCase
     public function testCanAddScripts()
     {
         $page = new Page();
-        $page->scripts()->add('fiz', 'bar/baz', 'head');
+        $page->scripts()->add('fiz', 'bar/baz', ['context' => 'head']);
 
         $this->assertArrayHasKey('fiz',  $page->getAllScripts('head'));
     }
@@ -130,9 +130,9 @@ class PageTest extends TestCase
     {
         $page = new Page(['module' => $this->mockModule, 'theme' => $this->mockTheme]);
 
-        $page->scripts()->add('foo', 'bar/baz', 'head');
-        $page->getModule()->scripts()->add('fiz', 'bar/baz', 'foot');
-        $page->getTheme()->scripts()->add('buz', 'bar/baz', 'head');
+        $page->scripts()->add('foo', 'bar/baz', ['context' => 'head']);
+        $page->getModule()->scripts()->add('fiz', 'bar/baz', ['context' => 'foot']);
+        $page->getTheme()->scripts()->add('buz', 'bar/baz', ['context' => 'head']);
 
         $this->assertEquals(['foo', 'buz'], array_keys($page->getAllScripts('head')));
     }

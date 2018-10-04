@@ -28,14 +28,14 @@ class ThemeTest extends TestCase
 
     public function testCanAddStylesheets()
     {
-        $this->theme->stylesheets()->add('foo', 'bar/baz', 'screen');
+        $this->theme->stylesheets()->add('foo', 'bar/baz');
 
         $this->assertArrayHasKey('foo',  $this->theme->stylesheets()->getAssets());
     }
 
     public function testCanAddScripts()
     {
-        $this->theme->scripts()->add('fiz', 'bar/baz', 'head');
+        $this->theme->scripts()->add('fiz', 'bar/baz');
 
         $this->assertArrayHasKey('fiz',  $this->theme->scripts()->getAssets());
     }
