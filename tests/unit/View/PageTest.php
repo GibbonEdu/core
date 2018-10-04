@@ -10,6 +10,8 @@ file that was distributed with this source code.
 namespace Gibbon\View;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Domain\System\Theme;
+use Gibbon\Domain\System\Module;
 
 /**
  * @covers Page
@@ -21,11 +23,11 @@ class PageTest extends TestCase
 
     public function setUp()
     {
-        $this->mockModule = $this->createMock(\Gibbon\Domain\System\Module::class);
+        $this->mockModule = $this->createMock(Module::class);
         $this->mockModule->method('stylesheets')->willReturn(new AssetBundle());
         $this->mockModule->method('scripts')->willReturn(new AssetBundle());
 
-        $this->mockTheme = $this->createMock(\Gibbon\Domain\System\Theme::class);
+        $this->mockTheme = $this->createMock(Theme::class);
         $this->mockTheme->method('stylesheets')->willReturn(new AssetBundle());
         $this->mockTheme->method('scripts')->willReturn(new AssetBundle());
     }

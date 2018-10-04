@@ -27,7 +27,7 @@ use Gibbon\View\AssetBundle;
  * @version v17
  * @since   v17
  */
-class Module
+abstract class Module
 {
     protected $name;
 

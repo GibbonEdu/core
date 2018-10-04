@@ -10,25 +10,33 @@ file that was distributed with this source code.
 namespace Gibbon\Domain\System;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Domain\System\Theme;
 
 /**
  * @covers Theme
  */
 class ThemeTest extends TestCase
 {
+    protected $theme;
+
+    public function setUp()
+    {
+        $this->theme = $this->getMockBuilder(Theme::class)
+            ->setConstructorArgs(['Test'])
+            ->getMockForAbstractClass();
+    }
+
     public function testCanAddStylesheets()
     {
-        $theme = new Theme('Test');
-        $theme->stylesheets()->add('foo', 'bar/baz', 'screen');
+        $this->theme->stylesheets()->add('foo', 'bar/baz', 'screen');
 
-        $this->assertArrayHasKey('foo',  $theme->stylesheets()->getAssets());
+        $this->assertArrayHasKey('foo',  $this->theme->stylesheets()->getAssets());
     }
 
     public function testCanAddScripts()
     {
-        $theme = new Theme('Test');
-        $theme->scripts()->add('fiz', 'bar/baz', 'head');
+        $this->theme->scripts()->add('fiz', 'bar/baz', 'head');
 
-        $this->assertArrayHasKey('fiz',  $theme->scripts()->getAssets());
+        $this->assertArrayHasKey('fiz',  $this->theme->scripts()->getAssets());
     }
 }

@@ -10,25 +10,33 @@ file that was distributed with this source code.
 namespace Gibbon\Domain\System;
 
 use PHPUnit\Framework\TestCase;
+use Gibbon\Domain\System\Module;
 
 /**
  * @covers Module
  */
 class ModuleTest extends TestCase
 {
+    protected $module;
+
+    public function setUp()
+    {
+        $this->module = $this->getMockBuilder(Module::class)
+            ->setConstructorArgs(['Test'])
+            ->getMockForAbstractClass();
+    }
+
     public function testCanAddStylesheets()
     {
-        $module = new Module('Test');
-        $module->stylesheets()->add('foo', 'bar/baz', 'screen');
+        $this->module->stylesheets()->add('foo', 'bar/baz', 'screen');
 
-        $this->assertArrayHasKey('foo',  $module->stylesheets()->getAssets());
+        $this->assertArrayHasKey('foo',  $this->module->stylesheets()->getAssets());
     }
 
     public function testCanAddScripts()
     {
-        $module = new Module('Test');
-        $module->scripts()->add('fiz', 'bar/baz', 'head');
+        $this->module->scripts()->add('fiz', 'bar/baz', 'head');
 
-        $this->assertArrayHasKey('fiz',  $module->scripts()->getAssets());
+        $this->assertArrayHasKey('fiz',  $this->module->scripts()->getAssets());
     }
 }
