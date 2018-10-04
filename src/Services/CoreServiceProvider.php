@@ -42,24 +42,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
     }
 
     /**
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> System: add and implement interfaces for Session and Locale classes
-     * The provides array is a way to let the container know that a service 
-     * is provided by this service provider. Every service that is registered 
-     * via this service provider must have an alias added to this array or 
+     * The provides array is a way to let the container know that a service
+     * is provided by this service provider. Every service that is registered
+     * via this service provider must have an alias added to this array or
      * it will be ignored.
-<<<<<<< HEAD
-=======
-     * The provides array is a way to let the container
-     * know that a service is provided by this service
-     * provider. Every service that is registered via
-     * this service provider must have an alias added
-     * to this array or it will be ignored.
->>>>>>> System: add a CoreServiceProvider for initializing services
-=======
->>>>>>> System: add and implement interfaces for Session and Locale classes
      *
      * @var array
      */
@@ -67,6 +53,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'config',
         'session',
         'locale',
+        'twig',
     ];
 
     /**
@@ -99,6 +86,32 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
      */
     public function register()
     {
-        
+        $container = $this->getContainer();
+        $absolutePath = $this->absolutePath;
+        $session = $container->get('session');
+
+        $container->add('twig', function() use ($absolutePath, $session) {
+            $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
+
+            // Add the theme templates folder so it can override core templates
+            $themeName = $session->get('gibbonThemeName');
+            if (is_dir($absolutePath.'/themes/'.$themeName.'/templates')) {
+                $loader->prependPath($absolutePath.'/themes/'.$themeName.'/templates');
+            }
+
+            $twig = new \Twig_Environment($loader, array(
+                'cache' => $absolutePath.'/resources/templates/cache',
+                'debug' => true,
+            ));
+
+            $twig->addGlobal('absolutePath', $session->get('absolutePath'));
+            $twig->addGlobal('absoluteURL', $session->get('absoluteURL'));
+
+            $twig->addFunction(new \Twig_Function('__', function ($string, $domain = null) {
+                return __($string, $domain);
+            }));
+
+            return $twig;
+        });
     }
 }
