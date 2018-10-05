@@ -60,7 +60,7 @@ class AssetBundle
     public function register(string $name, string $src, array $options = [])
     {
         $this->allAssets[$name] = array_replace([
-            'src'     => $src,
+            'src'     => trim($src, '/ '),
             'type'    => 'url',
             'context' => 'foot',
             'media'   => 'all',

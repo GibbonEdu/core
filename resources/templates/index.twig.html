@@ -45,14 +45,14 @@ TODO: add template variable details.
                             {{ include('navigation.twig.html') }}
                         {% endif %}
 
-                        {% if page.trail %}
+                        {% if page.breadcrumbs %}
                         <div class="trail">
                             <div class="trailHead">
-                            {% for title, src in page.trail %}
+                            {% for title, src in page.breadcrumbs %}
                                 {% if loop.last %}
                                     </div><div class="trailEnd">{{ title }}
                                 {% else %}
-                                    <a href="{{ src }}">{{ title }}</a> > 
+                                    <a href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
                                 {% endif %}
                             {% endfor %}
                             </div>

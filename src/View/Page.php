@@ -21,6 +21,7 @@ namespace Gibbon\View;
 
 use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
+use Gibbon\View\Components\Breadcrumbs;
 
 /**
  * Holds the details for rendering the current page.
@@ -46,6 +47,7 @@ class Page extends View
     protected $content = [];
     protected $stylesheets;
     protected $scripts;
+    protected $breadcrumbs;
     protected $alerts = ['error' => [], 'warning' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
 
@@ -58,6 +60,7 @@ class Page extends View
     {
         parent::__construct($templateEngine);
         
+        $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
 
@@ -274,7 +277,7 @@ class Page extends View
             ? $this->extra[$context]
             : $this->extra;
     }
-
+    
     /**
      * Builds an array of page data to be passed to the template engine.
      *
@@ -284,6 +287,7 @@ class Page extends View
     {
         return [
             'title'        => $this->getTitle(),
+            'breadcrumbs'  => $this->breadcrumbs->getItems(),
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
             'scriptsHead'  => $this->getAllScripts('head'),
@@ -375,5 +379,22 @@ class Page extends View
     public function scripts(): AssetBundle
     {
         return $this->scripts;
+    }
+
+    /**
+     * Returns the breadcrumb trail for this page.
+     *
+     * @return Breadcrumbs
+     */
+    public function breadcrumbs()
+    {
+        // Add the current module entry point to the trail. This is here rather than
+        // the constructor to allow incremental refactoring of the hard-coded breadcrumbs.
+        if (empty($this->breadcrumbs->getItems()) && !empty($this->getModule())) {
+            $this->breadcrumbs->setBaseURL('index.php?q=/modules/'.$this->module->name.'/');
+            $this->breadcrumbs->add(__($this->module->name), $this->module->entryURL);
+        }
+
+        return $this->breadcrumbs;
     }
 }
