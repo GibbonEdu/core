@@ -1,25 +1,36 @@
 <?php
-/*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
-
+/**
+ * Gibbon, Flexible & Open School System
+ * Copyright (C) 2010, Ross Parker
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * PHP version >= 7.0
+ * 
+ * @category File
+ * @package  Gibbon
+ * @author   Ross Parker <ross@rossparker.org>
+ * @license  GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link     https://gibbonedu.org/
+ */
 
 // Gibbon system-wide include
-include './gibbon.php';
+require './gibbon.php';
+
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
+use Gibbon\MenuMain;
+use Gibbon\MenuModule;
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -38,13 +49,16 @@ if ($caching == 0) {
 
 //Check for cutting edge code
 if (isset($_SESSION[$guid]['cuttingEdgeCode']) == false) {
-    $_SESSION[$guid]['cuttingEdgeCode'] = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
+    $_SESSION[$guid]['cuttingEdgeCode'] = getSettingByScope(
+        $connection2, 'System', 'cuttingEdgeCode'
+    );
 }
 
 // common variables
 $siteURL = $_SESSION[$guid]['absoluteURL'];
 
-//Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
+// Set sidebar values (from the entrySidebar field in gibbonAction and
+// from $_GET variable)
 $_SESSION[$guid]['sidebarExtra'] = '';
 $_SESSION[$guid]['sidebarExtraPosition'] = '';
 
@@ -62,9 +76,14 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 
 
 //Try to autoset user's calendar feed if not set already
-if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['googleAPIAccessToken'])) {
-    if ($_SESSION[$guid]['calendarFeedPersonal'] == '' and $_SESSION[$guid]['googleAPIAccessToken'] != null) {
-        require_once $_SESSION[$guid]['absolutePath'].'/lib/google/google-api-php-client/vendor/autoload.php';
+if (isset($_SESSION[$guid]['calendarFeedPersonal'])
+    && isset($_SESSION[$guid]['googleAPIAccessToken'])
+) {
+    if ($_SESSION[$guid]['calendarFeedPersonal'] == ''
+        && $_SESSION[$guid]['googleAPIAccessToken'] != null
+    ) {
+        include_once $_SESSION[$guid]['absolutePath'].
+            '/lib/google/google-api-php-client/vendor/autoload.php';
         $client2 = new Google_Client();
         $client2->setAccessToken($_SESSION[$guid]['googleAPIAccessToken']);
         $service = new Google_Service_Calendar($client2);
@@ -72,11 +91,17 @@ if (isset($_SESSION[$guid]['calendarFeedPersonal']) and isset($_SESSION[$guid]['
 
         if ($calendar['id'] != '') {
             try {
-                $dataCalendar = array('calendarFeedPersonal' => $calendar['id'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sqlCalendar = 'UPDATE gibbonPerson SET calendarFeedPersonal=:calendarFeedPersonal WHERE gibbonPersonID=:gibbonPersonID';
+                $dataCalendar = [
+                    'calendarFeedPersonal' => $calendar['id'],
+                    'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'],
+                ];
+                $sqlCalendar = 'UPDATE gibbonPerson SET
+                    calendarFeedPersonal=:calendarFeedPersonal
+                    WHERE gibbonPersonID=:gibbonPersonID';
                 $resultCalendar = $connection2->prepare($sqlCalendar);
                 $resultCalendar->execute($dataCalendar);
             } catch (PDOException $e) {
+                exit($e->getMessage());
             }
             $_SESSION[$guid]['calendarFeedPersonal'] = $calendar['id'];
         }
@@ -96,13 +121,19 @@ if (isset($_SESSION[$guid]['passwordForceReset'])) {
 // USER REDIRECTS
 if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { //First page load, so proceed
     if (!empty($_SESSION[$guid]['username'])) { //Are we logged in?
-        $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+        $roleCategory = getRoleCategory(
+            $_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2
+        );
 
         // Deal with attendance self-registration redirect
-        if ($roleCategory == 'Student') { //Are we a student?
-            if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) { //Can we self register?
-                //Check to see if student is on site
-                $studentSelfRegistrationIPAddresses = getSettingByScope($connection2, 'Attendance', 'studentSelfRegistrationIPAddresses');
+        // Are we a student?
+        if ($roleCategory == 'Student') {
+            // Can we self register?
+            if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) {
+                // Check to see if student is on site
+                $studentSelfRegistrationIPAddresses = getSettingByScope(
+                    $connection2, 'Attendance', 'studentSelfRegistrationIPAddresses'
+                );
                 $realIP = getIPAddress();
                 if ($studentSelfRegistrationIPAddresses != '' && !is_null($studentSelfRegistrationIPAddresses)) {
                     $inRange = false ;
@@ -124,9 +155,13 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
                                 $errors[] = $e->getMessage();
                             }
 
-                            if ($result->rowCount() == 0) { //No registration yet
-                                //Redirect!
-                                $URL = $siteURL.'/index.php?q=/modules/Attendance/attendance_studentSelfRegister.php&redirect=true';
+                            if ($result->rowCount() == 0) {
+                                // No registration yet
+                                // Redirect!
+                                $URL = $siteURL.
+                                    '/index.php?q=/modules/Attendance'.
+                                    '/attendance_studentSelfRegister.php'.
+                                    '&redirect=true';
                                 $_SESSION[$guid]['pageLoads'] = null;
                                 header("Location: {$URL}");
                                 exit;
@@ -141,15 +176,23 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
         $requiredUpdates = getSettingByScope($connection2, 'Data Updater', 'requiredUpdates');
         if ($requiredUpdates == 'Y') { 
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { //Can we update data?
-                $redirectByRoleCategory = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory');
+                $redirectByRoleCategory = getSettingByScope(
+                    $connection2, 'Data Updater', 'redirectByRoleCategory'
+                );
                 $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
 
-                if (in_array($roleCategory, $redirectByRoleCategory)) { //Are we the right role category?
-                    $gateway = new Gibbon\Domain\DataUpdater\DataUpdaterGateway($pdo);
+                // Are we the right role category?
+                if (in_array($roleCategory, $redirectByRoleCategory)) {
+                    $gateway = new DataUpdaterGateway($pdo);
 
-                    $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($_SESSION[$guid]['gibbonPersonID']);
+                    $updatesRequiredCount = $gateway
+                        ->countAllRequiredUpdatesByPerson(
+                            $_SESSION[$guid]['gibbonPersonID']
+                        );
                     if ($updatesRequiredCount > 0) {
-                        $URL = $siteURL.'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
+                        $URL = $siteURL.
+                            '/index.php?q=/modules/Data Updater'.
+                            '/data_updates.php&redirect=true';
                         $_SESSION[$guid]['pageLoads'] = null;
                         header("Location: {$URL}");
                         exit;
@@ -164,8 +207,16 @@ if ($_SESSION[$guid]['pageLoads'] == 0 && $_SESSION[$guid]['address'] == '') { /
 
 if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
     try {
-        $dataSidebar = array('action' => '%'.$_SESSION[$guid]['action'].'%', 'name' => $_SESSION[$guid]['module']);
-        $sqlSidebar = "SELECT gibbonAction.name FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonAction.URLList LIKE :action AND entrySidebar='N' AND gibbonModule.name=:name";
+        $dataSidebar = [
+            'action' => '%'.$_SESSION[$guid]['action'].'%',
+            'name' => $_SESSION[$guid]['module'],
+        ];
+        $sqlSidebar = "SELECT gibbonAction.name FROM
+            gibbonAction JOIN gibbonModule
+            ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
+            WHERE gibbonAction.URLList LIKE :action
+            AND entrySidebar='N'
+            AND gibbonModule.name=:name";
         $resultSidebar = $connection2->prepare($sqlSidebar);
         $resultSidebar->execute($dataSidebar);
     } catch (PDOException $e) {
@@ -180,7 +231,7 @@ if ($_SESSION[$guid]['address'] != '' and $sidebar != true) {
 $moduleMenu = null;
 if (!$sidebar) {
     //Invoke and show Module Menu
-    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
+    $menuModule = new MenuModule($gibbon, $pdo);
 
     // Display the module menu
     $moduleMenu = $menuModule->getMenu('mini');
@@ -241,7 +292,12 @@ $warnings = array();
 $contents = array();
 
 // Set theme CSS and JS
-if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['themeJS']) == false or $_SESSION[$guid]['gibbonThemeID'] == '' or $_SESSION[$guid]['gibbonThemeName'] == '') {
+if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' 
+    || isset($_SESSION[$guid]['themeJS']) == false
+    || $_SESSION[$guid]['gibbonThemeID'] == ''
+    || $_SESSION[$guid]['gibbonThemeName'] == ''
+) {
+
     $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
         'themes/Default/css/main.css?v='.$version :
         'themes/Default/css/main_rtl.css?v='.$version;
@@ -253,8 +309,11 @@ if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['
     $_SESSION[$guid]['gibbonThemeURL'] = '';
     try {
         if (isset($_SESSION[$guid]['gibbonThemeIDPersonal'])) {
-            $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
-            $sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
+            $dataTheme = [
+                'gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']
+            ];
+            $sqlTheme = 'SELECT * FROM gibbonTheme
+                WHERE gibbonThemeID=:gibbonThemeIDPersonal';
         } else {
             $dataTheme = array();
             $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
@@ -268,7 +327,8 @@ if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['
             $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
                 'themes/'.$rowTheme['name'].'/css/main.css?v='.$themeVersion :
                 'themes/'.$rowTheme['name'].'/css/main_rtl.css?v='.$themeVersion;
-            $theme_script = 'themes/'.$rowTheme['name'].'/js/common.js?v='.$themeVersion;
+            $theme_script = 'themes/'.$rowTheme['name'].
+                '/js/common.js?v='.$themeVersion;
 
             $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
             $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
@@ -282,28 +342,31 @@ if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['
     $stylesheets[] = $theme_stylesheet;
     $scripts[] = $theme_script;
 } else {
-
     $head_extras[] = $_SESSION[$guid]['themeCSS'];
     $head_extras[] = $_SESSION[$guid]['themeJS'];
+}
 
 // Append module CSS & JS
 if (isset($_GET['q'])) {
     if ($_GET['q'] != '') {
         $moduleVersion = $version;
-        if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')){
-            include('./modules/'.$_SESSION[$guid]['module'].'/version.php');
+        if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')) {
+            include './modules/'.$_SESSION[$guid]['module'].'/version.php';
         }
-        $stylesheets[] = 'modules/'.$_SESSION[$guid]['module'].'/css/module.css?v='.$moduleVersion;
-        $scripts[] = 'modules/'.$_SESSION[$guid]['module'].'/js/module.js?v='.$moduleVersion;
+        $stylesheets[] = 'modules/'.$_SESSION[$guid]['module'].
+            '/css/module.css?v='.$moduleVersion;
+        $scripts[] = 'modules/'.$_SESSION[$guid]['module'].
+            '/js/module.js?v='.$moduleVersion;
     }
 }
+
 
 // Set session duration for session timeout JS handling.
 $sessionDuration = -1;
 if (isset($_SESSION[$guid]['username'])) {
     $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
-    if (is_numeric($sessionDuration) == false) $sessionDuration = 1200;
-    if ($sessionDuration < 1200) $sessionDuration = 1200;
+    $sessionDuration = is_numeric($sessionDuration) ? $sessionDuration : 1200;
+    $sessionDuration = ($sessionDuration >= 1200) ? $sessionDuration : 1200;
 }
 
 // Set google analytics
@@ -313,7 +376,8 @@ $head_extras[] = $_SESSION[$guid]['analytics'];
 if ($_SESSION[$guid]['pageLoads'] == 0 and isset($_SESSION[$guid]['username']) and $_SESSION[$guid]['gibbonHouseID'] != '') {
     try {
         $dataHouse = array('gibbonHouseID' => $_SESSION[$guid]['gibbonHouseID']);
-        $sqlHouse = 'SELECT logo, name FROM gibbonHouse WHERE gibbonHouseID=:gibbonHouseID';
+        $sqlHouse = 'SELECT logo, name FROM gibbonHouse
+            WHERE gibbonHouseID=:gibbonHouseID';
         $resultHouse = $connection2->prepare($sqlHouse);
         $resultHouse->execute($dataHouse);
     } catch (PDOException $e) {
@@ -343,8 +407,10 @@ if (isset($_SESSION[$guid]['username'])) {
 }
 
 // Set main menu HTML
-$mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
-if ($cacheLoad) $mainMenu->setMenu();
+$mainMenu = new MenuMain($gibbon, $pdo);
+if ($cacheLoad) {
+    $mainMenu->setMenu();
+}
 $headerMenu = $mainMenu->getMenu();
 
 // Set flash notification (temp_array)
@@ -361,9 +427,10 @@ if ($_SESSION[$guid]['address'] == '') {
 }
 
 if ($_SESSION[$guid]['address'] == '') {
-    //Welcome message
-    if (isset($_SESSION[$guid]['username']) == false) {
-        //Create auto timeout message
+    // Welcome message
+    if (!isset($_SESSION[$guid]['username'])) {
+
+        // Create auto timeout message
         if (isset($_GET['timeout'])) {
             if ($_GET['timeout'] == 'true') {
                 $warnings[] = __($guid, 'Your session expired, so you were automatically logged out of the system.');
@@ -371,15 +438,13 @@ if ($_SESSION[$guid]['address'] == '') {
         }
 
         // Set welcome message
-        $contents[] =
-            '<h2>'.__($guid, 'Welcome').'</h2>'.
+        $contents[] = '<h2>'.__($guid, 'Welcome').'</h2>'.
             "<p>{$_SESSION[$guid]['indexText']}</p>";
 
         // Student public applications permitted?
         $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
         if ($publicApplications == 'Y') {
-            $contents[] =
-                "<h2 style='margin-top: 30px'>".
+            $contents[] = "<h2 style='margin-top: 30px'>".
                 __($guid, 'Student Applications').'</h2>'.
                 '<p>'.
                 sprintf(__($guid, 'Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $_SESSION[$guid]['organisationName'], "<a href='".$siteURL."/?q=/modules/Students/applicationForm.php'>", '</a>').
@@ -389,8 +454,7 @@ if ($_SESSION[$guid]['address'] == '') {
         //Staff public applications permitted?
         $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
         if ($staffApplicationFormPublicApplications == 'Y') {
-            $contents[] =
-                "<h2 style='margin-top: 30px'>" .
+            $contents[] = "<h2 style='margin-top: 30px'>" .
                 __($guid, 'Staff Applications') .
                 '</h2>'.
                 '<p>'.
@@ -401,8 +465,7 @@ if ($_SESSION[$guid]['address'] == '') {
         //Public departments permitted?
         $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
         if ($makeDepartmentsPublic == 'Y') {
-            $contents[] =
-                "<h2 style='margin-top: 30px'>".
+            $contents[] = "<h2 style='margin-top: 30px'>".
                 __($guid, 'Departments').
                 '</h2>'.
                 '<p>'.
@@ -413,8 +476,7 @@ if ($_SESSION[$guid]['address'] == '') {
         //Public units permitted?
         $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
         if ($makeUnitsPublic == 'Y') {
-            $contents[] =
-                "<h2 style='margin-top: 30px'>".
+            $contents[] = "<h2 style='margin-top: 30px'>".
                 __($guid, 'Learn With Us').
                 '</h2>'.
                 '<p>'.
@@ -434,8 +496,7 @@ if ($_SESSION[$guid]['address'] == '') {
             $options = unserialize(str_replace("'", "\'", $rowHook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { //If its turned on, display it
-                $contents[] =
-                    "<h2 style='margin-top: 30px'>".
+                $contents[] = "<h2 style='margin-top: 30px'>".
                     $options['title'].
                     '</h2>'.
                     '<p>'.
@@ -460,15 +521,15 @@ if ($_SESSION[$guid]['address'] == '') {
         //Get role category
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
         if ($category == false) {
-            $contents[] =
-                "<div class='error'>".
+            $contents[] = "<div class='error'>".
                 __($guid, 'Your current role type cannot be determined.').
                 '</div>';
         } elseif ($category == 'Parent') { //Display Parent Dashboard
             $count = 0;
             try {
-                $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                $sql = "SELECT * FROM gibbonFamilyAdult WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
+                $data = ['gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']];
+                $sql = "SELECT * FROM gibbonFamilyAdult WHERE
+                    gibbonPersonID=:gibbonPersonID AND childDataAccess='Y'";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
@@ -482,8 +543,43 @@ if ($_SESSION[$guid]['address'] == '') {
                 $students = array();
                 while ($row = $result->fetch()) {
                     try {
-                        $dataChild = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonFamilyID' => $row['gibbonFamilyID']);
-                        $sqlChild = "SELECT gibbonPerson.gibbonPersonID, image_240, surname, preferredName, dateStart, gibbonYearGroup.nameShort AS yearGroup, gibbonRollGroup.nameShort AS rollGroup, gibbonRollGroup.website AS rollGroupWebsite, gibbonRollGroup.gibbonRollGroupID FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName ";
+                        $dataChild = [
+                            'gibbonSchoolYearID' =>
+                                $_SESSION[$guid]['gibbonSchoolYearID'],
+                            'gibbonFamilyID' => $row['gibbonFamilyID'],
+                        ];
+                        $sqlChild = "SELECT
+                            gibbonPerson.gibbonPersonID,image_240, surname,
+                            preferredName, dateStart,
+                            gibbonYearGroup.nameShort AS yearGroup,
+                            gibbonRollGroup.nameShort AS rollGroup,
+                            gibbonRollGroup.website AS rollGroupWebsite,
+                            gibbonRollGroup.gibbonRollGroupID
+                            FROM gibbonFamilyChild JOIN gibbonPerson
+                            ON (gibbonFamilyChild.gibbonPersonID=
+                                gibbonPerson.gibbonPersonID)
+                            JOIN gibbonStudentEnrolment
+                            ON (gibbonPerson.gibbonPersonID=
+                                gibbonStudentEnrolment.gibbonPersonID)
+                            JOIN gibbonYearGroup
+                            ON (gibbonStudentEnrolment.gibbonYearGroupID=
+                                gibbonYearGroup.gibbonYearGroupID)
+                            JOIN gibbonRollGroup
+                            ON (gibbonStudentEnrolment.gibbonRollGroupID=
+                                gibbonRollGroup.gibbonRollGroupID)
+                            WHERE
+                            gibbonStudentEnrolment.gibbonSchoolYearID=
+                                :gibbonSchoolYearID
+                            AND gibbonFamilyID=:gibbonFamilyID
+                            AND gibbonPerson.status='Full'
+                            AND (
+                                dateStart IS NULL
+                                OR dateStart<='".date('Y-m-d')."'
+                            )
+                            AND (
+                                dateEnd IS NULL
+                                OR dateEnd>='".date('Y-m-d')."')
+                            ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
                     } catch (PDOException $e) {
@@ -505,20 +601,17 @@ if ($_SESSION[$guid]['address'] == '') {
             }
 
             if ($count > 0) {
-                $contents[] =
-                    '<h2>'.
+                $contents[] = '<h2>'.
                     __($guid, 'Parent Dashboard').
                     '</h2>';
                 include './modules/Timetable/moduleFunctions.php';
 
                 for ($i = 0; $i < $count; ++$i) {
-                    $contents[] =
-                        '<h4>'.
+                    $contents[] = '<h4>'.
                         $students[$i][1].' '.$students[$i][0].
                         '</h4>';
 
-                    $contents[] =
-                        "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
+                    $contents[] = "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
                         getUserPhoto($guid, $students[$i][5], 75).
                         "<div style='height: 5px'></div>".
                         "<span style='font-size: 70%'>".
@@ -536,8 +629,7 @@ if ($_SESSION[$guid]['address'] == '') {
                     $contents[] = "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
                     $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
                     if ($dashboardContents == false) {
-                        $contents[] =
-                            "<div class='error'>".
+                        $contents[] = "<div class='error'>".
                             __($guid, 'There are no records to display.').
                             '</div>';
                     } else {
@@ -547,15 +639,13 @@ if ($_SESSION[$guid]['address'] == '') {
                 }
             }
         } elseif ($category == 'Student') { //Display Student Dashboard
-            $contents[] =
-                '<h2>'.
+            $contents[] = '<h2>'.
                 __($guid, 'Student Dashboard').
                 '</h2>'.
                 "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
             $dashboardContents = getStudentDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
             if ($dashboardContents == false) {
-                $contents[] = 
-                    "<div class='error'>".
+                $contents[] = "<div class='error'>".
                     __($guid, 'There are no records to display.').
                     '</div>';
             } else {
@@ -568,15 +658,13 @@ if ($_SESSION[$guid]['address'] == '') {
                 $contents[] = $smartWorkflowHelp;
             }
 
-            $contents[] =
-                '<h2>'.
+            $contents[] = '<h2>'.
                 __($guid, 'Staff Dashboard').
                 '</h2>'.
                 "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
             $dashboardContents = getStaffDashboardContents($connection2, $guid, $_SESSION[$guid]['gibbonPersonID']);
             if ($dashboardContents == false) {
-                $contents[] = 
-                    "<div class='error'>".
+                $contents[] = "<div class='error'>".
                     __($guid, 'There are no records to display.').
                     '</div>';
             } else {
@@ -586,9 +674,17 @@ if ($_SESSION[$guid]['address'] == '') {
         }
     }
 } else {
-    if (strstr($_SESSION[$guid]['address'], '..') || strstr($_SESSION[$guid]['address'], 'installer') || strstr($_SESSION[$guid]['address'], 'uploads') || in_array($_SESSION[$guid]['address'] , array('index.php', '/index.php', './index.php')) || substr($_SESSION[$guid]['address'], -11) == '//index.php' || substr($_SESSION[$guid]['address'], -11) == './index.php') {
-        $contents[] =
-            "<div class='error'>".
+    if (strstr($_SESSION[$guid]['address'], '..')
+        || strstr($_SESSION[$guid]['address'], 'installer')
+        || strstr($_SESSION[$guid]['address'], 'uploads')
+        || in_array(
+            $_SESSION[$guid]['address'],
+            array('index.php', '/index.php', './index.php')
+        )
+        || substr($_SESSION[$guid]['address'], -11) == '//index.php'
+        || substr($_SESSION[$guid]['address'], -11) == './index.php'
+    ) {
+        $contents[] = "<div class='error'>".
             __($guid, 'Illegal address detected: access denied.').
             '</div>';
     } else {
@@ -625,11 +721,11 @@ if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbo
         __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
 }
 
-$footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
+$footerLogo = $siteURL .
+    "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
 
 /**
  * Variables to be used in the display logic below.
- *
  *
  * Content arrays:
  *
@@ -705,7 +801,6 @@ $footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logo
  *      HTML string of theme author information, if any. Or null.
  * @var $footerLogo string
  *      URL path to the footer logo.
- *
  */
 
 ?>
@@ -777,7 +872,9 @@ $footerLogo = $siteURL . "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logo
 		<!-- js initialization end -->
 
 		<!-- head extras -->
-		<?php foreach ($head_extras as $head_extra) echo $head_extra; ?>
+        <?php foreach ($head_extras as $head_extra): ?>
+            <?php echo $head_extra; ?>
+        <?php endforeach; ?>
 		<!-- head extras end -->
 
 	</head>
