@@ -115,6 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/Finance/invoices_manage.php');
+        $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
 
         $row = $form->addRow();
             $row->addLabel('status', __('Status'));
@@ -162,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             ->filterBy('month', $request['monthOfIssue'])
             ->filterBy('billingSchedule', $request['gibbonFinanceBillingScheduleID'])
             ->filterBy('feeCategory', $request['gibbonFinanceFeeCategoryID'])
-            ->fromArray($_POST);
+            ->fromPOST();
         $invoices = $invoiceGateway->queryInvoicesByYear($criteria, $gibbonSchoolYearID);
 
         // FORM
@@ -216,6 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         });
 
         $table->addMetaData('bulkActions', $col);
+        $table->addMetaData('post', ['gibbonSchoolYearID' => $gibbonSchoolYearID]);
 
         $table->addMetaData('filterOptions', [
             'status:Pending'          => __('Status').': '.__('Pending'),

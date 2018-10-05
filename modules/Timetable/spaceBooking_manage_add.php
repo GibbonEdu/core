@@ -63,8 +63,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+            $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
             $facilities = array();
+
+            $foreignKeyID = isset($_GET['gibbonSpaceID'])? 'gibbonSpaceID-'.$_GET['gibbonSpaceID'] : '';
+            $date = isset($_GET['date'])? dateConvertBack($guid, $_GET['date']) : '';
+            $timeStart = isset($_GET['timeStart'])? $_GET['timeStart'] : '';
+            $timeEnd = isset($_GET['timeEnd'])? $_GET['timeEnd'] : '';
 
             // Collect facilities
             $sql = "SELECT CONCAT('gibbonSpaceID-', gibbonSpaceID) as value, name FROM gibbonSpace ORDER BY name";
@@ -82,19 +88,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
             $row = $form->addRow();
                 $row->addLabel('foreignKeyID', __('Facility'));
-                $row->addSelect('foreignKeyID')->fromArray($facilities)->isRequired()->placeholder();
+                $row->addSelect('foreignKeyID')->fromArray($facilities)->isRequired()->placeholder()->selected($foreignKeyID);
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                $row->addDate('date')->isRequired();
+                $row->addDate('date')->isRequired()->setValue($date);
 
             $row = $form->addRow();
                 $row->addLabel('timeStart', __('Start Time'));
-                $row->addTime('timeStart')->isRequired();
+                $row->addTime('timeStart')->isRequired()->setValue($timeStart);
 
             $row = $form->addRow();
                 $row->addLabel('timeEnd', __('End Time'));
-                $row->addTime('timeEnd')->isRequired()->chainedTo('timeStart');
+                $row->addTime('timeEnd')->isRequired()->chainedTo('timeStart')->setValue($timeEnd);
 
             $repeatOptions = array('No' => __('No'), 'Daily' => __('Daily'), 'Weekly' => __('Weekly'));
             $row = $form->addRow();
@@ -178,6 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $form = Form::create('spaceBookingStep1', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_addProcess.php');
 
                     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                    $form->addHiddenValue('source', isset($_REQUEST['source'])? $_REQUEST['source'] : '');
 
                     $form->addHiddenValue('foreignKey', $foreignKey);
                     $form->addHiddenValue('foreignKeyID', $foreignKeyID);

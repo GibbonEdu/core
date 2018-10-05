@@ -68,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
     // QUERY
     $criteria = $rollGroupGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber', 'gibbonRollGroup.name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $rollGroups = $rollGroupGateway->queryRollGroups($criteria, $gibbonSchoolYearID);
 

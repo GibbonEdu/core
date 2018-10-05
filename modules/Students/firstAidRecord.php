@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->filterBy('student', $gibbonPersonID)
             ->filterBy('rollGroup', $gibbonRollGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

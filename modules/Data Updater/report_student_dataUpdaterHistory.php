@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
         $criteria = $gateway->newQueryCriteria()
             ->sortBy(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
             ->filterBy('cutoff', $nonCompliant == 'Y'? Format::dateConvert($date) : '')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         $dataUpdates = $gateway->queryStudentUpdaterHistory($criteria, $_SESSION[$guid]['gibbonSchoolYearID'], $choices);
         

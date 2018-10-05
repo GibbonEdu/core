@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $criteria = $facilityGateway->newQueryCriteria()
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
             ->sortBy('name')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');
@@ -84,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
 
         $table->addActionColumn()
             ->addParam('gibbonSpaceID')
+            ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($row, $actions) {
                 $actions->addAction('view', __('View'))
                         ->setURL('/modules/Timetable/tt_space_view.php');

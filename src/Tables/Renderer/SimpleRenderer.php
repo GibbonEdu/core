@@ -63,7 +63,7 @@ class SimpleRenderer implements RendererInterface
         $output .= '</header>';
 
         if ($dataSet->count() == 0) {
-            if ($dataSet->isSubset()) {
+            if ($dataSet->isSubset() && $dataSet->getPageSize() > 0) {
                 $output .= '<div class="warning">';
                 $output .= __('No results matched your search.');
                 $output .= '</div>';

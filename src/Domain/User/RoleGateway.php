@@ -50,4 +50,23 @@ class RoleGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function getRoleByID($gibbonRoleID)
+    {
+        $data = array('gibbonRoleID' => $gibbonRoleID);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleID";
+
+        return $this->db()->selectOne($sql, $data);
+    }
+
+    public function selectAllRolesByPerson($gibbonPersonID)
+    {
+        $data = array('gibbonPersonID' => $gibbonPersonID);
+        $sql = "SELECT gibbonRoleID AS groupBy, gibbonRole.* 
+                FROM gibbonPerson 
+                JOIN gibbonRole ON (FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll))
+                WHERE gibbonPersonID=:gibbonPersonID";
+
+        return $this->db()->select($sql, $data);
+    }
 }

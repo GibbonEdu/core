@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical_
     $criteria = $gateway->newQueryCriteria()
         ->sortBy('status')
         ->sortBy('timestamp', 'DESC')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $dataUpdates = $gateway->queryDataUpdates($criteria, $gibbonSchoolYearID);
 

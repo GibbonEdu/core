@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             // QUERY
             $criteria = $externalAssessmentGateway->newQueryCriteria()
                 ->sortBy(['category', 'order'])
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $externalAssessments = $externalAssessmentGateway->queryExternalAssessmentFields($criteria, $gibbonExternalAssessmentID);
 

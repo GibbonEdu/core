@@ -282,9 +282,9 @@ if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' or isset($_SESSION[$guid]['
     $stylesheets[] = $theme_stylesheet;
     $scripts[] = $theme_script;
 } else {
+
     $head_extras[] = $_SESSION[$guid]['themeCSS'];
     $head_extras[] = $_SESSION[$guid]['themeJS'];
-}
 
 // Append module CSS & JS
 if (isset($_GET['q'])) {
