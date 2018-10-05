@@ -854,42 +854,95 @@ $page = $container->get(Page::class);
 		<!-- js scripts end -->
 
 		<!-- js initialization -->
-		<script type='text/javascript'>$.datepicker.setDefaults($.datepicker.regional[<?php echo json_encode($datepickerLocale); ?>]);</script>
-		<script type="text/javascript">$(function() { $( document ).tooltip({  show: 800, hide: false, content: function () { return $(this).prop('title')}, position: { my: "center bottom-20", at: "center top", using: function( position, feedback ) { $( this ).css( position ); $( "<div>" ).addClass( "arrow" ).addClass( feedback.vertical ).addClass( feedback.horizontal ).appendTo( this ); } } }); });</script>
-		<script type="text/javascript">$(function () { $(".latex").latex();});</script>
-		<script type="text/javascript"> var tb_pathToImage=<?php echo json_encode($siteURL . '/lib/thickbox/loadingAnimation.gif');  ?>;</script>
-		<script type="text/javascript">
-		tinymce.init({
-			selector: "div#editorcontainer textarea",
-			width: '738px',
-			menubar : false,
-			toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-			plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-			statusbar: false,
-			valid_elements: '<?php echo getSettingByScope($connection2, 'System', 'allowableHTML') ?>',
-			invalid_elements: '',
-			apply_source_formatting : true,
-			browser_spellcheck: true,
-			convert_urls: false,
-			relative_urls: false,
-			default_link_target: "_blank"
-		 });
-		</script>
-		<script type="text/javascript">
-		$(document).ready(function(){
-			var sessionDuration = <?php echo json_encode($sessionDuration); ?>;
-			if (sessionDuration > 0) {
-				$.sessionTimeout({
-					message: '<?php echo __($guid, 'Your session is about to expire: you will be logged out shortly.') ?>',
-					keepAliveUrl: 'keepAlive.php' ,
-					redirUrl: 'logout.php?timeout=true',
-					logoutUrl: 'logout.php' ,
-					warnAfter: sessionDuration * 1000,
-					redirAfter: (sessionDuration * 1000) + 600000
-				});
-			}
-		});
-		</script>
+        <script type='text/javascript'>
+            window.Gibbon = <?php echo json_encode(
+                [
+                    'behaviour' => [
+                        'datepicker' => [
+                            'locale' => $datepickerLocale,
+                        ],
+                        'thickbox' => [
+                            'pathToImage' => $siteURL . '/lib/thickbox/loadingAnimation.gif',
+                        ],
+                        'tinymce' => [
+                            'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
+                        ],
+                        'sessionTimeout' => [
+                            'sessionDuration' => $sessionDuration,
+                            'message' => __($guid, 'Your session is about to expire: you will be logged out shortly.'),
+                        ]
+                    ],
+                ]
+            ); ?>;
+        </script>
+		<script type='text/javascript'>
+
+            // setup datepicker
+            $.datepicker.setDefaults($.datepicker.regional[Gibbon.behaviour.datepicker.locale]);
+
+            // setup thickbox
+            var tb_pathToImage=Gibbon.behaviour.thickbox.pathToImage;
+
+            $(function() {
+
+                // initialize tooltip
+                $(document).tooltip({
+                    show: 800,
+                    hide: false,
+                    content: function () {
+                        return $(this).prop('title');
+                    },
+                    position: {
+                        my: "center bottom-20",
+                        at: "center top",
+                        using: function (position, feedback) {
+                            $(this).css(position);
+                            $("<div>").
+                                addClass("arrow").
+                                addClass(feedback.vertical).
+                                addClass(feedback.horizontal).
+                                appendTo(this);
+                        }
+                    }
+                });
+
+                // initialize latex
+                $(".latex").latex();
+            });
+
+            // initialize tinymce
+            tinymce.init({
+                selector: "div#editorcontainer textarea",
+                width: '738px',
+                menubar : false,
+                toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
+                plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
+                statusbar: false,
+                valid_elements: Gibbon.behaviour.tinymce.valid_elements,
+                invalid_elements: '',
+                apply_source_formatting : true,
+                browser_spellcheck: true,
+                convert_urls: false,
+                relative_urls: false,
+                default_link_target: "_blank"
+            });
+
+            // initialize sessionTimeout
+            $(document).ready(function(){
+                var sessionDuration = Gibbon.behaviour.sessionTimeout.sessionDuration;
+                if (sessionDuration > 0) {
+                    $.sessionTimeout({
+                        message: Gibbon.behaviour.sessionTimeout.message,
+                        keepAliveUrl: 'keepAlive.php' ,
+                        redirUrl: 'logout.php?timeout=true',
+                        logoutUrl: 'logout.php' ,
+                        warnAfter: sessionDuration * 1000,
+                        redirAfter: (sessionDuration * 1000) + 600000
+                    });
+                }
+            });
+
+        </script>
 		<!-- js initialization end -->
 
 		<!-- head extras -->
