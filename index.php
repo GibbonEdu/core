@@ -277,7 +277,11 @@ $scripts->add(
 );
 $scripts->add('jqyery-timepicker', 'lib/jquery-timepicker/jquery.timepicker.min.js');
 $scripts->add('tinymce', 'lib/tinymce/tinymce.min.js');
-$scripts->add('core', 'assets/js/core.js?v='.$version);
+$scripts->add('gibbon/core', 'resources/assets/js/core.js', ['version' => $version]);
+$scripts->add(
+    'gibbon/common', 'resources/assets/js/common.js',
+    ['version' => $version, 'context' => 'foot']
+);
 
 // Set page stylesheets
 $stylesheets = new AssetBundle;
@@ -293,6 +297,13 @@ $personalBackground = null;
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' and isset($_SESSION[$guid]['personalBackground'])) {
     $personalBackground = ($_SESSION[$guid]['personalBackground'] != '') ?
         htmlPrep($_SESSION[$guid]['personalBackground']) : null;
+}
+if ($personalBackground !== null) {
+    $stylesheets->add(
+        'personal-background',
+        'body { background: url(' . json_encode($personalBackground) . ') repeat scroll center top #A88EDB!important; }',
+        ['type' => 'inline']
+    );
 }
 
 // Set head_extras, which will be rendered as-is in the head section
@@ -840,18 +851,7 @@ $page = $container->get(Page::class);
 
 		<!-- js stylesheets -->
 		<?php echo Page::renderStyleheets($page->stylesheets(), ['context' => 'head']); ?>
-		<?php if ($personalBackground !== null) { ?>
-			<style type="text/css">
-			body {
-			    background: url(<?php echo json_encode($personalBackground); ?>) repeat scroll center top #A88EDB!important;
-			}
-			</style>
-		<?php } ?>
 		<!-- js stylesheets end -->
-
-		<!-- js scripts -->
-		<?php echo Page::renderScripts($page->scripts(), ['context' => 'head']); ?>
-		<!-- js scripts end -->
 
 		<!-- js initialization -->
         <script type='text/javascript'>
@@ -862,88 +862,31 @@ $page = $container->get(Page::class);
                             'locale' => $datepickerLocale,
                         ],
                         'thickbox' => [
-                            'pathToImage' => $siteURL . '/lib/thickbox/loadingAnimation.gif',
+                            'pathToImage' => $siteURL .
+                                '/lib/thickbox/loadingAnimation.gif',
                         ],
                         'tinymce' => [
-                            'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
+                            'valid_elements' => getSettingByScope(
+                                $connection2, 'System', 'allowableHTML'
+                            ),
                         ],
                         'sessionTimeout' => [
                             'sessionDuration' => $sessionDuration,
-                            'message' => __($guid, 'Your session is about to expire: you will be logged out shortly.'),
+                            'message' => __(
+                                $guid,
+                                'Your session is about to expire: '.
+                                'you will be logged out shortly.'
+                            ),
                         ]
                     ],
                 ]
             ); ?>;
         </script>
-		<script type='text/javascript'>
+        <!-- js initialization end -->
 
-            // setup datepicker
-            $.datepicker.setDefaults($.datepicker.regional[Gibbon.behaviour.datepicker.locale]);
-
-            // setup thickbox
-            var tb_pathToImage=Gibbon.behaviour.thickbox.pathToImage;
-
-            $(function() {
-
-                // initialize tooltip
-                $(document).tooltip({
-                    show: 800,
-                    hide: false,
-                    content: function () {
-                        return $(this).prop('title');
-                    },
-                    position: {
-                        my: "center bottom-20",
-                        at: "center top",
-                        using: function (position, feedback) {
-                            $(this).css(position);
-                            $("<div>").
-                                addClass("arrow").
-                                addClass(feedback.vertical).
-                                addClass(feedback.horizontal).
-                                appendTo(this);
-                        }
-                    }
-                });
-
-                // initialize latex
-                $(".latex").latex();
-            });
-
-            // initialize tinymce
-            tinymce.init({
-                selector: "div#editorcontainer textarea",
-                width: '738px',
-                menubar : false,
-                toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-                plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-                statusbar: false,
-                valid_elements: Gibbon.behaviour.tinymce.valid_elements,
-                invalid_elements: '',
-                apply_source_formatting : true,
-                browser_spellcheck: true,
-                convert_urls: false,
-                relative_urls: false,
-                default_link_target: "_blank"
-            });
-
-            // initialize sessionTimeout
-            $(document).ready(function(){
-                var sessionDuration = Gibbon.behaviour.sessionTimeout.sessionDuration;
-                if (sessionDuration > 0) {
-                    $.sessionTimeout({
-                        message: Gibbon.behaviour.sessionTimeout.message,
-                        keepAliveUrl: 'keepAlive.php' ,
-                        redirUrl: 'logout.php?timeout=true',
-                        logoutUrl: 'logout.php' ,
-                        warnAfter: sessionDuration * 1000,
-                        redirAfter: (sessionDuration * 1000) + 600000
-                    });
-                }
-            });
-
-        </script>
-		<!-- js initialization end -->
+		<!-- js scripts -->
+		<?php echo Page::renderScripts($page->scripts(), ['context' => 'head']); ?>
+		<!-- js scripts end -->
 
 		<!-- head extras -->
         <?php foreach ($head_extras as $head_extra): ?>
@@ -1011,5 +954,6 @@ $page = $container->get(Page::class);
 				</div><!--/#footer-->
 			</div><!--/#wrap-->
 		</div><!--/.#wrapOuter-->
+		<?php echo Page::renderScripts($page->scripts(), ['context' => 'foot']); ?>
 	</body>
 </html>
