@@ -151,7 +151,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function getAllStylesheets(?string $context = null): array
+    public function getAllStylesheets(string $context = null): array
     {
         $stylesheets = $this->stylesheets()->getAssets($context);
 
@@ -180,7 +180,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function getAllScripts(?string $context = null): array
+    public function getAllScripts(string $context = null): array
     {
         $scripts = $this->scripts()->getAssets($context);
 
@@ -210,7 +210,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function addError(string $text): void
+    public function addError(string $text)
     {
         $this->alerts['error'][] = $text;
     }
@@ -224,7 +224,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function addWarning(string $text): void
+    public function addWarning(string $text)
     {
         $this->alerts['warning'][] = $text;
     }
@@ -238,7 +238,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function addMessage(string $text): void
+    public function addMessage(string $text)
     {
         $this->alerts['message'][] = $text;
     }
@@ -252,7 +252,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function getAlerts(?string $context = null)
+    public function getAlerts(string $context = null)
     {
         return !empty($context)
         ? $this->alerts[$context]
@@ -268,7 +268,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function addHeadExtra($code): void
+    public function addHeadExtra($code)
     {
         $this->extra['head'][] = $code;
     }
@@ -296,7 +296,7 @@ class Page
      *
      * @since Release: v17 
      */
-    public function addSidebarExtra($code): void
+    public function addSidebarExtra($code)
     {
         $this->extra['sidebar'][] = $code;
     }

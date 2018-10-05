@@ -74,7 +74,7 @@ class AssetBundle
      *
      * @since Release: v17 
      */
-    public function register(string $name, string $src, array $options = []): void
+    public function register(string $name, string $src, array $options = [])
     {
         $this->allAssets[$name] = array_replace(
             [
@@ -99,7 +99,7 @@ class AssetBundle
      *
      * @return void
      */
-    public function add(string $name, $src = null, array $options = []): void
+    public function add(string $name, $src = null, array $options = [])
     {
         if (!is_null($src)) {
             $this->register($name, $src, $options);
