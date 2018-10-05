@@ -11,6 +11,9 @@ uploads/*
 tests/log/*
 tests/config/support/_generated/*
 
+# Template Cache
+/resources/templates/cache/*
+
 # Misc Files
 Thumb.db
 .DS_Store
