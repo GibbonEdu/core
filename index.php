@@ -292,59 +292,15 @@ $warnings = array();
 // Array for displaying main contents
 $contents = array();
 
-// Set theme CSS and JS
-if ($cacheLoad or $_SESSION[$guid]['themeCSS'] == '' 
-    || isset($_SESSION[$guid]['themeJS']) == false
-    || $_SESSION[$guid]['gibbonThemeID'] == ''
-    || $_SESSION[$guid]['gibbonThemeName'] == ''
-) {
-
-    $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
-        'themes/Default/css/main.css?v='.$version :
-        'themes/Default/css/main_rtl.css?v='.$version;
-    $theme_script = 'themes/Default/js/common.js?v='.$version;
-
-    $_SESSION[$guid]['gibbonThemeID'] = '001';
-    $_SESSION[$guid]['gibbonThemeName'] = 'Default';
-    $_SESSION[$guid]['gibbonThemeAuthor'] = '';
-    $_SESSION[$guid]['gibbonThemeURL'] = '';
-    try {
-        if (isset($_SESSION[$guid]['gibbonThemeIDPersonal'])) {
-            $dataTheme = [
-                'gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']
-            ];
-            $sqlTheme = 'SELECT * FROM gibbonTheme
-                WHERE gibbonThemeID=:gibbonThemeIDPersonal';
-        } else {
-            $dataTheme = array();
-            $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
-        }
-        $resultTheme = $connection2->prepare($sqlTheme);
-        $resultTheme->execute($dataTheme);
-        if ($resultTheme->rowCount() == 1) {
-            $rowTheme = $resultTheme->fetch();
-
-            $themeVersion = ($rowTheme['name'] != 'Default')? $rowTheme['version'] : $version;
-            $theme_stylesheet = ($_SESSION[$guid]['i18n']['rtl'] == 'Y') ?
-                'themes/'.$rowTheme['name'].'/css/main.css?v='.$themeVersion :
-                'themes/'.$rowTheme['name'].'/css/main_rtl.css?v='.$themeVersion;
-            $theme_script = 'themes/'.$rowTheme['name'].
-                '/js/common.js?v='.$themeVersion;
-
-            $_SESSION[$guid]['gibbonThemeID'] = $rowTheme['gibbonThemeID'];
-            $_SESSION[$guid]['gibbonThemeName'] = $rowTheme['name'];
-            $_SESSION[$guid]['gibbonThemeAuthor'] = $rowTheme['author'];
-            $_SESSION[$guid]['gibbonThemeURL'] = $rowTheme['url'];
-        }
-    } catch (PDOException $e) {
-        $errors[] = $e->getMessage();
-    }
-
-    $stylesheets[] = $theme_stylesheet;
-    $scripts[] = $theme_script;
-} else {
-    $head_extras[] = $_SESSION[$guid]['themeCSS'];
-    $head_extras[] = $_SESSION[$guid]['themeJS'];
+// Setup theme CSS and JS
+try {
+    $theme = getTheme($connection2);
+    $_SESSION[$guid]['gibbonThemeID'] = $theme['id'];
+    $_SESSION[$guid]['gibbonThemeName'] = $theme['name'];
+    $stylesheets = array_merge($stylesheets, $theme['stylesheets']);
+    $scripts = array_merge($scripts, $theme['scripts']);
+} catch (PDOException $e) {
+    exit($e->getMessage());
 }
 
 // Append module CSS & JS
