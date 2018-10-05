@@ -4729,23 +4729,51 @@ function isCommandLineInterface()
     return false;
 }
 
-/*
-Easy Return Display Processing.
-Arguments:
-    $guid: The guid of your Gibbon Install.
-    $return: This should be the return value of the process.
-    $editLink: (Optional) This should be a link. The link will appended to the end of a success0 return.
-    $customReturns: (Optional) This should be an array. The array allows you to set custom return checks and messages. Set the array key to the return name and the value to the return message.
-Default returns:
-    success0: This is a default success message for adding a new record.
-    error0: This is a default error message for invalid permission for an action.
-    error1: This is a default error message for invalid inputs.
-    error2: This is a defualt error message for a database error.
-    warning0: This is a default warning message for a extra data failing to save.
-    warning1: This is a default warning message for a successful request, where certain data was not save properly.
-*/
+/**
+ * Easy Return Display Processing. Print out message as appropriate.
+ * See returnProcessMessage() for more details.
+ *
+ * @param string $guid
+ *      The guid of your Gibbon Install.
+ * @param string $return
+ *      The return value of the process.
+ * @param string $editLink
+ *      (Optional) This should be a link. The link will appended to the end of a success0 return.
+ * @param array $customReturns
+ *      (Optional) This should be an array. The array allows you to set custom return checks and
+ *      messages. Set the array key to the return name and the value to the return message.
+ *
+ * @return void
+ */
 function returnProcess($guid, $return, $editLink = null, $customReturns = null)
 {
+    echo returnProcessHTML($guid, $return, $editLink, $customReturns);
+}
+
+/**
+ * Render HTML for easy return display process.
+ *
+ * Default returns:
+ *   success0: This is a default success message for adding a new record.
+ *   error0:   This is a default error message for invalid permission for an action.
+ *   error1:   This is a default error message for invalid inputs.
+ *   error2:   This is a defualt error message for a database error.
+ *   warning0: This is a default warning message for a extra data failing to save.
+ *   warning1: This is a default warning message for a successful request, where certain data was not save properly.
+ *
+ * @param string $guid
+ *      The guid of your Gibbon Install.
+ * @param string $return
+ *      The return value of the process.
+ * @param string $editLink
+ *      (Optional) This should be a link. The link will appended to the end of a success0 return.
+ * @param array $customReturns
+ *      (Optional) This should be an array. The array allows you to set custom return checks and
+ *      messages. Set the array key to the return name and the value to the return message.
+ * @return string
+ *      The HTML ouput of the easy return display.
+ */
+function returnProcessHTML($guid, $return, $editLink = null, $customReturns = null) {
     if (isset($return)) {
         $class = 'error';
         $returnMessage = 'Unknown Return';
@@ -4794,11 +4822,7 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
             $returnMessage .= ' '.sprintf(__($guid, 'You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
         }
 
-        echo "<div class='$class'>";
-        echo $returnMessage;
-        echo '</div>';
+        return "<div class='{$class}'>{$returnMessage}</div>";
     }
+    return null;
 }
-
-
-?>

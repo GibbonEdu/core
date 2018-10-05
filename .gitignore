@@ -18,6 +18,7 @@ tests/config/support/_generated/*
 Thumb.db
 .DS_Store
 nbproject/
+var
 
 # Dev Dependencies
 /vendor/twbs
