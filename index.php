@@ -31,6 +31,8 @@ require './gibbon.php';
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\MenuMain;
 use Gibbon\MenuModule;
+use Gibbon\View\AssetBundle;
+use Gibbon\View\Page;
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -251,28 +253,39 @@ if ($_SESSION[$guid]['address'] != '') {
 $datepickerLocale = is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js') ?
     substr($_SESSION[$guid]['i18n']['code'], 0, 2) :
     str_replace('_', '-', $_SESSION[$guid]['i18n']['code']);
-$scripts = array(
-    'lib/LiveValidation/livevalidation_standalone.compressed.js',
-    'lib/jquery/jquery.js',
-    'lib/jquery/jquery-migrate.min.js',
-    'lib/jquery-ui/js/jquery-ui.min.js',
-    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
-    'lib/jquery-jslatex/jquery.jslatex.js',
-    'lib/jquery-form/jquery.form.js',
-    'lib/chained/jquery.chained.min.js',
-    'lib/thickbox/thickbox-compressed.js',
-    'lib/jquery-autosize/jquery.autosize.min.js',
-    'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
-    'lib/jquery-timepicker/jquery.timepicker.min.js',
-    'lib/tinymce/tinymce.min.js',
-    'assets/js/core.js?v='.$version,
+
+$scripts = new AssetBundle;
+$scripts->add(
+    'livevalidation',
+    'lib/LiveValidation/livevalidation_standalone.compressed.js'
 );
+$scripts->add('jquery', 'lib/jquery/jquery.js');
+$scripts->add('jqyer-migrate', 'lib/jquery/jquery-migrate.min.js');
+$scripts->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js');
+$scripts->add(
+    'juqery-ui/i18n',
+    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js'
+);
+$scripts->add('jquery-jslatex', 'lib/jquery-jslatex/jquery.jslatex.js');
+$scripts->add('jquery-form', 'lib/jquery-form/jquery.form.js');
+$scripts->add('jquery-chained', 'lib/chained/jquery.chained.min.js');
+$scripts->add('jquery-thickbox', 'lib/thickbox/thickbox-compressed.js');
+$scripts->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
+$scripts->add(
+    'jquery-sessionTimeout',
+    'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js'
+);
+$scripts->add('jqyery-timepicker', 'lib/jquery-timepicker/jquery.timepicker.min.js');
+$scripts->add('tinymce', 'lib/tinymce/tinymce.min.js');
+$scripts->add('core', 'assets/js/core.js?v='.$version);
 
 // Set page stylesheets
-$stylesheets = array(
-    'lib/jquery-ui/css/blitzer/jquery-ui.css',
-    'lib/thickbox/thickbox.css',
-    'lib/jquery-timepicker/jquery.timepicker.css',
+$stylesheets = new AssetBundle;
+$stylesheets->add('jquery-ui/blitzer', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
+$stylesheets->add('thickbox', 'lib/thickbox/thickbox.css');
+$stylesheets->add(
+    'jquery-timepicker',
+    'lib/jquery-timepicker/jquery.timepicker.css'
 );
 
 // Set personal background
@@ -297,8 +310,16 @@ try {
     $theme = getTheme($connection2);
     $_SESSION[$guid]['gibbonThemeID'] = $theme['id'];
     $_SESSION[$guid]['gibbonThemeName'] = $theme['name'];
-    $stylesheets = array_merge($stylesheets, $theme['stylesheets']);
-    $scripts = array_merge($scripts, $theme['scripts']);
+    foreach ($theme['stylesheets'] as $style) {
+        $stylesheets->add(
+            $style, $style, ['version' => $version]
+        );
+    }
+    foreach ($theme['scripts'] as $script) {
+        $scripts->add(
+            $script, $script, ['version' => $version]
+        );
+    }
 } catch (PDOException $e) {
     exit($e->getMessage());
 }
@@ -310,10 +331,24 @@ if (isset($_GET['q'])) {
         if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')) {
             include './modules/'.$_SESSION[$guid]['module'].'/version.php';
         }
-        $stylesheets[] = 'modules/'.$_SESSION[$guid]['module'].
-            '/css/module.css?v='.$moduleVersion;
-        $scripts[] = 'modules/'.$_SESSION[$guid]['module'].
-            '/js/module.js?v='.$moduleVersion;
+        $stylesheets->add(
+            'modules/'.$_SESSION[$guid]['module'].
+            '/css/module.css',
+            'modules/'.$_SESSION[$guid]['module'].
+            '/css/module.css',
+            [
+                'version' => $moduleVersion,
+            ]
+        );
+        $scripts->add(
+            'modules/'.$_SESSION[$guid]['module'].
+            '/js/module.js',
+            'modules/'.$_SESSION[$guid]['module'].
+            '/js/module.js',
+            [
+                'version' => $moduleVersion,
+            ]
+        );
     }
 }
 
@@ -681,13 +716,43 @@ if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbo
 $footerLogo = $siteURL .
     "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
 
+
+// define how Page should be created.
+$container->add(Page::class)->withArgument(
+    [
+        // string Page title
+        'title' => $title,
+
+        // string Route address
+        'address' => $_SESSION[$guid]['address'],
+
+        // not available yet, should be Action instance,
+        // not $_SESSION[$guid]['action'] (string)
+        'action' => null,
+
+        // not available yet, should be Module instance.
+        'module' => null,
+
+        // not available yet, should be Theme instance.
+        'theme' => null,
+
+        // stylesheets asset bundle
+        'stylesheets' => $stylesheets,
+
+        // scripts asset bundle
+        'scripts' => $scripts,
+    ]
+);
+
+// produce page object
+$page = $container->get(Page::class);
+
+
 /**
  * Variables to be used in the display logic below.
  *
  * Content arrays:
  *
- * @var $stylesheets array
- *      Array of stylesheet paths string. Presumed to be based on site path.
  * @var $scripts array
  *      Array of script paths string. Presumed to be based on site path.
  * @var $head_extras array
@@ -723,6 +788,8 @@ $footerLogo = $siteURL .
  *
  * General contents:
  *
+ * @var $page Page
+ *      Global page object for rendering.
  * @var $title string
  *      HTML page title.
  * @var $siteURL string
@@ -760,20 +827,19 @@ $footerLogo = $siteURL .
  *      URL path to the footer logo.
  */
 
+
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
-		<title><?php echo $title; ?></title>
+		<title><?php echo $page->getTitle(); ?></title>
 		<meta charset="utf-8"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
 
 		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 
 		<!-- js stylesheets -->
-		<?php foreach ($stylesheets as $stylesheet) { ?>
-			<link rel="stylesheet" href="<?php echo $siteURL . '/' . $stylesheet; ?>" type="text/css" media="screen" />
-		<?php } ?>
+		<?php echo Page::renderStyleheets($page->stylesheets(), ['context' => 'head']); ?>
 		<?php if ($personalBackground !== null) { ?>
 			<style type="text/css">
 			body {
@@ -784,9 +850,7 @@ $footerLogo = $siteURL .
 		<!-- js stylesheets end -->
 
 		<!-- js scripts -->
-		<?php foreach ($scripts as $script) { ?>
-			<script type="text/javascript" src="<?php echo $siteURL . '/' . $script; ?>"></script>
-		<?php } ?>
+		<?php echo Page::renderScripts($page->scripts(), ['context' => 'head']); ?>
 		<!-- js scripts end -->
 
 		<!-- js initialization -->

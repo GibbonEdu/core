@@ -330,6 +330,55 @@ class Page
     }
 
     /**
+     * Render AssetBundle as stylesheets.
+     *
+     * @param AssetBundle $styles  AssetBundle of styles.
+     * @param array       $options Array of options for rendering.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function renderStyleheets(
+        AssetBundle $styles, array $options=[]
+    ): string {
+        $options += [
+            'basePath' => '/',
+            'context' => null,
+        ];
+
+        // ensure trailing slash
+        $basePath = rtrim((string) $options['basePath'], '/') . '/';
+
+        return implode(
+            "\n",
+            array_map(
+                function ($style) use ($basePath) {
+                    $media = htmlspecialchars(@$style['media'] ?: 'all');
+                    $src = htmlspecialchars($basePath . $style['src']);
+                    switch ($style['type']) {
+                    case 'inline':
+                        return '<style type="text/css" media="'.$media.'">'.
+                            $src.'</style>';
+                    case 'url':
+                        if (!empty($style['version'])) {
+                            $src = (strpos($src, '?') === false) ?
+                                $src . '?v=' . $style['version'] :
+                                $src . '&v=' . $style['version'];
+                        }
+                        return '<link rel="stylesheet" href="'.
+                            $src. '" type="text/css" media="'.$media.'" />';
+                    default:
+                        throw new \Exception(
+                            sprintf('unknown style type: %s', $style['type'])
+                        );
+                    }
+                },
+                $styles->getAssets($options['context'])
+            )
+        );
+    }
+
+    /**
      * Returns the collection of scripts used by this page.
      *
      * @return AssetBundle Assetbundle of javascripts.
@@ -340,4 +389,54 @@ class Page
     {
         return $this->scripts;
     }
+
+    /**
+     * Render AssetBundle as stylesheets.
+     *
+     * @param AssetBundle $scripts AssetBundle of scripts.
+     * @param array       $options Array of options for rendering.
+     *
+     * @return string Rendered HTML string
+     * @throws Exception
+     */
+    public static function renderScripts(
+        AssetBundle $scripts, array $options=[]
+    ): string {
+        $options += [
+            'basePath' => '/',
+            'context' => null,
+        ];
+
+        // ensure trailing slash
+        $basePath = rtrim((string) $options['basePath'], '/') . '/';
+
+        return implode(
+            "\n",
+            array_map(
+                function ($script) use ($basePath) {
+                    $src = htmlspecialchars($basePath . $script['src']);
+                    switch ($script['type']) {
+                    case 'inline':
+                        return '<script type="text/javascript">'.
+                            $src.'</script>';
+                    case 'url':
+                        if (!empty($script['version'])) {
+                            $src = (strpos($src, '?') === false) ?
+                                $src . '?v=' . $script['version'] :
+                                $src . '&v=' . $script['version'];
+                        }
+                        return '<script type="text/javascript" src="'.
+                            $src.
+                            '"></script>';
+                    default:
+                        throw new \Exception(
+                            sprintf('unknown script type: %s', $script['type'])
+                        );
+                    }
+                },
+                $scripts->getAssets($options['context'])
+            )
+        );
+    }
+
 }
