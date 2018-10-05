@@ -27,8 +27,6 @@
 
 namespace Gibbon\View;
 
-use Gibbon\Domain\System\Module;
-use Gibbon\Domain\System\Theme;
 use Gibbon\View\AssetBundle;
 
 /**
@@ -119,11 +117,11 @@ class Page
     /**
      * Get the module instance for the current page.
      *
-     * @return Module The module instance for the page.
+     * @return Module|null The module instance for the page.
      *
      * @since Release: v17 
      */
-    public function getModule(): Module
+    public function getModule()
     {
         return $this->module;
     }
@@ -131,11 +129,11 @@ class Page
     /**
      * Get the theme instance for the current page.
      *
-     * @return Theme
+     * @return Theme|null
      *
      * @since Release: v17 
      */
-    public function getTheme(): Theme
+    public function getTheme()
     {
         return $this->theme;
     }
