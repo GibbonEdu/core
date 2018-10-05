@@ -264,6 +264,7 @@ $scripts = array(
     'lib/jquery-autosize/jquery.autosize.min.js',
     'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
     'lib/jquery-timepicker/jquery.timepicker.min.js',
+    'lib/tinymce/tinymce.min.js',
     'assets/js/core.js?v='.$version,
 );
 
