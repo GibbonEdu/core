@@ -1,21 +1,29 @@
 <?php
-/*
-Gibbon, Flexible & Open School System
-Copyright (C) 2010, Ross Parker
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
+/**
+ * Gibbon, Flexible & Open School System
+ * Copyright (C) 2010, Ross Parker
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ * PHP version >= 7.0
+ *
+ * @category File
+ * @package  Gibbon
+ * @author   Ross Parker <ross@rossparker.org>
+ * @license  GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @link     https://gibbonedu.org/
+ */
 
 namespace Gibbon\View;
 
@@ -24,8 +32,13 @@ use Gibbon\View\AssetBundle;
 /**
  * Holds the details for rendering the current page.
  *
- * @version v17
- * @since   v17
+ * @category Class
+ * @package  Gibbon\View
+ * @author   Ross Parker <ross@rossparker.org>
+ * @license  GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
+ * @version  Release: v17
+ * @link     https://gibbonedu.org/
+ * @since    Release: v17 
  */
 class Page
 {
@@ -39,7 +52,7 @@ class Page
     protected $theme;
 
     /**
-     * These properties can be modified during the runtime of a script, 
+     * These properties can be modified during the runtime of a script,
      * and will be output at the end during template rendering.
      */
     protected $stylesheets;
@@ -50,9 +63,9 @@ class Page
     /**
      * Create a new page from a variable set of constructor params.
      *
-     * @param array $params
+     * @param array $params Essential parameters for building a page.
      */
-    public function __construct($params = [])
+    public function __construct(array $params = [])
     {
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
@@ -68,19 +81,23 @@ class Page
     /**
      * Get the HTML page title.
      *
-     * @return string
+     * @return string Page title
+     *
+     * @since Release: v17 
      */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
     /**
-     * Get the current page address (?q=)
+     * Get the current page address (?q=).
      *
-     * @return string
+     * @return string Current page address.
+     *
+     * @since Release: v17 
      */
-    public function getAddress()
+    public function getAddress(): string
     {
         return $this->address;
     }
@@ -88,7 +105,9 @@ class Page
     /**
      * Get the action instance for the current page.
      *
-     * @return Action
+     * @return Action The action instance for the current page.
+     *
+     * @since Release: v17 
      */
     public function getAction()
     {
@@ -98,7 +117,9 @@ class Page
     /**
      * Get the module instance for the current page.
      *
-     * @return Module
+     * @return Module|null The module instance for the page.
+     *
+     * @since Release: v17 
      */
     public function getModule()
     {
@@ -108,7 +129,9 @@ class Page
     /**
      * Get the theme instance for the current page.
      *
-     * @return Theme
+     * @return Theme|null
+     *
+     * @since Release: v17 
      */
     public function getTheme()
     {
@@ -116,20 +139,30 @@ class Page
     }
 
     /**
-     * Get an array of all stylesheet asset used by this page (system, module & theme).
+     * Get an array of all stylesheet asset used by this page (system,
+     * module & theme).
+     *
+     * @param string|null $context Optional filter by context.
+     *                             Either 'head' or 'foot'.
      *
      * @return array
+     *
+     * @since Release: v17 
      */
-    public function getAllStylesheets($context = null)
+    public function getAllStylesheets(string $context = null): array
     {
         $stylesheets = $this->stylesheets()->getAssets($context);
 
         if (!empty($this->getModule())) {
-            $stylesheets = array_replace($stylesheets, $this->getModule()->stylesheets()->getAssets($context));
+            $stylesheets = array_replace(
+                $stylesheets, $this->getModule()->stylesheets()->getAssets($context)
+            );
         }
 
         if (!empty($this->getTheme())) {
-            $stylesheets = array_replace($stylesheets, $this->getTheme()->stylesheets()->getAssets($context));
+            $stylesheets = array_replace(
+                $stylesheets, $this->getTheme()->stylesheets()->getAssets($context)
+            );
         }
 
         return $stylesheets;
@@ -138,19 +171,29 @@ class Page
     /**
      * Get an array of all script assets used by this page (system, module & theme).
      *
-     * @param string $context  Optionally filter by context.
+     * @param string|null $context Optionally filter by context.
+     *                             Either 'head' or 'foot'.
+     *
      * @return array
+     *
+     * @since Release: v17 
      */
-    public function getAllScripts($context = null)
+    public function getAllScripts(string $context = null): array
     {
         $scripts = $this->scripts()->getAssets($context);
 
         if (!empty($this->getModule())) {
-            $scripts = array_replace($scripts, $this->getModule()->scripts()->getAssets($context));
+            $scripts = array_replace(
+                $scripts,
+                $this->getModule()->scripts()->getAssets($context)
+            );
         }
 
         if (!empty($this->getTheme())) {
-            $scripts = array_replace($scripts, $this->getTheme()->scripts()->getAssets($context));
+            $scripts = array_replace(
+                $scripts,
+                $this->getTheme()->scripts()->getAssets($context)
+            );
         }
 
         return $scripts;
@@ -159,9 +202,13 @@ class Page
     /**
      * Add user feedback as an error message displayed on this page.
      *
-     * @param string $text
+     * @param string $text Error message text.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
-    public function addError($text)
+    public function addError(string $text)
     {
         $this->alerts['error'][] = $text;
     }
@@ -169,9 +216,13 @@ class Page
     /**
      * Add user feedback as a warning message displayed on this page.
      *
-     * @param string $text
+     * @param string $text Warning message text.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
-    public function addWarning($text)
+    public function addWarning(string $text)
     {
         $this->alerts['warning'][] = $text;
     }
@@ -179,9 +230,13 @@ class Page
     /**
      * Add user feedback as an info message displayed on this page.
      *
-     * @param string $text
+     * @param string $text General notice message text.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
-    public function addMessage($text)
+    public function addMessage(string $text)
     {
         $this->alerts['message'][] = $text;
     }
@@ -189,21 +244,27 @@ class Page
     /**
      * Get all alerts generated by this page, optionally by context.
      *
-     * @param string $context  Contexts: error, warning, message, code
-     * @param string $text
+     * @param string $context Contexts: error, warning, message, code
+     *
      * @return array
+     *
+     * @since Release: v17 
      */
-    public function getAlerts($context = null)
+    public function getAlerts(string $context = null)
     {
-        return !empty($context) 
-            ? $this->alerts[$context] 
-            : $this->alerts;
+        return !empty($context)
+        ? $this->alerts[$context]
+        : $this->alerts;
     }
 
     /**
      * Add a section of raw HTML to the HEAD tag.
      *
-     * @param string $code
+     * @param string $code Raw HTML code to render in the HEAD region.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
     public function addHeadExtra($code)
     {
@@ -213,7 +274,11 @@ class Page
     /**
      * Add a section of raw HTML to bottom of the BODY tag.
      *
-     * @param string $code
+     * @param string $code Raw HTML code to render at the bottom of BODY region.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
     public function addFootExtra($code)
     {
@@ -223,7 +288,11 @@ class Page
     /**
      * Add a section of raw HTML to the page sidebar.
      *
-     * @param string $code
+     * @param string $code Raw HTML code to render in the page sidebar region.
+     *
+     * @return void
+     *
+     * @since Release: v17 
      */
     public function addSidebarExtra($code)
     {
@@ -233,33 +302,139 @@ class Page
     /**
      * Get all raw HTML code sections by context.
      *
-     * @param string $context  Contexts: head, foot, sidebar
+     * @param string $context Contexts: head, foot, sidebar
+     *
      * @return array
+     *
+     * @since Release: v17 
      */
-    public function getExtraCode($context)
+    public function getExtraCode($context): array
     {
-        return !empty($context) 
-            ? $this->extra[$context] 
-            : $this->extra;
+        return !empty($context)
+        ? $this->extra[$context]
+        : $this->extra;
     }
 
     /**
      * Returns the collection of stylesheets used by this page.
      *
-     * @return AssetBundle
+     * @return AssetBundle Assetbundle of stylesheets.
+     *
+     * @since Release: v17 
      */
-    public function stylesheets()
+    public function stylesheets(): AssetBundle
     {
         return $this->stylesheets;
     }
 
     /**
+     * Render AssetBundle as stylesheets.
+     *
+     * @param AssetBundle $styles  AssetBundle of styles.
+     * @param array       $options Array of options for rendering.
+     *
+     * @return string
+     * @throws Exception
+     */
+    public static function renderStyleheets(
+        AssetBundle $styles, array $options=[]
+    ): string {
+        $options += [
+            'basePath' => '/',
+            'context' => null,
+        ];
+
+        // ensure trailing slash
+        $basePath = rtrim((string) $options['basePath'], '/') . '/';
+
+        return implode(
+            "\n",
+            array_map(
+                function ($style) use ($basePath) {
+                    $media = htmlspecialchars(@$style['media'] ?: 'all');
+                    $src = htmlspecialchars($basePath . $style['src']);
+                    switch ($style['type']) {
+                    case 'inline':
+                        return '<style type="text/css" media="'.$media.'">'.
+                            $src.'</style>';
+                    case 'url':
+                        if (!empty($style['version'])) {
+                            $src = (strpos($src, '?') === false) ?
+                                $src . '?v=' . $style['version'] :
+                                $src . '&v=' . $style['version'];
+                        }
+                        return '<link rel="stylesheet" href="'.
+                            $src. '" type="text/css" media="'.$media.'" />';
+                    default:
+                        throw new \Exception(
+                            sprintf('unknown style type: %s', $style['type'])
+                        );
+                    }
+                },
+                $styles->getAssets($options['context'])
+            )
+        );
+    }
+
+    /**
      * Returns the collection of scripts used by this page.
      *
-     * @return AssetBundle
+     * @return AssetBundle Assetbundle of javascripts.
+     *
+     * @since Release: v17 
      */
-    public function scripts()
+    public function scripts(): AssetBundle
     {
         return $this->scripts;
     }
+
+    /**
+     * Render AssetBundle as stylesheets.
+     *
+     * @param AssetBundle $scripts AssetBundle of scripts.
+     * @param array       $options Array of options for rendering.
+     *
+     * @return string Rendered HTML string
+     * @throws Exception
+     */
+    public static function renderScripts(
+        AssetBundle $scripts, array $options=[]
+    ): string {
+        $options += [
+            'basePath' => '/',
+            'context' => null,
+        ];
+
+        // ensure trailing slash
+        $basePath = rtrim((string) $options['basePath'], '/') . '/';
+
+        return implode(
+            "\n",
+            array_map(
+                function ($script) use ($basePath) {
+                    $src = htmlspecialchars($basePath . $script['src']);
+                    switch ($script['type']) {
+                    case 'inline':
+                        return '<script type="text/javascript">'.
+                            $src.'</script>';
+                    case 'url':
+                        if (!empty($script['version'])) {
+                            $src = (strpos($src, '?') === false) ?
+                                $src . '?v=' . $script['version'] :
+                                $src . '&v=' . $script['version'];
+                        }
+                        return '<script type="text/javascript" src="'.
+                            $src.
+                            '"></script>';
+                    default:
+                        throw new \Exception(
+                            sprintf('unknown script type: %s', $script['type'])
+                        );
+                    }
+                },
+                $scripts->getAssets($options['context'])
+            )
+        );
+    }
+
 }
