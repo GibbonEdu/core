@@ -30,13 +30,17 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                     </div>
 
                     <div id="header-menu">
-                        {{ include('menuMain.twig.html') }}
+                        {{ include('menu.twig.html') }}
                     </div>
                 </div>
                 {% endblock %}
 
                 <div id="content-wrap">
                     <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
+
+                        {% if not sidebar %}
+                            {{ include('navigation.twig.html') }}
+                        {% endif %}
 
                         {% if page.trail %}
                         <div class="trail">
@@ -68,7 +72,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                 {{ code|raw }}
                             {% endfor %}
 
-                            {{ include('menuModule.twig.html') }}
+                            {{ include('navigation.twig.html') }}
                             
                             {{ sidebarContents|raw }}
                         </div>

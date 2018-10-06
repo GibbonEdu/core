@@ -10,6 +10,10 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
+{% for code in page.extraSidebar %}
+    {{ code|raw }}
+{% endfor %}
+
 <div class='linkTop'>
 
 {% if sidebar %}
@@ -54,3 +58,5 @@ collapsed drop-down list in 'mini' view-mode.
 {% endif %}
 
 </div>
+
+{{ sidebarContents|raw }}
