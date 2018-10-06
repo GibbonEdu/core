@@ -3160,7 +3160,7 @@ function sidebar($gibbon, $pdo)
 
     //Show tag cloud
     if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
-        include './modules/Planner/moduleFunctions.php';
+        include_once './modules/Planner/moduleFunctions.php';
         echo "<h2 class='sidebar'>";
         echo __($guid, 'Resource Tags');
         echo '</h2>';
