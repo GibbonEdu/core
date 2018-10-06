@@ -154,7 +154,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             $return .= "<div id='messageWall' style='display: inline; float: right'>";
 
-            include './modules/Messenger/moduleFunctions.php';
+            require_once './modules/Messenger/moduleFunctions.php';
 
             $q = (isset($_GET['q'])) ? $_GET['q'] : '';
 
@@ -541,13 +541,14 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET TIMETABLE
     $timetable = false;
     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
-        ?>
+
+        $timetable .= '
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#tt").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php echo @$_GET['gibbonTTID'] ?>", "ttDate": "<?php echo @$_POST['ttDate'] ?>", "fromTT": "<?php echo @$_POST['fromTT'] ?>", "personalCalendar": "<?php echo @$_POST['personalCalendar'] ?>", "schoolCalendar": "<?php echo @$_POST['schoolCalendar'] ?>", "spaceBookingCalendar": "<?php echo @$_POST['spaceBookingCalendar'] ?>"});
+				$("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
 			});
-		</script>
-		<?php
+        </script>   ';
+
         $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
         $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
@@ -973,13 +974,14 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET TIMETABLE
     $timetable = false;
     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') {
-        ?>
+
+        $timetable .= '
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#tt").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php echo @$_GET['gibbonTTID'] ?>", "ttDate": "<?php echo @$_POST['ttDate'] ?>", "fromTT": "<?php echo @$_POST['fromTT'] ?>", "personalCalendar": "<?php echo @$_POST['personalCalendar'] ?>", "schoolCalendar": "<?php echo @$_POST['schoolCalendar'] ?>", "spaceBookingCalendar": "<?php echo @$_POST['spaceBookingCalendar'] ?>"});
+				$("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
 			});
-		</script>
-		<?php
+        </script>';
+        
         $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
         $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
@@ -2797,10 +2799,6 @@ function sidebar($gibbon, $pdo)
             }
         }
     }
-
-    //Invoke and show Module Menu
-    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
-    echo $menuModule->getMenu('full');
 
     //Show custom sidebar content on homepage for logged in users
     if ($_SESSION[$guid]['address'] == '' and isset($_SESSION[$guid]['username'])) {

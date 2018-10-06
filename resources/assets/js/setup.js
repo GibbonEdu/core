@@ -16,15 +16,13 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// setup datepicker
-$.datepicker.setDefaults($.datepicker.regional[Gibbon.behaviour.datepicker.locale]);
+$(document).ready(function(){
 
-// setup thickbox
-var tb_pathToImage=Gibbon.behaviour.thickbox.pathToImage;
+    // Initialize datepicker
+    $.datepicker.setDefaults($.datepicker.regional[Gibbon.config.datepicker.locale]);
 
-$(function() {
 
-    // initialize tooltip
+    // Initialize tooltip
     $(document).tooltip({
         show: 800,
         hide: false,
@@ -45,33 +43,31 @@ $(function() {
         }
     });
 
-    // initialize latex
+    // Initialize latex
     $(".latex").latex();
-});
 
-// initialize tinymce
-tinymce.init({
-    selector: "div#editorcontainer textarea",
-    width: '738px',
-    menubar : false,
-    toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
-    plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
-    statusbar: false,
-    valid_elements: Gibbon.behaviour.tinymce.valid_elements,
-    invalid_elements: '',
-    apply_source_formatting : true,
-    browser_spellcheck: true,
-    convert_urls: false,
-    relative_urls: false,
-    default_link_target: "_blank"
-});
+    // Initialize tinymce
+    tinymce.init({
+        selector: "div#editorcontainer textarea",
+        width: '738px',
+        menubar : false,
+        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
+        plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
+        statusbar: false,
+        valid_elements: Gibbon.config.tinymce.valid_elements,
+        invalid_elements: '',
+        apply_source_formatting : true,
+        browser_spellcheck: true,
+        convert_urls: false,
+        relative_urls: false,
+        default_link_target: "_blank"
+    });
 
-// initialize sessionTimeout
-$(document).ready(function(){
-    var sessionDuration = Gibbon.behaviour.sessionTimeout.sessionDuration;
+    // Initialize sessionTimeout
+    var sessionDuration = Gibbon.config.sessionTimeout.sessionDuration;
     if (sessionDuration > 0) {
         $.sessionTimeout({
-            message: Gibbon.behaviour.sessionTimeout.message,
+            message: Gibbon.config.sessionTimeout.message,
             keepAliveUrl: 'keepAlive.php' ,
             redirUrl: 'logout.php?timeout=true',
             logoutUrl: 'logout.php' ,

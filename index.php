@@ -1,29 +1,21 @@
 <?php
-/**
- * Gibbon, Flexible & Open School System
- * Copyright (C) 2010, Ross Parker
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
- * PHP version >= 7.0
- * 
- * @category File
- * @package  Gibbon
- * @author   Ross Parker <ross@rossparker.org>
- * @license  GPLv3 https://www.gnu.org/licenses/gpl-3.0.html
- * @link     https://gibbonedu.org/
- */
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
 
 // Gibbon system-wide include
 require './gibbon.php';
@@ -33,6 +25,10 @@ use Gibbon\MenuMain;
 use Gibbon\MenuModule;
 use Gibbon\View\AssetBundle;
 use Gibbon\View\Page;
+
+// Setup the Page object
+$page = $container->get('page');
+$session = $container->get('session');
 
 //Deal with caching
 if (isset($_SESSION[$guid]['pageLoads'])) {
@@ -249,48 +245,69 @@ if ($_SESSION[$guid]['address'] != '') {
     }
 }
 
-// Set page scripts
+// Set session duration for session timeout JS handling.
+$sessionDuration = -1;
+if (isset($_SESSION[$guid]['username'])) {
+    $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
+    $sessionDuration = is_numeric($sessionDuration) ? $sessionDuration : 1200;
+    $sessionDuration = ($sessionDuration >= 1200) ? $sessionDuration : 1200;
+}
+
 $datepickerLocale = is_file($_SESSION[$guid]['absolutePath'].'/lib/jquery-ui/i18n/jquery.ui.datepicker-'.substr($_SESSION[$guid]['i18n']['code'], 0, 2).'.js') ?
     substr($_SESSION[$guid]['i18n']['code'], 0, 2) :
     str_replace('_', '-', $_SESSION[$guid]['i18n']['code']);
 
-$scripts = new AssetBundle;
-$scripts->add(
-    'livevalidation',
-    'lib/LiveValidation/livevalidation_standalone.compressed.js'
-);
-$scripts->add('jquery', 'lib/jquery/jquery.js');
-$scripts->add('jqyer-migrate', 'lib/jquery/jquery-migrate.min.js');
-$scripts->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js');
-$scripts->add(
-    'juqery-ui/i18n',
-    'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js'
-);
-$scripts->add('jquery-jslatex', 'lib/jquery-jslatex/jquery.jslatex.js');
-$scripts->add('jquery-form', 'lib/jquery-form/jquery.form.js');
-$scripts->add('jquery-chained', 'lib/chained/jquery.chained.min.js');
-$scripts->add('jquery-thickbox', 'lib/thickbox/thickbox-compressed.js');
-$scripts->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
-$scripts->add(
-    'jquery-sessionTimeout',
-    'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js'
-);
-$scripts->add('jqyery-timepicker', 'lib/jquery-timepicker/jquery.timepicker.min.js');
-$scripts->add('tinymce', 'lib/tinymce/tinymce.min.js');
-$scripts->add('gibbon/core', 'resources/assets/js/core.js', ['version' => $version]);
-$scripts->add(
-    'gibbon/common', 'resources/assets/js/common.js',
-    ['version' => $version, 'context' => 'foot']
-);
+// JAVASCRIPT
+$javascriptConfig = [
+    'config' => [
+        'datepicker' => [
+            'locale' => $datepickerLocale,
+        ],
+        'thickbox' => [
+            'pathToImage' => $session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif',
+        ],
+        'tinymce' => [
+            'valid_elements' => getSettingByScope($connection2, 'System', 'allowableHTML'),
+        ],
+        'sessionTimeout' => [
+            'sessionDuration' => $sessionDuration,
+            'message' => __('Your session is about to expire: you will be logged out shortly.'),
+        ]
+    ],
+];
+
+// Set page scripts: head
+$page->scripts()->add('jquery', 'lib/jquery/jquery.js', ['context' => 'head']);
+$page->scripts()->add('jquery-migrate', 'lib/jquery/jquery-migrate.min.js', ['context' => 'head']);
+$page->scripts()->add('lv', 'lib/LiveValidation/livevalidation_standalone.compressed.js', ['context' => 'head']);
+
+// Set page scripts: foot - lib
+$page->scripts()->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js');
+$page->scripts()->add('jquery-latex', 'lib/jquery-jslatex/jquery.jslatex.js');
+$page->scripts()->add('jquery-form', 'lib/jquery-form/jquery.form.js');
+$page->scripts()->add('jquery-chained', 'lib/chained/jquery.chained.min.js');
+$page->scripts()->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
+$page->scripts()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.min.js');
+$page->scripts()->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
+$page->scripts()->add('jquery-timeout', 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js');
+$page->scripts()->add('jquery-token', 'lib/jquery-tokeninput/src/jquery.tokeninput.js');
+$page->scripts()->add('thickboxi', 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";', ['type' => 'inline']);
+$page->scripts()->add('thickbox', 'lib/thickbox/thickbox-compressed.js');
+$page->scripts()->add('tinymce', 'lib/tinymce/tinymce.min.js');
+
+// Set page scripts: foot - core
+$page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
+$page->scripts()->add('core-setup', 'resources/assets/js/setup.js');
+$page->scripts()->add('core', 'resources/assets/js/core.js');
+
 
 // Set page stylesheets
-$stylesheets = new AssetBundle;
-$stylesheets->add('jquery-ui/blitzer', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
-$stylesheets->add('thickbox', 'lib/thickbox/thickbox.css');
-$stylesheets->add(
-    'jquery-timepicker',
-    'lib/jquery-timepicker/jquery.timepicker.css'
-);
+$page->stylesheets()->add('jquery-ui', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
+$page->stylesheets()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.css');
+$page->stylesheets()->add('jquery-token', 'lib/jquery-tokeninput/styles/token-input-facebook.css');
+$page->stylesheets()->add('thickbox', 'lib/thickbox/thickbox.css');
+$page->stylesheets()->add('theme', 'themes/Default/css/main.css');
+
 
 // Set personal background
 $personalBackground = null;
@@ -298,13 +315,14 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' a
     $personalBackground = ($_SESSION[$guid]['personalBackground'] != '') ?
         htmlPrep($_SESSION[$guid]['personalBackground']) : null;
 }
-if ($personalBackground !== null) {
-    $stylesheets->add(
+if (!empty($personalBackground)) {
+    $page->stylesheets()->add(
         'personal-background',
-        'body { background: url(' . json_encode($personalBackground) . ') repeat scroll center top #A88EDB!important; }',
+        'body { background: url('.$personalBackground.') repeat scroll center top #A88EDB!important; }',
         ['type' => 'inline']
     );
 }
+
 
 // Set head_extras, which will be rendered as-is in the head section
 $head_extras = array();
@@ -317,60 +335,54 @@ $warnings = array();
 $contents = array();
 
 // Setup theme CSS and JS
-try {
-    $theme = getTheme($connection2);
-    $_SESSION[$guid]['gibbonThemeID'] = $theme['id'];
-    $_SESSION[$guid]['gibbonThemeName'] = $theme['name'];
-    foreach ($theme['stylesheets'] as $style) {
-        $stylesheets->add(
-            $style, $style, ['version' => $version]
-        );
-    }
-    foreach ($theme['scripts'] as $script) {
-        $scripts->add(
-            $script, $script, ['version' => $version]
-        );
-    }
-} catch (PDOException $e) {
-    exit($e->getMessage());
-}
+// try {
+//     $theme = getTheme($connection2);
+//     $_SESSION[$guid]['gibbonThemeID'] = $theme['id'];
+//     $_SESSION[$guid]['gibbonThemeName'] = $theme['name'];
+//     foreach ($theme['stylesheets'] as $style) {
+//         $page->stylesheets()->add(
+//             $style, $style, ['version' => $version]
+//         );
+//     }
+//     foreach ($theme['scripts'] as $script) {
+//         $page->scripts()->add(
+//             $script, $script, ['version' => $version]
+//         );
+//     }
+// } catch (PDOException $e) {
+//     exit($e->getMessage());
+// }
 
 // Append module CSS & JS
-if (isset($_GET['q'])) {
-    if ($_GET['q'] != '') {
-        $moduleVersion = $version;
-        if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')) {
-            include './modules/'.$_SESSION[$guid]['module'].'/version.php';
-        }
-        $stylesheets->add(
-            'modules/'.$_SESSION[$guid]['module'].
-            '/css/module.css',
-            'modules/'.$_SESSION[$guid]['module'].
-            '/css/module.css',
-            [
-                'version' => $moduleVersion,
-            ]
-        );
-        $scripts->add(
-            'modules/'.$_SESSION[$guid]['module'].
-            '/js/module.js',
-            'modules/'.$_SESSION[$guid]['module'].
-            '/js/module.js',
-            [
-                'version' => $moduleVersion,
-            ]
-        );
-    }
-}
+// if (isset($_GET['q'])) {
+//     if ($_GET['q'] != '') {
+//         $moduleVersion = $version;
+//         if (file_exists('./modules/'.$_SESSION[$guid]['module'].'/version.php')) {
+//             include './modules/'.$_SESSION[$guid]['module'].'/version.php';
+//         }
+//         $page->stylesheets()->add(
+//             'modules/'.$_SESSION[$guid]['module'].
+//             '/css/module.css',
+//             'modules/'.$_SESSION[$guid]['module'].
+//             '/css/module.css',
+//             [
+//                 'version' => $moduleVersion,
+//             ]
+//         );
+//         $page->scripts()->add(
+//             'modules/'.$_SESSION[$guid]['module'].
+//             '/js/module.js',
+//             'modules/'.$_SESSION[$guid]['module'].
+//             '/js/module.js',
+//             [
+//                 'version' => $moduleVersion,
+//             ]
+//         );
+//     }
+// }
 
 
-// Set session duration for session timeout JS handling.
-$sessionDuration = -1;
-if (isset($_SESSION[$guid]['username'])) {
-    $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
-    $sessionDuration = is_numeric($sessionDuration) ? $sessionDuration : 1200;
-    $sessionDuration = ($sessionDuration >= 1200) ? $sessionDuration : 1200;
-}
+
 
 // Set google analytics
 $head_extras[] = $_SESSION[$guid]['analytics'];
@@ -417,7 +429,7 @@ if ($cacheLoad) {
 $headerMenu = $mainMenu->getMenu();
 
 // Set flash notification (temp_array)
-$notificationTray = getNotificationTray($connection2, $guid, $cacheLoad);
+// $notificationTray = getNotificationTray($connection2, $guid, $cacheLoad);
 
 // Set easy return message.
 $easyReturnHTML = null;
@@ -704,59 +716,156 @@ if ($_SESSION[$guid]['address'] == '') {
 }
 
 // Set header contents
-$hasTopGap = (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '');
-$headerLogoLink = $siteURL;
-$headerLogo = $siteURL.'/'.$_SESSION[$guid]['organisationLogo'];
+// $hasTopGap = (@$_SESSION[$guid]['gibbonHouseIDLogo'] == '');
+// $headerLogoLink = $siteURL;
+// $headerLogo = $siteURL.'/'.$_SESSION[$guid]['organisationLogo'];
 
-// Set footer contents
-$footerAuthor = __($guid, 'Powered by') . " <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> v{$version} " .
-    (($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') ? 'dev' : '') . " | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-" . date('Y');
+// // Set footer contents
+// $footerAuthor = __($guid, 'Powered by') . " <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> v{$version} " .
+//     (($_SESSION[$guid]['cuttingEdgeCode'] == 'Y') ? 'dev' : '') . " | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-" . date('Y');
 
-$footerLicense = __($guid, 'Created under the') . "<a target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> at ".
-    "<a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | ".
-    "<a target='_blank' href='https://gibbonedu.org/about/#ourTeam'>" . __($guid, 'Credits') . "</a> | ".
-    "<a target='_blank' href='https://gibbonedu.org/about/#translators'>" . __($guid, 'Translators') . '</a>';
+// $footerLicense = __($guid, 'Created under the') . "<a target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> at ".
+//     "<a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | ".
+//     "<a target='_blank' href='https://gibbonedu.org/about/#ourTeam'>" . __($guid, 'Credits') . "</a> | ".
+//     "<a target='_blank' href='https://gibbonedu.org/about/#translators'>" . __($guid, 'Translators') . '</a>';
 
-$footerThemeAuthor = null;
-if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
-    $footerThemeAuthor = ($_SESSION[$guid]['gibbonThemeURL'] != '') ?
-        __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>' :
-        __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
-}
+// $footerThemeAuthor = null;
+// if ($_SESSION[$guid]['gibbonThemeName'] != 'Default' and $_SESSION[$guid]['gibbonThemeAuthor'] != '') {
+//     $footerThemeAuthor = ($_SESSION[$guid]['gibbonThemeURL'] != '') ?
+//         __($guid, 'Theme by')." <a target='_blank' href='".$_SESSION[$guid]['gibbonThemeURL']."'>".$_SESSION[$guid]['gibbonThemeAuthor'].'</a>' :
+//         __($guid, 'Theme by').' '.$_SESSION[$guid]['gibbonThemeAuthor'];
+// }
 
-$footerLogo = $siteURL .
-    "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
+// $footerLogo = $siteURL .
+//     "/themes/{$_SESSION[$guid]['gibbonThemeName']}/img/logoFooter.png";
 
 
 // define how Page should be created.
-$container->add(Page::class)->withArgument(
-    [
-        // string Page title
-        'title' => $title,
+// $container->add(Page::class)->withArgument(
+//     [
+//         // string Page title
+//         'title' => $title,
 
-        // string Route address
-        'address' => $_SESSION[$guid]['address'],
+//         // string Route address
+//         'address' => $_SESSION[$guid]['address'],
 
-        // not available yet, should be Action instance,
-        // not $_SESSION[$guid]['action'] (string)
-        'action' => null,
+//         // not available yet, should be Action instance,
+//         // not $_SESSION[$guid]['action'] (string)
+//         'action' => null,
 
-        // not available yet, should be Module instance.
-        'module' => null,
+//         // not available yet, should be Module instance.
+//         'module' => null,
 
-        // not available yet, should be Theme instance.
-        'theme' => null,
+//         // not available yet, should be Theme instance.
+//         'theme' => null,
 
-        // stylesheets asset bundle
-        'stylesheets' => $stylesheets,
+//         // stylesheets asset bundle
+//         'stylesheets' => $stylesheets,
 
-        // scripts asset bundle
-        'scripts' => $scripts,
-    ]
-);
+//         // scripts asset bundle
+//         'scripts' => $scripts,
+//     ]
+// );
 
-// produce page object
-$page = $container->get(Page::class);
+
+
+
+// Setup menu items
+// TODO: replace!!!
+
+$absoluteURL = $session->get('absoluteURL');
+$gibbonRoleIDCurrent = $session->get('gibbonRoleIDCurrent');
+$mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
+
+$data = array('gibbonRoleID' => $gibbonRoleIDCurrent, 'menuOrder' => $mainMenuCategoryOrder );
+$sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
+        FROM gibbonModule 
+        JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+        JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+        WHERE gibbonModule.active='Y' 
+        AND gibbonAction.menuShow='Y' 
+        AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+        GROUP BY gibbonModule.name 
+        ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
+
+$menuMainItems = $pdo->select($sql, $data)->fetchGrouped();
+
+foreach ($menuMainItems as $category => &$items) {
+    foreach ($items as &$item) {
+        $modulePath = '/modules/'.$item['name'];
+        $item['url'] = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+            ? $absoluteURL.'/index.php?q='.$modulePath.'/'.$item['entryURL']
+            : $absoluteURL.'/index.php?q='.$modulePath.'/'.$item['alternateEntryURL'];
+    }
+}
+
+
+$moduleID=checkModuleReady($session->get('address'), $connection2);
+
+$data = array('gibbonModuleID' => $moduleID, 'gibbonRoleID' => $gibbonRoleIDCurrent);
+$sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name as actionName, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList, SUBSTRING_INDEX(gibbonAction.name, '_', 1) as name, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) AS textDomain
+        FROM gibbonModule
+        JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+        JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+        WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID)
+        AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)
+        AND NOT gibbonAction.entryURL=''
+        AND gibbonAction.menuShow='Y'
+        GROUP BY name
+        ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
+
+$menuModuleItems = $pdo->select($sql, $data)->fetchGrouped();
+
+$currentAction = getActionName($session->get('address'));
+
+foreach ($menuModuleItems as $category => &$items) {
+    foreach ($items as &$item) {
+        $item['active'] = stripos($item['URLList'], $currentAction) !== false;
+        $item['url'] = $absoluteURL.'/index.php?q=/modules/'.$item['moduleName'].'/'.$item['entryURL'];
+    }
+}
+
+
+
+
+$twig = $container->get('twig');
+$page = $container->get('page');
+
+// TODO: remove
+$session->set('gibbonThemeName', 'Default');
+
+ob_start();
+sidebar($gibbon, $pdo);
+$sidebar = ob_get_contents();
+ob_end_clean();
+
+
+
+
+$templateData = [
+    'page' => $page->gatherData(),
+    'contents' => $contents,
+    'organisationLogo' => $session->get('organisationLogo'),
+    'version'          => $gibbon->getVersion(),
+    'versionName'      => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+    'gibbonThemeName'  => $session->get('gibbonThemeName'),
+    'gibbonHouseIDLogo'  => $session->get('gibbonHouseIDLogo'),
+    'isLoggedIn'       => !empty($session->get('gibbonRoleIDCurrent')),
+    'page'             => $page->gatherData(),
+    'menuMain'         => $menuMainItems,
+    'menuModule'       => $menuModuleItems,
+    'minorLinks'       => getMinorLinks($connection2, $guid, true),
+    'notificationTray' => getNotificationTray($connection2, $guid, true),
+    'sidebar'          => $sidebar,
+];
+
+if (!empty($session->get('username')) && !empty($session->get('gibbonRoleIDCurrent'))) {
+    $templateData = array_replace($templateData, [
+        'fastFinder'       => getFastFinder($connection2, $guid),
+    ]);
+}
+
+echo $twig->render('index.twig.html', $templateData);
 
 
 /**
@@ -836,10 +945,10 @@ $page = $container->get(Page::class);
  *      HTML string of theme author information, if any. Or null.
  * @var $footerLogo string
  *      URL path to the footer logo.
- */
+ 
 
 
-?>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
@@ -850,7 +959,7 @@ $page = $container->get(Page::class);
 		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 
 		<!-- js stylesheets -->
-		<?php echo Page::renderStyleheets($page->stylesheets(), ['context' => 'head']); ?>
+		<!-- <?php echo Page::renderStyleheets($page->stylesheets(), ['context' => 'head']); ?> -->
 		<!-- js stylesheets end -->
 
 		<!-- js initialization -->
@@ -885,7 +994,7 @@ $page = $container->get(Page::class);
         <!-- js initialization end -->
 
 		<!-- js scripts -->
-		<?php echo Page::renderScripts($page->scripts(), ['context' => 'head']); ?>
+		<!-- <?php echo Page::renderScripts($page->scripts(), ['context' => 'head']); ?> -->
 		<!-- js scripts end -->
 
 		<!-- head extras -->
@@ -957,3 +1066,5 @@ $page = $container->get(Page::class);
 		<?php echo Page::renderScripts($page->scripts(), ['context' => 'foot']); ?>
 	</body>
 </html>
+
+*/
