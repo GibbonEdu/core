@@ -34,7 +34,7 @@ if (empty($session->get('systemSettingsSet'))) {
 
 $page = $container->get('page');
 
-$contents = '';
+$contents = [];
 
 if (empty($page->getAddress())) {
     $page->addWarning(__('There is no content to display'));
@@ -44,12 +44,12 @@ if (empty($page->getAddress())) {
     if (is_file('./'.$page->getAddress())) {
         ob_start();
         include './'.$page->getAddress();
-        $contents = ob_get_contents();
+        $contents[] = ob_get_contents();
         ob_end_clean();
     } else {
         ob_start();
         include './error.php';
-        $contents = ob_get_contents();
+        $contents[] = ob_get_contents();
         ob_end_clean();
     }
 }
@@ -62,4 +62,4 @@ $data = [
     'contents' => $contents,
 ];
 
-echo $twig->render('base.twig.html', $data);
+echo $twig->render('fullscreen.twig.html', $data);
