@@ -99,7 +99,7 @@ class Session
     public function exists($keys)
     {
         $keys = is_array($keys)? $keys : [$keys];
-        $exists = false;
+        $exists = !empty($keys);
 
         foreach ($keys as $key) {
             $exists &= array_key_exists($key, $_SESSION[$this->guid]);
@@ -117,7 +117,7 @@ class Session
     public function has($keys)
     {
         $keys = is_array($keys)? $keys : [$keys];
-        $has = false;
+        $has = !empty($keys);
 
         foreach ($keys as $key) {
             $has &= !empty($_SESSION[$this->guid][$key]);

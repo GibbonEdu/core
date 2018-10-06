@@ -36,7 +36,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                 {% endblock %}
 
                 <div id="content-wrap">
-                    <div id="{{ not page.sidebar ? 'content-wide' : 'content' }}">
+                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
 
                         {% if page.trail %}
                         <div class="trail">
@@ -62,7 +62,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                         {{ contents|join("\n")|raw }}
                     </div>
 
-                    {% if page.sidebar %}
+                    {% if sidebar %}
                         <div id="sidebar">
                             {% for code in page.extraSidebar %}
                                 {{ code|raw }}
@@ -70,7 +70,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
                             {{ include('menuModule.twig.html') }}
                             
-                            {{ sidebar|raw }}
+                            {{ sidebarContents|raw }}
                         </div>
                         <br style="clear: both">
                     {% endif %}

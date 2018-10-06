@@ -195,13 +195,14 @@ class Page
     }
 
     /**
-     * Add user feedback as an info message displayed on this page.
+     * Add user feedback as an alert displayed on this page.
      *
-     * @param string $text General notice message text.
+     * @param string $context   Contexts: error, warning, message, code
+     * @param string $text      General notice message text.
      */
-    public function addMessage(string $text)
+    public function addAlert(string $context, string $text)
     {
-        $this->alerts['message'][] = $text;
+        $this->alerts[$context][] = $text;
     }
 
     /**
@@ -276,7 +277,6 @@ class Page
             'extraHead'    => $this->getExtraCode('head'),
             'extraFoot'    => $this->getExtraCode('foot'),
             'extraSidebar' => $this->getExtraCode('sidebar'),
-            'sidebar'      => true,
         ];
     }
 
