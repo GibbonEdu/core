@@ -22,6 +22,7 @@ namespace Gibbon\Services;
 use Gibbon\Core;
 use Gibbon\Locale;
 use Gibbon\Session;
+use Gibbon\View\Page;
 use Gibbon\Services\Format;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
@@ -54,6 +55,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'session',
         'locale',
         'twig',
+        'page',
     ];
 
     /**
@@ -90,7 +92,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
 
-        $container->add('twig', function() use ($absolutePath, $session) {
+        $container->share('twig', function () use ($absolutePath, $session) {
             $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
 
             // Add the theme templates folder so it can override core templates
@@ -112,6 +114,17 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             }));
 
             return $twig;
+        });
+
+        $container->share('page', function () use ($session) {
+            $session->set('address', isset($_GET['q'])? $_GET['q'] : '');
+            $session->set('action', getActionName($session->get('address')));
+
+            return new Page([
+                'title'   => $session->get('organisationNameShort').' - '.$session->get('systemName'),
+                'address' => $session->get('address'),
+                'action'  => $session->get('action'),
+            ]);
         });
     }
 }

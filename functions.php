@@ -4035,24 +4035,6 @@ function getRoleList($gibbonRoleIDAll, $connection2)
     return $output;
 }
 
-/**
- * Get module information.
- *
- * @param string $address The $_GET['q'] or equivlant address field.
- * @return array Array of information about the module, includes
- *               - module: string name of module.
- *               - stylesheets: array of relative path to module stylesheets.
- *               - scripts: array of relative path to module scripts.
- */
-function getModule(string $address): array {
-    $name = getModuleName($address);
-    return array(
-        'name' => $name,
-        'stylesheets' => array("modules/{$name}/css/module.css"),
-        'scripts' => array("modules/{$name}/js/module.js"),
-    );
-}
-
 //Get the module name from the address
 function getModuleName($address)
 {
@@ -4108,56 +4090,6 @@ function getModuleCategory($address, $connection2)
     }
 
     return $output;
-}
-
-/**
- * Get theme information
- *
- * @param PDO $conn Database connection.
- * @return array Array of information about the theme, includes
- *               - id: int numerical id of the theme.
- *               - name: string name of the theme.
- *               - stylesheets: array of relative path to module stylesheets.
- *               - scripts: array of relative path to module scripts.
- */
-function getTheme(PDO $conn): array {
-
-    // default theme
-    $stylesheets = array("./themes/Default/css/main.css");
-    if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-        $stylesheets[] = "./themes/Default/css/main_rtl.css";
-    }
-    $scripts = array("./themes/Default/js/common.js");
-    $themeID = '001';
-    $themeName = 'Default';
-
-    // set personal theme, if any
-    if (@$_SESSION[$guid]['gibbonThemeIDPersonal'] != null) {
-        $dataTheme = array('gibbonThemeIDPersonal' => $_SESSION[$guid]['gibbonThemeIDPersonal']);
-        $sqlTheme = 'SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeIDPersonal';
-    } else {
-        $dataTheme = array();
-        $sqlTheme = "SELECT * FROM gibbonTheme WHERE active='Y'";
-    }
-    $resultTheme = $conn->prepare($sqlTheme);
-    $resultTheme->execute($dataTheme);
-    if ($resultTheme->rowCount() == 1) {
-        $rowTheme = $resultTheme->fetch();
-        $stylesheets = array("themes/{$rowTheme['name']}/css/main.css");
-        if ($_SESSION[$guid]['i18n']['rtl'] == 'Y') {
-            $stylesheets[] = "themes/{$rowTheme['name']}/css/main_rtl.css";
-        }
-        $scripts = array("themes/{$rowTheme['name']}/js/common.js");
-        $themeID = $rowTheme['gibbonThemeID'];
-        $themeName = $rowTheme['name'];
-    }
-
-    return array(
-        'id' => $themeID,
-        'name' => $themeName,
-        'stylesheets' => $stylesheets,
-        'scripts' => $scripts,
-    );
 }
 
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
