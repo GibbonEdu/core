@@ -4677,7 +4677,11 @@ function isCommandLineInterface()
  */
 function returnProcess($guid, $return, $editLink = null, $customReturns = null)
 {
-    echo returnProcessHTML($guid, $return, $editLink, $customReturns);
+    $alert = returnProcessGetAlert($return, $editLink, $customReturns);
+
+    echo !empty($alert) 
+        ? "<div class='{$alert['context']}'>{$alert['text']}</div>" 
+        : '';
 }
 
 /**
@@ -4703,28 +4707,28 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
  * @return string
  *      The HTML ouput of the easy return display.
  */
-function returnProcessHTML($guid, $return, $editLink = null, $customReturns = null) {
+function returnProcessGetAlert($return, $editLink = null, $customReturns = null) {
     if (isset($return)) {
         $class = 'error';
         $returnMessage = 'Unknown Return';
         $returns = array();
-        $returns['success0'] = __($guid, 'Your request was completed successfully.');
-        $returns['error0'] = __($guid, 'Your request failed because you do not have access to this action.');
-        $returns['error1'] = __($guid, 'Your request failed because your inputs were invalid.');
-        $returns['error2'] = __($guid, 'Your request failed due to a database error.');
-        $returns['error3'] = __($guid, 'Your request failed because your inputs were invalid.');
-        $returns['error4'] = __($guid, 'Your request failed because your passwords did not match.');
-        $returns['error5'] = __($guid, 'Your request failed because there are no records to show.');
-        $returns['error6'] = __($guid, 'Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
-        $returns['warning0'] = __($guid, 'Your optional extra data failed to save.');
-        $returns['warning1'] = __($guid, 'Your request was successful, but some data was not properly saved.');
-        $returns['warning2'] = __($guid, 'Your request was successful, but some data was not properly deleted.');
+        $returns['success0'] = __('Your request was completed successfully.');
+        $returns['error0'] = __('Your request failed because you do not have access to this action.');
+        $returns['error1'] = __('Your request failed because your inputs were invalid.');
+        $returns['error2'] = __('Your request failed due to a database error.');
+        $returns['error3'] = __('Your request failed because your inputs were invalid.');
+        $returns['error4'] = __('Your request failed because your passwords did not match.');
+        $returns['error5'] = __('Your request failed because there are no records to show.');
+        $returns['error6'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+        $returns['warning0'] = __('Your optional extra data failed to save.');
+        $returns['warning1'] = __('Your request was successful, but some data was not properly saved.');
+        $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');
 
         if (isset($customReturns)) {
             if (is_array($customReturns)) {
                 $customReturnKeys = array_keys($customReturns);
                 foreach ($customReturnKeys as $customReturnKey) {
-                    $customReturn = __($guid, 'Unknown Return');
+                    $customReturn = __('Unknown Return');
                     if (isset($customReturns[$customReturnKey])) {
                         $customReturn = $customReturns[$customReturnKey];
                     }
@@ -4749,10 +4753,10 @@ function returnProcessHTML($guid, $return, $editLink = null, $customReturns = nu
             }
         }
         if ($class == 'success' && $editLink != null) {
-            $returnMessage .= ' '.sprintf(__($guid, 'You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
+            $returnMessage .= ' '.sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
         }
 
-        return "<div class='{$class}'>{$returnMessage}</div>";
+        return ['context' => $class, 'text' => $returnMessage];
     }
     return null;
 }
