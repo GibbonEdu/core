@@ -292,7 +292,6 @@ class Page
             'extraHead'    => $this->getExtraCode('head'),
             'extraFoot'    => $this->getExtraCode('foot'),
             'extraSidebar' => $this->getExtraCode('sidebar'),
-            'content'      => $this->content,
         ];
     }
 
@@ -338,22 +337,22 @@ class Page
      */
     public function fetchFromFile(string $filepath, array $data = []) : string
     {
-        // TODO: Check $filepath for validity
-
         if (!is_file($filepath)) {
-            // Throw an exception?
             return '';
         }
 
-        global $guid, $gibbon, $caching, $version, $pdo, $connection2, $autoloader, $container;
+        // Backwards compatibility: include these globals in the current scope.
+        global $guid, $gibbon, $version, $pdo, $connection2, $autoloader, $container;
 
+        // Extract the array of data into individual variables.
         extract($data);
 
         try {
             ob_start();
-            include $filepath;
-            $output = ob_get_clean();
+            $included = include $filepath;
+            $output = ob_get_clean() . (is_string($included)? $included : '');
         } catch (\Exception $e) {
+            $output = '';
             ob_end_clean();
             throw $e;
         }

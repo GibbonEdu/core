@@ -14,7 +14,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
         {% for type, alerts in page.alerts %}
             {% for text in alerts %}
-                <div class="{{ type }}">{{ text }}</div>
+                <div class="{{ type }}">{{ text|raw }}</div>
             {% endfor %}
         {% endfor %}
 

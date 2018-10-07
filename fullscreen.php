@@ -17,30 +17,32 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-//Gibbon system-wide includes
-include './gibbon.php';
+// Gibbon system-wide includes
+require_once './gibbon.php';
 
+// Setup the Page and Session objects
+$page = $container->get('page');
 $session = $container->get('session');
 
-//Check to see if system settings are set from databases
-if (empty($session->get('systemSettingsSet'))) {
+// Check to see if system settings are set from databases
+if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 }
 
-//If still false, show warning, otherwise display page
-if (empty($session->get('systemSettingsSet'))) {
-    exit(__($guid, 'System Settings are not set: the system cannot be displayed'));
+// If still false, show warning, otherwise display page
+if (!$session->has('systemSettingsSet')) {
+    exit(__('System Settings are not set: the system cannot be displayed'));
 }
 
-$page = $container->get('page');
+$address = $page->getAddress();
 
-if (empty($page->getAddress())) {
+if (empty($address)) {
     $page->addWarning(__('There is no content to display'));
-} elseif (stripos($page->getAddress(), '..') !== false) {
+} elseif (stripos($address, '..') !== false) {
     $page->addError(__('Illegal address detected: access denied.'));
 } else {
-    if (is_file('./'.$page->getAddress())) {
-        $page->writeFromFile('./'.$page->getAddress());
+    if (is_file('./'.$address)) {
+        $page->writeFromFile('./'.$address);
     } else {
         $page->writeFromFile('./error.php');
     }

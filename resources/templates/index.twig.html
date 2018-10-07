@@ -62,7 +62,7 @@ TODO: add template variable details.
 
                         {% for type, alerts in page.alerts %}
                             {% for text in alerts %}
-                                <div class="{{ type }}">{{ text }}</div>
+                                <div class="{{ type }}">{{ text|raw }}</div>
                             {% endfor %}
                         {% endfor %}
 
