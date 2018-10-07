@@ -4,7 +4,10 @@ Copyright (C) 2010, Ross Parker
 
 This is a Gibbon template file, written in HTML and Twig syntax.
 For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+TODO: add template variable details.
 -->#}
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -72,9 +75,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
                                 {{ code|raw }}
                             {% endfor %}
 
-                            {{ include('navigation.twig.html') }}
-                            
                             {{ sidebarContents|raw }}
+
+                            {{ include('navigation.twig.html') }}
+
                         </div>
                         <br style="clear: both">
                     {% endif %}

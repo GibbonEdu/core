@@ -195,6 +195,16 @@ class Page
     }
 
     /**
+     * Add user feedback as an info message displayed on this page.
+     *
+     * @param string $text Info message text.
+     */
+    public function addMessage(string $text)
+    {
+        $this->alerts['message'][] = $text;
+    }
+
+    /**
      * Add user feedback as an alert displayed on this page.
      *
      * @param string $context   Contexts: error, warning, message, code
