@@ -121,8 +121,27 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $twig;
         });
 
+        $container->share('action', function () use ($session, $pdo) {
+            $data = [
+                'actionName'   => '%'.$session->get('action').'%',
+                'moduleName'   => $session->get('module'),
+                'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
+            ];
+            $sql = "SELECT gibbonAction.* 
+                    FROM gibbonAction
+                    JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                    WHERE gibbonAction.URLList LIKE :actionName 
+                    AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                    AND gibbonModule.name=:moduleName";
+
+            $actionData = $pdo->selectOne($sql, $data);
+
+            return $actionData ? $actionData : null;
+        });
+
         $container->share('module', function () use ($session, $pdo) {
-            // Setup the Module - move this to a Gateway class
             $data = ['moduleName' => $session->get('module')];
             $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName";
             $moduleData = $pdo->selectOne($sql, $data);
@@ -131,23 +150,25 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         });
 
         $container->share('theme', function () use ($session, $pdo) {
-            // Setup the Theme - move this to a Gateway class
             $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
             $themeData = $pdo->selectOne($sql);
 
-            $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 1);
+            $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 001);
             $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
 
             return $themeData ? new Theme($themeData) : null;
         });
 
         $container->share('page', function () use ($session, $container) {
-            $session->set('action', getActionName($session->get('address')));
+            $pageTitle = $session->get('organisationNameShort').' - '.$session->get('systemName');
+            if ($session->has('module')) {
+                $pageTitle .= ' - '.__($session->get('module'));
+            }
 
-            return new Page([
-                'title'   => $session->get('organisationNameShort').' - '.$session->get('systemName'),
+            return new Page($container->get('twig'), [
+                'title'   => $pageTitle,
                 'address' => $session->get('address'),
-                'action'  => $session->get('action'),
+                'action'  => $container->get('action'),
                 'module'  => $container->get('module'),
                 'theme'   => $container->get('theme'),
             ]);

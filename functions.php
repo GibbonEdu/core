@@ -4004,8 +4004,6 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
 //Get list of user roles from database, and convert to array
 function getRoleList($gibbonRoleIDAll, $connection2)
 {
-    @session_start();
-
     $output = array();
 
     //Tokenise list of roles
@@ -4093,8 +4091,6 @@ function getModuleCategory($address, $connection2)
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
 function setCurrentSchoolYear($guid,  $connection2)
 {
-    @session_start();
-
     //Run query
     try {
         $data = array();

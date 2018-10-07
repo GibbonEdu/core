@@ -57,17 +57,17 @@ class Session
             session_start();
         }
 
-        $config = $container->get('config');
-        $this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
+        // Backwards compatibility for external modules
+        $this->guid = $container->has('config')? $container->get('config')->guid() : $guid;
         
-        // Detect the current module - TODO: replace this logic when switching to routing.
-        $address = isset($_GET['q'])? $_GET['q'] : (isset($_POST['address'])? $_POST['address'] : '');
-        $this->set('address', $address);
+        // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
+        // which is currently used in many Process pages.
+        // TODO: replace this logic when switching to routing.
+        $address = $_GET['q'] ?? $_POST['address'] ?? '';
 
-        if (!empty($address)) {
-            $this->set('module',  getModuleName($address));
-            $this->set('action', getActionName($address));
-        }
+        $this->set('address', $address);
+        $this->set('module', $address ? getModuleName($address) : '');
+        $this->set('action', $address ? getActionName($address) : '');
     }
 
     /**
