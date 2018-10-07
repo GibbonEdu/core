@@ -143,7 +143,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->share('module', function () use ($session, $pdo) {
             $data = ['moduleName' => $session->get('module')];
-            $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName";
+            $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName AND active='Y'";
             $moduleData = $pdo->selectOne($sql, $data);
 
             return $moduleData ? new Module($moduleData) : null;

@@ -29,6 +29,7 @@ use Gibbon\View\AssetBundle;
  */
 class Theme
 {
+    protected $gibbonThemeID;
     protected $name;
     protected $version;
 
@@ -57,6 +58,16 @@ class Theme
             'themes/'.$this->name.'/js/common.js',
             ['version' => $this->version]
         );
+    }
+
+    /**
+     * Get the gibbonThemeID
+     *
+     * @return string
+     */
+    public function getID()
+    {
+        return $this->gibbonThemeID;
     }
 
     /**

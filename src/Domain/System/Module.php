@@ -29,6 +29,7 @@ use Gibbon\View\AssetBundle;
  */
 class Module
 {
+    protected $gibbonModuleID;
     protected $name;
     protected $version;
 
@@ -60,13 +61,23 @@ class Module
     }
 
     /**
+     * Get the gibbonModuleID
+     *
+     * @return string
+     */
+    public function getID()
+    {
+        return $this->gibbonModuleID;
+    }
+
+    /**
      * Get the module name, used in the folder path and database record.
      *
      * @return string
      */
     public function getName()
     {
-        return $this->name = $name;
+        return $this->name;
     }
 
     /**
