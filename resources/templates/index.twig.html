@@ -71,13 +71,17 @@ TODO: add template variable details.
 
                     {% if sidebar %}
                         <div id="sidebar">
-                            {% for code in page.extraSidebar %}
+                            {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
                                 {{ code|raw }}
                             {% endfor %}
 
                             {{ sidebarContents|raw }}
 
                             {{ include('navigation.twig.html') }}
+
+                            {% for code in page.extraSidebar if sidebarPosition == 'bottom' %}
+                                {{ code|raw }}
+                            {% endfor %}
 
                         </div>
                         <br style="clear: both">

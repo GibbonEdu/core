@@ -21,7 +21,12 @@ use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\View\Page;
 
 // Gibbon system-wide include
-require './gibbon.php';
+require_once './gibbon.php';
+
+// Module include: Messenger has a bug where files have been relying on these
+// functions because this file was included via getNotificationTray()
+// TODO: Fix that :)
+require_once './modules/Messenger/moduleFunctions.php';
 
 // Setup the Page and Session objects
 $page = $container->get('page');
@@ -29,33 +34,44 @@ $session = $container->get('session');
 
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
-
 /**
  * CACHE & INITIAL PAGE LOAD
+ *
+ * The 'pageLoad' value is used to run code when the user first logs in, and
+ * also to reload cached content based on the $caching value in config.php
+ *
+ * TODO: When we implement routing, these can become part of the HTTP middleware.
  */
-$session->set('pageLoads', $session->has('pageLoads') ? $session->get('pageLoads')+1 : 0);
+$session->set('pageLoads', $session->exists('pageLoads') ? $session->get('pageLoads')+1 : 0);
 
-if ($caching == 0) {
-    $cacheLoad = true;
-} elseif ($caching > 0 and is_numeric($caching)) {
-    $cacheLoad = $session->get('pageLoads') % $caching == 0;
+$cacheLoad = true;
+$caching = $gibbon->getConfig('caching');
+if (!empty($caching) && is_numeric($caching)) {
+    $cacheLoad = $session->get('pageLoads') % intval($caching) == 0;
 }
 
 /**
  * SYSTEM SETTINGS
+ *
+ * Checks to see if system settings are set from database. If not, tries to
+ * load them in. If this fails, something horrible has gone wrong ...
+ *
+ * TODO: Move this to the Session creation logic.
+ * TODO: Handle the exit() case with a pre-defined error template.
  */
 
-// Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
-}
-// If still false, only show warning and exit.
-if (!$session->has('systemSettingsSet')) {
-    exit(__('System Settings are not set: the system cannot be displayed'));
+
+    if (!$session->has('systemSettingsSet')) {
+        exit(__('System Settings are not set: the system cannot be displayed'));
+    }
 }
 
 /**
  * USER REDIRECTS
+ *
+ * TODO: When we implement routing, these can become part of the HTTP middleware.
  */
 
 // Check for force password reset flag
@@ -69,7 +85,7 @@ if ($session->has('passwordForceReset')) {
 }
 
 // Redirects after login
-if ($session->get('pageLoads') == 0 && $session->get('address') == '') { // First page load, so proceed
+if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
     if (!empty($session->get('username'))) { // Are we logged in?
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
@@ -150,13 +166,14 @@ if ($session->get('pageLoads') == 0 && $session->get('address') == '') { // Firs
 }
 
 /**
- * SIDEBAR
+ * SIDEBAR SETUP
+ *
+ * TODO: move all of the sidebar session variables to the $page->addSidebarExtra() method.
  */
 
 // Set sidebar extra content values via Session.
-// TODO: move all of these from session variables to the $page->addSidebarExtra() method.
 $session->set('sidebarExtra', '');
-$session->set('sidebarExtraPosition', '');
+$session->set('sidebarExtraPosition', 'top');
 
 // Don't display the sidebar if the URL 'sidebar' param is explicitly set to 'false'
 $showSidebar = !isset($_GET['sidebar']) || (strtolower($_GET['sidebar']) !== 'false');
@@ -168,16 +185,22 @@ if ($showSidebar && $page->getAction()) {
 
 /**
  * SESSION TIMEOUT
+ *
+ * Set session duration, which will be passed via JS config to setup the
+ * session timeout. Ensures a minimum session duration of 1200.
  */
-
-// Set session duration, which will be passed via JS config to setup the session timeout.
 $sessionDuration = -1;
-if ($session->has('username')) {
-    $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
-    $sessionDuration = is_numeric($sessionDuration) ? max($sessionDuration, 1200) : 1200;
+if ($isLoggedIn) {
+    $sessionDuration = $session->get('sessionDuration');
+    $sessionDuration = max(intval($sessionDuration), 1200);
 }
 
-// Set the i18n locale for jQuery UI DatePicker (if the file exists, otherwise fallback to en-GB)
+/**
+ * LOCALE
+ *
+ * Sets the i18n locale for jQuery UI DatePicker (if the file exists, otherwise
+ * falls back to en-GB)
+ */
 $localeCode = str_replace('_', '-', $session->get('i18n')['code']);
 $localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
 $localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
@@ -191,6 +214,9 @@ if (is_file(sprintf($localePath, $localeCode))) {
 
 /**
  * JAVASCRIPT
+ *
+ * The config array defines a set of PHP values that are encoded and passed to
+ * the setup.js file, which handles initialization of js libraries.
  */
 $javascriptConfig = [
     'config' => [
@@ -237,19 +263,19 @@ $page->scripts()->add('tinymce', 'lib/tinymce/tinymce.min.js');
 $page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 $page->scripts()->add('core-setup', 'resources/assets/js/setup.js');
 
+// Set system analytics code from session cache
+$page->addHeadExtra($session->get('analytics'));
+
 /**
  * STYLESHEETS & CSS
  */
-
-// Set page stylesheets
 $page->stylesheets()->add('jquery-ui', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
 $page->stylesheets()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.css');
 $page->stylesheets()->add('jquery-token', 'lib/jquery-tokeninput/styles/token-input-facebook.css');
 $page->stylesheets()->add('thickbox', 'lib/thickbox/thickbox.css');
 
 // Set personal background
-$personalBackground = null;
-if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' and $session->has('personalBackground')) {
+if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $personalBackground = htmlPrep($session->get('personalBackground'));
     $page->stylesheets()->add(
         'personal-background',
@@ -258,11 +284,11 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' a
     );
 }
 
+/**
+ * USER CONFIGURATION
+ */
 
-// Set Google analytics from session cache
-$page->addHeadExtra($session->get('analytics'));
-
-// Try to autoset user's calendar feed if not set already
+// Try to auto-set user's calendar feed if not set already
 if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
     if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
         include_once $session->get('absolutePath').'/lib/google/google-api-php-client/vendor/autoload.php';
@@ -292,7 +318,7 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
 }
 
 // Get house logo and set session variable, only on first load after login (for performance)
-if ($session->get('pageLoads') == 0 and $session->has('username') and $session->get('gibbonHouseID') != '') {
+if ($session->get('pageLoads') == 0 and $session->has('username') and !$session->has('gibbonHouseID')) {
     $dataHouse = array('gibbonHouseID' => $session->get('gibbonHouseID'));
     $sqlHouse = 'SELECT logo, name FROM gibbonHouse
         WHERE gibbonHouseID=:gibbonHouseID';
@@ -305,33 +331,40 @@ if ($session->get('pageLoads') == 0 and $session->has('username') and $session->
 }
 
 // Show warning if not in the current school year
+// TODO: When we implement routing, these can become part of the HTTP middleware.
 if ($isLoggedIn) {
     if ($session->get('gibbonSchoolYearID') != $session->get('gibbonSchoolYearIDCurrent')) {
         $page->addWarning('<b><u>'.sprintf(__('Warning: you are logged into the system in school year %1$s, which is not the current year.'), $session->get('gibbonSchoolYearName')).'</b></u>'.__('Your data may not look quite right (for example, students who have left the school will not appear in previous years), but you should be able to edit information from other years which is not available in the current year.'));
     }
 }
 
+/**
+ * RETURN PROCESS
+ *
+ * Adds an alert to the index based on the URL 'return' parameter.
+ * TODO: remove all returnProcess() from pages? But still let them register custom messages ...
+ */
+if (!$session->has('address') && !empty($_GET['return'])) {
+    $customReturns = [
+        'success1' => __('Password reset was successful: you may now log in.')
+    ];
 
-// Set any alerts in the index from the URL return parameter
-// TODO: remove all returnProcess() from pages? But still them register custom messages ...
-if ($session->get('address') == '') {
-    if (!empty($_GET['return'])) {
-        $customReturns = ['success1' => __('Password reset was successful: you may now log in.')];
-        if ($alert = returnProcessGetAlert($_GET['return'], '', $customReturns)) {
-            $page->addAlert($alert['context'], $alert['text']);
-        }
+    if ($alert = returnProcessGetAlert($_GET['return'], '', $customReturns)) {
+        $page->addAlert($alert['context'], $alert['text']);
     }
 }
 
+/**
+ * GET PAGE CONTENT
+ *
+ * TODO: rewrite welcome page & dashboards as template files.
+ */
 if (!$session->has('address')) {
-
     // Welcome message
     if (!$isLoggedIn) {
         // Create auto timeout message
-        if (isset($_GET['timeout'])) {
-            if ($_GET['timeout'] == 'true') {
-                $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
-            }
+        if (isset($_GET['timeout']) && $_GET['timeout'] == 'true') {
+            $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
         }
 
         // Set welcome message
@@ -402,15 +435,9 @@ if (!$session->has('address')) {
         }
     } else {
         // Custom content loader
-        if ($session->exists('index_custom.php')) {
-            if (is_file('./index_custom.php')) {
-                $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php'));
-            } else {
-                $session->set('index_custom.php', null);
-            }
-        }
-
-        if ($session->has('index_custom.php')) {
+        if (!$session->exists('index_custom.php')) {
+            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php'));
+        } elseif ($session->has('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 
@@ -419,7 +446,8 @@ if (!$session->has('address')) {
         $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
         if ($category == false) {
             $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');
-        } elseif ($category == 'Parent') { // Display Parent Dashboard
+        } elseif ($category == 'Parent') {
+            // Display Parent Dashboard
             $count = 0;
             try {
                 $data = ['gibbonPersonID' => $session->get('gibbonPersonID')];
@@ -439,9 +467,9 @@ if (!$session->has('address')) {
                 while ($row = $result->fetch()) {
                     try {
                         $dataChild = [
-                            'gibbonSchoolYearID' =>
-                                $session->get('gibbonSchoolYearID'),
+                            'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
                             'gibbonFamilyID' => $row['gibbonFamilyID'],
+                            'today' => date('Y-m-d'),
                         ];
                         $sqlChild = "SELECT
                             gibbonPerson.gibbonPersonID,image_240, surname,
@@ -450,30 +478,15 @@ if (!$session->has('address')) {
                             gibbonRollGroup.nameShort AS rollGroup,
                             gibbonRollGroup.website AS rollGroupWebsite,
                             gibbonRollGroup.gibbonRollGroupID
-                            FROM gibbonFamilyChild JOIN gibbonPerson
-                            ON (gibbonFamilyChild.gibbonPersonID=
-                                gibbonPerson.gibbonPersonID)
-                            JOIN gibbonStudentEnrolment
-                            ON (gibbonPerson.gibbonPersonID=
-                                gibbonStudentEnrolment.gibbonPersonID)
-                            JOIN gibbonYearGroup
-                            ON (gibbonStudentEnrolment.gibbonYearGroupID=
-                                gibbonYearGroup.gibbonYearGroupID)
-                            JOIN gibbonRollGroup
-                            ON (gibbonStudentEnrolment.gibbonRollGroupID=
-                                gibbonRollGroup.gibbonRollGroupID)
-                            WHERE
-                            gibbonStudentEnrolment.gibbonSchoolYearID=
-                                :gibbonSchoolYearID
+                            FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                            JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                            JOIN gibbonYearGroup ON (gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID)
+                            JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
                             AND gibbonFamilyID=:gibbonFamilyID
                             AND gibbonPerson.status='Full'
-                            AND (
-                                dateStart IS NULL
-                                OR dateStart<='".date('Y-m-d')."'
-                            )
-                            AND (
-                                dateEnd IS NULL
-                                OR dateEnd>='".date('Y-m-d')."')
+                            AND (dateStart IS NULL OR dateStart<=:today)
+                            AND (dateEnd IS NULL OR dateEnd>=:today)
                             ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
@@ -523,9 +536,7 @@ if (!$session->has('address')) {
                     $output .= "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
                     $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
                     if ($dashboardContents == false) {
-                        $output .= "<div class='error'>".
-                            __('There are no records to display.').
-                            '</div>';
+                        $output .= "<div class='error'>".__('There are no records to display.').'</div>';
                     } else {
                         $output .= $dashboardContents;
                     }
@@ -534,7 +545,8 @@ if (!$session->has('address')) {
 
                 $page->write($output);
             }
-        } elseif ($category == 'Student') { // Display Student Dashboard
+        } elseif ($category == 'Student') {
+            // Display Student Dashboard
             $output = '<h2>'.
                 __('Student Dashboard').
                 '</h2>'.
@@ -550,8 +562,8 @@ if (!$session->has('address')) {
             $output .= '</div>';
 
             $page->write($output);
-
-        } elseif ($category == 'Staff') { // Display Staff Dashboard
+        } elseif ($category == 'Staff') {
+            // Display Staff Dashboard
 
             $output = '';
             $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
@@ -577,9 +589,9 @@ if (!$session->has('address')) {
         }
     }
 } else {
-    $address = $page->getAddress();
+    $address = trim($page->getAddress(), ' /');
 
-    if (strstr($address, '..')
+    if (stripos($address, '..') !== false
         || strstr($address, 'installer')
         || strstr($address, 'uploads')
         || in_array($address, array('index.php', '/index.php', './index.php'))
@@ -596,51 +608,67 @@ if (!$session->has('address')) {
     }
 }
 
-// Load the sidebar output from function.
-// TODO: rewrite this as a template file.
+/**
+ * GET SIDEBAR CONTENT
+ *
+ * TODO: rewrite this as a template file.
+ */
 $sidebarContents = '';
 if ($showSidebar) {
+    $page->addSidebarExtra($session->get('sidebarExtra'));
+    $session->set('sidebarExtra', '');
+
     ob_start();
     sidebar($gibbon, $pdo);
     $sidebarContents = ob_get_clean();
 }
 
-
-
-// Setup menu items
-// TODO: Move this somewhere more sensible.
-
+/**
+ * MENU ITEMS & FAST FINDER
+ *
+ * TODO: Move this somewhere more sensible. Refactor to gateway classes.
+ */
 if ($isLoggedIn) {
-    $absoluteURL = $session->get('absoluteURL');
-    $gibbonRoleIDCurrent = $session->get('gibbonRoleIDCurrent');
-    $mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
-
-    $data = array('gibbonRoleID' => $gibbonRoleIDCurrent, 'menuOrder' => $mainMenuCategoryOrder );
-    $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
-            FROM gibbonModule 
-            JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-            JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-            WHERE gibbonModule.active='Y' 
-            AND gibbonAction.menuShow='Y' 
-            AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
-            GROUP BY gibbonModule.name 
-            ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
-
-    $menuMainItems = $pdo->select($sql, $data)->fetchGrouped();
-
-    foreach ($menuMainItems as $category => &$items) {
-        foreach ($items as &$item) {
-            $modulePath = '/modules/'.$item['name'];
-            $item['url'] = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
-                ? $absoluteURL.'/index.php?q='.$modulePath.'/'.$item['entryURL']
-                : $absoluteURL.'/index.php?q='.$modulePath.'/'.$item['alternateEntryURL'];
-        }
+    if ($cacheLoad || !$session->has('fastFinder')) {
+        $session->set('fastFinder', getFastFinder($connection2, $guid));
     }
 
-    $moduleID=checkModuleReady($session->get('address'), $connection2);
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
+        $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'menuOrder' => $mainMenuCategoryOrder);
+        $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
+                FROM gibbonModule 
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                WHERE gibbonModule.active='Y' 
+                AND gibbonAction.menuShow='Y' 
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                GROUP BY gibbonModule.name 
+                ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
 
-    $data = array('gibbonModuleID' => $moduleID, 'gibbonRoleID' => $gibbonRoleIDCurrent);
-    $sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name as actionName, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList, SUBSTRING_INDEX(gibbonAction.name, '_', 1) as name, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) AS textDomain
+        $menuMainItems = $pdo->select($sql, $data)->fetchGrouped();
+
+        foreach ($menuMainItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $modulePath = '/modules/'.$item['name'];
+                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+                    ? $item['entryURL']
+                    : $item['alternateEntryURL'];
+
+                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+            }
+        }
+
+        $session->set('menuMainItems', $menuMainItems);
+    }
+
+    if ($page->getModule()) {
+        $currentModule = $page->getModule()->getName();
+        $menuModule = $session->get('menuModuleName');
+        
+        if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
+            $data = array('gibbonModuleID' => $page->getModule()->getID(), 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
+            $sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name as actionName, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList, SUBSTRING_INDEX(gibbonAction.name, '_', 1) as name, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) AS textDomain
             FROM gibbonModule
             JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
             JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
@@ -651,40 +679,54 @@ if ($isLoggedIn) {
             GROUP BY name
             ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
 
-    $menuModuleItems = $pdo->select($sql, $data)->fetchGrouped();
-
-    $currentAction = getActionName($session->get('address'));
-
-    foreach ($menuModuleItems as $category => &$items) {
-        foreach ($items as &$item) {
-            $item['active'] = stripos($item['URLList'], $currentAction) !== false;
-            $item['url'] = $absoluteURL.'/index.php?q=/modules/'.$item['moduleName'].'/'.$item['entryURL'];
+            $menuModuleItems = $pdo->select($sql, $data)->fetchGrouped();
+        } else {
+            $menuModuleItems = $session->get('menuModuleItems');
         }
+        
+        // Update the menu items to indicate the current active action
+        foreach ($menuModuleItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $item['active'] = stripos($item['URLList'], $session->get('action')) !== false;
+                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
+                        .$item['moduleName'].'/'.$item['entryURL'];
+            }
+        }
+
+        $session->set('menuModuleItems', $menuModuleItems);
+        $session->set('menuModuleName', $currentModule);
     }
 }
 
-
-// TODO: Cacheload FastFinder, Main Menu
-
+/**
+ * TEMPLATE DATA
+ *
+ * These values are merged with the Page class settings & content, then passed
+ * into the template engine for rendering.
+ */
 $templateData = [
     'isLoggedIn'        => $isLoggedIn,
-    'organisationLogo'  => $session->get('organisationLogo'),
-    'version'           => $gibbon->getVersion(),
-    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
     'gibbonThemeName'   => $session->get('gibbonThemeName'),
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
+    'organisationLogo'  => $session->get('organisationLogo'),
     'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
     'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
     'sidebar'           => $showSidebar,
     'sidebarContents'   => $sidebarContents,
+    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
+    'version'           => $gibbon->getVersion(),
+    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
 ];
 
 if ($isLoggedIn) {
-    $templateData = array_replace($templateData, [
-        'menuMain'   => $menuMainItems ?? '',
-        'menuModule' => $menuModuleItems ?? '',
-        'fastFinder' => getFastFinder($connection2, $guid),
-    ]);
+    $templateData += [
+        'menuMain'   => $session->get('menuMainItems', []),
+        'menuModule' => $session->get('menuModuleItems', []),
+        'fastFinder' => $session->get('fastFinder'),
+    ];
 }
 
+/**
+ * DONE!!
+ */
 echo $page->render('index.twig.html', $templateData);
