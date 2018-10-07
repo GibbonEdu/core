@@ -42,7 +42,7 @@ $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
  *
  * TODO: When we implement routing, these can become part of the HTTP middleware.
  */
-$session->set('pageLoads', $session->exists('pageLoads') ? $session->get('pageLoads')+1 : 0);
+$session->set('pageLoads', !$session->exists('pageLoads') ? 0 : $session->get('pageLoads', -1)+1);
 
 $cacheLoad = true;
 $caching = $gibbon->getConfig('caching');
@@ -59,7 +59,6 @@ if (!empty($caching) && is_numeric($caching)) {
  * TODO: Move this to the Session creation logic.
  * TODO: Handle the exit() case with a pre-defined error template.
  */
-
 if (!$session->has('systemSettingsSet')) {
     getSystemSettings($guid, $connection2);
 
@@ -86,7 +85,8 @@ if ($session->has('passwordForceReset')) {
 
 // Redirects after login
 if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First page load, so proceed
-    if (!empty($session->get('username'))) { // Are we logged in?
+
+    if ($session->has('username')) { // Are we logged in?
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
 
         // Deal with attendance self-registration redirect
@@ -152,9 +152,7 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
                     $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($session->get('gibbonPersonID'));
                     
                     if ($updatesRequiredCount > 0) {
-                        $URL = $session->get('absoluteURL').
-                            '/index.php?q=/modules/Data Updater'.
-                            '/data_updates.php&redirect=true';
+                        $URL = $session->get('absoluteURL').'/index.php?q=/modules/Data Updater/data_updates.php&redirect=true';
                         $session->set('pageLoads', null);
                         header("Location: {$URL}");
                         exit;
@@ -241,14 +239,14 @@ $page->scripts()->add('lv', 'lib/LiveValidation/livevalidation_standalone.compre
 $page->scripts()->add('jquery', 'lib/jquery/jquery.js', ['context' => 'head']);
 $page->scripts()->add('jquery-migrate', 'lib/jquery/jquery-migrate.min.js', ['context' => 'head']);
 $page->scripts()->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js', ['context' => 'head']);
+$page->scripts()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.min.js', ['context' => 'head']);
+$page->scripts()->add('jquery-chained', 'lib/chained/jquery.chained.min.js', ['context' => 'head']);
 $page->scripts()->add('core', 'resources/assets/js/core.js', ['context' => 'head']);
 
 // Set page scripts: foot - jquery
 $page->scripts()->add('jquery-latex', 'lib/jquery-jslatex/jquery.jslatex.js');
 $page->scripts()->add('jquery-form', 'lib/jquery-form/jquery.form.js');
-$page->scripts()->add('jquery-chained', 'lib/chained/jquery.chained.min.js');
 $page->scripts()->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
-$page->scripts()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.min.js');
 $page->scripts()->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
 $page->scripts()->add('jquery-timeout', 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js');
 $page->scripts()->add('jquery-token', 'lib/jquery-tokeninput/src/jquery.tokeninput.js');
@@ -276,13 +274,16 @@ $page->stylesheets()->add('thickbox', 'lib/thickbox/thickbox.css');
 
 // Set personal background
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
-    $personalBackground = htmlPrep($session->get('personalBackground'));
-    $page->stylesheets()->add(
-        'personal-background',
-        'body { background: url('.$personalBackground.') repeat scroll center top #A88EDB!important; }',
-        ['type' => 'inline']
-    );
+    $backgroundImage = htmlPrep($session->get('personalBackground'));
+} else {
+    $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
 }
+
+$page->stylesheets()->add(
+    'personal-background',
+    'body { background: url('.$backgroundImage.') repeat scroll center top #A88EDB!important; }',
+    ['type' => 'inline']
+);
 
 /**
  * USER CONFIGURATION
@@ -358,6 +359,7 @@ if (!$session->has('address') && !empty($_GET['return'])) {
  * GET PAGE CONTENT
  *
  * TODO: rewrite welcome page & dashboards as template files.
+ * TODO: move queries into Gateway classes.
  */
 if (!$session->has('address')) {
     // Welcome message
@@ -695,6 +697,8 @@ if ($isLoggedIn) {
 
         $session->set('menuModuleItems', $menuModuleItems);
         $session->set('menuModuleName', $currentModule);
+    } else {
+        $session->forget(['menuModuleItems', 'menuModuleName']);
     }
 }
 
