@@ -128,17 +128,17 @@ class Page
     {
         $stylesheets = $this->stylesheets()->getAssets($context);
 
-        if (!empty($this->getModule())) {
-            $stylesheets = array_replace(
-                $stylesheets,
-                $this->getModule()->stylesheets()->getAssets($context)
-            );
-        }
-
         if (!empty($this->getTheme())) {
             $stylesheets = array_replace(
                 $stylesheets,
                 $this->getTheme()->stylesheets()->getAssets($context)
+            );
+        }
+
+        if (!empty($this->getModule())) {
+            $stylesheets = array_replace(
+                $stylesheets,
+                $this->getModule()->stylesheets()->getAssets($context)
             );
         }
 
@@ -157,17 +157,17 @@ class Page
     {
         $scripts = $this->scripts()->getAssets($context);
 
-        if (!empty($this->getModule())) {
-            $scripts = array_replace(
-                $scripts,
-                $this->getModule()->scripts()->getAssets($context)
-            );
-        }
-
         if (!empty($this->getTheme())) {
             $scripts = array_replace(
                 $scripts,
                 $this->getTheme()->scripts()->getAssets($context)
+            );
+        }
+
+        if (!empty($this->getModule())) {
+            $scripts = array_replace(
+                $scripts,
+                $this->getModule()->scripts()->getAssets($context)
             );
         }
 

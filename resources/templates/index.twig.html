@@ -15,7 +15,7 @@ TODO: add template variable details.
     </head>
     <body style="{{ bodyBackground }}">
         <div id="wrapOuter">
-            <div class="minorLinks{{ gibbonHouseIDLogo ? ' minorLinksTopGap' : '' }}">
+            <div class="minorLinks{{ not gibbonHouseIDLogo ? ' minorLinksTopGap' : '' }}">
                 {{ minorLinks|raw }}
             </div>
 

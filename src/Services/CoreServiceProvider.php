@@ -24,6 +24,8 @@ use Gibbon\Locale;
 use Gibbon\Session;
 use Gibbon\View\Page;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\Theme;
+use Gibbon\Domain\System\Module;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -56,6 +58,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'locale',
         'twig',
         'page',
+        'module',
+        'theme',
     ];
 
     /**
@@ -91,6 +95,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getContainer();
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
+        $pdo = $container->get('db');
 
         $container->share('twig', function () use ($absolutePath, $session) {
             $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
@@ -103,7 +108,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
             $twig = new \Twig_Environment($loader, array(
                 'cache' => $absolutePath.'/resources/templates/cache',
-                'debug' => true,
+                'debug' => $session->get('installType') == 'Development',
             ));
 
             $twig->addGlobal('absolutePath', $session->get('absolutePath'));
@@ -116,14 +121,35 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $twig;
         });
 
-        $container->share('page', function () use ($session) {
-            $session->set('address', isset($_GET['q'])? $_GET['q'] : '');
+        $container->share('module', function () use ($session, $pdo) {
+            // Setup the Module - move this to a Gateway class
+            $data = ['moduleName' => $session->get('module')];
+            $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName";
+            $moduleData = $pdo->selectOne($sql, $data);
+
+            return $moduleData ? new Module($moduleData) : null;
+        });
+
+        $container->share('theme', function () use ($session, $pdo) {
+            // Setup the Theme - move this to a Gateway class
+            $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
+            $themeData = $pdo->selectOne($sql);
+
+            $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 1);
+            $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
+
+            return $themeData ? new Theme($themeData) : null;
+        });
+
+        $container->share('page', function () use ($session, $container) {
             $session->set('action', getActionName($session->get('address')));
 
             return new Page([
                 'title'   => $session->get('organisationNameShort').' - '.$session->get('systemName'),
                 'address' => $session->get('address'),
                 'action'  => $session->get('action'),
+                'module'  => $container->get('module'),
+                'theme'   => $container->get('theme'),
             ]);
         });
     }

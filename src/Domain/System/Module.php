@@ -27,18 +27,36 @@ use Gibbon\View\AssetBundle;
  * @version v17
  * @since   v17
  */
-abstract class Module
+class Module
 {
     protected $name;
+    protected $version;
 
     protected $stylesheets;
     protected $scripts;
 
-    public function __construct($name)
+    public function __construct(array $params = [])
     {
-        $this->name = $name;
+        // Merge constructor params into class properties
+        foreach ($params as $key => $value) {
+            if (property_exists($this, $key)) {
+                $this->$key = $value;
+            }
+        }
+
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
+
+        $this->stylesheets()->add(
+            'module',
+            'modules/'.$this->name.'/css/module.css',
+            ['version' => $this->version]
+        );
+        $this->scripts()->add(
+            'module',
+            'modules/'.$this->name.'/js/module.js',
+            ['version' => $this->version]
+        );
     }
 
     /**

@@ -232,7 +232,9 @@ if (is_file(sprintf($localePath, $localeCode))) {
     $datepickerLocale = $localeCodeShort;
 }
 
-// JAVASCRIPT
+/**
+ * JAVASCRIPT
+ */
 $javascriptConfig = [
     'config' => [
         'datepicker' => [
@@ -258,7 +260,7 @@ $page->scripts()->add('jquery-migrate', 'lib/jquery/jquery-migrate.min.js', ['co
 $page->scripts()->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js', ['context' => 'head']);
 $page->scripts()->add('core', 'resources/assets/js/core.js', ['context' => 'head']);
 
-// Set page scripts: foot - lib
+// Set page scripts: foot - jquery
 $page->scripts()->add('jquery-latex', 'lib/jquery-jslatex/jquery.jslatex.js');
 $page->scripts()->add('jquery-form', 'lib/jquery-form/jquery.form.js');
 $page->scripts()->add('jquery-chained', 'lib/chained/jquery.chained.min.js');
@@ -267,7 +269,10 @@ $page->scripts()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.mi
 $page->scripts()->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
 $page->scripts()->add('jquery-timeout', 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js');
 $page->scripts()->add('jquery-token', 'lib/jquery-tokeninput/src/jquery.tokeninput.js');
-$page->scripts()->add('thickboxi', 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";', ['type' => 'inline']);
+
+// Set page scripts: foot - misc
+$thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
+$page->scripts()->add('thickboxi', $thickboxInline, ['type' => 'inline']);
 $page->scripts()->add('thickbox', 'lib/thickbox/thickbox-compressed.js');
 $page->scripts()->add('tinymce', 'lib/tinymce/tinymce.min.js');
 
@@ -275,22 +280,20 @@ $page->scripts()->add('tinymce', 'lib/tinymce/tinymce.min.js');
 $page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 $page->scripts()->add('core-setup', 'resources/assets/js/setup.js');
 
+/**
+ * STYLESHEETS & CSS
+ */
 
 // Set page stylesheets
 $page->stylesheets()->add('jquery-ui', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
 $page->stylesheets()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.css');
 $page->stylesheets()->add('jquery-token', 'lib/jquery-tokeninput/styles/token-input-facebook.css');
 $page->stylesheets()->add('thickbox', 'lib/thickbox/thickbox.css');
-$page->stylesheets()->add('theme', 'themes/Default/css/main.css');
-
 
 // Set personal background
 $personalBackground = null;
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' and $session->has('personalBackground')) {
-    $personalBackground = ($session->get('personalBackground') != '') ?
-        htmlPrep($session->get('personalBackground')) : null;
-}
-if (!empty($personalBackground)) {
+    $personalBackground = htmlPrep($session->get('personalBackground'));
     $page->stylesheets()->add(
         'personal-background',
         'body { background: url('.$personalBackground.') repeat scroll center top #A88EDB!important; }',
@@ -302,76 +305,21 @@ if (!empty($personalBackground)) {
 // TODO: Move to Page class
 $contents = array();
 
-// TODO: THIS!!!!
-// Setup theme CSS and JS
-// try {
-//     $theme = getTheme($connection2);
-//     $session->set('gibbonThemeID', $theme['id']);
-//     $session->set('gibbonThemeName', $theme['name']);
-//     foreach ($theme['stylesheets'] as $style) {
-//         $page->stylesheets()->add(
-//             $style, $style, ['version' => $version]
-//         );
-//     }
-//     foreach ($theme['scripts'] as $script) {
-//         $page->scripts()->add(
-//             $script, $script, ['version' => $version]
-//         );
-//     }
-// } catch (PDOException $e) {
-//     exit($e->getMessage());
-// }
-
-// Append module CSS & JS
-// if (isset($_GET['q'])) {
-//     if ($_GET['q'] != '') {
-//         $moduleVersion = $version;
-//         if (file_exists('./modules/'.$session->get('module').'/version.php')) {
-//             include './modules/'.$session->get('module').'/version.php';
-//         }
-//         $page->stylesheets()->add(
-//             'modules/'.$session->get('module').
-//             '/css/module.css',
-//             'modules/'.$session->get('module').
-//             '/css/module.css',
-//             [
-//                 'version' => $moduleVersion,
-//             ]
-//         );
-//         $page->scripts()->add(
-//             'modules/'.$session->get('module').
-//             '/js/module.js',
-//             'modules/'.$session->get('module').
-//             '/js/module.js',
-//             [
-//                 'version' => $moduleVersion,
-//             ]
-//         );
-//     }
-// }
-
-
 
 // Set Google analytics from session cache
 $page->addHeadExtra($session->get('analytics'));
 
 // Get house logo and set session variable, only on first load after login (for performance)
 if ($session->get('pageLoads') == 0 and $session->has('username') and $session->get('gibbonHouseID') != '') {
-    try {
-        $dataHouse = array('gibbonHouseID' => $session->get('gibbonHouseID'));
-        $sqlHouse = 'SELECT logo, name FROM gibbonHouse
-            WHERE gibbonHouseID=:gibbonHouseID';
-        $resultHouse = $connection2->prepare($sqlHouse);
-        $resultHouse->execute($dataHouse);
-    } catch (PDOException $e) {
-    }
+    $dataHouse = array('gibbonHouseID' => $session->get('gibbonHouseID'));
+    $sqlHouse = 'SELECT logo, name FROM gibbonHouse
+        WHERE gibbonHouseID=:gibbonHouseID';
+    $house = $pdo->selectOne($sqlHouse, $dataHouse);
 
-    if ($resultHouse->rowCount() == 1) {
-        $rowHouse = $resultHouse->fetch();
-        $session->set('gibbonHouseIDLogo', $rowHouse['logo']);
-        $session->set('gibbonHouseIDName', $rowHouse['name']);
+    if (!empty($house)) {
+        $session->set('gibbonHouseIDLogo', $house['logo']);
+        $session->set('gibbonHouseIDName', $house['name']);
     }
-    $resultHouse->closeCursor();
 }
 
 // Show warning if not in the current school year
@@ -743,7 +691,6 @@ if ($sidebar) {
 
 
 // TODO: Cacheload FastFinder, Main Menu
-
 
 $templateData = [
     'page'              => $page->gatherData(),
