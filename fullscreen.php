@@ -34,32 +34,16 @@ if (empty($session->get('systemSettingsSet'))) {
 
 $page = $container->get('page');
 
-$contents = [];
-
 if (empty($page->getAddress())) {
     $page->addWarning(__('There is no content to display'));
 } elseif (stripos($page->getAddress(), '..') !== false) {
     $page->addError(__('Illegal address detected: access denied.'));
 } else {
     if (is_file('./'.$page->getAddress())) {
-        ob_start();
-        include './'.$page->getAddress();
-        $contents[] = ob_get_contents();
-        ob_end_clean();
+        $page->writeFromFile('./'.$page->getAddress());
     } else {
-        ob_start();
-        include './error.php';
-        $contents[] = ob_get_contents();
-        ob_end_clean();
+        $page->writeFromFile('./error.php');
     }
 }
 
-$twig = $container->get('twig');
-$page = $container->get('page');
-
-$data = [
-    'page' => $page->gatherData(),
-    'contents' => $contents,
-];
-
-echo $twig->render('fullscreen.twig.html', $data);
+echo $page->render('fullscreen.twig.html');

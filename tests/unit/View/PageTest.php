@@ -35,7 +35,7 @@ class PageTest extends TestCase
     public function testCanConstructFromParams()
     {
         $params = ['title' => 'Foo Bar', 'address' => 'fiz/buzz'];
-        $page = new Page($params);
+        $page = new Page(null, $params);
 
         $this->assertEquals('Foo Bar', $page->getTitle());
         $this->assertEquals('fiz/buzz', $page->getAddress());
@@ -109,13 +109,13 @@ class PageTest extends TestCase
 
     public function testCanGetAllStylesheets()
     {
-        $page = new Page(['module' => $this->mockModule, 'theme' => $this->mockTheme]);
+        $page = new Page(null, ['module' => $this->mockModule, 'theme' => $this->mockTheme]);
 
         $page->stylesheets()->add('foo', 'bar/baz');
-        $page->getModule()->stylesheets()->add('fiz', 'bar/baz');
         $page->getTheme()->stylesheets()->add('buz', 'bar/baz');
+        $page->getModule()->stylesheets()->add('fiz', 'bar/baz');
 
-        $this->assertEquals(['foo', 'fiz', 'buz'], array_keys($page->getAllStylesheets()));
+        $this->assertEquals(['foo', 'buz', 'fiz'], array_keys($page->getAllStylesheets()));
     }
 
     public function testCanAddScripts()
@@ -128,7 +128,7 @@ class PageTest extends TestCase
 
     public function testCanGetAllScripts()
     {
-        $page = new Page(['module' => $this->mockModule, 'theme' => $this->mockTheme]);
+        $page = new Page(null, ['module' => $this->mockModule, 'theme' => $this->mockTheme]);
 
         $page->scripts()->add('foo', 'bar/baz', ['context' => 'head']);
         $page->getModule()->scripts()->add('fiz', 'bar/baz', ['context' => 'foot']);

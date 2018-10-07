@@ -29,6 +29,8 @@ use Gibbon\View\AssetBundle;
  */
 class Page
 {
+    protected $templateEngine;
+
     /**
      * After constructing these class properties are publicly read-only.
      */
@@ -42,6 +44,7 @@ class Page
      * These properties can be modified during the runtime of a script,
      * and will be output at the end during template rendering.
      */
+    protected $content = [];
     protected $stylesheets;
     protected $scripts;
     protected $alerts = ['error' => [], 'warning' => [], 'message' => []];
@@ -52,8 +55,10 @@ class Page
      *
      * @param array $params Essential parameters for building a page.
      */
-    public function __construct(array $params = [])
+    public function __construct($templateEngine = null, array $params = [])
     {
+        $this->templateEngine = $templateEngine;
+
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
 
@@ -287,7 +292,101 @@ class Page
             'extraHead'    => $this->getExtraCode('head'),
             'extraFoot'    => $this->getExtraCode('foot'),
             'extraSidebar' => $this->getExtraCode('sidebar'),
+            'content'      => $this->content,
         ];
+    }
+
+    /**
+     * Writes a string to the page's internal content property.
+     *
+     * @param string $value
+     */
+    public function write(string $value)
+    {
+        $this->content[] = $value;
+    }
+
+    /**
+     * Writes the output buffered result from a PHP script to the page's content.
+     *
+     * @param string $filepath
+     * @param array $data
+     */
+    public function writeFromFile(string $filepath, array $data = [])
+    {
+        $this->write($this->fetchFromFile($filepath, $data));
+    }
+
+    /**
+     * Writes a rendered template file to the page's content.
+     *
+     * @param string $template
+     * @param array $data
+     */
+    public function writeFromTemplate(string $template, array $data = [])
+    {
+        $this->write($this->fetchFromTemplate($template, $data));
+    }
+
+    /**
+     * Includes a PHP file in a protected scope, and returns the
+     * output-buffered contents as a string.
+     *
+     * @param string $filepath
+     * @param array  $data
+     * @return string
+     */
+    public function fetchFromFile(string $filepath, array $data = []) : string
+    {
+        // TODO: Check $filepath for validity
+
+        if (!is_file($filepath)) {
+            // Throw an exception?
+            return '';
+        }
+
+        global $guid, $gibbon, $caching, $version, $pdo, $connection2, $autoloader, $container;
+
+        extract($data);
+
+        try {
+            ob_start();
+            include $filepath;
+            $output = ob_get_clean();
+        } catch (\Exception $e) {
+            ob_end_clean();
+            throw $e;
+        }
+
+        return $output;
+    }
+
+    /**
+     * Renders a given template using the template engine + provided data
+     * and returns the result as a string.
+     *
+     * @param string $template
+     * @param array  $data
+     * @return string
+     */
+    public function fetchFromTemplate(string $template, array $data = []) : string
+    {
+        return $this->templateEngine->render($template, $data);
+    }
+
+    /**
+     * Render the entire page with the given template and return the result as a string.
+     *
+     * @param string $template
+     * @param array $data
+     * @return string
+     */
+    public function render(string $template, array $data = []) : string
+    {
+        $data['page'] = $this->gatherData();
+        $data['content'] = $this->content;
+
+        return $this->templateEngine->render($template, $data);
     }
 
     /**

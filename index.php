@@ -30,7 +30,9 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 
-// Deal with caching
+/**
+ * CACHE & INITIAL PAGE LOAD
+ */
 $session->set('pageLoads', $session->has('pageLoads') ? $session->get('pageLoads')+1 : 0);
 
 if ($caching == 0) {
@@ -39,17 +41,9 @@ if ($caching == 0) {
     $cacheLoad = $session->get('pageLoads') % $caching == 0;
 }
 
-// Check for cutting edge code
-if (!$session->has('cuttingEdgeCode')) {
-    $session->set('cuttingEdgeCode', getSettingByScope($connection2, 'System', 'cuttingEdgeCode'));
-}
-
-// Set sidebar values (from the entrySidebar field in gibbonAction and from $_GET variable)
-$session->set('sidebarExtra', '');
-$session->set('sidebarExtraPosition', '');
-
-// $sidebar is true unless $_GET['sidebar'] explicitly set to 'false'
-$sidebar = !isset($_GET['sidebar']) || (strtolower($_GET['sidebar']) !== 'false');
+/**
+ * SYSTEM SETTINGS
+ */
 
 // Check to see if system settings are set from databases
 if (!$session->has('systemSettingsSet')) {
@@ -60,35 +54,9 @@ if (!$session->has('systemSettingsSet')) {
     exit(__('System Settings are not set: the system cannot be displayed'));
 }
 
-
-// Try to autoset user's calendar feed if not set already
-if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
-    if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
-        include_once $session->get('absolutePath').'/lib/google/google-api-php-client/vendor/autoload.php';
-
-        $client2 = new Google_Client();
-        $client2->setAccessToken($session->get('googleAPIAccessToken'));
-        $service = new Google_Service_Calendar($client2);
-        $calendar = $service->calendars->get('primary');
-
-        if ($calendar['id'] != '') {
-            try {
-                $dataCalendar = [
-                    'calendarFeedPersonal' => $calendar['id'],
-                    'gibbonPersonID' => $session->get('gibbonPersonID'),
-                ];
-                $sqlCalendar = 'UPDATE gibbonPerson SET
-                    calendarFeedPersonal=:calendarFeedPersonal
-                    WHERE gibbonPersonID=:gibbonPersonID';
-                $resultCalendar = $connection2->prepare($sqlCalendar);
-                $resultCalendar->execute($dataCalendar);
-            } catch (PDOException $e) {
-                exit($e->getMessage());
-            }
-            $session->set('calendarFeedPersonal', $calendar['id']);
-        }
-    }
-}
+/**
+ * USER REDIRECTS
+ */
 
 // Check for force password reset flag
 if ($session->has('passwordForceReset')) {
@@ -100,7 +68,7 @@ if ($session->has('passwordForceReset')) {
     }
 }
 
-// USER REDIRECTS
+// Redirects after login
 if ($session->get('pageLoads') == 0 && $session->get('address') == '') { // First page load, so proceed
     if (!empty($session->get('username'))) { // Are we logged in?
         $roleCategory = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
@@ -181,43 +149,32 @@ if ($session->get('pageLoads') == 0 && $session->get('address') == '') { // Firs
     }
 }
 
-// TODO: replace this with a property check on the current Action object
-if ($session->has('address') && $sidebar) {
-    $dataSidebar = [
-        'action' => '%'.$session->get('action').'%',
-        'moduleName' => $session->get('module'),
-    ];
-    $sqlSidebar = "SELECT gibbonAction.name FROM
-        gibbonAction JOIN gibbonModule
-        ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID)
-        WHERE gibbonAction.URLList LIKE :action
-        AND entrySidebar='N'
-        AND gibbonModule.name=:moduleName";
+/**
+ * SIDEBAR
+ */
 
-    $resultSidebar = $pdo->select($sqlSidebar, $dataSidebar);
+// Set sidebar extra content values via Session.
+// TODO: move all of these from session variables to the $page->addSidebarExtra() method.
+$session->set('sidebarExtra', '');
+$session->set('sidebarExtraPosition', '');
 
-    if ($resultSidebar->rowCount() > 0) {
-        $sidebar = false;
-    }
+// Don't display the sidebar if the URL 'sidebar' param is explicitly set to 'false'
+$showSidebar = !isset($_GET['sidebar']) || (strtolower($_GET['sidebar']) !== 'false');
+
+// Check the current Action 'entrySidebar' to see if we should display a sidebar
+if ($showSidebar && $page->getAction()) {
+    $showSidebar = $page->getAction()['entrySidebar'] != 'N';
 }
 
-// Set page title
-// TODO: move to CoreServiceProvider, using Module class
-// $title = $session->get('organisationNameShort').' - '.$session->get('systemName');
-// if ($session->get('address') != '') {
-//     if (strstr($session->get('address'), '..') == false) {
-//         if (getModuleName($session->get('address')) != '') {
-//             $title .= ' - '.__(getModuleName($session->get('address')));
-//         }
-//     }
-// }
+/**
+ * SESSION TIMEOUT
+ */
 
-// Set session duration for session timeout JS handling
+// Set session duration, which will be passed via JS config to setup the session timeout.
 $sessionDuration = -1;
 if ($session->has('username')) {
     $sessionDuration = getSettingByScope($connection2, 'System', 'sessionDuration');
-    $sessionDuration = is_numeric($sessionDuration) ? $sessionDuration : 1200;
-    $sessionDuration = ($sessionDuration >= 1200) ? $sessionDuration : 1200;
+    $sessionDuration = is_numeric($sessionDuration) ? max($sessionDuration, 1200) : 1200;
 }
 
 // Set the i18n locale for jQuery UI DatePicker (if the file exists, otherwise fallback to en-GB)
@@ -301,13 +258,38 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' a
     );
 }
 
-// Array for displaying main contents
-// TODO: Move to Page class
-$contents = array();
-
 
 // Set Google analytics from session cache
 $page->addHeadExtra($session->get('analytics'));
+
+// Try to autoset user's calendar feed if not set already
+if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
+    if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
+        include_once $session->get('absolutePath').'/lib/google/google-api-php-client/vendor/autoload.php';
+
+        $client2 = new Google_Client();
+        $client2->setAccessToken($session->get('googleAPIAccessToken'));
+        $service = new Google_Service_Calendar($client2);
+        $calendar = $service->calendars->get('primary');
+
+        if ($calendar['id'] != '') {
+            try {
+                $dataCalendar = [
+                    'calendarFeedPersonal' => $calendar['id'],
+                    'gibbonPersonID' => $session->get('gibbonPersonID'),
+                ];
+                $sqlCalendar = 'UPDATE gibbonPerson SET
+                    calendarFeedPersonal=:calendarFeedPersonal
+                    WHERE gibbonPersonID=:gibbonPersonID';
+                $resultCalendar = $connection2->prepare($sqlCalendar);
+                $resultCalendar->execute($dataCalendar);
+            } catch (PDOException $e) {
+                exit($e->getMessage());
+            }
+            $session->set('calendarFeedPersonal', $calendar['id']);
+        }
+    }
+}
 
 // Get house logo and set session variable, only on first load after login (for performance)
 if ($session->get('pageLoads') == 0 and $session->has('username') and $session->get('gibbonHouseID') != '') {
@@ -353,50 +335,49 @@ if (!$session->has('address')) {
         }
 
         // Set welcome message
-        $contents[] = '<h2>'.__('Welcome').'</h2>'.
-            "<p>{$session->get('indexText')}</p>";
+        $page->write('<h2>'.__('Welcome').'</h2><p>'.$session->get('indexText').'</p>');
 
         // Student public applications permitted?
         $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
         if ($publicApplications == 'Y') {
-            $contents[] = "<h2 style='margin-top: 30px'>".
+            $page->write("<h2 style='margin-top: 30px'>".
                 __('Student Applications').'</h2>'.
                 '<p>'.
                 sprintf(__('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Students/applicationForm.php'>", '</a>').
-                '</p>';
+                '</p>');
         }
 
         // Staff public applications permitted?
         $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
         if ($staffApplicationFormPublicApplications == 'Y') {
-            $contents[] = "<h2 style='margin-top: 30px'>" .
+            $page->write("<h2 style='margin-top: 30px'>" .
                 __('Staff Applications') .
                 '</h2>'.
                 '<p>'.
                 sprintf(__('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
-                '</p>';
+                '</p>');
         }
 
         // Public departments permitted?
         $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
         if ($makeDepartmentsPublic == 'Y') {
-            $contents[] = "<h2 style='margin-top: 30px'>".
+            $page->write("<h2 style='margin-top: 30px'>".
                 __('Departments').
                 '</h2>'.
                 '<p>'.
                 sprintf(__('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Departments/departments.php'>", '</a>', $session->get('organisationName')).
-                '</p>';
+                '</p>');
         }
 
         // Public units permitted?
         $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
         if ($makeUnitsPublic == 'Y') {
-            $contents[] = "<h2 style='margin-top: 30px'>".
+            $page->write("<h2 style='margin-top: 30px'>".
                 __('Learn With Us').
                 '</h2>'.
                 '<p>'.
                 sprintf(__('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $session->get('organisationName')).
-                '</p>';
+                '</p>');
         }
 
         // Get any elements hooked into public home page, checking if they are turned on
@@ -411,34 +392,33 @@ if (!$session->has('address')) {
             $options = unserialize(str_replace("'", "\'", $rowHook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
-                $contents[] = "<h2 style='margin-top: 30px'>".
+                $page->write("<h2 style='margin-top: 30px'>".
                     $options['title'].
                     '</h2>'.
                     '<p>'.
                     stripslashes($options['text']).
-                    '</p>';
+                    '</p>');
             }
         }
     } else {
         // Custom content loader
-        if ($session->has('index_custom.php') == false) {
+        if ($session->exists('index_custom.php')) {
             if (is_file('./index_custom.php')) {
-                $session->set('index_custom.php', include './index_custom.php');
+                $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php'));
             } else {
                 $session->set('index_custom.php', null);
             }
         }
+
         if ($session->has('index_custom.php')) {
-            $contents[] = $session->get('index_custom.php');
+            $page->write($session->get('index_custom.php'));
         }
 
         // DASHBOARDS!
         // Get role category
         $category = getRoleCategory($session->get('gibbonRoleIDCurrent'), $connection2);
         if ($category == false) {
-            $contents[] = "<div class='error'>".
-                __('Your current role type cannot be determined.').
-                '</div>';
+            $page->write('<div class="error">'.__('Your current role type cannot be determined.').'</div>');
         } elseif ($category == 'Parent') { // Display Parent Dashboard
             $count = 0;
             try {
@@ -516,108 +496,119 @@ if (!$session->has('address')) {
             }
 
             if ($count > 0) {
-                $contents[] = '<h2>'.
-                    __('Parent Dashboard').
-                    '</h2>';
-                include './modules/Timetable/moduleFunctions.php';
+                include_once './modules/Timetable/moduleFunctions.php';
+
+                $output = '<h2>'.__('Parent Dashboard').'</h2>';
 
                 for ($i = 0; $i < $count; ++$i) {
-                    $contents[] = '<h4>'.
+                    $output .= '<h4>'.
                         $students[$i][1].' '.$students[$i][0].
                         '</h4>';
 
-                    $contents[] = "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
+                    $output .= "<div style='margin-right: 1%; float:left; width: 15%; text-align: center'>".
                         getUserPhoto($guid, $students[$i][5], 75).
                         "<div style='height: 5px'></div>".
                         "<span style='font-size: 70%'>".
                         "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$students[$i][4]."'>".__('Student Profile').'</a><br/>';
 
                     if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php')) {
-                        $contents[] = "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__('Roll Group').' ('.$students[$i][3].')</a><br/>';
+                        $output .= "<a href='".$session->get('absoluteURL').'/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID='.$students[$i][7]."'>".__('Roll Group').' ('.$students[$i][3].')</a><br/>';
                     }
                     if ($students[$i][8] != '') {
-                        $contents[] = "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__('Website').'</a>';
+                        $output .= "<a target='_blank' href='".$students[$i][8]."'>".$students[$i][3].' '.__('Website').'</a>';
                     }
 
-                    $contents[] = '</span>';
-                    $contents[] = '</div>';
-                    $contents[] = "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
+                    $output .= '</span>';
+                    $output .= '</div>';
+                    $output .= "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 83%'>";
                     $dashboardContents = getParentDashboardContents($connection2, $guid, $students[$i][4]);
                     if ($dashboardContents == false) {
-                        $contents[] = "<div class='error'>".
+                        $output .= "<div class='error'>".
                             __('There are no records to display.').
                             '</div>';
                     } else {
-                        $contents[] = $dashboardContents;
+                        $output .= $dashboardContents;
                     }
-                    $contents[] = '</div>';
+                    $output .= '</div>';
                 }
+
+                $page->write($output);
             }
         } elseif ($category == 'Student') { // Display Student Dashboard
-            $contents[] = '<h2>'.
+            $output = '<h2>'.
                 __('Student Dashboard').
                 '</h2>'.
                 "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
             $dashboardContents = getStudentDashboardContents($connection2, $guid, $session->get('gibbonPersonID'));
             if ($dashboardContents == false) {
-                $contents[] = "<div class='error'>".
+                $output .= "<div class='error'>".
                     __('There are no records to display.').
                     '</div>';
             } else {
-                $contents[] = $dashboardContents;
+                $output .= $dashboardContents;
             }
-            $contents[] = '</div>';
+            $output .= '</div>';
+
+            $page->write($output);
+
         } elseif ($category == 'Staff') { // Display Staff Dashboard
+
+            $output = '';
             $smartWorkflowHelp = getSmartWorkflowHelp($connection2, $guid);
             if ($smartWorkflowHelp != false) {
-                $contents[] = $smartWorkflowHelp;
+                $output .= $smartWorkflowHelp;
             }
 
-            $contents[] = '<h2>'.
+            $output .= '<h2>'.
                 __('Staff Dashboard').
                 '</h2>'.
                 "<div style='margin-bottom: 30px; margin-left: 1%; float: left; width: 100%'>";
             $dashboardContents = getStaffDashboardContents($connection2, $guid, $session->get('gibbonPersonID'));
             if ($dashboardContents == false) {
-                $contents[] = "<div class='error'>".
+                $output .= "<div class='error'>".
                     __('There are no records to display.').
                     '</div>';
             } else {
-                $contents[] = $dashboardContents;
+                $output .= $dashboardContents;
             }
-            $contents[] = '</div>';
+            $output .= '</div>';
+
+            $page->write($output);
         }
     }
 } else {
-    if (strstr($session->get('address'), '..')
-        || strstr($session->get('address'), 'installer')
-        || strstr($session->get('address'), 'uploads')
-        || in_array(
-            $session->get('address'),
-            array('index.php', '/index.php', './index.php')
-        )
-        || substr($session->get('address'), -11) == '// index.php'
-        || substr($session->get('address'), -11) == './index.php'
+    $address = $page->getAddress();
+
+    if (strstr($address, '..')
+        || strstr($address, 'installer')
+        || strstr($address, 'uploads')
+        || in_array($address, array('index.php', '/index.php', './index.php'))
+        || substr($address, -11) == '// index.php'
+        || substr($address, -11) == './index.php'
     ) {
-        $contents[] = "<div class='error'>".
-            __('Illegal address detected: access denied.').
-            '</div>';
+        $page->addError(__('Illegal address detected: access denied.'));
     } else {
-        ob_start();
-        if (is_file('./'.$session->get('address'))) {
-            // Include the page
-            include './'.$session->get('address');
+        if (is_file('./'.$address)) {
+            $page->writeFromFile('./'.$address);
         } else {
-            include './error.php';
+            $page->writeFromFile('./error.php');
         }
-        $contents[] = ob_get_contents();
-        ob_end_clean();
     }
 }
 
+// Load the sidebar output from function.
+// TODO: rewrite this as a template file.
+$sidebarContents = '';
+if ($showSidebar) {
+    ob_start();
+    sidebar($gibbon, $pdo);
+    $sidebarContents = ob_get_clean();
+}
+
+
 
 // Setup menu items
-// TODO: replace!!!
+// TODO: Move this somewhere more sensible.
 
 if ($isLoggedIn) {
     $absoluteURL = $session->get('absoluteURL');
@@ -646,8 +637,6 @@ if ($isLoggedIn) {
         }
     }
 
-
-
     $moduleID=checkModuleReady($session->get('address'), $connection2);
 
     $data = array('gibbonModuleID' => $moduleID, 'gibbonRoleID' => $gibbonRoleIDCurrent);
@@ -675,26 +664,9 @@ if ($isLoggedIn) {
 }
 
 
-$twig = $container->get('twig');
-$page = $container->get('page');
-
-// TODO: remove
-$session->set('gibbonThemeName', 'Default');
-
-$sidebarContents = '';
-if ($sidebar) {
-    ob_start();
-    sidebar($gibbon, $pdo);
-    $sidebarContents = ob_get_contents();
-    ob_end_clean();
-}
-
-
 // TODO: Cacheload FastFinder, Main Menu
 
 $templateData = [
-    'page'              => $page->gatherData(),
-    'contents'          => $contents,
     'isLoggedIn'        => $isLoggedIn,
     'organisationLogo'  => $session->get('organisationLogo'),
     'version'           => $gibbon->getVersion(),
@@ -703,7 +675,7 @@ $templateData = [
     'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
     'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
     'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
-    'sidebar'           => $sidebar,
+    'sidebar'           => $showSidebar,
     'sidebarContents'   => $sidebarContents,
 ];
 
@@ -715,4 +687,4 @@ if ($isLoggedIn) {
     ]);
 }
 
-echo $twig->render('index.twig.html', $templateData);
+echo $page->render('index.twig.html', $templateData);
