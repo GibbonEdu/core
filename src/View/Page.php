@@ -295,6 +295,16 @@ class Page
         ];
     }
 
+    public function isAddressValid($address)
+    {
+        return !(stripos($address, '..') !== false
+            || strstr($address, 'installer')
+            || strstr($address, 'uploads')
+            || in_array($address, array('index.php', '/index.php', './index.php'))
+            || substr($address, -11) == '// index.php'
+            || substr($address, -11) == './index.php');
+    }
+
     /**
      * Writes a string to the page's internal content property.
      *
@@ -341,10 +351,7 @@ class Page
             return '';
         }
 
-        // Backwards compatibility: include these globals in the current scope.
-        global $guid, $gibbon, $version, $pdo, $connection2, $autoloader, $container;
-
-        // Extract the array of data into individual variables.
+        // Extracts the array of data into individual variables in the current scope.
         extract($data);
 
         try {

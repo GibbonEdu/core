@@ -20,6 +20,12 @@ along with this program. If not, see <http:// www.gnu.org/licenses/>.
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\View\Page;
 
+/**
+ * BOOTSTRAP
+ *
+ * The bootstrapping process creates the essential variables and services for
+ * Gibbon. These are required for all scripts: page views, CLI and API.
+ */
 // Gibbon system-wide include
 require_once './gibbon.php';
 
@@ -37,7 +43,7 @@ $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 /**
  * CACHE & INITIAL PAGE LOAD
  *
- * The 'pageLoad' value is used to run code when the user first logs in, and
+ * The 'pageLoads' value is used to run code when the user first logs in, and
  * also to reload cached content based on the $caching value in config.php
  *
  * TODO: When we implement routing, these can become part of the HTTP middleware.
@@ -96,7 +102,9 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
             if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php')) {
                 // Check to see if student is on site
                 $studentSelfRegistrationIPAddresses = getSettingByScope(
-                    $connection2, 'Attendance', 'studentSelfRegistrationIPAddresses'
+                    $connection2,
+                    'Attendance',
+                    'studentSelfRegistrationIPAddresses'
                 );
                 $realIP = getIPAddress();
                 if ($studentSelfRegistrationIPAddresses != '' && !is_null($studentSelfRegistrationIPAddresses)) {
@@ -141,7 +149,9 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
         if ($requiredUpdates == 'Y') {
             if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php')) { // Can we update data?
                 $redirectByRoleCategory = getSettingByScope(
-                    $connection2, 'Data Updater', 'redirectByRoleCategory'
+                    $connection2,
+                    'Data Updater',
+                    'redirectByRoleCategory'
                 );
                 $redirectByRoleCategory = explode(',', $redirectByRoleCategory);
 
@@ -234,6 +244,13 @@ $javascriptConfig = [
     ],
 ];
 
+/**
+ * There are currently a handful of scripts that must be in the page <HEAD>.
+ * Otherwise, the preference is to add javascript to the 'foot' at the bottom
+ * of the page, which speeds up rendering by deferring their execution until
+ * after all content has loaded.
+ */
+
 // Set page scripts: head
 $page->scripts()->addMultiple([
     'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
@@ -295,6 +312,9 @@ $page->stylesheets()->add(
 
 /**
  * USER CONFIGURATION
+ *
+ * This should be moved to a one-time process to run after login, which can be
+ * handled by HTTP middleware.
  */
 
 // Try to auto-set user's calendar feed if not set already
@@ -327,7 +347,7 @@ if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAcces
 }
 
 // Get house logo and set session variable, only on first load after login (for performance)
-if ($session->get('pageLoads') == 0 and $session->has('username') and !$session->has('gibbonHouseID')) {
+if ($session->get('pageLoads') == 0 and $session->has('username') and !$session->has('gibbonHouseIDLogo')) {
     $dataHouse = array('gibbonHouseID' => $session->get('gibbonHouseID'));
     $sqlHouse = 'SELECT logo, name FROM gibbonHouse
         WHERE gibbonHouseID=:gibbonHouseID';
@@ -351,7 +371,10 @@ if ($isLoggedIn) {
  * RETURN PROCESS
  *
  * Adds an alert to the index based on the URL 'return' parameter.
- * TODO: remove all returnProcess() from pages? But still let them register custom messages ...
+ *
+ * TODO: Remove all returnProcess() from pages. We could add a method to the
+ * Page class to allow them to register custom messages, or use Session flash
+ * to add the message directly from the Process pages.
  */
 if (!$session->has('address') && !empty($_GET['return'])) {
     $customReturns = [
@@ -366,8 +389,8 @@ if (!$session->has('address') && !empty($_GET['return'])) {
 /**
  * GET PAGE CONTENT
  *
- * TODO: rewrite welcome page & dashboards as template files.
  * TODO: move queries into Gateway classes.
+ * TODO: rewrite welcome page & dashboards as template files.
  */
 if (!$session->has('address')) {
     // Welcome message
@@ -601,19 +624,24 @@ if (!$session->has('address')) {
 } else {
     $address = trim($page->getAddress(), ' /');
 
-    if (stripos($address, '..') !== false
-        || strstr($address, 'installer')
-        || strstr($address, 'uploads')
-        || in_array($address, array('index.php', '/index.php', './index.php'))
-        || substr($address, -11) == '// index.php'
-        || substr($address, -11) == './index.php'
-    ) {
+    if ($page->isAddressValid($address) == false) {
         $page->addError(__('Illegal address detected: access denied.'));
     } else {
+        // Pass these globals into the script of the included file, for backwards compatibility.
+        $globals = [
+            'guid'        => $guid,
+            'gibbon'      => $gibbon,
+            'version'     => $version,
+            'pdo'         => $pdo,
+            'connection2' => $connection2,
+            'autoloader'  => $autoloader,
+            'container'   => $container,
+        ];
+
         if (is_file('./'.$address)) {
-            $page->writeFromFile('./'.$address);
+            $page->writeFromFile('./'.$address, $globals);
         } else {
-            $page->writeFromFile('./error.php');
+            $page->writeFromFile('./error.php', $globals);
         }
     }
 }
@@ -621,7 +649,7 @@ if (!$session->has('address')) {
 /**
  * GET SIDEBAR CONTENT
  *
- * TODO: rewrite this as a template file.
+ * TODO: rewrite the sidebar() function as a template file.
  */
 $sidebarContents = '';
 if ($showSidebar) {
@@ -714,7 +742,8 @@ if ($isLoggedIn) {
  * TEMPLATE DATA
  *
  * These values are merged with the Page class settings & content, then passed
- * into the template engine for rendering.
+ * into the template engine for rendering. They're a work in progress, but once
+ * they're more finalized we can document them for theme developers.
  */
 $templateData = [
     'isLoggedIn'        => $isLoggedIn,
