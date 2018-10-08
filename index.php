@@ -259,8 +259,6 @@ $page->scripts()->addMultiple([
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
-    'jquery-exif'    => 'lib/jquery-cropit/exif.js',
-    'jquery-cropit'  => 'jquery-cropit/jquery.cropit.js',
     'core'           => 'resources/assets/js/core.js',
 ], ['context' => 'head']);
 
