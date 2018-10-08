@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage_
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-                $row->addTextField('nameShort')->isRequired()->maxLength(6)->setValue($values['nameShort']);
+                $row->addTextField('nameShort')->isRequired()->maxLength(10)->setValue($values['nameShort']);
 
             $fileUploader = new FileUploader($pdo, $gibbon->session);
 

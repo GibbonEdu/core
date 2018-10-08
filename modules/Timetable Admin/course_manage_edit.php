@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
                 
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
-				$row->addNumber('orderBy')->maxLength(6);
+				$row->addNumber('orderBy')->maxLength(3);
             
             $data = array('gibbonSchoolYearID' => $values['gibbonSchoolYearID'], 'gibbonCourseID' => $gibbonCourseID);
             $sql = "SELECT gibbonCourseID as value, CONCAT(nameShort, ' - ', name) as name FROM gibbonCourse WHERE gibbonCourseID<>:gibbonCourseID AND gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseIDParent IS NULL ORDER BY nameShort";

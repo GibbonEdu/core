@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-				$row->addTextField('nameInCharacters')->maxLength(20);
+				$row->addTextField('nameInCharacters')->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('gender', __('Gender'));
@@ -502,15 +502,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 				$row = $form->addRow();
 					$row->addLabel('profession', __('Profession'));
-					$row->addTextField('profession')->maxLength(150);
+					$row->addTextField('profession')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('employer', __('Employer'));
-					$row->addTextField('employer')->maxLength(150);
+					$row->addTextField('employer')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('jobTitle', __('Job Title'));
-					$row->addTextField('jobTitle')->maxLength(150);
+					$row->addTextField('jobTitle')->maxLength(90);
 			}
 
 			// EMERGENCY CONTACTS

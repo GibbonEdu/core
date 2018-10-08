@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(20);
+        $row->addTextField('nameInCharacters')->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -367,26 +367,26 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     // EMPLOYMENT
     $form->addRow()->addHeading(__('Employment'));
 
-	$row = $form->addRow();
-		$row->addLabel('profession', __('Profession'));
-		$row->addTextField('profession')->maxLength(150);
+    $row = $form->addRow();
+        $row->addLabel('profession', __('Profession'));
+        $row->addTextField('profession')->maxLength(90);
 
-	$row = $form->addRow();
-		$row->addLabel('employer', __('Employer'));
-		$row->addTextField('employer')->maxLength(150);
+    $row = $form->addRow();
+        $row->addLabel('employer', __('Employer'));
+        $row->addTextField('employer')->maxLength(90);
 
-	$row = $form->addRow();
-		$row->addLabel('jobTitle', __('Job Title'));
-		$row->addTextField('jobTitle')->maxLength(150);
+    $row = $form->addRow();
+        $row->addLabel('jobTitle', __('Job Title'));
+        $row->addTextField('jobTitle')->maxLength(90);
 
     // EMERGENCY CONTACTS
     $form->addRow()->addHeading(__('Emergency Contacts'));
 
     $form->addRow()->addContent(__('These details are used when immediate family members (e.g. parent, spouse) cannot be reached first. Please try to avoid listing immediate family members.'));
 
-	$row = $form->addRow();
-		$row->addLabel('emergency1Name', __('Contact 1 Name'));
-		$row->addTextField('emergency1Name')->maxLength(90);
+    $row = $form->addRow();
+        $row->addLabel('emergency1Name', __('Contact 1 Name'));
+        $row->addTextField('emergency1Name')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
@@ -400,9 +400,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('emergency1Number2', __('Contact 1 Number 2'));
         $row->addTextField('emergency1Number2')->maxLength(30);
 
-	$row = $form->addRow();
-		$row->addLabel('emergency2Name', __('Contact 2 Name'));
-		$row->addTextField('emergency2Name')->maxLength(90);
+    $row = $form->addRow();
+        $row->addLabel('emergency2Name', __('Contact 2 Name'));
+        $row->addTextField('emergency2Name')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
