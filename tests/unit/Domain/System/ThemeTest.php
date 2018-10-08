@@ -22,7 +22,7 @@ class ThemeTest extends TestCase
     public function setUp()
     {
         $this->theme = $this->getMockBuilder(Theme::class)
-            ->setConstructorArgs(['Test'])
+            ->setConstructorArgs([])
             ->getMockForAbstractClass();
     }
 

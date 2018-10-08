@@ -22,7 +22,7 @@ class ModuleTest extends TestCase
     public function setUp()
     {
         $this->module = $this->getMockBuilder(Module::class)
-            ->setConstructorArgs(['Test'])
+            ->setConstructorArgs([])
             ->getMockForAbstractClass();
     }
 

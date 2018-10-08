@@ -154,7 +154,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
             $return .= "<div id='messageWall' style='display: inline; float: right'>";
 
-            include './modules/Messenger/moduleFunctions.php';
+            require_once './modules/Messenger/moduleFunctions.php';
 
             $q = (isset($_GET['q'])) ? $_GET['q'] : '';
 
@@ -541,13 +541,14 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET TIMETABLE
     $timetable = false;
     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
-        ?>
+
+        $timetable .= '
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#tt").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php echo @$_GET['gibbonTTID'] ?>", "ttDate": "<?php echo @$_POST['ttDate'] ?>", "fromTT": "<?php echo @$_POST['fromTT'] ?>", "personalCalendar": "<?php echo @$_POST['personalCalendar'] ?>", "schoolCalendar": "<?php echo @$_POST['schoolCalendar'] ?>", "spaceBookingCalendar": "<?php echo @$_POST['spaceBookingCalendar'] ?>"});
+				$("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
 			});
-		</script>
-		<?php
+        </script>   ';
+
         $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
         $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
@@ -973,13 +974,14 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
     //GET TIMETABLE
     $timetable = false;
     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') and $_SESSION[$guid]['username'] != '' and getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Student') {
-        ?>
+
+        $timetable .= '
 		<script type="text/javascript">
 			$(document).ready(function(){
-				$("#tt").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/index_tt_ajax.php",{"gibbonTTID": "<?php echo @$_GET['gibbonTTID'] ?>", "ttDate": "<?php echo @$_POST['ttDate'] ?>", "fromTT": "<?php echo @$_POST['fromTT'] ?>", "personalCalendar": "<?php echo @$_POST['personalCalendar'] ?>", "schoolCalendar": "<?php echo @$_POST['schoolCalendar'] ?>", "spaceBookingCalendar": "<?php echo @$_POST['spaceBookingCalendar'] ?>"});
+				$("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
 			});
-		</script>
-		<?php
+        </script>';
+        
         $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
         $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
@@ -2798,10 +2800,6 @@ function sidebar($gibbon, $pdo)
         }
     }
 
-    //Invoke and show Module Menu
-    $menuModule = new Gibbon\MenuModule($gibbon, $pdo);
-    echo $menuModule->getMenu('full');
-
     //Show custom sidebar content on homepage for logged in users
     if ($_SESSION[$guid]['address'] == '' and isset($_SESSION[$guid]['username'])) {
         if (isset($_SESSION[$guid]['index_customSidebar.php']) == false) {
@@ -3162,7 +3160,7 @@ function sidebar($gibbon, $pdo)
 
     //Show tag cloud
     if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
-        include './modules/Planner/moduleFunctions.php';
+        include_once './modules/Planner/moduleFunctions.php';
         echo "<h2 class='sidebar'>";
         echo __($guid, 'Resource Tags');
         echo '</h2>';
@@ -4006,8 +4004,6 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
 //Get list of user roles from database, and convert to array
 function getRoleList($gibbonRoleIDAll, $connection2)
 {
-    @session_start();
-
     $output = array();
 
     //Tokenise list of roles
@@ -4095,8 +4091,6 @@ function getModuleCategory($address, $connection2)
 //GET THE CURRENT YEAR AND SET IT AS A GLOBAL VARIABLE
 function setCurrentSchoolYear($guid,  $connection2)
 {
-    @session_start();
-
     //Run query
     try {
         $data = array();
@@ -4661,44 +4655,76 @@ function isCommandLineInterface()
     return false;
 }
 
-/*
-Easy Return Display Processing.
-Arguments:
-    $guid: The guid of your Gibbon Install.
-    $return: This should be the return value of the process.
-    $editLink: (Optional) This should be a link. The link will appended to the end of a success0 return.
-    $customReturns: (Optional) This should be an array. The array allows you to set custom return checks and messages. Set the array key to the return name and the value to the return message.
-Default returns:
-    success0: This is a default success message for adding a new record.
-    error0: This is a default error message for invalid permission for an action.
-    error1: This is a default error message for invalid inputs.
-    error2: This is a defualt error message for a database error.
-    warning0: This is a default warning message for a extra data failing to save.
-    warning1: This is a default warning message for a successful request, where certain data was not save properly.
-*/
+/**
+ * Easy Return Display Processing. Print out message as appropriate.
+ * See returnProcessMessage() for more details.
+ *
+ * @param string $guid
+ *      The guid of your Gibbon Install.
+ * @param string $return
+ *      The return value of the process.
+ * @param string $editLink
+ *      (Optional) This should be a link. The link will appended to the end of a success0 return.
+ * @param array $customReturns
+ *      (Optional) This should be an array. The array allows you to set custom return checks and
+ *      messages. Set the array key to the return name and the value to the return message.
+ *
+ * @return void
+ */
 function returnProcess($guid, $return, $editLink = null, $customReturns = null)
 {
+    $alert = returnProcessGetAlert($return, $editLink, $customReturns);
+
+    echo !empty($alert) 
+        ? "<div class='{$alert['context']}'>{$alert['text']}</div>" 
+        : '';
+}
+
+/**
+ * Render HTML for easy return display process.
+ *
+ * Default returns:
+ *   success0: This is a default success message for adding a new record.
+ *   error0:   This is a default error message for invalid permission for an action.
+ *   error1:   This is a default error message for invalid inputs.
+ *   error2:   This is a defualt error message for a database error.
+ *   warning0: This is a default warning message for a extra data failing to save.
+ *   warning1: This is a default warning message for a successful request, where certain data was not save properly.
+ *
+ * @param string $guid
+ *      The guid of your Gibbon Install.
+ * @param string $return
+ *      The return value of the process.
+ * @param string $editLink
+ *      (Optional) This should be a link. The link will appended to the end of a success0 return.
+ * @param array $customReturns
+ *      (Optional) This should be an array. The array allows you to set custom return checks and
+ *      messages. Set the array key to the return name and the value to the return message.
+ * @return string
+ *      The HTML ouput of the easy return display.
+ */
+function returnProcessGetAlert($return, $editLink = null, $customReturns = null) {
     if (isset($return)) {
         $class = 'error';
         $returnMessage = 'Unknown Return';
         $returns = array();
-        $returns['success0'] = __($guid, 'Your request was completed successfully.');
-        $returns['error0'] = __($guid, 'Your request failed because you do not have access to this action.');
-        $returns['error1'] = __($guid, 'Your request failed because your inputs were invalid.');
-        $returns['error2'] = __($guid, 'Your request failed due to a database error.');
-        $returns['error3'] = __($guid, 'Your request failed because your inputs were invalid.');
-        $returns['error4'] = __($guid, 'Your request failed because your passwords did not match.');
-        $returns['error5'] = __($guid, 'Your request failed because there are no records to show.');
-        $returns['error6'] = __($guid, 'Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
-        $returns['warning0'] = __($guid, 'Your optional extra data failed to save.');
-        $returns['warning1'] = __($guid, 'Your request was successful, but some data was not properly saved.');
-        $returns['warning2'] = __($guid, 'Your request was successful, but some data was not properly deleted.');
+        $returns['success0'] = __('Your request was completed successfully.');
+        $returns['error0'] = __('Your request failed because you do not have access to this action.');
+        $returns['error1'] = __('Your request failed because your inputs were invalid.');
+        $returns['error2'] = __('Your request failed due to a database error.');
+        $returns['error3'] = __('Your request failed because your inputs were invalid.');
+        $returns['error4'] = __('Your request failed because your passwords did not match.');
+        $returns['error5'] = __('Your request failed because there are no records to show.');
+        $returns['error6'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
+        $returns['warning0'] = __('Your optional extra data failed to save.');
+        $returns['warning1'] = __('Your request was successful, but some data was not properly saved.');
+        $returns['warning2'] = __('Your request was successful, but some data was not properly deleted.');
 
         if (isset($customReturns)) {
             if (is_array($customReturns)) {
                 $customReturnKeys = array_keys($customReturns);
                 foreach ($customReturnKeys as $customReturnKey) {
-                    $customReturn = __($guid, 'Unknown Return');
+                    $customReturn = __('Unknown Return');
                     if (isset($customReturns[$customReturnKey])) {
                         $customReturn = $customReturns[$customReturnKey];
                     }
@@ -4723,14 +4749,10 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
             }
         }
         if ($class == 'success' && $editLink != null) {
-            $returnMessage .= ' '.sprintf(__($guid, 'You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
+            $returnMessage .= ' '.sprintf(__('You can edit your newly created record %1$shere%2$s.'), "<a href='$editLink'>", '</a>');
         }
 
-        echo "<div class='$class'>";
-        echo $returnMessage;
-        echo '</div>';
+        return ['context' => $class, 'text' => $returnMessage];
     }
+    return null;
 }
-
-
-?>
