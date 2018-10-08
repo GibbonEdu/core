@@ -22,7 +22,10 @@ namespace Gibbon\Services;
 use Gibbon\Core;
 use Gibbon\Locale;
 use Gibbon\Session;
+use Gibbon\View\Page;
 use Gibbon\Services\Format;
+use Gibbon\Domain\System\Theme;
+use Gibbon\Domain\System\Module;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -54,6 +57,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'session',
         'locale',
         'twig',
+        'page',
+        'module',
+        'theme',
     ];
 
     /**
@@ -89,8 +95,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getContainer();
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
+        $pdo = $container->get('db');
 
-        $container->add('twig', function() use ($absolutePath, $session) {
+        $container->share('twig', function () use ($absolutePath, $session) {
             $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
 
             // Add the theme templates folder so it can override core templates
@@ -101,7 +108,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
             $twig = new \Twig_Environment($loader, array(
                 'cache' => $absolutePath.'/resources/templates/cache',
-                'debug' => true,
+                'debug' => $session->get('installType') == 'Development',
             ));
 
             $twig->addGlobal('absolutePath', $session->get('absolutePath'));
@@ -112,6 +119,59 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             }));
 
             return $twig;
+        });
+
+        $container->share('action', function () use ($session, $pdo) {
+            $data = [
+                'actionName'   => '%'.$session->get('action').'%',
+                'moduleName'   => $session->get('module'),
+                'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'),
+            ];
+            $sql = "SELECT gibbonAction.* 
+                    FROM gibbonAction
+                    JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
+                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                    WHERE gibbonAction.URLList LIKE :actionName 
+                    AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                    AND gibbonModule.name=:moduleName";
+
+            $actionData = $pdo->selectOne($sql, $data);
+
+            return $actionData ? $actionData : null;
+        });
+
+        $container->share('module', function () use ($session, $pdo) {
+            $data = ['moduleName' => $session->get('module')];
+            $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName AND active='Y'";
+            $moduleData = $pdo->selectOne($sql, $data);
+
+            return $moduleData ? new Module($moduleData) : null;
+        });
+
+        $container->share('theme', function () use ($session, $pdo) {
+            $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
+            $themeData = $pdo->selectOne($sql);
+
+            $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 001);
+            $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
+
+            return $themeData ? new Theme($themeData) : null;
+        });
+
+        $container->share('page', function () use ($session, $container) {
+            $pageTitle = $session->get('organisationNameShort').' - '.$session->get('systemName');
+            if ($session->has('module')) {
+                $pageTitle .= ' - '.__($session->get('module'));
+            }
+
+            return new Page($container->get('twig'), [
+                'title'   => $pageTitle,
+                'address' => $session->get('address'),
+                'action'  => $container->get('action'),
+                'module'  => $container->get('module'),
+                'theme'   => $container->get('theme'),
+            ]);
         });
     }
 }
