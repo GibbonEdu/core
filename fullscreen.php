@@ -38,13 +38,25 @@ $address = $page->getAddress();
 
 if (empty($address)) {
     $page->addWarning(__('There is no content to display'));
-} elseif (stripos($address, '..') !== false) {
+} elseif ($page->isAddressValid($address) == false) {
     $page->addError(__('Illegal address detected: access denied.'));
 } else {
+    // Pass these globals into the script of the included file, for backwards compatibility.
+    // These will be removed when we begin the process of ooifying action pages.
+    $globals = [
+        'guid'        => $guid,
+        'gibbon'      => $gibbon,
+        'version'     => $version,
+        'pdo'         => $pdo,
+        'connection2' => $connection2,
+        'autoloader'  => $autoloader,
+        'container'   => $container,
+    ];
+
     if (is_file('./'.$address)) {
-        $page->writeFromFile('./'.$address);
+        $page->writeFromFile('./'.$address, $globals);
     } else {
-        $page->writeFromFile('./error.php');
+        $page->writeFromFile('./error.php', $globals);
     }
 }
 

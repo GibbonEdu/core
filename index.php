@@ -628,6 +628,7 @@ if (!$session->has('address')) {
         $page->addError(__('Illegal address detected: access denied.'));
     } else {
         // Pass these globals into the script of the included file, for backwards compatibility.
+        // These will be removed when we begin the process of ooifying action pages.
         $globals = [
             'guid'        => $guid,
             'gibbon'      => $gibbon,
