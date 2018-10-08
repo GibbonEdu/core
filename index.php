@@ -235,27 +235,33 @@ $javascriptConfig = [
 ];
 
 // Set page scripts: head
-$page->scripts()->add('lv', 'lib/LiveValidation/livevalidation_standalone.compressed.js', ['context' => 'head']);
-$page->scripts()->add('jquery', 'lib/jquery/jquery.js', ['context' => 'head']);
-$page->scripts()->add('jquery-migrate', 'lib/jquery/jquery-migrate.min.js', ['context' => 'head']);
-$page->scripts()->add('jquery-ui', 'lib/jquery-ui/js/jquery-ui.min.js', ['context' => 'head']);
-$page->scripts()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.min.js', ['context' => 'head']);
-$page->scripts()->add('jquery-chained', 'lib/chained/jquery.chained.min.js', ['context' => 'head']);
-$page->scripts()->add('core', 'resources/assets/js/core.js', ['context' => 'head']);
+$page->scripts()->addMultiple([
+    'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
+    'jquery'         => 'lib/jquery/jquery.js',
+    'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
+    'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
+    'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
+    'jquery-chained' => 'lib/chained/jquery.chained.min.js',
+    'core'           => 'resources/assets/js/core.js',
+], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
-$page->scripts()->add('jquery-latex', 'lib/jquery-jslatex/jquery.jslatex.js');
-$page->scripts()->add('jquery-form', 'lib/jquery-form/jquery.form.js');
-$page->scripts()->add('jquery-date', 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js');
-$page->scripts()->add('jquery-autosize', 'lib/jquery-autosize/jquery.autosize.min.js');
-$page->scripts()->add('jquery-timeout', 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js');
-$page->scripts()->add('jquery-token', 'lib/jquery-tokeninput/src/jquery.tokeninput.js');
+$page->scripts()->addMultiple([
+    'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
+    'jquery-form'     => 'lib/jquery-form/jquery.form.js',
+    'jquery-date'     => 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
+    'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
+    'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
+    'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
+], ['context' => 'foot']);
 
 // Set page scripts: foot - misc
 $thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
 $page->scripts()->add('thickboxi', $thickboxInline, ['type' => 'inline']);
-$page->scripts()->add('thickbox', 'lib/thickbox/thickbox-compressed.js');
-$page->scripts()->add('tinymce', 'lib/tinymce/tinymce.min.js');
+$page->scripts()->addMultiple([
+    'thickbox' => 'lib/thickbox/thickbox-compressed.js',
+    'tinymce'  => 'lib/tinymce/tinymce.min.js',
+], ['context' => 'foot']);
 
 // Set page scripts: foot - core
 $page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
@@ -267,10 +273,12 @@ $page->addHeadExtra($session->get('analytics'));
 /**
  * STYLESHEETS & CSS
  */
-$page->stylesheets()->add('jquery-ui', 'lib/jquery-ui/css/blitzer/jquery-ui.css');
-$page->stylesheets()->add('jquery-time', 'lib/jquery-timepicker/jquery.timepicker.css');
-$page->stylesheets()->add('jquery-token', 'lib/jquery-tokeninput/styles/token-input-facebook.css');
-$page->stylesheets()->add('thickbox', 'lib/thickbox/thickbox.css');
+$page->stylesheets()->addMultiple([
+    'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
+    'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
+    'jquery-token' => 'lib/jquery-tokeninput/styles/token-input-facebook.css',
+    'thickbox'     => 'lib/thickbox/thickbox.css',
+]);
 
 // Set personal background
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {

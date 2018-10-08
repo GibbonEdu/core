@@ -88,6 +88,19 @@ class AssetBundle
     }
 
     /**
+     * Add an array of assets that each share the same options.
+     *
+     * @param array $assets
+     * @param array $options
+     */
+    public function addMultiple(array $assets, array $options = [])
+    {
+        foreach ($assets as $name => $src) {
+            $this->add($name, $src, $options);
+        }
+    }
+
+    /**
      * Get all assets sorted by weight, ascending.
      *
      * @param string $context Optionally filter returned assets by context.
