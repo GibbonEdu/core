@@ -80,4 +80,39 @@ class ModuleGateway extends QueryableGateway
 
         return $this->db()->select($sql)->fetchAll(\PDO::FETCH_COLUMN);
     }
+
+    public function selectModulesByRole($gibbonRoleID)
+    {
+        $mainMenuCategoryOrder = getSettingByScope($this->db()->getConnection(), 'System', 'mainMenuCategoryOrder');
+
+        $data = array('gibbonRoleID' => $gibbonRoleID, 'menuOrder' => $mainMenuCategoryOrder);
+        $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
+                FROM gibbonModule 
+                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
+                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
+                WHERE gibbonModule.active='Y' 
+                AND gibbonAction.menuShow='Y' 
+                AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
+                GROUP BY gibbonModule.name 
+                ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectModuleActionsByRole($gibbonRoleID, $gibbonModuleID)
+    {
+        $data = array('gibbonModuleID' => $gibbonRoleID, 'gibbonRoleID' => $gibbonModuleID);
+        $sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name as actionName, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList, SUBSTRING_INDEX(gibbonAction.name, '_', 1) as name, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) AS textDomain
+                FROM gibbonModule
+                JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
+                JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
+                WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID)
+                AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)
+                AND NOT gibbonAction.entryURL=''
+                AND gibbonAction.menuShow='Y'
+                GROUP BY name
+                ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
+
+        return $this->db()->select($sql, $data);
+    }
 }

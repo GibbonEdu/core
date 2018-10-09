@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 use Gibbon\View\Page;
+use Gibbon\Domain\System\ModuleGateway;
+use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 /**
  * BOOTSTRAP
@@ -665,27 +666,17 @@ if ($showSidebar) {
 /**
  * MENU ITEMS & FAST FINDER
  *
- * TODO: Move this somewhere more sensible. Refactor to gateway classes.
+ * TODO: Move this somewhere more sensible.
  */
 if ($isLoggedIn) {
     if ($cacheLoad || !$session->has('fastFinder')) {
         $session->set('fastFinder', getFastFinder($connection2, $guid));
     }
 
-    if ($cacheLoad || !$session->has('menuMainItems')) {
-        $mainMenuCategoryOrder = getSettingByScope($connection2, 'System', 'mainMenuCategoryOrder');
-        $data = array('gibbonRoleID' => $session->get('gibbonRoleIDCurrent'), 'menuOrder' => $mainMenuCategoryOrder);
-        $sql = "SELECT gibbonModule.category, gibbonModule.name, gibbonModule.type, gibbonModule.entryURL, gibbonAction.entryURL as alternateEntryURL, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) as textDomain
-                FROM gibbonModule 
-                JOIN gibbonAction ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) 
-                JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID) 
-                WHERE gibbonModule.active='Y' 
-                AND gibbonAction.menuShow='Y' 
-                AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
-                GROUP BY gibbonModule.name 
-                ORDER BY FIND_IN_SET(gibbonModule.category, :menuOrder), gibbonModule.category, gibbonModule.name, gibbonAction.name";
+    $moduleGateway = $container->get(ModuleGateway::class);
 
-        $menuMainItems = $pdo->select($sql, $data)->fetchGrouped();
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
 
         foreach ($menuMainItems as $category => &$items) {
             foreach ($items as &$item) {
@@ -706,19 +697,7 @@ if ($isLoggedIn) {
         $menuModule = $session->get('menuModuleName');
         
         if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
-            $data = array('gibbonModuleID' => $page->getModule()->getID(), 'gibbonRoleID' => $session->get('gibbonRoleIDCurrent'));
-            $sql = "SELECT gibbonAction.category, gibbonModule.entryURL AS moduleEntry, gibbonModule.name AS moduleName, gibbonAction.name as actionName, gibbonModule.type, gibbonAction.precedence, gibbonAction.entryURL, URLList, SUBSTRING_INDEX(gibbonAction.name, '_', 1) as name, (CASE WHEN gibbonModule.type <> 'Core' THEN gibbonModule.name ELSE NULL END) AS textDomain
-            FROM gibbonModule
-            JOIN gibbonAction ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
-            JOIN gibbonPermission ON (gibbonAction.gibbonActionID=gibbonPermission.gibbonActionID)
-            WHERE (gibbonModule.gibbonModuleID=:gibbonModuleID)
-            AND (gibbonPermission.gibbonRoleID=:gibbonRoleID)
-            AND NOT gibbonAction.entryURL=''
-            AND gibbonAction.menuShow='Y'
-            GROUP BY name
-            ORDER BY gibbonModule.name, gibbonAction.category, gibbonAction.name, precedence DESC";
-
-            $menuModuleItems = $pdo->select($sql, $data)->fetchGrouped();
+            $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
         } else {
             $menuModuleItems = $session->get('menuModuleItems');
         }
@@ -726,7 +705,7 @@ if ($isLoggedIn) {
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
-                $item['active'] = stripos($item['URLList'], $session->get('action')) !== false;
+                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
                 $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
                         .$item['moduleName'].'/'.$item['entryURL'];
             }
