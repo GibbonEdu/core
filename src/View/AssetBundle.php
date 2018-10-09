@@ -65,7 +65,8 @@ class AssetBundle
             'context' => 'foot',
             'media'   => 'all',
             'version' => null,
-            'weight'  => count($this->allAssets),
+            'weight'  => 0,
+            'index'   => count($this->allAssets),
         ], $options);
     }
 
@@ -101,7 +102,8 @@ class AssetBundle
     }
 
     /**
-     * Get all assets sorted by weight, ascending.
+     * Get all assets sorted by weight, ascending. The index value is used to
+     * maintain the original array order when weights are equal.
      *
      * @param string $context Optionally filter returned assets by context.
      * @return array
@@ -111,7 +113,11 @@ class AssetBundle
         $usedAssets = array_intersect_key($this->allAssets, $this->usedAssetsByName);
 
         uasort($usedAssets, function ($a, $b) {
-            return $a['weight'] <=> $b['weight'];
+            if ($a['weight'] != $b['weight']) {
+                return $a['weight'] <=> $b['weight'];
+            }
+            
+            return $a['index'] <=> $b['index'];
         });
 
         return array_filter($usedAssets, function ($item) use ($context) {
