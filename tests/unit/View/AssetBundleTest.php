@@ -78,4 +78,19 @@ class AssetBundleTest extends TestCase
 
         $this->assertEquals(['fiz', 'foo', 'biz', 'bus'], array_keys($assets->getAssets()));
     }
+
+    public function testSortsAssetsByWeightAndOriginalOrder()
+    {
+        $assets = new AssetBundle();
+
+        $assets->add('foo', 'bar/baz', ['weight' => 1]);
+
+        $assets->add('bar', 'bar/baz');
+        $assets->add('baz', 'bar/baz');
+        $assets->add('bus', 'bar/baz');
+
+        $assets->add('fiz', 'bar/baz', ['weight' => -1]);
+
+        $this->assertEquals(['fiz', 'bar', 'baz', 'bus', 'foo'], array_keys($assets->getAssets()));
+    }
 }
