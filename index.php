@@ -726,7 +726,7 @@ if ($isLoggedIn) {
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
-                $item['active'] = stripos($item['URLList'], $session->get('action')) !== false;
+                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
                 $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
                         .$item['moduleName'].'/'.$item['entryURL'];
             }
