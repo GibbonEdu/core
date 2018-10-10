@@ -222,6 +222,10 @@ class Form implements OutputableInterface
      */
     public function setAutocomplete($value)
     {
+        if (is_bool($value)) {
+            $value = $value? 'on' : 'off';
+        }
+        
         $this->setAttribute('autocomplete', $value);
 
         return $this;

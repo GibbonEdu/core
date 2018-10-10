@@ -2730,6 +2730,7 @@ function sidebar($gibbon, $pdo)
             $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
 
             $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
+            $form->setAutocomplete(false);
             $form->setClass('noIntBorder fullWidth');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

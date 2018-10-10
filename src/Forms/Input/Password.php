@@ -95,7 +95,7 @@ class Password extends TextField
      */
     protected function getElement()
     {
-        $output = '<input type="password" '.$this->getAttributeString().'>';
+        $output = '<input type="password" '.$this->getAttributeString().' autocomplete="off">';
 
         return $output;
     }

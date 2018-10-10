@@ -53,8 +53,19 @@ class Session
             //Prevent breakage of back button on POST pages
             ini_set('session.cache_limiter', 'private');
             session_cache_limiter(false);
+
+            $options = [
+                'cookie_httponly'  => true,
+                'cookie_secure'    => isset($_SERVER['HTTPS']),
+            ];
+
+            if (version_compare(phpversion(), '7.3.0', '>=')) {
+                $options['cookie_samesite'] = 'Strict';
+            }
         
-            session_start();
+            session_start($options);
+
+            header('X-Frame-Options: SAMEORIGIN');
         }
 
         // Backwards compatibility for external modules
