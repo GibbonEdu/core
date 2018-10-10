@@ -340,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								?><br/></span>
 							</td>
 							<td class="right">
-								<input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
+								<input autocomplete='off' name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $row['date']) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
@@ -726,7 +726,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 						<tr id="homeworkDueDateRow">
 							<td>
 								<b><?php echo __($guid, 'Homework Due Date') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+								<span autocomplete='off' class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 								} else {
 									echo $_SESSION[$guid]['i18n']['dateFormat'];
 								}
