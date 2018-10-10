@@ -15,10 +15,12 @@
             "@test:phpunit"
         ],
         "test:codeception": [
-            "cd tests && codecept run install --env travis_ci",
-            "cd tests && codecept run acceptance --env travis_ci"
+            "cd tests && codecept run install --env $CI_PLATFORM",
+            "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
-        "test:phpunit": "cd tests && phpunit --verbose --configuration phpunit.xml"
+        "test:phpunit": [
+            "cd tests && phpunit --verbose --configuration phpunit.xml"
+        ]
     },
     "scripts-descriptions": {
         "test:codeception": "Initialize CI environment and run acceptance tests with Codeception.",

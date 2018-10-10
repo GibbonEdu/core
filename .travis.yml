@@ -16,6 +16,7 @@ php:
 env:
   global:
     - TEST_ENV='codeception'
+    - CI_PLATFORM='travis_ci'
     - ABSOLUTE_URL='http://127.0.0.1:8888'
     - DB_HOST='127.0.0.1'
     - DB_NAME='gibbon_test'
