@@ -184,12 +184,14 @@ if ($session->get('pageLoads') == 0 && !$session->has('address')) { // First pag
 $session->set('sidebarExtra', '');
 $session->set('sidebarExtraPosition', 'top');
 
-// Don't display the sidebar if the URL 'sidebar' param is explicitly set to 'false'
-$showSidebar = !isset($_GET['sidebar']) || (strtolower($_GET['sidebar']) !== 'false');
-
 // Check the current Action 'entrySidebar' to see if we should display a sidebar
-if ($showSidebar && $page->getAction()) {
-    $showSidebar = $page->getAction()['entrySidebar'] != 'N';
+$showSidebar = $page->getAction()
+    ? $page->getAction()['entrySidebar'] != 'N'
+    : true;
+
+// Override showSidebar if the URL 'sidebar' param is explicitly set
+if (!empty($_GET['sidebar'])) {
+    $showSidebar = strtolower($_GET['sidebar']) !== 'false';
 }
 
 /**
