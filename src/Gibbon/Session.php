@@ -54,7 +54,10 @@ class Session
             ini_set('session.cache_limiter', 'private');
             session_cache_limiter(false);
         
-            session_start();
+            session_start([
+                'cookie_httponly'  => true,
+                'cookie_secure'    => isset($_SERVER['HTTPS']),
+            ]);
         }
 
         // Backwards compatibility for external modules
