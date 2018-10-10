@@ -274,9 +274,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                             exit();
                         }
 
-                        //Update main menu
-                        $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
-                        $mainMenu->setMenu();
+                        // Clear the main menu from session cache
+                        $gibbon->session->forget('menuMainItems');
 
                         //We made it!
                         $URL .= '&return=success0';
