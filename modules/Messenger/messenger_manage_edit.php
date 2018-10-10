@@ -265,7 +265,7 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; all staff.'));
+						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
 						$row->addYesNoRadio('yearGroup')->checked($checked)->isRequired();
 
 					$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
