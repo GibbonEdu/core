@@ -16,25 +16,3 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
-
-a.button {
-    background-color: #db4e44 !important;
-    color: #fff;
-    padding: 10px;
-    font-size: 18px;
-    line-height: 1.2;
-    text-decoration: none;
-    border-radius: .25rem;
-    border: 1px solid transparent;
-    display: block;
-    font-weight: 400;
-    text-align: center;
-    white-space: nowrap;
-    transition: all 0.15s;
-    /* text-shadow: 2px 2px  rgba(0,0,0,0.15); */
-    text-rendering: optimizeLegibility;
-}
-
-a.button:hover  {
-    background-color: #c2382e !important;
-}

@@ -65,30 +65,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo __('This page shows all the data updates that are available to you. If an update is required it will be highlighted in red.');
     echo '</p>';
 
-    include './modules/ID Cards/src/Domain/UpdaterGateway.php';
-    $updaterGateway = new Modules\IDCards\Domain\UpdaterGateway($pdo);
-
-    $gibbonFamilyID = $updaterGateway->selectFamilyIDByPerson($gibbonPersonID);
-    if (!empty($gibbonFamilyID)) {
-
-        echo '<h2>';
-        echo __('Family ID Cards');
-        echo '</h2>';
-
-        echo '<table cellspacing=0 class="smallintBorder fullWidth">';
-        echo '<tr>';
-        echo '<td style="font-size:14px;">';
-        echo __('ID card requests for the <b>upcoming school year 2018-2019</b> are now available. Please visit the photo upload page to review your family photos and check the box at the bottom if your family will need ID cards for the upcoming school year.');
-        echo '</td>';
-        echo '<td style="width: 35%; text-align:right;vertical-align: baseline;">';
-        echo '<a class="button buttonPush buttonBlueGreen" href="'.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/ID Cards/photos.php">';
-            echo 'Request ID Cards<br/>for 2018-2019';
-        echo '</a>';
-        echo '</td>';
-        echo '</tr>';
-        echo '</table><br/>';
-    }
-
     if ($requiredUpdates == 'Y') {
         $updatesRequiredCount = $gateway->countAllRequiredUpdatesByPerson($gibbonPersonID);
 

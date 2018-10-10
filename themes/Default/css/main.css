@@ -1485,7 +1485,7 @@ input[name*="phone"] ~ .LV_invalid {
 }
 
 tr.head td {
-	/* font-weight: bold; */
+	font-weight: bold;
 	font-size: 110%;
 }
 
