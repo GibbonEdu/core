@@ -57,9 +57,8 @@ if (empty(intval($role))) {
         // Reload cached FF actions
         $gibbon->session->cacheFastFinderActions($role);
 
-        // Reload the cached menu
-        $mainMenu = new Gibbon\MenuMain($gibbon, $pdo);
-        $mainMenu->setMenu();
+        // Clear the main menu from session cache
+        $gibbon->session->forget('menuMainItems');
 
         $URL .= '?return=success0';
         header("Location: {$URL}");

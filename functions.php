@@ -828,7 +828,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     }
 
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -837,7 +836,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
@@ -1077,7 +1075,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         $defaultTab = $studentDashboardDefaultTabCount-1;
     }
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -1086,7 +1083,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
@@ -1814,7 +1810,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $defaultTab = $parentDashboardDefaultTabCount-1;
     }
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -1823,7 +1818,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
@@ -2726,6 +2720,7 @@ function sidebar($gibbon, $pdo)
             $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
 
             $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
+            $form->setAutocomplete(false);
             $form->setClass('noIntBorder fullWidth');
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
@@ -2895,6 +2890,9 @@ function sidebar($gibbon, $pdo)
                         }
                         echo '</table>';
                         $order = substr($order, 0, strlen($order) - 2);
+                        if ($order == '0' || $order == '0,1') {
+                            $order = '0,1,2';
+                        }
                         echo '
 							<script type="text/javascript">
 								$(document).ready(function(){
