@@ -828,7 +828,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     }
 
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -837,7 +836,6 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
@@ -1077,7 +1075,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         $defaultTab = $studentDashboardDefaultTabCount-1;
     }
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -1086,7 +1083,6 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
@@ -1822,7 +1818,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $defaultTab = $parentDashboardDefaultTabCount-1;
     }
     $return .= "<script type='text/javascript'>";
-    $return .= '$(function() {';
     $return .= '$( "#'.$gibbonPersonID.'tabs" ).tabs({';
     $return .= 'active: '.$defaultTab.',';
     $return .= 'ajaxOptions: {';
@@ -1831,7 +1826,6 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $return .= "\"Couldn't load this tab.\" );";
     $return .= '}';
     $return .= '}';
-    $return .= '});';
     $return .= '});';
     $return .= '</script>';
 
