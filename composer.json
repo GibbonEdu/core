@@ -15,8 +15,8 @@
             "@test:phpunit"
         ],
         "test:codeception": [
-            "cd tests && ~/.composer/vendor/bin/codecept run install --env travis_ci",
-            "cd tests && ~/.composer/vendor/bin/codecept run acceptance --env travis_ci"
+            "cd tests && codecept run install --env travis_ci",
+            "cd tests && codecept run acceptance --env travis_ci"
         ],
         "test:phpunit": "cd tests && phpunit --verbose --configuration phpunit.xml"
     },
