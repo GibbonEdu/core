@@ -150,8 +150,15 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         });
 
         $container->share('theme', function () use ($session, $pdo) {
-            $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
-            $themeData = $pdo->selectOne($sql);
+            if ($session->has('gibbonThemeIDPersonal')) {
+                $data = ['gibbonThemeID' => $session->get('gibbonThemeIDPersonal')];
+                $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
+            } else {
+                $data = [];
+                $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
+            }
+
+            $themeData = $pdo->selectOne($sql, $data);
 
             $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 001);
             $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
