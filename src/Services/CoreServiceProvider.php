@@ -107,7 +107,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             }
 
             $twig = new \Twig_Environment($loader, array(
-                'cache' => $absolutePath.'/resources/templates/cache',
+                'cache' => $absolutePath.'/uploads/cache',
                 'debug' => $session->get('installType') == 'Development',
             ));
 
