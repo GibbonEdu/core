@@ -303,15 +303,15 @@ $page->stylesheets()->addMultiple([
 // Set personal background
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
-    $backgroundScroll = 'repeat scroll center top';
+    $backgroundScroll = 'no-repeat fixed center top !important; background-size: cover !important';
 } else {
     $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
-    $backgroundScroll = 'repeat fixed center top';
+    $backgroundScroll = 'no-repeat fixed center top #A88EDB!important;';
 }
 
 $page->stylesheets()->add(
     'personal-background',
-    'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #A88EDB!important; }',
+    'body { background: url('.$backgroundImage.') '.$backgroundScroll.'  }',
     ['type' => 'inline']
 );
 
