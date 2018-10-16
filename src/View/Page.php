@@ -68,10 +68,6 @@ class Page
                 $this->$key = $value;
             }
         }
-
-        set_error_handler([$this, 'handleError']);
-        set_exception_handler([$this, 'handleException']);
-        register_shutdown_function([$this, 'handleFatalErrorShutdown']);
     }
 
     /**
@@ -369,90 +365,6 @@ class Page
         }
 
         return $output;
-    }
-
-    public function handleError($code, $message = '', $file = null, $line = null)
-    {
-        if (!(error_reporting() & $code)) {
-            // This error code is not included in error_reporting, so let it fall
-            // through to the standard PHP error handler
-            return false;
-        }
-
-        switch ($code) {
-            case ($code & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR)):
-                $type = 'Fatal Error';
-                break;
-            case ($code & (E_WARNING | E_USER_WARNING | E_COMPILE_WARNING | E_RECOVERABLE_ERROR)):
-                $type = 'Warning';
-                break;
-            case ($code & (E_DEPRECATED | E_USER_DEPRECATED)):
-                $type = 'Deprecated';
-                break;
-            case ($code & (E_NOTICE | E_USER_NOTICE)):
-                $type = 'Notice';
-                break;
-            default:
-                $type = 'Unknown Error';
-                break;
-        }
-
-        $stackTrace = debug_backtrace();
-
-        $this->addCodeError($code, $type, $message, next($stackTrace), $file, $line);
-        
-        // Don't execute PHP internal error handler
-        return true;
-    }
-
-    public function handleException($e)
-    {
-        $this->addCodeError($e->getCode(), 'Uncaught Exception', get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
-        $this->handleGracefulShutdown();
-    }
-    
-    public function handleFatalErrorShutdown()
-    {
-        $lastError = error_get_last();
-        if ($lastError['type'] === E_ERROR) {
-            $this->handleError($lastError['type'], nl2br($lastError['message']));
-            $this->handleGracefulShutdown();
-        }
-    }
-
-    protected function handleGracefulShutdown()
-    {
-        ob_end_clean();
-        echo $this->render('index.twig.html', ['sidebar' => false]);
-        exit;
-    }
-
-    protected function addCodeError($code, $type = '', $message = '', $stackTrace = [], $file = null, $line = null)
-    {
-        if (ini_get('display_errors')) {
-            $output = sprintf('<strong title="Error Code: %1$s">%2$s</strong>: %3$s', $code, $type, $message);
-
-            $basePath = realpath('./').'/';
-            $stackTrace = array_filter($stackTrace, function ($item) {
-                return !empty($item['file']);
-            });
-
-            if (!empty($stackTrace)) {
-                $output .= '<ol start="0" style="font-size: inherit;margin-bottom:0;">';
-                foreach ($stackTrace as $index => $caller) {
-                    $output .= sprintf('<li>Line %1$s in <span title="%2$s">%3$s</span></li>', $caller['line'], $caller['file'], str_replace($basePath, '', $caller['file']));
-                }
-                $output .= '</ol>';
-            } else {
-                $output .= sprintf(' in <span title="%1$s">%2$s</span> on line %3$s', $file, str_replace($basePath, '', $file), $line);
-            }
-
-            $this->addAlert('exception', $output);
-        }
-
-        if (ini_get('log_errors')) {
-            error_log($type.': '.$message.' in '.$file.' on line '.$line);
-        }
     }
 
     /**

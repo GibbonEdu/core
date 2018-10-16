@@ -41,6 +41,8 @@ TODO: add template variable details.
                 <div id="content-wrap">
                     <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
 
+                        {% block page %}
+
                         {% if content and not sidebar %}
                             {{ include('navigation.twig.html') }}
                         {% endif %}
@@ -67,6 +69,8 @@ TODO: add template variable details.
                         {% endfor %}
 
                         {{ content|join("\n")|raw }}
+
+                        {% endblock %}
                     </div>
 
                     {% if sidebar %}
