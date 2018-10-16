@@ -391,6 +391,106 @@ if (!$session->has('address') && !empty($_GET['return'])) {
     }
 }
 
+
+/**
+ * GET SIDEBAR CONTENT
+ *
+ * TODO: rewrite the sidebar() function as a template file.
+ */
+$sidebarContents = '';
+if ($showSidebar) {
+    $page->addSidebarExtra($session->get('sidebarExtra'));
+    $session->set('sidebarExtra', '');
+
+    ob_start();
+    sidebar($gibbon, $pdo);
+    $sidebarContents = ob_get_clean();
+}
+
+/**
+ * MENU ITEMS & FAST FINDER
+ *
+ * TODO: Move this somewhere more sensible.
+ */
+if ($isLoggedIn) {
+    if ($cacheLoad || !$session->has('fastFinder')) {
+        $session->set('fastFinder', getFastFinder($connection2, $guid));
+    }
+
+    $moduleGateway = $container->get(ModuleGateway::class);
+
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+
+        foreach ($menuMainItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $modulePath = '/modules/'.$item['name'];
+                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+                    ? $item['entryURL']
+                    : $item['alternateEntryURL'];
+
+                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+            }
+        }
+
+        $session->set('menuMainItems', $menuMainItems);
+    }
+
+    if ($page->getModule()) {
+        $currentModule = $page->getModule()->getName();
+        $menuModule = $session->get('menuModuleName');
+        
+        if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
+            $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+        } else {
+            $menuModuleItems = $session->get('menuModuleItems');
+        }
+        
+        // Update the menu items to indicate the current active action
+        foreach ($menuModuleItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
+                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
+                        .$item['moduleName'].'/'.$item['entryURL'];
+            }
+        }
+
+        $session->set('menuModuleItems', $menuModuleItems);
+        $session->set('menuModuleName', $currentModule);
+    } else {
+        $session->forget(['menuModuleItems', 'menuModuleName']);
+    }
+}
+
+/**
+ * TEMPLATE DATA
+ *
+ * These values are merged with the Page class settings & content, then passed
+ * into the template engine for rendering. They're a work in progress, but once
+ * they're more finalized we can document them for theme developers.
+ */
+$page->addData([
+    'isLoggedIn'        => $isLoggedIn,
+    'gibbonThemeName'   => $session->get('gibbonThemeName'),
+    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
+    'organisationLogo'  => $session->get('organisationLogo'),
+    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
+    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
+    'sidebar'           => $showSidebar,
+    'sidebarContents'   => $sidebarContents,
+    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
+    'version'           => $gibbon->getVersion(),
+    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+]);
+
+if ($isLoggedIn) {
+    $page->addData([
+        'menuMain'   => $session->get('menuMainItems', []),
+        'menuModule' => $session->get('menuModuleItems', []),
+        'fastFinder' => $session->get('fastFinder'),
+    ]);
+}
+
 /**
  * GET PAGE CONTENT
  *
@@ -652,106 +752,10 @@ if (!$session->has('address')) {
     }
 }
 
-/**
- * GET SIDEBAR CONTENT
- *
- * TODO: rewrite the sidebar() function as a template file.
- */
-$sidebarContents = '';
-if ($showSidebar) {
-    $page->addSidebarExtra($session->get('sidebarExtra'));
-    $session->set('sidebarExtra', '');
 
-    ob_start();
-    sidebar($gibbon, $pdo);
-    $sidebarContents = ob_get_clean();
-}
 
-/**
- * MENU ITEMS & FAST FINDER
- *
- * TODO: Move this somewhere more sensible.
- */
-if ($isLoggedIn) {
-    if ($cacheLoad || !$session->has('fastFinder')) {
-        $session->set('fastFinder', getFastFinder($connection2, $guid));
-    }
-
-    $moduleGateway = $container->get(ModuleGateway::class);
-
-    if ($cacheLoad || !$session->has('menuMainItems')) {
-        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-
-        foreach ($menuMainItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
-                    ? $item['entryURL']
-                    : $item['alternateEntryURL'];
-
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
-            }
-        }
-
-        $session->set('menuMainItems', $menuMainItems);
-    }
-
-    if ($page->getModule()) {
-        $currentModule = $page->getModule()->getName();
-        $menuModule = $session->get('menuModuleName');
-        
-        if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
-            $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-        } else {
-            $menuModuleItems = $session->get('menuModuleItems');
-        }
-        
-        // Update the menu items to indicate the current active action
-        foreach ($menuModuleItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
-            }
-        }
-
-        $session->set('menuModuleItems', $menuModuleItems);
-        $session->set('menuModuleName', $currentModule);
-    } else {
-        $session->forget(['menuModuleItems', 'menuModuleName']);
-    }
-}
-
-/**
- * TEMPLATE DATA
- *
- * These values are merged with the Page class settings & content, then passed
- * into the template engine for rendering. They're a work in progress, but once
- * they're more finalized we can document them for theme developers.
- */
-$templateData = [
-    'isLoggedIn'        => $isLoggedIn,
-    'gibbonThemeName'   => $session->get('gibbonThemeName'),
-    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
-    'organisationLogo'  => $session->get('organisationLogo'),
-    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
-    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
-    'sidebar'           => $showSidebar,
-    'sidebarContents'   => $sidebarContents,
-    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
-    'version'           => $gibbon->getVersion(),
-    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
-];
-
-if ($isLoggedIn) {
-    $templateData += [
-        'menuMain'   => $session->get('menuMainItems', []),
-        'menuModule' => $session->get('menuModuleItems', []),
-        'fastFinder' => $session->get('fastFinder'),
-    ];
-}
 
 /**
  * DONE!!
  */
-echo $page->render('index.twig.html', $templateData);
+echo $page->render('index.twig.html');

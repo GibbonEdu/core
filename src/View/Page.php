@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
 
 /**
@@ -27,10 +28,8 @@ use Gibbon\View\AssetBundle;
  * @version  v17
  * @since    v17
  */
-class Page
+class Page extends View
 {
-    protected $templateEngine;
-
     /**
      * After constructing these class properties are publicly read-only.
      */
@@ -57,8 +56,8 @@ class Page
      */
     public function __construct($templateEngine = null, array $params = [])
     {
-        $this->templateEngine = $templateEngine;
-
+        parent::__construct($templateEngine);
+        
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
 
@@ -295,7 +294,13 @@ class Page
         ];
     }
 
-    public function isAddressValid($address)
+    /**
+     * Check is a given address is valid and does not contain illegal strings.
+     *
+     * @param string $address
+     * @return bool
+     */
+    public function isAddressValid($address) : bool
     {
         return !(stripos($address, '..') !== false
             || strstr($address, 'installer')
@@ -306,7 +311,7 @@ class Page
     }
 
     /**
-     * Writes a string to the page's internal content property.
+     * Write a string to the view's internal content property.
      *
      * @param string $value
      */
@@ -316,7 +321,7 @@ class Page
     }
 
     /**
-     * Writes the output buffered result from a PHP script to the page's content.
+     * Write the output buffered result from a PHP script to the view's content.
      *
      * @param string $filepath
      * @param array $data
@@ -327,7 +332,7 @@ class Page
     }
 
     /**
-     * Writes a rendered template file to the page's content.
+     * Writes a rendered template file to the view's content.
      *
      * @param string $template
      * @param array $data
@@ -335,49 +340,6 @@ class Page
     public function writeFromTemplate(string $template, array $data = [])
     {
         $this->write($this->fetchFromTemplate($template, $data));
-    }
-
-    /**
-     * Includes a PHP file in a protected scope, and returns the
-     * output-buffered contents as a string.
-     *
-     * @param string $filepath
-     * @param array  $data
-     * @return string
-     */
-    public function fetchFromFile(string $filepath, array $data = []) : string
-    {
-        if (!is_file($filepath)) {
-            return '';
-        }
-
-        // Extracts the array of data into individual variables in the current scope.
-        extract($data);
-
-        try {
-            ob_start();
-            $included = include $filepath;
-            $output = ob_get_clean() . (is_string($included)? $included : '');
-        } catch (\Exception $e) {
-            $output = '';
-            ob_end_clean();
-            throw $e;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Renders a given template using the template engine + provided data
-     * and returns the result as a string.
-     *
-     * @param string $template
-     * @param array  $data
-     * @return string
-     */
-    public function fetchFromTemplate(string $template, array $data = []) : string
-    {
-        return $this->templateEngine->render($template, $data);
     }
 
     /**
@@ -392,7 +354,7 @@ class Page
         $data['page'] = $this->gatherData();
         $data['content'] = $this->content;
 
-        return $this->templateEngine->render($template, $data);
+        return parent::render($template, $data);
     }
 
     /**
