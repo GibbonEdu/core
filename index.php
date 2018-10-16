@@ -495,7 +495,7 @@ if ($isLoggedIn) {
  * GET PAGE CONTENT
  *
  * TODO: move queries into Gateway classes.
- * TODO: rewrite welcome page & dashboards as template files.
+ * TODO: rewrite dashboards as template files.
  */
 if (!$session->has('address')) {
     // Welcome message
@@ -505,72 +505,30 @@ if (!$session->has('address')) {
             $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
         }
 
-        // Set welcome message
-        $page->write('<h2>'.__('Welcome').'</h2><p>'.$session->get('indexText').'</p>');
-
-        // Student public applications permitted?
-        $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
-        if ($publicApplications == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Student Applications').'</h2>'.
-                '<p>'.
-                sprintf(__('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Students/applicationForm.php'>", '</a>').
-                '</p>');
-        }
-
-        // Staff public applications permitted?
-        $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
-        if ($staffApplicationFormPublicApplications == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>" .
-                __('Staff Applications') .
-                '</h2>'.
-                '<p>'.
-                sprintf(__('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
-                '</p>');
-        }
-
-        // Public departments permitted?
-        $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
-        if ($makeDepartmentsPublic == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Departments').
-                '</h2>'.
-                '<p>'.
-                sprintf(__('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Departments/departments.php'>", '</a>', $session->get('organisationName')).
-                '</p>');
-        }
-
-        // Public units permitted?
-        $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
-        if ($makeUnitsPublic == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Learn With Us').
-                '</h2>'.
-                '<p>'.
-                sprintf(__('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $session->get('organisationName')).
-                '</p>');
-        }
+        $templateData = [
+            'indexText'                 => $session->get('indexText'),
+            'organisationName'          => $session->get('organisationName'),
+            'publicStudentApplications' => getSettingByScope($connection2, 'Application Form', 'publicApplications') == 'Y',
+            'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
+            'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
+            'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+        ];
 
         // Get any elements hooked into public home page, checking if they are turned on
-        try {
-            $dataHook = array();
-            $sqlHook = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
-            $resultHook = $connection2->prepare($sqlHook);
-            $resultHook->execute($dataHook);
-        } catch (PDOException $e) {
-        }
-        while ($rowHook = $resultHook->fetch()) {
-            $options = unserialize(str_replace("'", "\'", $rowHook['options']));
+        $sql = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
+        $hooks = $pdo->select($sql)->fetchAll();
+
+        foreach ($hooks as $hook) {
+            $options = unserialize(str_replace("'", "\'", $hook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
-                $page->write("<h2 style='margin-top: 30px'>".
-                    $options['title'].
-                    '</h2>'.
-                    '<p>'.
-                    stripslashes($options['text']).
-                    '</p>');
+                $options['text'] = stripslashes($options['text']);
+                $templateData['indexHooks'][] = $options;
             }
         }
+
+        $page->writeFromTemplate('welcome.twig.html', $templateData);
+        
     } else {
         // Custom content loader
         if (!$session->exists('index_custom.php')) {
@@ -751,9 +709,6 @@ if (!$session->has('address')) {
         }
     }
 }
-
-
-
 
 /**
  * DONE!!

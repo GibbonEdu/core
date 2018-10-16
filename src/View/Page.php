@@ -311,7 +311,7 @@ class Page extends View
     }
 
     /**
-     * Write a string to the view's internal content property.
+     * Writes a string to the page's internal content property.
      *
      * @param string $value
      */
@@ -321,7 +321,7 @@ class Page extends View
     }
 
     /**
-     * Write the output buffered result from a PHP script to the view's content.
+     * Writes the output buffered result from a PHP script to the page's content.
      *
      * @param string $filepath
      * @param array $data
@@ -332,7 +332,7 @@ class Page extends View
     }
 
     /**
-     * Writes a rendered template file to the view's content.
+     * Writes a rendered template file to the page's content.
      *
      * @param string $template
      * @param array $data
