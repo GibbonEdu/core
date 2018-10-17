@@ -700,6 +700,7 @@ if (!$session->has('address')) {
             'connection2' => $connection2,
             'autoloader'  => $autoloader,
             'container'   => $container,
+            'page'        => $page,
         ];
 
         if (is_file('./'.$address)) {
