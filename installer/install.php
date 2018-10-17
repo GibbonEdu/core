@@ -83,7 +83,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
     </head>
-    <body>
+    <body style="background: url('../themes/Default/img/backgroundPage.jpg') repeat fixed center top #A88EDB!important;">
         <div id="wrapOuter">
             <div id="wrap">
                 <div id="header">
