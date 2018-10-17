@@ -42,12 +42,6 @@ class ErrorHandler
 
     public function handleError($code, $message = '', $file = null, $line = null)
     {
-        if (!(error_reporting() & $code)) {
-            // This error code is not included in error_reporting, so let it fall
-            // through to the standard PHP error handler
-            return false;
-        }
-
         switch ($code) {
             case ($code & (E_PARSE | E_ERROR | E_CORE_ERROR | E_COMPILE_ERROR | E_USER_ERROR)):
                 $type = 'Error';
@@ -69,15 +63,12 @@ class ErrorHandler
         // Slice out the backtrace from this error handler
         $stackTrace = array_slice(debug_backtrace(), 2, -3);
 
-        $this->outputError($code, $type, $message, $stackTrace, $file, $line);
-        
-        // Don't execute PHP internal error handler
-        return true;
+        return $this->outputError($code, $type, $message, $stackTrace, $file, $line);
     }
 
     public function handleException($e)
     {
-        $this->outputError($e->getCode(), 'Uncaught Exception', get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
+        $this->outputError(E_ERROR, 'Uncaught Exception', get_class($e).' - '.$e->getMessage(), $e->getTrace(), $e->getFile(), $e->getLine());
         $this->handleGracefulShutdown();
     }
     
@@ -92,17 +83,27 @@ class ErrorHandler
 
     protected function handleGracefulShutdown()
     {
-        ob_end_clean();
-
+        @ob_end_clean();
+        
         if ($this->page) {
-            $template = $this->installType == 'Production'? 'error.twig.html' : 'index.twig.html';
-            echo $this->page->render($template);
+
+            if (!ini_get('display_errors') || !(error_reporting() & E_ERROR)) {
+                $this->page->writeFromTemplate('error.twig.html');
+            }
+
+            echo $this->page->render('index.twig.html');
         }
         exit;
     }
 
     protected function outputError($code, $type = '', $message = '', $stackTrace = [], $file = null, $line = null)
     {
+        // This error code is not included in error_reporting, so let it fall
+        // through to the standard PHP error handler
+        if (!(error_reporting() & $code)) {
+            return false;
+        }
+
         if (ini_get('display_errors') && $this->installType != 'Production') {
             $output = sprintf('<strong title="Error Code: %1$s">%2$s</strong>: %3$s', $code, $type, $message);
 
@@ -132,5 +133,8 @@ class ErrorHandler
         if (ini_get('log_errors')) {
             error_log($type.': '.$message.' in '.$file.' on line '.$line);
         }
+
+        // Everything worked, so don't execute PHP internal error handler
+        return true;
     }
 }
