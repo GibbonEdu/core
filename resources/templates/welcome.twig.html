@@ -1,0 +1,50 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+<h2>{{ __('Welcome') }}</h2>
+<p>
+    {{ indexText }}
+</p>
+
+{% if publicStudentApplications %}
+    <h2 style='margin-top: 30px'>{{ __('Student Applications') }}</h2>
+    <p>
+        {% set url = absoluteURL ~ "/?q=/modules/Students/applicationForm.php" %}
+        {{ __('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.')|format(organisationName, '<a href="' ~ url ~ '">', '</a>')|raw }}
+    </p>
+{% endif %}
+
+{% if publicStaffApplications %}
+    <h2 style='margin-top: 30px'>{{ __('Staff Applications') }}</h2>
+    <p>
+        {% set url = absoluteURL ~ "/?q=/modules/Staff/applicationForm_jobOpenings_view.php" %}
+        {{ __('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.')|format(organisationName, '<a href="' ~ url ~ '">', '</a>')|raw }}
+    </p>
+{% endif %}
+
+{% if makeDepartmentsPublic %}
+    <h2 style='margin-top: 30px'>{{ __('Departments') }}</h2>
+    <p>
+        {% set url = absoluteURL ~ "/?q=/modules/Departments/departments.php" %}
+        {{ __('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.')|format('<a href="' ~ url ~ '">', '</a>', organisationName)|raw }}
+    </p>
+{% endif %}
+
+{% if makeUnitsPublic %}
+    <h2 style='margin-top: 30px'>{{ __('Learn With Us') }}</h2>
+    <p>
+        {% set url = absoluteURL ~ "/?q=/modules/Planner/units_public.php&sidebar=false" %}
+        {{ __('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.')|format('<a href="' ~ url ~ '">', '</a>', organisationName)|raw }}
+    </p>
+{% endif %}
+
+{% for hook in indexHooks %}
+    <h2 style='margin-top: 30px'>{{ hook.title }}</h2>
+    <p>
+        {{ hook.text|raw }}
+    </p>
+{% endfor %}

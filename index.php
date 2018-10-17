@@ -391,11 +391,111 @@ if (!$session->has('address') && !empty($_GET['return'])) {
     }
 }
 
+
+/**
+ * GET SIDEBAR CONTENT
+ *
+ * TODO: rewrite the sidebar() function as a template file.
+ */
+$sidebarContents = '';
+if ($showSidebar) {
+    $page->addSidebarExtra($session->get('sidebarExtra'));
+    $session->set('sidebarExtra', '');
+
+    ob_start();
+    sidebar($gibbon, $pdo);
+    $sidebarContents = ob_get_clean();
+}
+
+/**
+ * MENU ITEMS & FAST FINDER
+ *
+ * TODO: Move this somewhere more sensible.
+ */
+if ($isLoggedIn) {
+    if ($cacheLoad || !$session->has('fastFinder')) {
+        $session->set('fastFinder', getFastFinder($connection2, $guid));
+    }
+
+    $moduleGateway = $container->get(ModuleGateway::class);
+
+    if ($cacheLoad || !$session->has('menuMainItems')) {
+        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+
+        foreach ($menuMainItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $modulePath = '/modules/'.$item['name'];
+                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
+                    ? $item['entryURL']
+                    : $item['alternateEntryURL'];
+
+                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
+            }
+        }
+
+        $session->set('menuMainItems', $menuMainItems);
+    }
+
+    if ($page->getModule()) {
+        $currentModule = $page->getModule()->getName();
+        $menuModule = $session->get('menuModuleName');
+        
+        if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
+            $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
+        } else {
+            $menuModuleItems = $session->get('menuModuleItems');
+        }
+        
+        // Update the menu items to indicate the current active action
+        foreach ($menuModuleItems as $category => &$items) {
+            foreach ($items as &$item) {
+                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
+                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
+                        .$item['moduleName'].'/'.$item['entryURL'];
+            }
+        }
+
+        $session->set('menuModuleItems', $menuModuleItems);
+        $session->set('menuModuleName', $currentModule);
+    } else {
+        $session->forget(['menuModuleItems', 'menuModuleName']);
+    }
+}
+
+/**
+ * TEMPLATE DATA
+ *
+ * These values are merged with the Page class settings & content, then passed
+ * into the template engine for rendering. They're a work in progress, but once
+ * they're more finalized we can document them for theme developers.
+ */
+$page->addData([
+    'isLoggedIn'        => $isLoggedIn,
+    'gibbonThemeName'   => $session->get('gibbonThemeName'),
+    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
+    'organisationLogo'  => $session->get('organisationLogo'),
+    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
+    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
+    'sidebar'           => $showSidebar,
+    'sidebarContents'   => $sidebarContents,
+    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
+    'version'           => $gibbon->getVersion(),
+    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+]);
+
+if ($isLoggedIn) {
+    $page->addData([
+        'menuMain'   => $session->get('menuMainItems', []),
+        'menuModule' => $session->get('menuModuleItems', []),
+        'fastFinder' => $session->get('fastFinder'),
+    ]);
+}
+
 /**
  * GET PAGE CONTENT
  *
  * TODO: move queries into Gateway classes.
- * TODO: rewrite welcome page & dashboards as template files.
+ * TODO: rewrite dashboards as template files.
  */
 if (!$session->has('address')) {
     // Welcome message
@@ -405,72 +505,30 @@ if (!$session->has('address')) {
             $page->addWarning(__('Your session expired, so you were automatically logged out of the system.'));
         }
 
-        // Set welcome message
-        $page->write('<h2>'.__('Welcome').'</h2><p>'.$session->get('indexText').'</p>');
-
-        // Student public applications permitted?
-        $publicApplications = getSettingByScope($connection2, 'Application Form', 'publicApplications');
-        if ($publicApplications == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Student Applications').'</h2>'.
-                '<p>'.
-                sprintf(__('Parents of students interested in study at %1$s may use our %2$s online form%3$s to initiate the application process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Students/applicationForm.php'>", '</a>').
-                '</p>');
-        }
-
-        // Staff public applications permitted?
-        $staffApplicationFormPublicApplications = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications');
-        if ($staffApplicationFormPublicApplications == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>" .
-                __('Staff Applications') .
-                '</h2>'.
-                '<p>'.
-                sprintf(__('Individuals interested in working at %1$s may use our %2$s online form%3$s to view job openings and begin the recruitment process.'), $session->get('organisationName'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Staff/applicationForm_jobOpenings_view.php'>", '</a>').
-                '</p>');
-        }
-
-        // Public departments permitted?
-        $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
-        if ($makeDepartmentsPublic == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Departments').
-                '</h2>'.
-                '<p>'.
-                sprintf(__('Please feel free to %1$sbrowse our departmental information%2$s, to learn more about %3$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Departments/departments.php'>", '</a>', $session->get('organisationName')).
-                '</p>');
-        }
-
-        // Public units permitted?
-        $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
-        if ($makeUnitsPublic == 'Y') {
-            $page->write("<h2 style='margin-top: 30px'>".
-                __('Learn With Us').
-                '</h2>'.
-                '<p>'.
-                sprintf(__('We are sharing some of our units of study with members of the public, so you can learn with us. Feel free to %1$sbrowse our public units%2$s.'), "<a href='".$session->get('absoluteURL')."/?q=/modules/Planner/units_public.php&sidebar=false'>", '</a>', $session->get('organisationName')).
-                '</p>');
-        }
+        $templateData = [
+            'indexText'                 => $session->get('indexText'),
+            'organisationName'          => $session->get('organisationName'),
+            'publicStudentApplications' => getSettingByScope($connection2, 'Application Form', 'publicApplications') == 'Y',
+            'publicStaffApplications'   => getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications') == 'Y',
+            'makeDepartmentsPublic'     => getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic') == 'Y',
+            'makeUnitsPublic'           => getSettingByScope($connection2, 'Planner', 'makeUnitsPublic') == 'Y',
+        ];
 
         // Get any elements hooked into public home page, checking if they are turned on
-        try {
-            $dataHook = array();
-            $sqlHook = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
-            $resultHook = $connection2->prepare($sqlHook);
-            $resultHook->execute($dataHook);
-        } catch (PDOException $e) {
-        }
-        while ($rowHook = $resultHook->fetch()) {
-            $options = unserialize(str_replace("'", "\'", $rowHook['options']));
+        $sql = "SELECT * FROM gibbonHook WHERE type='Public Home Page' ORDER BY name";
+        $hooks = $pdo->select($sql)->fetchAll();
+
+        foreach ($hooks as $hook) {
+            $options = unserialize(str_replace("'", "\'", $hook['options']));
             $check = getSettingByScope($connection2, $options['toggleSettingScope'], $options['toggleSettingName']);
             if ($check == $options['toggleSettingValue']) { // If its turned on, display it
-                $page->write("<h2 style='margin-top: 30px'>".
-                    $options['title'].
-                    '</h2>'.
-                    '<p>'.
-                    stripslashes($options['text']).
-                    '</p>');
+                $options['text'] = stripslashes($options['text']);
+                $templateData['indexHooks'][] = $options;
             }
         }
+
+        $page->writeFromTemplate('welcome.twig.html', $templateData);
+        
     } else {
         // Custom content loader
         if (!$session->exists('index_custom.php')) {
@@ -653,105 +711,6 @@ if (!$session->has('address')) {
 }
 
 /**
- * GET SIDEBAR CONTENT
- *
- * TODO: rewrite the sidebar() function as a template file.
- */
-$sidebarContents = '';
-if ($showSidebar) {
-    $page->addSidebarExtra($session->get('sidebarExtra'));
-    $session->set('sidebarExtra', '');
-
-    ob_start();
-    sidebar($gibbon, $pdo);
-    $sidebarContents = ob_get_clean();
-}
-
-/**
- * MENU ITEMS & FAST FINDER
- *
- * TODO: Move this somewhere more sensible.
- */
-if ($isLoggedIn) {
-    if ($cacheLoad || !$session->has('fastFinder')) {
-        $session->set('fastFinder', getFastFinder($connection2, $guid));
-    }
-
-    $moduleGateway = $container->get(ModuleGateway::class);
-
-    if ($cacheLoad || !$session->has('menuMainItems')) {
-        $menuMainItems = $moduleGateway->selectModulesByRole($session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-
-        foreach ($menuMainItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $modulePath = '/modules/'.$item['name'];
-                $entryURL = isActionAccessible($guid, $connection2, $modulePath.'/'.$item['entryURL'])
-                    ? $item['entryURL']
-                    : $item['alternateEntryURL'];
-
-                $item['url'] = $session->get('absoluteURL').'/index.php?q='.$modulePath.'/'.$entryURL;
-            }
-        }
-
-        $session->set('menuMainItems', $menuMainItems);
-    }
-
-    if ($page->getModule()) {
-        $currentModule = $page->getModule()->getName();
-        $menuModule = $session->get('menuModuleName');
-        
-        if ($cacheLoad || !$session->has('menuModuleItems') || $currentModule != $menuModule) {
-            $menuModuleItems = $moduleGateway->selectModuleActionsByRole($page->getModule()->getID(), $session->get('gibbonRoleIDCurrent'))->fetchGrouped();
-        } else {
-            $menuModuleItems = $session->get('menuModuleItems');
-        }
-        
-        // Update the menu items to indicate the current active action
-        foreach ($menuModuleItems as $category => &$items) {
-            foreach ($items as &$item) {
-                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
-                $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
-                        .$item['moduleName'].'/'.$item['entryURL'];
-            }
-        }
-
-        $session->set('menuModuleItems', $menuModuleItems);
-        $session->set('menuModuleName', $currentModule);
-    } else {
-        $session->forget(['menuModuleItems', 'menuModuleName']);
-    }
-}
-
-/**
- * TEMPLATE DATA
- *
- * These values are merged with the Page class settings & content, then passed
- * into the template engine for rendering. They're a work in progress, but once
- * they're more finalized we can document them for theme developers.
- */
-$templateData = [
-    'isLoggedIn'        => $isLoggedIn,
-    'gibbonThemeName'   => $session->get('gibbonThemeName'),
-    'gibbonHouseIDLogo' => $session->get('gibbonHouseIDLogo'),
-    'organisationLogo'  => $session->get('organisationLogo'),
-    'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
-    'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
-    'sidebar'           => $showSidebar,
-    'sidebarContents'   => $sidebarContents,
-    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
-    'version'           => $gibbon->getVersion(),
-    'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
-];
-
-if ($isLoggedIn) {
-    $templateData += [
-        'menuMain'   => $session->get('menuMainItems', []),
-        'menuModule' => $session->get('menuModuleItems', []),
-        'fastFinder' => $session->get('fastFinder'),
-    ];
-}
-
-/**
  * DONE!!
  */
-echo $page->render('index.twig.html', $templateData);
+echo $page->render('index.twig.html');
