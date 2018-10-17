@@ -32,6 +32,7 @@ class Module
     protected $gibbonModuleID;
     protected $name;
     protected $version;
+    protected $entryURL;
 
     protected $stylesheets;
     protected $scripts;
@@ -58,6 +59,17 @@ class Module
             'modules/'.$this->name.'/js/module.js',
             ['version' => $this->version]
         );
+    }
+
+    /**
+     * Allow read-only access of model properties.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get(string $name)
+    {
+        return isset($this->$name) ? $this->$name : null;
     }
 
     /**
