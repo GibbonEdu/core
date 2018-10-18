@@ -391,22 +391,6 @@ if (!$session->has('address') && !empty($_GET['return'])) {
     }
 }
 
-
-/**
- * GET SIDEBAR CONTENT
- *
- * TODO: rewrite the sidebar() function as a template file.
- */
-$sidebarContents = '';
-if ($showSidebar) {
-    $page->addSidebarExtra($session->get('sidebarExtra'));
-    $session->set('sidebarExtra', '');
-
-    ob_start();
-    sidebar($gibbon, $pdo);
-    $sidebarContents = ob_get_clean();
-}
-
 /**
  * MENU ITEMS & FAST FINDER
  *
@@ -477,7 +461,6 @@ $page->addData([
     'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
     'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
     'sidebar'           => $showSidebar,
-    'sidebarContents'   => $sidebarContents,
     'sidebarPosition'   => $session->get('sidebarExtraPosition'),
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
@@ -710,6 +693,22 @@ if (!$session->has('address')) {
         }
     }
 }
+
+/**
+ * GET SIDEBAR CONTENT
+ *
+ * TODO: rewrite the sidebar() function as a template file.
+ */
+$sidebarContents = '';
+if ($showSidebar) {
+    $page->addSidebarExtra($session->get('sidebarExtra'));
+    $session->set('sidebarExtra', '');
+
+    ob_start();
+    sidebar($gibbon, $pdo);
+    $page['sidebarContents'] = ob_get_clean();
+}
+
 
 /**
  * DONE!!
