@@ -249,7 +249,20 @@ else {
 					$row = $form->addRow()->addClass('roleCategory hiddenReveal');
 						$row->addLabel('roleCategories[]', __('Select Role Categories'));
 						$row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder()->selected($selected);
-				}
+				} else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
+                    // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
+                    $row = $form->addRow();
+						$row->addLabel('roleCategoryLabel', __('Role Category'))->description(__('Users of a certain type.'));
+                        $row->addYesNoRadio('roleCategoryLabel')->checked('Y')->readonly()->isDisabled();
+
+                    $form->addHiddenValue('role', 'N');
+                    $form->addHiddenValue('roleCategory', 'Y');
+                    foreach ($targets as $target) {
+                        if ($target['type'] == 'Role Category') {
+                            $form->addHiddenValue('roleCategories[]', $target['id']);
+                        }
+                    }
+                }
 
 				//Year group
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {

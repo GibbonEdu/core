@@ -24,6 +24,7 @@ use Gibbon\Locale;
 use Gibbon\Session;
 use Gibbon\View\Page;
 use Gibbon\Services\Format;
+use Gibbon\Services\ErrorHandler;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -107,7 +108,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             }
 
             $twig = new \Twig_Environment($loader, array(
-                'cache' => $absolutePath.'/resources/templates/cache',
+                'cache' => $absolutePath.'/uploads/cache',
                 'debug' => $session->get('installType') == 'Development',
             ));
 
@@ -172,13 +173,17 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $pageTitle .= ' - '.__($session->get('module'));
             }
 
-            return new Page($container->get('twig'), [
+            $page = new Page($container->get('twig'), [
                 'title'   => $pageTitle,
                 'address' => $session->get('address'),
                 'action'  => $container->get('action'),
                 'module'  => $container->get('module'),
                 'theme'   => $container->get('theme'),
             ]);
+
+            $container->add('errorHandler', new ErrorHandler($session->get('installType'), $page));
+
+            return $page;
         });
     }
 }

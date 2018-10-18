@@ -24,7 +24,7 @@ TODO: add template variable details.
                 <div id="header">
                     <div id="header-logo">
                         <a href="{{ absoluteURL }}" style="display: block;max-height:121px;">
-                            <img class="logo" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo }}" height="100px" width="400px"/>
+                            <img class="logo" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" height="100px" width="400px"/>
                         </a>
                     </div>
 
@@ -41,18 +41,20 @@ TODO: add template variable details.
                 <div id="content-wrap">
                     <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
 
-                        {% if not sidebar %}
+                        {% block page %}
+
+                        {% if content and not sidebar %}
                             {{ include('navigation.twig.html') }}
                         {% endif %}
 
-                        {% if page.trail %}
+                        {% if page.breadcrumbs %}
                         <div class="trail">
                             <div class="trailHead">
-                            {% for title, src in page.trail %}
+                            {% for title, src in page.breadcrumbs %}
                                 {% if loop.last %}
                                     </div><div class="trailEnd">{{ title }}
                                 {% else %}
-                                    <a href="{{ src }}">{{ title }}</a> > 
+                                    <a href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
                                 {% endif %}
                             {% endfor %}
                             </div>
@@ -67,6 +69,8 @@ TODO: add template variable details.
                         {% endfor %}
 
                         {{ content|join("\n")|raw }}
+
+                        {% endblock %}
                     </div>
 
                     {% if sidebar %}
@@ -103,7 +107,7 @@ TODO: add template variable details.
                         {{ footerThemeAuthor }}<br/>
                     </span>
 
-                    <img id="footer-logo" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName }}/img/logoFooter.png"/>
+                    <img id="footer-logo" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
                 </div>
                 {% endblock %}
             </div>

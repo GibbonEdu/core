@@ -19,7 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\View;
 
+use Gibbon\View\View;
 use Gibbon\View\AssetBundle;
+use Gibbon\View\Components\Breadcrumbs;
 
 /**
  * Holds the details for rendering the current page.
@@ -27,10 +29,8 @@ use Gibbon\View\AssetBundle;
  * @version  v17
  * @since    v17
  */
-class Page
+class Page extends View
 {
-    protected $templateEngine;
-
     /**
      * After constructing these class properties are publicly read-only.
      */
@@ -47,6 +47,7 @@ class Page
     protected $content = [];
     protected $stylesheets;
     protected $scripts;
+    protected $breadcrumbs;
     protected $alerts = ['error' => [], 'warning' => [], 'message' => []];
     protected $extra = ['head' => [], 'foot' => [], 'sidebar' => []];
 
@@ -57,8 +58,9 @@ class Page
      */
     public function __construct($templateEngine = null, array $params = [])
     {
-        $this->templateEngine = $templateEngine;
-
+        parent::__construct($templateEngine);
+        
+        $this->breadcrumbs = new Breadcrumbs();
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
 
@@ -275,7 +277,7 @@ class Page
             ? $this->extra[$context]
             : $this->extra;
     }
-
+    
     /**
      * Builds an array of page data to be passed to the template engine.
      *
@@ -285,6 +287,7 @@ class Page
     {
         return [
             'title'        => $this->getTitle(),
+            'breadcrumbs'  => $this->breadcrumbs->getItems(),
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
             'scriptsHead'  => $this->getAllScripts('head'),
@@ -295,7 +298,13 @@ class Page
         ];
     }
 
-    public function isAddressValid($address)
+    /**
+     * Check is a given address is valid and does not contain illegal strings.
+     *
+     * @param string $address
+     * @return bool
+     */
+    public function isAddressValid($address) : bool
     {
         return !(stripos($address, '..') !== false
             || strstr($address, 'installer')
@@ -338,49 +347,6 @@ class Page
     }
 
     /**
-     * Includes a PHP file in a protected scope, and returns the
-     * output-buffered contents as a string.
-     *
-     * @param string $filepath
-     * @param array  $data
-     * @return string
-     */
-    public function fetchFromFile(string $filepath, array $data = []) : string
-    {
-        if (!is_file($filepath)) {
-            return '';
-        }
-
-        // Extracts the array of data into individual variables in the current scope.
-        extract($data);
-
-        try {
-            ob_start();
-            $included = include $filepath;
-            $output = ob_get_clean() . (is_string($included)? $included : '');
-        } catch (\Exception $e) {
-            $output = '';
-            ob_end_clean();
-            throw $e;
-        }
-
-        return $output;
-    }
-
-    /**
-     * Renders a given template using the template engine + provided data
-     * and returns the result as a string.
-     *
-     * @param string $template
-     * @param array  $data
-     * @return string
-     */
-    public function fetchFromTemplate(string $template, array $data = []) : string
-    {
-        return $this->templateEngine->render($template, $data);
-    }
-
-    /**
      * Render the entire page with the given template and return the result as a string.
      *
      * @param string $template
@@ -392,7 +358,7 @@ class Page
         $data['page'] = $this->gatherData();
         $data['content'] = $this->content;
 
-        return $this->templateEngine->render($template, $data);
+        return parent::render($template, $data);
     }
 
     /**
@@ -413,5 +379,22 @@ class Page
     public function scripts(): AssetBundle
     {
         return $this->scripts;
+    }
+
+    /**
+     * Returns the breadcrumb trail for this page.
+     *
+     * @return Breadcrumbs
+     */
+    public function breadcrumbs()
+    {
+        // Add the current module entry point to the trail. This is here rather than
+        // the constructor to allow incremental refactoring of the hard-coded breadcrumbs.
+        if (empty($this->breadcrumbs->getItems()) && !empty($this->getModule())) {
+            $this->breadcrumbs->setBaseURL('index.php?q=/modules/'.$this->module->name.'/');
+            $this->breadcrumbs->add(__($this->module->name), $this->module->entryURL);
+        }
+
+        return $this->breadcrumbs;
     }
 }
