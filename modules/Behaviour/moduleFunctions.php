@@ -69,12 +69,12 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 }
 
                 $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
-                    if (!empty($policyLink)) {
-                        $table->addHeaderAction('policy', __('View Behaviour Policy'))
-                            ->setExternalURL($policyLink)
-                            ->displayLabel()
-                            ->prepend('&nbsp|&nbsp');
-                    }
+                if (!empty($policyLink)) {
+                    $table->addHeaderAction('policy', __('View Behaviour Policy'))
+                        ->setExternalURL($policyLink)
+                        ->displayLabel()
+                        ->prepend('&nbsp|&nbsp');
+                }
             }
 
             $table->addMetaData('hidePagination', true);
@@ -127,6 +127,24 @@ function getBehaviourRecord(ContainerInterface $container, $gibbonPersonID)
                 ->format(function($person) {
                     return Format::name($person['titleCreator'], $person['preferredNameCreator'], $person['surnameCreator'], 'Staff');
                 });
+
+            if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage.php') && $schoolYear['gibbonSchoolYearID'] == $_SESSION[$guid]['gibbonSchoolYearID']) {
+                $highestAction = getHighestGroupedAction($guid, '/modules/Behaviour/behaviour_manage.php', $connection2);
+                
+                $table->addActionColumn()
+                    ->addParam('gibbonPersonID', $gibbonPersonID)
+                    ->addParam('gibbonRollGroupID', '')
+                    ->addParam('gibbonYearGroupID', '')
+                    ->addParam('type', '')
+                    ->addParam('gibbonBehaviourID')
+                    ->format(function ($person, $actions) use ($guid, $highestAction) {
+                        if ($highestAction == 'Manage Behaviour Records_all'
+                        || ($highestAction == 'Manage Behaviour Records_my' && $person['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID'])) {
+                            $actions->addAction('edit', __('Edit'))
+                                ->setURL('/modules/Behaviour/behaviour_manage_edit.php');
+                        }
+                    });
+            }
 
             $output .= $table->render($behaviourRecords);
         }
