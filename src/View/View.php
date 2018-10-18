@@ -148,7 +148,7 @@ class View implements \ArrayAccess
      */
     public function offsetSet($key, $value)
     {
-        $this->with($key, $value);
+        $this->data[$key] = $value;
     }
 
     /**
