@@ -461,7 +461,6 @@ $page->addData([
     'minorLinks'        => getMinorLinks($connection2, $guid, $cacheLoad),
     'notificationTray'  => getNotificationTray($connection2, $guid, $cacheLoad),
     'sidebar'           => $showSidebar,
-    'sidebarPosition'   => $session->get('sidebarExtraPosition'),
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
 ]);
@@ -706,7 +705,11 @@ if ($showSidebar) {
 
     ob_start();
     sidebar($gibbon, $pdo);
-    $page['sidebarContents'] = ob_get_clean();
+
+    $page->addData([
+        'sidebarContents' => ob_get_clean(),
+        'sidebarPosition' => $session->get('sidebarExtraPosition'),
+    ]);
 }
 
 
