@@ -20,6 +20,7 @@ v17.0.00
 --------
     Headlines
         Languages can now be installed and updated through Manage Languages in System Admin
+        System: added Hebrew an active language
 
     Changes With Important Notices
 
@@ -29,7 +30,6 @@ v17.0.00
     Security
 
     Tweaks & Bug Fixes
-        System: added Hebrew as development language
         System: fixed IE incompatibility with javascript and select inputs
         System: added the option to display all records in a paginated table
         System: fixed an issue with hidden fields in bulk action forms after pagination

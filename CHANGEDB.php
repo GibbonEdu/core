@@ -772,4 +772,5 @@ ALTER TABLE `gibbonFamilyAdult` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`)
 ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`);end
 ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonFamilyIndex` (`gibbonFamilyID`);end
 ALTER TABLE `gibbonStudentEnrolment` ADD KEY `gibbonPersonIndex` (`gibbonPersonID`,`gibbonSchoolYearID`);end
+UPDATE gibboni18n SET active='Y' WHERE code='he_IL';end
 ";
