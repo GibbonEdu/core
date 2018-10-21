@@ -351,6 +351,7 @@ class FormFactory implements FormFactoryInterface
             'en_US' => 'English - United States',
             'es_ES' => 'Español',
             'fr_FR' => 'Français - France',
+            'he_IL' => 'עברית - ישראל',
             'it_IT' => 'Italiano - Italia',
             'pl_PL' => 'Język polski - Polska',
             'pt_BR' => 'Português - Brasil',
