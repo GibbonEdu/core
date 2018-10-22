@@ -57,7 +57,7 @@ class Module
         $this->scripts()->add(
             'module',
             'modules/'.$this->name.'/js/module.js',
-            ['version' => $this->version]
+            ['version' => $this->version, 'context' => 'head']
         );
     }
 
