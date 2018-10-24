@@ -133,6 +133,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 echo $form->getOutput();
                 echo '</div>';
             }
+
+            echo "<div class='linkTop'>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Individual Needs/in_edit_print.php&gibbonPersonID=$gibbonPersonID&search=$search&source=$source&gibbonINDescriptorID=$gibbonINDescriptorID&gibbonAlertLevelID=$gibbonAlertLevelID&gibbonRollGroupID=$gibbonRollGroupID&gibbonYearGroupID=$gibbonYearGroupID'>".__('Print').'<img style="margin-left: 5px" title="'.__('Print').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png"/></a>';
+            echo '</div>';
             
             // DISPLAY STUDENT DATA
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
