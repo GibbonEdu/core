@@ -57,6 +57,7 @@ v17.0.00
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
+        Markbook: fixed shifted table cells in Markbook View class average when cumulative averages are enabled
         Messenger: restricted Manage Groups view to display groups from the current school year only
         Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
         Messenger: added row colouring to By Roll Group report, and made it default view
