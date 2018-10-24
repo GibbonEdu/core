@@ -773,4 +773,5 @@ ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonPersonIndex` (`gibbonPersonID`)
 ALTER TABLE `gibbonFamilyChild` ADD INDEX `gibbonFamilyIndex` (`gibbonFamilyID`);end
 ALTER TABLE `gibbonStudentEnrolment` ADD KEY `gibbonPersonIndex` (`gibbonPersonID`,`gibbonSchoolYearID`);end
 UPDATE gibboni18n SET active='Y' WHERE code='he_IL';end
+INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Updated Behaviour Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 ";
