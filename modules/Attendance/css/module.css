@@ -223,3 +223,41 @@ td.center {
 #periodSelectContainer{
     float: right;   
 }
+
+/**
+ * attendance table, by roll
+ */
+#tableAttendanceByRollGroup {
+    table-layout: fixed;
+}
+#tableAttendanceByRollGroup th {
+    font-size: 60%;
+    text-align: center;
+    text-transform: uppercase;
+}
+#tableAttendanceByRollGroup th:first-child {
+    font-size: 85%;
+    text-align: left;
+}
+#tableAttendanceByRollGroup tr td:nth-child(n+3) {
+    text-align: center;
+}
+
+/**
+ * attendance table, by course class
+ */
+#tableAttendanceByCourseClass {
+    table-layout: fixed;
+}
+#tableAttendanceByCourseClass th {
+    font-size: 60%;
+    text-align: center;
+    text-transform: uppercase;
+}
+#tableAttendanceByCourseClass th:first-child {
+    font-size: 85%;
+    text-align: left;
+}
+#tableAttendanceByCourseClass tr td:nth-child(n+3) {
+    text-align: center;
+}
