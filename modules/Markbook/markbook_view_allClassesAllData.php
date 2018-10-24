@@ -937,6 +937,10 @@
             echo '<tr>';
             echo '<td class="firstColumn right dataDividerTop">'.__($guid, 'Class Average').':</td>';
 
+            if ($markbook->hasExternalAssessments()) {
+                echo '<td class="dataColumn dataDividerTop"></td>';
+            }
+            
             if ($markbook->hasPersonalizedTargets()) {
                 echo '<td class="dataColumn dataDividerTop"></td>';
             }
