@@ -906,7 +906,10 @@
                     echo '<td class="dataColumn dataDivider">';
                     echo $markbook->getFormattedAverage( $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) );
                     echo '</td>';
-                    @$totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
+                    if ($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) != '') {
+                        @$totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
+                        @$totals['count'] += 1;
+                    }
 
                     if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
 
@@ -958,6 +961,8 @@
                 }
             }
 
+            $count = isset($totals['count'])? min($totals['count'], $count) : $count;
+            
             // Type Averages
             if ($columnFilter == 'averages') {
                 if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
