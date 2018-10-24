@@ -906,7 +906,10 @@
                     echo '<td class="dataColumn dataDivider">';
                     echo $markbook->getFormattedAverage( $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) );
                     echo '</td>';
-                    @$totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
+                    if ($markbook->getCumulativeAverage($rowStudents['gibbonPersonID']) != '') {
+                        @$totals['cumulativeAverage'] += $markbook->getCumulativeAverage($rowStudents['gibbonPersonID']);
+                        @$totals['count'] += 1;
+                    }
 
                     if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
 
@@ -937,6 +940,10 @@
             echo '<tr>';
             echo '<td class="firstColumn right dataDividerTop">'.__($guid, 'Class Average').':</td>';
 
+            if ($markbook->hasExternalAssessments()) {
+                echo '<td class="dataColumn dataDividerTop"></td>';
+            }
+            
             if ($markbook->hasPersonalizedTargets()) {
                 echo '<td class="dataColumn dataDividerTop"></td>';
             }
@@ -954,6 +961,8 @@
                 }
             }
 
+            $count = isset($totals['count'])? min($totals['count'], $count) : $count;
+            
             // Type Averages
             if ($columnFilter == 'averages') {
                 if ($markbook->getSetting('enableTypeWeighting') == 'Y' ) {
