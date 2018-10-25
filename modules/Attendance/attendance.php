@@ -26,9 +26,7 @@ use Gibbon\Tables\Renderer\SimpleRenderer;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-// data table definition
-$errors = [];
-
+// rendering parameters
 $currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : dateConvert($guid, $_GET["currentDate"]);
 $today = date("Y-m-d");
 $lastNSchoolDays = getLastNSchoolDays($guid, $connection2, $currentDate, 10, true);
@@ -39,7 +37,7 @@ $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
 
 // show access denied message, if needed
 if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
-    $errors[] = __("You do not have access to this action.");
+    $page->addError(__("You do not have access to this action."));
 }
 
 // define attendance filter form, if user is permit to view it
@@ -72,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
 
     if ($currentDate>$today) {
-        $errors[] = __("The specified date is in the future: it must be today or earlier.");
+        $page->addError(__("The specified date is in the future: it must be today or earlier."));
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
-        $errors[] = __("School is closed on the specified date, and so attendance information cannot be recorded.");
+        $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
     } elseif (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
         // Show My Form Groups
@@ -84,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
             $result=$connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
-            $errors[] = $e->getMessage();
+            $page->addError($e->getMessage());
         }
 
         if ($result->rowCount()>0) {
@@ -99,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $resultAttendance = $connection2->prepare($sqlAttendance);
                     $resultAttendance->execute($dataAttendance);
                 } catch (PDOException $e) {
-                    $errors[] = $e->getMessage();
+                    $page->addError($e->getMessage());
                 }
                 $logHistory = array();
                 while ($rowAttendance = $resultAttendance->fetch()) {
@@ -125,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $resultLog=$connection2->prepare($sqlLog);
                     $resultLog->execute($dataLog);
                 } catch (PDOException $e) {
-                    $errors[] = $e->getMessage();
+                    $page->addError($e->getMessage());
                 }
 
                 $log=$resultLog->fetch();
@@ -223,7 +221,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $errors[] = $e->getMessage();
+                $page->addError($e->getMessage());
             }
             $logHistory = array();
             while ($row = $result->fetch()) {
@@ -238,7 +236,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                $errors[] = $e->getMessage();
+                $page->addError($e->getMessage());
             }
             $ttHistory = array();
             while ($row = $result->fetch()) {
@@ -298,7 +296,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                         $resultLog=$connection2->prepare($sqlLog);
                         $resultLog->execute($dataLog);
                     } catch (PDOException $e) {
-                        $errors[] = $e->getMessage();
+                        $page->addError($e->getMessage());
                     }
 
                     $log=$resultLog->fetch();
@@ -416,12 +414,6 @@ $page->breadcrumbs()
      ->add(__('View Daily Attendance'));
 
 ?>
-
-<?php if (!empty($errors)) { ?>
-<?php echo implode("\n", array_map(function ($error) {
-    return "<div class='error'>{$error}</div>";
-}, $errors)); ?>
-<?php } ?>
 
 <?php if (isset($form)) { ?>
     <h2><?php echo __("View Daily Attendance"); ?></h2>
