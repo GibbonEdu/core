@@ -410,35 +410,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     }
 }
 
-// show errors, if any
-echo implode("\n", array_map(function ($error) {
+?>
+
+<?php if (!empty($errors)) { ?>
+<?php echo implode("\n", array_map(function ($error) {
     return "<div class='error'>{$error}</div>";
-}, $errors));
+}, $errors)); ?>
+<?php } ?>
 
-// show filter form
-if (isset($form)) {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('View Daily Attendance') . "</div>";
-    echo "</div>";
+<?php if (isset($form)) { ?>
+    <div class='trail'>
+        <div class='trailHead'>
+            <a href='<?php echo $_SESSION[$guid]["absoluteURL"]; ?>"'><?php echo __("Home"); ?></a> &gt;
+            <a href='<?php echo $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid); ?>'><?php echo __(getModuleName($_GET["q"])); ?></a> &gt;
+        </div>
+        <div class='trailEnd'><?php echo __('View Daily Attendance'); ?></div>
+    </div><!--/.trail-->
 
-    echo "<h2>";
-    echo __("View Daily Attendance");
-    echo "</h2>";
-    echo $form->getOutput();
-}
+    <h2><?php echo __("View Daily Attendance"); ?></h2>
+    <?php echo $form->getOutput(); ?>
+<?php } ?>
 
-// show attendance table, by roll group
-if (isset($attendanceByRollGroupTable)) {
-    echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
-    echo __($guid, "My Roll Group");
-    echo "</h2>";
-    echo $attendanceByRollGroupTable->getOutput();
-}
+<?php if (isset($attendanceByRollGroupTable)) { ?>
+    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __($guid, "My Roll Group"); ?></h2>
+    <?php echo $attendanceByRollGroupTable->getOutput(); ?>
+<?php } ?>
 
-// show attendance table, by course class
-if (isset($attendanceByCourseClassTable)) {
-    echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
-    echo __("My Classes");
-    echo "</h2>";
-    echo $attendanceByCourseClassTable->getOutput();
-}
+<?php if (isset($attendanceByCourseClassTable)) { ?>
+    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __("My Classes"); ?></h2>
+    <?php echo $attendanceByCourseClassTable->getOutput(); ?>
+<?php } ?>
