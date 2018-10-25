@@ -27,7 +27,6 @@ use Gibbon\Tables\Renderer\SimpleRenderer;
 require_once __DIR__ . '/moduleFunctions.php';
 
 // data table definition
-$attendance_table = ''; // TODO: should remove this in long run
 $errors = [];
 
 $currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : dateConvert($guid, $_GET["currentDate"]);
@@ -40,7 +39,7 @@ $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
 
-    $attendanceByRollTable = DataTable::create(
+    $attendanceByRollGroupTable = DataTable::create(
         'attendance-by-roll',
         (new SimpleRenderer)
             ->setID('tableAttendanceByRollGroup')
@@ -64,55 +63,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
             }
 
             if ($result->rowCount()>0) {
-                $attendance_table .= "<h2 style='margin-bottom: 10px'  class='sidebar'>";
-                $attendance_table .= __($guid, "My Roll Group");
-                $attendance_table .= "</h2>";
-
-                $attendanceByRollTable->addColumn('group', __('Group'))
+                $attendanceByRollGroupTable->addColumn('group', __('Group'))
                     ->width('80px');
-                $attendance_table .= "<table class='mini' cellspacing='0' style='width: 100%;table-layout: fixed;'>";
-                $attendance_table .= "<tr class='head'>";
-                $attendance_table .= "<th style='width: 80px;font-size: 85%;text-transform: uppercase'>";
-                $attendance_table .= __("Group");
-                $attendance_table .= "</th>";
-
-                $attendanceByRollTable->addColumn('recent-history', __('Recent History'))
+                $attendanceByRollGroupTable->addColumn('recent-history', __('Recent History'))
                     ->width('342px');
-                $attendance_table .= "<th style='width: 342px;font-size: 60%;text-align: center;text-transform: uppercase'>";
-                $attendance_table .= __("Recent History");
-                $attendance_table .= "</th>";
-
-                $attendanceByRollTable->addColumn('today', __('Today'))
+                $attendanceByRollGroupTable->addColumn('today', __('Today'))
                     ->width('40px');
-                $attendance_table .= "<th style='width: 40px;font-size: 60%;text-align: center;text-transform: uppercase'>";
-                $attendance_table .= __("Today");
-                $attendance_table .= "</th>";
-
-                $attendanceByRollTable->addColumn('in', __('In'))
+                $attendanceByRollGroupTable->addColumn('in', __('In'))
                     ->width('40px');
-                $attendance_table .= "<th style='width: 40px;font-size: 60%;text-align: center;text-transform: uppercase'>";
-                $attendance_table .= __("In");
-                $attendance_table .= "</th>";
-
-                $attendanceByRollTable->addColumn('out', __('Out'))
+                $attendanceByRollGroupTable->addColumn('out', __('Out'))
                     ->width('40px');
-                $attendance_table .= "<th style='width: 40px;font-size: 60%;text-align: center;text-transform: uppercase'>";
-                $attendance_table .= __("Out");
-                $attendance_table .= "</th>";
 
                 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                    $attendanceByRollTable->addColumn('actions', __('Actions'))
+                    $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
                         ->width('50px');
-                    $attendance_table .= "<th style='width: 50px;font-size: 60%;text-align: center;text-transform: uppercase'>";
-                    $attendance_table .= __("Actions");
-                    $attendance_table .= "</th>";
                 }
-
-                $attendance_table .= "</tr>";
 
                 $attendanceByRollGroup = [];
                 while ($row=$result->fetch()) {
-                    $attendanceByRollGroupRow = [];
+                    $dataRow = [];
 
                     //Produce array of attendance data
                     try {
@@ -152,14 +121,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
                     $log=$resultLog->fetch();
 
-                    $attendance_table .= "<tr>";
-
-                    $attendanceByRollGroupRow = [];
-
-                    $attendanceByRollGroupRow[] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
-                    $attendance_table .= "<td style='word-wrap: break-word'>";
-                    $attendance_table .= "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
-                    $attendance_table .= "</td>";
+                    $dataRow = [];
+                    $dataRow['group'] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
 
                     $dayTable = '';
                     $dayTable .= "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
@@ -198,45 +161,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                         }
                         $historyCount++;
                     }
-
                     $dayTable .= '</tr>';
                     $dayTable .= '</table>';
 
-                    $attendanceByRollGroupRow[] = $dayTable;
-                    $attendance_table .= "<td style='text-align: center'>" . $dayTable . "</td>";
-
+                    $dataRow['recent-history'] = $dayTable;
                     // Attendance not taken
                     $attendance_image = ($resultLog->rowCount()<1) ?
                         '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>' :
                         '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
-
-                    $attendanceByRollGroupRow[] = $attendance_image;
-                    $attendance_table .= "<td style='text-align: center'>";
-                    $attendance_table .= $attendance_image;
-                    $attendance_table .= "</td>";
-
-                    $attendanceByRollGroupRow[] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-                    $attendance_table .= "<td style='text-align: center'>";
-                    $attendance_table .= ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-                    $attendance_table .= "</td>";
-
-                    $attendanceByRollGroupRow[] = $log["absent"];
-                    $attendance_table .= "<td style='text-align: center'>";
-                    $attendance_table .= $log["absent"];
-                    $attendance_table .= "</td>";
+                    $dataRow['today'] = $attendance_image;
+                    $dataRow['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                    $dataRow['out'] = $log["absent"];
 
                     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                        $attendanceByRollGroupRow[] = "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
-                        $attendance_table .= "<td style='text-align: center'>";
-                        $attendance_table .= "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
-                        $attendance_table .= "</td>";
+                        $dataRow['actions'] = "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
                     }
 
-                    $attendance_table .= "</tr>";
-                    $attendanceByRollGroup[] = $attendanceByRollGroupRow;
+                    $attendanceByRollGroup[] = $dataRow;
                 }
 
-                $attendance_table .= "</table><br/>";
+                $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
             }
         }
 
@@ -481,17 +425,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 }
 
 // show errors
-echo array_map(function ($error) {
-    return "<div class='error'>{$error}</div>\n";
-}, $errors);
+echo implode("\n", array_map(function ($error) {
+    return "<div class='error'>{$error}</div>";
+}, $errors));
 
-// show form output
+// show form
 echo $output;
 
-// show attendance table
-if (!empty($attendance_table)) {
-    echo $attendance_table;
+// show attendance table, by roll group
+if (isset($attendanceByRollGroupTable)) {
+    echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
+    echo __($guid, "My Roll Group");
+    echo "</h2>";
+    echo $attendanceByRollGroupTable->getOutput();
 }
+
+// show attendance table, by course class
 if (isset($attendanceByCourseClassTable)) {
     echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
     echo __("My Classes");
