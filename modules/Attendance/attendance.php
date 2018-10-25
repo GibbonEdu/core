@@ -410,6 +410,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     }
 }
 
+// set page breadcrumbs
+$page->breadcrumbs()
+     ->add(__(getModuleName($_GET["q"])), getModuleEntry($_GET["q"], $connection2, $guid))
+     ->add(__('View Daily Attendance'));
+
 ?>
 
 <?php if (!empty($errors)) { ?>
@@ -419,14 +424,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 <?php } ?>
 
 <?php if (isset($form)) { ?>
-    <div class='trail'>
-        <div class='trailHead'>
-            <a href='<?php echo $_SESSION[$guid]["absoluteURL"]; ?>"'><?php echo __("Home"); ?></a> &gt;
-            <a href='<?php echo $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid); ?>'><?php echo __(getModuleName($_GET["q"])); ?></a> &gt;
-        </div>
-        <div class='trailEnd'><?php echo __('View Daily Attendance'); ?></div>
-    </div><!--/.trail-->
-
     <h2><?php echo __("View Daily Attendance"); ?></h2>
     <?php echo $form->getOutput(); ?>
 <?php } ?>
