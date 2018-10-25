@@ -243,3 +243,12 @@ td.center {
 .dailyAttendanceTable tr td:nth-child(n+3) {
     text-align: center;
 }
+.dailyAttendanceTable tr td div.month {
+    font-size: 65%;
+}
+.dailyAttendanceTable tr td table.historyCalendarMini {
+    border-spacing: 0;
+    border-collapse: separate;
+    width:160px;
+    margin:0;
+}

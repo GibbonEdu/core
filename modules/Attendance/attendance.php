@@ -69,6 +69,99 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 // define attendance tables, if user is permit to view them
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
 
+    // proto attendance table with columns for both
+    // roll group and course class
+    $dailyAttendanceTable = DataTable::create(
+        '',
+        (new SimpleRenderer)
+            ->addClass('mini')
+            ->addClass('dailyAttendanceTable')
+    );
+    $dailyAttendanceTable->addColumn('group', __('Group'))
+        ->width('80px')
+        ->format(function ($row) use ($guid) {
+            return '<a href="' . $_SESSION[$guid]["absoluteURL"] . '/index.php?'.http_build_query([
+                'q' => $row['groupQuery'],
+                $row['rowID'] => $row[$row['rowID']],
+            ]) . '">' . $row['groupName'] . "</a>";
+        });
+    $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
+        ->width('342px')
+        ->format(function ($row) use ($guid) {
+            $dayTable = "<table class='historyCalendarMini'>";
+
+            $l = sizeof($row['recentHistory']);
+            for ($i = 0; $i < $l; $i++) {
+                $dayTable .= '<tr>';
+                for ($j = 0; ($j < 10) && ($i + $j < $l); $j++) {
+                    // grouping 10 days as a row
+                    $day = $row['recentHistory'][$i + $j];
+                    $link = '';
+                    $content = '';
+
+                    // default link and content
+                    if (!empty($day['currentDate']) && !empty($day['currentDayTimestamp'])) {
+                        // link and date content of a cell
+                        $link = './index.php?' . http_build_query([
+                            'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
+                            $row['rowID'] => $row[$row['rowID']],
+                            'currentDate' => $day['currentDate'],
+                        ]);
+                        $content =
+                            '<div class="day">'.date('d', $day['currentDayTimestamp']).'</div>'.
+                            '<div class="month">'.date('M', $day['currentDayTimestamp']).'</div>';
+                    }
+
+                    // determine how to display link and content
+                    // according to status
+                    switch ($day['status']) {
+                        case 'na':
+                            $class = 'highlightNoData';
+                            $content = __('NA');
+                            break;
+                        case 'present':
+                            $class = 'highlightPresent';
+                            $content = "<a href=\"{$link}\">{$content}</a>";
+                            break;
+                        case 'absent':
+                            $class = 'highlightAbsent';
+                            $content = "<a href=\"{$link}\">{$content}</a>";
+                            break;
+                        default:
+                            $class = 'highlightNoData';
+                            break;
+                    }
+
+                    $dayTable .= "<td class=\"{$class}\" style=\"padding: 12px !important;\">{$content}</td>";
+                }
+                $i += $j;
+                $dayTable .= '</tr>';
+            }
+
+            $dayTable .= '</table>';
+            return $dayTable;
+        });
+    $dailyAttendanceTable->addColumn('today', __('Today'))
+        ->width('40px')
+        ->format(function ($row) use ($guid) {
+            switch ($row['today']) {
+                case 'taken':
+                    // attendance taken
+                    return '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
+                case 'not taken':
+                    // attendance not taken
+                    return '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>';
+                case 'not timetabled':
+                    // class not timetabled on the day
+                    return '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">' .
+                        __('N/A') . '</span>';
+            }
+        });
+    $dailyAttendanceTable->addColumn('in', __('In'))
+        ->width('40px');
+    $dailyAttendanceTable->addColumn('out', __('Out'))
+        ->width('40px');
+
     if ($currentDate>$today) {
         $page->addError(__("The specified date is in the future: it must be today or earlier."));
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
@@ -87,9 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
         if ($result->rowCount()>0) {
             $attendanceByRollGroup = [];
-            while ($row=$result->fetch()) {
-                $dataRow = [];
-
+            while ($row = $result->fetch()) {
                 //Produce array of attendance data
                 try {
                     $dataAttendance = array("gibbonRollGroupID" => $row["gibbonRollGroupID"], 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
@@ -126,87 +217,55 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $page->addError($e->getMessage());
                 }
 
-                $log=$resultLog->fetch();
+                $log = $resultLog->fetch();
 
-                $dataRow = [];
-                $dataRow['group'] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
+                // general row variables
+                $row['rowID'] = 'gibbonRollGroupID';
+                $row['currentDate'] = dateConvertBack($guid, $currentDate);
 
-                $dayTable = '';
-                $dayTable .= "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
-                $dayTable .= '<tr>';
-                $historyCount = 0;
+                // render group link variables
+                $row['groupQuery'] = '/modules/Roll Groups/rollGroups_details.php';
+                $row['groupName'] = $row['name'];
 
+                // render recentHistory into the row
                 for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
-                    $link = '';
                     if ($i > (count($lastNSchoolDays) - 1)) {
-                        $dayTable .= "<td class='highlightNoData'>";
-                        $dayTable .= '<i>'.__($guid, 'NA').'</i>';
-                        $dayTable .= '</td>';
+                        $dayData = [
+                            'currentDate' => null,
+                            'currentDayTimestamp' => null,
+                            'status' => 'na'
+                        ];
                     } else {
-                        $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-
-                        $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
-
-                        if (isset($logHistory[$lastNSchoolDays[$i]]) == false) {
-                            //$class = 'highlightNoData';
-                            $class = 'highlightAbsent';
-                        } else {
-                            $class = 'highlightPresent';
-                        }
-
-                        $dayTable .= "<td class='$class' style='padding: 12px !important;'>";
-                        $dayTable .= "<a href='$link'>";
-                        $dayTable .= date('d', $currentDayTimestamp).'<br/>';
-                        $dayTable .= "<span>".date('M', $currentDayTimestamp).'</span>';
-                        $dayTable .= '</a>';
-                        $dayTable .= '</td>';
+                        $dayData = [
+                            'currentDate' => dateConvertBack($guid, $lastNSchoolDays[$i]),
+                            'currentDayTimestamp' => dateConvertToTimestamp($lastNSchoolDays[$i]),
+                            'status' => isset($logHistory[$lastNSchoolDays[$i]]) ? 'present' : 'absent',
+                        ];
                     }
-
-                    // Wrap to a new line every 10 dates
-                    if (($historyCount+1) % 10 == 0) {
-                        $dayTable .= '</tr><tr>';
-                    }
-                    $historyCount++;
+                    $row['recentHistory'][] = $dayData;
                 }
-                $dayTable .= '</tr>';
-                $dayTable .= '</table>';
 
-                $dataRow['recent-history'] = $dayTable;
                 // Attendance not taken
-                $attendance_image = ($resultLog->rowCount()<1) ?
-                    '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>' :
-                    '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
-                $dataRow['today'] = $attendance_image;
-                $dataRow['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-                $dataRow['out'] = $log["absent"];
+                $row['today'] = ($resultLog->rowCount()<1) ? 'not taken' : 'taken';
+                $row['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                $row['out'] = $log["absent"];
 
-                if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                    $dataRow['actions'] = "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
-                }
-
-                $attendanceByRollGroup[] = $dataRow;
+                $attendanceByRollGroup[] = $row;
             }
 
             // define DataTable
-            $attendanceByRollGroupTable = DataTable::create(
-                'attendance-by-roll',
-                (new SimpleRenderer)
-                    ->addClass('mini')
-                    ->addClass('dailyAttendanceTable')
-            );
-            $attendanceByRollGroupTable->addColumn('group', __('Group'))
-                ->width('80px');
-            $attendanceByRollGroupTable->addColumn('recent-history', __('Recent History'))
-                ->width('342px');
-            $attendanceByRollGroupTable->addColumn('today', __('Today'))
-                ->width('40px');
-            $attendanceByRollGroupTable->addColumn('in', __('In'))
-                ->width('40px');
-            $attendanceByRollGroupTable->addColumn('out', __('Out'))
-                ->width('40px');
+            $attendanceByRollGroupTable = clone $dailyAttendanceTable;
             if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
                 $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
-                    ->width('50px');
+                    ->width('50px')
+                    ->format(function ($row) use ($guid) {
+                        return '<a href="index.php?' . http_build_query([
+                            'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
+                            $row['rowID'] => $row[$row['rowID']],
+                            'currentDate' => $row['currentDate'],
+                        ]) . '"><img title="' . __('Take Attendance') .
+                        '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] . '/img/attendance.png"/></a>';
+                    });
             }
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
@@ -266,9 +325,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $count=0;
 
                 $attendanceByCourseClass = [];
-                while ($row=$result->fetch()) {
-                    $dataRow = [];
-
+                while ($row = $result->fetch()) {
                     // Skip unscheduled courses
                     //if ( isset($ttHistory[$row['gibbonCourseClassID']]) == false || count($ttHistory[$row['gibbonCourseClassID']]) == 0) continue;
 
@@ -299,108 +356,68 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                         $page->addError($e->getMessage());
                     }
 
-                    $log=$resultLog->fetch();
+                    $log = $resultLog->fetch();
 
-                    $dataRow['group'] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "'>" . $row["course"] . "." . $row["class"] . "</a>";
+                    // general row variables
+                    $row['rowID'] = 'gibbonCourseClassID';
+                    $row['currentDate'] = dateConvertBack($guid, $currentDate);
 
-                    // day table
-                    $dayTable = "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
-                    $dayTable .= '<tr>';
+                    // render group link variables
+                    $row['groupQuery'] = '/modules/Departments/department_course_class.php';
+                    $row['groupName'] = $row["course"] . "." . $row["class"];
 
-                    $historyCount = 0;
+                    // render recentHistory into the row
                     for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
-                        $link = '';
-                        if ($i > ( count($lastNSchoolDays) - 1)) {
-                            $dayTable .= "<td class='highlightNoData'>";
-                            $dayTable .= '<i>'.__($guid, 'NA').'</i>';
-                            $dayTable .= '</td>';
+                        if ($i > (count($lastNSchoolDays) - 1)) {
+                            $dayData = [
+                                'currentDate' => null,
+                                'currentDayTimestamp' => null,
+                                'status' => 'na'
+                            ];
                         } else {
-                            $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-
-                            $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
-
+                            $dayData = [
+                                'currentDate' => dateConvertBack($guid, $lastNSchoolDays[$i]),
+                                'currentDayTimestamp' => dateConvertToTimestamp($lastNSchoolDays[$i]),
+                            ];
                             if (isset($logHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
-                                $class = 'highlightPresent';
+                                $dayData['status'] = 'present';
                             } else {
-                                if (isset($ttHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
-                                    $class = 'highlightAbsent';
-                                } else {
-                                    $class = 'highlightNoData';
-                                    $link = '';
-                                }
+                                $dayData['status'] =
+                                    isset($ttHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) ?
+                                        $dayData['status'] = 'absent' :
+                                        $dayData['status'] = null;
                             }
-
-                            $dayTable .= "<td class='$class' style='padding: 12px !important;'>";
-                            if ($link != '') {
-                                $dayTable .= "<a href='$link'>";
-                                $dayTable .= date('d', $currentDayTimestamp).'<br/>';
-                                $dayTable .= "<span>".date('M', $currentDayTimestamp).'</span>';
-                                $dayTable .= '</a>';
-                            } else {
-                                $dayTable .= date('d', $currentDayTimestamp).'<br/>';
-                                $dayTable .= "<span>".date('M', $currentDayTimestamp).'</span>';
-                            }
-                            $dayTable .= '</td>';
-
-                            // Wrap to a new line every 10 dates
-                            if (($historyCount+1) % 10 == 0) {
-                                $dayTable .= '</tr><tr>';
-                            }
-
-                            $historyCount++;
                         }
+                        $row['recentHistory'][] = $dayData;
                     }
-                    $dayTable .= '</tr>';
-                    $dayTable .= '</table>';
 
-                    $dataRow['recent-history'] = $dayTable;
-
-                    // Attendance not taken, timetabled
-                    $attendance_image = '';
-                    if (isset($ttHistory[$row['gibbonCourseClassID']][$currentDate]) == true) {
-                        $attendance_image = ($resultLog->rowCount()<1) ?
-                            '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>' :
-                            '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
+                    // attendance today, if timetabled
+                    $row['today'] = null;
+                    if (isset($ttHistory[$row['gibbonCourseClassID']][$currentDate])) {
+                        $row['today'] = ($resultLog->rowCount()<1) ? 'not taken' : 'taken';
                     } elseif (isset($logHistory[$row['gibbonCourseClassID']][$currentDate])) {
-                        $attendance_image = '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">';
-                        $attendance_image .= __('N/A');
-                        $attendance_image .= '</span>';
+                        // class is not timetabled to run on the specified date
+                        $row['today'] = 'not timetabled';
                     }
-                    $dataRow['today'] = $attendance_image;
+                    $row['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                    $row['out'] = $log["absent"];
 
-                    $attendance_count = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-                    $dataRow['in'] = $attendance_count;
-
-                    $dataRow['out'] = $log["absent"];
-
-                    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-                        $attendance_action = "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=" . $row["gibbonCourseClassID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
-                        $dataRow['actions'] = $attendance_action;
-                    }
-
-                    $attendanceByCourseClass[] = $dataRow;
+                    $attendanceByCourseClass[] = $row;
                 }
 
                 // define DataTable
-                $attendanceByCourseClassTable = DataTable::create(
-                    'attendance-by-course-class',
-                    (new SimpleRenderer)
-                        ->addClass('mini')
-                        ->addClass('dailyAttendanceTable')
-                    );
-                $attendanceByCourseClassTable->addColumn('group', __('Group'))
-                    ->width('80px');
-                $attendanceByCourseClassTable->addColumn('recent-history', __('Recent History'))
-                    ->width('342px');
-                $attendanceByCourseClassTable->addColumn('today', __('Today'))
-                    ->width('40px');
-                $attendanceByCourseClassTable->addColumn('in', __('In'))
-                    ->width('40px');
-                $attendanceByCourseClassTable->addColumn('out', __('Out'))
-                    ->width('40px');
+                $attendanceByCourseClassTable = clone $dailyAttendanceTable;
                 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
                     $attendanceByCourseClassTable->addColumn('actions', __('Actions'))
-                        ->width('50px');
+                        ->width('50px')
+                        ->format(function ($row) use ($guid) {
+                            return '<a href="index.php?' . http_build_query([
+                                'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
+                                $row['rowID'] => $row[$row['rowID']],
+                                'currentDate' => $row['currentDate'],
+                            ]) . '"><img title="' . __('Take Attendance') .
+                            '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] . '/img/attendance.png"/></a>';
+                        });
                 }
                 $attendanceByCourseClassTable->withData(new DataSet($attendanceByCourseClass));
             }
@@ -421,7 +438,7 @@ $page->breadcrumbs()
 <?php } ?>
 
 <?php if (isset($attendanceByRollGroupTable)) { ?>
-    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __($guid, "My Roll Group"); ?></h2>
+    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __("My Roll Group"); ?></h2>
     <?php echo $attendanceByRollGroupTable->getOutput(); ?>
 <?php } ?>
 
