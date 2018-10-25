@@ -283,3 +283,25 @@ function i18nCheckAndUpdateVersion($container, $version = null)
         }
     }
 }
+
+/**
+ * Recursively remove the contents of a folder, including sub-directories. Optionally remove the folder itself.
+ *
+ * @param string $dir
+ * @param bool   $removeSelf
+ */
+function removeDirectoryContents($dir, $removeSelf = false)
+{
+    $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::CHILD_FIRST);
+    foreach ($iterator as $filename => $fileInfo) {
+        if ($fileInfo->isDir()) {
+            rmdir($filename);
+        } else {
+            unlink($filename);
+        }
+    }
+
+    if ($removeSelf) {
+        rmdir($dir);
+    }
+}
