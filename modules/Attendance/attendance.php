@@ -191,8 +191,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
             $attendanceByRollGroupTable = DataTable::create(
                 'attendance-by-roll',
                 (new SimpleRenderer)
-                    ->setID('tableAttendanceByRollGroup')
                     ->addClass('mini')
+                    ->addClass('dailyAttendanceTable')
             );
             $attendanceByRollGroupTable->addColumn('group', __('Group'))
                 ->width('80px');
@@ -385,9 +385,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $attendanceByCourseClassTable = DataTable::create(
                     'attendance-by-course-class',
                     (new SimpleRenderer)
-                        ->setID('tableAttendanceByCourseClass')
                         ->addClass('mini')
-                );
+                        ->addClass('dailyAttendanceTable')
+                    );
                 $attendanceByCourseClassTable->addColumn('group', __('Group'))
                     ->width('80px');
                 $attendanceByCourseClassTable->addColumn('recent-history', __('Recent History'))

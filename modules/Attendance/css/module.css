@@ -225,39 +225,21 @@ td.center {
 }
 
 /**
- * attendance table, by roll
+ * daily attendance table, by roll or by course class
+ * (attendance.php)
  */
-#tableAttendanceByRollGroup {
+.dailyAttendanceTable {
     table-layout: fixed;
 }
-#tableAttendanceByRollGroup th {
+.dailyAttendanceTable th {
     font-size: 60%;
     text-align: center;
     text-transform: uppercase;
 }
-#tableAttendanceByRollGroup th:first-child {
+.dailyAttendanceTable th:first-child {
     font-size: 85%;
     text-align: left;
 }
-#tableAttendanceByRollGroup tr td:nth-child(n+3) {
-    text-align: center;
-}
-
-/**
- * attendance table, by course class
- */
-#tableAttendanceByCourseClass {
-    table-layout: fixed;
-}
-#tableAttendanceByCourseClass th {
-    font-size: 60%;
-    text-align: center;
-    text-transform: uppercase;
-}
-#tableAttendanceByCourseClass th:first-child {
-    font-size: 85%;
-    text-align: left;
-}
-#tableAttendanceByCourseClass tr td:nth-child(n+3) {
+.dailyAttendanceTable tr td:nth-child(n+3) {
     text-align: center;
 }
