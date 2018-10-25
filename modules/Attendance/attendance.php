@@ -37,151 +37,180 @@ $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attenda
 $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
     $_GET['gibbonPersonID'] : $_SESSION[$guid]["gibbonPersonID"];
 
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
+// show access denied message, if needed
+if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
+    $errors[] = __("You do not have access to this action.");
+}
 
-    $attendanceByRollGroupTable = DataTable::create(
-        'attendance-by-roll',
-        (new SimpleRenderer)
-            ->setID('tableAttendanceByRollGroup')
-            ->addClass('mini')
-    );
+// define attendance filter form, if user is permit to view it
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
+    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+
+    $form->setFactory(DatabaseFormFactory::create($pdo));
+    $form->setClass('noIntBorder fullWidth');
+
+    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/attendance.php");
+
+    $row = $form->addRow();
+    $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+    $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
+
+    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
+        $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Staff'));
+        $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+    } else {
+        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
+    }
+
+    $row = $form->addRow();
+    $row->addFooter();
+    $row->addSearchSubmit($gibbon->session);
+}
+
+// define attendance tables, if user is permit to view them
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
 
     if ($currentDate>$today) {
         $errors[] = __("The specified date is in the future: it must be today or earlier.");
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
         $errors[] = __("School is closed on the specified date, and so attendance information cannot be recorded.");
-    } else {
-        if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-            // Show My Form Groups
-            try {
-                $data=array("gibbonPersonIDTutor1"=>$gibbonPersonID, "gibbonPersonIDTutor2"=>$gibbonPersonID, "gibbonPersonIDTutor3"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
-                $sql="SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'";
-                $result=$connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $errors[] = $e->getMessage();
-            }
+    } elseif (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
 
-            if ($result->rowCount()>0) {
-                $attendanceByRollGroupTable->addColumn('group', __('Group'))
-                    ->width('80px');
-                $attendanceByRollGroupTable->addColumn('recent-history', __('Recent History'))
-                    ->width('342px');
-                $attendanceByRollGroupTable->addColumn('today', __('Today'))
-                    ->width('40px');
-                $attendanceByRollGroupTable->addColumn('in', __('In'))
-                    ->width('40px');
-                $attendanceByRollGroupTable->addColumn('out', __('Out'))
-                    ->width('40px');
+        // Show My Form Groups
+        try {
+            $data=array("gibbonPersonIDTutor1"=>$gibbonPersonID, "gibbonPersonIDTutor2"=>$gibbonPersonID, "gibbonPersonIDTutor3"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+            $sql="SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'";
+            $result=$connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $errors[] = $e->getMessage();
+        }
+
+        if ($result->rowCount()>0) {
+            $attendanceByRollGroup = [];
+            while ($row=$result->fetch()) {
+                $dataRow = [];
+
+                //Produce array of attendance data
+                try {
+                    $dataAttendance = array("gibbonRollGroupID" => $row["gibbonRollGroupID"], 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
+                    $sqlAttendance = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date';
+                    $resultAttendance = $connection2->prepare($sqlAttendance);
+                    $resultAttendance->execute($dataAttendance);
+                } catch (PDOException $e) {
+                    $errors[] = $e->getMessage();
+                }
+                $logHistory = array();
+                while ($rowAttendance = $resultAttendance->fetch()) {
+                    $logHistory[$rowAttendance['date']] = true;
+                }
+
+                //Grab attendance log for the group & current day
+                try {
+                    $dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%");
+
+                    $sqlLog = "SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
+                    COUNT(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) AS total,
+                    COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonAttendanceLogPerson.gibbonPersonID END) AS absent
+                    FROM gibbonAttendanceLogPerson
+                    JOIN gibbonAttendanceLogRollGroup ON (gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date)
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonAttendanceLogRollGroup.gibbonRollGroupID)
+                    WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
+                    AND gibbonAttendanceLogPerson.date LIKE :date
+                    AND gibbonAttendanceLogPerson.context = 'Roll Group'
+                    GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID
+                    ORDER BY gibbonAttendanceLogPerson.timestampTaken";
+
+                    $resultLog=$connection2->prepare($sqlLog);
+                    $resultLog->execute($dataLog);
+                } catch (PDOException $e) {
+                    $errors[] = $e->getMessage();
+                }
+
+                $log=$resultLog->fetch();
+
+                $dataRow = [];
+                $dataRow['group'] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
+
+                $dayTable = '';
+                $dayTable .= "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
+                $dayTable .= '<tr>';
+                $historyCount = 0;
+
+                for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                    $link = '';
+                    if ($i > (count($lastNSchoolDays) - 1)) {
+                        $dayTable .= "<td class='highlightNoData'>";
+                        $dayTable .= '<i>'.__($guid, 'NA').'</i>';
+                        $dayTable .= '</td>';
+                    } else {
+                        $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
+
+                        $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
+
+                        if (isset($logHistory[$lastNSchoolDays[$i]]) == false) {
+                            //$class = 'highlightNoData';
+                            $class = 'highlightAbsent';
+                        } else {
+                            $class = 'highlightPresent';
+                        }
+
+                        $dayTable .= "<td class='$class' style='padding: 12px !important;'>";
+                        $dayTable .= "<a href='$link'>";
+                        $dayTable .= date('d', $currentDayTimestamp).'<br/>';
+                        $dayTable .= "<span>".date('M', $currentDayTimestamp).'</span>';
+                        $dayTable .= '</a>';
+                        $dayTable .= '</td>';
+                    }
+
+                    // Wrap to a new line every 10 dates
+                    if (($historyCount+1) % 10 == 0) {
+                        $dayTable .= '</tr><tr>';
+                    }
+                    $historyCount++;
+                }
+                $dayTable .= '</tr>';
+                $dayTable .= '</table>';
+
+                $dataRow['recent-history'] = $dayTable;
+                // Attendance not taken
+                $attendance_image = ($resultLog->rowCount()<1) ?
+                    '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>' :
+                    '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
+                $dataRow['today'] = $attendance_image;
+                $dataRow['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                $dataRow['out'] = $log["absent"];
 
                 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                    $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
-                        ->width('50px');
+                    $dataRow['actions'] = "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
                 }
 
-                $attendanceByRollGroup = [];
-                while ($row=$result->fetch()) {
-                    $dataRow = [];
-
-                    //Produce array of attendance data
-                    try {
-                        $dataAttendance = array("gibbonRollGroupID" => $row["gibbonRollGroupID"], 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-                        $sqlAttendance = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date';
-                        $resultAttendance = $connection2->prepare($sqlAttendance);
-                        $resultAttendance->execute($dataAttendance);
-                    } catch (PDOException $e) {
-                        $errors[] = $e->getMessage();
-                    }
-                    $logHistory = array();
-                    while ($rowAttendance = $resultAttendance->fetch()) {
-                        $logHistory[$rowAttendance['date']] = true;
-                    }
-
-                    //Grab attendance log for the group & current day
-                    try {
-                        $dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%");
-
-                        $sqlLog = "SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
-                        COUNT(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) AS total,
-                        COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonAttendanceLogPerson.gibbonPersonID END) AS absent
-                        FROM gibbonAttendanceLogPerson
-                        JOIN gibbonAttendanceLogRollGroup ON (gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date)
-                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonAttendanceLogRollGroup.gibbonRollGroupID)
-                        WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
-                        AND gibbonAttendanceLogPerson.date LIKE :date
-                        AND gibbonAttendanceLogPerson.context = 'Roll Group'
-                        GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID
-                        ORDER BY gibbonAttendanceLogPerson.timestampTaken";
-
-                        $resultLog=$connection2->prepare($sqlLog);
-                        $resultLog->execute($dataLog);
-                    } catch (PDOException $e) {
-                        $errors[] = $e->getMessage();
-                    }
-
-                    $log=$resultLog->fetch();
-
-                    $dataRow = [];
-                    $dataRow['group'] = "<a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/Roll Groups/rollGroups_details.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "'>" . $row["name"] . "</a>";
-
-                    $dayTable = '';
-                    $dayTable .= "<table cellspacing='0' class='historyCalendarMini' style='width:160px;margin:0;' >";
-                    $dayTable .= '<tr>';
-                    $historyCount = 0;
-
-                    for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
-                        $link = '';
-                        if ($i > (count($lastNSchoolDays) - 1)) {
-                            $dayTable .= "<td class='highlightNoData'>";
-                            $dayTable .= '<i>'.__($guid, 'NA').'</i>';
-                            $dayTable .= '</td>';
-                        } else {
-                            $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-
-                            $link = './index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$row['gibbonRollGroupID'].'&currentDate='.dateConvertBack($guid, $lastNSchoolDays[$i]);
-
-                            if (isset($logHistory[$lastNSchoolDays[$i]]) == false) {
-                                //$class = 'highlightNoData';
-                                $class = 'highlightAbsent';
-                            } else {
-                                $class = 'highlightPresent';
-                            }
-
-                            $dayTable .= "<td class='$class' style='padding: 12px !important;'>";
-                            $dayTable .= "<a href='$link'>";
-                            $dayTable .= date('d', $currentDayTimestamp).'<br/>';
-                            $dayTable .= "<span>".date('M', $currentDayTimestamp).'</span>';
-                            $dayTable .= '</a>';
-                            $dayTable .= '</td>';
-                        }
-
-                        // Wrap to a new line every 10 dates
-                        if (($historyCount+1) % 10 == 0) {
-                            $dayTable .= '</tr><tr>';
-                        }
-                        $historyCount++;
-                    }
-                    $dayTable .= '</tr>';
-                    $dayTable .= '</table>';
-
-                    $dataRow['recent-history'] = $dayTable;
-                    // Attendance not taken
-                    $attendance_image = ($resultLog->rowCount()<1) ?
-                        '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>' :
-                        '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
-                    $dataRow['today'] = $attendance_image;
-                    $dataRow['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
-                    $dataRow['out'] = $log["absent"];
-
-                    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                        $dataRow['actions'] = "<a href='index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID=" . $row["gibbonRollGroupID"] . "&currentDate=" . dateConvertBack($guid, $currentDate) . "'><img title='" . __('Take Attendance') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/></a>";
-                    }
-
-                    $attendanceByRollGroup[] = $dataRow;
-                }
-
-                $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
+                $attendanceByRollGroup[] = $dataRow;
             }
+
+            // define DataTable
+            $attendanceByRollGroupTable = DataTable::create(
+                'attendance-by-roll',
+                (new SimpleRenderer)
+                    ->setID('tableAttendanceByRollGroup')
+                    ->addClass('mini')
+            );
+            $attendanceByRollGroupTable->addColumn('group', __('Group'))
+                ->width('80px');
+            $attendanceByRollGroupTable->addColumn('recent-history', __('Recent History'))
+                ->width('342px');
+            $attendanceByRollGroupTable->addColumn('today', __('Today'))
+                ->width('40px');
+            $attendanceByRollGroupTable->addColumn('in', __('In'))
+                ->width('40px');
+            $attendanceByRollGroupTable->addColumn('out', __('Out'))
+                ->width('40px');
+            if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
+                $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
+                    ->width('50px');
+            }
+            $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
 
         if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -375,66 +404,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $attendanceByCourseClassTable->addColumn('actions', __('Actions'))
                         ->width('50px');
                 }
-
-                // assign data set to the DataTable
                 $attendanceByCourseClassTable->withData(new DataSet($attendanceByCourseClass));
             }
         }
     }
 }
 
-$output = '';
-
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')==false) {
-    //Acess denied
-    $errors[] = __("You do not have access to this action.");
-} else {
-    //Proceed!
-    $output .= "<div class='trail'>";
-    $output .= "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('View Daily Attendance') . "</div>";
-    $output .= "</div>";
-
-    $output .= "<h2>";
-    $output .= __("View Daily Attendance");
-    $output .= "</h2>";
-
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
-
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/attendance.php");
-
-    $row = $form->addRow();
-    $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-    $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
-
-    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
-        $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Staff'));
-        $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
-    } else {
-        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
-    }
-
-    $row = $form->addRow();
-        $row->addFooter();
-        $row->addSearchSubmit($gibbon->session);
-
-    $output .= $form->getOutput();
-}
-
-// show errors
+// show errors, if any
 echo implode("\n", array_map(function ($error) {
     return "<div class='error'>{$error}</div>";
 }, $errors));
 
-// show form
-echo $output;
+// show filter form
+if (isset($form)) {
+    echo "<div class='trail'>";
+    echo "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('View Daily Attendance') . "</div>";
+    echo "</div>";
+
+    echo "<h2>";
+    echo __("View Daily Attendance");
+    echo "</h2>";
+    echo $form->getOutput();
+}
 
 // show attendance table, by roll group
 if (isset($attendanceByRollGroupTable)) {
-    echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
+    echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
     echo __($guid, "My Roll Group");
     echo "</h2>";
     echo $attendanceByRollGroupTable->getOutput();
@@ -442,7 +437,7 @@ if (isset($attendanceByRollGroupTable)) {
 
 // show attendance table, by course class
 if (isset($attendanceByCourseClassTable)) {
-    echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
+    echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
     echo __("My Classes");
     echo "</h2>";
     echo $attendanceByCourseClassTable->getOutput();
