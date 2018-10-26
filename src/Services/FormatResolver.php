@@ -50,12 +50,12 @@ trait FormatResolver
      */
     public static function getFormatter($method)
     {
-        if (method_exists(static::class, $method)) {
-            return [static::class, $method];
-        }
-
         if (isset(static::$formatters[$method])) {
             return static::$formatters[$method];
+        }
+
+        if (method_exists(static::class, $method)) {
+            return [static::class, $method];
         }
         
         throw new \InvalidArgumentException(sprintf('Unknown formatter "%s"', $method));
