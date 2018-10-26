@@ -57,6 +57,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $form->toggleVisibilityByClass('columnWeighting')->onSelect('enableColumnWeighting')->when('Y');
 
+    $defaultAssessmentScale = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
+    if (intval($defaultAssessmentScale) != 4) {
+        $row = $form->addRow()->addClass('columnWeighting');
+            $row->addAlert(__('Calculation of cumulative marks and weightings is currently only available when using Percentage as the Default Assessment Scale. This value can be changed in System Settings.'));
+    }
+    
     $setting = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks', true);
     $row = $form->addRow()->addClass('columnWeighting');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
