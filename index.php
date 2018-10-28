@@ -255,7 +255,7 @@ $javascriptConfig = [
  */
 
 // Set page scripts: head
-$page->scripts()->addMultiple([
+$page->scripts->addMultiple([
     'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
     'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
@@ -266,7 +266,7 @@ $page->scripts()->addMultiple([
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
-$page->scripts()->addMultiple([
+$page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-date'     => 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
@@ -277,15 +277,15 @@ $page->scripts()->addMultiple([
 
 // Set page scripts: foot - misc
 $thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
-$page->scripts()->add('thickboxi', $thickboxInline, ['type' => 'inline']);
-$page->scripts()->addMultiple([
+$page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
+$page->scripts->addMultiple([
     'thickbox' => 'lib/thickbox/thickbox-compressed.js',
     'tinymce'  => 'lib/tinymce/tinymce.min.js',
 ], ['context' => 'foot']);
 
 // Set page scripts: foot - core
-$page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
-$page->scripts()->add('core-setup', 'resources/assets/js/setup.js');
+$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
+$page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
@@ -293,7 +293,7 @@ $page->addHeadExtra($session->get('analytics'));
 /**
  * STYLESHEETS & CSS
  */
-$page->stylesheets()->addMultiple([
+$page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
     'jquery-token' => 'lib/jquery-tokeninput/styles/token-input-facebook.css',
@@ -309,7 +309,7 @@ if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' &
     $backgroundScroll = 'repeat fixed center top';
 }
 
-$page->stylesheets()->add(
+$page->stylesheets->add(
     'personal-background',
     'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #A88EDB!important; }',
     ['type' => 'inline']

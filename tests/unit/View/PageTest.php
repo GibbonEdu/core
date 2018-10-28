@@ -23,13 +23,10 @@ class PageTest extends TestCase
 
     public function setUp()
     {
-        $this->mockModule = $this->createMock(Module::class);
-        $this->mockModule->method('stylesheets')->willReturn(new AssetBundle());
-        $this->mockModule->method('scripts')->willReturn(new AssetBundle());
-
-        $this->mockTheme = $this->createMock(Theme::class);
-        $this->mockTheme->method('stylesheets')->willReturn(new AssetBundle());
-        $this->mockTheme->method('scripts')->willReturn(new AssetBundle());
+        $this->prebuiltPage = new Page(null, [
+            'module' => new Module(),
+            'theme'  => new Theme(),
+        ]);
     }
 
     public function testCanConstructFromParams()
@@ -102,38 +99,41 @@ class PageTest extends TestCase
     public function testCanAddStylesheets()
     {
         $page = new Page();
-        $page->stylesheets()->add('foo', 'bar/baz');
+        $page->stylesheets->add('foo', 'bar/baz');
 
-        $this->assertArrayHasKey('foo',  $page->getAllStylesheets());
+        $this->assertArrayHasKey('foo', $page->getAllStylesheets());
     }
 
     public function testCanGetAllStylesheets()
     {
-        $page = new Page(null, ['module' => $this->mockModule, 'theme' => $this->mockTheme]);
+        $page = $this->prebuiltPage;
 
-        $page->stylesheets()->add('foo', 'bar/baz');
-        $page->getTheme()->stylesheets()->add('buz', 'bar/baz');
-        $page->getModule()->stylesheets()->add('fiz', 'bar/baz');
+        $page->stylesheets->add('foo', 'bar/baz');
+        $page->getTheme()->stylesheets->add('buz', 'bar/baz');
+        $page->getModule()->stylesheets->add('fiz', 'bar/baz');
 
-        $this->assertEquals(['foo', 'buz', 'fiz'], array_keys($page->getAllStylesheets()));
+        $this->assertArrayHasKey('foo', $page->getAllStylesheets());
+        $this->assertArrayHasKey('buz', $page->getAllStylesheets());
+        $this->assertArrayHasKey('fiz', $page->getAllStylesheets());
     }
 
     public function testCanAddScripts()
     {
         $page = new Page();
-        $page->scripts()->add('fiz', 'bar/baz', ['context' => 'head']);
+        $page->scripts->add('fiz', 'bar/baz', ['context' => 'head']);
 
-        $this->assertArrayHasKey('fiz',  $page->getAllScripts('head'));
+        $this->assertArrayHasKey('fiz', $page->getAllScripts('head'));
     }
 
     public function testCanGetAllScripts()
     {
-        $page = new Page(null, ['module' => $this->mockModule, 'theme' => $this->mockTheme]);
+        $page = $this->prebuiltPage;
 
-        $page->scripts()->add('foo', 'bar/baz', ['context' => 'head']);
-        $page->getModule()->scripts()->add('fiz', 'bar/baz', ['context' => 'foot']);
-        $page->getTheme()->scripts()->add('buz', 'bar/baz', ['context' => 'head']);
+        $page->scripts->add('foo', 'bar/baz', ['context' => 'head']);
+        $page->getModule()->scripts->add('fiz', 'bar/baz', ['context' => 'foot']);
+        $page->getTheme()->scripts->add('buz', 'bar/baz', ['context' => 'head']);
 
-        $this->assertEquals(['foo', 'buz'], array_keys($page->getAllScripts('head')));
+        $this->assertArrayHasKey('foo', $page->getAllScripts('head'));
+        $this->assertArrayHasKey('buz', $page->getAllScripts('head'));
     }
 }

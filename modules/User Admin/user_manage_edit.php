@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs()
+    $page->breadcrumbs
          ->add(__('Manage Users'), 'user_manage.php')
          ->add(__('Edit User'));
 
