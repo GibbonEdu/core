@@ -70,6 +70,17 @@ class Theme
     {
         return isset($this->$name) ? $this->$name : null;
     }
+
+    /**
+     * Check if a model property exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset(string $name)
+    {
+        return isset($this->$name);
+    }
     
     /**
      * Get the gibbonThemeID

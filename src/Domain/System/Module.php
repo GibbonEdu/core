@@ -73,6 +73,17 @@ class Module
     }
 
     /**
+     * Check if a model property exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset(string $name)
+    {
+        return isset($this->$name);
+    }
+
+    /**
      * Get the gibbonModuleID
      *
      * @return string

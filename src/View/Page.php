@@ -90,6 +90,17 @@ class Page extends View
     }
 
     /**
+     * Check if a page property exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset(string $name)
+    {
+        return isset($this->$name);
+    }
+
+    /**
      * Get the HTML page title.
      *
      * @return string
