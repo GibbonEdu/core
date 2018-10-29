@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             } else {
                 //Get child list
                 $countChild = 0;
-                $options = '';
+                $options = [];
                 while ($row = $result->fetch()) {
                     try {
                         $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
