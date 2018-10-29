@@ -334,9 +334,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
                 $attendanceByCourseClass = [];
                 while ($row = $result->fetch()) {
-                    // Skip unscheduled courses
-                    //if ( isset($ttHistory[$row['gibbonCourseClassID']]) == false || count($ttHistory[$row['gibbonCourseClassID']]) == 0) continue;
-
                     // Skip classes with no students
                     if ($row['studentCount'] <= 0) {
                         continue;
