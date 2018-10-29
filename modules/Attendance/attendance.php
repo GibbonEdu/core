@@ -36,7 +36,7 @@ $page->breadcrumbs()
     ->add(__('View Daily Attendance'));
 
 // rendering parameters
-$currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : Format::dateConvert($_GET["currentDate"]);
+$currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
 $today = date("Y-m-d");
 $lastNSchoolDays = getLastNSchoolDays($guid, $connection2, $currentDate, 10, true);
 $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate.php")
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
     $row = $form->addRow();
     $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-    $row->addDate('currentDate')->setValue(Format::dateConvert($currentDate))->isRequired();
+    $row->addDate('currentDate')->setValue(Format::date($currentDate))->isRequired();
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
         $row = $form->addRow();
@@ -79,7 +79,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
 // define attendance tables, if user is permit to view them
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
-
     // generator of basic attendance table
     $getDailyAttendanceTable = function ($guid, $connection2, $rowID, $takeAttendanceURL) use ($session) {
 
@@ -199,7 +198,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
         $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
     } elseif (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-
         // Show My Form Groups
         try {
             $data=[
@@ -257,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $log = $resultLog->fetch();
 
                 // general row variables
-                $row['currentDate'] = Format::dateConvert($currentDate);
+                $row['currentDate'] = Format::date($currentDate);
 
                 // render group link variables
                 $row['groupQuery'] = '/modules/Roll Groups/rollGroups_details.php';
@@ -302,7 +300,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
         }
 
         if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-
             // Produce array of attendance data
             try {
                 $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
@@ -390,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $log = $resultLog->fetch();
 
                     // general row variables
-                    $row['currentDate'] = Format::dateConvert($currentDate);
+                    $row['currentDate'] = Format::date($currentDate);
 
                     // render group link variables
                     $row['groupQuery'] = '/modules/Departments/department_course_class.php';
