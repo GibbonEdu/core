@@ -27,6 +27,9 @@ use Gibbon\Tables\Renderer\SimpleRenderer;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// get session object
+$session = $container->get('session');
+
 // rendering parameters
 $currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : Format::dateConvert($_GET["currentDate"]);
 $today = date("Y-m-d");
@@ -34,7 +37,7 @@ $lastNSchoolDays = getLastNSchoolDays($guid, $connection2, $currentDate, 10, tru
 $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate.php")
     && isActionAccessible($guid, $connection2, "/modules/Attendance/report_courseClassesNotRegistered_byDate.php");
 $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
-    $_GET['gibbonPersonID'] : $_SESSION[$guid]["gibbonPersonID"];
+    $_GET['gibbonPersonID'] : $session->get('gibbonPersonID');
 
 // show access denied message, if needed
 if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
@@ -44,12 +47,12 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php
 
 // define attendance filter form, if user is permit to view it
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
-    $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/attendance.php");
+    $form->addHiddenValue('q', "/modules/".$session->get('module')."/attendance.php");
 
     $row = $form->addRow();
     $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
@@ -60,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
         $row->addLabel('gibbonPersonID', __('Staff'));
         $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
     } else {
-        $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
+        $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
     }
 
     $row = $form->addRow();
@@ -81,16 +84,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     );
     $dailyAttendanceTable->addColumn('group', __('Group'))
         ->width('80px')
-        ->format(function ($row) use ($guid) {
+        ->format(function ($row) use ($session) {
             return Format::link(
-                $_SESSION[$guid]["absoluteURL"] . '/index.php?'.
+                $session->get('absoluteURL') . '/index.php?'.
                     http_build_query(['q' => $row['groupQuery'], $row['rowID'] => $row[$row['rowID']]]),
                 $row['groupName']
             );
         });
     $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
         ->width('342px')
-        ->format(function ($row) use ($guid) {
+        ->format(function ($row) {
             $dayTable = "<table class='historyCalendarMini'>";
 
             $l = sizeof($row['recentHistory']);
@@ -146,14 +149,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
         });
     $dailyAttendanceTable->addColumn('today', __('Today'))
         ->width('40px')
-        ->format(function ($row) use ($guid) {
+        ->format(function ($row) use ($session) {
             switch ($row['today']) {
                 case 'taken':
                     // attendance taken
-                    return '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconTick.png"/>';
+                    return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconTick.png"/>';
                 case 'not taken':
                     // attendance not taken
-                    return '<img src="./themes/' . $_SESSION[$guid]["gibbonThemeName"] . '/img/iconCross.png"/>';
+                    return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconCross.png"/>';
                 case 'not timetabled':
                     // class not timetabled on the day
                     return '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">' .
@@ -173,7 +176,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
         // Show My Form Groups
         try {
-            $data=array("gibbonPersonIDTutor1"=>$gibbonPersonID, "gibbonPersonIDTutor2"=>$gibbonPersonID, "gibbonPersonIDTutor3"=>$gibbonPersonID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+            $data=[
+                'gibbonPersonIDTutor1' => $gibbonPersonID,
+                'gibbonPersonIDTutor2' => $gibbonPersonID,
+                'gibbonPersonIDTutor3' => $gibbonPersonID,
+                'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+            ];
             $sql="SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'";
             $result=$connection2->prepare($sql);
             $result->execute($data);
@@ -309,7 +317,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
             //Show My Classes
             try {
-                $data=array("gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"], "gibbonPersonID"=> $gibbonPersonID);
+                $data = [
+                    'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
+                    'gibbonPersonID' => $gibbonPersonID,
+                ];
 
                 $sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID,
                 (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount
