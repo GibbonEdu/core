@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Module\Markbook ;
 
 use Gibbon\session;
+use Gibbon\Domain\DataSet;
 use Gibbon\Contracts\Database\Connection;
 
 /**
@@ -204,7 +205,6 @@ class markbookView
      * @return  int
      */
     public function getColumnCountTotal() {
-
         if ($this->columnCountTotal > -1) return $this->columnCountTotal;
 
         // Build the initial column counts for this class
@@ -226,6 +226,7 @@ class markbookView
     /**
      * Load Columns
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   int    $pageNum
@@ -291,6 +292,38 @@ class markbookView
         }
 
         return (count($this->columns) > 0);
+    }
+
+    /**
+     * Load the current markbook columns from a DataSet.
+     *
+     * @param   DataSet $dataSet
+     * @return  bool    true if there are columns
+     */
+    public function loadColumnsFromDataSet(DataSet $dataSet)
+    {
+        $this->columns = [];
+        $this->columnCountTotal = $dataSet->getResultCount();
+        $this->columnsThisPage = count($dataSet);
+
+        // Grab the minimum sequenceNumber for the current page set, to pass to markbook_viewAjax.php
+        $this->minSequenceNumber = array_reduce($this->columns, function ($minimum, $item) {
+            return min($minimum, $item['sequenceNumber']);
+        }, 0);
+
+        // Build a markbookColumn object for each row
+        foreach ($dataSet as $i => $columnData) {
+            if ($column = new markbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
+                $this->columns[$i] = $column;
+
+                // Attach planner info to help determine if theres homework submissions for this column
+                if (!empty($columnData['gibbonPlannerEntry'])) {
+                    $column->setSubmissionDetails($columnData['gibbonPlannerEntry']);
+                }
+            }
+        }
+
+        return !empty($this->columns);
     }
 
     /**
@@ -882,6 +915,7 @@ class markbookView
     /**
      * Creates a date range SQL filter, also checks validity of dates provided
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $startDate  YYYY-MM-DD Format
@@ -909,6 +943,7 @@ class markbookView
     /**
      * Filter By Term
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   int|string $gibbonSchoolYearTermID
@@ -935,6 +970,7 @@ class markbookView
     /**
      * Creates simple SQL statements for options from the Class Selector
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $filter
@@ -954,6 +990,7 @@ class markbookView
     /**
      * Add a raw SQL statement to the filters
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @param   string $query
@@ -969,6 +1006,7 @@ class markbookView
     /**
      * Get a SQL frieldly string of query modifiers
      *
+     * @deprecated v17
      * @version 7th May 2016
      * @since   7th May 2016
      * @return  string
