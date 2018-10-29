@@ -1,0 +1,14 @@
+# `gitlab_ci` environment config goes here
+modules:
+    enabled:
+        - PhpBrowser:
+            url: "http://127.0.0.1:8888"
+    config:
+        Db:
+            dsn: "mysql:host=mariadb;dbname=gibbon_test"
+            user: "gibbon_test"
+            password: "gibbon_password"
+            dump: 'config/data/dump.sql'
+            populate: true
+            cleanup: false
+            reconnect: true

@@ -9,6 +9,23 @@
             "email": "ross@rossparker.org"
         }
     ],
+    "scripts": {
+        "test": [
+            "@test:codeception",
+            "@test:phpunit"
+        ],
+        "test:codeception": [
+            "cd tests && codecept run install --env $CI_PLATFORM",
+            "cd tests && codecept run acceptance --env $CI_PLATFORM"
+        ],
+        "test:phpunit": [
+            "cd tests && phpunit --verbose --configuration phpunit.xml"
+        ]
+    },
+    "scripts-descriptions": {
+        "test:codeception": "Initialize CI environment and run acceptance tests with Codeception.",
+        "test:phpunit": "Run unit tests with PHPUnit."
+    },
     "require": {
         "php" : "^5.5 || ^7.0",
         "ext-curl": "*",
