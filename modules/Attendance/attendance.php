@@ -447,16 +447,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     }
 }
 
-?>
-
-<?php if (isset($form)) { ?>
-    <?php echo $form->getOutput(); ?>
-<?php } ?>
-
-<?php if (isset($attendanceByRollGroupTable)) { ?>
-    <?php echo $attendanceByRollGroupTable->getOutput(); ?>
-<?php } ?>
-
-<?php if (isset($attendanceByCourseClassTable)) { ?>
-    <?php echo $attendanceByCourseClassTable->getOutput(); ?>
-<?php } ?>
+//
+// write page outputs
+//
+if (isset($form)) {
+    $page->write($form->getOutput());
+}
+if (isset($attendanceByRollGroupTable)) {
+    $page->write($attendanceByRollGroupTable->getOutput());
+}
+if (isset($attendanceByCourseClassTable)) {
+    $page->write($attendanceByCourseClassTable->getOutput());
+}
