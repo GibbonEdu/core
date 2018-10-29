@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\DataSet;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 
@@ -27,7 +28,7 @@ use Gibbon\Tables\Renderer\SimpleRenderer;
 require_once __DIR__ . '/moduleFunctions.php';
 
 // rendering parameters
-$currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : dateConvert($guid, $_GET["currentDate"]);
+$currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : Format::dateConvert($_GET["currentDate"]);
 $today = date("Y-m-d");
 $lastNSchoolDays = getLastNSchoolDays($guid, $connection2, $currentDate, 10, true);
 $accessNotRegistered = isActionAccessible($guid, $connection2, "/modules/Attendance/report_rollGroupsNotRegistered_byDate.php")
@@ -52,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
     $row = $form->addRow();
     $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-    $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
+    $row->addDate('currentDate')->setValue(Format::dateConvert($currentDate))->isRequired();
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
         $row = $form->addRow();
@@ -222,7 +223,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
                 // general row variables
                 $row['rowID'] = 'gibbonRollGroupID';
-                $row['currentDate'] = dateConvertBack($guid, $currentDate);
+                $row['currentDate'] = Format::dateConvert($currentDate);
 
                 // render group link variables
                 $row['groupQuery'] = '/modules/Roll Groups/rollGroups_details.php';
@@ -238,8 +239,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                         ];
                     } else {
                         $dayData = [
-                            'currentDate' => dateConvertBack($guid, $lastNSchoolDays[$i]),
-                            'currentDayTimestamp' => dateConvertToTimestamp($lastNSchoolDays[$i]),
+                            'currentDate' => Format::dateConvert($lastNSchoolDays[$i]),
+                            'currentDayTimestamp' => Format::timestamp($lastNSchoolDays[$i]),
                             'status' => isset($logHistory[$lastNSchoolDays[$i]]) ? 'present' : 'absent',
                         ];
                     }
@@ -361,7 +362,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
                     // general row variables
                     $row['rowID'] = 'gibbonCourseClassID';
-                    $row['currentDate'] = dateConvertBack($guid, $currentDate);
+                    $row['currentDate'] = Format::dateConvert($currentDate);
 
                     // render group link variables
                     $row['groupQuery'] = '/modules/Departments/department_course_class.php';
@@ -377,8 +378,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                             ];
                         } else {
                             $dayData = [
-                                'currentDate' => dateConvertBack($guid, $lastNSchoolDays[$i]),
-                                'currentDayTimestamp' => dateConvertToTimestamp($lastNSchoolDays[$i]),
+                                'currentDate' => Format::dateConvert($lastNSchoolDays[$i]),
+                                'currentDayTimestamp' => Format::timestamp($lastNSchoolDays[$i]),
                             ];
                             if (isset($logHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true) {
                                 $dayData['status'] = 'present';
