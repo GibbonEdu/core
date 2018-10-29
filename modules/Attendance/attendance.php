@@ -82,10 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     $dailyAttendanceTable->addColumn('group', __('Group'))
         ->width('80px')
         ->format(function ($row) use ($guid) {
-            return '<a href="' . $_SESSION[$guid]["absoluteURL"] . '/index.php?'.http_build_query([
-                'q' => $row['groupQuery'],
-                $row['rowID'] => $row[$row['rowID']],
-            ]) . '">' . $row['groupName'] . "</a>";
+            return Format::link(
+                $_SESSION[$guid]["absoluteURL"] . '/index.php?'.
+                    http_build_query(['q' => $row['groupQuery'], $row['rowID'] => $row[$row['rowID']]]),
+                $row['groupName']
+            );
         });
     $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
         ->width('342px')
@@ -123,11 +124,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                             break;
                         case 'present':
                             $class = 'highlightPresent';
-                            $content = "<a href=\"{$link}\">{$content}</a>";
+                            $content = Format::link($link, $content);
                             break;
                         case 'absent':
                             $class = 'highlightAbsent';
-                            $content = "<a href=\"{$link}\">{$content}</a>";
+                            $content = Format::link($link, $content);
                             break;
                         default:
                             $class = 'highlightNoData';
@@ -261,12 +262,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
                     ->width('50px')
                     ->format(function ($row) use ($guid) {
-                        return '<a href="index.php?' . http_build_query([
-                            'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
-                            $row['rowID'] => $row[$row['rowID']],
-                            'currentDate' => $row['currentDate'],
-                        ]) . '"><img title="' . __('Take Attendance') .
-                        '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] . '/img/attendance.png"/></a>';
+                        return Format::link(
+                            'index.php?' .
+                                http_build_query([
+                                    'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
+                                    $row['rowID'] => $row[$row['rowID']],
+                                    'currentDate' => $row['currentDate'],
+                                ]),
+                            '<img title="' . __('Take Attendance') .
+                                '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] .
+                                '/img/attendance.png"/>'
+                        );
                     });
             }
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
@@ -413,12 +419,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $attendanceByCourseClassTable->addColumn('actions', __('Actions'))
                         ->width('50px')
                         ->format(function ($row) use ($guid) {
-                            return '<a href="index.php?' . http_build_query([
-                                'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
-                                $row['rowID'] => $row[$row['rowID']],
-                                'currentDate' => $row['currentDate'],
-                            ]) . '"><img title="' . __('Take Attendance') .
-                            '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] . '/img/attendance.png"/></a>';
+                            return Format::link(
+                                'index.php?' . http_build_query([
+                                    'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
+                                    $row['rowID'] => $row[$row['rowID']],
+                                    'currentDate' => $row['currentDate'],
+                                ]),
+                                '<img title="' . __('Take Attendance') .
+                                    '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] .
+                                    '/img/attendance.png"/>'
+                            );
                         });
                 }
                 $attendanceByCourseClassTable->withData(new DataSet($attendanceByCourseClass));
