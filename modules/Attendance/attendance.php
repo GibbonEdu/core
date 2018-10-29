@@ -30,6 +30,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 // get session object
 $session = $container->get('session');
 
+// set page breadcrumbs
+$page->breadcrumbs()
+    ->add(__(getModuleName($_GET["q"])), getModuleEntry($_GET["q"], $connection2, $guid))
+    ->add(__('View Daily Attendance'));
+
 // rendering parameters
 $currentDate = (isset($_GET["currentDate"])==false) ? date("Y-m-d") : Format::dateConvert($_GET["currentDate"]);
 $today = date("Y-m-d");
@@ -49,6 +54,7 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
     $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
+    $form->setTitle(__('View Daily Attendance'));
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
@@ -266,6 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
             // define DataTable
             $attendanceByRollGroupTable = clone $dailyAttendanceTable;
+            $attendanceByRollGroupTable->setTitle(__('My Roll Group'));
             if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
                 $attendanceByRollGroupTable->addActionColumn()
                     ->width('50px')
@@ -420,6 +427,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 
                 // define DataTable
                 $attendanceByCourseClassTable = clone $dailyAttendanceTable;
+                $attendanceByCourseClassTable->setTitle(__('My Classes'));
                 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
                     $attendanceByCourseClassTable->addActionColumn()
                         ->width('50px')
@@ -440,24 +448,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
     }
 }
 
-// set page breadcrumbs
-$page->breadcrumbs()
-     ->add(__(getModuleName($_GET["q"])), getModuleEntry($_GET["q"], $connection2, $guid))
-     ->add(__('View Daily Attendance'));
-
 ?>
 
 <?php if (isset($form)) { ?>
-    <h2><?php echo __("View Daily Attendance"); ?></h2>
     <?php echo $form->getOutput(); ?>
 <?php } ?>
 
 <?php if (isset($attendanceByRollGroupTable)) { ?>
-    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __("My Roll Group"); ?></h2>
     <?php echo $attendanceByRollGroupTable->getOutput(); ?>
 <?php } ?>
 
 <?php if (isset($attendanceByCourseClassTable)) { ?>
-    <h2 style='margin-bottom: 10px' class='sidebar'><?php echo __("My Classes"); ?></h2>
     <?php echo $attendanceByCourseClassTable->getOutput(); ?>
 <?php } ?>
