@@ -300,10 +300,16 @@ $page->stylesheets->addMultiple([
     'thickbox'     => 'lib/thickbox/thickbox.css',
 ]);
 
-// Set personal background
+// Set personal, organisational or theme background
+if (!($session->exists('organisationBackground'))) {
+     $session->set('organisationBackground', getSettingByScope($this->pdo, 'System', 'organisationBackground'));
+}        
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
     $backgroundScroll = 'repeat scroll center top';
+} else if (!empty($session->get('organisationBackground'))) {
+    $backgroundImage = $session->get('absoluteURL').'/'.$session->get('organisationBackground');
+    $backgroundScroll = 'repeat fixed center top';
 } else {
     $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
     $backgroundScroll = 'repeat fixed center top';

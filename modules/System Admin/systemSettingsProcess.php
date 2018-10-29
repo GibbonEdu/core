@@ -39,6 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $organisationNameShort = $_POST['organisationNameShort'];
     $organisationEmail = $_POST['organisationEmail'];
     $organisationLogo = $_POST['organisationLogo'];
+    $organisationBackground = $_POST['organisationBackground'];
     $organisationAdministrator = $_POST['organisationAdministrator'];
     $organisationDBA = $_POST['organisationDBA'];
     $organisationHR = $_POST['organisationHR'];
@@ -129,6 +130,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('organisationLogo' => $organisationLogo);
             $sql = "UPDATE gibbonSetting SET value=:organisationLogo WHERE scope='System' AND name='organisationLogo'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        try {
+            $data = array('organisationBackground' => $organisationBackground);
+            $sql = "UPDATE gibbonSetting SET value=:organisationBackground WHERE scope='System' AND name='organisationBackground'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
