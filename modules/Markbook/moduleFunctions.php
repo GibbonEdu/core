@@ -67,6 +67,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $col = $form->addRow()->addColumn()->addClass('inline right');
 
+    // SEARCH
+    $search = $_GET['search'] ?? '';
+
+    $col->addContent(__('Search').':');
+    $col->addTextField('search')
+        ->setClass('shortWidth')
+        ->setValue($search);
+
     // TERM
     if ($enableGroupByTerm == 'Y' ) {
         $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
@@ -77,7 +85,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':');
+        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
@@ -136,6 +144,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         ->selected($gibbonCourseClassID);
 
     $col->addSubmit(__('Go'));
+
+    if (!empty($search)) {
+        $clearURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'];
+        $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
+
+        $form->addRow()->addContent($clearLink)->addClass('right');
+    }
+
 
     $output .= $form->getOutput();
 
