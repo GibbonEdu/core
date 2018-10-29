@@ -80,99 +80,119 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
 // define attendance tables, if user is permit to view them
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
 
-    // proto attendance table with columns for both
-    // roll group and course class
-    $dailyAttendanceTable = DataTable::create(
-        '',
-        (new SimpleRenderer)
-            ->addClass('mini')
-            ->addClass('dailyAttendanceTable')
-    );
-    $dailyAttendanceTable->addColumn('group', __('Group'))
-        ->width('80px')
-        ->format(function ($row) use ($session) {
-            return Format::link(
-                $session->get('absoluteURL') . '/index.php?'.
-                    http_build_query(['q' => $row['groupQuery'], $row['rowID'] => $row[$row['rowID']]]),
-                $row['groupName']
-            );
-        });
-    $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
-        ->width('342px')
-        ->format(function ($row) {
-            $dayTable = "<table class='historyCalendarMini'>";
+    // generator of basic attendance table
+    $getDailyAttendanceTable = function ($guid, $connection2, $rowID, $takeAttendanceURL) use ($session) {
 
-            $l = sizeof($row['recentHistory']);
-            for ($i = 0; $i < $l; $i++) {
-                $dayTable .= '<tr>';
-                for ($j = 0; ($j < 10) && ($i + $j < $l); $j++) {
-                    // grouping 10 days as a row
-                    $day = $row['recentHistory'][$i + $j];
-                    $link = '';
-                    $content = '';
+        // proto attendance table with columns for both
+        // roll group and course class
+        $dailyAttendanceTable = DataTable::create(
+            '',
+            (new SimpleRenderer)
+                ->addClass('mini')
+                ->addClass('dailyAttendanceTable')
+        );
 
-                    // default link and content
-                    if (!empty($day['currentDate']) && !empty($day['currentDayTimestamp'])) {
-                        // link and date content of a cell
-                        $link = './index.php?' . http_build_query([
-                            'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
-                            $row['rowID'] => $row[$row['rowID']],
-                            'currentDate' => $day['currentDate'],
-                        ]);
-                        $content =
-                            '<div class="day">'.date('d', $day['currentDayTimestamp']).'</div>'.
-                            '<div class="month">'.date('M', $day['currentDayTimestamp']).'</div>';
+        // column definitions
+        $dailyAttendanceTable->addColumn('group', __('Group'))
+            ->width('80px')
+            ->format(function ($row) use ($session, $rowID) {
+                return Format::link(
+                    $session->get('absoluteURL') . '/index.php?'.
+                        http_build_query(['q' => $row['groupQuery'], $rowID => $row[$rowID]]),
+                    $row['groupName']
+                );
+            });
+        $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
+            ->width('342px')
+            ->format(function ($row) use ($takeAttendanceURL, $rowID) {
+                $dayTable = "<table class='historyCalendarMini'>";
+
+                $l = sizeof($row['recentHistory']);
+                for ($i = 0; $i < $l; $i++) {
+                    $dayTable .= '<tr>';
+                    for ($j = 0; ($j < 10) && ($i + $j < $l); $j++) {
+                        // grouping 10 days as a row
+                        $day = $row['recentHistory'][$i + $j];
+                        $link = '';
+                        $content = '';
+
+                        // default link and content
+                        if (!empty($day['currentDate']) && !empty($day['currentDayTimestamp'])) {
+                            // link and date content of a cell
+                            $link = './index.php?' . http_build_query([
+                                'q' => $takeAttendanceURL,
+                                $rowID => $row[$rowID],
+                                'currentDate' => $day['currentDate'],
+                            ]);
+                            $content =
+                                '<div class="day">'.date('d', $day['currentDayTimestamp']).'</div>'.
+                                '<div class="month">'.date('M', $day['currentDayTimestamp']).'</div>';
+                        }
+
+                        // determine how to display link and content
+                        // according to status
+                        switch ($day['status']) {
+                            case 'na':
+                                $class = 'highlightNoData';
+                                $content = __('NA');
+                                break;
+                            case 'present':
+                                $class = 'highlightPresent';
+                                $content = Format::link($link, $content);
+                                break;
+                            case 'absent':
+                                $class = 'highlightAbsent';
+                                $content = Format::link($link, $content);
+                                break;
+                            default:
+                                $class = 'highlightNoData';
+                                break;
+                        }
+
+                        $dayTable .= "<td class=\"{$class}\" style=\"padding: 12px !important;\">{$content}</td>";
                     }
-
-                    // determine how to display link and content
-                    // according to status
-                    switch ($day['status']) {
-                        case 'na':
-                            $class = 'highlightNoData';
-                            $content = __('NA');
-                            break;
-                        case 'present':
-                            $class = 'highlightPresent';
-                            $content = Format::link($link, $content);
-                            break;
-                        case 'absent':
-                            $class = 'highlightAbsent';
-                            $content = Format::link($link, $content);
-                            break;
-                        default:
-                            $class = 'highlightNoData';
-                            break;
-                    }
-
-                    $dayTable .= "<td class=\"{$class}\" style=\"padding: 12px !important;\">{$content}</td>";
+                    $i += $j;
+                    $dayTable .= '</tr>';
                 }
-                $i += $j;
-                $dayTable .= '</tr>';
-            }
 
-            $dayTable .= '</table>';
-            return $dayTable;
-        });
-    $dailyAttendanceTable->addColumn('today', __('Today'))
-        ->width('40px')
-        ->format(function ($row) use ($session) {
-            switch ($row['today']) {
-                case 'taken':
-                    // attendance taken
-                    return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconTick.png"/>';
-                case 'not taken':
-                    // attendance not taken
-                    return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconCross.png"/>';
-                case 'not timetabled':
-                    // class not timetabled on the day
-                    return '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">' .
-                        __('N/A') . '</span>';
-            }
-        });
-    $dailyAttendanceTable->addColumn('in', __('In'))
-        ->width('40px');
-    $dailyAttendanceTable->addColumn('out', __('Out'))
-        ->width('40px');
+                $dayTable .= '</table>';
+                return $dayTable;
+            });
+        $dailyAttendanceTable->addColumn('today', __('Today'))
+            ->width('40px')
+            ->format(function ($row) use ($session) {
+                switch ($row['today']) {
+                    case 'taken':
+                        // attendance taken
+                        return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconTick.png"/>';
+                    case 'not taken':
+                        // attendance not taken
+                        return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconCross.png"/>';
+                    case 'not timetabled':
+                        // class not timetabled on the day
+                        return '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">' .
+                            __('N/A') . '</span>';
+                }
+            });
+        $dailyAttendanceTable->addColumn('in', __('In'))
+            ->width('40px');
+        $dailyAttendanceTable->addColumn('out', __('Out'))
+            ->width('40px');
+
+        // action column, if user has the permission
+        if (isActionAccessible($guid, $connection2, $takeAttendanceURL)) {
+            $dailyAttendanceTable->addActionColumn()
+                ->width('50px')
+                ->addParam($rowID)
+                ->addParam('currentDate')
+                ->addAction('takeAttendance')
+                ->setLabel(__('Take Attendance'))
+                ->setIcon('attendance')
+                ->setURL($takeAttendanceURL);
+        }
+
+        return $dailyAttendanceTable;
+    };
 
     if ($currentDate>$today) {
         $page->addError(__("The specified date is in the future: it must be today or earlier."));
@@ -237,7 +257,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 $log = $resultLog->fetch();
 
                 // general row variables
-                $row['rowID'] = 'gibbonRollGroupID';
                 $row['currentDate'] = Format::dateConvert($currentDate);
 
                 // render group link variables
@@ -271,22 +290,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
             }
 
             // define DataTable
-            $attendanceByRollGroupTable = clone $dailyAttendanceTable;
+            $takeAttendanceURL = '/modules/Attendance/attendance_take_byRollGroup.php';
+            $attendanceByRollGroupTable = $getDailyAttendanceTable(
+                $guid,
+                $connection2,
+                'gibbonRollGroupID',
+                $takeAttendanceURL
+            );
             $attendanceByRollGroupTable->setTitle(__('My Roll Group'));
-            if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                $attendanceByRollGroupTable->addActionColumn()
-                    ->width('50px')
-                    ->setAction('takeAttendance')
-                    ->setLabel(__('Take Attendance'))
-                    ->setIcon('attendance')
-                    ->setURL(
-                        'index.php?' . http_build_query([
-                            'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
-                            $row['rowID'] => $row[$row['rowID']],
-                            'currentDate' => $row['currentDate'],
-                        ])
-                    );
-            }
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
 
@@ -379,7 +390,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                     $log = $resultLog->fetch();
 
                     // general row variables
-                    $row['rowID'] = 'gibbonCourseClassID';
                     $row['currentDate'] = Format::dateConvert($currentDate);
 
                     // render group link variables
@@ -426,22 +436,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 }
 
                 // define DataTable
-                $attendanceByCourseClassTable = clone $dailyAttendanceTable;
+                $takeAttendanceURL = '/modules/Attendance/attendance_take_byCourseClass.php';
+                $attendanceByCourseClassTable = $getDailyAttendanceTable(
+                    $guid,
+                    $connection2,
+                    'gibbonCourseClassID',
+                    $takeAttendanceURL
+                );
                 $attendanceByCourseClassTable->setTitle(__('My Classes'));
-                if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-                    $attendanceByCourseClassTable->addActionColumn()
-                        ->width('50px')
-                        ->addAction('takeAttendance')
-                        ->setLabel(__('Take Attendance'))
-                        ->setIcon('attendance')
-                        ->setURL(
-                            'index.php?' . http_build_query([
-                                'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
-                                $row['rowID'] => $row[$row['rowID']],
-                                'currentDate' => $row['currentDate'],
-                            ])
-                        );
-                }
                 $attendanceByCourseClassTable->withData(new DataSet($attendanceByCourseClass));
             }
         }
