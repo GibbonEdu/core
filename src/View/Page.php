@@ -313,6 +313,9 @@ class Page extends View
      */
     public function gatherData() : array
     {
+        // This is for backwards compatibility with pages that still have hardcoded breadcrumbs.
+        // It currently only displays the new breadcrumbs if some have been added via this class.
+        // Eg: more than one on a non-module page, more than two on a module-page.
         $breadcrumbs = $this->breadcrumbs->getItems();
         $displayTrail = (empty($this->getModule()) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
         
