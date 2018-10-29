@@ -259,21 +259,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
             // define DataTable
             $attendanceByRollGroupTable = clone $dailyAttendanceTable;
             if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-                $attendanceByRollGroupTable->addColumn('actions', __('Actions'))
+                $attendanceByRollGroupTable->addActionColumn()
                     ->width('50px')
-                    ->format(function ($row) use ($guid) {
-                        return Format::link(
-                            'index.php?' .
-                                http_build_query([
-                                    'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
-                                    $row['rowID'] => $row[$row['rowID']],
-                                    'currentDate' => $row['currentDate'],
-                                ]),
-                            '<img title="' . __('Take Attendance') .
-                                '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] .
-                                '/img/attendance.png"/>'
-                        );
-                    });
+                    ->setAction('takeAttendance')
+                    ->setLabel(__('Take Attendance'))
+                    ->setIcon('attendance')
+                    ->setURL(
+                        'index.php?' . http_build_query([
+                            'q' => '/modules/Attendance/attendance_take_byRollGroup.php',
+                            $row['rowID'] => $row[$row['rowID']],
+                            'currentDate' => $row['currentDate'],
+                        ])
+                    );
             }
             $attendanceByRollGroupTable->withData(new DataSet($attendanceByRollGroup));
         }
@@ -413,20 +410,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php'
                 // define DataTable
                 $attendanceByCourseClassTable = clone $dailyAttendanceTable;
                 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-                    $attendanceByCourseClassTable->addColumn('actions', __('Actions'))
+                    $attendanceByCourseClassTable->addActionColumn()
                         ->width('50px')
-                        ->format(function ($row) use ($guid) {
-                            return Format::link(
-                                'index.php?' . http_build_query([
-                                    'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
-                                    $row['rowID'] => $row[$row['rowID']],
-                                    'currentDate' => $row['currentDate'],
-                                ]),
-                                '<img title="' . __('Take Attendance') .
-                                    '" src="./themes/' .  $_SESSION[$guid]["gibbonThemeName"] .
-                                    '/img/attendance.png"/>'
-                            );
-                        });
+                        ->addAction('takeAttendance')
+                        ->setLabel(__('Take Attendance'))
+                        ->setIcon('attendance')
+                        ->setURL(
+                            'index.php?' . http_build_query([
+                                'q' => '/modules/Attendance/attendance_take_byCourseClass.php',
+                                $row['rowID'] => $row[$row['rowID']],
+                                'currentDate' => $row['currentDate'],
+                            ])
+                        );
                 }
                 $attendanceByCourseClassTable->withData(new DataSet($attendanceByCourseClass));
             }
