@@ -38,6 +38,7 @@ $gibbonPersonID = ($accessNotRegistered && isset($_GET['gibbonPersonID'])) ?
 // show access denied message, if needed
 if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
     $page->addError(__("You do not have access to this action."));
+    return;
 }
 
 // define attendance filter form, if user is permit to view it
