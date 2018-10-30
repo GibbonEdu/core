@@ -51,34 +51,32 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php
 }
 
 // define attendance filter form, if user is permit to view it
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php')) {
-    $form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+$form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
 
-    $form->setTitle(__('View Daily Attendance'));
-    $form->setFactory(DatabaseFormFactory::create($pdo));
-    $form->setClass('noIntBorder fullWidth');
+$form->setTitle(__('View Daily Attendance'));
+$form->setFactory(DatabaseFormFactory::create($pdo));
+$form->setClass('noIntBorder fullWidth');
 
-    $form->addHiddenValue('q', "/modules/".$session->get('module')."/attendance.php");
+$form->addHiddenValue('q', '/modules/'.$session->get('module').'/attendance.php');
 
+$row = $form->addRow();
+$row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
+$row->addDate('currentDate')->setValue(Format::date($currentDate))->isRequired();
+
+if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
     $row = $form->addRow();
-    $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-    $row->addDate('currentDate')->setValue(Format::date($currentDate))->isRequired();
-
-    if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
-        $row = $form->addRow();
-        $row->addLabel('gibbonPersonID', __('Staff'));
-        $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
-    } else {
-        $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
-    }
-
-    $row = $form->addRow();
-    $row->addFooter();
-    $row->addSearchSubmit($gibbon->session);
+    $row->addLabel('gibbonPersonID', __('Staff'));
+    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+} else {
+    $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
 }
 
+$row = $form->addRow();
+$row->addFooter();
+$row->addSearchSubmit($gibbon->session);
+
 // define attendance tables, if user is permit to view them
-if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php') && isset($_SESSION[$guid]["username"])) {
+if (isset($_SESSION[$guid]["username"])) {
     // generator of basic attendance table
     $getDailyAttendanceTable = function ($guid, $connection2, $rowID, $takeAttendanceURL) use ($session) {
 
