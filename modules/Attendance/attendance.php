@@ -78,7 +78,7 @@ $row->addSearchSubmit($gibbon->session);
 // define attendance tables, if user is permit to view them
 if (isset($_SESSION[$guid]["username"])) {
     // generator of basic attendance table
-    $getDailyAttendanceTable = function ($guid, $connection2, $rowID, $takeAttendanceURL) use ($session) {
+    $getDailyAttendanceTable = function ($guid, $connection2, $currentDate, $rowID, $takeAttendanceURL) use ($session) {
 
         // proto attendance table with columns for both
         // roll group and course class
@@ -176,8 +176,8 @@ if (isset($_SESSION[$guid]["username"])) {
         $dailyAttendanceTable->addColumn('out', __('Out'))
             ->width('40px');
 
-        // action column, if user has the permission
-        if (isActionAccessible($guid, $connection2, $takeAttendanceURL)) {
+        // action column, if user has the permission, and if this is a school day.
+        if (isActionAccessible($guid, $connection2, $takeAttendanceURL) && isSchoolOpen($guid, $currentDate, $connection2)) {
             $dailyAttendanceTable->addActionColumn()
                 ->width('50px')
                 ->addParam($rowID)
@@ -195,7 +195,9 @@ if (isset($_SESSION[$guid]["username"])) {
         $page->addError(__("The specified date is in the future: it must be today or earlier."));
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
         $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
-    } elseif (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
+    }
+
+    if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
         // Show My Form Groups
         try {
             $result = $connection2->prepare("SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'");
@@ -289,6 +291,7 @@ if (isset($_SESSION[$guid]["username"])) {
             $attendanceByRollGroupTable = $getDailyAttendanceTable(
                 $guid,
                 $connection2,
+                $currentDate,
                 'gibbonRollGroupID',
                 $takeAttendanceURL
             );
@@ -429,6 +432,7 @@ if (isset($_SESSION[$guid]["username"])) {
                 $attendanceByCourseClassTable = $getDailyAttendanceTable(
                     $guid,
                     $connection2,
+                    $currentDate,
                     'gibbonCourseClassID',
                     $takeAttendanceURL
                 );
