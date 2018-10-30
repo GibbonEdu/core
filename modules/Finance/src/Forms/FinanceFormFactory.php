@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Finance\Forms;
+namespace Gibbon\Module\Finance\Forms;
 
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Contracts\Database\Connection;
