@@ -18,8 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Domain\DataSet;
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\SimpleRenderer;
@@ -31,7 +31,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 $session = $container->get('session');
 
 // set page breadcrumbs
-$page->breadcrumbs()
+$page->breadcrumbs
     ->add(__(getModuleName($_GET["q"])), getModuleEntry($_GET["q"], $connection2, $guid))
     ->add(__('View Daily Attendance'));
 
@@ -51,13 +51,13 @@ if (!isActionAccessible($guid, $connection2, '/modules/Attendance/attendance.php
 }
 
 // define attendance filter form, if user is permit to view it
-$form = Form::create('action', $session->get('absoluteURL').'/index.php', 'get');
+$form = Form::create('action', $session->get('absoluteURL') . '/index.php', 'get');
 
 $form->setTitle(__('View Daily Attendance'));
 $form->setFactory(DatabaseFormFactory::create($pdo));
 $form->setClass('noIntBorder fullWidth');
 
-$form->addHiddenValue('q', '/modules/'.$session->get('module').'/attendance.php');
+$form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.php');
 
 $row = $form->addRow();
 $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
@@ -94,7 +94,7 @@ if (isset($_SESSION[$guid]["username"])) {
             ->width('80px')
             ->format(function ($row) use ($session, $rowID) {
                 return Format::link(
-                    $session->get('absoluteURL') . '/index.php?'.
+                    $session->get('absoluteURL') . '/index.php?' .
                         http_build_query(['q' => $row['groupQuery'], $rowID => $row[$rowID]]),
                     $row['groupName']
                 );
@@ -122,8 +122,8 @@ if (isset($_SESSION[$guid]["username"])) {
                                 'currentDate' => $day['currentDate'],
                             ]);
                             $content =
-                                '<div class="day">'.date('d', $day['currentDayTimestamp']).'</div>'.
-                                '<div class="month">'.date('M', $day['currentDayTimestamp']).'</div>';
+                                '<div class="day">' . date('d', $day['currentDayTimestamp']) . '</div>' .
+                                '<div class="month">' . date('M', $day['currentDayTimestamp']) . '</div>';
                         }
 
                         // determine how to display link and content
@@ -167,7 +167,7 @@ if (isset($_SESSION[$guid]["username"])) {
                         return '<img src="./themes/' . $session->get('gibbonThemeName') . '/img/iconCross.png"/>';
                     case 'not timetabled':
                         // class not timetabled on the day
-                        return '<span title="'.__('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.').'">' .
+                        return '<span title="' . __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.') . '">' .
                             __('N/A') . '</span>';
                 }
             });
@@ -191,35 +191,35 @@ if (isset($_SESSION[$guid]["username"])) {
         return $dailyAttendanceTable;
     };
 
-    if ($currentDate>$today) {
+    if ($currentDate > $today) {
         $page->addError(__("The specified date is in the future: it must be today or earlier."));
     } elseif (isSchoolOpen($guid, $currentDate, $connection2)==false) {
         $page->addError(__("School is closed on the specified date, and so attendance information cannot be recorded."));
     } elseif (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
         // Show My Form Groups
         try {
-            $data=[
+            $result = $connection2->prepare("SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'");
+            $result->execute([
                 'gibbonPersonIDTutor1' => $gibbonPersonID,
                 'gibbonPersonIDTutor2' => $gibbonPersonID,
                 'gibbonPersonIDTutor3' => $gibbonPersonID,
                 'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
-            ];
-            $sql="SELECT gibbonRollGroupID, gibbonRollGroup.nameShort as name, firstDay, lastDay FROM gibbonRollGroup JOIN gibbonSchoolYear ON (gibbonRollGroup.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID) WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor1 OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonRollGroup.attendance = 'Y'";
-            $result=$connection2->prepare($sql);
-            $result->execute($data);
+            ]);
         } catch (PDOException $e) {
             $page->addError($e->getMessage());
         }
 
-        if ($result->rowCount()>0) {
+        if ($result->rowCount() > 0) {
             $attendanceByRollGroup = [];
             while ($row = $result->fetch()) {
                 //Produce array of attendance data
                 try {
-                    $dataAttendance = array("gibbonRollGroupID" => $row["gibbonRollGroupID"], 'dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-                    $sqlAttendance = 'SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date';
-                    $resultAttendance = $connection2->prepare($sqlAttendance);
-                    $resultAttendance->execute($dataAttendance);
+                    $resultAttendance = $connection2->prepare('SELECT date, gibbonRollGroupID, UNIX_TIMESTAMP(timestampTaken) FROM gibbonAttendanceLogRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID AND date>=:dateStart AND date<=:dateEnd ORDER BY date');
+                    $resultAttendance->execute([
+                        'gibbonRollGroupID' => $row["gibbonRollGroupID"],
+                        'dateStart' => $lastNSchoolDays[count($lastNSchoolDays) - 1],
+                        'dateEnd' => $lastNSchoolDays[0],
+                    ]);
                 } catch (PDOException $e) {
                     $page->addError($e->getMessage());
                 }
@@ -230,22 +230,21 @@ if (isset($_SESSION[$guid]["username"])) {
 
                 //Grab attendance log for the group & current day
                 try {
-                    $dataLog=array("gibbonRollGroupID"=>$row["gibbonRollGroupID"], "date"=>$currentDate . "%");
-
-                    $sqlLog = "SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
-                    COUNT(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) AS total,
-                    COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonAttendanceLogPerson.gibbonPersonID END) AS absent
-                    FROM gibbonAttendanceLogPerson
-                    JOIN gibbonAttendanceLogRollGroup ON (gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date)
-                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonAttendanceLogRollGroup.gibbonRollGroupID)
-                    WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
-                    AND gibbonAttendanceLogPerson.date LIKE :date
-                    AND gibbonAttendanceLogPerson.context = 'Roll Group'
-                    GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID
-                    ORDER BY gibbonAttendanceLogPerson.timestampTaken";
-
-                    $resultLog=$connection2->prepare($sqlLog);
-                    $resultLog->execute($dataLog);
+                    $resultLog = $connection2->prepare("SELECT DISTINCT gibbonAttendanceLogRollGroupID, gibbonAttendanceLogRollGroup.timestampTaken as timestamp,
+                        COUNT(DISTINCT gibbonAttendanceLogPerson.gibbonPersonID) AS total,
+                        COUNT(DISTINCT CASE WHEN gibbonAttendanceLogPerson.direction = 'Out' THEN gibbonAttendanceLogPerson.gibbonPersonID END) AS absent
+                        FROM gibbonAttendanceLogPerson
+                        JOIN gibbonAttendanceLogRollGroup ON (gibbonAttendanceLogRollGroup.date = gibbonAttendanceLogPerson.date)
+                        JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonAttendanceLogPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonAttendanceLogRollGroup.gibbonRollGroupID)
+                        WHERE gibbonAttendanceLogRollGroup.gibbonRollGroupID=:gibbonRollGroupID
+                        AND gibbonAttendanceLogPerson.date LIKE :date
+                        AND gibbonAttendanceLogPerson.context = 'Roll Group'
+                        GROUP BY gibbonAttendanceLogRollGroup.gibbonAttendanceLogRollGroupID
+                        ORDER BY gibbonAttendanceLogPerson.timestampTaken");
+                    $resultLog->execute([
+                        'gibbonRollGroupID' => $row['gibbonRollGroupID'],
+                        'date' => $currentDate . '%'
+                    ]);
                 } catch (PDOException $e) {
                     $page->addError($e->getMessage());
                 }
@@ -260,12 +259,12 @@ if (isset($_SESSION[$guid]["username"])) {
                 $row['groupName'] = $row['name'];
 
                 // render recentHistory into the row
-                for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                for ($i = count($lastNSchoolDays) - 1; $i >= 0; --$i) {
                     if ($i > (count($lastNSchoolDays) - 1)) {
                         $dayData = [
                             'currentDate' => null,
                             'currentDayTimestamp' => null,
-                            'status' => 'na'
+                            'status' => 'na',
                         ];
                     } else {
                         $dayData = [
@@ -278,8 +277,8 @@ if (isset($_SESSION[$guid]["username"])) {
                 }
 
                 // Attendance not taken
-                $row['today'] = ($resultLog->rowCount()<1) ? 'not taken' : 'taken';
-                $row['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                $row['today'] = ($resultLog->rowCount() < 1) ? 'not taken' : 'taken';
+                $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
                 $row['out'] = $log["absent"];
 
                 $attendanceByRollGroup[] = $row;
@@ -300,11 +299,11 @@ if (isset($_SESSION[$guid]["username"])) {
         if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
             // Produce array of attendance data
             try {
-                $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0]);
-                $sql = "SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date";
-
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $connection2->prepare("SELECT date, gibbonCourseClassID FROM gibbonAttendanceLogCourseClass WHERE date>=:dateStart AND date<=:dateEnd ORDER BY date");
+                $result->execute([
+                    'dateStart' => $lastNSchoolDays[count($lastNSchoolDays) - 1],
+                    'dateEnd' => $lastNSchoolDays[0],
+                ]);
             } catch (PDOException $e) {
                 $page->addError($e->getMessage());
             }
@@ -315,11 +314,11 @@ if (isset($_SESSION[$guid]["username"])) {
 
             // Produce an array of scheduled classes
             try {
-                $data = array('dateStart' => $lastNSchoolDays[count($lastNSchoolDays)-1], 'dateEnd' => $lastNSchoolDays[0] );
-                $sql = "SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date";
-
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
+                $result = $connection2->prepare("SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayDate.date FROM gibbonTTDayRowClass JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonTTDayRowClass.gibbonCourseClassID) WHERE gibbonCourseClass.attendance = 'Y' AND gibbonTTDayDate.date>=:dateStart AND gibbonTTDayDate.date<=:dateEnd ORDER BY gibbonTTDayDate.date");
+                $result->execute([
+                    'dateStart' => $lastNSchoolDays[count($lastNSchoolDays) - 1],
+                    'dateEnd' => $lastNSchoolDays[0],
+                ]);
             } catch (PDOException $e) {
                 $page->addError($e->getMessage());
             }
@@ -330,28 +329,24 @@ if (isset($_SESSION[$guid]["username"])) {
 
             //Show My Classes
             try {
-                $data = [
+                $result = $connection2->prepare("SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID,
+                    (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount
+                    FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson
+                    WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID
+                    AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID
+                    AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%'
+                    AND gibbonCourseClass.attendance = 'Y'
+                    ORDER BY course, class");
+                $result->execute([
                     'gibbonSchoolYearID' => $session->get('gibbonSchoolYearID'),
                     'gibbonPersonID' => $gibbonPersonID,
-                ];
-
-                $sql="SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourseClass.gibbonCourseClassID,
-                (SELECT count(*) FROM gibbonCourseClassPerson WHERE role='Student' AND gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) as studentCount
-                FROM gibbonCourse, gibbonCourseClass, gibbonCourseClassPerson
-                WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID
-                AND gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID
-                AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND NOT role LIKE '% - Left%'
-                AND gibbonCourseClass.attendance = 'Y'
-                ORDER BY course, class";
-
-                $result=$connection2->prepare($sql);
-                $result->execute($data);
+                ]);
             } catch (PDOException $e) {
                 //
             }
 
-            if ($result->rowCount()>0) {
-                $count=0;
+            if ($result->rowCount() > 0) {
+                $count = 0;
 
                 $attendanceByCourseClass = [];
                 while ($row = $result->fetch()) {
@@ -364,20 +359,19 @@ if (isset($_SESSION[$guid]["username"])) {
 
                     //Grab attendance log for the class & current day
                     try {
-                        $dataLog=array("gibbonCourseClassID"=>$row["gibbonCourseClassID"], "date"=>$currentDate . "%");
-
-                        $sqlLog="SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp,
-                        COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent
-                        FROM gibbonAttendanceLogCourseClass
-                        JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
-                        WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID
-                        AND gibbonAttendanceLogPerson.context='Class'
-                        AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date
-                        GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID
-                        ORDER BY gibbonAttendanceLogCourseClass.timestampTaken";
-
-                        $resultLog=$connection2->prepare($sqlLog);
-                        $resultLog->execute($dataLog);
+                        $resultLog = $connection2->prepare("SELECT gibbonAttendanceLogCourseClass.timestampTaken as timestamp,
+                            COUNT(gibbonAttendanceLogPerson.gibbonPersonID) AS total, SUM(gibbonAttendanceLogPerson.direction = 'Out') AS absent
+                            FROM gibbonAttendanceLogCourseClass
+                            JOIN gibbonAttendanceLogPerson ON gibbonAttendanceLogPerson.gibbonCourseClassID = gibbonAttendanceLogCourseClass.gibbonCourseClassID
+                            WHERE gibbonAttendanceLogCourseClass.gibbonCourseClassID=:gibbonCourseClassID
+                            AND gibbonAttendanceLogPerson.context='Class'
+                            AND gibbonAttendanceLogCourseClass.date LIKE :date AND gibbonAttendanceLogPerson.date LIKE :date
+                            GROUP BY gibbonAttendanceLogCourseClass.gibbonAttendanceLogCourseClassID
+                            ORDER BY gibbonAttendanceLogCourseClass.timestampTaken");
+                        $resultLog->execute([
+                            'gibbonCourseClassID' => $row['gibbonCourseClassID'],
+                            'date' => $currentDate . '%',
+                        ]);
                     } catch (PDOException $e) {
                         $page->addError($e->getMessage());
                     }
@@ -392,12 +386,12 @@ if (isset($_SESSION[$guid]["username"])) {
                     $row['groupName'] = $row["course"] . "." . $row["class"];
 
                     // render recentHistory into the row
-                    for ($i = count($lastNSchoolDays)-1; $i >= 0; --$i) {
+                    for ($i = count($lastNSchoolDays) - 1; $i >= 0; --$i) {
                         if ($i > (count($lastNSchoolDays) - 1)) {
                             $dayData = [
                                 'currentDate' => null,
                                 'currentDayTimestamp' => null,
-                                'status' => 'na'
+                                'status' => 'na',
                             ];
                         } else {
                             $dayData = [
@@ -408,9 +402,9 @@ if (isset($_SESSION[$guid]["username"])) {
                                 $dayData['status'] = 'present';
                             } else {
                                 $dayData['status'] =
-                                    isset($ttHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) ?
-                                        $dayData['status'] = 'absent' :
-                                        $dayData['status'] = null;
+                                isset($ttHistory[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) ?
+                                $dayData['status'] = 'absent' :
+                                $dayData['status'] = null;
                             }
                         }
                         $row['recentHistory'][] = $dayData;
@@ -419,12 +413,12 @@ if (isset($_SESSION[$guid]["username"])) {
                     // attendance today, if timetabled
                     $row['today'] = null;
                     if (isset($ttHistory[$row['gibbonCourseClassID']][$currentDate])) {
-                        $row['today'] = ($resultLog->rowCount()<1) ? 'not taken' : 'taken';
+                        $row['today'] = ($resultLog->rowCount() < 1) ? 'not taken' : 'taken';
                     } elseif (isset($logHistory[$row['gibbonCourseClassID']][$currentDate])) {
                         // class is not timetabled to run on the specified date
                         $row['today'] = 'not timetabled';
                     }
-                    $row['in'] = ($resultLog->rowCount()<1)? "" : ($log["total"] - $log["absent"]);
+                    $row['in'] = ($resultLog->rowCount() < 1) ? "" : ($log["total"] - $log["absent"]);
                     $row['out'] = $log["absent"];
 
                     $attendanceByCourseClass[] = $row;
