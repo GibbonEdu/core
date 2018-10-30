@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Module\Markbook ;
+namespace Gibbon\Module\Markbook;
 
 /**
  * Helper class to holds and retrieve information for a single markbook column.
@@ -26,7 +26,7 @@ namespace Module\Markbook ;
  * @since	4th May 2016
  * @author	Sandra Kuipers
  */
-class markbookColumn
+class MarkbookColumn
 {
 	public $gibbonMarkbookColumnID;
 
@@ -264,5 +264,3 @@ class markbookColumn
 
 
 }
-
-?>

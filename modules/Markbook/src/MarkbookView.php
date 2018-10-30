@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Module\Markbook ;
+namespace Gibbon\Module\Markbook;
 
 use Gibbon\session;
 use Gibbon\Domain\DataSet;
@@ -30,7 +30,7 @@ use Gibbon\Contracts\Database\Connection;
  * @since   3rd May 2016
  * @author  Sandra Kuipers
  */
-class markbookView
+class MarkbookView
 {
 
     /**
@@ -267,7 +267,7 @@ class markbookView
         // Build a markbookColumn object for each row
         for ($i = 0; $i < $this->columnsThisPage; ++$i) {
 
-            $column = new markbookColumn( $result->fetch(), $this->settings['enableEffort'], $this->settings['enableRubrics'] );
+            $column = new MarkbookColumn( $result->fetch(), $this->settings['enableEffort'], $this->settings['enableRubrics'] );
 
             if ($column != NULL) {
                 $this->columns[ $i ] = $column;
@@ -313,7 +313,7 @@ class markbookView
 
         // Build a markbookColumn object for each row
         foreach ($dataSet as $i => $columnData) {
-            if ($column = new markbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
+            if ($column = new MarkbookColumn($columnData, $this->settings['enableEffort'], $this->settings['enableRubrics'])) {
                 $this->columns[$i] = $column;
 
                 // Attach planner info to help determine if theres homework submissions for this column
@@ -1032,5 +1032,3 @@ class markbookView
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 }
-
-?>
