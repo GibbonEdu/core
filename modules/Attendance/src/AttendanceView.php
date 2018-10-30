@@ -29,7 +29,7 @@ use Gibbon\Contracts\Database\Connection;
  * @since	12th Sept 2016
  * @author	Sandra Kuipers
  */
-class attendanceView
+class AttendanceView
 {
 	/**
 	 * Gibbon\Contracts\Database\Connection
