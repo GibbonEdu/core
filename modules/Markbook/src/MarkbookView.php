@@ -267,7 +267,7 @@ class MarkbookView
         // Build a markbookColumn object for each row
         for ($i = 0; $i < $this->columnsThisPage; ++$i) {
 
-            $column = new MarkbookColumn( $result->fetch(), $this->settings['enableEffort'], $this->settings['enableRubrics'] );
+            $column = new MarkbookColumn($result->fetch(), $this->settings['enableEffort'], $this->settings['enableRubrics']);
 
             if ($column != NULL) {
                 $this->columns[ $i ] = $column;

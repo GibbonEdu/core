@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Markbook\MarkbookView;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -264,10 +265,10 @@ function getAlertStyle( $alert, $concern ) {
 
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
 
-    require_once $gibbon->session->get('absolutePath').'/modules/Markbook/src/markbookView.php';
+    require_once __DIR__ . '/src/MarkbookView.php';
 
     // Build the markbook object for this class & student
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID);
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
     $assessmentScale = $markbook->getDefaultAssessmentScale();
 
     // Cancel our now if this isnt a percent-based mark
@@ -327,7 +328,6 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
-            
         } else {
             $output .= "<span title='$status. ".__('Recorded at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style>$linkText</span>";
         }
