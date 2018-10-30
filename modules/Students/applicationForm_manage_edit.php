@@ -205,6 +205,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 
+    // USERNAME & STUDENT ID
+    $row = $form->addRow();
+        $row->addLabel('username', __('Username'))->description(__('System login name.'));
+        $row->addUsername('username')
+            ->readonly($application['applicationStatus'] == 'Accepted')
+            ->addGenerateUsernameButton($form);
+
+    $row = $form->addRow();
+        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+        $row->addTextField('studentID')
+            ->maxLength(10)
+            ->readonly($application['applicationStatus'] == 'Accepted');
+
     // NOTES
     $row = $form->addRow();
         $column = $row->addColumn();
