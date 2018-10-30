@@ -145,6 +145,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         }
 
+        $gibbon->session->set('organisationBackground', $organisationBackground);
+
         try {
             $data = array('organisationEmail' => $organisationEmail);
             $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
