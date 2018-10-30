@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Attendance\AttendanceView;
+
 //Gibbon system-wide includes
-include '../../gibbon.php';
+require __DIR__ . '/../../gibbon.php';
 
 //Module includes
-include './moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $currentDate = $_POST['currentDate'];
@@ -64,8 +66,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     header("Location: {$URL}");
                 } else {
                     //Write to database
-                    require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
-                    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+                    require_once __DIR__ . '/src/AttendanceView.php';
+                    $attendance = new AttendanceView($gibbon, $pdo);
 
                     $fail = false;
                     $type = $_POST['type'];

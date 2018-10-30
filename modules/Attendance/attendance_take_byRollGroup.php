@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-
-require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+require_once __DIR__ . '/src/AttendanceView.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     //Acess denied
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
             returnProcess($guid, $_GET['return'], null, array('warning1' => 'Your request was successful, but some data was not properly saved.', 'error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
         }
 
-        $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+        $attendance = new AttendanceView($gibbon, $pdo);
 
         $gibbonRollGroupID = '';
         if (isset($_GET['gibbonRollGroupID']) == false) {
