@@ -102,4 +102,55 @@ class Module
     {
         return $this->name;
     }
+
+    /**
+     * Given a class fullpath string, returns the speculative
+     * full path to the class file.
+     *
+     * All class path should follow this pattern:
+     *   `Gibbon\ModuleName\SubNamespaceIfApplicable\Class`
+     *
+     * The `ModuleName` portion will be processed. All capitalized
+     * word in the module name will be separated by space. I.E.
+     * `ModuleName` will become `Module Name` for directory name.
+     *
+     * @param string $class Full namespaced class name.
+     *
+     * @return string|null  The full file path, or null if the
+     *                      namespaced class name does not match
+     *                      the pattern of a correct Gibbon module
+     *                      class. Note that, if returned, the path
+     *                      is only speculative. The module or file
+     *                      might not exists.
+     */
+    public static function getAutoloadFilepath(string $class)
+    {
+        if (preg_match('/^Gibbon\\\\Module\\\\(.+?)\\\\(.+)$/', $class, $matches)) {
+            list($all, $module, $subclass) = $matches;
+            $basePath = realpath(__DIR__ . '/../../../modules');
+            $modulePath = trim(implode(' ', preg_split('/(?=[A-Z])/', $module)), ' ');
+            $classPath = implode(DIRECTORY_SEPARATOR, explode('\\', $subclass));
+            return $basePath .
+                DIRECTORY_SEPARATOR . $modulePath .
+                DIRECTORY_SEPARATOR . 'src' .
+                DIRECTORY_SEPARATOR . $classPath . '.php';
+        }
+        return null;
+    }
+
+    /**
+     * Given a full namspaced class name, this function
+     * will try to automatically load the class file.
+     *
+     * @param string $class
+     *
+     * @return void
+     */
+    public static function autoload(string $class)
+    {
+        if (($path = static::getAutoloadFilepath($class)) !== null) {
+            include_once $path;
+        }
+        return;
+    }
 }
