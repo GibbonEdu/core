@@ -58,7 +58,7 @@ class Username extends TextField
     protected function getElement()
     {
         $this->maxLength(20)
-            ->isUnique('./publicRegistrationCheck.php')
+            ->isUnique('./publicRegistrationCheck.php', ['currentUsername' => $this->getValue()])
             ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"');
 
         return parent::getElement();
