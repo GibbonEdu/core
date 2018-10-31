@@ -19,6 +19,7 @@ CHANGELOG
 v17.0.00
 --------
     Headlines
+        Added data visualisation to Rubrics
 
     Changes With Important Notices
 

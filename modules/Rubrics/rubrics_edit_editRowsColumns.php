@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 					$form->addRow()->addHeading(__('Columns'));
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -187,10 +187,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 						while ($rubricColumn = $result->fetch()) {
 							$row = $form->addRow();
 							$row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
+							$column = $row->addColumn()->addClass('right');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {
-								$row->addTextField('columnTitle['.$count.']')
+								$column->addTextField('columnTitle['.$count.']')
 									->setID('columnTitle'.$count)
 									->maxLength(20)
 									->isRequired()
@@ -198,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							} else {
 								$data = array('gibbonScaleID' => $values['gibbonScaleID']);
 								$sql = "SELECT gibbonScaleGradeID as value, CONCAT(value, ' - ', descriptor) as name FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID AND NOT value='Incomplete' ORDER BY sequenceNumber";
-								$row->addSelect('gibbonScaleGradeID['.$count.']')
+								$column->addSelect('gibbonScaleGradeID['.$count.']')
 									->setID('gibbonScaleGradeID'.$count)
 									->fromQuery($pdo, $sql, $data)
 									->isRequired()
@@ -206,6 +207,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							}
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
+							//$row = $form->addRow();
+							$column->addLabel('columnVisualise'.$count, sprintf(__('Visualise?'), ($count + 1)));
+							$column->addYesNo('columnVisualise['.$count.']')->selected($rubricColumn['visualise']);
 							$count++;
 						}
 					}
