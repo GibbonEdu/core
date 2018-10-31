@@ -2168,7 +2168,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     //     }
                                     // }
 
-                                    renderStudentGPA( $pdo, $guid, $_GET['gibbonPersonID'], $filter);
+                                    if (intval($_SESSION[$guid]['gibbonSchoolYearID']) <= 12) {
+                                        renderStudentGPA($pdo, $guid, $_GET['gibbonPersonID'], $filter);
+                                    }
 
                                     while ($rowList = $resultList->fetch()) {
                                         echo "<a name='".$rowList['gibbonCourseClassID']."'></a><h4>".$rowList['course'].'.'.$rowList['class']." <span style='font-size:85%; font-style: italic'>(".$rowList['name'].')</span></h4>';
