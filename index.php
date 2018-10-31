@@ -287,6 +287,9 @@ $page->scripts->addMultiple([
 $page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
 $page->scripts->add('core-setup', 'resources/assets/js/setup.js');
 
+// Register scripts available to the core, but not included by default
+$page->scripts->register('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js');
+
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
 
