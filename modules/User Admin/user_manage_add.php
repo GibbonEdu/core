@@ -128,15 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
         $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
 
-    $generateUsername = $form->getFactory()->createButton(__('Generate'))->addClass('generateUsername alignRight')->setTabIndex(-1);
     $row = $form->addRow();
         $row->addLabel('username', __('Username'))->description(__('System login name.'));
-        $row->addTextField('username')
+        $row->addUsername('username')
             ->isRequired()
-            ->maxLength(20)
-            ->append($generateUsername->getOutput())
-            ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
-            ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php');
+            ->addGenerateUsernameButton($form);
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -476,38 +472,4 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSubmit();
 
     echo $form->getOutput();
-    ?>
-
-    <script type="text/javascript">
-        // Username Generation
-        $(".generateUsername").click(function(){
-            $.ajax({
-                type : 'POST',
-                data : {
-                    gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
-                    preferredName: $('#preferredName').val(),
-                    firstName: $('#firstName').val(),
-                    surname: $('#surname').val(),
-                },
-                url: "./modules/User Admin/user_manage_usernameAjax.php",
-                success: function(responseText){
-                    if (responseText == 0) {
-                        $('#gibbonRoleIDPrimary').change();
-                        $('#preferredName').blur();
-                        $('#firstName').blur();
-                        $('#surname').blur();
-                        alert("<?php
-                            echo __('The following fields are required to generate a username:').'\n\n';
-                            echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
-                        ?>");
-                    } else {
-                        $('#username').val(responseText);
-                        $('#username').trigger('input');
-                        $('#username').blur();
-                    }
-                }
-            });
-        });
-    </script>
-    <?php
 }

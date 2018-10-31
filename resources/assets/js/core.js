@@ -78,6 +78,36 @@ jQuery(function($){
         $('input[name="' + $(this).data("confirm") + '"]').val(text).blur();
         prompt($(this).data("alert"), text);
     });
+
+    /**
+     * Username Generator. Requires data-alert attribute.
+     */
+    $(".generateUsername").click(function(){
+        var alertText = $(this).data('alert');
+        $.ajax({
+            type : 'POST',
+            data : {
+                gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
+                preferredName: $('#preferredName').val(),
+                firstName: $('#firstName').val(),
+                surname: $('#surname').val(),
+            },
+            url: "./modules/User Admin/user_manage_usernameAjax.php",
+            success: function(responseText){
+                if (responseText == 0) {
+                    $('#gibbonRoleIDPrimary').change();
+                    $('#preferredName').blur();
+                    $('#firstName').blur();
+                    $('#surname').blur();
+                    alert(alertText);
+                } else {
+                    $('#username').val(responseText);
+                    $('#username').trigger('input');
+                    $('#username').blur();
+                }
+            }
+        });
+    });
 });
 
 // Form API Functions

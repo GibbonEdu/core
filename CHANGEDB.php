@@ -775,4 +775,6 @@ ALTER TABLE `gibbonStudentEnrolment` ADD KEY `gibbonPersonIndex` (`gibbonPersonI
 UPDATE gibboni18n SET active='Y' WHERE code='he_IL';end
 INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `type`, `scopes`, `active`) VALUES ('Updated Behaviour Record', 'Behaviour', 'View Behaviour Records_all', 'Core', 'All,gibbonPersonIDStudent,gibbonYearGroupID', 'Y');end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'organisationBackground', 'Background', 'Relative path to background image. Overrides theme background.', '');end
+ALTER TABLE `gibbonApplicationForm` ADD `username` VARCHAR(20) NULL AFTER `gender`;end
+ALTER TABLE `gibbonApplicationForm` ADD `studentID` VARCHAR(10) NULL AFTER `gibbonPaymentID`;end
 ";

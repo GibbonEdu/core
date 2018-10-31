@@ -206,6 +206,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\CustomBlocks($this, $name, $session);
     }
 
+    public function createUsername($name)
+    {
+        return new Input\Username($name);
+    }
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($content, $tag = 'h4')
