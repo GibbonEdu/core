@@ -777,4 +777,5 @@ INSERT INTO `gibbonNotificationEvent` (`event`, `moduleName`, `actionName`, `typ
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'organisationBackground', 'Background', 'Relative path to background image. Overrides theme background.', '');end
 ALTER TABLE `gibbonApplicationForm` ADD `username` VARCHAR(20) NULL AFTER `gender`;end
 ALTER TABLE `gibbonApplicationForm` ADD `studentID` VARCHAR(10) NULL AFTER `gibbonPaymentID`;end
+ALTER TABLE `gibbonRubricColumn` ADD `visualise` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonScaleGradeID`;end
 ";
