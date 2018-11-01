@@ -415,37 +415,31 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     $output .= "<canvas id='canvas'></canvas>";
                 $output .= "</div>";
 
-                $labels = "" ;
+                $labels = array() ;
                 foreach ($means as $mean) {
-                    $labels .= "\"".$mean['title']."\",";
+                    array_push($labels, "\"".$mean['title']."\"");
                 }
-                if ($labels != '') {
-                    $labels = substr($labels, 0, -1);
-                }
+                $labelsOutput = implode($labels, ",");
 
-                $data = "";
+                $data = array();
                 foreach ($means as $mean) {
-                    $data .= round((($mean['cumulative']/$mean['denonimator'])/count($columns)), 2).",";
+                    array_push($data, round((($mean['cumulative']/$mean['denonimator'])/count($columns)), 2));
                 }
-                if ($data != '') {
-                    $data = substr($data, 0, -1);
-                }
+                $dataOutput = implode($data, ",");
 
-                $colors = "";
+                $colors = array();
                 foreach ($means as $mean) {
-                    $colors .= "\"rgba(".rand(0,255).",".rand(0,255).",".rand(0,255).",0.5)\",";
+                    array_push($colors, "\"rgba(".rand(0,255).",".rand(0,255).",".rand(0,255).",0.5)\"");
                 }
-                if ($colors != '') {
-                    $colors = substr($colors, 0, -1);
-                }
+                $colorsOutput = implode($colors, ",");
 
                 $output .= '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/2.0/Chart.min.js"></script>';
                 $output .= "<script type='text/javascript'>
                     var data = {
-                        labels: [".$labels."],
+                        labels: [".$labelsOutput."],
                         datasets: [{
-                        data: [".$data."],
-                        backgroundColor: [".$colors."]
+                        data: [".$dataOutput."],
+                        backgroundColor: [".$colorsOutput."]
                         }]
                     };
                     
