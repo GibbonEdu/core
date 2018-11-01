@@ -193,7 +193,7 @@ else {
 
 					$row = $form->addRow()->addClass('emailReceipt');
 						$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I agree that I have read, and agree to, the text contained within this email.'))->readonly();
+						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly();
 				}
 
 				//TARGETS
@@ -249,7 +249,20 @@ else {
 					$row = $form->addRow()->addClass('roleCategory hiddenReveal');
 						$row->addLabel('roleCategories[]', __('Select Role Categories'));
 						$row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder()->selected($selected);
-				}
+				} else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
+                    // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
+                    $row = $form->addRow();
+						$row->addLabel('roleCategoryLabel', __('Role Category'))->description(__('Users of a certain type.'));
+                        $row->addYesNoRadio('roleCategoryLabel')->checked('Y')->readonly()->isDisabled();
+
+                    $form->addHiddenValue('role', 'N');
+                    $form->addHiddenValue('roleCategory', 'Y');
+                    foreach ($targets as $target) {
+                        if ($target['type'] == 'Role Category') {
+                            $form->addHiddenValue('roleCategories[]', $target['id']);
+                        }
+                    }
+                }
 
 				//Year group
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
@@ -265,7 +278,7 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; all staff.'));
+						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
 						$row->addYesNoRadio('yearGroup')->checked($checked)->isRequired();
 
 					$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');

@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage.ph
 
     $criteria = $groupGateway->newQueryCriteria()
         ->sortBy(['schoolYear', 'name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Messenger/groups_manage.php', $connection2);
     if ($highestAction == 'Manage Groups_all') {

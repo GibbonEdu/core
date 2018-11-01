@@ -45,7 +45,7 @@ class FacilityBookingGateway extends QueryableGateway
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonSpace.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey'
+                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonSpace.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
             ])
             ->innerJoin('gibbonSpace', 'gibbonTTSpaceBooking.foreignKeyID=gibbonSpace.gibbonSpaceID')
             ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')
@@ -61,7 +61,7 @@ class FacilityBookingGateway extends QueryableGateway
         $query->unionAll()
             ->from($this->getTableName())
             ->cols([
-                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonLibraryItem.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey'
+                'gibbonTTSpaceBookingID', 'date', 'timeStart', 'timeEnd', 'gibbonLibraryItem.name', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'foreignKey', 'foreignKeyID'
             ])
             ->innerJoin('gibbonLibraryItem', 'gibbonTTSpaceBooking.foreignKeyID=gibbonLibraryItem.gibbonLibraryItemID')
             ->innerJoin('gibbonPerson', 'gibbonTTSpaceBooking.gibbonPersonID=gibbonPerson.gibbonPersonID')

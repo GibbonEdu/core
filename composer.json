@@ -9,6 +9,23 @@
             "email": "ross@rossparker.org"
         }
     ],
+    "scripts": {
+        "test": [
+            "@test:codeception",
+            "@test:phpunit"
+        ],
+        "test:codeception": [
+            "cd tests && codecept run install --env $CI_PLATFORM",
+            "cd tests && codecept run acceptance --env $CI_PLATFORM"
+        ],
+        "test:phpunit": [
+            "cd tests && phpunit --verbose --configuration phpunit.xml"
+        ]
+    },
+    "scripts-descriptions": {
+        "test:codeception": "Initialize CI environment and run acceptance tests with Codeception.",
+        "test:phpunit": "Run unit tests with PHPUnit."
+    },
     "require": {
         "php" : "^5.5 || ^7.0",
         "ext-curl": "*",
@@ -16,9 +33,15 @@
         "ext-gettext": "*",
         "ext-PDO": "*",
         "league/container": "^2.4",
-        "aura/sqlquery": "3.*-dev"
+        "aura/sqlquery": "3.*-dev",
+        "twig/twig": "^2.0",
+        "slim/slim": "^3.0"
     },
     "require-dev": {
+        "twbs/bootstrap": "^4.1"
+    },
+    "replace": {
+        "pimple/pimple": "*"
     },
     "autoload": {
         "psr-4": { "Gibbon\\": ["src/", "src/Gibbon"] }

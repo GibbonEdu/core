@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php') == false) {
     //Acess denied
@@ -118,7 +118,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
             echo '</td>';
 
             $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
-            $recentlyStarted = !empty($person['dateStart']) && $person['dateStart'] >= $cutoffDate;
 
             foreach ($updatableDataTypes as $type) {
                 $updateRequired = false;
@@ -130,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
                         $lastUpdate = !empty($dataUpdate['lastUpdated'])? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) : '';
                         
-                        if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate) || $recentlyStarted) {
+                        if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
                             // Display an edit link if updates aren't required or no cutoff date is set
                             $output .= "<img title='".__('Edit').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/><br/>";
                             $output .= $dataUpdate['name'];

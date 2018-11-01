@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_add.php') == false) {
     //Acess denied
@@ -82,15 +82,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-				$row->addTextField('name')->isRequired()->maxLength(45);
+				$row->addTextField('name')->isRequired()->maxLength(60);
 			
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(6);
+				$row->addTextField('nameShort')->isRequired()->maxLength(12);
 			
 			$row = $form->addRow();
 				$row->addLabel('orderBy', __('Order'))->description(__('May be used to adjust arrangement of courses in reports.'));
-				$row->addNumber('orderBy')->maxLength(6);
+				$row->addNumber('orderBy')->maxLength(3);
 			
 			$row = $form->addRow();
 				$column = $row->addColumn('blurb');

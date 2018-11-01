@@ -206,6 +206,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\CustomBlocks($this, $name, $session);
     }
 
+    public function createUsername($name)
+    {
+        return new Input\Username($name);
+    }
+
     /* PRE-DEFINED LAYOUT --------------------------- */
 
     public function createSubheading($content, $tag = 'h4')
@@ -343,6 +348,30 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
+    public function createSelectSystemLanguage($name)
+    {
+        $languages = array(
+            'nl_NL' => 'Dutch - Nederland',
+            'en_GB' => 'English - United Kingdom',
+            'en_US' => 'English - United States',
+            'es_ES' => 'Español',
+            'fr_FR' => 'Français - France',
+            'he_IL' => 'עברית - ישראל',
+            'it_IT' => 'Italiano - Italia',
+            'pl_PL' => 'Język polski - Polska',
+            'pt_BR' => 'Português - Brasil',
+            'ro_RO' => 'Română',
+            'sq_AL' => 'Shqip - Shqipëri',
+            'vi_VN' => 'Tiếng Việt - Việt Nam',
+            'ar_SA' => 'العربية - المملكة العربية السعودية',
+            'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'zh_CN' => '汉语 - 中国',
+            'zh_HK' => '體字 - 香港',
+        );
+        
+        return $this->createSelect($name)->fromArray($languages);
+    }
+
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
@@ -382,6 +411,7 @@ class FormFactory implements FormFactoryInterface
                 'EGP £' => 'Egyptian Pound (£)',
                 'FJD $' => 'Fijian Dollar ($)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
+                'GTQ Q' => 'Guatemalan Quetzal (Q)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',

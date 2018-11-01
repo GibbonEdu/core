@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
 use Psr\Container\ContainerInterface;
 
@@ -28,7 +29,7 @@ use Psr\Container\ContainerInterface;
  * @version	v13
  * @since	v13
  */
-class Locale
+class Locale implements LocaleInterface
 {
     protected $i18ncode;
 
@@ -91,25 +92,42 @@ class Locale
      * @param   Gibbon\Contracts\Database\Connection  $pdo
      */
     public function setTextDomain(Connection $pdo) {
-        bindtextdomain('gibbon', $this->session->get('absolutePath').'/i18n');
-        bind_textdomain_codeset('gibbon', 'UTF-8');
+        
+        $this->setSystemTextDomain($this->session->get('absolutePath'));
 
+        // Parse additional modules, adding domains for those
         if ($pdo->getConnection() != null) {
-            // Parse additional modules, adding domains for those
-
-            $data = array();
             $sql = "SELECT name FROM gibbonModule WHERE active='Y' AND type='Additional'";
-            $result = $pdo->executeQuery($data, $sql);
+            $modules = $pdo->select($sql)->fetchAll();
 
-            if ($result->rowCount() > 0) {
-                while ($row = $result->fetch()) {
-                    bindtextdomain($row['name'], $this->session->get('absolutePath').'/modules/'.$row['name'].'/i18n');
-                }
+            foreach ($modules as $module) {
+                $this->setModuleTextDomain($module['name'], $this->session->get('absolutePath'));
             }
         }
+    }
 
-        // Set default domain
+    /**
+     * Binds the system default text domain.
+     *
+     * @param string $domain
+     * @param string $absolutePath
+     */
+    public function setSystemTextDomain($absolutePath)
+    {
+        bindtextdomain('gibbon', $absolutePath.'/i18n');
+        bind_textdomain_codeset('gibbon', 'UTF-8');
         textdomain('gibbon');
+    }
+
+    /**
+     * Binds a text domain for a given module by name.
+     *
+     * @param string $module
+     * @param string $absolutePath
+     */
+    public function setModuleTextDomain($module, $absolutePath)
+    {
+        bindtextdomain($module, $absolutePath.'/modules/'.$module.'/i18n');
     }
 
     /**

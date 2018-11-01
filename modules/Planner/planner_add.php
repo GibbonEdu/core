@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') == false) {
     //Acess denied
@@ -311,7 +311,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					</tr>
 					<tr>
 						<td>
-							<b><?php echo __($guid, 'Name') ?> *</b><br/>
+							<b><?php echo __($guid, 'Lesson Name') ?> *</b><br/>
 						</td>
 						<td class="right">
 							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
@@ -398,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
                             } else {
                                 ?>
-								<input name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $nextDate) ?>" type="text" class="standardWidth">
+								<input autocomplete='off' name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $nextDate) ?>" type="text" class="standardWidth">
 								<script type="text/javascript">
 									var date=new LiveValidation('date');
 									date.add(Validate.Presence);
@@ -629,7 +629,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             				?><br/></span>
 						</td>
 						<td class="right">
-							<input name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" class="standardWidth">
+							<input autocomplete='off' name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" class="standardWidth">
 							<script type="text/javascript">
 								var homeworkDueDate=new LiveValidation('homeworkDueDate');
 								homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {

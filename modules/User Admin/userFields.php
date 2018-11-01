@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     // QUERY
     $criteria = $userFieldGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $userFields = $userFieldGateway->queryUserFields($criteria);
 
@@ -66,8 +66,18 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
         'role:other'   => __('Role').': '.__('Other'),
     ]);
 
+    $customFieldTypes = array(
+        'varchar' => __('Short Text'),
+        'text'    => __('Long Text'),
+        'date'    => __('Date'),
+        'url'     => __('Link'),
+        'select'  => __('Dropdown')
+    );
+
     $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->format(function ($row) use ($customFieldTypes) {
+        return isset($customFieldTypes[$row['type']])? $customFieldTypes[$row['type']] : '';
+    });
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
     $table->addColumn('roles', __('Role Categories'))
         ->notSortable()

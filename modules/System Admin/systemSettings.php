@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
     //Acess denied
@@ -136,6 +136,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
+
+    $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow();

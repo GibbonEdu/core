@@ -24,7 +24,7 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php') == false) {
     //Acess denied
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
         ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
-    $criteria->fromArray($_POST);
+    $criteria->fromPOST();
 
     echo '<h2>';
     echo __('Search & Filter');

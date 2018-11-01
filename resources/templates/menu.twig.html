@@ -1,0 +1,34 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Main Menu: Displays the top-level categories and active modules.
+-->#}
+
+<ul id="nav">
+    <li>
+        <a href="{{ absoluteURL }}/index.php">{{ __('Home') }}</a>
+    </li>
+
+    {% for categoryName, items in menuMain if isLoggedIn %}
+    <li>
+        <a href="#">{{ __(categoryName) }}</a>
+        <ul>
+
+        {% for item in items %}
+            <li>
+                <a href="{{ item.url }}">{{ __(item.name, item.textDomain) }}</a>
+            </li>
+        {% endfor %}
+
+        </ul>
+    </li>
+    {% endfor %}
+</ul>
+
+<div class='notificationTray'>
+    {{ notificationTray|raw }}
+</div>

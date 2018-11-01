@@ -24,7 +24,7 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Students\FirstAidGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.php') == false) {
     //Acess denied
@@ -91,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord.ph
             ->filterBy('student', $gibbonPersonID)
             ->filterBy('rollGroup', $gibbonRollGroupID)
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         $firstAidRecords = $firstAidGateway->queryFirstAidBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 

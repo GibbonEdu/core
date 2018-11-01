@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include 'functions.php';
-include 'config.php';
+// Gibbon system-wide include
+require_once './gibbon.php';
 
 setCurrentSchoolYear($guid, $connection2);
 
@@ -65,14 +65,21 @@ else {
     } else {
         $row = $result->fetch();
 
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y') {
+            $URL .= '?loginReturn=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
         // Get primary role info
         $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
         $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
         $role = $pdo->selectOne($sql, $data);
 
-        // Insufficient privileges to login
-        if ($row['canLogin'] != 'Y' || (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y')) {
-            $URL .= '?loginReturn=fail2';
+        // Login not allowed for this role
+        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
+            $URL .= '?loginReturn=fail9';
             header("Location: {$URL}");
             exit;
         }

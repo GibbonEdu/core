@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $name = 'custom'.$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }

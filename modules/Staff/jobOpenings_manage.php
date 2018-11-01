@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage.p
     // QUERY
     $criteria = $jobGateway->newQueryCriteria()
         ->sortBy(['dateOpen', 'jobTitle'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $jobs = $jobGateway->queryJobOpenings($criteria);
 

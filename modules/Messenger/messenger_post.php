@@ -19,17 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-//Only include module include if it is not already included (which it may be been on the index page)
-$included=FALSE ;
-$includes=get_included_files() ;
-foreach ($includes AS $include) {
-	if (str_replace("\\","/",$include)==str_replace("\\","/",$_SESSION[$guid]["absolutePath"] . "/modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php")) {
-		$included=TRUE ;
-	}
-}
-if ($included==FALSE) {
-	include_once "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php" ;
-}
+require_once __DIR__ . '/moduleFunctions.php';
+
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -252,7 +243,7 @@ else {
 
 			$row = $form->addRow()->addClass('emailReceipt');
 				$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-				$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I agree that I have read, and agree to, the text contained within this email.'));
+				$row->addTextArea('emailReceiptText')->setRows(4)->isRequired()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'));
 
 		}
 
@@ -291,7 +282,7 @@ else {
 		//Year group
 		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
 			$row = $form->addRow();
-				$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; all staff.'));
+				$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
 				$row->addYesNoRadio('yearGroup')->checked('N')->isRequired();
 
 			$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');

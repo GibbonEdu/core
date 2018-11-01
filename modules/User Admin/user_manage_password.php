@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\User\RoleGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     //Acess denied
@@ -26,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage.php'>".__($guid, 'Manage Users')."</a> > </div><div class='trailEnd'>".__($guid, 'Reset User Password').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+         ->add(__('Manage Users'), 'user_manage.php')
+         ->add(__('Reset User Password'));
 
     $returns = array();
     $returns['error5'] = __($guid, 'Your request failed because your passwords did not match.');
@@ -60,6 +61,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
         } else {
             //Let's go!
             $values = $result->fetch();
+
+            $roleGateway = $container->get(RoleGateway::class);
+            $role = $roleGateway->getRoleByID($values['gibbonRoleIDPrimary']);
+            $userRoles = $roleGateway->selectAllRolesByPerson($_SESSION[$guid]['gibbonPersonID'])->fetchGroupedUnique();
+
+            // Acess denied for users changing a password if they do not have system access to this role
+            if ( ($role['restriction'] == 'Admin Only' && !isset($userRoles['001']) ) 
+              || ($role['restriction'] == 'Same Role' && !isset($userRoles[$role['gibbonRoleID']]) )) {
+                echo "<div class='error'>";
+                echo __('You do not have access to this action.');
+                echo '</div>';
+                return;
+            }
 
             $search = (isset($_GET['search']))? $_GET['search'] : '';
             if (!empty($search)) {

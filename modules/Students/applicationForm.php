@@ -202,15 +202,15 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->isRequired()->maxLength(30);
+        $row->addTextField('preferredName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -218,7 +218,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(20);
+        $row->addTextField('nameInCharacters')->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -410,7 +410,7 @@ if ($proceed == false) {
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
             $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name']);
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields);
         }
     }
@@ -511,7 +511,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -633,11 +633,11 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(90)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
@@ -651,7 +651,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -945,10 +945,13 @@ if ($proceed == false) {
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy Options'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
     }
 

@@ -33,7 +33,6 @@ html {
 
 body {
 	padding: 0 0 20px;
-	background: url("../img/backgroundPage.jpg") repeat fixed center top #A88EDB;
 	color:#222222;
 	font-family: Helvetica, Arial, sans-serif!important;
 }
@@ -839,6 +838,15 @@ div.success {
 	margin: 10px 0px 15px 0px;
 	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
 }
+div.exception {
+	border-left: 6px solid #444;
+	color: #444;
+	background-color: #f9f9f9;
+	font-size: 12px;
+	padding: 10px;
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
+}
 
 div.paginationTop {
 	text-align: right;
@@ -1638,6 +1646,10 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
+.dataTable {
+    overflow-x: auto;
+}
+
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;
@@ -1833,4 +1845,15 @@ button[disabled], input[disabled], textarea[disabled] {
     height: 14px;
     width: 14px;
     opacity: 0.65;
+}
+
+/* PRINT STYLES */
+body.print div.trail {
+    display: none;
+}
+
+@media print {
+    table tr {
+        page-break-inside: avoid;
+    }
 }
