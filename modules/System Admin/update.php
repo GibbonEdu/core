@@ -52,8 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         $_SESSION[$guid]['systemUpdateError'] = null;
     }
 
-    getSystemSettings($guid, $connection2);
-
     $versionDB = getSettingByScope($connection2, 'System', 'version');
     $versionCode = $version;
 

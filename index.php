@@ -303,6 +303,11 @@ $page->stylesheets->addMultiple([
     'thickbox'     => 'lib/thickbox/thickbox.css',
 ]);
 
+// Add right-to-left stylesheet
+if ($session->get('i18n')['rtl'] == 'Y') {
+    $page->theme->stylesheets->add('theme-rtl', '/themes/'.$session->get('gibbonThemeName').'/css/main_rtl.css', ['weight' => 1]);
+}
+
 // Set personal, organisational or theme background     
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
@@ -469,6 +474,7 @@ $page->addData([
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+    'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
 ]);
 
 if ($isLoggedIn) {
