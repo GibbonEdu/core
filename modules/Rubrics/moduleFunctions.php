@@ -412,7 +412,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 }
 
                 $output .= "<div id='canvasHolder' style='width:100%;'>";
-                    $output .= "<canvas id='birdsCanvas'></canvas>";
+                    $output .= "<canvas id='canvas'></canvas>";
                 $output .= "</div>";
 
                 $labels = "" ;
@@ -449,7 +449,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                         }]
                     };
                     
-                    var polarAreaChart = new Chart(birdsCanvas, {
+                    var polarAreaChart = new Chart(canvas, {
                         type: 'polarArea',
                         data: data,
                         options: {
