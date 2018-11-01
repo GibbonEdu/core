@@ -430,6 +430,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     'height' => '120%',
                     'scale'  => [
                         'ticks' => [
+                            'min' => 0.0,
+                            'max' => 1.0,
                             'callback' => $chart->addFunction('function(tickValue, index, ticks) {
                                 return Number(tickValue).toFixed(1);
                             }'),
