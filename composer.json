@@ -36,7 +36,8 @@
         "aura/sqlquery": "3.*-dev",
         "twig/twig": "^2.0",
         "slim/slim": "^3.0",
-        "phpmailer/phpmailer": "5.2.*"
+        "phpmailer/phpmailer": "5.2.*",
+        "phpoffice/phpexcel": "1.8.*"
     },
     "require-dev": {
         "twbs/bootstrap": "^4.1"
