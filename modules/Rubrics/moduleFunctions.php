@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\UI\Chart\Chart;
 
 function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $search = '', $filter2 = '')
 {
@@ -403,7 +404,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                             foreach ($contexts as $entry) {
                                 if ($entry['gibbonRubricCellID'] == $cell['gibbonRubricCellID']) {
                                     $means[$row['gibbonRubricRowID']]['cumulative'] += $cellCount;
-                                    $means[$row['gibbonRubricRowID']]['denonimator'] ++; 
+                                    $means[$row['gibbonRubricRowID']]['denonimator']++;
                                 }
                             }
                             $cellCount++;
@@ -411,54 +412,34 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     }
                 }
 
-                $output .= "<div id='canvasHolder' style='width:100%;'>";
-                    $output .= "<canvas id='canvas'></canvas>";
-                $output .= "</div>";
+                $columnCount = count($columns);
+                $data = array_map(function ($mean) use ($columnCount) {
+                    return !empty($mean['denonimator'])
+                        ? round((($mean['cumulative']/$mean['denonimator'])/$columnCount), 2)
+                        : 0;
+                }, $means);
 
-                $labels = array() ;
-                foreach ($means as $mean) {
-                    array_push($labels, "\"".$mean['title']."\"");
-                }
-                $labelsOutput = implode($labels, ",");
+                $chart = Chart::create('visualisation', 'polarArea')
+                    ->setLegend(['display' => true, 'position' => 'right'])
+                    ->setLabels(array_column($means, 'title'))
+                    ->setColorOpacity(0.6);
 
-                $data = array();
-                foreach ($means as $mean) {
-                    array_push($data, round((($mean['cumulative']/$mean['denonimator'])/count($columns)), 2));
-                }
-                $dataOutput = implode($data, ",");
+                $chart->setOptions([
+                    'height' => '120%',
+                    'scale'  => [
+                        'ticks' => [
+                            'callback' => $chart->addFunction('function(tickValue, index, ticks) {
+                                return Number(tickValue).toFixed(1);
+                            }'),
+                        ],
+                    ],
+                ]);
 
-                $colors = array();
-                foreach ($means as $mean) {
-                    array_push($colors, "\"rgba(".rand(0,255).",".rand(0,255).",".rand(0,255).",0.5)\"");
-                }
-                $colorsOutput = implode($colors, ",");
+                $chart->addDataset('rubric')->setData($data);
 
-                $output .= '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/2.0/Chart.min.js"></script>';
-                $output .= "<script type='text/javascript'>
-                    var data = {
-                        labels: [".$labelsOutput."],
-                        datasets: [{
-                        data: [".$dataOutput."],
-                        backgroundColor: [".$colorsOutput."]
-                        }]
-                    };
-                    
-                    var polarAreaChart = new Chart(canvas, {
-                        type: 'polarArea',
-                        data: data,
-                        options: {
-                            legend: {
-                                position: \"right\"
-                            }
-                        }
-                    });
-
-
-                </script>" ;
+                $output .= $chart->render();
     
             $output .= "</div>";
-
-            
 
             //Function to show/hide rubric/visualisation 
             $output .= "<script type='text/javascript'>
