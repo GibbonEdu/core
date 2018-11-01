@@ -27,7 +27,7 @@ class Chart
     protected $labels = [];
     protected $options = [];
     protected $datasets = [];
-    protected $events = [];
+    protected $functions = [];
     protected $metadata = [];
 
     protected $useFillZero = false;
@@ -118,6 +118,28 @@ class Chart
     }
 
     /**
+     * Set the default color array to apply to data sets.
+     *
+     * @param array $defaultColors
+     * @return self
+     */
+    public function setColors($defaultColors)
+    {
+        $this->defaultColors = $defaultColors;
+
+        return $this;
+    }
+
+    public function setColorOpacity($opacity)
+    {
+        $this->defaultColors = array_map(function ($color) use ($opacity) {
+            return str_replace('1.0', floatval($opacity), $color);
+        }, $this->defaultColors);
+
+        return $this;
+    }
+
+    /**
      * Set an array of labels.
      * @param array $labels
      * @return self
@@ -143,19 +165,6 @@ class Chart
     {
         $this->options = array_replace($this->options, $options);
         
-        return $this;
-    }
-    
-    /**
-     * Set the default color array to apply to data sets.
-     *
-     * @param array $defaultColors
-     * @return self
-     */
-    public function setColors($defaultColors)
-    {
-        $this->defaultColors = $defaultColors;
-
         return $this;
     }
 
@@ -222,7 +231,8 @@ class Chart
      */
     public function onClick($function, $pointerOnHover = true)
     {
-        $this->events['onClick'] = $function;
+        $this['options']['onClick'] = $this->addFunction($function);
+
         if ($pointerOnHover) {
             $this->onHover('function(elements) { document.body.style.cursor = (elements.length) ? "pointer" : "default";}');
         }
@@ -237,19 +247,35 @@ class Chart
      */
     public function onHover($function)
     {
-        $this->events['onHover'] = $function;
+        $config['options']['hover']['onHover'] = $this->addFunction($function);
+
         return $this;
     }
 
     /**
-     * Get an event type by name (eg: onClick, onHover)
+     * Get a function by index.
      *
-     * @param  string $eventType
+     * @param  string $name
      * @return string
      */
-    public function getEvent($eventType)
+    public function getFunction($index)
     {
-        return isset($this->events[$eventType])? $this->events[$eventType] : '';
+        return isset($this->functions[$index])? $this->functions[$index] : '';
+    }
+
+    /**
+     * Add a function to it can be inserted into the config after json_encoding.
+     * Returns a string identifier used to inject the function into the config.
+     *
+     * @param string $function
+     * @return string
+     */
+    public function addFunction($function)
+    {
+        $index = count($this->functions);
+        $this->functions[$index] = $function;
+
+        return '__function:'.$index.'__';
     }
 
     /**
@@ -353,11 +379,6 @@ class Chart
 
         $config['options'] = $this->options;
 
-        if (!empty($this->events)) {
-            $config['options']['onClick'] = !empty($this->events['onClick']) ? '__ON_CLICK_EVENT__' : '';
-            $config['options']['hover']['onHover'] = !empty($this->events['onHover']) ? '__ON_HOVER_EVENT__' : '';
-        }
-
         if (!empty($this->metadata)) {
             $config['metadata'] = $this->metadata;
         }
@@ -371,9 +392,11 @@ class Chart
         $config = json_encode($this->getConfig(), JSON_NUMERIC_CHECK);
         $key = $this->getElementID();
 
-        // Workaround to enable javascript functions for onClick and onHover events (after json_encoding).
-        $config = str_replace('"__ON_CLICK_EVENT__"', $this->getEvent('onClick'), $config);
-        $config = str_replace('"__ON_HOVER_EVENT__"', $this->getEvent('onHover'), $config);
+        // Inject functions into the config. This is a workaround to enable javascript functions,
+        // which need added after json_encode so it doesn't enclose them in ""s.
+        foreach ($this->functions as $index => $function) {
+            $config = str_replace('"__function:'.$index.'__"', $this->getFunction($index), $config);
+        }
 
         $output .= sprintf('var chart_config_%s = %s;', $key, $config);
         $output .= sprintf('var chart_context_%s = document.getElementById("%s").getContext("2d");', $key, $this->getElementID());

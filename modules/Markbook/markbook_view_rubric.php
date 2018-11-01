@@ -126,6 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                 $mark = false;
                             }
                         }
+
                         echo rubricView($guid, $connection2, $gibbonRubricID, $mark, $row4['gibbonPersonID'], 'gibbonMarkbookColumn', 'gibbonMarkbookColumnID', $gibbonMarkbookColumnID,  $contextDBTableGibbonRubricIDField, 'name', 'completeDate');
                     }
                 }
