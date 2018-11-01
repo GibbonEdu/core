@@ -106,6 +106,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent('<b>'.__($outcome['name']).'</b>')
                     ->append(!empty($outcome['category'])? ('<i> - <br/>'.$outcome['category'].'</i>') : '')
                     ->append('<br/><span class="small emphasis">'.$outcome['scope'].' '.__('Outcome').'</span>');
+                $rows[$i]['title'] = $outcome['name'];
             } else {
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
             }
@@ -220,7 +221,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $cells[$rowCells['gibbonRubricRowID']][$rowCells['gibbonRubricColumnID']] = $rowCells;
             }
 
-            //Get other uses of this rubric in this context
+            //Get other uses of this rubric in this context, and store for use in visualisation
+            $contexts = array();
             if ($hasContexts) {
                 $dataContext = array('gibbonPersonID' => $gibbonPersonID);
                 $sqlContext = "SELECT gibbonRubricEntry.*, $contextDBTable.*, gibbonRubricEntry.*, gibbonRubricCell.*, gibbonCourse.nameShort AS course, gibbonCourseClass.nameshort AS class 
@@ -240,14 +242,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     while ($rowContext = $resultContext->fetch()) {
                         $context = $rowContext['course'].'.'.$rowContext['class'].' - '.$rowContext[$contextDBTableNameField].' ('.dateConvertBack($guid, $rowContext[$contextDBTableDateField]).')';
                         $cells[$rowContext['gibbonRubricRowID']][$rowContext['gibbonRubricColumnID']]['context'][] = $context;
+                    
+                        array_push($contexts, array('gibbonRubricEntry' => $rowContext['gibbonRubricEntry'], 'gibbonRubricID' => $rowContext['gibbonRubricID'], 'gibbonPersonID' => $rowContext['gibbonPersonID'], 'gibbonRubricCellID' => $rowContext['gibbonRubricCellID'], 'contextDBTable' => $rowContext['contextDBTable'], 'contextDBTableID' => $rowContext['contextDBTableID']));
                     }
                 }
-            }
-
-            if ($mark == true) {
-                echo '<p>';
-                echo __('Click on any of the cells below to highlight them. Data is saved automatically after each click.');
-                echo '</p>';
             }
 
             //Controls for viewing mode
@@ -255,113 +253,227 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                 $output .= "<div class='linkTop'>";
                 $output .= "Viewing Mode: <select name='type' id='type' class='type' style='width: 152px; float: none'>";
                 $output .= "<option id='type' name='type' value='Current'>".__('Current').'</option>';
+                $output .= "<option id='type' name='type' value='Visualise'>".__('Visualise').'</option>';
                 $output .= "<option id='type' name='type' value='Historical'>".__('Historical Data').'</option>';
                 $output .= '</select>';
                 $output .= '</div>';
             }
 
-            $form = Form::create('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
-            $form->setClass('rubricTable fullWidth');
+            //Div to contain rubric for current and historicla views
+            $output .= "<div id='rubric'>";
 
-            $row = $form->addRow()->addClass();
-                $row->addContent()->addClass('');
-
-            if ($hasContexts) {
-                $form->toggleVisibilityByClass('currentView')->onSelect('type')->when('Current');
-                $form->toggleVisibilityByClass('historical')->onSelect('type')->when('Historical');
-            }
-
-            // Column Headers
-            for ($n = 0; $n < $columnCount; ++$n) {
-                $column = $row->addColumn()->addClass('rubricHeading');
-
-                // Display grade scale, otherwise column title
-                if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
-                    $gradeScaleGrade = $gradeScales[$columns[$n]['gibbonScaleGradeID']];
-                    $column->addContent('<b>'.$gradeScaleGrade['descriptor'].'</b>')
-                        ->append(' ('.$gradeScaleGrade['value'].')')
-                        ->append('<br/><span class="small emphasis">'.__($gradeScaleGrade['name']).' '.__('Scale').'</span>');
-                } else {
-                    $column->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
-                }
-            }
-
-            // Rows
-            $count = 0;
-            for ($i = 0; $i < $rowCount; ++$i) {
-                $row = $form->addRow();
-                $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading');
-
-                // Row Header
-                if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
-                    $outcome = $outcomes[$rows[$i]['gibbonOutcomeID']];
-                    $content = $col->addContent('<b>'.__($outcome['name']).'</b>')
-                        ->append(!empty($outcome['category'])? ('<i> - <br/>'.$outcome['category'].'</i>') : '')
-                        ->append('<br/><span class="small emphasis">'.$outcome['scope'].' '.__('Outcome').'</span>')
-                        ->wrap('<span title="'.$outcome['description'].'">', '</span>');
-
-                    // Highlight unit outcomes with a checkmark
-                    if (isset($unitOutcomes[$rows[$i]['gibbonOutcomeID']])) {
-                        $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"/>');
-                    }
-                } else {
-                    $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
+                if ($mark == true) {
+                    $output .= '<p>';
+                    $output .= __('Click on any of the cells below to highlight them. Data is saved automatically after each click.');
+                    $output .= '</p>';
                 }
 
-                // Cells
-                for ($n = 0; $n < $columnCount; ++$n) {
-                    if (!isset($cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']])) {
-                        $row->addColumn()->addClass('rubricCell');
-                        continue;
+                $form = Form::create('viewRubric', $_SESSION[$guid]['absoluteURL'].'/index.php');
+                $form->setClass('rubricTable fullWidth');
+
+                $row = $form->addRow()->addClass();
+                    $row->addContent()->addClass('');
+
+                if ($hasContexts) {
+                    $form->toggleVisibilityByClass('currentView')->onSelect('type')->when('Current');
+                    $form->toggleVisibilityByClass('historical')->onSelect('type')->when('Historical');
+                }
+
+                    // Column Headers
+                    for ($n = 0; $n < $columnCount; ++$n) {
+                        $column = $row->addColumn()->addClass('rubricHeading');
+
+                        // Display grade scale, otherwise column title
+                        if (!empty($gradeScales[$columns[$n]['gibbonScaleGradeID']])) {
+                            $gradeScaleGrade = $gradeScales[$columns[$n]['gibbonScaleGradeID']];
+                            $column->addContent('<b>'.$gradeScaleGrade['descriptor'].'</b>')
+                                ->append(' ('.$gradeScaleGrade['value'].')')
+                                ->append('<br/><span class="small emphasis">'.__($gradeScaleGrade['name']).' '.__('Scale').'</span>');
+                        } else {
+                            $column->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
+                        }
                     }
 
-                    $cell = $cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];
+                    // Rows
+                    $count = 0;
+                    for ($i = 0; $i < $rowCount; ++$i) {
+                        $row = $form->addRow();
+                        $col = $row->addColumn()->addClass('rubricHeading rubricRowHeading');
 
-                    $highlightClass = isset($entries[$cell['gibbonRubricCellID']])? 'rubricCellHighlight' : '';
-                    $markableClass = ($mark == true)? 'markableCell' : '';
-                    
-                    $col = $row->addColumn()->addClass('rubricCell '.$highlightClass);
-                        $col->addContent($cell['contents'])
-                            ->addClass('currentView '.$markableClass)
-                            ->append('<span class="cellID" data-cell="'.$cell['gibbonRubricCellID'].'"></span>');
-
-                    // Add historical contexts if applicable, shown/hidden by dropdown
-                    $countHistorical = isset($cell['context']) ? count($cell['context']) : 0;
-                    if ($hasContexts && $countHistorical > 0) {
-                        $historicalContent = '';
-                        for ($h = 0; $h < min(7, $countHistorical); ++$h) {
-                            $historicalContent .= ($h + 1) . ') ' . $cell['context'][$h] . '<br/>';
+                        // Row Header
+                        if (!empty($outcomes[$rows[$i]['gibbonOutcomeID']])) {
+                            $outcome = $outcomes[$rows[$i]['gibbonOutcomeID']];
+                            $content = $col->addContent('<b>'.__($outcome['name']).'</b>')
+                                ->append(!empty($outcome['category'])? ('<i> - <br/>'.$outcome['category'].'</i>') : '')
+                                ->append('<br/><span class="small emphasis">'.$outcome['scope'].' '.__('Outcome').'</span>')
+                                ->wrap('<span title="'.$outcome['description'].'">', '</span>');
+                            // Highlight unit outcomes with a checkmark
+                            if (isset($unitOutcomes[$rows[$i]['gibbonOutcomeID']])) {
+                                $content->append('<img style="float: right" title="'.__('This outcome is one of the unit outcomes.').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"/>');
+                            }
+                            $rows[$i]['title'] = $outcomes[$rows[$i]['gibbonOutcomeID']]['name'];
+                            $rows[$i]['title'];
+                        } else {
+                            $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
                         }
 
-                        $col->addContent($historicalContent)
-                            ->addClass('historical')
-                            ->prepend('<b><u>' . __('Total Occurences:') . ' ' . $countHistorical . '</u></b><br/>')
-                            ->append(($countHistorical > 7)? '<b>'.__('Older occurrences not shown...').'</b>' : '')
-                            ->append('<span class="cellID" data-cell="' . $cell['gibbonRubricCellID'] . '"></span>');
+                        // Cells
+                        for ($n = 0; $n < $columnCount; ++$n) {
+                            if (!isset($cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']])) {
+                                $row->addColumn()->addClass('rubricCell');
+                                continue;
+                            }
+
+                            $cell = $cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];
+
+                            $highlightClass = isset($entries[$cell['gibbonRubricCellID']])? 'rubricCellHighlight' : '';
+                            $markableClass = ($mark == true)? 'markableCell' : '';
+                            
+                            $col = $row->addColumn()->addClass('rubricCell '.$highlightClass);
+                                $col->addContent($cell['contents'])
+                                    ->addClass('currentView '.$markableClass)
+                                    ->append('<span class="cellID" data-cell="'.$cell['gibbonRubricCellID'].'"></span>');
+
+                            // Add historical contexts if applicable, shown/hidden by dropdown
+                            $countHistorical = isset($cell['context']) ? count($cell['context']) : 0;
+                            if ($hasContexts && $countHistorical > 0) {
+                                $historicalContent = '';
+                                for ($h = 0; $h < min(7, $countHistorical); ++$h) {
+                                    $historicalContent .= ($h + 1) . ') ' . $cell['context'][$h] . '<br/>';
+                                }
+
+                                $col->addContent($historicalContent)
+                                    ->addClass('historical')
+                                    ->prepend('<b><u>' . __('Total Occurences:') . ' ' . $countHistorical . '</u></b><br/>')
+                                    ->append(($countHistorical > 7)? '<b>'.__('Older occurrences not shown...').'</b>' : '')
+                                    ->append('<span class="cellID" data-cell="' . $cell['gibbonRubricCellID'] . '"></span>');
+                            }
+                        }
+                    }
+
+                    if ($mark == true) {
+                        $output .= "<script type='text/javascript'>";
+                        $output .= '$(document).ready(function(){';
+                        $output .= '$(".markableCell").parent().click(function(){';
+                            $output .= "var mode = '';";
+                            $output .= "var cellID = $(this).find('.cellID').data('cell');";
+                            $output .= "if ($(this).hasClass('rubricCellHighlight') == false ) {";
+                                $output .= "$(this).addClass('rubricCellHighlight');";
+                                $output .= "mode = 'Add';";
+                            $output .= '} else {';
+                                $output .= "$(this).removeClass('rubricCellHighlight');";
+                                $output .= "mode = 'Remove';";
+                            $output .= '}';
+                            $output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: mode, gibbonRubricID : "' . $gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'", gibbonRubricCellID : cellID, contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
+                            $output .= '});';
+                        $output .= '});';
+                        $output .= '</script>';
+                    }
+
+
+                $output .= $form->getOutput();
+
+            $output .= "</div>";
+
+            //Div to contain visualisation
+            $output .= "<div id='visualise' style='display: none'>";
+                //Filter out columns to ignore from visualisation
+                $columns = array_filter($columns, function ($item) {
+                    return $item['visualise'] == 'Y'; 
+                });
+
+                //Cycle through rows to calculate means
+                $means = array() ;
+                foreach ($rows as $row) {
+                    $means[$row['gibbonRubricRowID']]['title'] = $row['title'];
+                    $means[$row['gibbonRubricRowID']]['cumulative'] = 0;
+                    $means[$row['gibbonRubricRowID']]['denonimator'] = 0;
+
+                    //Cycle through cells, and grab those for this row
+                    $cellCount = 1 ;
+                    foreach ($cells[$row['gibbonRubricRowID']] AS $cell) {
+                        $visualise = false ;
+                        foreach ($columns as $column) {
+                            if ($column['gibbonRubricColumnID'] == $cell['gibbonRubricColumnID']) {
+                                $visualise = true ;
+                            }
+                        }
+
+                        if ($visualise) {
+                            foreach ($contexts as $entry) {
+                                if ($entry['gibbonRubricCellID'] == $cell['gibbonRubricCellID']) {
+                                    $means[$row['gibbonRubricRowID']]['cumulative'] += $cellCount;
+                                    $means[$row['gibbonRubricRowID']]['denonimator'] ++; 
+                                }
+                            }
+                            $cellCount++;
+                        }
                     }
                 }
-            }
 
-            if ($mark == true) {
-                $output .= "<script type='text/javascript'>";
-                $output .= '$(document).ready(function(){';
-                $output .= '$(".markableCell").parent().click(function(){';
-                    $output .= "var mode = '';";
-                    $output .= "var cellID = $(this).find('.cellID').data('cell');";
-                    $output .= "if ($(this).hasClass('rubricCellHighlight') == false ) {";
-                        $output .= "$(this).addClass('rubricCellHighlight');";
-                        $output .= "mode = 'Add';";
-                    $output .= '} else {';
-                        $output .= "$(this).removeClass('rubricCellHighlight');";
-                        $output .= "mode = 'Remove';";
-                    $output .= '}';
-                    $output .= 'var request=$.ajax({ url: "'.$_SESSION[$guid]['absoluteURL'].'/modules/Rubrics/rubrics_data_saveAjax.php", type: "GET", data: {mode: mode, gibbonRubricID : "' . $gibbonRubricID.'", gibbonPersonID : "'.$gibbonPersonID.'", gibbonRubricCellID : cellID, contextDBTable : "'.$contextDBTable.'",contextDBTableID : "'.$contextDBTableID.'"}, dataType: "html"});';
-                    $output .= '});';
-                $output .= '});';
-                $output .= '</script>';
-            }
+                $output .= "<div id='canvasHolder' style='width:100%;'>";
+                    $output .= "<canvas id='canvas'></canvas>";
+                $output .= "</div>";
 
-            $output .= $form->getOutput();
+                $labels = array() ;
+                foreach ($means as $mean) {
+                    array_push($labels, "\"".$mean['title']."\"");
+                }
+                $labelsOutput = implode($labels, ",");
+
+                $data = array();
+                foreach ($means as $mean) {
+                    array_push($data, round((($mean['cumulative']/$mean['denonimator'])/count($columns)), 2));
+                }
+                $dataOutput = implode($data, ",");
+
+                $colors = array();
+                foreach ($means as $mean) {
+                    array_push($colors, "\"rgba(".rand(0,255).",".rand(0,255).",".rand(0,255).",0.5)\"");
+                }
+                $colorsOutput = implode($colors, ",");
+
+                $output .= '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/2.0/Chart.min.js"></script>';
+                $output .= "<script type='text/javascript'>
+                    var data = {
+                        labels: [".$labelsOutput."],
+                        datasets: [{
+                        data: [".$dataOutput."],
+                        backgroundColor: [".$colorsOutput."]
+                        }]
+                    };
+                    
+                    var polarAreaChart = new Chart(canvas, {
+                        type: 'polarArea',
+                        data: data,
+                        options: {
+                            legend: {
+                                position: \"right\"
+                            }
+                        }
+                    });
+
+
+                </script>" ;
+    
+            $output .= "</div>";
+
+            
+
+            //Function to show/hide rubric/visualisation 
+            $output .= "<script type='text/javascript'>
+                 $(document).ready(function(){
+                    $('#type').change(function () {
+                        if ($(this).val() == 'Current' || $(this).val() == 'Historical') {
+                            $('#rubric').slideDown('fast', $('#rubric').css('display','block'));
+                            $('#visualise').css('display','none');
+                        } else {
+                            $('#visualise').slideDown('fast', $('#visualise').css('display','block'));
+                            $('#rubric').css('display','none');
+                        }
+                    });
+                });
+            </script>";
         }
 
         // Append the Rubric stylesheet to the current page - for Markbook view of Rubric (only if it's not already included)
