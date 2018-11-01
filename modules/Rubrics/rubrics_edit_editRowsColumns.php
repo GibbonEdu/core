@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 							}
 							$form->addHiddenValue('gibbonRubricColumnID['.$count.']', $rubricColumn['gibbonRubricColumnID']);
 
-							//$row = $form->addRow();
+							
 							$column->addLabel('columnVisualise'.$count, sprintf(__('Visualise?'), ($count + 1)));
 							$column->addYesNo('columnVisualise['.$count.']')->selected($rubricColumn['visualise']);
 							$count++;
