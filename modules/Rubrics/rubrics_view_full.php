@@ -55,8 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view_full.
             echo $row3['name'].'<br/>';
             echo '</h2>';
 
-            $page->scripts->add('chart');
-
             echo rubricView($guid, $connection2, $gibbonRubricID, false);
         }
     }

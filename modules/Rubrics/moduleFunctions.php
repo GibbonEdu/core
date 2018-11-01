@@ -138,7 +138,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 //If $mark=TRUE, then marking tools are made available, otherwise it is view only
 function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID = '', $contextDBTable = '', $contextDBTableIDField = '', $contextDBTableID = '', $contextDBTableGibbonRubricIDField = '', $contextDBTableNameField = '', $contextDBTableDateField = '')
 {
-    global $pdo;
+    global $pdo, $page;
     
     $output = false;
     $hasContexts = $contextDBTable != '' and $contextDBTableIDField != '' and $contextDBTableID != '' and $contextDBTableGibbonRubricIDField != '' and $contextDBTableNameField != '' and $contextDBTableDateField != '';
@@ -419,6 +419,8 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                         : 0;
                 }, $means);
 
+                $page->scripts->add('chart');
+                
                 $chart = Chart::create('visualisation', 'polarArea')
                     ->setLegend(['display' => true, 'position' => 'right'])
                     ->setLabels(array_column($means, 'title'))
