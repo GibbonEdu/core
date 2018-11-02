@@ -35,7 +35,18 @@ use Gibbon\Forms\Layout\Element;
 class SimpleRenderer implements RendererInterface
 {
     use BasicAttributesTrait;
-    
+
+    /**
+     * A callback to render string display if there is no result
+     * in the DataSet.
+     *
+     * The callback should have the same function siguature as
+     * the `SimpleRenderer::renderNoResult` method.
+     *
+     * @var callable|null
+     */
+    protected $noResultRenderer = null;
+
     /**
      * So simple ...
      */
@@ -67,15 +78,7 @@ class SimpleRenderer implements RendererInterface
         $output .= '</header>';
 
         if ($dataSet->count() == 0) {
-            if ($dataSet->isSubset() && $dataSet->getPageSize() > 0) {
-                $output .= '<div class="warning">';
-                $output .= __('No results matched your search.');
-                $output .= '</div>';
-            } else {
-                $output .= '<div class="error">';
-                $output .= __('There are no records to display.');
-                $output .= '</div>';
-            }
+            $output .= $this->renderNoResult($table, $dataSet);
         } else {
             $this->addClass('fullWidth');
 
@@ -148,6 +151,47 @@ class SimpleRenderer implements RendererInterface
         $output .= '</footer>';
 
         return $output;
+    }
+
+    /**
+     * Set a renderer callback to render if there is no result.
+     * The callback should have the same function siguature as
+     * the `SimpleRenderer::renderNoResult` method.
+     *
+     * @param callable $callback
+     * @return this
+     */
+    public function setNoResultRenderer(callable $callback)
+    {
+        $this->noResultRenderer = $callback;
+        return $this;
+    }
+
+    /**
+     * Render the no result output.
+     *
+     * @param DataTable $table
+     * @param DataSet $dataSet
+     * @return void
+     */
+    protected function renderNoResult(DataTable $table, DataSet $dataSet)
+    {
+        if ($this->noResultRenderer !== null) {
+            // use the overriding $this->noResultRenderer callback
+            return call_user_func($this->noResultRenderer, $table, $dataSet);
+        }
+
+        if ($dataSet->isSubset() && $dataSet->getPageSize() > 0) {
+            // if this is a page overload
+            return '<div class="warning">' .
+                __('No results matched your search.') .
+                '</div>';
+        }
+
+        // if there is actually no result
+        return '<div class="error">' .
+            __('There are no records to display.') .
+            '</div>';
     }
 
     /**
