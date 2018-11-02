@@ -21,7 +21,7 @@ v17.0.00
     Headlines
         Added data visualisation to Rubrics
         Languages can now be installed and updated through Manage Languages in System Admin
-        System: added Hebrew an active language
+        Added Hebrew an active language and improved the display of right-to-left languages
 
     Changes With Important Notices
 

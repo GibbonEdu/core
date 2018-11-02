@@ -9,7 +9,7 @@ TODO: add template variable details.
 -->#}
 
 <!DOCTYPE html>
-<html>
+<html {{ rightToLeft ? 'dir="rtl"' : '' }}>
     <head>
         {{ include('head.twig.html') }}
     </head>
