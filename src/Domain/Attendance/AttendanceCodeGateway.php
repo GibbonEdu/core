@@ -17,36 +17,37 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+namespace Gibbon\Domain\Attendance;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 
 /**
- * @version v17
- * @since   v17
+ * @version v16
+ * @since   v16
  */
-class IndividualNeedsGateway extends QueryableGateway
+class AttendanceCodeGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonINDescriptor';
+    private static $tableName = 'gibbonAttendanceCode';
 
-    private static $searchableColumns = ['name'];
+    private static $searchableColumns = ['name', 'nameShort'];
     
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryIndividualNeedsDescriptors(QueryCriteria $criteria)
+    public function queryAttendanceCodes(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonINDescriptorID', 'name', 'nameShort', 'description', 'sequenceNumber'
+                'gibbonAttendanceCodeID', 'name', 'nameShort', 'scope', 'active', 'direction', 'type', 'sequenceNumber'
             ]);
+
 
         return $this->runQuery($query, $criteria);
     }

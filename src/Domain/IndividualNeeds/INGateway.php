@@ -84,4 +84,16 @@ class INGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryIndividualNeedsDescriptors(QueryCriteria $criteria)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonINDescriptor')
+            ->cols([
+                'gibbonINDescriptorID', 'name', 'nameShort', 'description', 'sequenceNumber'
+            ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }

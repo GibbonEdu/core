@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\StudentGateway;
+use Gibbon\Domain\School\StudentNoteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
     //Acess denied
@@ -45,14 +45,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     echo '</p>';
 
 
-    $studentGateway = $container->get(StudentGateway::class);
+    $studentNoteGateway = $container->get(StudentNoteGateway::class);
 
     // QUERY
-    $criteria = $studentGateway->newQueryCriteria()
+    $criteria = $studentNoteGateway->newQueryCriteria()
         ->sortBy(['name'])
         ->fromArray($_POST);
 
-    $studentNoteCategories = $studentGateway->queryStudentNoteCategories($criteria);
+    $studentNoteCategories = $studentNoteGateway->queryStudentNoteCategories($criteria);
 
     // DATA TABLE
     $table = DataTable::createPaginated('studentNoteCategoriesManage', $criteria);
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     });
     
     $table->addColumn('name', __('Name'));
-    $table->addColumn('active', __('Active'));
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     // ACTIONS
     $table->addActionColumn()

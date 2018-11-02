@@ -27,25 +27,25 @@ use Gibbon\Domain\QueryableGateway;
  * @version v16
  * @since   v16
  */
-class AttendanceGateway extends QueryableGateway
+class StudentNoteGateway extends QueryableGateway
 {
     use TableAware;
 
-    private static $tableName = 'gibbonAttendanceCode';
+    private static $tableName = 'gibbonStudentNoteCategory';
 
-    private static $searchableColumns = ['name', 'nameShort'];
+    private static $searchableColumns = ['name'];
     
     /**
      * @param QueryCriteria $criteria
      * @return DataSet
      */
-    public function queryAttendanceCodes(QueryCriteria $criteria)
+    public function queryStudentNoteCategories(QueryCriteria $criteria)
     {
         $query = $this
             ->newQuery()
             ->from($this->getTableName())
             ->cols([
-                'gibbonAttendanceCodeID', 'name', 'nameShort', 'scope', 'active', 'direction', 'type', 'sequenceNumber'
+                'gibbonStudentNoteCategoryID', 'name', 'template', 'active'
             ]);
 
 

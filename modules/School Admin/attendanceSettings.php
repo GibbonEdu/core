@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\AttendanceGateway;
+use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
     //Acess denied
@@ -44,14 +44,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo __($guid, 'These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.');
     echo '</p>';
 
-    $attendanceGateway = $container->get(AttendanceGateway::class);
+    $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
 
     // QUERY
-    $criteria = $attendanceGateway->newQueryCriteria()
+    $criteria = $attendanceCodeGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 
-    $attendanceCodes = $attendanceGateway->queryAttendanceCodes($criteria);
+    $attendanceCodes = $attendanceCodeGateway->queryAttendanceCodes($criteria);
 
     // DATA TABLE
     $table = DataTable::createPaginated('attendanceCodesManage', $criteria);

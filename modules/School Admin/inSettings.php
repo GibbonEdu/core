@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\IndividualNeedsGateway;
+use Gibbon\Domain\IndividualNeeds\INGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.php') == false) {
     //Acess denied
@@ -42,14 +42,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     echo '</h3>';
 
 
-    $individualNeedsGateway = $container->get(IndividualNeedsGateway::class);
+    $INGateway = $container->get(INGateway::class);
 
     // QUERY
-    $criteria = $individualNeedsGateway->newQueryCriteria()
+    $criteria = $INGateway->newQueryCriteria()
         ->sortBy(['sequenceNumber'])
         ->fromArray($_POST);
 
-    $individualNeedsDescriptors = $individualNeedsGateway->queryIndividualNeedsDescriptors($criteria);
+    $individualNeedsDescriptors = $INGateway->queryIndividualNeedsDescriptors($criteria);
 
     // DATA TABLE
     $table = DataTable::createPaginated('individualNeedsDescriptorsManage', $criteria);
