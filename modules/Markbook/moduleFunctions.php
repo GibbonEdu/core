@@ -239,9 +239,6 @@ function getAlertStyle( $alert, $concern ) {
 }
 
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
-
-    require_once __DIR__ . '/src/MarkbookView.php';
-
     // Build the markbook object for this class & student
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
     $assessmentScale = $markbook->getDefaultAssessmentScale();

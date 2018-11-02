@@ -67,9 +67,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-
-        require_once __DIR__ . '/src/MarkbookView.php';
-
         // Build the markbook object for this class
         $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
