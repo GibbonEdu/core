@@ -1273,7 +1273,13 @@ function renderTTDay($guid, $connection2, $gibbonTTID, $schoolOpen, $startDaySta
 
                         try {
                             $dataTeacher = array('gibbonCourseClassID' => $rowPeriods['gibbonCourseClassID'] );
-                            $sqlTeacher = 'SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title FROM gibbonPerson, gibbonCourseClassPerson WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonCourseClassPerson.role="Teacher" ORDER BY gibbonCourseClassPerson.gibbonCourseClassPersonID LIMIT 1';
+                            $sqlTeacher = "SELECT gibbonPerson.preferredName, gibbonPerson.surname, gibbonPerson.title 
+                                FROM gibbonPerson 
+                                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID ) 
+                                WHERE gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID 
+                                AND gibbonCourseClassPerson.role='Teacher'
+                                AND gibbonPerson.status='Full'
+                                ORDER BY gibbonCourseClassPerson.gibbonCourseClassPersonID LIMIT 1";
                             $resultTeacher = $connection2->prepare($sqlTeacher);
                             $resultTeacher->execute($dataTeacher);
                         } catch (PDOException $e) {}
