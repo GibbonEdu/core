@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $table->addColumn('name', __('Name'));
     $table->addColumn('direction', __('Direction'));
     $table->addColumn('scope', __('Scope'));
-    $table->addColumn('active', __('Active'));
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
 
     // ACTIONS
     $table->addActionColumn()
