@@ -91,7 +91,6 @@ else {
 				}
 				else {
 					//Write to database
-					require_once __DIR__ . '/src/AttendanceView.php';
 					$attendance = new AttendanceView($gibbon, $pdo);
 
 					try {

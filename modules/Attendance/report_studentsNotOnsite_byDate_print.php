@@ -38,7 +38,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
     $gibbonYearGroupIDList = (!empty($_GET['gibbonYearGroupIDList'])) ? explode(',', $_GET['gibbonYearGroupIDList']) : null ;
 
-    require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
 
     //Proceed!

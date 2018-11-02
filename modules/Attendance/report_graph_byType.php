@@ -81,7 +81,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $rollGroups = !empty($_POST['gibbonRollGroupID'])? $_POST['gibbonRollGroupID'] : array('all');
     if (in_array('all', $rollGroups)) $rollGroups = array('all');
 
-    require_once __DIR__ . '/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {

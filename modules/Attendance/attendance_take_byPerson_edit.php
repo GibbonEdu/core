@@ -22,7 +22,6 @@ use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-require_once __DIR__ . '/src/AttendanceView.php';
 
 $urlParams = ['gibbonPersonID' => $_GET['gibbonPersonID'], 'currentDate' => $_GET['currentDate']];
 

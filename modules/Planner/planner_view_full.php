@@ -22,7 +22,6 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/../Attendance/moduleFunctions.php';
-require_once __DIR__ . '/../Attendance/src/AttendanceView.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     //Acess denied

@@ -66,7 +66,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     header("Location: {$URL}");
                 } else {
                     //Write to database
-                    require_once __DIR__ . '/src/AttendanceView.php';
                     $attendance = new AttendanceView($gibbon, $pdo);
 
                     $fail = false;

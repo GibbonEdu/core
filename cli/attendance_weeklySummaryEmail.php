@@ -33,7 +33,6 @@ if (!isCommandLineInterface()) {
     setCurrentSchoolYear($guid, $connection2);
 
     require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
-    require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
     $attendance = new AttendanceView($gibbon, $pdo);
     
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
