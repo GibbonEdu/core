@@ -17,14 +17,16 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Attendance\AttendanceView;
+
 //Get's a count of absent days for specified student between specified dates (YYYY-MM-DD, inclusive). Return of FALSE means there was an error, or no data
 function getAbsenceCount($guid, $gibbonPersonID, $connection2, $dateStart, $dateEnd, $gibbonCourseClassID = 0)
 {
     $queryFail = false;
 
     global $gibbon, $session, $pdo;
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     //Get all records for the student, in the date range specified, ordered by date and timestamp taken.
     try {
@@ -133,8 +135,8 @@ function getLatenessCount($guid, $gibbonPersonID, $connection2, $dateStart, $dat
 function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $connection2, $dateStart, $dateEnd)
 {
     global $gibbon, $session, $pdo;
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     $attendanceByPersonAccessible = isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php');
 

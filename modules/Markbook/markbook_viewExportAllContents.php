@@ -17,10 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../config.php';
+use Gibbon\Module\Markbook\MarkbookView;
+
+include __DIR__ . '/../../config.php';
 
 //Module includes
-include './moduleFunctions.php';
+include __DIR__ . '/moduleFunctions.php';
 
 //Get settings
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
@@ -66,10 +68,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         echo '</div>';
     } else {
 
-        require_once $_SESSION[$guid]['absolutePath'].'/modules/Markbook/src/markbookView.php';
+        require_once __DIR__ . '/src/MarkbookView.php';
 
         // Build the markbook object for this class
-        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+        $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
         // Calculate and cache all weighting data
         if ($markbook->getSetting('enableColumnWeighting') == 'Y') {

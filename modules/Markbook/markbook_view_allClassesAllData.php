@@ -2,12 +2,13 @@
 
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
+use Gibbon\Module\Markbook\MarkbookView;
 
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	require_once __DIR__ . '/src/markbookView.php';
-	require_once __DIR__ . '/src/markbookColumn.php';
+	require_once __DIR__ . '/src/MarkbookView.php';
+	require_once __DIR__ . '/src/MarkbookColumn.php';
 
     //Check for access to multiple column add
     $multiAdd = false;
@@ -138,7 +139,7 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
     });
 
     // Build the markbook object for this class
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // Load the columns for the current page
     $markbook->loadColumnsFromDataSet($columns);

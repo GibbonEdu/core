@@ -19,11 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-
-require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+require_once __DIR__ . '/src/AttendanceView.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     //Acess denied
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         );
     }
 
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';

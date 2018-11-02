@@ -22,7 +22,7 @@ use Gibbon\Services\Format;
 use Gibbon\Tables\DataTable;
 use Gibbon\Forms\Prefab\BulkActionForm;
 use Gibbon\Domain\Finance\InvoiceGateway;
-use Gibbon\Finance\Forms\FinanceFormFactory;
+use Gibbon\Module\Finance\Forms\FinanceFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';

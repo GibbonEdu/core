@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -80,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $rollGroups = !empty($_POST['gibbonRollGroupID'])? $_POST['gibbonRollGroupID'] : array('all');
     if (in_array('all', $rollGroups)) $rollGroups = array('all');
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
         $types = $_POST['types'];

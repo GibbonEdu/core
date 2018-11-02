@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-include './modules/Attendance/moduleFunctions.php';
+require_once __DIR__ . '/../Attendance/moduleFunctions.php';
+require_once __DIR__ . '/../Attendance/src/AttendanceView.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.php') == false) {
     //Acess denied
@@ -1496,9 +1497,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
                         $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
 
-                        require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
 
-                        $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+                        $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
 
                         try {
                             $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
