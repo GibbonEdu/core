@@ -59,8 +59,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     $table->addHeaderAction('add', __('Add'))
         ->setURL('/modules/School Admin/attendanceSettings_manage_add.php')
         ->displayLabel();
-
     
+    $table->modifyRows(function ($values, $row) {
+        if ($values['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
+
     $table->addColumn('nameShort', __('Code'));
     $table->addColumn('name', __('Name'));
     $table->addColumn('direction', __('Direction'));
