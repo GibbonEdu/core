@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\StudentNoteGateway;
+use Gibbon\Domain\Students\StudentNoteGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
     //Acess denied
