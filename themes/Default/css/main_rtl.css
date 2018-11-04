@@ -40,6 +40,7 @@ Add any extra code here to make right to left languages (such as Arabic) work.
 
 div.minorLinks {
     text-align: left;
+    padding-left: 13px;
 }
 
 div.trail {
@@ -63,6 +64,10 @@ div.trailHead {
 #nav li {
     position: relative;
     float: right;
+}
+
+#nav li li {
+    text-align: right;
 }
 
 ul.moduleMenu ul li {
