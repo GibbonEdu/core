@@ -17,7 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace Gibbon\Domain\School;
+namespace Gibbon\Domain\RollGroups;
 
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
@@ -91,5 +91,15 @@ class RollGroupGateway extends QueryableGateway
                 ORDER BY gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor DESC, gibbonPersonID=gibbonRollGroup.gibbonPersonIDTutor2 DESC";
 
         return $this->db()->select($sql, $data);
+    }
+
+    public function getRollGroupByID($gibbonRollGroupID)
+    {
+        $data = array('gibbonRollGroupID' => $gibbonRollGroupID);
+        $sql = "SELECT * 
+                FROM gibbonRollGroup
+                WHERE gibbonRollGroupID=:gibbonRollGroupID";
+            
+        return $this->db()->selectOne($sql, $data);
     }
 }
