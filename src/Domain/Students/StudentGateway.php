@@ -116,14 +116,26 @@ class StudentGateway extends QueryableGateway
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'));
         
-        if (!is_null($gibbonRollGroupID)) {
+        if (!empty($gibbonRollGroupID)) {
             $query
                 ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
                 ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
         }
             
-
         $criteria->addFilterRules($this->getSharedUserFilterRules());
+
+        $criteria->addFilterRules([
+            'view' => function ($query, $view) {
+                if ($view == 'extended') {
+                    $query->cols(['gibbonHouse.name as house', 'gibbonPersonMedical.*', 'COUNT(gibbonPersonMedicalConditionID) as conditionCount'])
+                        ->leftJoin('gibbonHouse', 'gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID')
+                        ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                        ->leftJoin('gibbonPersonMedicalCondition', 'gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID')
+                        ->groupBy(['gibbonPerson.gibbonPersonID']);
+                }
+                return $query;
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }
