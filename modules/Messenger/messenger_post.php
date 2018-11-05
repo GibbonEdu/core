@@ -106,7 +106,7 @@ else {
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool")) {
 				$row = $form->addRow()->addClass('email');
 					$row->addLabel('emailReplyTo', __('Reply To'));
-					$row->addEmail('emailReplyTo')->maxLength(50);
+					$row->addEmail('emailReplyTo');
 			}
 		}
 
