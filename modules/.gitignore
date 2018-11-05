@@ -51,3 +51,7 @@
 !/Tracking/**
 !/User Admin
 !/User Admin/**
+
+# black list some files and folders
+# in the module folders
+**/.DS_Store
