@@ -231,7 +231,7 @@ if ($proceed == false) {
 
             $row = $form->addRow();
                 $row->addLabel('email', __('Email'));
-                $email = $row->addEmail('email')->maxLength(50)->isRequired();
+                $email = $row->addEmail('email')->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('phone1', __('Phone'))->description(__('Type, country code, number.'));
@@ -310,11 +310,11 @@ if ($proceed == false) {
 
             $row = $form->addRow();
                 $row->addLabel('referenceEmail1', __('Referee 1'))->description(__('An email address for a referee at the applicant\'s current school.'));
-                $row->addEmail('referenceEmail1')->maxLength(50)->isRequired();
+                $row->addEmail('referenceEmail1')->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('referenceEmail2', __('Referee 2'))->description(__('An email address for a second referee.'));
-                $row->addEmail('referenceEmail2')->maxLength(50)->isRequired();
+                $row->addEmail('referenceEmail2')->isRequired();
 
         }
 
