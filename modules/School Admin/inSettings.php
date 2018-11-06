@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
     $table->addColumn('name', __('Name').'<br/>'.Format::small('Short Name'))
         ->width('15%')
         ->format(function($values) {
-            return '<strong>'.__('Name').'</strong><br/>'.Format::small($values['nameShort']);
+            return '<strong>'.$values['name'].'</strong><br/>'.Format::small($values['nameShort']);
         });
     $table->addColumn('description', __('Description'));
 

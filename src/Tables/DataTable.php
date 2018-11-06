@@ -30,8 +30,6 @@ use Gibbon\Tables\Columns\ExpandableColumn;
 use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
-use Gibbon\Tables\Renderer\PrintableRenderer;
-use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
 /**
  * DataTable
@@ -43,6 +41,7 @@ class DataTable implements OutputableInterface
 {
     protected $id;
     protected $title;
+    protected $description;
     protected $data;
     protected $renderer;
 
@@ -127,6 +126,28 @@ class DataTable implements OutputableInterface
     public function setTitle($title)
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the table description.
+     * @return  string
+     */
+    public function getDescription()
+    {
+        return is_callable($this->description)
+            ? call_user_func($this->description)
+            : $this->description;
+    }
+
+    /**
+     * Set the table description. Can be a string or a callable that returns a string.
+     * @param  string|Callable  $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }
