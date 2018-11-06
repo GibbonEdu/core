@@ -451,7 +451,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('email', __('Email'));
-                                                    $row->addEmail('email')->maxLength(50)->isRequired();
+                                                    $row->addEmail('email')->isRequired();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
