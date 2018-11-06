@@ -49,12 +49,12 @@ class Module
         $this->stylesheets = new AssetBundle();
         $this->scripts = new AssetBundle();
 
-        $this->stylesheets()->add(
+        $this->stylesheets->add(
             'module',
             'modules/'.$this->name.'/css/module.css',
             ['version' => $this->version]
         );
-        $this->scripts()->add(
+        $this->scripts->add(
             'module',
             'modules/'.$this->name.'/js/module.js',
             ['version' => $this->version, 'context' => 'head']
@@ -70,6 +70,17 @@ class Module
     public function __get(string $name)
     {
         return isset($this->$name) ? $this->$name : null;
+    }
+
+    /**
+     * Check if a model property exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset(string $name)
+    {
+        return isset($this->$name);
     }
 
     /**
@@ -90,25 +101,5 @@ class Module
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Returns the collection of stylesheets used by this module.
-     *
-     * @return AssetBundle
-     */
-    public function stylesheets()
-    {
-        return $this->stylesheets;
-    }
-
-    /**
-     * Returns the collection of scripts used by this module.
-     *
-     * @return AssetBundle
-     */
-    public function scripts()
-    {
-        return $this->scripts;
     }
 }

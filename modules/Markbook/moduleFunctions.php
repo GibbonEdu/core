@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Markbook\MarkbookView;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -67,6 +68,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
 
     $col = $form->addRow()->addColumn()->addClass('inline right');
 
+    // SEARCH
+    $search = $_GET['search'] ?? '';
+
+    $col->addContent(__('Search').':');
+    $col->addTextField('search')
+        ->setClass('shortWidth')
+        ->setValue($search);
+
     // TERM
     if ($enableGroupByTerm == 'Y' ) {
         $selectTerm = (isset($_SESSION[$guid]['markbookTerm']))? $_SESSION[$guid]['markbookTerm'] : 0;
@@ -77,7 +86,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':');
+        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
@@ -136,6 +145,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         ->selected($gibbonCourseClassID);
 
     $col->addSubmit(__('Go'));
+
+    if (!empty($search)) {
+        $clearURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'];
+        $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
+
+        $form->addRow()->addContent($clearLink)->addClass('right');
+    }
+
 
     $output .= $form->getOutput();
 
@@ -595,7 +612,6 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
-            
         } else {
             $output .= "<span title='$status. ".__('Recorded at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style>$linkText</span>";
         }

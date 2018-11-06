@@ -1,9 +1,14 @@
 <?php
+
+use Gibbon\Domain\Planner\PlannerEntryGateway;
+use Gibbon\Domain\Markbook\MarkbookColumnGateway;
+use Gibbon\Module\Markbook\MarkbookView;
+
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	require_once __DIR__ . '/src/markbookView.php';
-	require_once __DIR__ . '/src/markbookColumn.php';
+	require_once __DIR__ . '/src/MarkbookView.php';
+	require_once __DIR__ . '/src/MarkbookColumn.php';
 
     //Check for access to multiple column add
     $multiAdd = false;
@@ -109,21 +114,35 @@
     $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
 	$canEditThisClass = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) || $highestAction2 == 'Edit Markbook_everything');
 
+    // Get criteria filter values, including session defaults
+    $search = $_GET['search'] ?? '';
+    $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? $_SESSION[$guid]['markbookTerm'] ?? '';
+    $columnFilter = $_GET['markbookFilter'] ?? $_SESSION[$guid]['markbookFilter'] ?? '';
+    $studentOrderBy = $_GET['markbookOrderBy'] ?? $_SESSION[$guid]['markbookOrderBy'] ?? 'surname';
+
+    $markbookGateway = $container->get(MarkbookColumnGateway::class);
+    $plannerGateway = $container->get(PlannerEntryGateway::class);
+
+    // QUERY
+    $criteria = $markbookGateway->newQueryCriteria()
+        ->searchBy($markbookGateway->getSearchableColumns(), $search)
+        ->sortBy(['gibbonMarkbookColumn.sequenceNumber', 'gibbonMarkbookColumn.date', 'gibbonMarkbookColumn.complete', 'gibbonMarkbookColumn.completeDate'])
+        ->filterBy('term', $gibbonSchoolYearTermID)
+        ->filterBy('show', $columnFilter)
+        ->fromPOST();
+
+    $columns = $markbookGateway->queryMarkbookColumnsByClass($criteria, $gibbonCourseClassID);
+    $columns->transform(function ($column) use ($plannerGateway) {
+        if (isset($column['gibbonPlannerEntryID'])) {
+            $column['gibbonPlannerEntry'] = $plannerGateway->getPlannerEntryByID($column['gibbonPlannerEntryID']);
+        }
+    });
+
     // Build the markbook object for this class
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
-    // Add a school term filter if one exists
-    $gibbonSchoolYearTermID = (isset($_GET['gibbonSchoolYearTermID']))? $_GET['gibbonSchoolYearTermID'] : $_SESSION[$guid]['markbookTerm'];
-    $markbook->filterByTerm( $gibbonSchoolYearTermID );
-
-    // Add class chooser filters
-    $columnFilter = (isset($_GET['markbookFilter']))? $_GET['markbookFilter'] : $_SESSION[$guid]['markbookFilter'];
-    $markbook->filterByFormOptions( $columnFilter );
-
-    // Get the sort order, if it exists
-    $studentOrderBy = (isset($_SESSION[$guid]['markbookOrderBy']))? $_SESSION[$guid]['markbookOrderBy'] : 'surname';
-    $studentOrderBy = (isset($_GET['markbookOrderBy']))? $_GET['markbookOrderBy'] : $studentOrderBy;
-
+    // Load the columns for the current page
+    $markbook->loadColumnsFromDataSet($columns);
 
     if ($markbook == NULL || $markbook->getColumnCountTotal() < 1) {
         echo "<div class='linkTop'>";
@@ -147,9 +166,6 @@
         $pageNum = (isset($_GET['page']))? $_GET['page'] : $pageNum;
 
         $_SESSION[$guid]['markbookPage'] = $pageNum;
-
-        // Load the columns for the current page
-        $markbook->loadColumns( $pageNum );
 
         // Cache all personalized target data
         $markbook->cachePersonalizedTargets( $gibbonCourseClassID );
@@ -986,7 +1002,7 @@
             }
 
             // Cumulative Average
-            $cumulativeAverage = ($count > 0 && $totals['cumulativeAverage'] > 0)? ($totals['cumulativeAverage'] / $count) : '';
+            $cumulativeAverage = ($count > 0 && !empty($totals['cumulativeAverage']))? ($totals['cumulativeAverage'] / $count) : '';
             echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
 
             if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {

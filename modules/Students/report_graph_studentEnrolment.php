@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\UI\Chart\Chart;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -169,92 +170,49 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
             echo '</div>';
         } else {
             //PLOT DATA
-            echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/2.0/Chart.bundle.min.js"></script>';
+            $page->scripts->add('chart');
 
-            echo '<div style="width:100%">';
-            echo '<div>';
-            echo '<canvas id="canvas"></canvas>';
-            echo '</div>';
-            echo '</div>';
+            $labels = array_map(function ($date) {
+                return date('M j, Y', strtotime($date));
+            }, array_keys(current($enrolment)));
 
-            $colors = getColourArray();
-            $colorCount = count($colors);
-            ?>
-            <script>
-
-            var chartData = {
-
-                labels: [
-                    <?php
-                        $dateRange = array_keys(current($enrolment));
-                        foreach ($dateRange as $date) {
-                            echo "'".date('M j Y', strtotime($date) )."',";
-                        }
-                    ?>
+            $options = [
+                'fill'         => false,
+                'showTooltips' => true,
+                'tooltips'     => ['mode' => 'single'],
+                'hover'        => ['mode' => 'dataset'],
+                'scales'       => [
+                    'xAxes' => [[
+                        'ticks' => [
+                            'autoSkip'    => true,
+                            'maxRotation' => 0,
+                            'padding'     => 30,
+                        ]
+                    ]],
+                    'yAxes' => [[
+                        'ticks' => [
+                            'beginAtZero'  => false,
+                        ]
+                    ]],
                 ],
-                datasets: [
-                    <?php
-                    $datasetCount = 0;
-                    foreach ($enrolment as $groupBy => $dates) : ?>
-                    {
-                        label: '<?php echo ucfirst($groupBy); ?>',
-                        fill: false,
-                        backgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        borderColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        pointBackgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",
-                        borderWidth: 1,
-                        data: [
-                        <?php
-                            foreach ($dates as $date => $count) {
-                                echo "'".$count."',";
-                            }
-                        ?>
-                        ],
-                    },
-                    <?php
-                    $datasetCount++;
-                    endforeach;
-                    ?>
-                ],
+            ];
 
-            };
+            $chart = Chart::create('studentEnrolment', 'line')
+                ->setLabels($labels)
+                ->setOptions($options)
+                ->setLegend(true);
 
-            window.onload = function(){
-                var ctx = document.getElementById("canvas").getContext("2d");
-                var myLineChart = new Chart(ctx, {
-                    type: 'line',
-                    data: chartData,
-                    options:
-                        {
-                            fill: false,
-                            responsive: true,
-                            showTooltips: true,
-                            tooltips: {
-                                mode: 'single',
-                            },
-                            hover: {
-                                mode: 'dataset',
-                            },
-                            scales: {
-                                xAxes: [{
-                                    ticks: {
-                                        autoSkip: true,
-                                        maxRotation: 0,
-                                        padding: 30,
-                                    }
-                                }],
-                                yAxes: [{
-                                    ticks: {
-                                        beginAtZero:false
-                                    }
-                                }]
-                            }
-                        }
-                    }
-                );
+            foreach ($enrolment as $groupBy => $dates) {
+                $chart->addDataset($groupBy)
+                    ->setLabel($groupBy)
+                    ->setProperties([
+                        'fill'        => false,
+                        'borderWidth' => 1,
+                    ])
+                    ->setData($dates);
             }
-            </script>
-            <?php
+
+            echo $chart->render();
         }
     }
 }

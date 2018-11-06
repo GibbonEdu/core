@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Module\Attendance\AttendanceView;
 
 require getcwd().'/../gibbon.php';
 
@@ -31,9 +32,9 @@ if (!isCommandLineInterface()) {
 } else {
     setCurrentSchoolYear($guid, $connection2);
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/moduleFunctions.php';
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
+    require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
     
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];

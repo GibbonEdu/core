@@ -19,8 +19,9 @@ CHANGELOG
 v17.0.00
 --------
     Headlines
+        Added data visualisation to Rubrics
         Languages can now be installed and updated through Manage Languages in System Admin
-        System: added Hebrew an active language
+        Added Hebrew an active language and improved the display of right-to-left languages
 
     Changes With Important Notices
 
@@ -38,8 +39,10 @@ v17.0.00
         System: added country code and correct spelling of Vietnam and Russia
         System: updated vis.js library to v4.21.0
         System: updated robots.txt to disallow all indexing
+        System: added ability to set background image
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
+        Attendance: fixed an error in the parent view of Student History for PHP 7.1+
         Behaviour: added a notification event for Updated Behaviour Record
         Data Updater: added a Family Data Updater History report
         Data Updater: fixed comment bug in Medical Updates
@@ -59,6 +62,7 @@ v17.0.00
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
         Markbook: fixed shifted table cells in Markbook View class average when cumulative averages are enabled
+        Markbook: added a search option to the filters in Markbook View
         Messenger: restricted Manage Groups view to display groups from the current school year only
         Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
         Messenger: added row colouring to By Roll Group report, and made it default view
@@ -76,6 +80,7 @@ v17.0.00
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
         Students: updated how the Privacy section is displayed in application and data updater forms
+        Students: added the option to enter a username and student ID in the For Office Use section of the Application Form
         Timetable: added a facility booking button to the timetable in View Timetable by Facility
         Timetable Admin: fixed course sync for courses with multiple year groups
         Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields

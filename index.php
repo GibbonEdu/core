@@ -255,7 +255,7 @@ $javascriptConfig = [
  */
 
 // Set page scripts: head
-$page->scripts()->addMultiple([
+$page->scripts->addMultiple([
     'lv'             => 'lib/LiveValidation/livevalidation_standalone.compressed.js',
     'jquery'         => 'lib/jquery/jquery.js',
     'jquery-migrate' => 'lib/jquery/jquery-migrate.min.js',
@@ -266,7 +266,7 @@ $page->scripts()->addMultiple([
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
-$page->scripts()->addMultiple([
+$page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
     'jquery-date'     => 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
@@ -277,15 +277,18 @@ $page->scripts()->addMultiple([
 
 // Set page scripts: foot - misc
 $thickboxInline = 'var tb_pathToImage="'.$session->get('absoluteURL').'/lib/thickbox/loadingAnimation.gif";';
-$page->scripts()->add('thickboxi', $thickboxInline, ['type' => 'inline']);
-$page->scripts()->addMultiple([
+$page->scripts->add('thickboxi', $thickboxInline, ['type' => 'inline']);
+$page->scripts->addMultiple([
     'thickbox' => 'lib/thickbox/thickbox-compressed.js',
     'tinymce'  => 'lib/tinymce/tinymce.min.js',
 ], ['context' => 'foot']);
 
 // Set page scripts: foot - core
-$page->scripts()->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
-$page->scripts()->add('core-setup', 'resources/assets/js/setup.js');
+$page->scripts->add('core-config', 'window.Gibbon = '.json_encode($javascriptConfig).';', ['type' => 'inline']);
+$page->scripts->add('core-setup', 'resources/assets/js/setup.js');
+
+// Register scripts available to the core, but not included by default
+$page->scripts->register('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js');
 
 // Set system analytics code from session cache
 $page->addHeadExtra($session->get('analytics'));
@@ -293,23 +296,31 @@ $page->addHeadExtra($session->get('analytics'));
 /**
  * STYLESHEETS & CSS
  */
-$page->stylesheets()->addMultiple([
+$page->stylesheets->addMultiple([
     'jquery-ui'    => 'lib/jquery-ui/css/blitzer/jquery-ui.css',
     'jquery-time'  => 'lib/jquery-timepicker/jquery.timepicker.css',
     'jquery-token' => 'lib/jquery-tokeninput/styles/token-input-facebook.css',
     'thickbox'     => 'lib/thickbox/thickbox.css',
 ]);
 
-// Set personal background
+// Add right-to-left stylesheet
+if ($session->get('i18n')['rtl'] == 'Y') {
+    $page->theme->stylesheets->add('theme-rtl', '/themes/'.$session->get('gibbonThemeName').'/css/main_rtl.css', ['weight' => 1]);
+}
+
+// Set personal, organisational or theme background     
 if (getSettingByScope($connection2, 'User Admin', 'personalBackground') == 'Y' && $session->has('personalBackground')) {
     $backgroundImage = htmlPrep($session->get('personalBackground'));
-    $backgroundScroll = 'no-repeat fixed center top !important; background-size: cover !important';
+    $backgroundScroll = 'repeat scroll center top';
+} else if ($session->has('organisationBackground')) {
+    $backgroundImage = $session->get('absoluteURL').'/'.$session->get('organisationBackground');
+    $backgroundScroll = 'repeat fixed center top';
 } else {
     $backgroundImage = $session->get('absoluteURL').'/themes/'.$session->get('gibbonThemeName').'/img/backgroundPage.jpg';
     $backgroundScroll = 'no-repeat fixed center top #A88EDB!important;';
 }
 
-$page->stylesheets()->add(
+$page->stylesheets->add(
     'personal-background',
     'body { background: url('.$backgroundImage.') '.$backgroundScroll.'  }',
     ['type' => 'inline']
@@ -433,7 +444,8 @@ if ($isLoggedIn) {
         // Update the menu items to indicate the current active action
         foreach ($menuModuleItems as $category => &$items) {
             foreach ($items as &$item) {
-                $item['active'] = in_array($session->get('action'), explode(',', $item['URLList']));
+                $urlList = array_map('trim', explode(',', $item['URLList']));
+                $item['active'] = in_array($session->get('action'), $urlList);
                 $item['url'] = $session->get('absoluteURL').'/index.php?q=/modules/'
                         .$item['moduleName'].'/'.$item['entryURL'];
             }
@@ -463,6 +475,7 @@ $page->addData([
     'sidebar'           => $showSidebar,
     'version'           => $gibbon->getVersion(),
     'versionName'       => 'v'.$gibbon->getVersion().($session->get('cuttingEdgeCode') == 'Y'? 'dev' : ''),
+    'rightToLeft'       => $session->get('i18n')['rtl'] == 'Y',
 ]);
 
 if ($isLoggedIn) {

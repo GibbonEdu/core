@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs()
+    $page->breadcrumbs
          ->add(__('Manage Users'), 'user_manage.php')
          ->add(__('Edit User'));
 
@@ -211,11 +211,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
             $row = $form->addRow();
                 $row->addLabel('username', __('Username'))->description(__('System login name.'));
-                $row->addTextField('username')
+                $row->addUsername('username')
                     ->isRequired()
-                    ->maxLength(20)
-                    ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
-                    ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php', ['currentUsername' => $values['username']]);
+                    ->setValue($values['username']);
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));

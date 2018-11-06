@@ -174,10 +174,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 						}
 					}
 
-					$form->addRow()->addHeading(__('Columns'));
+                    $row = $form->addRow();
+                        $row->addHeading(__('Columns'));
+                        $row->addContent(__('Visualise?'))->setClass('textCenter')->wrap('<strong>', '</strong>');
+                        $row->addContent();
 
 					$data = array('gibbonRubricID' => $gibbonRubricID);
-					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
+					$sql = "SELECT gibbonRubricColumnID, title, gibbonScaleGradeID, visualise FROM gibbonRubricColumn WHERE gibbonRubricID=:gibbonRubricID ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
 					
 					if ($result->rowCount() <= 0) {
@@ -186,7 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
 						$count = 0;
 						while ($rubricColumn = $result->fetch()) {
 							$row = $form->addRow();
-							$row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
+                            $row->addLabel('columnName'.$count, sprintf(__('Column %1$s Title'), ($count + 1)));
+                            
+                            $row->addCheckbox('columnVisualise['.$count.']')
+                                ->setValue('Y')
+                                ->checked($rubricColumn['visualise'])
+                                ->setClass('textCenter');
 
 							// Handle non-grade scale columns as a text field, otherwise a dropdown
 							if ($values['gibbonScaleID'] == '') {

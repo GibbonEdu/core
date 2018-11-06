@@ -70,6 +70,34 @@ class Page extends View
                 $this->$key = $value;
             }
         }
+
+        // Add the current module entry point to the trail.
+        if (!empty($this->module->name)) {
+            $this->breadcrumbs->setBaseURL('index.php?q=/modules/'.$this->module->name.'/');
+            $this->breadcrumbs->add(__($this->module->name), $this->module->entryURL);
+        }
+    }
+
+    /**
+     * Allow read-only access of page properties.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return isset($this->$name)? $this->$name : null;
+    }
+
+    /**
+     * Check if a page property exists.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __isset(string $name)
+    {
+        return isset($this->$name);
     }
 
     /**
@@ -133,19 +161,19 @@ class Page extends View
      */
     public function getAllStylesheets(string $context = null): array
     {
-        $stylesheets = $this->stylesheets()->getAssets($context);
+        $stylesheets = $this->stylesheets->getAssets($context);
 
         if (!empty($this->getTheme())) {
             $stylesheets = array_replace(
                 $stylesheets,
-                $this->getTheme()->stylesheets()->getAssets($context)
+                $this->getTheme()->stylesheets->getAssets($context)
             );
         }
 
         if (!empty($this->getModule())) {
             $stylesheets = array_replace(
                 $stylesheets,
-                $this->getModule()->stylesheets()->getAssets($context)
+                $this->getModule()->stylesheets->getAssets($context)
             );
         }
 
@@ -162,19 +190,19 @@ class Page extends View
      */
     public function getAllScripts(string $context = null): array
     {
-        $scripts = $this->scripts()->getAssets($context);
+        $scripts = $this->scripts->getAssets($context);
 
         if (!empty($this->getTheme())) {
             $scripts = array_replace(
                 $scripts,
-                $this->getTheme()->scripts()->getAssets($context)
+                $this->getTheme()->scripts->getAssets($context)
             );
         }
 
         if (!empty($this->getModule())) {
             $scripts = array_replace(
                 $scripts,
-                $this->getModule()->scripts()->getAssets($context)
+                $this->getModule()->scripts->getAssets($context)
             );
         }
 
@@ -285,9 +313,15 @@ class Page extends View
      */
     public function gatherData() : array
     {
+        // This is for backwards compatibility with pages that still have hardcoded breadcrumbs.
+        // It currently only displays the new breadcrumbs if some have been added via this class.
+        // Eg: more than one on a non-module page, more than two on a module-page.
+        $breadcrumbs = $this->breadcrumbs->getItems();
+        $displayTrail = (empty($this->getModule()) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
+        
         return [
             'title'        => $this->getTitle(),
-            'breadcrumbs'  => $this->breadcrumbs->getItems(),
+            'breadcrumbs'  => $displayTrail ? $breadcrumbs : [],
             'alerts'       => $this->getAlerts(),
             'stylesheets'  => $this->getAllStylesheets(),
             'scriptsHead'  => $this->getAllScripts('head'),
@@ -359,42 +393,5 @@ class Page extends View
         $data['content'] = $this->content;
 
         return parent::render($template, $data);
-    }
-
-    /**
-     * Returns the collection of stylesheets used by this page.
-     *
-     * @return AssetBundle
-     */
-    public function stylesheets(): AssetBundle
-    {
-        return $this->stylesheets;
-    }
-
-    /**
-     * Returns the collection of scripts used by this page.
-     *
-     * @return AssetBundle
-     */
-    public function scripts(): AssetBundle
-    {
-        return $this->scripts;
-    }
-
-    /**
-     * Returns the breadcrumb trail for this page.
-     *
-     * @return Breadcrumbs
-     */
-    public function breadcrumbs()
-    {
-        // Add the current module entry point to the trail. This is here rather than
-        // the constructor to allow incremental refactoring of the hard-coded breadcrumbs.
-        if (empty($this->breadcrumbs->getItems()) && !empty($this->getModule())) {
-            $this->breadcrumbs->setBaseURL('index.php?q=/modules/'.$this->module->name.'/');
-            $this->breadcrumbs->add(__($this->module->name), $this->module->entryURL);
-        }
-
-        return $this->breadcrumbs;
     }
 }

@@ -28,15 +28,15 @@ class ModuleTest extends TestCase
 
     public function testCanAddStylesheets()
     {
-        $this->module->stylesheets()->add('foo', 'bar/baz');
+        $this->module->stylesheets->add('foo', 'bar/baz');
 
-        $this->assertArrayHasKey('foo',  $this->module->stylesheets()->getAssets());
+        $this->assertArrayHasKey('foo',  $this->module->stylesheets->getAssets());
     }
 
     public function testCanAddScripts()
     {
-        $this->module->scripts()->add('fiz', 'bar/baz');
+        $this->module->scripts->add('fiz', 'bar/baz');
 
-        $this->assertArrayHasKey('fiz',  $this->module->scripts()->getAssets());
+        $this->assertArrayHasKey('fiz',  $this->module->scripts->getAssets());
     }
 }
