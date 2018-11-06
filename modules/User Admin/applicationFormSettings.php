@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Application Form Settings'));
+    $page->breadcrumbs->add(__('Application Form Settings'));
     
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

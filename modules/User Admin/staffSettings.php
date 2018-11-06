@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffSettings.p
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Manage Staff Settings'));
+    $page->breadcrumbs->add(__('Manage Staff Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

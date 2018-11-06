@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Staff Application Form Settings'));
+    $page->breadcrumbs->add(__('Staff Application Form Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

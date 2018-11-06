@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/publicRegistrat
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Public Registration Settings'));
+    $page->breadcrumbs->add(__('Public Registration Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

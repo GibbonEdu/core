@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_studentE
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Import Student Enrolment'));
+    $page->breadcrumbs->add(__('Import Student Enrolment'));
     
     $step = null;
     if (isset($_GET['step'])) {

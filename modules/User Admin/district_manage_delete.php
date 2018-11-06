@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Manage District'), 'district_manage.php')
+        ->add(__('Manage Districts'), 'district_manage.php')
         ->add(__('Delete District'));    
 
     if (isset($_GET['return'])) {

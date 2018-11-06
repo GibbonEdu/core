@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_add.
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__($guid, 'Manage Custom Fields'), 'userFields.php')
-        ->add(__($guid, 'Add Custom Field'));
+        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Add Custom Field'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {

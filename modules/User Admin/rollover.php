@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/rollover.php') 
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Rollover'));
+    $page->breadcrumbs->add(__('Rollover'));
     
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields.php'
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Manage Custom Fields'));
+    $page->breadcrumbs->add(__('Manage Custom Fields'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

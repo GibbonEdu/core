@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
 } else {
     //Set returnTo point for upcoming pages
     //Proceed!
-    $page->breadcrumbs->add(__($guid, 'Manage Families'));
+    $page->breadcrumbs->add(__('Manage Families'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

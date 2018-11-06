@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__($guid, 'Manage Custom Fields'), 'userFields.php')
-        ->add(__($guid, 'Delete Custom Field'));
+        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Delete Custom Field'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

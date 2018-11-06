@@ -29,9 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     $urlParams = ['gibbonFamilyID' => $_GET['gibbonFamilyID']];
     
     $page->breadcrumbs
-        ->add(__($guid, 'Manage Families'), 'family_manage.php')
-        ->add(__($guid, 'Edit Family'), 'family_manage_edit.php', $urlParams)
-        ->add(__($guid, 'Edit Adult'));  
+        ->add(__('Manage Families'), 'family_manage.php')
+        ->add(__('Edit Family'), 'family_manage_edit.php', $urlParams)
+        ->add(__('Edit Adult'));  
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

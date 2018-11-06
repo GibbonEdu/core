@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_del
     //Proceed!
     $page->breadcrumbs
         ->add(__('Manage Users'), 'user_manage.php')
-        ->add(__($guid, 'Delete User'));
+        ->add(__('Delete User'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
