@@ -25,6 +25,8 @@ $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Student Borrowing Record'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -32,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Student Borrowing Record').'</div>';
-    echo '</div>';
-
     echo '<h2>';
     echo __($guid, 'Choose Student');
     echo '</h2>';
