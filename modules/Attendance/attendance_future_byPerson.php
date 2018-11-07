@@ -25,6 +25,9 @@ use Gibbon\Module\Attendance\AttendanceView;
 require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/src/AttendanceView.php';
 
+// set page breadcrumb
+$page->breadcrumbs->add(__('Set Future Absence'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -32,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Set Future Absence').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null,
         	array( 'warning2' => __($guid, 'Your request was successful, but some data was not properly saved.') .' '. __($guid, 'The specified date is not in the future, or is not a school day.'),
