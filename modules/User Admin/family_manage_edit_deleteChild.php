@@ -26,13 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     echo '</div>';
 } else {
     //Proceed!
-    $urlParams = ['gibbonFamilyID' => $_GET['gibbonFamilyID']];
-    
-    $page->breadcrumbs
-        ->add(__('Manage Families'), 'family_manage.php')
-        ->add(__('Edit Family'), 'family_manage_edit.php', $urlParams)
-        ->add(__('Delete Child'));      
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

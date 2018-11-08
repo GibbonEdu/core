@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Districts'), 'district_manage.php')
-        ->add(__('Delete District'));    
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
