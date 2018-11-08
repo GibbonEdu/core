@@ -86,9 +86,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                 echo '</div>';
             } else {
                 $row = $result->fetch();
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Add').' '.$row['course'].'.'.$row['class'].' '.__($guid, ' Weighting').'</div>';
-                echo '</div>';
+
+                $page->breadcrumbs->add(sprintf(
+                    '%s %s %s %s',
+                    __('Delete'),
+                    $course['course'],
+                    $course['class'],
+                    __('Weighting')
+                ));
 
                 // Show add weighting form
                 $form = Form::create('manageWeighting', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID");

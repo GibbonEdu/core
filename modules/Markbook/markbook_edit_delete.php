@@ -79,9 +79,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Column').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(
+                            sprintf(
+                                '%s %s %s %s',
+                                __('View'),
+                                $row['course'],
+                                $row['class'],
+                                __('Markbook')
+                            ),
+                            'markbook_view.php',
+                            [
+                                'gibbonCourseClassID' => @$_GET['gibbonCourseClassID'],
+                            ]
+                        )
+                        ->add(__('Delete Column'));
 
                     if ($row2['groupingID'] != '' and $row2['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                         echo "<div class='error'>";
@@ -100,4 +112,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
         }
     }
 }
-?>

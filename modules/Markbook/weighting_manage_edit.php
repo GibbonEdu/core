@@ -107,9 +107,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $course = $result->fetch();
                     $values = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Edit').' '.$course['course'].'.'.$course['class'].' '.__($guid, ' Weighting').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs->add(sprintf(
+                        '%s %s %s %s',
+                        __('Edit'),
+                        $course['course'],
+                        $course['class'],
+                        __('Weighting')
+                    ));
 
                     $form = Form::create('manageWeighting', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID");
                 

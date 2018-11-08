@@ -41,9 +41,8 @@ use Gibbon\Module\Markbook\MarkbookView;
     }
 
     if ($gibbonCourseClassID == '') {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Markbook').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Markbook'));
+
         //Add multiple columns
         if ($multiAdd) {
             echo "<div class='linkTop'>";
@@ -61,9 +60,7 @@ use Gibbon\Module\Markbook\MarkbookView;
     $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction );
 
     if ($class == NULL) {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Markbook').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Markbook'));
 
         //Get class chooser
         echo classChooser($guid, $pdo, $gibbonCourseClassID);
@@ -83,9 +80,13 @@ use Gibbon\Module\Markbook\MarkbookView;
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
 
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>View ".$class['course'].'.'.$class['class'].' Markbook</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(sprintf(
+        '%s %s %s %s',
+        __('View'),
+        $class['course'],
+        $class['class'],
+        __('Markbook')
+    ));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -1030,7 +1031,3 @@ use Gibbon\Module\Markbook\MarkbookView;
         echo '</div><br/>';
 
     }
-
-
-
-?>

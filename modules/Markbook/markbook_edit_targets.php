@@ -64,9 +64,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
                 //Let's go!
                 $course = $result->fetch();
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Set Personalised Attainment Targets').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(
+                        sprintf(
+                            '%s %s %s %s',
+                            __('View'),
+                            $course['course'],
+                            $course['class'],
+                            __('Markbook')
+                        ),
+                        'markbook_view.php',
+                        [
+                            'gibbonCourseClassID' => @$_GET['gibbonCourseClassID'],
+                        ]
+                    )
+                    ->add(__('Set Personalised Attainment Targets'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -150,4 +162,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
     // Print the sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, 'markbook_edit_targets.php');
 }
-?>

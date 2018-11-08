@@ -1,6 +1,8 @@
 <?php
     use Gibbon\Forms\Form;
 
+    $page->breadcrumbs->add(__('View Markbook'));
+
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
@@ -11,9 +13,6 @@
 	$effortAltName = getSettingByScope($connection2, 'Markbook', 'effortAlternativeName');
 
     $entryCount = 0;
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>View Markbook</div>";
-    echo '</div>';
     echo '<p>';
     echo "This page shows your children's academic results throughout your school career. Only subjects with published results are shown.";
     echo '</p>';
@@ -535,5 +534,3 @@
         echo __($guid, 'There are no records to display.');
         echo '</div>';
     }
-
-?>
