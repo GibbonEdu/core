@@ -30,10 +30,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 // get session object
 $session = $container->get('session');
 
-// set page breadcrumbs
-$page->breadcrumbs
-    ->add(__(getModuleName($_GET["q"])), getModuleEntry($_GET["q"], $connection2, $guid))
-    ->add(__('View Daily Attendance'));
+$page->breadcrumbs->add(__('View Daily Attendance'));
 
 // rendering parameters
 $currentDate = isset($_GET['currentDate']) ? Format::dateConvert($_GET['currentDate']) : date('Y-m-d');
