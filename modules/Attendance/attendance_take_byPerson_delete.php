@@ -22,11 +22,6 @@ use Gibbon\Forms\Prefab\DeleteForm;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-// set page breadcrumb
-$page->breadcrumb
-    ->add(__('Attendance by Person'), 'attendance_take_byPerson.php')
-    ->add(__('Delete'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
