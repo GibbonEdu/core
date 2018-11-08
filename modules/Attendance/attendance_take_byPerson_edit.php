@@ -24,8 +24,11 @@ use Gibbon\Module\Attendance\AttendanceView;
 require_once __DIR__ . '/moduleFunctions.php';
 require_once __DIR__ . '/src/AttendanceView.php';
 
-// set page breadcrumb
-$page->breadcrumbs->add(__('Edit Attendance by Person'));
+$urlParams = ['gibbonPersonID' => $_GET['gibbonPersonID'], 'currentDate' => $_GET['currentDate']];
+
+$page->breadcrumbs
+	->add(__('Take Attendance by Person'), 'attendance_take_byPerson.php', $urlParams)
+	->add(__('Edit Attendance by Person'));      
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
     //Acess denied
