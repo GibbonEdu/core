@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -47,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
@@ -72,16 +73,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $page->breadcrumbs
                     ->add(
-                        sprintf(
-                            '%s %s %s %s',
-                            __('View'),
-                            $course['course'],
-                            $course['class'],
-                            __('Markbook')
+                        strtr(
+                            ':action :courseClass :property',
+                            [
+                                ':action' => __('View'),
+                                ':courseClass' => Format::courseClassName($course['course'], $course['class']),
+                                ':property' => __('Markbook'),
+                            ]
                         ),
                         'markbook_view.php',
                         [
-                            'gibbonCourseClassID' => @$_GET['gibbonCourseClassID'],
+                            'gibbonCourseClassID' => $gibbonCourseClassID,
                         ]
                     )
                     ->add(__('Add Multiple Columns'));

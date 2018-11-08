@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -35,8 +36,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
@@ -81,16 +82,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
 
                     $page->breadcrumbs
                         ->add(
-                            sprintf(
-                                '%s %s %s %s',
-                                __('View'),
-                                $row['course'],
-                                $row['class'],
-                                __('Markbook')
+                            strtr(
+                                ':action :courseClass :property',
+                                [
+                                    ':action' => __('View'),
+                                    ':courseClass' => Format::courseClassName($row['course'], $row['class']),
+                                    ':property' => __('Markbook'),
+                                ]
                             ),
                             'markbook_view.php',
                             [
-                                'gibbonCourseClassID' => @$_GET['gibbonCourseClassID'],
+                                'gibbonCourseClassID' => $gibbonCourseClassID,
                             ]
                         )
                         ->add(__('Delete Column'));

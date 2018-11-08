@@ -21,6 +21,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
 use Gibbon\Module\Markbook\MarkbookView;
+use Gibbon\Services\Format;
 
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
@@ -98,12 +99,13 @@ use Gibbon\Module\Markbook\MarkbookView;
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
 
-    $page->breadcrumbs->add(sprintf(
-        '%s %s %s %s',
-        __('View'),
-        $class['course'],
-        $class['class'],
-        __('Markbook')
+    $page->breadcrumbs->add(strtr(
+        ':action :courseClass :property',
+        [
+            ':action' => __('View'),
+            ':courseClass' => Format::courseClassName($class['course'], $class['class']),
+            ':property' => __('Markbook'),
+        ]
     ));
 
     if (isset($_GET['return'])) {

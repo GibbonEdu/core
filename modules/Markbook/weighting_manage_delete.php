@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -47,10 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         }
 
         //Get class variable
-        $gibbonCourseClassID = null;
-        if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        }
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
@@ -109,12 +107,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    $page->breadcrumbs->add(sprintf(
-                        '%s %s %s %s',
-                        __('Delete'),
-                        $course['course'],
-                        $course['class'],
-                        __('Weighting')
+                    $page->breadcrumbs->add(strtr(
+                        ':action :courseClass :property',
+                        [
+                            ':action' => __('Delete'),
+                            ':courseClass' => Format::courseClassName($row['course'], $row['class']),
+                            ':property' => __('Weighting'),
+                        ]
                     ));
 
                     $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
