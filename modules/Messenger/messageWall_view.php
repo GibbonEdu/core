@@ -28,16 +28,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormatPHP'];
     $date = isset($_REQUEST['date'])? $_REQUEST['date'] : date($dateFormat);
 
-    $extra = '';
-    if ($date == date($dateFormat)) {
-        $extra = __($guid, "Today's Messages").' ('.$date.')';
-    } else {
-        $extra = __($guid, 'View Messages').' ('.$date.')';
-	}
-
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>$extra</div>";
-	echo '</div>';
+    $page->breadcrumbs->add(($date === date($dateFormat)) ?
+        __('Today\'s Messages').' ('.$date.')' :
+        __('View Messages').' ('.$date.')');
 
     if (isset($_GET['return'])) {
         $status = (!empty($_GET['status'])) ? $_GET['status'] : __('Unknown');
