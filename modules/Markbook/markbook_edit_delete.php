@@ -80,23 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    $page->breadcrumbs
-                        ->add(
-                            strtr(
-                                ':action :courseClass :property',
-                                [
-                                    ':action' => __('View'),
-                                    ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                                    ':property' => __('Markbook'),
-                                ]
-                            ),
-                            'markbook_view.php',
-                            [
-                                'gibbonCourseClassID' => $gibbonCourseClassID,
-                            ]
-                        )
-                        ->add(__('Delete Column'));
-
                     if ($row2['groupingID'] != '' and $row2['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                         echo "<div class='error'>";
                         echo __($guid, 'This column is part of a set of columns, and so cannot be individually deleted.');

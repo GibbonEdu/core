@@ -102,19 +102,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     echo __($guid, 'The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
-
-
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
-
-                    $page->breadcrumbs->add(strtr(
-                        ':action :courseClass :property',
-                        [
-                            ':action' => __('Delete'),
-                            ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                            ':property' => __('Weighting'),
-                        ]
-                    ));
 
                     $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
                     echo $form->getOutput();
