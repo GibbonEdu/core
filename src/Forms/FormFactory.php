@@ -115,6 +115,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createRange($name, $min, $max, $step = null)
+    {
+        return new Input\Range($name, $min, $max, $step);
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
