@@ -26,6 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     echo '</div>';
 } else {
     //Proceed!
+    $page->breadcrumbs
+        ->add(__('Manage User Settings'),'userSettings.php')
+        ->add(__('Delete Username Format'));       
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return']);
     }

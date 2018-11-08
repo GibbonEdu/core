@@ -26,6 +26,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_d
     echo '</div>';
 } else {
     //Proceed!
+    $page->breadcrumbs
+        ->add(__('Manage Families'), 'family_manage.php')
+        ->add(__('Delete Family'));        
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
