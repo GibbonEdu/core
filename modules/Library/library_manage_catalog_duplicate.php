@@ -22,6 +22,10 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs
+    ->add(__('Manage Catalog'), 'library_manage_catalog.php')
+    ->add(__('Duplicate Item'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_duplicate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -29,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/library_manage_catalog.php'>".__($guid, 'Manage Catalog')."</a> > </div><div class='trailEnd'>".__($guid, 'Duplicate Item').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

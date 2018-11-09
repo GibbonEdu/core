@@ -23,6 +23,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('View Overdue Items'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Overdue Items').'</div>';
-    echo '</div>';
-
     echo '<h2>';
     echo __($guid, 'Filter');
     echo '</h2>';

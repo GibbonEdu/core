@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
+$page->breadcrumbs->add(__('Import Records'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -26,10 +28,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import Records').'</div>';
-    echo '</div>';
-
     $step = null;
     if (isset($_GET['step'])) {
         $step = $_GET['step'];
@@ -565,4 +563,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
         }
     }
 }
-?>
