@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Import Users'));   
+    $page->breadcrumbs->add(__('Import User Photos'));   
 
     $step = null;
     if (isset($_GET['step'])) {
