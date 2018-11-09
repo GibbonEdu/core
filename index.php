@@ -336,8 +336,6 @@ $page->stylesheets->add(
 // Try to auto-set user's calendar feed if not set already
 if ($session->exists('calendarFeedPersonal') && $session->exists('googleAPIAccessToken')) {
     if (!$session->has('calendarFeedPersonal') && $session->has('googleAPIAccessToken')) {
-        include_once $session->get('absolutePath').'/lib/google/google-api-php-client/vendor/autoload.php';
-
         $client2 = new Google_Client();
         $client2->setAccessToken($session->get('googleAPIAccessToken'));
         $service = new Google_Service_Calendar($client2);
