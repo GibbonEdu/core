@@ -22,10 +22,6 @@ use Gibbon\Forms\Prefab\DeleteForm;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$page->breadcrumbs
-    ->add(__('Manage Catalog'), 'library_manage_catalog.php')
-    ->add(__('Delete Item'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
