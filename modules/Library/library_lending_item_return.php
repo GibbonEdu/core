@@ -20,6 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
+$gibbonLibraryItemEventID = trim($_GET['gibbonLibraryItemEventID']) ?? '';
+$gibbonLibraryItemID = trim($_GET['gibbonLibraryItemID']) ?? '';
+
+$page->breadcrumbs
+    ->add(__('Lending & Activity Log'), 'library_lending.php')
+    ->add(__('View Item'), 'library_lending_item.php', ['gibbonLibraryItemID' => $gibbonLibraryItemID])
+    ->add(__('Return Item'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_return.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -27,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonLibraryItemEventID = $_GET['gibbonLibraryItemEventID'];
-    $gibbonLibraryItemID = $_GET['gibbonLibraryItemID'];
-    if ($gibbonLibraryItemEventID == '' or $gibbonLibraryItemID == '') {
+    if (empty($gibbonLibraryItemEventID) or empty($gibbonLibraryItemID)) {
         echo "<div class='error'>";
         echo __($guid, 'You have not specified one or more required parameters.');
         echo '</div>';
@@ -50,10 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         } else {
             //Let's go!
             $values = $result->fetch();
-
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/library_lending.php'>".__($guid, 'Lending & Activity Log')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/library_lending_item.php&gibbonLibraryItemID=$gibbonLibraryItemID'>".__($guid, 'View Item')."</a> > </div><div class='trailEnd'>".__($guid, 'Return Item').'</div>';
-            echo '</div>';
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -144,4 +146,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
         }
     }
 }
-?>

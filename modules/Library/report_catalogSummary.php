@@ -25,6 +25,8 @@ $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Catalog Summary'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -32,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Catalog Summary').'</div>';
-    echo '</div>';
-
     echo '<h3>';
     echo __($guid, 'Search & Filter');
     echo '</h3>';
