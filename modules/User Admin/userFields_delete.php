@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Custom Fields'), 'userFields.php')
-        ->add(__('Delete Custom Field'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

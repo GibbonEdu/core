@@ -25,11 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage User Settings'),'userSettings.php')
-        ->add(__('Delete Username Format'));       
-
+    //Proceed! 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return']);
     }
