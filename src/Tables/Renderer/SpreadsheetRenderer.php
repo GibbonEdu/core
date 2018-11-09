@@ -35,11 +35,8 @@ class SpreadsheetRenderer implements RendererInterface
 {
     protected $path;
 
-    public function __construct($absolutePath)
+    public function __construct()
     {
-        if (!class_exists('PHPExcel')) {
-            require_once $absolutePath . '/lib/PHPExcel/Classes/PHPExcel.php';
-        }
     }
 
     /**

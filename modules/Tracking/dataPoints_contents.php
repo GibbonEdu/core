@@ -35,9 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    /** Include PHPExcel */
-    require_once $_SESSION[$guid]['absolutePath'].'/lib/PHPExcel/Classes/PHPExcel.php';
-
     // Create new PHPExcel object
     $excel = new PHPExcel();
 
