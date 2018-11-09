@@ -32,6 +32,7 @@
         "ext-mbstring": "*",
         "ext-gettext": "*",
         "ext-PDO": "*",
+        "google/apiclient": "v2.2.0",
         "league/container": "^2.4",
         "aura/sqlquery": "3.*-dev",
         "twig/twig": "^2.0",
