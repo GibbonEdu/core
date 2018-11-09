@@ -117,7 +117,6 @@ $gibbonPersonUpdateID = $I->grabValueFromURL('gibbonPersonUpdateID');
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_personal_manage_delete.php', array('gibbonPersonUpdateID' => $gibbonPersonUpdateID));
-$I->seeBreadcrumb('Delete Request');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

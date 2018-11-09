@@ -57,7 +57,6 @@ $I->seeInField('viewableParents', 'N');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', $urlParams );
 
-$I->seeBreadcrumb('Delete Column');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 
@@ -66,7 +65,6 @@ $I->see('Your request was completed successfully.', '.success');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'viewBy' => 'class');
 $I->amOnModulePage('Planner', 'planner_delete.php', $urlParams );
 
-$I->seeBreadcrumb('Delete Lesson Plan');
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');
 

@@ -40,7 +40,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('System Admin', 'stringReplacement_manage_delete.php', array('gibbonStringID' => $gibbonStringID));
-$I->seeBreadcrumb('Delete String');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

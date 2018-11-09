@@ -128,7 +128,6 @@ $I->seeInField('completeDate', '02/02/2022');
 $urlParams = array('gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonMarkbookColumnID' => $gibbonMarkbookColumnID);
 $I->amOnModulePage('Markbook', 'markbook_edit_delete.php', $urlParams );
 
-$I->seeBreadcrumb('Delete Column');
 $I->click('Yes');
 $I->seeSuccessMessage();
 

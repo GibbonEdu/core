@@ -40,7 +40,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'department_manage_delete.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
-$I->seeBreadcrumb('Delete Department');
 
 $I->click('Yes');
 $I->seeSuccessMessage();
