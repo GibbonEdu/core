@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
+$page->breadcrumbs->add(__('Manage Message'));
+
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -35,10 +37,6 @@ else {
 	}
 	else {
 		//Proceed!
-		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __($guid, 'Manage Messages') . "</div>" ;
-		print "</div>" ;
-
 		if (isset($_GET["deleteReturn"])) { $deleteReturn=$_GET["deleteReturn"] ; } else { $deleteReturn="" ; }
 		$deleteReturnMessage="" ;
 		$class="error" ;

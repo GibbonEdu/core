@@ -32,15 +32,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/messenger_manage.php&search=$search'>".__($guid, 'Manage Messages')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Message').'</div>';
-        echo '</div>';
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+
+        $page->breadcrumbs
+            ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
+            ->add(__('Delete Message'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -73,9 +70,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
                 echo '</div>';
             } else {
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/messenger_manage_deleteProcess.php?gibbonMessengerID=$gibbonMessengerID&search=$search");
-	            echo $form->getOutput();
+                echo $form->getOutput();
             }
         }
     }
 }
-?>

@@ -19,6 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
+$page->breadcrumbs
+    ->add(__('Manage Canned Responses'), 'cannedResponse_manage.php')
+    ->add(__('Delete Canned Response'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -26,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/cannedResponse_manage.php'>".__($guid, 'Manage Canned Responses')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Canned Response').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
