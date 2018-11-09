@@ -22,10 +22,6 @@ use Gibbon\Forms\Prefab\DeleteForm;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$page->breadcrumbs
-    ->add(__('Manage Outcomes'), 'outcomes.php')
-    ->add(__('Delete Outcome'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";

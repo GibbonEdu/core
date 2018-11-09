@@ -27,13 +27,6 @@ $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
 $gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
 
-$page->breadcrumbs
-    ->add(__('Unit Planner'), 'units.php', [
-        'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'gibbonCourseID' => $gibbonCourseID,
-    ])
-    ->add(__('Delete Unit'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";

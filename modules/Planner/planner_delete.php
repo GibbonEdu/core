@@ -86,13 +86,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         }
         $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-        $page->breadcrumbs
-            ->add(strtr(':planner :target', [
-                ':planner' => __('Planner'),
-                ':target' => $extra,
-            ]), 'planner.php', $params)
-            ->add(__('Delete Lesson Plan'));
-
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 
