@@ -20,6 +20,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs
+    ->add(__('Lending & Activity Log'), 'library_lending.php')
+    ->add(__('View Item'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -27,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/library_lending.php'>".__($guid, 'Lending & Activity Log')."</a> > </div><div class='trailEnd'>".__($guid, 'View Item').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
     }

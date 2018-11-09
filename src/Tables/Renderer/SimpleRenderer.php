@@ -58,6 +58,10 @@ class SimpleRenderer implements RendererInterface
             $output .= '<h2>'.$title.'</h2>';
         }
 
+        if ($description = $table->getDescription()) {
+            $output .= '<p>'.$description.'</p>';
+        }
+
         $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';

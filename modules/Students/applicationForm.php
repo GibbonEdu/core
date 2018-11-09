@@ -291,7 +291,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email');
         if ($uniqueEmailAddress == 'Y') {
             $email->isUnique('./publicRegistrationCheck.php');
         }
@@ -616,7 +616,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50)->loadFrom($application);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->loadFrom($application);
                 if ($uniqueEmailAddress == 'Y') {
                     $email->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'email'));
                 }

@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
-use Gibbon\Domain\School\RollGroupGateway;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
 use Gibbon\Domain\Students\StudentGateway;
 
 include '../../gibbon.php';

@@ -100,25 +100,42 @@ class StudentGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function queryStudentEnrolmentByRollGroup(QueryCriteria $criteria, $gibbonRollGroupID)
+    public function queryStudentEnrolmentByRollGroup(QueryCriteria $criteria, $gibbonRollGroupID = null)
     {
         $query = $this
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory"
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonStudentEnrolment.gibbonSchoolYearID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.image_240', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', "'Student' as roleCategory", 'gender', 'dob', 'citizenship1', 'citizenship2', 'transport', 'lockerNumber'
             ])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
-            ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
-            ->bindValue('gibbonRollGroupID', $gibbonRollGroupID)
             ->where("gibbonPerson.status = 'Full'")
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'));
-
+        
+        if (!empty($gibbonRollGroupID)) {
+            $query
+                ->where('gibbonStudentEnrolment.gibbonRollGroupID = :gibbonRollGroupID')
+                ->bindValue('gibbonRollGroupID', $gibbonRollGroupID);
+        }
+            
         $criteria->addFilterRules($this->getSharedUserFilterRules());
+
+        $criteria->addFilterRules([
+            'view' => function ($query, $view) {
+                if ($view == 'extended') {
+                    $query->cols(['gibbonHouse.name as house', 'gibbonPersonMedical.*', 'COUNT(gibbonPersonMedicalConditionID) as conditionCount'])
+                        ->leftJoin('gibbonHouse', 'gibbonHouse.gibbonHouseID=gibbonPerson.gibbonHouseID')
+                        ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
+                        ->leftJoin('gibbonPersonMedicalCondition', 'gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID')
+                        ->groupBy(['gibbonPerson.gibbonPersonID']);
+                }
+                return $query;
+            },
+        ]);
 
         return $this->runQuery($query, $criteria);
     }

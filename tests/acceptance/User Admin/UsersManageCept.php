@@ -199,7 +199,6 @@ $I->deleteFile('../'.$I->grabValueFrom('input[name="nationalIDCardScanCurrent"]'
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'user_manage_delete.php', array('gibbonPersonID' => $gibbonPersonID, 'search' => ''));
-$I->seeBreadcrumb('Delete User');
 
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');

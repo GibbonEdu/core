@@ -778,4 +778,12 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 ALTER TABLE `gibbonApplicationForm` ADD `username` VARCHAR(20) NULL AFTER `gender`;end
 ALTER TABLE `gibbonApplicationForm` ADD `studentID` VARCHAR(10) NULL AFTER `gibbonPaymentID`;end
 ALTER TABLE `gibbonRubricColumn` ADD `visualise` ENUM('Y','N') NOT NULL DEFAULT 'Y' AFTER `gibbonScaleGradeID`;end
+ALTER TABLE `gibbonPerson` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonPerson` CHANGE `emailAlternate` `emailAlternate` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonPersonUpdate` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonPersonUpdate` CHANGE `emailAlternate` `emailAlternate` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonStaffApplicationForm` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonApplicationForm` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonApplicationForm` CHANGE `parent1email` `parent1email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonApplicationForm` CHANGE `parent2email` `parent2email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ";

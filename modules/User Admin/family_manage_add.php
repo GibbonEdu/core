@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php'>".__($guid, 'Manage Families')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Family').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Families'), 'family_manage.php')
+        ->add(__('Add Family'));    
 
     $editLink = '';
     if (isset($_GET['editID'])) {

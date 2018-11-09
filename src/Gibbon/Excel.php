@@ -12,11 +12,6 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Database\Connection;
 
-if (file_exists('../../lib/PHPExcel/Classes/PHPExcel.php'))
-	require_once '../../lib/PHPExcel/Classes/PHPExcel.php';
-else
-	require_once './lib/PHPExcel/Classes/PHPExcel.php';
-
 /**
  * Export to Excel
  *

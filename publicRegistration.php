@@ -81,7 +81,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50)->isRequired();
+        $email = $row->addEmail('email')->isRequired();
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
