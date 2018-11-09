@@ -23,8 +23,6 @@ use Gibbon\Data\UsernameGenerator;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
-
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_accept.php') == false) {
     //Acess denied
