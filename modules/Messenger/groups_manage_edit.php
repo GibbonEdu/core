@@ -23,6 +23,10 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Messenger\GroupGateway;
 
+$page->breadcrumbs
+    ->add(__('Manage Groups'), 'groups_manage.php')
+    ->add(__('Edit Group'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/groups_manage.php'>Manage Groups</a> > </div><div class='trailEnd'>Edit Group</div>";
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
