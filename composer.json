@@ -27,7 +27,7 @@
         "test:phpunit": "Run unit tests with PHPUnit."
     },
     "require": {
-        "php" : "^5.5 || ^7.0",
+        "php" : "^7.0",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
