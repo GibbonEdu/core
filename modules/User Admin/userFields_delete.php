@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_dele
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/userFields.php'>".__($guid, 'Manage Custom Fields')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Custom Field').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Delete Custom Field'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

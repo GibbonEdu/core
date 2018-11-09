@@ -26,9 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import Users').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Import Users'));   
 
     $step = null;
     if (isset($_GET['step'])) {
