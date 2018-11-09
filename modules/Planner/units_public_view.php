@@ -20,20 +20,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
 $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Learn With Us'), 'units_public.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    ])
+    ->add(__('View Unit'));
+
 if ($makeUnitsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
     echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Learn With Us')."</a> > </div><div class='trailEnd'>".__('View Unit').'</div>';
-    echo '</div>';
-
     //Check if courseschool year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonUnitID = $_GET['gibbonUnitID'];
     if ($gibbonUnitID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -350,4 +354,3 @@ if ($makeUnitsPublic != 'Y') {
         }
     }
 }
-?>

@@ -20,6 +20,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'), 'units_edit.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+    ])
+    ->add(__('Copy Unit Back'));
+
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBack.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,19 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__('Unit Planner')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."'>".__('Edit Unit')."</a> > </div><div class='trailEnd'>".__('Copy Unit Back').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

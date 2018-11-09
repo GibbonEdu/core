@@ -22,6 +22,18 @@ use Gibbon\Forms\Prefab\DeleteForm;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Delete Unit'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -36,18 +48,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_delete.php')
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__('Unit Planner')."</a> > </div><div class='trailEnd'>".__('Delete Unit').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

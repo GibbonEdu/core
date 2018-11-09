@@ -23,6 +23,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Concept Explorer'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Concept Explorer').'</div>';
-    echo '</div>';
-
     //Get all concepts in current year and convert to ordered array
     $tagsAll = getTagList($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
 
@@ -220,4 +218,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         }
     }
 }
-?>

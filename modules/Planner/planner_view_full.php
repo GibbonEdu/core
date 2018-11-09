@@ -216,28 +216,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         }
                     }
 
-                    $extra = '';
-                    if ($viewBy == 'class') {
-                        $extra = $row['course'].'.'.$row['class'];
-                    } else {
-                        $extra = dateConvertBack($guid, $date);
-                    }
+                    // target of the planner
+                    $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                    $params = "&gibbonPlannerEntryID=$gibbonPlannerEntryID";
+                    // planner's parameters
+                    $params = [];
+                    $params['gibbonPlannerEntryID'] = $gibbonPlannerEntryID;
                     if ($date != '') {
-                        $params = $params.'&date='.$_GET['date'];
+                        $params['date'] = $_GET['date'];
                     }
                     if ($viewBy != '') {
-                        $params = $params.'&viewBy='.@$_GET['viewBy'];
+                        $params['viewBy'] = $_GET['viewBy'] ?? '';
                     }
                     if ($gibbonCourseClassID != '') {
-                        $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+                        $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                     }
-                    $params = $params."&subView=$subView";
+                    $params['subView'] = $subView;
+                    $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__('Planner')." $extra</a> > </div><div class='trailEnd'>".__('View Lesson Plan').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(strtr(':planner :target', [
+                            ':planner' => __('Planner'),
+                            ':target' => $extra,
+                        ]), 'planner.php', $params)
+                        ->add(__('View Lesson Plan'));
 
                     $returns = array();
                     $returns['error6'] = __('An error occured with your submission, most likely because a submitted file was too large.');
@@ -607,7 +609,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 										echo "<div style='text-align: right; margin-top: 3px'>";
 										echo "<input type='hidden' name='minSeq' value='$minSeq'>";
 										echo "<input type='hidden' name='mode' value='edit'>";
-										echo "<input type='hidden' name='params' value='$params'>";
+										echo "<input type='hidden' name='params' value='$paramsVar'>";
 										echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 										echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
 										echo "<input type='submit' value='Submit'>";
@@ -675,7 +677,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 if ($row['role'] == 'Teacher' and $teacher == true) {
                                     echo "<div style='text-align: right; margin-top: 3px'>";
                                     echo "<input type='hidden' name='mode' value='view'>";
-                                    echo "<input type='hidden' name='params' value='$params'>";
+                                    echo "<input type='hidden' name='params' value='$paramsVar'>";
                                     echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
                                     echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
                                     echo "<input type='submit' value='Submit'>";
@@ -833,7 +835,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                             }
 
                                             ?>
-											<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submitProcess.php?address='.$_GET['q'].$params.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'] ?>" enctype="multipart/form-data">
+											<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/planner_view_full_submitProcess.php?address='.$_GET['q'].$paramsVar.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'] ?>" enctype="multipart/form-data">
 												<table class='smallIntBorder fullWidth' cellspacing='0'>
 													<tr>
 														<td>
@@ -1476,7 +1478,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo "<td style='text-align: justify; padding-top: 5px; width: 33%; vertical-align: top; max-width: 752px!important;' colspan=3>";
 
                         echo "<div style='margin: 0px' class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params#chat'>".__('Refresh')."<img style='margin-left: 5px' title='".__('Refresh')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a> <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$paramsVar#chat'>".__('Refresh')."<img style='margin-left: 5px' title='".__('Refresh')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/refresh.png'/></a> <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full_post.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&subView=$subView&gibbonCourseClassID=$gibbonCourseClassID&date=$date&search=".$gibbonPersonID."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
                         echo '</div>';
 
 						//Get discussion
@@ -1704,7 +1706,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         if ($attendanceEnabled && $row['role'] == 'Teacher' and $teacher == true) {
                             $_SESSION[$guid]['sidebarExtra'] .= '<tr>';
                             $_SESSION[$guid]['sidebarExtra'] .= "<td class='right' colspan=5>";
-                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='params' value='$params'>";
+                            $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='params' value='$paramsVar'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonCourseClassID' value='$gibbonCourseClassID'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
                             $_SESSION[$guid]['sidebarExtra'] .= "<input type='hidden' name='currentDate' value='".$row['date']."'>";
@@ -1818,4 +1820,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
         }
     }
 }
-?>

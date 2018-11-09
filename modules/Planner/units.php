@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Unit Planner'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -33,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Unit Planner').'</div>';
-        echo '</div>';
-
         //Get Smart Workflow help message
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
         if ($category == 'Staff') {
