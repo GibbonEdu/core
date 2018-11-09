@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 
 require getcwd().'/../gibbon.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);
 
