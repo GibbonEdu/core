@@ -24,6 +24,7 @@ v17.0.00
         Added Hebrew an active language and improved the display of right-to-left languages
 
     Changes With Important Notices
+        System: increased minimum PHP version to 7.0
 
     Significant Changes
         System: removed upgrade path for v11.0.00 and below
