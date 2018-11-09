@@ -19,10 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Prefab\DeleteForm;
 
-$page->breadcrumbs
-    ->add(__('Manage Canned Responses'), 'cannedResponse_manage.php')
-    ->add(__('Delete Canned Response'));
-
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";

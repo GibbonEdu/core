@@ -35,10 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_manage
         //Proceed!
         $search = isset($_GET['search']) ? $_GET['search'] : null;
 
-        $page->breadcrumbs
-            ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
-            ->add(__('Delete Message'));
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
