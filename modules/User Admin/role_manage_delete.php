@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_del
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Roles'),'role_manage.php')
-        ->add(__('Delete Role'));    
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
