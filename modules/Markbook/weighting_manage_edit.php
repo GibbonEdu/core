@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -47,10 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
         }
 
         //Get class variable
-        $gibbonCourseClassID = null;
-        if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        }
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
@@ -107,9 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
                     $course = $result->fetch();
                     $values = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Edit').' '.$course['course'].'.'.$course['class'].' '.__($guid, ' Weighting').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs->add(strtr(
+                        ':action :courseClass :property',
+                        [
+                            ':action' => __('Edit'),
+                            ':courseClass' => Format::courseClassName($course['course'], $course['class']),
+                            ':property' => __('Weighting'),
+                        ]
+                    ));
 
                     $form = Form::create('manageWeighting', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=$gibbonMarkbookWeightID");
                 
