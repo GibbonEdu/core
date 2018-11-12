@@ -553,7 +553,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     $studentName = formatName('', $preferredName, $surname, 'Student', false);
                                     $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
-                                    $event->setNotificationText(sprintf(__($guid, '%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
+                                    $privacyText = __('Privacy').' (<i>'.__('New Value').'</i>): ';
+                                    $privacyText .= !empty($privacy) ? $privacy : __('None');
+
+                                    $notificationText = sprintf(__('%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName).'<br/><br/>';
+                                    $notificationText .= $privacyText;
+
+                                    $event->setNotificationText($notificationText);
                                     $event->setActionLink($actionLink);
 
                                     $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
@@ -564,7 +570,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                                     // Add direct notifications to roll group tutors
                                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                                        $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
+                                        $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
+                                        $notificationText .= $privacyText;
 
                                         if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);
