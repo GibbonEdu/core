@@ -15,37 +15,12 @@ use Symfony\Component\Cache\Exception\CacheException;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
- * @author Rob Frawley 2nd <rmf@src.run>
  *
  * @internal
  */
 trait FilesystemTrait
 {
     use FilesystemCommonTrait;
-
-    /**
-     * @return bool
-     */
-    public function prune()
-    {
-        $time = time();
-        $pruned = true;
-
-        foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->directory, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-            if (!$h = @fopen($file, 'rb')) {
-                continue;
-            }
-
-            if (($expiresAt = (int) fgets($h)) && $time >= $expiresAt) {
-                fclose($h);
-                $pruned = @unlink($file) && !file_exists($file) && $pruned;
-            } else {
-                fclose($h);
-            }
-        }
-
-        return $pruned;
-    }
 
     /**
      * {@inheritdoc}
@@ -60,9 +35,11 @@ trait FilesystemTrait
             if (!file_exists($file) || !$h = @fopen($file, 'rb')) {
                 continue;
             }
-            if (($expiresAt = (int) fgets($h)) && $now >= $expiresAt) {
+            if ($now >= (int) $expiresAt = fgets($h)) {
                 fclose($h);
-                @unlink($file);
+                if (isset($expiresAt[0])) {
+                    @unlink($file);
+                }
             } else {
                 $i = rawurldecode(rtrim(fgets($h)));
                 $value = stream_get_contents($h);
@@ -92,7 +69,7 @@ trait FilesystemTrait
     protected function doSave(array $values, $lifetime)
     {
         $ok = true;
-        $expiresAt = $lifetime ? (time() + $lifetime) : 0;
+        $expiresAt = time() + ($lifetime ?: 31557600); // 31557600s = 1 year
 
         foreach ($values as $id => $value) {
             $ok = $this->write($this->getFile($id, true), $expiresAt."\n".rawurlencode($id)."\n".serialize($value), $expiresAt) && $ok;

@@ -13,20 +13,13 @@ namespace Symfony\Component\HttpKernel\Tests\DataCollector;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Debug\Exception\SilencedErrorContext;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\LoggerDataCollector;
-use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
 
 class LoggerDataCollectorTest extends TestCase
 {
     public function testCollectWithUnexpectedFormat()
     {
-        $logger = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Log\DebugLoggerInterface')
-            ->setMethods(array('countErrors', 'getLogs', 'clear'))
-            ->getMock();
+        $logger = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\DebugLoggerInterface')->getMock();
         $logger->expects($this->once())->method('countErrors')->will($this->returnValue('foo'));
         $logger->expects($this->exactly(2))->method('getLogs')->will($this->returnValue(array()));
 
@@ -45,55 +38,12 @@ class LoggerDataCollectorTest extends TestCase
         ), $compilerLogs['Unknown Compiler Pass']);
     }
 
-    public function testWithMasterRequest()
-    {
-        $masterRequest = new Request();
-        $stack = new RequestStack();
-        $stack->push($masterRequest);
-
-        $logger = $this
-            ->getMockBuilder(DebugLoggerInterface::class)
-            ->setMethods(array('countErrors', 'getLogs', 'clear'))
-            ->getMock();
-        $logger->expects($this->once())->method('countErrors')->with(null);
-        $logger->expects($this->exactly(2))->method('getLogs')->with(null)->will($this->returnValue(array()));
-
-        $c = new LoggerDataCollector($logger, __DIR__.'/', $stack);
-
-        $c->collect($masterRequest, new Response());
-        $c->lateCollect();
-    }
-
-    public function testWithSubRequest()
-    {
-        $masterRequest = new Request();
-        $subRequest = new Request();
-        $stack = new RequestStack();
-        $stack->push($masterRequest);
-        $stack->push($subRequest);
-
-        $logger = $this
-            ->getMockBuilder(DebugLoggerInterface::class)
-            ->setMethods(array('countErrors', 'getLogs', 'clear'))
-            ->getMock();
-        $logger->expects($this->once())->method('countErrors')->with($subRequest);
-        $logger->expects($this->exactly(2))->method('getLogs')->with($subRequest)->will($this->returnValue(array()));
-
-        $c = new LoggerDataCollector($logger, __DIR__.'/', $stack);
-
-        $c->collect($subRequest, new Response());
-        $c->lateCollect();
-    }
-
     /**
      * @dataProvider getCollectTestData
      */
     public function testCollect($nb, $logs, $expectedLogs, $expectedDeprecationCount, $expectedScreamCount, $expectedPriorities = null)
     {
-        $logger = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Log\DebugLoggerInterface')
-            ->setMethods(array('countErrors', 'getLogs', 'clear'))
-            ->getMock();
+        $logger = $this->getMockBuilder('Symfony\Component\HttpKernel\Log\DebugLoggerInterface')->getMock();
         $logger->expects($this->once())->method('countErrors')->will($this->returnValue($nb));
         $logger->expects($this->exactly(2))->method('getLogs')->will($this->returnValue($logs));
 
@@ -118,18 +68,6 @@ class LoggerDataCollectorTest extends TestCase
         if (isset($expectedPriorities)) {
             $this->assertSame($expectedPriorities, $c->getPriorities()->getValue(true));
         }
-    }
-
-    public function testReset()
-    {
-        $logger = $this
-            ->getMockBuilder('Symfony\Component\HttpKernel\Log\DebugLoggerInterface')
-            ->setMethods(array('countErrors', 'getLogs', 'clear'))
-            ->getMock();
-        $logger->expects($this->once())->method('clear');
-
-        $c = new LoggerDataCollector($logger);
-        $c->reset();
     }
 
     public function getCollectTestData()

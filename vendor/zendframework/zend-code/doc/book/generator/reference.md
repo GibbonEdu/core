@@ -358,7 +358,6 @@ class Zend\Code\Generator\ParameterGenerator extends Zend\Code\Generator\Abstrac
     public function getPassedByReference()
     public function setPassedByReference($passedByReference)
     public function generate()
-    public function omitDefaultValue()
 }
 ```
 
@@ -400,6 +399,5 @@ class Zend\Code\Generator\PropertyGenerator
     public function setDefaultValue($defaultValue)
     public function getDefaultValue()
     public function generate()
-    public function omitDefaultValue()
 }
 ```

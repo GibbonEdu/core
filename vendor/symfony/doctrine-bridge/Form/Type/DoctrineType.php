@@ -151,7 +151,7 @@ abstract class DoctrineType extends AbstractType
                     $entityLoader
                 );
 
-                if (null !== $hash) {
+                if ($hash !== null) {
                     $this->choiceLoaders[$hash] = $doctrineChoiceLoader;
                 }
 
@@ -202,7 +202,11 @@ abstract class DoctrineType extends AbstractType
             $em = $this->registry->getManagerForClass($options['class']);
 
             if (null === $em) {
-                throw new RuntimeException(sprintf('Class "%s" seems not to be a managed Doctrine entity. Did you forget to map it?', $options['class']));
+                throw new RuntimeException(sprintf(
+                    'Class "%s" seems not to be a managed Doctrine entity. '.
+                    'Did you forget to map it?',
+                    $options['class']
+                ));
             }
 
             return $em;
@@ -211,8 +215,8 @@ abstract class DoctrineType extends AbstractType
         // Invoke the query builder closure so that we can cache choice lists
         // for equal query builders
         $queryBuilderNormalizer = function (Options $options, $queryBuilder) {
-            if (\is_callable($queryBuilder)) {
-                $queryBuilder = \call_user_func($queryBuilder, $options['em']->getRepository($options['class']));
+            if (is_callable($queryBuilder)) {
+                $queryBuilder = call_user_func($queryBuilder, $options['em']->getRepository($options['class']));
             }
 
             return $queryBuilder;
@@ -275,10 +279,5 @@ abstract class DoctrineType extends AbstractType
     public function getParent()
     {
         return 'Symfony\Component\Form\Extension\Core\Type\ChoiceType';
-    }
-
-    public function reset()
-    {
-        $this->choiceLoaders = array();
     }
 }

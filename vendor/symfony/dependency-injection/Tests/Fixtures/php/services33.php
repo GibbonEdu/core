@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 /**
+ * ProjectServiceContainer.
+ *
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
@@ -20,62 +22,54 @@ class ProjectServiceContainer extends Container
     private $targetDirs = array();
 
     /**
-     * @internal but protected for BC on cache:clear
+     * Constructor.
      */
-    protected $privates = array();
-
     public function __construct()
     {
-        $this->services = $this->privates = array();
+        $this->services = array();
+        $this->normalizedIds = array(
+            'symfony\\component\\dependencyinjection\\tests\\fixtures\\container33\\foo' => 'Symfony\\Component\\DependencyInjection\\Tests\\Fixtures\\Container33\\Foo',
+        );
         $this->methodMap = array(
-            'Bar\\Foo' => 'getFooService',
-            'Foo\\Foo' => 'getFoo2Service',
+            'Symfony\\Component\\DependencyInjection\\Tests\\Fixtures\\Container33\\Foo' => 'getSymfony_Component_DependencyInjection_Tests_Fixtures_Container33_FooService',
         );
 
         $this->aliases = array();
     }
 
-    public function reset()
-    {
-        $this->privates = array();
-        parent::reset();
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function compile()
     {
         throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isCompiled()
     {
         return true;
     }
 
-    public function getRemovedIds()
+    /**
+     * {@inheritdoc}
+     */
+    public function isFrozen()
     {
-        return array(
-            'Psr\\Container\\ContainerInterface' => true,
-            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
-        );
+        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return true;
     }
 
     /**
-     * Gets the public 'Bar\Foo' shared service.
+     * Gets the public 'Symfony\Component\DependencyInjection\Tests\Fixtures\Container33\Foo' shared service.
      *
-     * @return \Bar\Foo
+     * @return \Symfony\Component\DependencyInjection\Tests\Fixtures\Container33\Foo
      */
-    protected function getFooService()
+    protected function getSymfony_Component_DependencyInjection_Tests_Fixtures_Container33_FooService()
     {
-        return $this->services['Bar\Foo'] = new \Bar\Foo();
-    }
-
-    /**
-     * Gets the public 'Foo\Foo' shared service.
-     *
-     * @return \Foo\Foo
-     */
-    protected function getFoo2Service()
-    {
-        return $this->services['Foo\Foo'] = new \Foo\Foo();
+        return $this->services['Symfony\Component\DependencyInjection\Tests\Fixtures\Container33\Foo'] = new \Symfony\Component\DependencyInjection\Tests\Fixtures\Container33\Foo();
     }
 }

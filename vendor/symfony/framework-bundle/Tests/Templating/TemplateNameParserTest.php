@@ -11,9 +11,9 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Tests\Templating;
 
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateNameParser;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\Templating\TemplateReference as BaseTemplateReference;
 
 class TemplateNameParserTest extends TestCase
@@ -27,7 +27,7 @@ class TemplateNameParserTest extends TestCase
             ->expects($this->any())
             ->method('getBundle')
             ->will($this->returnCallback(function ($bundle) {
-                if (\in_array($bundle, array('SensioFooBundle', 'SensioCmsFooBundle', 'FooBundle'))) {
+                if (in_array($bundle, array('SensioFooBundle', 'SensioCmsFooBundle', 'FooBundle'))) {
                     return true;
                 }
 
@@ -80,5 +80,30 @@ class TemplateNameParserTest extends TestCase
     public function testParseValidNameWithNotFoundBundle()
     {
         $this->parser->parse('BarBundle:Post:index.html.php');
+    }
+
+    /**
+     * @group legacy
+     * @dataProvider provideAbsolutePaths
+     * @expectedDeprecation Absolute template path support is deprecated since Symfony 3.1 and will be removed in 4.0.
+     */
+    public function testAbsolutePathsAreDeprecated($name, $logicalName, $path, $ref)
+    {
+        $template = $this->parser->parse($name);
+
+        $this->assertSame($ref->getLogicalName(), $template->getLogicalName());
+        $this->assertSame($logicalName, $template->getLogicalName());
+        $this->assertSame($path, $template->getPath());
+    }
+
+    public function provideAbsolutePaths()
+    {
+        return array(
+            array('/path/to/section/index.html.php', '/path/to/section/index.html.php', '/path/to/section/index.html.php', new BaseTemplateReference('/path/to/section/index.html.php', 'php')),
+            array('C:\\path\\to\\section\\name.html.php', 'C:path/to/section/name.html.php', 'C:path/to/section/name.html.php', new BaseTemplateReference('C:path/to/section/name.html.php', 'php')),
+            array('C:\\path\\to\\section\\name:foo.html.php', 'C:path/to/section/name:foo.html.php', 'C:path/to/section/name:foo.html.php', new BaseTemplateReference('C:path/to/section/name:foo.html.php', 'php')),
+            array('\\path\\to\\section\\name.html.php', '/path/to/section/name.html.php', '/path/to/section/name.html.php', new BaseTemplateReference('/path/to/section/name.html.php', 'php')),
+            array('/path/to/section/name.php', '/path/to/section/name.php', '/path/to/section/name.php', new BaseTemplateReference('/path/to/section/name.php', 'php')),
+        );
     }
 }

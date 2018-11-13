@@ -29,6 +29,7 @@ class NativeFileSessionHandlerTest extends TestCase
     {
         $storage = new NativeSessionStorage(array('name' => 'TESTING'), new NativeFileSessionHandler(sys_get_temp_dir()));
 
+        $this->assertEquals('files', $storage->getSaveHandler()->getSaveHandlerName());
         $this->assertEquals('user', ini_get('session.save_handler'));
 
         $this->assertEquals(sys_get_temp_dir(), ini_get('session.save_path'));

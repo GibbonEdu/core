@@ -11,8 +11,6 @@ namespace Zend\Code\Generic\Prototype;
 
 use Zend\Code\Reflection\Exception;
 
-use function str_replace;
-
 /**
  * This is a factory for classes which are identified by name.
  *
@@ -34,7 +32,7 @@ class PrototypeClassFactory
     /**
      * @var PrototypeGenericInterface
      */
-    protected $genericPrototype;
+    protected $genericPrototype = null;
 
     /**
      * @param PrototypeInterface[] $prototypes
@@ -42,7 +40,7 @@ class PrototypeClassFactory
      */
     public function __construct($prototypes = [], PrototypeGenericInterface $genericPrototype = null)
     {
-        foreach ((array) $prototypes as $prototype) {
+        foreach ((array)$prototypes as $prototype) {
             $this->addPrototype($prototype);
         }
 
@@ -107,11 +105,11 @@ class PrototypeClassFactory
     {
         $prototypeName = $this->normalizeName($prototypeName);
 
-        if (! $this->hasPrototype($prototypeName) && ! isset($this->genericPrototype)) {
+        if (!$this->hasPrototype($prototypeName) && !isset($this->genericPrototype)) {
             throw new Exception\RuntimeException('This tag name is not supported by this tag manager');
         }
 
-        if (! $this->hasPrototype($prototypeName)) {
+        if (!$this->hasPrototype($prototypeName)) {
             $newPrototype = clone $this->genericPrototype;
             $newPrototype->setName($prototypeName);
         } else {

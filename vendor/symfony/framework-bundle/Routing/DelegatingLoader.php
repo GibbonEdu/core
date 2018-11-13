@@ -30,6 +30,8 @@ class DelegatingLoader extends BaseDelegatingLoader
     private $loading = false;
 
     /**
+     * Constructor.
+     *
      * @param ControllerNameParser    $parser   A ControllerNameParser instance
      * @param LoaderResolverInterface $resolver A LoaderResolverInterface instance
      */
@@ -73,29 +75,14 @@ class DelegatingLoader extends BaseDelegatingLoader
         }
 
         foreach ($collection->all() as $route) {
-            if (!\is_string($controller = $route->getDefault('_controller'))) {
+            if (!$controller = $route->getDefault('_controller')) {
                 continue;
             }
 
-            if (false !== strpos($controller, '::')) {
-                continue;
-            }
-
-            if (2 === substr_count($controller, ':')) {
-                $deprecatedNotation = $controller;
-
-                try {
-                    $controller = $this->parser->parse($controller, false);
-
-                    @trigger_error(sprintf('Referencing controllers with %s is deprecated since Symfony 4.1, use "%s" instead.', $deprecatedNotation, $controller), E_USER_DEPRECATED);
-                } catch (\InvalidArgumentException $e) {
-                    // unable to optimize unknown notation
-                }
-            }
-
-            if (1 === substr_count($controller, ':')) {
-                $nonDeprecatedNotation = str_replace(':', '::', $controller);
-                @trigger_error(sprintf('Referencing controllers with a single colon is deprecated since Symfony 4.1, use "%s" instead.', $nonDeprecatedNotation), E_USER_DEPRECATED);
+            try {
+                $controller = $this->parser->parse($controller);
+            } catch (\InvalidArgumentException $e) {
+                // unable to optimize unknown notation
             }
 
             $route->setDefault('_controller', $controller);

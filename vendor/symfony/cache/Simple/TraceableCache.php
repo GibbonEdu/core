@@ -12,15 +12,13 @@
 namespace Symfony\Component\Cache\Simple;
 
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\Cache\PruneableInterface;
-use Symfony\Component\Cache\ResettableInterface;
 
 /**
  * An adapter that collects data about all cache calls.
  *
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class TraceableCache implements CacheInterface, PruneableInterface, ResettableInterface
+class TraceableCache implements CacheInterface
 {
     private $pool;
     private $miss;
@@ -37,7 +35,7 @@ class TraceableCache implements CacheInterface, PruneableInterface, ResettableIn
      */
     public function get($key, $default = null)
     {
-        $miss = null !== $default && \is_object($default) ? $default : $this->miss;
+        $miss = null !== $default && is_object($default) ? $default : $this->miss;
         $event = $this->start(__FUNCTION__);
         try {
             $value = $this->pool->get($key, $miss);
@@ -109,7 +107,7 @@ class TraceableCache implements CacheInterface, PruneableInterface, ResettableIn
                 }
             };
             $values = $values();
-        } elseif (\is_array($values)) {
+        } elseif (is_array($values)) {
             $event->result['keys'] = array_keys($values);
         }
 
@@ -125,7 +123,7 @@ class TraceableCache implements CacheInterface, PruneableInterface, ResettableIn
      */
     public function getMultiple($keys, $default = null)
     {
-        $miss = null !== $default && \is_object($default) ? $default : $this->miss;
+        $miss = null !== $default && is_object($default) ? $default : $this->miss;
         $event = $this->start(__FUNCTION__);
         try {
             $result = $this->pool->getMultiple($keys, $miss);
@@ -174,38 +172,6 @@ class TraceableCache implements CacheInterface, PruneableInterface, ResettableIn
         }
         try {
             return $event->result['result'] = $this->pool->deleteMultiple($keys);
-        } finally {
-            $event->end = microtime(true);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prune()
-    {
-        if (!$this->pool instanceof PruneableInterface) {
-            return false;
-        }
-        $event = $this->start(__FUNCTION__);
-        try {
-            return $event->result = $this->pool->prune();
-        } finally {
-            $event->end = microtime(true);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reset()
-    {
-        if (!$this->pool instanceof ResettableInterface) {
-            return;
-        }
-        $event = $this->start(__FUNCTION__);
-        try {
-            $this->pool->reset();
         } finally {
             $event->end = microtime(true);
         }

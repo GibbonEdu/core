@@ -12,32 +12,27 @@ namespace Zend\Code\Generator;
 use ReflectionParameter;
 use Zend\Code\Reflection\ParameterReflection;
 
-use function is_string;
-use function method_exists;
-use function str_replace;
-use function strtolower;
-
 class ParameterGenerator extends AbstractGenerator
 {
     /**
      * @var string
      */
-    protected $name;
+    protected $name = null;
 
     /**
      * @var TypeGenerator|null
      */
-    protected $type;
+    protected $type = null;
 
     /**
-     * @var ValueGenerator
+     * @var string|ValueGenerator
      */
-    protected $defaultValue;
+    protected $defaultValue = null;
 
     /**
      * @var int
      */
-    protected $position;
+    protected $position = null;
 
     /**
      * @var bool
@@ -48,11 +43,6 @@ class ParameterGenerator extends AbstractGenerator
      * @var bool
      */
     private $variadic = false;
-
-    /**
-     * @var bool
-     */
-    private $omitDefaultValue = false;
 
     /**
      * @param  ParameterReflection $reflectionParameter
@@ -90,15 +80,14 @@ class ParameterGenerator extends AbstractGenerator
     /**
      * Generate from array
      *
-     * @configkey name                  string                                          [required] Class Name
-     * @configkey type                  string
-     * @configkey defaultvalue          null|bool|string|int|float|array|ValueGenerator
-     * @configkey passedbyreference     bool
-     * @configkey position              int
-     * @configkey sourcedirty           bool
-     * @configkey indentation           string
-     * @configkey sourcecontent         string
-     * @configkey omitdefaultvalue      bool
+     * @configkey name              string                                          [required] Class Name
+     * @configkey type              string
+     * @configkey defaultvalue      null|bool|string|int|float|array|ValueGenerator
+     * @configkey passedbyreference bool
+     * @configkey position          int
+     * @configkey sourcedirty       bool
+     * @configkey indentation       string
+     * @configkey sourcecontent     string
      *
      * @throws Exception\InvalidArgumentException
      * @param  array $array
@@ -106,9 +95,9 @@ class ParameterGenerator extends AbstractGenerator
      */
     public static function fromArray(array $array)
     {
-        if (! isset($array['name'])) {
+        if (!isset($array['name'])) {
             throw new Exception\InvalidArgumentException(
-                'Parameter generator requires that a name is provided for this object'
+                'Paramerer generator requires that a name is provided for this object'
             );
         }
 
@@ -136,9 +125,6 @@ class ParameterGenerator extends AbstractGenerator
                     break;
                 case 'sourcecontent':
                     $param->setSourceContent($value);
-                    break;
-                case 'omitdefaultvalue':
-                    $param->omitDefaultValue($value);
                     break;
             }
         }
@@ -226,7 +212,7 @@ class ParameterGenerator extends AbstractGenerator
      */
     public function setDefaultValue($defaultValue)
     {
-        if (! $defaultValue instanceof ValueGenerator) {
+        if (!($defaultValue instanceof ValueGenerator)) {
             $defaultValue = new ValueGenerator($defaultValue);
         }
         $this->defaultValue = $defaultValue;
@@ -235,7 +221,7 @@ class ParameterGenerator extends AbstractGenerator
     }
 
     /**
-     * @return ValueGenerator
+     * @return string
      */
     public function getDefaultValue()
     {
@@ -315,14 +301,16 @@ class ParameterGenerator extends AbstractGenerator
 
         $output .= '$' . $this->name;
 
-        if ($this->omitDefaultValue) {
-            return $output;
-        }
-
-        if ($this->defaultValue instanceof ValueGenerator) {
+        if ($this->defaultValue !== null) {
             $output .= ' = ';
-            $this->defaultValue->setOutputMode(ValueGenerator::OUTPUT_SINGLE_LINE);
-            $output .= $this->defaultValue;
+            if (is_string($this->defaultValue)) {
+                $output .= ValueGenerator::escape($this->defaultValue);
+            } elseif ($this->defaultValue instanceof ValueGenerator) {
+                $this->defaultValue->setOutputMode(ValueGenerator::OUTPUT_SINGLE_LINE);
+                $output .= $this->defaultValue;
+            } else {
+                $output .= $this->defaultValue;
+            }
         }
 
         return $output;
@@ -399,6 +387,8 @@ class ParameterGenerator extends AbstractGenerator
     }
 
     /**
+     * @param string|null $type
+     *
      * @return string
      */
     private function generateTypeHint()
@@ -408,16 +398,5 @@ class ParameterGenerator extends AbstractGenerator
         }
 
         return $this->type->generate() . ' ';
-    }
-
-    /**
-     * @param bool $omit
-     * @return ParameterGenerator
-     */
-    public function omitDefaultValue(bool $omit = true)
-    {
-        $this->omitDefaultValue = $omit;
-
-        return $this;
     }
 }

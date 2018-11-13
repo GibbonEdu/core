@@ -11,9 +11,9 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Templating\Helper;
 
-use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 use Symfony\Component\Templating\Helper\Helper;
+use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
+use Symfony\Component\HttpKernel\Controller\ControllerReference;
 
 /**
  * ActionsHelper manages action inclusions.
@@ -24,6 +24,11 @@ class ActionsHelper extends Helper
 {
     private $handler;
 
+    /**
+     * Constructor.
+     *
+     * @param FragmentHandler $handler A FragmentHandler instance
+     */
     public function __construct(FragmentHandler $handler)
     {
         $this->handler = $handler;

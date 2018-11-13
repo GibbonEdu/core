@@ -26,6 +26,9 @@ class FlashBagTest extends TestCase
      */
     private $bag;
 
+    /**
+     * @var array
+     */
     protected $array = array();
 
     protected function setUp()
@@ -54,7 +57,7 @@ class FlashBagTest extends TestCase
 
     public function testGetStorageKey()
     {
-        $this->assertEquals('_symfony_flashes', $this->bag->getStorageKey());
+        $this->assertEquals('_sf2_flashes', $this->bag->getStorageKey());
         $attributeBag = new FlashBag('test');
         $this->assertEquals('test', $attributeBag->getStorageKey());
     }
@@ -72,18 +75,6 @@ class FlashBagTest extends TestCase
         $this->assertEquals(array('default'), $this->bag->peek('not_existing', array('default')));
         $this->assertEquals(array('A previous flash message'), $this->bag->peek('notice'));
         $this->assertEquals(array('A previous flash message'), $this->bag->peek('notice'));
-    }
-
-    public function testAdd()
-    {
-        $tab = array('bar' => 'baz');
-        $this->bag->add('string_message', 'lorem');
-        $this->bag->add('object_message', new \stdClass());
-        $this->bag->add('array_message', $tab);
-
-        $this->assertEquals(array('lorem'), $this->bag->get('string_message'));
-        $this->assertEquals(array(new \stdClass()), $this->bag->get('object_message'));
-        $this->assertEquals(array($tab), $this->bag->get('array_message'));
     }
 
     public function testGet()
@@ -122,19 +113,6 @@ class FlashBagTest extends TestCase
     public function testKeys()
     {
         $this->assertEquals(array('notice'), $this->bag->keys());
-    }
-
-    public function testSetAll()
-    {
-        $this->bag->add('one_flash', 'Foo');
-        $this->bag->add('another_flash', 'Bar');
-        $this->assertTrue($this->bag->has('one_flash'));
-        $this->assertTrue($this->bag->has('another_flash'));
-        $this->bag->setAll(array('unique_flash' => 'FooBar'));
-        $this->assertFalse($this->bag->has('one_flash'));
-        $this->assertFalse($this->bag->has('another_flash'));
-        $this->assertSame(array('unique_flash' => 'FooBar'), $this->bag->all());
-        $this->assertSame(array(), $this->bag->all());
     }
 
     public function testPeekAll()

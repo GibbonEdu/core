@@ -24,6 +24,8 @@ class RemovePrivateAliasesPass implements CompilerPassInterface
 {
     /**
      * Removes private aliases from the ContainerBuilder.
+     *
+     * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {

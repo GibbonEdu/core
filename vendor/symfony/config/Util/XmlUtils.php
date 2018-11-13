@@ -11,9 +11,6 @@
 
 namespace Symfony\Component\Config\Util;
 
-use Symfony\Component\Config\Util\Exception\InvalidXmlException;
-use Symfony\Component\Config\Util\Exception\XmlParsingException;
-
 /**
  * XMLUtils is a bunch of utility methods to XML operations.
  *
@@ -21,7 +18,6 @@ use Symfony\Component\Config\Util\Exception\XmlParsingException;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Martin Hasoň <martin.hason@gmail.com>
- * @author Ole Rößner <ole@roessner.it>
  */
 class XmlUtils
 {
@@ -33,21 +29,20 @@ class XmlUtils
     }
 
     /**
-     * Parses an XML string.
+     * Loads an XML file.
      *
-     * @param string               $content          An XML string
+     * @param string               $file             An XML file path
      * @param string|callable|null $schemaOrCallable An XSD schema file path, a callable, or null to disable validation
      *
      * @return \DOMDocument
      *
-     * @throws XmlParsingException When parsing of XML file returns error
-     * @throws InvalidXmlException When parsing of XML with schema or callable produces any errors unrelated to the XML parsing itself
-     * @throws \RuntimeException   When DOM extension is missing
+     * @throws \InvalidArgumentException When loading of XML file returns error
      */
-    public static function parse($content, $schemaOrCallable = null)
+    public static function loadFile($file, $schemaOrCallable = null)
     {
-        if (!\extension_loaded('dom')) {
-            throw new \RuntimeException('Extension DOM is required.');
+        $content = @file_get_contents($file);
+        if ('' === trim($content)) {
+            throw new \InvalidArgumentException(sprintf('File %s does not contain valid XML, it is empty.', $file));
         }
 
         $internalErrors = libxml_use_internal_errors(true);
@@ -56,10 +51,10 @@ class XmlUtils
 
         $dom = new \DOMDocument();
         $dom->validateOnParse = true;
-        if (!$dom->loadXML($content, LIBXML_NONET | (\defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
+        if (!$dom->loadXML($content, LIBXML_NONET | (defined('LIBXML_COMPACT') ? LIBXML_COMPACT : 0))) {
             libxml_disable_entity_loader($disableEntities);
 
-            throw new XmlParsingException(implode("\n", static::getXmlErrors($internalErrors)));
+            throw new \InvalidArgumentException(implode("\n", static::getXmlErrors($internalErrors)));
         }
 
         $dom->normalizeDocument();
@@ -68,8 +63,8 @@ class XmlUtils
         libxml_disable_entity_loader($disableEntities);
 
         foreach ($dom->childNodes as $child) {
-            if (XML_DOCUMENT_TYPE_NODE === $child->nodeType) {
-                throw new XmlParsingException('Document types are not allowed.');
+            if ($child->nodeType === XML_DOCUMENT_TYPE_NODE) {
+                throw new \InvalidArgumentException('Document types are not allowed.');
             }
         }
 
@@ -78,27 +73,27 @@ class XmlUtils
             libxml_clear_errors();
 
             $e = null;
-            if (\is_callable($schemaOrCallable)) {
+            if (is_callable($schemaOrCallable)) {
                 try {
-                    $valid = \call_user_func($schemaOrCallable, $dom, $internalErrors);
+                    $valid = call_user_func($schemaOrCallable, $dom, $internalErrors);
                 } catch (\Exception $e) {
                     $valid = false;
                 }
-            } elseif (!\is_array($schemaOrCallable) && is_file((string) $schemaOrCallable)) {
+            } elseif (!is_array($schemaOrCallable) && is_file((string) $schemaOrCallable)) {
                 $schemaSource = file_get_contents((string) $schemaOrCallable);
                 $valid = @$dom->schemaValidateSource($schemaSource);
             } else {
                 libxml_use_internal_errors($internalErrors);
 
-                throw new XmlParsingException('The schemaOrCallable argument has to be a valid path to XSD file or callable.');
+                throw new \InvalidArgumentException('The schemaOrCallable argument has to be a valid path to XSD file or callable.');
             }
 
             if (!$valid) {
                 $messages = static::getXmlErrors($internalErrors);
                 if (empty($messages)) {
-                    throw new InvalidXmlException('The XML is not valid.', 0, $e);
+                    $messages = array(sprintf('The XML file "%s" is not valid.', $file));
                 }
-                throw new XmlParsingException(implode("\n", $messages), 0, $e);
+                throw new \InvalidArgumentException(implode("\n", $messages), 0, $e);
             }
         }
 
@@ -109,33 +104,7 @@ class XmlUtils
     }
 
     /**
-     * Loads an XML file.
-     *
-     * @param string               $file             An XML file path
-     * @param string|callable|null $schemaOrCallable An XSD schema file path, a callable, or null to disable validation
-     *
-     * @return \DOMDocument
-     *
-     * @throws \InvalidArgumentException When loading of XML file returns error
-     * @throws XmlParsingException       When XML parsing returns any errors
-     * @throws \RuntimeException         When DOM extension is missing
-     */
-    public static function loadFile($file, $schemaOrCallable = null)
-    {
-        $content = @file_get_contents($file);
-        if ('' === trim($content)) {
-            throw new \InvalidArgumentException(sprintf('File %s does not contain valid XML, it is empty.', $file));
-        }
-
-        try {
-            return static::parse($content, $schemaOrCallable);
-        } catch (InvalidXmlException $e) {
-            throw new XmlParsingException(sprintf('The XML file "%s" is not valid.', $file), 0, $e->getPrevious());
-        }
-    }
-
-    /**
-     * Converts a \DOMElement object to a PHP array.
+     * Converts a \DomElement object to a PHP array.
      *
      * The following rules applies during the conversion:
      *
@@ -149,7 +118,7 @@ class XmlUtils
      *
      *  * The nested-tags are converted to keys (<foo><foo>bar</foo></foo>)
      *
-     * @param \DOMElement $element     A \DOMElement instance
+     * @param \DomElement $element     A \DomElement instance
      * @param bool        $checkPrefix Check prefix in an element or an attribute name
      *
      * @return array A PHP array
@@ -160,7 +129,7 @@ class XmlUtils
         $empty = true;
         $config = array();
         foreach ($element->attributes as $name => $node) {
-            if ($checkPrefix && !\in_array((string) $node->prefix, array('', $prefix), true)) {
+            if ($checkPrefix && !in_array((string) $node->prefix, array('', $prefix), true)) {
                 continue;
             }
             $config[$name] = static::phpize($node->value);
@@ -181,7 +150,7 @@ class XmlUtils
 
                 $key = $node->localName;
                 if (isset($config[$key])) {
-                    if (!\is_array($config[$key]) || !\is_int(key($config[$key]))) {
+                    if (!is_array($config[$key]) || !is_int(key($config[$key]))) {
                         $config[$key] = array($config[$key]);
                     }
                     $config[$key][] = $value;
@@ -195,7 +164,7 @@ class XmlUtils
 
         if (false !== $nodeValue) {
             $value = static::phpize($nodeValue);
-            if (\count($config)) {
+            if (count($config)) {
                 $config['value'] = $value;
             } else {
                 $config = $value;
@@ -240,7 +209,7 @@ class XmlUtils
                 return '0x' === $value[0].$value[1] ? hexdec($value) : (float) $value;
             case preg_match('/^0x[0-9a-f]++$/i', $value):
                 return hexdec($value);
-            case preg_match('/^[+-]?[0-9]+(\.[0-9]+)?$/', $value):
+            case preg_match('/^(-|\+)?[0-9]+(\.[0-9]+)?$/', $value):
                 return (float) $value;
             default:
                 return $value;

@@ -18,12 +18,12 @@ class AuthorTag extends AbstractGenerator implements TagInterface
     /**
      * @var string
      */
-    protected $authorName;
+    protected $authorName = null;
 
     /**
      * @var string
      */
-    protected $authorEmail;
+    protected $authorEmail = null;
 
     /**
      * @param string $authorName
@@ -31,18 +31,18 @@ class AuthorTag extends AbstractGenerator implements TagInterface
      */
     public function __construct($authorName = null, $authorEmail = null)
     {
-        if (! empty($authorName)) {
+        if (!empty($authorName)) {
             $this->setAuthorName($authorName);
         }
 
-        if (! empty($authorEmail)) {
+        if (!empty($authorEmail)) {
             $this->setAuthorEmail($authorEmail);
         }
     }
 
     /**
      * @param ReflectionTagInterface $reflectionTag
-     * @return AuthorTag
+     * @return ReturnTag
      * @deprecated Deprecated in 2.3. Use TagManager::createTagFromReflection() instead
      */
     public static function fromReflection(ReflectionTagInterface $reflectionTag)
@@ -102,8 +102,8 @@ class AuthorTag extends AbstractGenerator implements TagInterface
     public function generate()
     {
         $output = '@author'
-            . (! empty($this->authorName) ? ' ' . $this->authorName : '')
-            . (! empty($this->authorEmail) ? ' <' . $this->authorEmail . '>' : '');
+            . ((!empty($this->authorName)) ? ' ' . $this->authorName : '')
+            . ((!empty($this->authorEmail)) ? ' <' . $this->authorEmail . '>' : '');
 
         return $output;
     }

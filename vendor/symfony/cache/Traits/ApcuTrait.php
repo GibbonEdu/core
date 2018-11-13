@@ -23,7 +23,7 @@ trait ApcuTrait
 {
     public static function isSupported()
     {
-        return \function_exists('apcu_fetch') && ini_get('apc.enabled');
+        return function_exists('apcu_fetch') && ini_get('apc.enabled');
     }
 
     private function init($namespace, $defaultLifetime, $version)
@@ -31,7 +31,7 @@ trait ApcuTrait
         if (!static::isSupported()) {
             throw new CacheException('APCu is not enabled');
         }
-        if ('cli' === \PHP_SAPI) {
+        if ('cli' === PHP_SAPI) {
             ini_set('apc.use_request_time', 0);
         }
         parent::__construct($namespace, $defaultLifetime);
@@ -52,11 +52,7 @@ trait ApcuTrait
     protected function doFetch(array $ids)
     {
         try {
-            foreach (apcu_fetch($ids, $ok) ?: array() as $k => $v) {
-                if (null !== $v || $ok) {
-                    yield $k => $v;
-                }
-            }
+            return apcu_fetch($ids) ?: array();
         } catch (\Error $e) {
             throw new \ErrorException($e->getMessage(), $e->getCode(), E_ERROR, $e->getFile(), $e->getLine());
         }
@@ -75,7 +71,7 @@ trait ApcuTrait
      */
     protected function doClear($namespace)
     {
-        return isset($namespace[0]) && class_exists('APCuIterator', false) && ('cli' !== \PHP_SAPI || ini_get('apc.enable_cli'))
+        return isset($namespace[0]) && class_exists('APCuIterator', false) && ('cli' !== PHP_SAPI || ini_get('apc.enable_cli'))
             ? apcu_delete(new \APCuIterator(sprintf('/^%s/', preg_quote($namespace, '/')), APC_ITER_KEY))
             : apcu_clear_cache();
     }
@@ -103,13 +99,15 @@ trait ApcuTrait
             }
 
             return array_keys($failures);
-        } catch (\Throwable $e) {
-            if (1 === \count($values)) {
-                // Workaround https://github.com/krakjoe/apcu/issues/170
-                apcu_delete(key($values));
-            }
-
-            throw $e;
+        } catch (\Error $e) {
+        } catch (\Exception $e) {
         }
+
+        if (1 === count($values)) {
+            // Workaround https://github.com/krakjoe/apcu/issues/170
+            apcu_delete(key($values));
+        }
+
+        throw $e;
     }
 }

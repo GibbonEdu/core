@@ -2,13 +2,9 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 3.3.1 - 2018-08-13
+## 3.2.0 - TBD
 
 ### Added
-
-- Nothing.
-
-### Changed
 
 - Nothing.
 
@@ -22,40 +18,13 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#158](https://github.com/zendframework/zend-code/pull/158) updates several `switch` cases to use `break` instead of `continue`
-  in order to prevent issues under the upcoming PHP 7.3 release.
+- Nothing.
 
-- [#147](https://github.com/zendframework/zend-code/pull/147) fixes the regular expression used for `@var` annotations to
-  allow omission of the variable name.
-
-- [#146](https://github.com/zendframework/zend-code/pull/146) updates all `@return` annotations to reflect the correct types returned by each method.
-
-- [#144](https://github.com/zendframework/zend-code/pull/144) fixes the class generator such that it now resolves
-  `setExtendedClass()` arguments to aliases provided to the generator.
-
-- [#140](https://github.com/zendframework/zend-code/pull/140) fixes `MethodScanner::setVisibility()` such that it no longer
-  casts the provided visibility token to lower case; this fix is necessary, as
-  the method is supposed to expect only the appropriate
-  `T_(PUBLIC|PROTECTED|PRIVATE)` token values, which are integers.
-
-- [#140](https://github.com/zendframework/zend-code/pull/140) updates the `MethodScanner::setVisibility()` method to raise
-  a package-specific `InvalidArgumentException` instead of the non-existent
-  package `Exception` class when an invalid visibility is provided.
-
-## 3.3.0 - 2017-10-20
+## 3.1.1 - TBD
 
 ### Added
 
-- [#131](https://github.com/zendframework/zend-code/pull/131) added the
-  ability to omit a parameter type declaration
-- [#132](https://github.com/zendframework/zend-code/pull/132) added a
-  lightweight `MethodGenerator::copyMethodSignature()` constructor that
-  only copies the method declaration with no body nor docblock.
-- [#134](https://github.com/zendframework/zend-code/pull/134) short array
-  notation is now used by default for generated array values
-- [#136](https://github.com/zendframework/zend-code/pull/136) added the
-  ability to specify an `omitdefaultvalue` key when using
-  `ParameterGenerator::fromArray()`
+- Nothing.
 
 ### Deprecated
 
@@ -67,69 +36,17 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#130](https://github.com/zendframework/zend-code/pull/130) Updated 
-  links to the documentation
-- [#133](https://github.com/zendframework/zend-code/pull/133) The default
-  value of a `ParameterGenerator` is always a `ValueGenerator`
-
-## 3.2.0 - 2017-07-23
-
-### Added
-
-- [#112](https://github.com/zendframework/zend-code/pull/112)
-  [#110](https://github.com/zendframework/zend-code/pull/110) Introduced
-  support for the PHP `7.2` `object` type-hint
-- [#41](https://github.com/zendframework/zend-code/pull/41) Added `VarTag`
-  support to the docblock generators and reflectors: allows generating
-  and parsing `@var` tags.
-- [#113](https://github.com/zendframework/zend-code/pull/113) Added
-  PHP `7.2` to the build matrix
-- [#114](https://github.com/zendframework/zend-code/pull/114) Increased
-  minimum supported PHP version to `^7.1.0`
-- [#114](https://github.com/zendframework/zend-code/pull/114) Upgraded
-  PHPUnit dependency to `^6.2.2`
-- [#121](https://github.com/zendframework/zend-code/pull/121) Imported
-  global functions via `use` statements (experimenting with OpCache
-  OPCODE inlining optimisations)
-
-### Deprecated
-
 - Nothing.
-
-### Removed
-
-- [#113](https://github.com/zendframework/zend-code/pull/113)
-  [#118](https://github.com/zendframework/zend-code/pull/118) Removed
-  HHVM support
-- [#122](https://github.com/zendframework/zend-code/pull/122) Removed
-  IRC notifications for pushes/build statuses
-
-### Fixed
-
-- [#101](https://github.com/zendframework/zend-code/pull/101) avoid
-  calling `isInternalPhpType` twice in the `TypeGenerator`
-- [#115](https://github.com/zendframework/zend-code/pull/115) Replaced
-  assertions in the test suite with their static counterparts where
-  applicable
-- [#120](https://github.com/zendframework/zend-code/pull/120)
-  [#109](https://github.com/zendframework/zend-code/pull/109)
-  [#100](https://github.com/zendframework/zend-code/pull/100) Applied
-  ZendFramework coding standard to the library code
-- [#119](https://github.com/zendframework/zend-code/pull/119) Corrected
-  test suite errors caused by mismatching parameter order
-- [#106](https://github.com/zendframework/zend-code/pull/106)
-- [#107](https://github.com/zendframework/zend-code/pull/107) Minor
-  typing error corrections in documentation and error messages
 
 ## 3.1.0 - 2016-10-24
 
 ### Added
 
-- [#87](https://github.com/zendframework/zend-code/pull/87) support for
+- [#87](https://github.com/zendframework/zend-code/pull/95) support for
   PHP 7.1's `void` return type declaration.
-- [#87](https://github.com/zendframework/zend-code/pull/87) support for
+- [#87](https://github.com/zendframework/zend-code/pull/95) support for
   PHP 7.1's nullable type declarations.
-- [#87](https://github.com/zendframework/zend-code/pull/87) support for
+- [#87](https://github.com/zendframework/zend-code/pull/95) support for
   PHP 7.1's `iterable` type declaration.
 - [#62](https://github.com/zendframework/zend-code/pull/62) added
   `Zend\Code\Generator\MethodGenerator#getReturnType()` accessor.
@@ -278,9 +195,6 @@ All notable changes to this project will be documented in this file, in reverse 
 ## 3.0.0 - 2016-01-13
 
 ### Changed
-
-- [#140](https://github.com/zendframework/zend-code/pull/140) updates the `MethodScanner::setVisibility()` method to raise a package-specific `InvalidArgumentException` instead of
-  the non-existent package `Exception` class when an invalid visibility is provided.
 
 This section refers to breaking changes: please refer to
 [doc/book/migration.md](doc/book/migration.md) for migration instructions.

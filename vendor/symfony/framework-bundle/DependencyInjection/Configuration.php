@@ -12,18 +12,12 @@
 namespace Symfony\Bundle\FrameworkBundle\DependencyInjection;
 
 use Doctrine\Common\Annotations\Annotation;
-use Doctrine\Common\Cache\Cache;
 use Symfony\Bundle\FullStack;
 use Symfony\Component\Asset\Package;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 use Symfony\Component\Form\Form;
-use Symfony\Component\Lock\Lock;
-use Symfony\Component\Lock\Store\SemaphoreStore;
-use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\PropertyInfo\PropertyInfoExtractorInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Validator\Validation;
@@ -33,7 +27,6 @@ use Symfony\Component\WebLink\HttpHeaderSerializer;
  * FrameworkExtension configuration structure.
  *
  * @author Jeremy Mikola <jmikola@gmail.com>
- * @author Grégoire Pineau <lyrixx@lyrixx.info>
  */
 class Configuration implements ConfigurationInterface
 {
@@ -42,9 +35,9 @@ class Configuration implements ConfigurationInterface
     /**
      * @param bool $debug Whether debugging is enabled or not
      */
-    public function __construct(bool $debug)
+    public function __construct($debug)
     {
-        $this->debug = $debug;
+        $this->debug = (bool) $debug;
     }
 
     /**
@@ -59,7 +52,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->beforeNormalization()
-                ->ifTrue(function ($v) { return !isset($v['assets']) && isset($v['templating']) && class_exists(Package::class); })
+                ->ifTrue(function ($v) { return !isset($v['assets']) && isset($v['templating']); })
                 ->then(function ($v) {
                     $v['assets'] = array();
 
@@ -71,6 +64,40 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('http_method_override')
                     ->info("Set true to enable support for the '_method' request parameter to determine the intended HTTP method on POST requests. Note: When using the HttpCache, you need to call the method in your front controller instead")
                     ->defaultTrue()
+                ->end()
+                ->arrayNode('trusted_proxies')
+                    ->beforeNormalization()
+                        ->ifTrue(function ($v) {
+                            @trigger_error('The "framework.trusted_proxies" configuration key has been deprecated in Symfony 3.3. Use the Request::setTrustedProxies() method in your front controller instead.', E_USER_DEPRECATED);
+
+                            return !is_array($v) && null !== $v;
+                        })
+                        ->then(function ($v) { return is_bool($v) ? array() : preg_split('/\s*,\s*/', $v); })
+                    ->end()
+                    ->prototype('scalar')
+                        ->validate()
+                            ->ifTrue(function ($v) {
+                                if (empty($v)) {
+                                    return false;
+                                }
+
+                                if (false !== strpos($v, '/')) {
+                                    if ('0.0.0.0/0' === $v) {
+                                        return false;
+                                    }
+
+                                    list($v, $mask) = explode('/', $v, 2);
+
+                                    if (strcmp($mask, (int) $mask) || $mask < 1 || $mask > (false !== strpos($v, ':') ? 128 : 32)) {
+                                        return true;
+                                    }
+                                }
+
+                                return !filter_var($v, FILTER_VALIDATE_IP);
+                            })
+                            ->thenInvalid('Invalid proxy IP "%s"')
+                        ->end()
+                    ->end()
                 ->end()
                 ->scalarNode('ide')->defaultNull()->end()
                 ->booleanNode('test')->end()
@@ -103,8 +130,6 @@ class Configuration implements ConfigurationInterface
         $this->addCacheSection($rootNode);
         $this->addPhpErrorsSection($rootNode);
         $this->addWebLinkSection($rootNode);
-        $this->addLockSection($rootNode);
-        $this->addMessengerSection($rootNode);
 
         return $treeBuilder;
     }
@@ -114,14 +139,7 @@ class Configuration implements ConfigurationInterface
         $rootNode
             ->children()
                 ->arrayNode('csrf_protection')
-                    ->treatFalseLike(array('enabled' => false))
-                    ->treatTrueLike(array('enabled' => true))
-                    ->treatNullLike(array('enabled' => true))
-                    ->addDefaultsIfNotSet()
-                    ->children()
-                        // defaults to framework.session.enabled && !class_exists(FullStack::class) && interface_exists(CsrfTokenManagerInterface::class)
-                        ->booleanNode('enabled')->defaultNull()->end()
-                    ->end()
+                    ->canBeEnabled()
                 ->end()
             ->end()
         ;
@@ -201,6 +219,22 @@ class Configuration implements ConfigurationInterface
                         ->booleanNode('only_exceptions')->defaultFalse()->end()
                         ->booleanNode('only_master_requests')->defaultFalse()->end()
                         ->scalarNode('dsn')->defaultValue('file:%kernel.cache_dir%/profiler')->end()
+                        ->arrayNode('matcher')
+                            ->canBeEnabled()
+                            ->performNoDeepMerging()
+                            ->fixXmlConfig('ip')
+                            ->children()
+                                ->scalarNode('path')
+                                    ->info('use the urldecoded format')
+                                    ->example('^/path to resource/')
+                                ->end()
+                                ->scalarNode('service')->end()
+                                ->arrayNode('ips')
+                                    ->beforeNormalization()->ifString()->then(function ($v) { return array($v); })->end()
+                                    ->prototype('scalar')->end()
+                                ->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()
@@ -213,217 +247,140 @@ class Configuration implements ConfigurationInterface
             ->fixXmlConfig('workflow')
             ->children()
                 ->arrayNode('workflows')
-                    ->canBeEnabled()
-                    ->beforeNormalization()
-                        ->always(function ($v) {
-                            if (true === $v['enabled']) {
-                                $workflows = $v;
-                                unset($workflows['enabled']);
-
-                                if (1 === \count($workflows) && isset($workflows[0]['enabled'])) {
-                                    $workflows = array();
-                                }
-
-                                $v = array(
-                                    'enabled' => true,
-                                    'workflows' => $workflows,
-                                );
-                            }
-
-                            return $v;
-                        })
-                    ->end()
-                    ->children()
-                        ->arrayNode('workflows')
-                            ->useAttributeAsKey('name')
-                            ->prototype('array')
-                                ->fixXmlConfig('support')
-                                ->fixXmlConfig('place')
-                                ->fixXmlConfig('transition')
+                    ->useAttributeAsKey('name')
+                    ->prototype('array')
+                        ->fixXmlConfig('support')
+                        ->fixXmlConfig('place')
+                        ->fixXmlConfig('transition')
+                        ->children()
+                            ->arrayNode('audit_trail')
+                                ->canBeEnabled()
+                            ->end()
+                            ->enumNode('type')
+                                ->values(array('workflow', 'state_machine'))
+                            ->end()
+                            ->arrayNode('marking_store')
+                                ->fixXmlConfig('argument')
                                 ->children()
-                                    ->arrayNode('audit_trail')
-                                        ->canBeEnabled()
-                                    ->end()
                                     ->enumNode('type')
-                                        ->values(array('workflow', 'state_machine'))
-                                        ->defaultValue('state_machine')
+                                        ->values(array('multiple_state', 'single_state'))
                                     ->end()
-                                    ->arrayNode('marking_store')
-                                        ->fixXmlConfig('argument')
-                                        ->children()
-                                            ->enumNode('type')
-                                                ->values(array('multiple_state', 'single_state'))
-                                            ->end()
-                                            ->arrayNode('arguments')
-                                                ->beforeNormalization()
-                                                    ->ifString()
-                                                    ->then(function ($v) { return array($v); })
-                                                ->end()
-                                                ->requiresAtLeastOneElement()
-                                                ->prototype('scalar')
-                                                ->end()
-                                            ->end()
-                                            ->scalarNode('service')
-                                                ->cannotBeEmpty()
-                                            ->end()
-                                        ->end()
-                                        ->validate()
-                                            ->ifTrue(function ($v) { return isset($v['type']) && isset($v['service']); })
-                                            ->thenInvalid('"type" and "service" cannot be used together.')
-                                        ->end()
-                                        ->validate()
-                                            ->ifTrue(function ($v) { return !empty($v['arguments']) && isset($v['service']); })
-                                            ->thenInvalid('"arguments" and "service" cannot be used together.')
-                                        ->end()
-                                    ->end()
-                                    ->arrayNode('supports')
+                                    ->arrayNode('arguments')
                                         ->beforeNormalization()
                                             ->ifString()
                                             ->then(function ($v) { return array($v); })
                                         ->end()
+                                        ->requiresAtLeastOneElement()
                                         ->prototype('scalar')
-                                            ->cannotBeEmpty()
-                                            ->validate()
-                                                ->ifTrue(function ($v) { return !class_exists($v) && !interface_exists($v); })
-                                                ->thenInvalid('The supported class or interface "%s" does not exist.')
-                                            ->end()
                                         ->end()
                                     ->end()
-                                    ->scalarNode('support_strategy')
+                                    ->scalarNode('service')
                                         ->cannotBeEmpty()
                                     ->end()
-                                    ->scalarNode('initial_place')
-                                        ->defaultNull()
-                                    ->end()
-                                    ->arrayNode('places')
-                                        ->beforeNormalization()
-                                            ->always()
-                                            ->then(function ($places) {
-                                                // It's an indexed array of shape  ['place1', 'place2']
-                                                if (isset($places[0]) && \is_string($places[0])) {
-                                                    return array_map(function (string $place) {
-                                                        return array('name' => $place);
-                                                    }, $places);
-                                                }
-
-                                                // It's an indexed array, we let the validation occur
-                                                if (isset($places[0]) && \is_array($places[0])) {
-                                                    return $places;
-                                                }
-
-                                                foreach ($places as $name => $place) {
-                                                    if (\is_array($place) && array_key_exists('name', $place)) {
-                                                        continue;
-                                                    }
-                                                    $place['name'] = $name;
-                                                    $places[$name] = $place;
-                                                }
-
-                                                return array_values($places);
-                                            })
-                                        ->end()
-                                        ->isRequired()
-                                        ->requiresAtLeastOneElement()
-                                        ->prototype('array')
-                                            ->children()
-                                                ->scalarNode('name')
-                                                    ->isRequired()
-                                                    ->cannotBeEmpty()
-                                                ->end()
-                                                ->arrayNode('metadata')
-                                                    ->normalizeKeys(false)
-                                                    ->defaultValue(array())
-                                                    ->example(array('color' => 'blue', 'description' => 'Workflow to manage article.'))
-                                                    ->prototype('variable')
-                                                    ->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
-                                    ->arrayNode('transitions')
-                                        ->beforeNormalization()
-                                            ->always()
-                                            ->then(function ($transitions) {
-                                                // It's an indexed array, we let the validation occur
-                                                if (isset($transitions[0]) && \is_array($transitions[0])) {
-                                                    return $transitions;
-                                                }
-
-                                                foreach ($transitions as $name => $transition) {
-                                                    if (\is_array($transition) && array_key_exists('name', $transition)) {
-                                                        continue;
-                                                    }
-                                                    $transition['name'] = $name;
-                                                    $transitions[$name] = $transition;
-                                                }
-
-                                                return $transitions;
-                                            })
-                                        ->end()
-                                        ->isRequired()
-                                        ->requiresAtLeastOneElement()
-                                        ->prototype('array')
-                                            ->children()
-                                                ->scalarNode('name')
-                                                    ->isRequired()
-                                                    ->cannotBeEmpty()
-                                                ->end()
-                                                ->scalarNode('guard')
-                                                    ->cannotBeEmpty()
-                                                    ->info('An expression to block the transition')
-                                                    ->example('is_fully_authenticated() and has_role(\'ROLE_JOURNALIST\') and subject.getTitle() == \'My first article\'')
-                                                ->end()
-                                                ->arrayNode('from')
-                                                    ->beforeNormalization()
-                                                        ->ifString()
-                                                        ->then(function ($v) { return array($v); })
-                                                    ->end()
-                                                    ->requiresAtLeastOneElement()
-                                                    ->prototype('scalar')
-                                                        ->cannotBeEmpty()
-                                                    ->end()
-                                                ->end()
-                                                ->arrayNode('to')
-                                                    ->beforeNormalization()
-                                                        ->ifString()
-                                                        ->then(function ($v) { return array($v); })
-                                                    ->end()
-                                                    ->requiresAtLeastOneElement()
-                                                    ->prototype('scalar')
-                                                        ->cannotBeEmpty()
-                                                    ->end()
-                                                ->end()
-                                                ->arrayNode('metadata')
-                                                    ->normalizeKeys(false)
-                                                    ->defaultValue(array())
-                                                    ->example(array('color' => 'blue', 'description' => 'Workflow to manage article.'))
-                                                    ->prototype('variable')
-                                                    ->end()
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
-                                    ->arrayNode('metadata')
-                                        ->normalizeKeys(false)
-                                        ->defaultValue(array())
-                                        ->example(array('color' => 'blue', 'description' => 'Workflow to manage article.'))
-                                        ->prototype('variable')
-                                        ->end()
-                                    ->end()
                                 ->end()
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return $v['supports'] && isset($v['support_strategy']);
-                                    })
-                                    ->thenInvalid('"supports" and "support_strategy" cannot be used together.')
+                                    ->ifTrue(function ($v) { return isset($v['type']) && isset($v['service']); })
+                                    ->thenInvalid('"type" and "service" cannot be used together.')
                                 ->end()
                                 ->validate()
-                                    ->ifTrue(function ($v) {
-                                        return !$v['supports'] && !isset($v['support_strategy']);
-                                    })
-                                    ->thenInvalid('"supports" or "support_strategy" should be configured.')
+                                    ->ifTrue(function ($v) { return !empty($v['arguments']) && isset($v['service']); })
+                                    ->thenInvalid('"arguments" and "service" cannot be used together.')
                                 ->end()
                             ->end()
+                            ->arrayNode('supports')
+                                ->beforeNormalization()
+                                    ->ifString()
+                                    ->then(function ($v) { return array($v); })
+                                ->end()
+                                ->prototype('scalar')
+                                    ->cannotBeEmpty()
+                                    ->validate()
+                                        ->ifTrue(function ($v) { return !class_exists($v); })
+                                        ->thenInvalid('The supported class %s does not exist.')
+                                    ->end()
+                                ->end()
+                            ->end()
+                            ->scalarNode('support_strategy')
+                                ->cannotBeEmpty()
+                            ->end()
+                            ->scalarNode('initial_place')
+                                ->defaultNull()
+                            ->end()
+                            ->arrayNode('places')
+                                ->isRequired()
+                                ->requiresAtLeastOneElement()
+                                ->prototype('scalar')
+                                    ->cannotBeEmpty()
+                                ->end()
+                            ->end()
+                            ->arrayNode('transitions')
+                                ->beforeNormalization()
+                                    ->always()
+                                    ->then(function ($transitions) {
+                                        // It's an indexed array, we let the validation occurs
+                                        if (isset($transitions[0])) {
+                                            return $transitions;
+                                        }
+
+                                        foreach ($transitions as $name => $transition) {
+                                            if (array_key_exists('name', $transition)) {
+                                                continue;
+                                            }
+                                            $transition['name'] = $name;
+                                            $transitions[$name] = $transition;
+                                        }
+
+                                        return $transitions;
+                                    })
+                                ->end()
+                                ->isRequired()
+                                ->requiresAtLeastOneElement()
+                                ->prototype('array')
+                                    ->children()
+                                        ->scalarNode('name')
+                                            ->isRequired()
+                                            ->cannotBeEmpty()
+                                        ->end()
+                                        ->scalarNode('guard')
+                                            ->cannotBeEmpty()
+                                            ->info('An expression to block the transition')
+                                            ->example('is_fully_authenticated() and has_role(\'ROLE_JOURNALIST\') and subject.getTitle() == \'My first article\'')
+                                        ->end()
+                                        ->arrayNode('from')
+                                            ->beforeNormalization()
+                                                ->ifString()
+                                                ->then(function ($v) { return array($v); })
+                                            ->end()
+                                            ->requiresAtLeastOneElement()
+                                            ->prototype('scalar')
+                                                ->cannotBeEmpty()
+                                            ->end()
+                                        ->end()
+                                        ->arrayNode('to')
+                                            ->beforeNormalization()
+                                                ->ifString()
+                                                ->then(function ($v) { return array($v); })
+                                            ->end()
+                                            ->requiresAtLeastOneElement()
+                                            ->prototype('scalar')
+                                                ->cannotBeEmpty()
+                                            ->end()
+                                        ->end()
+                                    ->end()
+                                ->end()
+                            ->end()
+                        ->end()
+                        ->validate()
+                            ->ifTrue(function ($v) {
+                                return $v['supports'] && isset($v['support_strategy']);
+                            })
+                            ->thenInvalid('"supports" and "support_strategy" cannot be used together.')
+                        ->end()
+                        ->validate()
+                            ->ifTrue(function ($v) {
+                                return !$v['supports'] && !isset($v['support_strategy']);
+                            })
+                            ->thenInvalid('"supports" or "support_strategy" should be configured.')
                         ->end()
                     ->end()
                 ->end()
@@ -468,16 +425,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->scalarNode('storage_id')->defaultValue('session.storage.native')->end()
                         ->scalarNode('handler_id')->defaultValue('session.handler.native_file')->end()
-                        ->scalarNode('name')
-                            ->validate()
-                                ->ifTrue(function ($v) {
-                                    parse_str($v, $parsed);
-
-                                    return implode('&', array_keys($parsed)) !== (string) $v;
-                                })
-                                ->thenInvalid('Session name %s contains illegal character(s)')
-                            ->end()
-                        ->end()
+                        ->scalarNode('name')->end()
                         ->scalarNode('cookie_lifetime')->end()
                         ->scalarNode('cookie_path')->end()
                         ->scalarNode('cookie_domain')->end()
@@ -487,10 +435,11 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('gc_divisor')->end()
                         ->scalarNode('gc_probability')->defaultValue(1)->end()
                         ->scalarNode('gc_maxlifetime')->end()
+                        ->booleanNode('use_strict_mode')->end()
                         ->scalarNode('save_path')->defaultValue('%kernel.cache_dir%/sessions')->end()
                         ->integerNode('metadata_update_threshold')
                             ->defaultValue('0')
-                            ->info('seconds to wait between 2 session metadata updates')
+                            ->info('seconds to wait between 2 session metadata updates, it will also prevent the session handler to write if the session has not changed')
                         ->end()
                     ->end()
                 ->end()
@@ -511,11 +460,11 @@ class Configuration implements ConfigurationInterface
                             ->useAttributeAsKey('name')
                             ->prototype('array')
                                 ->beforeNormalization()
-                                    ->ifTrue(function ($v) { return \is_array($v) && isset($v['mime_type']); })
+                                    ->ifTrue(function ($v) { return is_array($v) && isset($v['mime_type']); })
                                     ->then(function ($v) { return $v['mime_type']; })
                                 ->end()
                                 ->beforeNormalization()
-                                    ->ifTrue(function ($v) { return !\is_array($v); })
+                                    ->ifTrue(function ($v) { return !is_array($v); })
                                     ->then(function ($v) { return array($v); })
                                 ->end()
                                 ->prototype('scalar')->end()
@@ -535,7 +484,7 @@ class Configuration implements ConfigurationInterface
                     ->info('templating configuration')
                     ->canBeEnabled()
                     ->beforeNormalization()
-                        ->ifTrue(function ($v) { return false === $v || \is_array($v) && false === $v['enabled']; })
+                        ->ifTrue(function ($v) { return false === $v || is_array($v) && false === $v['enabled']; })
                         ->then(function () { return array('enabled' => false, 'engines' => false); })
                     ->end()
                     ->children()
@@ -549,7 +498,7 @@ class Configuration implements ConfigurationInterface
                                     ->addDefaultChildrenIfNoneSet()
                                     ->prototype('scalar')->defaultValue('FrameworkBundle:Form')->end()
                                     ->validate()
-                                        ->ifTrue(function ($v) {return !\in_array('FrameworkBundle:Form', $v); })
+                                        ->ifTrue(function ($v) {return !in_array('FrameworkBundle:Form', $v); })
                                         ->then(function ($v) {
                                             return array_merge(array('FrameworkBundle:Form'), $v);
                                         })
@@ -566,7 +515,7 @@ class Configuration implements ConfigurationInterface
                             ->requiresAtLeastOneElement()
                             ->canBeUnset()
                             ->beforeNormalization()
-                                ->ifTrue(function ($v) { return !\is_array($v) && false !== $v; })
+                                ->ifTrue(function ($v) { return !is_array($v) && false !== $v; })
                                 ->then(function ($v) { return array($v); })
                             ->end()
                             ->prototype('scalar')->end()
@@ -576,7 +525,7 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->arrayNode('loaders')
                             ->beforeNormalization()
-                                ->ifTrue(function ($v) { return !\is_array($v); })
+                                ->ifTrue(function ($v) { return !is_array($v); })
                                 ->then(function ($v) { return array($v); })
                              ->end()
                             ->prototype('scalar')->end()
@@ -604,7 +553,7 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('base_urls')
                             ->requiresAtLeastOneElement()
                             ->beforeNormalization()
-                                ->ifTrue(function ($v) { return !\is_array($v); })
+                                ->ifTrue(function ($v) { return !is_array($v); })
                                 ->then(function ($v) { return array($v); })
                             ->end()
                             ->prototype('scalar')->end()
@@ -648,7 +597,7 @@ class Configuration implements ConfigurationInterface
                                     ->arrayNode('base_urls')
                                         ->requiresAtLeastOneElement()
                                         ->beforeNormalization()
-                                            ->ifTrue(function ($v) { return !\is_array($v); })
+                                            ->ifTrue(function ($v) { return !is_array($v); })
                                             ->then(function ($v) { return array($v); })
                                         ->end()
                                         ->prototype('scalar')->end()
@@ -695,12 +644,7 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->defaultValue(array('en'))
                         ->end()
-                        ->booleanNode('logging')->defaultValue(false)->end()
-                        ->scalarNode('formatter')->defaultValue('translator.formatter.default')->end()
-                        ->scalarNode('default_path')
-                            ->info('The default path used to load translations')
-                            ->defaultValue('%kernel.project_dir%/translations')
-                        ->end()
+                        ->booleanNode('logging')->defaultValue($this->debug)->end()
                         ->arrayNode('paths')
                             ->prototype('scalar')->end()
                         ->end()
@@ -717,27 +661,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('validation')
                     ->info('validation configuration')
                     ->{!class_exists(FullStack::class) && class_exists(Validation::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                    ->validate()
-                        ->ifTrue(function ($v) { return isset($v['strict_email']) && isset($v['email_validation_mode']); })
-                        ->thenInvalid('"strict_email" and "email_validation_mode" cannot be used together.')
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['strict_email']); })
-                        ->then(function ($v) {
-                            @trigger_error('The "framework.validation.strict_email" configuration key has been deprecated in Symfony 4.1. Use the "framework.validation.email_validation_mode" configuration key instead.', E_USER_DEPRECATED);
-
-                            return $v;
-                        })
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(function ($v) { return isset($v['strict_email']) && !isset($v['email_validation_mode']); })
-                        ->then(function ($v) {
-                            $v['email_validation_mode'] = $v['strict_email'] ? 'strict' : 'loose';
-                            unset($v['strict_email']);
-
-                            return $v;
-                        })
-                    ->end()
                     ->children()
                         ->scalarNode('cache')->end()
                         ->booleanNode('enable_annotations')->{!class_exists(FullStack::class) && class_exists(Annotation::class) ? 'defaultTrue' : 'defaultFalse'}()->end()
@@ -746,13 +669,12 @@ class Configuration implements ConfigurationInterface
                             ->prototype('scalar')->end()
                             ->treatFalseLike(array())
                             ->validate()
-                                ->ifTrue(function ($v) { return !\is_array($v); })
+                                ->ifTrue(function ($v) { return !is_array($v); })
                                 ->then(function ($v) { return (array) $v; })
                             ->end()
                         ->end()
                         ->scalarNode('translation_domain')->defaultValue('validators')->end()
-                        ->booleanNode('strict_email')->end()
-                        ->enumNode('email_validation_mode')->values(array('html5', 'loose', 'strict'))->end()
+                        ->booleanNode('strict_email')->defaultFalse()->end()
                         ->arrayNode('mapping')
                             ->addDefaultsIfNotSet()
                             ->fixXmlConfig('path')
@@ -776,7 +698,7 @@ class Configuration implements ConfigurationInterface
                     ->info('annotation configuration')
                     ->{class_exists(Annotation::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                     ->children()
-                        ->scalarNode('cache')->defaultValue(interface_exists(Cache::class) ? 'php_array' : 'none')->end()
+                        ->scalarNode('cache')->defaultValue('php_array')->end()
                         ->scalarNode('file_cache_dir')->defaultValue('%kernel.cache_dir%/annotations')->end()
                         ->booleanNode('debug')->defaultValue($this->debug)->end()
                     ->end()
@@ -794,9 +716,9 @@ class Configuration implements ConfigurationInterface
                     ->{!class_exists(FullStack::class) && class_exists(Serializer::class) ? 'canBeDisabled' : 'canBeEnabled'}()
                     ->children()
                         ->booleanNode('enable_annotations')->{!class_exists(FullStack::class) && class_exists(Annotation::class) ? 'defaultTrue' : 'defaultFalse'}()->end()
+                        ->scalarNode('cache')->end()
                         ->scalarNode('name_converter')->end()
                         ->scalarNode('circular_reference_handler')->end()
-                        ->scalarNode('max_depth_handler')->end()
                         ->arrayNode('mapping')
                             ->addDefaultsIfNotSet()
                             ->fixXmlConfig('path')
@@ -834,7 +756,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->arrayNode('property_info')
                     ->info('Property info configuration')
-                    ->{!class_exists(FullStack::class) && interface_exists(PropertyInfoExtractorInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
+                    ->canBeEnabled()
                 ->end()
             ->end()
         ;
@@ -898,63 +820,15 @@ class Configuration implements ConfigurationInterface
                     ->info('PHP errors handling configuration')
                     ->addDefaultsIfNotSet()
                     ->children()
-                        ->scalarNode('log')
-                            ->info('Use the application logger instead of the PHP logger for logging PHP errors.')
-                            ->example('"true" to use the default configuration: log all errors. "false" to disable. An integer bit field of E_* constants.')
+                        ->booleanNode('log')
+                            ->info('Use the app logger instead of the PHP logger for logging PHP errors.')
                             ->defaultValue($this->debug)
                             ->treatNullLike($this->debug)
-                            ->validate()
-                                ->ifTrue(function ($v) { return !(\is_int($v) || \is_bool($v)); })
-                                ->thenInvalid('The "php_errors.log" parameter should be either an integer or a boolean.')
-                            ->end()
                         ->end()
                         ->booleanNode('throw')
                             ->info('Throw PHP errors as \ErrorException instances.')
                             ->defaultValue($this->debug)
                             ->treatNullLike($this->debug)
-                        ->end()
-                    ->end()
-                ->end()
-            ->end()
-        ;
-    }
-
-    private function addLockSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode
-            ->children()
-                ->arrayNode('lock')
-                    ->info('Lock configuration')
-                    ->{!class_exists(FullStack::class) && class_exists(Lock::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                    ->beforeNormalization()
-                        ->ifString()->then(function ($v) { return array('enabled' => true, 'resources' => $v); })
-                    ->end()
-                    ->beforeNormalization()
-                        ->ifTrue(function ($v) { return \is_array($v) && !isset($v['resources']); })
-                        ->then(function ($v) {
-                            $e = $v['enabled'];
-                            unset($v['enabled']);
-
-                            return array('enabled' => $e, 'resources' => $v);
-                        })
-                    ->end()
-                    ->addDefaultsIfNotSet()
-                    ->fixXmlConfig('resource')
-                    ->children()
-                        ->arrayNode('resources')
-                            ->requiresAtLeastOneElement()
-                            ->defaultValue(array('default' => array(class_exists(SemaphoreStore::class) && SemaphoreStore::isSupported() ? 'semaphore' : 'flock')))
-                            ->beforeNormalization()
-                                ->ifString()->then(function ($v) { return array('default' => $v); })
-                            ->end()
-                            ->beforeNormalization()
-                                ->ifTrue(function ($v) { return \is_array($v) && array_keys($v) === range(0, \count($v) - 1); })
-                                ->then(function ($v) { return array('default' => $v); })
-                            ->end()
-                            ->prototype('array')
-                                ->beforeNormalization()->ifString()->then(function ($v) { return array($v); })->end()
-                                ->prototype('scalar')->end()
-                            ->end()
                         ->end()
                     ->end()
                 ->end()
@@ -969,148 +843,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('web_link')
                     ->info('web links configuration')
                     ->{!class_exists(FullStack::class) && class_exists(HttpHeaderSerializer::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                ->end()
-            ->end()
-        ;
-    }
-
-    private function addMessengerSection(ArrayNodeDefinition $rootNode)
-    {
-        $rootNode
-            ->children()
-                ->arrayNode('messenger')
-                    ->info('Messenger configuration')
-                    ->{!class_exists(FullStack::class) && interface_exists(MessageBusInterface::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                    ->fixXmlConfig('transport')
-                    ->fixXmlConfig('bus', 'buses')
-                    ->children()
-                        ->arrayNode('routing')
-                            ->useAttributeAsKey('message_class')
-                            ->beforeNormalization()
-                                ->always()
-                                ->then(function ($config) {
-                                    if (!\is_array($config)) {
-                                        return array();
-                                    }
-
-                                    $newConfig = array();
-                                    foreach ($config as $k => $v) {
-                                        if (!\is_int($k)) {
-                                            $newConfig[$k] = array(
-                                                'senders' => $v['senders'] ?? (\is_array($v) ? array_values($v) : array($v)),
-                                                'send_and_handle' => $v['send_and_handle'] ?? false,
-                                            );
-                                        } else {
-                                            $newConfig[$v['message-class']]['senders'] = array_map(
-                                                function ($a) {
-                                                    return \is_string($a) ? $a : $a['service'];
-                                                },
-                                                array_values($v['sender'])
-                                            );
-                                            $newConfig[$v['message-class']]['send-and-handle'] = $v['send-and-handle'] ?? false;
-                                        }
-                                    }
-
-                                    return $newConfig;
-                                })
-                            ->end()
-                            ->prototype('array')
-                                ->children()
-                                    ->arrayNode('senders')
-                                        ->requiresAtLeastOneElement()
-                                        ->prototype('scalar')->end()
-                                    ->end()
-                                    ->booleanNode('send_and_handle')->defaultFalse()->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('serializer')
-                            ->{!class_exists(FullStack::class) && class_exists(Serializer::class) ? 'canBeDisabled' : 'canBeEnabled'}()
-                            ->addDefaultsIfNotSet()
-                            ->children()
-                                ->scalarNode('format')->defaultValue('json')->end()
-                                ->arrayNode('context')
-                                    ->normalizeKeys(false)
-                                    ->useAttributeAsKey('name')
-                                    ->defaultValue(array())
-                                    ->prototype('variable')->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->scalarNode('encoder')->defaultValue('messenger.transport.serializer')->end()
-                        ->scalarNode('decoder')->defaultValue('messenger.transport.serializer')->end()
-                        ->arrayNode('transports')
-                            ->useAttributeAsKey('name')
-                            ->arrayPrototype()
-                                ->beforeNormalization()
-                                    ->ifString()
-                                    ->then(function (string $dsn) {
-                                        return array('dsn' => $dsn);
-                                    })
-                                ->end()
-                                ->fixXmlConfig('option')
-                                ->children()
-                                    ->scalarNode('dsn')->end()
-                                    ->arrayNode('options')
-                                        ->normalizeKeys(false)
-                                        ->defaultValue(array())
-                                        ->prototype('variable')
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                        ->scalarNode('default_bus')->defaultValue(null)->end()
-                        ->arrayNode('buses')
-                            ->defaultValue(array('messenger.bus.default' => array('default_middleware' => true, 'middleware' => array())))
-                            ->useAttributeAsKey('name')
-                            ->prototype('array')
-                                ->addDefaultsIfNotSet()
-                                ->children()
-                                    ->booleanNode('default_middleware')->defaultTrue()->end()
-                                    ->arrayNode('middleware')
-                                        ->beforeNormalization()
-                                            ->ifString()
-                                            ->then(function (string $middleware) {
-                                                return array($middleware);
-                                            })
-                                        ->end()
-                                        ->defaultValue(array())
-                                        ->prototype('array')
-                                            ->beforeNormalization()
-                                                ->always()
-                                                ->then(function ($middleware): array {
-                                                    if (!\is_array($middleware)) {
-                                                        return array('id' => $middleware);
-                                                    }
-                                                    if (isset($middleware['id'])) {
-                                                        return $middleware;
-                                                    }
-                                                    if (\count($middleware) > 1) {
-                                                        throw new \InvalidArgumentException(sprintf('There is an error at path "framework.messenger" in one of the buses middleware definitions: expected a single entry for a middleware item config, with factory id as key and arguments as value. Got "%s".', json_encode($middleware)));
-                                                    }
-
-                                                    return array(
-                                                        'id' => key($middleware),
-                                                        'arguments' => current($middleware),
-                                                    );
-                                                })
-                                            ->end()
-                                            ->fixXmlConfig('argument')
-                                            ->children()
-                                                ->scalarNode('id')->isRequired()->cannotBeEmpty()->end()
-                                                ->arrayNode('arguments')
-                                                    ->normalizeKeys(false)
-                                                    ->defaultValue(array())
-                                                    ->prototype('variable')
-                                                ->end()
-                                            ->end()
-                                        ->end()
-                                    ->end()
-                                ->end()
-                            ->end()
-                        ->end()
-                    ->end()
                 ->end()
             ->end()
         ;

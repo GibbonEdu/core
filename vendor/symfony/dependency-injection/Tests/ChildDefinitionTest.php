@@ -13,6 +13,7 @@ namespace Symfony\Component\DependencyInjection\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\ChildDefinition;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
 
 class ChildDefinitionTest extends TestCase
 {
@@ -129,6 +130,11 @@ class ChildDefinitionTest extends TestCase
         $def->replaceArgument(0, 'foo');
 
         $def->getArgument(1);
+    }
+
+    public function testDefinitionDecoratorAliasExistsForBackwardsCompatibility()
+    {
+        $this->assertInstanceOf(ChildDefinition::class, new DefinitionDecorator('foo'));
     }
 
     /**

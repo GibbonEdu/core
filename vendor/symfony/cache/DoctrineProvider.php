@@ -17,32 +17,13 @@ use Psr\Cache\CacheItemPoolInterface;
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class DoctrineProvider extends CacheProvider implements PruneableInterface, ResettableInterface
+class DoctrineProvider extends CacheProvider
 {
     private $pool;
 
     public function __construct(CacheItemPoolInterface $pool)
     {
         $this->pool = $pool;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function prune()
-    {
-        return $this->pool instanceof PruneableInterface && $this->pool->prune();
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reset()
-    {
-        if ($this->pool instanceof ResettableInterface) {
-            $this->pool->reset();
-        }
-        $this->setNamespace($this->getNamespace());
     }
 
     /**

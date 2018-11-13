@@ -18,7 +18,12 @@ class DoctrineAdapter extends AbstractAdapter
 {
     use DoctrineTrait;
 
-    public function __construct(CacheProvider $provider, string $namespace = '', int $defaultLifetime = 0)
+    /**
+     * @param CacheProvider $provider
+     * @param string        $namespace
+     * @param int           $defaultLifetime
+     */
+    public function __construct(CacheProvider $provider, $namespace = '', $defaultLifetime = 0)
     {
         parent::__construct('', $defaultLifetime);
         $this->provider = $provider;

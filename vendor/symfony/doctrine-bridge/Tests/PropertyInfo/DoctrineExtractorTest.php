@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Bridge\Doctrine\Tests\PropertyInfo;
+namespace Symfony\Bridge\Doctrine\PropertyInfo\Tests;
 
 use Doctrine\DBAL\Types\Type as DBALType;
 use Doctrine\ORM\EntityManager;
@@ -30,7 +30,7 @@ class DoctrineExtractorTest extends TestCase
 
     protected function setUp()
     {
-        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__.\DIRECTORY_SEPARATOR.'Fixtures'), true);
+        $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__.DIRECTORY_SEPARATOR.'Fixtures'), true);
         $entityManager = EntityManager::create(array('driver' => 'pdo_sqlite'), $config);
 
         if (!DBALType::hasType('foo')) {
@@ -48,8 +48,6 @@ class DoctrineExtractorTest extends TestCase
                 'id',
                 'guid',
                 'time',
-                'timeImmutable',
-                'dateInterval',
                 'json',
                 'simpleArray',
                 'float',
@@ -61,7 +59,6 @@ class DoctrineExtractorTest extends TestCase
                 'foo',
                 'bar',
                 'indexedBar',
-                'indexedFoo',
             ),
             $this->extractor->getProperties('Symfony\Bridge\Doctrine\Tests\PropertyInfo\Fixtures\DoctrineDummy')
         );
@@ -117,9 +114,6 @@ class DoctrineExtractorTest extends TestCase
             array('id', array(new Type(Type::BUILTIN_TYPE_INT))),
             array('guid', array(new Type(Type::BUILTIN_TYPE_STRING))),
             array('bigint', array(new Type(Type::BUILTIN_TYPE_STRING))),
-            array('time', array(new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTime'))),
-            array('timeImmutable', array(new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateTimeImmutable'))),
-            array('dateInterval', array(new Type(Type::BUILTIN_TYPE_OBJECT, false, 'DateInterval'))),
             array('float', array(new Type(Type::BUILTIN_TYPE_FLOAT))),
             array('decimal', array(new Type(Type::BUILTIN_TYPE_STRING))),
             array('bool', array(new Type(Type::BUILTIN_TYPE_BOOL))),
@@ -135,14 +129,6 @@ class DoctrineExtractorTest extends TestCase
                 new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\Bridge\Doctrine\Tests\PropertyInfo\Fixtures\DoctrineRelation')
             ))),
             array('indexedBar', array(new Type(
-                Type::BUILTIN_TYPE_OBJECT,
-                false,
-                'Doctrine\Common\Collections\Collection',
-                true,
-                new Type(Type::BUILTIN_TYPE_STRING),
-                new Type(Type::BUILTIN_TYPE_OBJECT, false, 'Symfony\Bridge\Doctrine\Tests\PropertyInfo\Fixtures\DoctrineRelation')
-            ))),
-            array('indexedFoo', array(new Type(
                 Type::BUILTIN_TYPE_OBJECT,
                 false,
                 'Doctrine\Common\Collections\Collection',

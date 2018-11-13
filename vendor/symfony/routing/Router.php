@@ -11,19 +11,19 @@
 
 namespace Symfony\Component\Routing;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Config\ConfigCacheFactory;
-use Symfony\Component\Config\ConfigCacheFactoryInterface;
-use Symfony\Component\Config\ConfigCacheInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
-use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Config\ConfigCacheInterface;
+use Symfony\Component\Config\ConfigCacheFactoryInterface;
+use Symfony\Component\Config\ConfigCacheFactory;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Routing\Generator\ConfigurableRequirementsInterface;
-use Symfony\Component\Routing\Generator\Dumper\GeneratorDumperInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Routing\Matcher\Dumper\MatcherDumperInterface;
+use Symfony\Component\Routing\Generator\Dumper\GeneratorDumperInterface;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\Matcher\UrlMatcherInterface;
+use Symfony\Component\Routing\Matcher\Dumper\MatcherDumperInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\ExpressionLanguage\ExpressionFunctionProviderInterface;
 
 /**
  * The Router class is an example of the integration of all pieces of the
@@ -84,6 +84,8 @@ class Router implements RouterInterface, RequestMatcherInterface
     private $expressionLanguageProviders = array();
 
     /**
+     * Constructor.
+     *
      * @param LoaderInterface $loader   A LoaderInterface instance
      * @param mixed           $resource The main resource to load
      * @param array           $options  An array of options
@@ -226,6 +228,8 @@ class Router implements RouterInterface, RequestMatcherInterface
 
     /**
      * Sets the ConfigCache factory to use.
+     *
+     * @param ConfigCacheFactoryInterface $configCacheFactory The factory to use
      */
     public function setConfigCacheFactory(ConfigCacheFactoryInterface $configCacheFactory)
     {
@@ -302,9 +306,7 @@ class Router implements RouterInterface, RequestMatcherInterface
             }
         );
 
-        if (!class_exists($this->options['matcher_cache_class'], false)) {
-            require_once $cache->getPath();
-        }
+        require_once $cache->getPath();
 
         return $this->matcher = new $this->options['matcher_cache_class']($this->context);
     }
@@ -336,9 +338,7 @@ class Router implements RouterInterface, RequestMatcherInterface
                 }
             );
 
-            if (!class_exists($this->options['generator_cache_class'], false)) {
-                require_once $cache->getPath();
-            }
+            require_once $cache->getPath();
 
             $this->generator = new $this->options['generator_cache_class']($this->context, $this->logger);
         }

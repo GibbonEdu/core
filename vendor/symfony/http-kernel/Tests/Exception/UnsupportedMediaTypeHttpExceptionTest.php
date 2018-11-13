@@ -6,7 +6,17 @@ use Symfony\Component\HttpKernel\Exception\UnsupportedMediaTypeHttpException;
 
 class UnsupportedMediaTypeHttpExceptionTest extends HttpExceptionTest
 {
-    protected function createException()
+    /**
+     * @dataProvider headerDataProvider
+     */
+    public function testHeadersSetter($headers)
+    {
+        $exception = new UnsupportedMediaTypeHttpException(10);
+        $exception->setHeaders($headers);
+        $this->assertSame($headers, $exception->getHeaders());
+    }
+
+    protected function createException($headers = array())
     {
         return new UnsupportedMediaTypeHttpException();
     }

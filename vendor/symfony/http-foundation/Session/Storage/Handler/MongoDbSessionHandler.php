@@ -12,19 +12,19 @@
 namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
 
 /**
- * Session handler using the mongodb/mongodb package and MongoDB driver extension.
+ * MongoDB session handler.
  *
  * @author Markus Bachmann <markus.bachmann@bachi.biz>
- *
- * @see https://packagist.org/packages/mongodb/mongodb
- * @see http://php.net/manual/en/set.mongodb.php
  */
-class MongoDbSessionHandler extends AbstractSessionHandler
+class MongoDbSessionHandler implements \SessionHandlerInterface
 {
+    /**
+     * @var \Mongo|\MongoClient|\MongoDB\Client
+     */
     private $mongo;
 
     /**
-     * @var \MongoDB\Collection
+     * @var \MongoCollection
      */
     private $collection;
 
@@ -42,7 +42,7 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      *  * id_field: The field name for storing the session id [default: _id]
      *  * data_field: The field name for storing the session data [default: data]
      *  * time_field: The field name for storing the timestamp [default: time]
-     *  * expiry_field: The field name for storing the expiry-timestamp [default: expires_at].
+     *  * expiry_field: The field name for storing the expiry-timestamp [default: expires_at]
      *
      * It is strongly recommended to put an index on the `expiry_field` for
      * garbage-collection. Alternatively it's possible to automatically expire
@@ -61,13 +61,18 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      * If you use such an index, you can drop `gc_probability` to 0 since
      * no garbage-collection is required.
      *
-     * @param \MongoDB\Client $mongo   A MongoDB\Client instance
-     * @param array           $options An associative array of field options
+     * @param \Mongo|\MongoClient|\MongoDB\Client $mongo   A MongoDB\Client, MongoClient or Mongo instance
+     * @param array                               $options An associative array of field options
      *
+     * @throws \InvalidArgumentException When MongoClient or Mongo instance not provided
      * @throws \InvalidArgumentException When "database" or "collection" not provided
      */
-    public function __construct(\MongoDB\Client $mongo, array $options)
+    public function __construct($mongo, array $options)
     {
+        if (!($mongo instanceof \MongoDB\Client || $mongo instanceof \MongoClient || $mongo instanceof \Mongo)) {
+            throw new \InvalidArgumentException('MongoClient or Mongo instance required');
+        }
+
         if (!isset($options['database']) || !isset($options['collection'])) {
             throw new \InvalidArgumentException('You must provide the "database" and "collection" option for MongoDBSessionHandler');
         }
@@ -85,6 +90,14 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
+    public function open($savePath, $sessionName)
+    {
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function close()
     {
         return true;
@@ -93,9 +106,11 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doDestroy($sessionId)
+    public function destroy($sessionId)
     {
-        $this->getCollection()->deleteOne(array(
+        $methodName = $this->mongo instanceof \MongoDB\Client ? 'deleteOne' : 'remove';
+
+        $this->getCollection()->$methodName(array(
             $this->options['id_field'] => $sessionId,
         ));
 
@@ -107,8 +122,10 @@ class MongoDbSessionHandler extends AbstractSessionHandler
      */
     public function gc($maxlifetime)
     {
-        $this->getCollection()->deleteMany(array(
-            $this->options['expiry_field'] => array('$lt' => new \MongoDB\BSON\UTCDateTime()),
+        $methodName = $this->mongo instanceof \MongoDB\Client ? 'deleteOne' : 'remove';
+
+        $this->getCollection()->$methodName(array(
+            $this->options['expiry_field'] => array('$lt' => $this->createDateTime()),
         ));
 
         return true;
@@ -117,20 +134,30 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doWrite($sessionId, $data)
+    public function write($sessionId, $data)
     {
-        $expiry = new \MongoDB\BSON\UTCDateTime((time() + (int) ini_get('session.gc_maxlifetime')) * 1000);
+        $expiry = $this->createDateTime(time() + (int) ini_get('session.gc_maxlifetime'));
 
         $fields = array(
-            $this->options['time_field'] => new \MongoDB\BSON\UTCDateTime(),
+            $this->options['time_field'] => $this->createDateTime(),
             $this->options['expiry_field'] => $expiry,
-            $this->options['data_field'] => new \MongoDB\BSON\Binary($data, \MongoDB\BSON\Binary::TYPE_OLD_BINARY),
         );
 
-        $this->getCollection()->updateOne(
+        $options = array('upsert' => true);
+
+        if ($this->mongo instanceof \MongoDB\Client) {
+            $fields[$this->options['data_field']] = new \MongoDB\BSON\Binary($data, \MongoDB\BSON\Binary::TYPE_OLD_BINARY);
+        } else {
+            $fields[$this->options['data_field']] = new \MongoBinData($data, \MongoBinData::BYTE_ARRAY);
+            $options['multiple'] = false;
+        }
+
+        $methodName = $this->mongo instanceof \MongoDB\Client ? 'updateOne' : 'update';
+
+        $this->getCollection()->$methodName(
             array($this->options['id_field'] => $sessionId),
             array('$set' => $fields),
-            array('upsert' => true)
+            $options
         );
 
         return true;
@@ -139,40 +166,28 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    public function updateTimestamp($sessionId, $data)
-    {
-        $expiry = new \MongoDB\BSON\UTCDateTime((time() + (int) ini_get('session.gc_maxlifetime')) * 1000);
-
-        $this->getCollection()->updateOne(
-            array($this->options['id_field'] => $sessionId),
-            array('$set' => array(
-                $this->options['time_field'] => new \MongoDB\BSON\UTCDateTime(),
-                $this->options['expiry_field'] => $expiry,
-            ))
-        );
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function doRead($sessionId)
+    public function read($sessionId)
     {
         $dbData = $this->getCollection()->findOne(array(
             $this->options['id_field'] => $sessionId,
-            $this->options['expiry_field'] => array('$gte' => new \MongoDB\BSON\UTCDateTime()),
+            $this->options['expiry_field'] => array('$gte' => $this->createDateTime()),
         ));
 
         if (null === $dbData) {
             return '';
         }
 
-        return $dbData[$this->options['data_field']]->getData();
+        if ($dbData[$this->options['data_field']] instanceof \MongoDB\BSON\Binary) {
+            return $dbData[$this->options['data_field']]->getData();
+        }
+
+        return $dbData[$this->options['data_field']]->bin;
     }
 
     /**
-     * @return \MongoDB\Collection
+     * Return a "MongoCollection" instance.
+     *
+     * @return \MongoCollection
      */
     private function getCollection()
     {
@@ -184,10 +199,34 @@ class MongoDbSessionHandler extends AbstractSessionHandler
     }
 
     /**
-     * @return \MongoDB\Client
+     * Return a Mongo instance.
+     *
+     * @return \Mongo|\MongoClient|\MongoDB\Client
      */
     protected function getMongo()
     {
         return $this->mongo;
+    }
+
+    /**
+     * Create a date object using the class appropriate for the current mongo connection.
+     *
+     * Return an instance of a MongoDate or \MongoDB\BSON\UTCDateTime
+     *
+     * @param int $seconds An integer representing UTC seconds since Jan 1 1970.  Defaults to now.
+     *
+     * @return \MongoDate|\MongoDB\BSON\UTCDateTime
+     */
+    private function createDateTime($seconds = null)
+    {
+        if (null === $seconds) {
+            $seconds = time();
+        }
+
+        if ($this->mongo instanceof \MongoDB\Client) {
+            return new \MongoDB\BSON\UTCDateTime($seconds * 1000);
+        }
+
+        return new \MongoDate($seconds);
     }
 }

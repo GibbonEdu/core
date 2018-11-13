@@ -18,9 +18,10 @@ class StaticPrefixCollectionTest extends TestCase
         foreach ($routes as $route) {
             list($path, $name) = $route;
             $staticPrefix = (new Route($path))->compile()->getStaticPrefix();
-            $collection->addRoute($staticPrefix, array($name));
+            $collection->addRoute($staticPrefix, $name);
         }
 
+        $collection->optimizeGroups();
         $dumped = $this->dumpCollection($collection);
         $this->assertEquals($expected, $dumped);
     }
@@ -35,22 +36,21 @@ class StaticPrefixCollectionTest extends TestCase
                     array('/leading/segment/', 'leading_segment'),
                 ),
                 <<<EOF
-root
-prefix_segment
-leading_segment
+/ root
+/prefix/segment prefix_segment
+/leading/segment leading_segment
 EOF
             ),
-            'Nested - small group' => array(
+            'Not nested - group too small' => array(
                 array(
                     array('/', 'root'),
                     array('/prefix/segment/aa', 'prefix_segment'),
                     array('/prefix/segment/bb', 'leading_segment'),
                 ),
                 <<<EOF
-root
-/prefix/segment/
--> prefix_segment
--> leading_segment
+/ root
+/prefix/segment/aa prefix_segment
+/prefix/segment/bb leading_segment
 EOF
             ),
             'Nested - contains item at intersection' => array(
@@ -60,10 +60,10 @@ EOF
                     array('/prefix/segment/bb', 'leading_segment'),
                 ),
                 <<<EOF
-root
-/prefix/segment/
--> prefix_segment
--> leading_segment
+/ root
+/prefix/segment
+-> /prefix/segment prefix_segment
+-> /prefix/segment/bb leading_segment
 EOF
             ),
             'Simple one level nesting' => array(
@@ -74,11 +74,11 @@ EOF
                     array('/group/other/', 'other_segment'),
                 ),
                 <<<EOF
-root
-/group/
--> nested_segment
--> some_segment
--> other_segment
+/ root
+/group
+-> /group/segment nested_segment
+-> /group/thing some_segment
+-> /group/other other_segment
 EOF
             ),
             'Retain matching order with groups' => array(
@@ -86,21 +86,21 @@ EOF
                     array('/group/aa/', 'aa'),
                     array('/group/bb/', 'bb'),
                     array('/group/cc/', 'cc'),
-                    array('/(.*)', 'root'),
+                    array('/', 'root'),
                     array('/group/dd/', 'dd'),
                     array('/group/ee/', 'ee'),
                     array('/group/ff/', 'ff'),
                 ),
                 <<<EOF
-/group/
--> aa
--> bb
--> cc
-root
-/group/
--> dd
--> ee
--> ff
+/group
+-> /group/aa aa
+-> /group/bb bb
+-> /group/cc cc
+/ root
+/group
+-> /group/dd dd
+-> /group/ee ee
+-> /group/ff ff
 EOF
             ),
             'Retain complex matching order with groups at base' => array(
@@ -109,30 +109,28 @@ EOF
                     array('/prefixed/group/aa/', 'aa'),
                     array('/prefixed/group/bb/', 'bb'),
                     array('/prefixed/group/cc/', 'cc'),
-                    array('/prefixed/(.*)', 'root'),
+                    array('/prefixed/', 'root'),
                     array('/prefixed/group/dd/', 'dd'),
                     array('/prefixed/group/ee/', 'ee'),
-                    array('/prefixed/', 'parent'),
                     array('/prefixed/group/ff/', 'ff'),
                     array('/aaa/222/', 'second_aaa'),
                     array('/aaa/333/', 'third_aaa'),
                 ),
                 <<<EOF
-/aaa/
--> first_aaa
--> second_aaa
--> third_aaa
-/prefixed/
--> /prefixed/group/
--> -> aa
--> -> bb
--> -> cc
--> root
--> /prefixed/group/
--> -> dd
--> -> ee
--> -> ff
--> parent
+/aaa
+-> /aaa/111 first_aaa
+-> /aaa/222 second_aaa
+-> /aaa/333 third_aaa
+/prefixed
+-> /prefixed/group
+-> -> /prefixed/group/aa aa
+-> -> /prefixed/group/bb bb
+-> -> /prefixed/group/cc cc
+-> /prefixed root
+-> /prefixed/group
+-> -> /prefixed/group/dd dd
+-> -> /prefixed/group/ee ee
+-> -> /prefixed/group/ff ff
 EOF
             ),
 
@@ -147,13 +145,13 @@ EOF
                 ),
                 <<<EOF
 /aaa-
--> a1
--> a2
--> a3
+-> /aaa-111 a1
+-> /aaa-222 a2
+-> /aaa-333 a3
 /group-
--> g1
--> g2
--> g3
+-> /group-aa g1
+-> /group-bb g2
+-> /group-cc g3
 EOF
             ),
         );
@@ -163,7 +161,7 @@ EOF
     {
         $lines = array();
 
-        foreach ($collection->getRoutes() as $item) {
+        foreach ($collection->getItems() as $item) {
             if ($item instanceof StaticPrefixCollection) {
                 $lines[] = $prefix.$item->getPrefix();
                 $lines[] = $this->dumpCollection($item, $prefix.'-> ');

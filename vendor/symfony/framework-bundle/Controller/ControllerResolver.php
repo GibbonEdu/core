@@ -12,17 +12,26 @@
 namespace Symfony\Bundle\FrameworkBundle\Controller;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpKernel\Controller\ContainerControllerResolver;
 
 /**
+ * ControllerResolver.
+ *
  * @author Fabien Potencier <fabien@symfony.com>
  */
 class ControllerResolver extends ContainerControllerResolver
 {
     protected $parser;
 
+    /**
+     * Constructor.
+     *
+     * @param ContainerInterface   $container A ContainerInterface instance
+     * @param ControllerNameParser $parser    A ControllerNameParser instance
+     * @param LoggerInterface      $logger    A LoggerInterface instance
+     */
     public function __construct(ContainerInterface $container, ControllerNameParser $parser, LoggerInterface $logger = null)
     {
         $this->parser = $parser;
@@ -37,13 +46,22 @@ class ControllerResolver extends ContainerControllerResolver
     {
         if (false === strpos($controller, '::') && 2 === substr_count($controller, ':')) {
             // controller in the a:b:c notation then
-            $deprecatedNotation = $controller;
-            $controller = $this->parser->parse($deprecatedNotation, false);
-
-            @trigger_error(sprintf('Referencing controllers with %s is deprecated since Symfony 4.1. Use %s instead.', $deprecatedNotation, $controller), E_USER_DEPRECATED);
+            $controller = $this->parser->parse($controller);
         }
 
-        return parent::createController($controller);
+        $resolvedController = parent::createController($controller);
+
+        if (1 === substr_count($controller, ':') && is_array($resolvedController)) {
+            if ($resolvedController[0] instanceof ContainerAwareInterface) {
+                $resolvedController[0]->setContainer($this->container);
+            }
+
+            if ($resolvedController[0] instanceof AbstractController && null !== $previousContainer = $resolvedController[0]->setContainer($this->container)) {
+                $resolvedController[0]->setContainer($previousContainer);
+            }
+        }
+
+        return $resolvedController;
     }
 
     /**
@@ -51,11 +69,8 @@ class ControllerResolver extends ContainerControllerResolver
      */
     protected function instantiateController($class)
     {
-        return $this->configureController(parent::instantiateController($class));
-    }
+        $controller = parent::instantiateController($class);
 
-    private function configureController($controller)
-    {
         if ($controller instanceof ContainerAwareInterface) {
             $controller->setContainer($this->container);
         }

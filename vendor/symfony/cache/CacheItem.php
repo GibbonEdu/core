@@ -74,7 +74,7 @@ final class CacheItem implements CacheItemInterface
         } elseif ($expiration instanceof \DateTimeInterface) {
             $this->expiry = (int) $expiration->format('U');
         } else {
-            throw new InvalidArgumentException(sprintf('Expiration date must implement DateTimeInterface or be null, "%s" given', \is_object($expiration) ? \get_class($expiration) : \gettype($expiration)));
+            throw new InvalidArgumentException(sprintf('Expiration date must implement DateTimeInterface or be null, "%s" given', is_object($expiration) ? get_class($expiration) : gettype($expiration)));
         }
 
         return $this;
@@ -89,10 +89,10 @@ final class CacheItem implements CacheItemInterface
             $this->expiry = $this->defaultLifetime > 0 ? time() + $this->defaultLifetime : null;
         } elseif ($time instanceof \DateInterval) {
             $this->expiry = (int) \DateTime::createFromFormat('U', time())->add($time)->format('U');
-        } elseif (\is_int($time)) {
+        } elseif (is_int($time)) {
             $this->expiry = $time + time();
         } else {
-            throw new InvalidArgumentException(sprintf('Expiration date must be an integer, a DateInterval or null, "%s" given', \is_object($time) ? \get_class($time) : \gettype($time)));
+            throw new InvalidArgumentException(sprintf('Expiration date must be an integer, a DateInterval or null, "%s" given', is_object($time) ? get_class($time) : gettype($time)));
         }
 
         return $this;
@@ -109,17 +109,17 @@ final class CacheItem implements CacheItemInterface
      */
     public function tag($tags)
     {
-        if (!\is_array($tags)) {
+        if (!is_array($tags)) {
             $tags = array($tags);
         }
         foreach ($tags as $tag) {
-            if (!\is_string($tag)) {
-                throw new InvalidArgumentException(sprintf('Cache tag must be string, "%s" given', \is_object($tag) ? \get_class($tag) : \gettype($tag)));
+            if (!is_string($tag)) {
+                throw new InvalidArgumentException(sprintf('Cache tag must be string, "%s" given', is_object($tag) ? get_class($tag) : gettype($tag)));
             }
             if (isset($this->tags[$tag])) {
                 continue;
             }
-            if ('' === $tag) {
+            if (!isset($tag[0])) {
                 throw new InvalidArgumentException('Cache tag length must be greater than zero');
             }
             if (false !== strpbrk($tag, '{}()/\@:')) {
@@ -135,6 +135,8 @@ final class CacheItem implements CacheItemInterface
      * Returns the list of tags bound to the value coming from the pool storage if any.
      *
      * @return array
+     *
+     * @experimental in version 3.3
      */
     public function getPreviousTags()
     {
@@ -146,23 +148,19 @@ final class CacheItem implements CacheItemInterface
      *
      * @param string $key The key to validate
      *
-     * @return string
-     *
      * @throws InvalidArgumentException When $key is not valid
      */
     public static function validateKey($key)
     {
-        if (!\is_string($key)) {
-            throw new InvalidArgumentException(sprintf('Cache key must be string, "%s" given', \is_object($key) ? \get_class($key) : \gettype($key)));
+        if (!is_string($key)) {
+            throw new InvalidArgumentException(sprintf('Cache key must be string, "%s" given', is_object($key) ? get_class($key) : gettype($key)));
         }
-        if ('' === $key) {
+        if (!isset($key[0])) {
             throw new InvalidArgumentException('Cache key length must be greater than zero');
         }
         if (false !== strpbrk($key, '{}()/\@:')) {
             throw new InvalidArgumentException(sprintf('Cache key "%s" contains reserved characters {}()/\@:', $key));
         }
-
-        return $key;
     }
 
     /**

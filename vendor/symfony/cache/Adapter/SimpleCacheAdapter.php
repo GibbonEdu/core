@@ -12,20 +12,16 @@
 namespace Symfony\Component\Cache\Adapter;
 
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\Cache\PruneableInterface;
-use Symfony\Component\Cache\ResettableInterface;
-use Symfony\Component\Cache\Traits\ProxyTrait;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class SimpleCacheAdapter extends AbstractAdapter implements PruneableInterface, ResettableInterface
+class SimpleCacheAdapter extends AbstractAdapter
 {
-    use ProxyTrait;
-
+    private $pool;
     private $miss;
 
-    public function __construct(CacheInterface $pool, string $namespace = '', int $defaultLifetime = 0)
+    public function __construct(CacheInterface $pool, $namespace = '', $defaultLifetime = 0)
     {
         parent::__construct($namespace, $defaultLifetime);
 

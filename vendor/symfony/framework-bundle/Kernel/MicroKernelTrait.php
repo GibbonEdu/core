@@ -13,7 +13,6 @@ namespace Symfony\Bundle\FrameworkBundle\Kernel;
 
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
 /**
@@ -28,7 +27,7 @@ trait MicroKernelTrait
      * Add or import routes into your application.
      *
      *     $routes->import('config/routing.yml');
-     *     $routes->add('/admin', 'App\Controller\AdminController::dashboard', 'admin_dashboard');
+     *     $routes->add('/admin', 'AppBundle:Admin:dashboard', 'admin_dashboard');
      *
      * @param RouteCollectionBuilder $routes
      */
@@ -39,17 +38,17 @@ trait MicroKernelTrait
      *
      * You can register extensions:
      *
-     *     $c->loadFromExtension('framework', array(
-     *         'secret' => '%secret%'
-     *     ));
+     * $c->loadFromExtension('framework', array(
+     *     'secret' => '%secret%'
+     * ));
      *
      * Or services:
      *
-     *     $c->register('halloween', 'FooBundle\HalloweenProvider');
+     * $c->register('halloween', 'FooBundle\HalloweenProvider');
      *
      * Or parameters:
      *
-     *     $c->setParameter('halloween', 'lot of fun');
+     * $c->setParameter('halloween', 'lot of fun');
      *
      * @param ContainerBuilder $c
      * @param LoaderInterface  $loader
@@ -64,18 +63,10 @@ trait MicroKernelTrait
         $loader->load(function (ContainerBuilder $container) use ($loader) {
             $container->loadFromExtension('framework', array(
                 'router' => array(
-                    'resource' => 'kernel::loadRoutes',
+                    'resource' => 'kernel:loadRoutes',
                     'type' => 'service',
                 ),
             ));
-
-            if ($this instanceof EventSubscriberInterface) {
-                $container->register('kernel', static::class)
-                    ->setSynthetic(true)
-                    ->setPublic(true)
-                    ->addTag('kernel.event_subscriber')
-                ;
-            }
 
             $this->configureContainer($container, $loader);
 

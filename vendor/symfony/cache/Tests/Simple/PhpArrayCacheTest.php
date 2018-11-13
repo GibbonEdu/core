@@ -11,9 +11,9 @@
 
 namespace Symfony\Component\Cache\Tests\Simple;
 
+use Symfony\Component\Cache\Tests\Adapter\FilesystemAdapterTest;
 use Symfony\Component\Cache\Simple\NullCache;
 use Symfony\Component\Cache\Simple\PhpArrayCache;
-use Symfony\Component\Cache\Tests\Adapter\FilesystemAdapterTest;
 
 /**
  * @group time-sensitive
@@ -21,8 +21,6 @@ use Symfony\Component\Cache\Tests\Adapter\FilesystemAdapterTest;
 class PhpArrayCacheTest extends CacheTestCase
 {
     protected $skippedTests = array(
-        'testBasicUsageWithLongKey' => 'PhpArrayCache does no writes',
-
         'testDelete' => 'PhpArrayCache does no writes',
         'testDeleteMultiple' => 'PhpArrayCache does no writes',
         'testDeleteMultipleGenerator' => 'PhpArrayCache does no writes',
@@ -44,7 +42,6 @@ class PhpArrayCacheTest extends CacheTestCase
         'testSetValidData' => 'PhpArrayCache does no validation',
 
         'testDefaultLifeTime' => 'PhpArrayCache does not allow configuring a default lifetime.',
-        'testPrune' => 'PhpArrayCache just proxies',
     );
 
     protected static $file;
@@ -60,7 +57,6 @@ class PhpArrayCacheTest extends CacheTestCase
             FilesystemAdapterTest::rmdir(sys_get_temp_dir().'/symfony-cache');
         }
     }
-
     public function createSimpleCache()
     {
         return new PhpArrayCacheWrapper(self::$file, new NullCache());
@@ -116,7 +112,7 @@ class PhpArrayCacheWrapper extends PhpArrayCache
 {
     public function set($key, $value, $ttl = null)
     {
-        \call_user_func(\Closure::bind(function () use ($key, $value) {
+        call_user_func(\Closure::bind(function () use ($key, $value) {
             $this->values[$key] = $value;
             $this->warmUp($this->values);
             $this->values = eval(substr(file_get_contents($this->file), 6));
@@ -127,10 +123,10 @@ class PhpArrayCacheWrapper extends PhpArrayCache
 
     public function setMultiple($values, $ttl = null)
     {
-        if (!\is_array($values) && !$values instanceof \Traversable) {
+        if (!is_array($values) && !$values instanceof \Traversable) {
             return parent::setMultiple($values, $ttl);
         }
-        \call_user_func(\Closure::bind(function () use ($values) {
+        call_user_func(\Closure::bind(function () use ($values) {
             foreach ($values as $key => $value) {
                 $this->values[$key] = $value;
             }

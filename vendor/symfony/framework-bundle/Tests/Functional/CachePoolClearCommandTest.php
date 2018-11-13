@@ -12,7 +12,6 @@
 namespace Symfony\Bundle\FrameworkBundle\Tests\Functional;
 
 use Symfony\Bundle\FrameworkBundle\Command\CachePoolClearCommand;
-use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
@@ -58,10 +57,10 @@ class CachePoolClearCommandTest extends WebTestCase
     public function testCallClearer()
     {
         $tester = $this->createCommandTester();
-        $tester->execute(array('pools' => array('cache.app_clearer')), array('decorated' => false));
+        $tester->execute(array('pools' => array('cache.default_clearer')), array('decorated' => false));
 
         $this->assertSame(0, $tester->getStatusCode(), 'cache:pool:clear exits with 0 in case of success');
-        $this->assertContains('Calling cache clearer: cache.app_clearer', $tester->getDisplay());
+        $this->assertContains('Calling cache clearer: cache.default_clearer', $tester->getDisplay());
         $this->assertContains('[OK] Cache was successfully cleared.', $tester->getDisplay());
     }
 
@@ -77,9 +76,9 @@ class CachePoolClearCommandTest extends WebTestCase
 
     private function createCommandTester()
     {
-        $application = new Application(static::$kernel);
-        $application->add(new CachePoolClearCommand(static::$container->get('cache.global_clearer')));
+        $command = new CachePoolClearCommand();
+        $command->setContainer(static::$kernel->getContainer());
 
-        return new CommandTester($application->find('cache:pool:clear'));
+        return new CommandTester($command);
     }
 }

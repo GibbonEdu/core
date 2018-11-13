@@ -4,7 +4,6 @@ parameters:
 services:
     project.service.foo:
         class: BAR
-        public: true
 
 project:
     test: '%project.parameter.foo%'

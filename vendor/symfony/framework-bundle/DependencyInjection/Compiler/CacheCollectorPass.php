@@ -50,6 +50,11 @@ class CacheCollectorPass implements CompilerPassInterface
             $definition->setTags(array());
             $definition->setPublic(false);
 
+            if ($types = $definition->getAutowiringTypes(false)) {
+                $recorder->setAutowiringTypes($types);
+                $definition->setAutowiringTypes(array());
+            }
+
             $container->setDefinition($innerId, $definition);
             $container->setDefinition($id, $recorder);
 

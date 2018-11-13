@@ -27,6 +27,11 @@ class AggregateDirectoryScanner extends DirectoryScanner
         // @todo
     }
 
+    /*
+    public function getUses($returnScannerClass = false)
+    {}
+    */
+
     public function getIncludes($returnScannerClass = false)
     {
     }
@@ -60,7 +65,7 @@ class AggregateDirectoryScanner extends DirectoryScanner
             }
         }
 
-        return isset($scanner);
+        return (isset($scanner));
     }
 
     /**
@@ -80,7 +85,7 @@ class AggregateDirectoryScanner extends DirectoryScanner
             }
         }
 
-        if (! isset($scanner)) {
+        if (!isset($scanner)) {
             throw new Exception\RuntimeException('Class by that name was not found.');
         }
 
@@ -96,7 +101,7 @@ class AggregateDirectoryScanner extends DirectoryScanner
     {
         $this->scan();
 
-        if (! $returnScannerClass) {
+        if (!$returnScannerClass) {
             $functions = [];
             foreach ($this->infos as $info) {
                 if ($info['type'] == 'function') {

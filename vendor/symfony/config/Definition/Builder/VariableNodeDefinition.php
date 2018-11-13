@@ -27,7 +27,7 @@ class VariableNodeDefinition extends NodeDefinition
      */
     protected function instantiateNode()
     {
-        return new VariableNode($this->name, $this->parent, $this->pathSeparator);
+        return new VariableNode($this->name, $this->parent);
     }
 
     /**
@@ -54,7 +54,6 @@ class VariableNodeDefinition extends NodeDefinition
         $node->addEquivalentValue(true, $this->trueEquivalent);
         $node->addEquivalentValue(false, $this->falseEquivalent);
         $node->setRequired($this->required);
-        $node->setDeprecated($this->deprecationMessage);
 
         if (null !== $this->validation) {
             $node->setFinalValidationClosures($this->validation->rules);

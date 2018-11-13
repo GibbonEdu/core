@@ -12,10 +12,10 @@
 namespace Symfony\Bundle\FrameworkBundle\Templating;
 
 use Psr\Container\ContainerInterface;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\PhpEngine as BasePhpEngine;
+use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\TemplateNameParserInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * This engine knows how to render Symfony templates.
@@ -26,6 +26,14 @@ class PhpEngine extends BasePhpEngine implements EngineInterface
 {
     protected $container;
 
+    /**
+     * Constructor.
+     *
+     * @param TemplateNameParserInterface $parser    A TemplateNameParserInterface instance
+     * @param ContainerInterface          $container The DI container
+     * @param LoaderInterface             $loader    A loader instance
+     * @param GlobalVariables|null        $globals   A GlobalVariables instance or null
+     */
     public function __construct(TemplateNameParserInterface $parser, ContainerInterface $container, LoaderInterface $loader, GlobalVariables $globals = null)
     {
         $this->container = $container;
@@ -46,7 +54,7 @@ class PhpEngine extends BasePhpEngine implements EngineInterface
             throw new \InvalidArgumentException(sprintf('The helper "%s" is not defined.', $name));
         }
 
-        if (\is_string($this->helpers[$name])) {
+        if (is_string($this->helpers[$name])) {
             $this->helpers[$name] = $this->container->get($this->helpers[$name]);
             $this->helpers[$name]->setCharset($this->charset);
         }

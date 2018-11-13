@@ -25,7 +25,15 @@ class ArgumentMetadata
     private $defaultValue;
     private $isNullable;
 
-    public function __construct(string $name, ?string $type, bool $isVariadic, bool $hasDefaultValue, $defaultValue, bool $isNullable = false)
+    /**
+     * @param string $name
+     * @param string $type
+     * @param bool   $isVariadic
+     * @param bool   $hasDefaultValue
+     * @param mixed  $defaultValue
+     * @param bool   $isNullable
+     */
+    public function __construct($name, $type, $isVariadic, $hasDefaultValue, $defaultValue, $isNullable = false)
     {
         $this->name = $name;
         $this->type = $type;

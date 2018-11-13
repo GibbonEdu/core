@@ -27,12 +27,20 @@ use Symfony\Component\Console\Exception\RuntimeException;
  */
 abstract class Input implements InputInterface, StreamableInputInterface
 {
+    /**
+     * @var InputDefinition
+     */
     protected $definition;
     protected $stream;
     protected $options = array();
     protected $arguments = array();
     protected $interactive = true;
 
+    /**
+     * Constructor.
+     *
+     * @param InputDefinition|null $definition A InputDefinition instance
+     */
     public function __construct(InputDefinition $definition = null)
     {
         if (null === $definition) {
@@ -72,7 +80,7 @@ abstract class Input implements InputInterface, StreamableInputInterface
             return !array_key_exists($argument, $givenArguments) && $definition->getArgument($argument)->isRequired();
         });
 
-        if (\count($missingArguments) > 0) {
+        if (count($missingArguments) > 0) {
             throw new RuntimeException(sprintf('Not enough arguments (missing: "%s").', implode(', ', $missingArguments)));
         }
     }

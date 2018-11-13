@@ -37,7 +37,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
      * @param string                              $file             The absolute cache path
      * @param iterable|ResourceCheckerInterface[] $resourceCheckers The ResourceCheckers to use for the freshness check
      */
-    public function __construct(string $file, iterable $resourceCheckers = array())
+    public function __construct($file, $resourceCheckers = array())
     {
         $this->file = $file;
         $this->resourceCheckers = $resourceCheckers;
@@ -68,27 +68,41 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
             return false;
         }
 
-        if ($this->resourceCheckers instanceof \Traversable && !$this->resourceCheckers instanceof \Countable) {
-            $this->resourceCheckers = iterator_to_array($this->resourceCheckers);
-        }
-
-        if (!\count($this->resourceCheckers)) {
+        if (!$this->resourceCheckers) {
             return true; // shortcut - if we don't have any checkers we don't need to bother with the meta file at all
         }
 
         $metadata = $this->getMetaFile();
-
         if (!is_file($metadata)) {
             return false;
         }
 
-        $meta = $this->safelyUnserialize($metadata);
+        $e = null;
+        $meta = false;
+        $time = filemtime($this->file);
+        $signalingException = new \UnexpectedValueException();
+        $prevUnserializeHandler = ini_set('unserialize_callback_func', '');
+        $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context) use (&$prevErrorHandler, $signalingException) {
+            if (E_WARNING === $type && 'Class __PHP_Incomplete_Class has no unserializer' === $msg) {
+                throw $signalingException;
+            }
 
+            return $prevErrorHandler ? $prevErrorHandler($type, $msg, $file, $line, $context) : false;
+        });
+
+        try {
+            $meta = unserialize(file_get_contents($metadata));
+        } catch (\Error $e) {
+        } catch (\Exception $e) {
+        }
+        restore_error_handler();
+        ini_set('unserialize_callback_func', $prevUnserializeHandler);
+        if (null !== $e && $e !== $signalingException) {
+            throw $e;
+        }
         if (false === $meta) {
             return false;
         }
-
-        $time = filemtime($this->file);
 
         foreach ($meta as $resource) {
             /* @var ResourceInterface $resource */
@@ -121,7 +135,7 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         $mode = 0666;
         $umask = umask();
         $filesystem = new Filesystem();
-        $filesystem->dumpFile($this->file, $content);
+        $filesystem->dumpFile($this->file, $content, null);
         try {
             $filesystem->chmod($this->file, $mode, $umask);
         } catch (IOException $e) {
@@ -129,16 +143,12 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
         }
 
         if (null !== $metadata) {
-            $filesystem->dumpFile($this->getMetaFile(), serialize($metadata));
+            $filesystem->dumpFile($this->getMetaFile(), serialize($metadata), null);
             try {
                 $filesystem->chmod($this->getMetaFile(), $mode, $umask);
             } catch (IOException $e) {
                 // discard chmod failure (some filesystem may not support it)
             }
-        }
-
-        if (\function_exists('opcache_invalidate') && filter_var(ini_get('opcache.enable'), FILTER_VALIDATE_BOOLEAN)) {
-            @opcache_invalidate($this->file, true);
         }
     }
 
@@ -150,33 +160,5 @@ class ResourceCheckerConfigCache implements ConfigCacheInterface
     private function getMetaFile()
     {
         return $this->file.'.meta';
-    }
-
-    private function safelyUnserialize($file)
-    {
-        $e = null;
-        $meta = false;
-        $signalingException = new \UnexpectedValueException();
-        $prevUnserializeHandler = ini_set('unserialize_callback_func', '');
-        $prevErrorHandler = set_error_handler(function ($type, $msg, $file, $line, $context = array()) use (&$prevErrorHandler, $signalingException) {
-            if (E_WARNING === $type && 'Class __PHP_Incomplete_Class has no unserializer' === $msg) {
-                throw $signalingException;
-            }
-
-            return $prevErrorHandler ? $prevErrorHandler($type, $msg, $file, $line, $context) : false;
-        });
-
-        try {
-            $meta = unserialize(file_get_contents($file));
-        } catch (\Throwable $e) {
-            if ($e !== $signalingException) {
-                throw $e;
-            }
-        } finally {
-            restore_error_handler();
-            ini_set('unserialize_callback_func', $prevUnserializeHandler);
-        }
-
-        return $meta;
     }
 }

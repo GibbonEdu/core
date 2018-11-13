@@ -13,15 +13,15 @@
         }
     },
     "require": {
-        "php": "^7.1",
+        "php": "^5.6 || 7.0.0 - 7.0.4 || ^7.0.6",
         "zendframework/zend-eventmanager": "^2.6 || ^3.0"
     },
     "require-dev": {
         "ext-phar": "*",
         "doctrine/annotations": "~1.0",
         "zendframework/zend-stdlib": "^2.7 || ^3.0",
-        "phpunit/phpunit": "^6.2.3",
-        "zendframework/zend-coding-standard": "^1.0.0"
+        "squizlabs/php_codesniffer": "^2.5",
+        "phpunit/PHPUnit": "^4.8.21"
     },
     "suggest": {
         "doctrine/annotations": "Doctrine\\Common\\Annotations >=1.0 for annotation features",
@@ -31,8 +31,8 @@
     "prefer-stable": true,
     "extra": {
         "branch-alias": {
-            "dev-master": "3.3.x-dev",
-            "dev-develop": "3.4.x-dev"
+            "dev-master": "3.1-dev",
+            "dev-develop": "3.2-dev"
         }
     },
     "autoload-dev": {

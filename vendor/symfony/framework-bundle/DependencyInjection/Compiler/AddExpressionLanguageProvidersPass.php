@@ -11,8 +11,8 @@
 
 namespace Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler;
 
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -36,10 +36,10 @@ class AddExpressionLanguageProvidersPass implements CompilerPassInterface
         }
 
         // security
-        if ($container->has('security.expression_language')) {
-            $definition = $container->findDefinition('security.expression_language');
+        if ($container->has('security.access.expression_voter')) {
+            $definition = $container->findDefinition('security.access.expression_voter');
             foreach ($container->findTaggedServiceIds('security.expression_language_provider', true) as $id => $attributes) {
-                $definition->addMethodCall('registerProvider', array(new Reference($id)));
+                $definition->addMethodCall('addExpressionLanguageProvider', array(new Reference($id)));
             }
         }
     }

@@ -17,13 +17,12 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Cache\CacheItem;
 use Symfony\Component\Cache\Exception\InvalidArgumentException;
-use Symfony\Component\Cache\ResettableInterface;
 use Symfony\Component\Cache\Traits\AbstractTrait;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface, ResettableInterface
+abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
 {
     use AbstractTrait;
 
@@ -33,11 +32,15 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
     private $createCacheItem;
     private $mergeByLifetime;
 
-    protected function __construct(string $namespace = '', int $defaultLifetime = 0)
+    /**
+     * @param string $namespace
+     * @param int    $defaultLifetime
+     */
+    protected function __construct($namespace = '', $defaultLifetime = 0)
     {
-        $this->namespace = '' === $namespace ? '' : CacheItem::validateKey($namespace).':';
-        if (null !== $this->maxIdLength && \strlen($namespace) > $this->maxIdLength - 24) {
-            throw new InvalidArgumentException(sprintf('Namespace must be %d chars max, %d given ("%s")', $this->maxIdLength - 24, \strlen($namespace), $namespace));
+        $this->namespace = '' === $namespace ? '' : $this->getId($namespace).':';
+        if (null !== $this->maxIdLength && strlen($namespace) > $this->maxIdLength - 24) {
+            throw new InvalidArgumentException(sprintf('Namespace must be %d chars max, %d given ("%s")', $this->maxIdLength - 24, strlen($namespace), $namespace));
         }
         $this->createCacheItem = \Closure::bind(
             function ($key, $value, $isHit) use ($defaultLifetime) {
@@ -52,21 +55,19 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
             null,
             CacheItem::class
         );
-        $getId = \Closure::fromCallable(array($this, 'getId'));
         $this->mergeByLifetime = \Closure::bind(
-            function ($deferred, $namespace, &$expiredIds) use ($getId) {
+            function ($deferred, $namespace, &$expiredIds) {
                 $byLifetime = array();
                 $now = time();
                 $expiredIds = array();
 
                 foreach ($deferred as $key => $item) {
-                    $key = (string) $key;
                     if (null === $item->expiry) {
-                        $byLifetime[0 < $item->defaultLifetime ? $item->defaultLifetime : 0][$getId($key)] = $item->value;
+                        $byLifetime[0 < $item->defaultLifetime ? $item->defaultLifetime : 0][$namespace.$key] = $item->value;
                     } elseif ($item->expiry > $now) {
-                        $byLifetime[$item->expiry - $now][$getId($key)] = $item->value;
+                        $byLifetime[$item->expiry - $now][$namespace.$key] = $item->value;
                     } else {
-                        $expiredIds[] = $getId($key);
+                        $expiredIds[] = $namespace.$key;
                     }
                 }
 
@@ -114,7 +115,7 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
         }
 
         $apcu = new ApcuAdapter($namespace, (int) $defaultLifetime / 5, $version);
-        if ('cli' === \PHP_SAPI && !ini_get('apc.enable_cli')) {
+        if ('cli' === PHP_SAPI && !ini_get('apc.enable_cli')) {
             $apcu->setLogger(new NullLogger());
         } elseif (null !== $logger) {
             $apcu->setLogger($logger);
@@ -125,8 +126,8 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
 
     public static function createConnection($dsn, array $options = array())
     {
-        if (!\is_string($dsn)) {
-            throw new InvalidArgumentException(sprintf('The %s() method expect argument #1 to be string, %s given.', __METHOD__, \gettype($dsn)));
+        if (!is_string($dsn)) {
+            throw new InvalidArgumentException(sprintf('The %s() method expect argument #1 to be string, %s given.', __METHOD__, gettype($dsn)));
         }
         if (0 === strpos($dsn, 'redis://')) {
             return RedisAdapter::createConnection($dsn, $options);
@@ -234,12 +235,12 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
             if (true === $e || array() === $e) {
                 continue;
             }
-            if (\is_array($e) || 1 === \count($values)) {
-                foreach (\is_array($e) ? $e : array_keys($values) as $id) {
+            if (is_array($e) || 1 === count($values)) {
+                foreach (is_array($e) ? $e : array_keys($values) as $id) {
                     $ok = false;
                     $v = $values[$id];
-                    $type = \is_object($v) ? \get_class($v) : \gettype($v);
-                    CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => substr($id, \strlen($this->namespace)), 'type' => $type, 'exception' => $e instanceof \Exception ? $e : null));
+                    $type = is_object($v) ? get_class($v) : gettype($v);
+                    CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => substr($id, strlen($this->namespace)), 'type' => $type, 'exception' => $e instanceof \Exception ? $e : null));
                 }
             } else {
                 foreach ($values as $id => $v) {
@@ -260,8 +261,8 @@ abstract class AbstractAdapter implements AdapterInterface, LoggerAwareInterface
                     continue;
                 }
                 $ok = false;
-                $type = \is_object($v) ? \get_class($v) : \gettype($v);
-                CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => substr($id, \strlen($this->namespace)), 'type' => $type, 'exception' => $e instanceof \Exception ? $e : null));
+                $type = is_object($v) ? get_class($v) : gettype($v);
+                CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => substr($id, strlen($this->namespace)), 'type' => $type, 'exception' => $e instanceof \Exception ? $e : null));
             }
         }
 

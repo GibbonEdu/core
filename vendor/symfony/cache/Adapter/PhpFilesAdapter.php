@@ -12,17 +12,20 @@
 namespace Symfony\Component\Cache\Adapter;
 
 use Symfony\Component\Cache\Exception\CacheException;
-use Symfony\Component\Cache\PruneableInterface;
 use Symfony\Component\Cache\Traits\PhpFilesTrait;
 
-class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
+class PhpFilesAdapter extends AbstractAdapter
 {
     use PhpFilesTrait;
 
     /**
+     * @param string      $namespace
+     * @param int         $defaultLifetime
+     * @param string|null $directory
+     *
      * @throws CacheException if OPcache is not enabled
      */
-    public function __construct(string $namespace = '', int $defaultLifetime = 0, string $directory = null)
+    public function __construct($namespace = '', $defaultLifetime = 0, $directory = null)
     {
         if (!static::isSupported()) {
             throw new CacheException('OPcache is not enabled');
@@ -32,6 +35,5 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
 
         $e = new \Exception();
         $this->includeHandler = function () use ($e) { throw $e; };
-        $this->zendDetectUnicode = ini_get('zend.detect_unicode');
     }
 }

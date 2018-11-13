@@ -12,8 +12,8 @@
 namespace Symfony\Component\DependencyInjection\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
 
 class CrossCheckTest extends TestCase
 {
@@ -55,6 +55,12 @@ class CrossCheckTest extends TestCase
         $this->assertEquals($container2->getAliases(), $container1->getAliases(), 'loading a dump from a previously loaded container returns the same container');
         $this->assertEquals($container2->getDefinitions(), $container1->getDefinitions(), 'loading a dump from a previously loaded container returns the same container');
         $this->assertEquals($container2->getParameterBag()->all(), $container1->getParameterBag()->all(), '->getParameterBag() returns the same value for both containers');
+
+        $r = new \ReflectionProperty(ContainerBuilder::class, 'normalizedIds');
+        $r->setAccessible(true);
+        $r->setValue($container2, array());
+        $r->setValue($container1, array());
+
         $this->assertEquals(serialize($container2), serialize($container1), 'loading a dump from a previously loaded container returns the same container');
 
         $services1 = array();

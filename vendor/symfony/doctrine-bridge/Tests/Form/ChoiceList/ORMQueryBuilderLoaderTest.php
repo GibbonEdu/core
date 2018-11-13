@@ -11,11 +11,11 @@
 
 namespace Symfony\Bridge\Doctrine\Tests\Form\ChoiceList;
 
-use Doctrine\DBAL\Connection;
-use Doctrine\ORM\Version;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bridge\Doctrine\Form\ChoiceList\ORMQueryBuilderLoader;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
+use Doctrine\DBAL\Connection;
+use Doctrine\ORM\Version;
 
 class ORMQueryBuilderLoaderTest extends TestCase
 {
@@ -87,38 +87,6 @@ class ORMQueryBuilderLoaderTest extends TestCase
         $loader->getEntitiesByIds('id', array(1, '', 2, 3, 'foo', '9223372036854775808'));
     }
 
-    /**
-     * @dataProvider provideGuidEntityClasses
-     */
-    public function testFilterEmptyUuids($entityClass)
-    {
-        $em = DoctrineTestHelper::createTestEntityManager();
-
-        $query = $this->getMockBuilder('QueryMock')
-            ->setMethods(array('setParameter', 'getResult', 'getSql', '_doExecute'))
-            ->getMock();
-
-        $query->expects($this->once())
-            ->method('setParameter')
-            ->with('ORMQueryBuilderLoader_getEntitiesByIds_id', array('71c5fd46-3f16-4abb-bad7-90ac1e654a2d', 'b98e8e11-2897-44df-ad24-d2627eb7f499'), Connection::PARAM_STR_ARRAY)
-            ->willReturn($query);
-
-        $qb = $this->getMockBuilder('Doctrine\ORM\QueryBuilder')
-            ->setConstructorArgs(array($em))
-            ->setMethods(array('getQuery'))
-            ->getMock();
-
-        $qb->expects($this->once())
-            ->method('getQuery')
-            ->willReturn($query);
-
-        $qb->select('e')
-            ->from($entityClass, 'e');
-
-        $loader = new ORMQueryBuilderLoader($qb);
-        $loader->getEntitiesByIds('id', array('71c5fd46-3f16-4abb-bad7-90ac1e654a2d', '', 'b98e8e11-2897-44df-ad24-d2627eb7f499'));
-    }
-
     public function testEmbeddedIdentifierName()
     {
         if (Version::compare('2.5.0') > 0) {
@@ -151,13 +119,5 @@ class ORMQueryBuilderLoaderTest extends TestCase
 
         $loader = new ORMQueryBuilderLoader($qb);
         $loader->getEntitiesByIds('id.value', array(1, '', 2, 3, 'foo'));
-    }
-
-    public function provideGuidEntityClasses()
-    {
-        return array(
-            array('Symfony\Bridge\Doctrine\Tests\Fixtures\GuidIdEntity'),
-            array('Symfony\Bridge\Doctrine\Tests\Fixtures\UuidIdEntity'),
-        );
     }
 }

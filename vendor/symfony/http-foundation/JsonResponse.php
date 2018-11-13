@@ -39,7 +39,7 @@ class JsonResponse extends Response
      * @param array $headers An array of response headers
      * @param bool  $json    If the data is already a JSON string
      */
-    public function __construct($data = null, int $status = 200, array $headers = array(), bool $json = false)
+    public function __construct($data = null, $status = 200, $headers = array(), $json = false)
     {
         parent::__construct('', $status, $headers);
 
@@ -101,7 +101,7 @@ class JsonResponse extends Response
             );
             $parts = explode('.', $callback);
             foreach ($parts as $part) {
-                if (!preg_match($pattern, $part) || \in_array($part, $reserved, true)) {
+                if (!preg_match($pattern, $part) || in_array($part, $reserved, true)) {
                     throw new \InvalidArgumentException('The callback name is not valid.');
                 }
             }
@@ -139,13 +139,23 @@ class JsonResponse extends Response
      */
     public function setData($data = array())
     {
-        try {
+        if (defined('HHVM_VERSION')) {
+            // HHVM does not trigger any warnings and let exceptions
+            // thrown from a JsonSerializable object pass through.
+            // If only PHP did the same...
             $data = json_encode($data, $this->encodingOptions);
-        } catch (\Exception $e) {
-            if ('Exception' === \get_class($e) && 0 === strpos($e->getMessage(), 'Failed calling ')) {
-                throw $e->getPrevious() ?: $e;
+        } else {
+            try {
+                // PHP 5.4 and up wrap exceptions thrown by JsonSerializable
+                // objects in a new exception that needs to be removed.
+                // Fortunately, PHP 5.5 and up do not trigger any warning anymore.
+                $data = json_encode($data, $this->encodingOptions);
+            } catch (\Exception $e) {
+                if ('Exception' === get_class($e) && 0 === strpos($e->getMessage(), 'Failed calling ')) {
+                    throw $e->getPrevious() ?: $e;
+                }
+                throw $e;
             }
-            throw $e;
         }
 
         if (JSON_ERROR_NONE !== json_last_error()) {

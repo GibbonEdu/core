@@ -111,6 +111,7 @@ abstract class FileDriver implements MappingDriver
         if (isset($this->classCache[$className])) {
             return $this->classCache[$className];
         }
+
         $result = $this->loadMappingFile($this->locator->findMappingFile($className));
         if (!isset($result[$className])) {
             throw MappingException::invalidMappingFile($className, str_replace('\\', '.', $className) . $this->locator->getFileExtension());

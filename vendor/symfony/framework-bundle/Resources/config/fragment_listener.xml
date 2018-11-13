@@ -7,7 +7,7 @@
     <services>
         <defaults public="false" />
 
-        <service id="fragment.listener" class="Symfony\Component\HttpKernel\EventListener\FragmentListener">
+        <service id="fragment.listener" class="Symfony\Component\HttpKernel\EventListener\FragmentListener" public="true">
             <tag name="kernel.event_subscriber" />
             <argument type="service" id="uri_signer" />
             <argument>%fragment.path%</argument>

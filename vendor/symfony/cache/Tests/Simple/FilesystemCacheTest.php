@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Cache\Tests\Simple;
 
-use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Cache\Simple\FilesystemCache;
 
 /**
@@ -22,13 +21,5 @@ class FilesystemCacheTest extends CacheTestCase
     public function createSimpleCache($defaultLifetime = 0)
     {
         return new FilesystemCache('', $defaultLifetime);
-    }
-
-    protected function isPruned(CacheInterface $cache, $name)
-    {
-        $getFileMethod = (new \ReflectionObject($cache))->getMethod('getFile');
-        $getFileMethod->setAccessible(true);
-
-        return !file_exists($getFileMethod->invoke($cache, $name));
     }
 }

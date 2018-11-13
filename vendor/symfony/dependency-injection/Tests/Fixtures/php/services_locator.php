@@ -9,6 +9,8 @@ use Symfony\Component\DependencyInjection\Exception\RuntimeException;
 use Symfony\Component\DependencyInjection\ParameterBag\FrozenParameterBag;
 
 /**
+ * ProjectServiceContainer.
+ *
  * This class has been auto-generated
  * by the Symfony Dependency Injection Component.
  *
@@ -20,15 +22,14 @@ class ProjectServiceContainer extends Container
     private $targetDirs = array();
 
     /**
-     * @internal but protected for BC on cache:clear
+     * Constructor.
      */
-    protected $privates = array();
-
     public function __construct()
     {
-        $this->services = $this->privates = array();
+        $this->services = array();
         $this->methodMap = array(
             'bar_service' => 'getBarServiceService',
+            'baz_service' => 'getBazServiceService',
             'foo_service' => 'getFooServiceService',
             'translator.loader_1' => 'getTranslator_Loader1Service',
             'translator.loader_2' => 'getTranslator_Loader2Service',
@@ -37,36 +38,37 @@ class ProjectServiceContainer extends Container
             'translator_2' => 'getTranslator2Service',
             'translator_3' => 'getTranslator3Service',
         );
+        $this->privates = array(
+            'baz_service' => true,
+        );
 
         $this->aliases = array();
     }
 
-    public function reset()
-    {
-        $this->privates = array();
-        parent::reset();
-    }
-
+    /**
+     * {@inheritdoc}
+     */
     public function compile()
     {
         throw new LogicException('You cannot compile a dumped container that was already compiled.');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function isCompiled()
     {
         return true;
     }
 
-    public function getRemovedIds()
+    /**
+     * {@inheritdoc}
+     */
+    public function isFrozen()
     {
-        return array(
-            'Psr\\Container\\ContainerInterface' => true,
-            'Symfony\\Component\\DependencyInjection\\ContainerInterface' => true,
-            'baz_service' => true,
-            'translator.loader_1_locator' => true,
-            'translator.loader_2_locator' => true,
-            'translator.loader_3_locator' => true,
-        );
+        @trigger_error(sprintf('The %s() method is deprecated since version 3.3 and will be removed in 4.0. Use the isCompiled() method instead.', __METHOD__), E_USER_DEPRECATED);
+
+        return true;
     }
 
     /**
@@ -76,7 +78,7 @@ class ProjectServiceContainer extends Container
      */
     protected function getBarServiceService()
     {
-        return $this->services['bar_service'] = new \stdClass(($this->privates['baz_service'] ?? $this->privates['baz_service'] = new \stdClass()));
+        return $this->services['bar_service'] = new \stdClass(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->getBazServiceService()) && false ?: '_'});
     }
 
     /**
@@ -87,9 +89,9 @@ class ProjectServiceContainer extends Container
     protected function getFooServiceService()
     {
         return $this->services['foo_service'] = new \Symfony\Component\DependencyInjection\ServiceLocator(array('bar' => function () {
-            return ($this->services['bar_service'] ?? $this->getBarServiceService());
-        }, 'baz' => function (): \stdClass {
-            return ($this->privates['baz_service'] ?? $this->privates['baz_service'] = new \stdClass());
+            return ${($_ = isset($this->services['bar_service']) ? $this->services['bar_service'] : $this->get('bar_service')) && false ?: '_'};
+        }, 'baz' => function () {
+            $f = function (\stdClass $v) { return $v; }; return $f(${($_ = isset($this->services['baz_service']) ? $this->services['baz_service'] : $this->getBazServiceService()) && false ?: '_'});
         }, 'nil' => function () {
             return NULL;
         }));
@@ -133,7 +135,7 @@ class ProjectServiceContainer extends Container
     protected function getTranslator1Service()
     {
         return $this->services['translator_1'] = new \Symfony\Component\DependencyInjection\Tests\Fixtures\StubbedTranslator(new \Symfony\Component\DependencyInjection\ServiceLocator(array('translator.loader_1' => function () {
-            return ($this->services['translator.loader_1'] ?? $this->services['translator.loader_1'] = new \stdClass());
+            return ${($_ = isset($this->services['translator.loader_1']) ? $this->services['translator.loader_1'] : $this->get('translator.loader_1')) && false ?: '_'};
         })));
     }
 
@@ -145,10 +147,10 @@ class ProjectServiceContainer extends Container
     protected function getTranslator2Service()
     {
         $this->services['translator_2'] = $instance = new \Symfony\Component\DependencyInjection\Tests\Fixtures\StubbedTranslator(new \Symfony\Component\DependencyInjection\ServiceLocator(array('translator.loader_2' => function () {
-            return ($this->services['translator.loader_2'] ?? $this->services['translator.loader_2'] = new \stdClass());
+            return ${($_ = isset($this->services['translator.loader_2']) ? $this->services['translator.loader_2'] : $this->get('translator.loader_2')) && false ?: '_'};
         })));
 
-        $instance->addResource('db', ($this->services['translator.loader_2'] ?? $this->services['translator.loader_2'] = new \stdClass()), 'nl');
+        $instance->addResource('db', ${($_ = isset($this->services['translator.loader_2']) ? $this->services['translator.loader_2'] : $this->get('translator.loader_2')) && false ?: '_'}, 'nl');
 
         return $instance;
     }
@@ -160,15 +162,25 @@ class ProjectServiceContainer extends Container
      */
     protected function getTranslator3Service()
     {
-        $this->services['translator_3'] = $instance = new \Symfony\Component\DependencyInjection\Tests\Fixtures\StubbedTranslator(new \Symfony\Component\DependencyInjection\ServiceLocator(array('translator.loader_3' => function () {
-            return ($this->services['translator.loader_3'] ?? $this->services['translator.loader_3'] = new \stdClass());
-        })));
+        $a = ${($_ = isset($this->services['translator.loader_3']) ? $this->services['translator.loader_3'] : $this->get('translator.loader_3')) && false ?: '_'};
 
-        $a = ($this->services['translator.loader_3'] ?? $this->services['translator.loader_3'] = new \stdClass());
+        $this->services['translator_3'] = $instance = new \Symfony\Component\DependencyInjection\Tests\Fixtures\StubbedTranslator(new \Symfony\Component\DependencyInjection\ServiceLocator(array('translator.loader_3' => function () {
+            return ${($_ = isset($this->services['translator.loader_3']) ? $this->services['translator.loader_3'] : $this->get('translator.loader_3')) && false ?: '_'};
+        })));
 
         $instance->addResource('db', $a, 'nl');
         $instance->addResource('db', $a, 'en');
 
         return $instance;
+    }
+
+    /**
+     * Gets the private 'baz_service' shared service.
+     *
+     * @return \stdClass
+     */
+    protected function getBazServiceService()
+    {
+        return $this->services['baz_service'] = new \stdClass();
     }
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Symfony\Component\Config\Tests\Fixtures\Builder;
+namespace Symfony\Component\Config\Tests\Definition\Builder;
 
 use Symfony\Component\Config\Definition\Builder\VariableNodeDefinition as BaseVariableNodeDefinition;
 

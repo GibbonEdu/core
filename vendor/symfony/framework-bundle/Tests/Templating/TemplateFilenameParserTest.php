@@ -11,9 +11,9 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Tests\Templating;
 
+use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateFilenameParser;
 use Symfony\Bundle\FrameworkBundle\Templating\TemplateReference;
-use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 
 class TemplateFilenameParserTest extends TestCase
 {
@@ -36,7 +36,7 @@ class TemplateFilenameParserTest extends TestCase
     {
         $template = $this->parser->parse($file);
 
-        if (false === $ref) {
+        if ($ref === false) {
             $this->assertFalse($template);
         } else {
             $this->assertEquals($template->getLogicalName(), $ref->getLogicalName());

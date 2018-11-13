@@ -11,6 +11,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader;
 
+use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Config\Util\XmlUtils;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 
@@ -39,7 +40,7 @@ class IniFileLoader extends FileLoader
         // real raw parsing
         $result = parse_ini_file($path, true, INI_SCANNER_RAW);
 
-        if (isset($result['parameters']) && \is_array($result['parameters'])) {
+        if (isset($result['parameters']) && is_array($result['parameters'])) {
             foreach ($result['parameters'] as $key => $value) {
                 $this->container->setParameter($key, $this->phpize($value));
             }
@@ -51,7 +52,7 @@ class IniFileLoader extends FileLoader
      */
     public function supports($resource, $type = null)
     {
-        if (!\is_string($resource)) {
+        if (!is_string($resource)) {
             return false;
         }
 
@@ -74,15 +75,15 @@ class IniFileLoader extends FileLoader
         $lowercaseValue = strtolower($value);
 
         switch (true) {
-            case \defined($value):
-                return \constant($value);
+            case defined($value):
+                return constant($value);
             case 'yes' === $lowercaseValue || 'on' === $lowercaseValue:
                 return true;
             case 'no' === $lowercaseValue || 'off' === $lowercaseValue || 'none' === $lowercaseValue:
                 return false;
             case isset($value[1]) && (
-                ("'" === $value[0] && "'" === $value[\strlen($value) - 1]) ||
-                ('"' === $value[0] && '"' === $value[\strlen($value) - 1])
+                ("'" === $value[0] && "'" === $value[strlen($value) - 1]) ||
+                ('"' === $value[0] && '"' === $value[strlen($value) - 1])
             ):
                 // quoted string
                 return substr($value, 1, -1);

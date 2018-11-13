@@ -34,6 +34,8 @@ interface StyleInterface
 
     /**
      * Formats a list.
+     *
+     * @param array $elements
      */
     public function listing(array $elements);
 
@@ -81,6 +83,9 @@ interface StyleInterface
 
     /**
      * Formats a table.
+     *
+     * @param array $headers
+     * @param array $rows
      */
     public function table(array $headers, array $rows);
 
@@ -91,7 +96,7 @@ interface StyleInterface
      * @param string|null   $default
      * @param callable|null $validator
      *
-     * @return mixed
+     * @return string
      */
     public function ask($question, $default = null, $validator = null);
 
@@ -101,7 +106,7 @@ interface StyleInterface
      * @param string        $question
      * @param callable|null $validator
      *
-     * @return mixed
+     * @return string
      */
     public function askHidden($question, $validator = null);
 
@@ -122,7 +127,7 @@ interface StyleInterface
      * @param array           $choices
      * @param string|int|null $default
      *
-     * @return mixed
+     * @return string
      */
     public function choice($question, array $choices, $default = null);
 

@@ -22,6 +22,11 @@ class MergeBuilder
     public $allowFalse = false;
     public $allowOverwrite = true;
 
+    /**
+     * Constructor.
+     *
+     * @param NodeDefinition $node The related node
+     */
     public function __construct(NodeDefinition $node)
     {
         $this->node = $node;

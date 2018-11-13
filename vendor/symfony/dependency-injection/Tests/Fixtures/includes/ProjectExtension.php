@@ -1,25 +1,19 @@
 <?php
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Extension\ExtensionInterface;
 
 class ProjectExtension implements ExtensionInterface
 {
     public function load(array $configs, ContainerBuilder $configuration)
     {
-        $configuration->setParameter('project.configs', $configs);
-        $configs = array_filter($configs);
+        $config = call_user_func_array('array_merge', $configs);
 
-        if ($configs) {
-            $config = array_merge(...$configs);
-        } else {
-            $config = array();
-        }
-
-        $configuration->register('project.service.bar', 'FooClass')->setPublic(true);
+        $configuration->setDefinition('project.service.bar', new Definition('FooClass'));
         $configuration->setParameter('project.parameter.bar', isset($config['foo']) ? $config['foo'] : 'foobar');
 
-        $configuration->register('project.service.foo', 'FooClass')->setPublic(true);
+        $configuration->setDefinition('project.service.foo', new Definition('FooClass'));
         $configuration->setParameter('project.parameter.foo', isset($config['foo']) ? $config['foo'] : 'foobar');
 
         return $configuration;

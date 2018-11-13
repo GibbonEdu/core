@@ -27,6 +27,9 @@ use Symfony\Component\PropertyInfo\Type;
  */
 class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeExtractorInterface
 {
+    /**
+     * @var ClassMetadataFactory
+     */
     private $classMetadataFactory;
 
     public function __construct(ClassMetadataFactory $classMetadataFactory)
@@ -95,18 +98,8 @@ class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeE
 
                 if (isset($associationMapping['indexBy'])) {
                     $indexProperty = $associationMapping['indexBy'];
-                    /** @var ClassMetadataInfo $subMetadata */
                     $subMetadata = $this->classMetadataFactory->getMetadataFor($associationMapping['targetEntity']);
                     $typeOfField = $subMetadata->getTypeOfField($indexProperty);
-
-                    if (null === $typeOfField) {
-                        $associationMapping = $subMetadata->getAssociationMapping($indexProperty);
-
-                        /** @var ClassMetadataInfo $subMetadata */
-                        $indexProperty = $subMetadata->getSingleAssociationReferencedJoinColumnName($indexProperty);
-                        $subMetadata = $this->classMetadataFactory->getMetadataFor($associationMapping['targetEntity']);
-                        $typeOfField = $subMetadata->getTypeOfField($indexProperty);
-                    }
 
                     $collectionKeyType = $this->getPhpType($typeOfField);
                 }
@@ -138,15 +131,6 @@ class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeE
                 case DBALType::TIME:
                     return array(new Type(Type::BUILTIN_TYPE_OBJECT, $nullable, 'DateTime'));
 
-                case 'date_immutable':
-                case 'datetime_immutable':
-                case 'datetimetz_immutable':
-                case 'time_immutable':
-                    return array(new Type(Type::BUILTIN_TYPE_OBJECT, $nullable, 'DateTimeImmutable'));
-
-                case 'dateinterval':
-                    return array(new Type(Type::BUILTIN_TYPE_OBJECT, $nullable, 'DateInterval'));
-
                 case DBALType::TARRAY:
                     return array(new Type(Type::BUILTIN_TYPE_ARRAY, $nullable, null, true));
 
@@ -167,9 +151,13 @@ class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeE
     /**
      * Determines whether an association is nullable.
      *
+     * @param array $associationMapping
+     *
+     * @return bool
+     *
      * @see https://github.com/doctrine/doctrine2/blob/v2.5.4/lib/Doctrine/ORM/Tools/EntityGenerator.php#L1221-L1246
      */
-    private function isAssociationNullable(array $associationMapping): bool
+    private function isAssociationNullable(array $associationMapping)
     {
         if (isset($associationMapping['id']) && $associationMapping['id']) {
             return false;
@@ -191,8 +179,12 @@ class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeE
 
     /**
      * Gets the corresponding built-in PHP type.
+     *
+     * @param string $doctrineType
+     *
+     * @return string|null
      */
-    private function getPhpType(string $doctrineType): ?string
+    private function getPhpType($doctrineType)
     {
         switch ($doctrineType) {
             case DBALType::SMALLINT:
@@ -219,7 +211,5 @@ class DoctrineExtractor implements PropertyListExtractorInterface, PropertyTypeE
             case DBALType::OBJECT:
                 return Type::BUILTIN_TYPE_OBJECT;
         }
-
-        return null;
     }
 }

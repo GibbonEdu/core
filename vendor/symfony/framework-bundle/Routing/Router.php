@@ -11,18 +11,16 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Routing;
 
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\Config\ContainerParametersResource;
-use Symfony\Component\DependencyInjection\ContainerInterface as SymfonyContainerInterface;
+use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
+use Symfony\Component\Routing\Router as BaseRouter;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 use Symfony\Component\DependencyInjection\Exception\ParameterNotFoundException;
 use Symfony\Component\DependencyInjection\Exception\RuntimeException;
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
-use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Router as BaseRouter;
 
 /**
  * This Router creates the Loader only when the cache is empty.
@@ -33,31 +31,22 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
 {
     private $container;
     private $collectedParameters = array();
-    private $paramFetcher;
 
     /**
-     * @param ContainerInterface      $container  A ContainerInterface instance
-     * @param mixed                   $resource   The main resource to load
-     * @param array                   $options    An array of options
-     * @param RequestContext          $context    The context
-     * @param ContainerInterface|null $parameters A ContainerInterface instance allowing to fetch parameters
-     * @param LoggerInterface|null    $logger
+     * Constructor.
+     *
+     * @param ContainerInterface $container A ContainerInterface instance
+     * @param mixed              $resource  The main resource to load
+     * @param array              $options   An array of options
+     * @param RequestContext     $context   The context
      */
-    public function __construct(ContainerInterface $container, $resource, array $options = array(), RequestContext $context = null, ContainerInterface $parameters = null, LoggerInterface $logger = null)
+    public function __construct(ContainerInterface $container, $resource, array $options = array(), RequestContext $context = null)
     {
         $this->container = $container;
+
         $this->resource = $resource;
         $this->context = $context ?: new RequestContext();
-        $this->logger = $logger;
         $this->setOptions($options);
-
-        if ($parameters) {
-            $this->paramFetcher = array($parameters, 'get');
-        } elseif ($container instanceof SymfonyContainerInterface) {
-            $this->paramFetcher = array($container, 'getParameter');
-        } else {
-            throw new \LogicException(sprintf('You should either pass a "%s" instance or provide the $parameters argument of the "%s" method.', SymfonyContainerInterface::class, __METHOD__));
-        }
     }
 
     /**
@@ -97,6 +86,8 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
      * - the route host,
      * - the route schemes,
      * - the route methods.
+     *
+     * @param RouteCollection $collection
      */
     private function resolveParameters(RouteCollection $collection)
     {
@@ -140,7 +131,7 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
      */
     private function resolve($value)
     {
-        if (\is_array($value)) {
+        if (is_array($value)) {
             foreach ($value as $key => $val) {
                 $value[$key] = $this->resolve($val);
             }
@@ -148,11 +139,13 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
             return $value;
         }
 
-        if (!\is_string($value)) {
+        if (!is_string($value)) {
             return $value;
         }
 
-        $escapedValue = preg_replace_callback('/%%|%([^%\s]++)%/', function ($match) use ($value) {
+        $container = $this->container;
+
+        $escapedValue = preg_replace_callback('/%%|%([^%\s]++)%/', function ($match) use ($container, $value) {
             // skip %%
             if (!isset($match[1])) {
                 return '%%';
@@ -162,15 +155,22 @@ class Router extends BaseRouter implements WarmableInterface, ServiceSubscriberI
                 throw new RuntimeException(sprintf('Using "%%%s%%" is not allowed in routing configuration.', $match[1]));
             }
 
-            $resolved = ($this->paramFetcher)($match[1]);
+            $resolved = $container->getParameter($match[1]);
 
-            if (\is_string($resolved) || is_numeric($resolved)) {
+            if (is_string($resolved) || is_numeric($resolved)) {
                 $this->collectedParameters[$match[1]] = $resolved;
 
                 return (string) $resolved;
             }
 
-            throw new RuntimeException(sprintf('The container parameter "%s", used in the route configuration value "%s", must be a string or numeric, but it is of type %s.', $match[1], $value, \gettype($resolved)));
+            throw new RuntimeException(sprintf(
+                'The container parameter "%s", used in the route configuration value "%s", '.
+                'must be a string or numeric, but it is of type %s.',
+                $match[1],
+                $value,
+                gettype($resolved)
+                )
+            );
         }, $value);
 
         return str_replace('%%', '%', $escapedValue);

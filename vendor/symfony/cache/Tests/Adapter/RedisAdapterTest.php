@@ -13,22 +13,13 @@ namespace Symfony\Component\Cache\Tests\Adapter;
 
 use Symfony\Component\Cache\Adapter\AbstractAdapter;
 use Symfony\Component\Cache\Adapter\RedisAdapter;
-use Symfony\Component\Cache\Traits\RedisProxy;
 
 class RedisAdapterTest extends AbstractRedisAdapterTest
 {
     public static function setupBeforeClass()
     {
         parent::setupBeforeClass();
-        self::$redis = AbstractAdapter::createConnection('redis://'.getenv('REDIS_HOST'), array('lazy' => true));
-    }
-
-    public function createCachePool($defaultLifetime = 0)
-    {
-        $adapter = parent::createCachePool($defaultLifetime);
-        $this->assertInstanceOf(RedisProxy::class, self::$redis);
-
-        return $adapter;
+        self::$redis = AbstractAdapter::createConnection('redis://'.getenv('REDIS_HOST'));
     }
 
     public function testCreateConnection()

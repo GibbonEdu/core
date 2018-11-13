@@ -9,10 +9,6 @@
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
 
-use function explode;
-use function preg_match;
-use function rtrim;
-
 class MethodTag implements TagInterface, PhpDocTypedTagInterface
 {
     /**
@@ -25,12 +21,12 @@ class MethodTag implements TagInterface, PhpDocTypedTagInterface
     /**
      * @var string
      */
-    protected $methodName;
+    protected $methodName = null;
 
     /**
      * @var string
      */
-    protected $description;
+    protected $description = null;
 
     /**
      * Is static method
@@ -56,7 +52,7 @@ class MethodTag implements TagInterface, PhpDocTypedTagInterface
     {
         $match = [];
 
-        if (! preg_match('#^(static[\s]+)?(.+[\s]+)?(.+\(\))[\s]*(.*)$#m', $tagDocblockLine, $match)) {
+        if (!preg_match('#^(static[\s]+)?(.+[\s]+)?(.+\(\))[\s]*(.*)$#m', $tagDocblockLine, $match)) {
             return;
         }
 

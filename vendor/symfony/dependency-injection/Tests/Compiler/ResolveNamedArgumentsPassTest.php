@@ -15,10 +15,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Compiler\ResolveNamedArgumentsPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Tests\Fixtures\CaseSensitiveClass;
 use Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsDummy;
-use Symfony\Component\DependencyInjection\Tests\Fixtures\NamedArgumentsVariadicsDummy;
-use Symfony\Component\DependencyInjection\Tests\Fixtures\SimilarArgumentsDummy;
 
 /**
  * @author Kévin Dunglas <dunglas@gmail.com>
@@ -113,75 +110,6 @@ class ResolveNamedArgumentsPassTest extends TestCase
 
         $pass = new ResolveNamedArgumentsPass();
         $pass->process($container);
-    }
-
-    public function testTypedArgument()
-    {
-        $container = new ContainerBuilder();
-
-        $definition = $container->register(NamedArgumentsDummy::class, NamedArgumentsDummy::class);
-        $definition->setArguments(array('$apiKey' => '123', CaseSensitiveClass::class => new Reference('foo')));
-
-        $pass = new ResolveNamedArgumentsPass();
-        $pass->process($container);
-
-        $this->assertEquals(array(new Reference('foo'), '123'), $definition->getArguments());
-    }
-
-    public function testResolvesMultipleArgumentsOfTheSameType()
-    {
-        $container = new ContainerBuilder();
-
-        $definition = $container->register(SimilarArgumentsDummy::class, SimilarArgumentsDummy::class);
-        $definition->setArguments(array(CaseSensitiveClass::class => new Reference('foo'), '$token' => 'qwerty'));
-
-        $pass = new ResolveNamedArgumentsPass();
-        $pass->process($container);
-
-        $this->assertEquals(array(new Reference('foo'), 'qwerty', new Reference('foo')), $definition->getArguments());
-    }
-
-    public function testResolvePrioritizeNamedOverType()
-    {
-        $container = new ContainerBuilder();
-
-        $definition = $container->register(SimilarArgumentsDummy::class, SimilarArgumentsDummy::class);
-        $definition->setArguments(array(CaseSensitiveClass::class => new Reference('foo'), '$token' => 'qwerty', '$class1' => new Reference('bar')));
-
-        $pass = new ResolveNamedArgumentsPass();
-        $pass->process($container);
-
-        $this->assertEquals(array(new Reference('bar'), 'qwerty', new Reference('foo')), $definition->getArguments());
-    }
-
-    public function testVariadics()
-    {
-        $container = new ContainerBuilder();
-
-        $definition = $container->register(NamedArgumentsVariadicsDummy::class, NamedArgumentsVariadicsDummy::class);
-        $definition->setArguments(
-            array(
-                '$class' => new \stdClass(),
-                '$variadics' => array(
-                    new Reference('foo'),
-                    new Reference('bar'),
-                    new Reference('baz'),
-                ),
-            )
-        );
-
-        $pass = new ResolveNamedArgumentsPass();
-        $pass->process($container);
-
-        $this->assertEquals(
-            array(
-                0 => new \stdClass(),
-                1 => new Reference('foo'),
-                2 => new Reference('bar'),
-                3 => new Reference('baz'),
-            ),
-            $definition->getArguments()
-        );
     }
 }
 

@@ -13,9 +13,8 @@ namespace Symfony\Bundle\FrameworkBundle\DependencyInjection\Compiler;
 
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface as FrameworkBundleEngineInterface;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\Templating\EngineInterface as ComponentEngineInterface;
 
 class TemplatingPass implements CompilerPassInterface
@@ -32,22 +31,16 @@ class TemplatingPass implements CompilerPassInterface
         }
 
         if ($container->hasDefinition('templating.engine.php')) {
-            $refs = array();
             $helpers = array();
             foreach ($container->findTaggedServiceIds('templating.helper', true) as $id => $attributes) {
                 if (isset($attributes[0]['alias'])) {
                     $helpers[$attributes[0]['alias']] = $id;
-                    $refs[$id] = new Reference($id);
                 }
             }
 
-            if (\count($helpers) > 0) {
+            if (count($helpers) > 0) {
                 $definition = $container->getDefinition('templating.engine.php');
                 $definition->addMethodCall('setHelpers', array($helpers));
-
-                if ($container->hasDefinition('templating.engine.php.helpers_locator')) {
-                    $container->getDefinition('templating.engine.php.helpers_locator')->replaceArgument(0, $refs);
-                }
             }
         }
     }

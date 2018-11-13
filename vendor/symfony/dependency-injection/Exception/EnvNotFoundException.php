@@ -18,7 +18,7 @@ namespace Symfony\Component\DependencyInjection\Exception;
  */
 class EnvNotFoundException extends InvalidArgumentException
 {
-    public function __construct(string $name)
+    public function __construct($name)
     {
         parent::__construct(sprintf('Environment variable not found: "%s".', $name));
     }

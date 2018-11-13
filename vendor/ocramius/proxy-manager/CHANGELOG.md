@@ -4,62 +4,6 @@ title: Changelog
 
 This is a list of changes/improvements that were introduced in ProxyManager
 
-## 2.2.0
-
-This release provides support for the PHP 7.2 `object` type hint, as
-well as dramatic (~300%) speed improvement during proxy class generation.
-PHP 7.1 support has been dropped.
-
-Total issues resolved: **11**
-
-- [367: Property name (suffixes) differ after each generation of a proxy](https://github.com/Ocramius/ProxyManager/issues/367) thanks to @holtkamp
-- [381: Adding `object` hit based tests and test assets - preparing for PHP 7.2 compatibility](https://github.com/Ocramius/ProxyManager/pull/381) thanks to @Ocramius
-- [382: Removed redundant docblocks](https://github.com/Ocramius/ProxyManager/pull/382) thanks to @Ocramius
-- [383: PHPStan version upgrade 0.8](https://github.com/Ocramius/ProxyManager/pull/383) thanks to @Ocramius
-- [384: Group generated unique identifiers by name](https://github.com/Ocramius/ProxyManager/pull/384) thanks to @nicolas-grekas
-- [385: #384 #367 deterministic generated property suffixes for generated properties](https://github.com/Ocramius/ProxyManager/pull/385) thanks to @Ocramius
-- [386: Removed licence headers from all single source files](https://github.com/Ocramius/ProxyManager/pull/386) thanks to @Ocramius
-- [387: Correct createProxy PHPDoc](https://github.com/Ocramius/ProxyManager/pull/387) thanks to @PurpleBooth
-- [391: PHPUnit 6.x upgrade](https://github.com/Ocramius/ProxyManager/pull/391) thanks to @Ocramius
-- [392: PHPStan level 7 analysis](https://github.com/Ocramius/ProxyManager/pull/392) thanks to @snapshotpl
-- [393: remove inheritdoc &amp; body parsing from generated proxies](https://github.com/Ocramius/ProxyManager/pull/393) thanks to @Tobion
-
-## 2.1.1
-
-This release provides aggressive improvements in static introspection via
-[phpstan/phpstan](https://github.com/phpstan/phpstan). No functional
-changes, just removed possible bugs due to excessive parameter count
-in method calls, as well as test type hint fixes.
-
-Total issues resolved: **3**
-
-- [351: Travis already has xdebug pre-installed for PHP 7.1](https://github.com/Ocramius/ProxyManager/pull/351)
-- [358: Fix #351 - travis has xdebug pre-installed for PHP 7.1](https://github.com/Ocramius/ProxyManager/pull/358)
-- [361: PHPStan inspection fixes](https://github.com/Ocramius/ProxyManager/pull/361)
-
-## 2.1.0
-
-### Improved
-
-- Introduced support for PHP 7.1, `void` and nullable (`?`)
-  types [#314](https://github.com/Ocramius/ProxyManager/issues/314)
-  [#327](https://github.com/Ocramius/ProxyManager/pull/327)
-- The test suite is now fully CI-covered by mutation testing [#348](https://github.com/Ocramius/ProxyManager/pull/348)
-- Moved all performance testing to PHPBench [#326](https://github.com/Ocramius/ProxyManager/pull/326)
-- PHP 7.0 support dropped [#327](https://github.com/Ocramius/ProxyManager/pull/327)
-
-Total issues resolved: **9**
-
-- [290: Branch-alias version bump: master bump to 3.0.x](https://github.com/Ocramius/ProxyManager/pull/290)
-- [314: Nullable params type](https://github.com/Ocramius/ProxyManager/issues/314)
-- [326: Moved performance tests to phpbench-based suite](https://github.com/Ocramius/ProxyManager/pull/326)
-- [327: PHP 7.1 support](https://github.com/Ocramius/ProxyManager/pull/327)
-- [336: Hotfix tests for php 7 support](https://github.com/Ocramius/ProxyManager/pull/336)
-- [339: Provided type ?... is invalid](https://github.com/Ocramius/ProxyManager/issues/339)
-- [343: Fix typo in ghost objects lazy loading code example](https://github.com/Ocramius/ProxyManager/pull/343)
-- [348: Introduced full mutation testing](https://github.com/Ocramius/ProxyManager/pull/348)
-- [349: install xdebug manually for php 7.1](https://github.com/Ocramius/ProxyManager/pull/349)
-
 ## 2.0.4
 
 ### Fixed

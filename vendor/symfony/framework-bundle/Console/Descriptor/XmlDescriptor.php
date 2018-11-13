@@ -58,7 +58,7 @@ class XmlDescriptor extends Descriptor
      */
     protected function describeContainerTags(ContainerBuilder $builder, array $options = array())
     {
-        $this->writeDocument($this->getContainerTagsDocument($builder, isset($options['show_hidden']) && $options['show_hidden']));
+        $this->writeDocument($this->getContainerTagsDocument($builder, isset($options['show_private']) && $options['show_private']));
     }
 
     /**
@@ -78,7 +78,7 @@ class XmlDescriptor extends Descriptor
      */
     protected function describeContainerServices(ContainerBuilder $builder, array $options = array())
     {
-        $this->writeDocument($this->getContainerServicesDocument($builder, isset($options['tag']) ? $options['tag'] : null, isset($options['show_hidden']) && $options['show_hidden'], isset($options['show_arguments']) && $options['show_arguments'], isset($options['filter']) ? $options['filter'] : null));
+        $this->writeDocument($this->getContainerServicesDocument($builder, isset($options['tag']) ? $options['tag'] : null, isset($options['show_private']) && $options['show_private'], isset($options['show_arguments']) && $options['show_arguments'], isset($options['filter']) ? $options['filter'] : null));
     }
 
     /**
@@ -133,6 +133,8 @@ class XmlDescriptor extends Descriptor
     /**
      * Writes DOM document.
      *
+     * @param \DOMDocument $dom
+     *
      * @return \DOMDocument|string
      */
     private function writeDocument(\DOMDocument $dom)
@@ -141,7 +143,12 @@ class XmlDescriptor extends Descriptor
         $this->write($dom->saveXML());
     }
 
-    private function getRouteCollectionDocument(RouteCollection $routes): \DOMDocument
+    /**
+     * @param RouteCollection $routes
+     *
+     * @return \DOMDocument
+     */
+    private function getRouteCollectionDocument(RouteCollection $routes)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($routesXML = $dom->createElement('routes'));
@@ -154,7 +161,13 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getRouteDocument(Route $route, string $name = null): \DOMDocument
+    /**
+     * @param Route       $route
+     * @param string|null $name
+     *
+     * @return \DOMDocument
+     */
+    private function getRouteDocument(Route $route, $name = null)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($routeXML = $dom->createElement('route'));
@@ -163,7 +176,7 @@ class XmlDescriptor extends Descriptor
             $routeXML->setAttribute('name', $name);
         }
 
-        $routeXML->setAttribute('class', \get_class($route));
+        $routeXML->setAttribute('class', get_class($route));
 
         $routeXML->appendChild($pathXML = $dom->createElement('path'));
         $pathXML->setAttribute('regex', $route->compile()->getRegex());
@@ -217,7 +230,12 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getContainerParametersDocument(ParameterBag $parameters): \DOMDocument
+    /**
+     * @param ParameterBag $parameters
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerParametersDocument(ParameterBag $parameters)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($parametersXML = $dom->createElement('parameters'));
@@ -231,12 +249,18 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getContainerTagsDocument(ContainerBuilder $builder, bool $showHidden = false): \DOMDocument
+    /**
+     * @param ContainerBuilder $builder
+     * @param bool             $showPrivate
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerTagsDocument(ContainerBuilder $builder, $showPrivate = false)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($containerXML = $dom->createElement('container'));
 
-        foreach ($this->findDefinitionsByTag($builder, $showHidden) as $tag => $definitions) {
+        foreach ($this->findDefinitionsByTag($builder, $showPrivate) as $tag => $definitions) {
             $containerXML->appendChild($tagXML = $dom->createElement('tag'));
             $tagXML->setAttribute('name', $tag);
 
@@ -249,7 +273,15 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getContainerServiceDocument($service, string $id, ContainerBuilder $builder = null, bool $showArguments = false): \DOMDocument
+    /**
+     * @param mixed                 $service
+     * @param string                $id
+     * @param ContainerBuilder|null $builder
+     * @param bool                  $showArguments
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerServiceDocument($service, $id, ContainerBuilder $builder = null, $showArguments = false)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
 
@@ -263,13 +295,22 @@ class XmlDescriptor extends Descriptor
         } else {
             $dom->appendChild($serviceXML = $dom->createElement('service'));
             $serviceXML->setAttribute('id', $id);
-            $serviceXML->setAttribute('class', \get_class($service));
+            $serviceXML->setAttribute('class', get_class($service));
         }
 
         return $dom;
     }
 
-    private function getContainerServicesDocument(ContainerBuilder $builder, string $tag = null, bool $showHidden = false, bool $showArguments = false, callable $filter = null): \DOMDocument
+    /**
+     * @param ContainerBuilder $builder
+     * @param string|null      $tag
+     * @param bool             $showPrivate
+     * @param bool             $showArguments
+     * @param callable         $filter
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerServicesDocument(ContainerBuilder $builder, $tag = null, $showPrivate = false, $showArguments = false, $filter = null)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($containerXML = $dom->createElement('container'));
@@ -283,7 +324,7 @@ class XmlDescriptor extends Descriptor
         foreach ($this->sortServiceIds($serviceIds) as $serviceId) {
             $service = $this->resolveServiceDefinition($builder, $serviceId);
 
-            if ($showHidden xor '.' === ($serviceId[0] ?? null)) {
+            if (($service instanceof Definition || $service instanceof Alias) && !($showPrivate || $service->isPublic())) {
                 continue;
             }
 
@@ -294,7 +335,14 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getContainerDefinitionDocument(Definition $definition, string $id = null, bool $omitTags = false, bool $showArguments = false): \DOMDocument
+    /**
+     * @param Definition  $definition
+     * @param string|null $id
+     * @param bool        $omitTags
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerDefinitionDocument(Definition $definition, $id = null, $omitTags = false, $showArguments = false)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($serviceXML = $dom->createElement('definition'));
@@ -308,7 +356,7 @@ class XmlDescriptor extends Descriptor
         if ($factory = $definition->getFactory()) {
             $serviceXML->appendChild($factoryXML = $dom->createElement('factory'));
 
-            if (\is_array($factory)) {
+            if (is_array($factory)) {
                 if ($factory[0] instanceof Reference) {
                     $factoryXML->setAttribute('service', (string) $factory[0]);
                 } elseif ($factory[0] instanceof Definition) {
@@ -322,7 +370,7 @@ class XmlDescriptor extends Descriptor
             }
         }
 
-        $serviceXML->setAttribute('public', $definition->isPublic() && !$definition->isPrivate() ? 'true' : 'false');
+        $serviceXML->setAttribute('public', $definition->isPublic() ? 'true' : 'false');
         $serviceXML->setAttribute('synthetic', $definition->isSynthetic() ? 'true' : 'false');
         $serviceXML->setAttribute('lazy', $definition->isLazy() ? 'true' : 'false');
         $serviceXML->setAttribute('shared', $definition->isShared() ? 'true' : 'false');
@@ -332,7 +380,7 @@ class XmlDescriptor extends Descriptor
         $serviceXML->setAttribute('file', $definition->getFile());
 
         $calls = $definition->getMethodCalls();
-        if (\count($calls) > 0) {
+        if (count($calls) > 0) {
             $serviceXML->appendChild($callsXML = $dom->createElement('calls'));
             foreach ($calls as $callData) {
                 $callsXML->appendChild($callXML = $dom->createElement('call'));
@@ -367,6 +415,8 @@ class XmlDescriptor extends Descriptor
     }
 
     /**
+     * @param array $arguments
+     *
      * @return \DOMNode[]
      */
     private function getArgumentNodes(array $arguments, \DOMDocument $dom)
@@ -376,7 +426,7 @@ class XmlDescriptor extends Descriptor
         foreach ($arguments as $argumentKey => $argument) {
             $argumentXML = $dom->createElement('argument');
 
-            if (\is_string($argumentKey)) {
+            if (is_string($argumentKey)) {
                 $argumentXML->setAttribute('key', $argumentKey);
             }
 
@@ -395,7 +445,7 @@ class XmlDescriptor extends Descriptor
                 }
             } elseif ($argument instanceof Definition) {
                 $argumentXML->appendChild($dom->importNode($this->getContainerDefinitionDocument($argument, null, false, true)->childNodes->item(0), true));
-            } elseif (\is_array($argument)) {
+            } elseif (is_array($argument)) {
                 $argumentXML->setAttribute('type', 'collection');
 
                 foreach ($this->getArgumentNodes($argument, $dom) as $childArgumenXML) {
@@ -411,7 +461,13 @@ class XmlDescriptor extends Descriptor
         return $nodes;
     }
 
-    private function getContainerAliasDocument(Alias $alias, string $id = null): \DOMDocument
+    /**
+     * @param Alias       $alias
+     * @param string|null $id
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerAliasDocument(Alias $alias, $id = null)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($aliasXML = $dom->createElement('alias'));
@@ -421,12 +477,18 @@ class XmlDescriptor extends Descriptor
         }
 
         $aliasXML->setAttribute('service', (string) $alias);
-        $aliasXML->setAttribute('public', $alias->isPublic() && !$alias->isPrivate() ? 'true' : 'false');
+        $aliasXML->setAttribute('public', $alias->isPublic() ? 'true' : 'false');
 
         return $dom;
     }
 
-    private function getContainerParameterDocument($parameter, $options = array()): \DOMDocument
+    /**
+     * @param string $parameter
+     * @param array  $options
+     *
+     * @return \DOMDocument
+     */
+    private function getContainerParameterDocument($parameter, $options = array())
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($parameterXML = $dom->createElement('parameter'));
@@ -440,7 +502,13 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
-    private function getEventDispatcherListenersDocument(EventDispatcherInterface $eventDispatcher, string $event = null): \DOMDocument
+    /**
+     * @param EventDispatcherInterface $eventDispatcher
+     * @param string|null              $event
+     *
+     * @return \DOMDocument
+     */
+    private function getEventDispatcherListenersDocument(EventDispatcherInterface $eventDispatcher, $event = null)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($eventDispatcherXML = $dom->createElement('event-dispatcher'));
@@ -462,6 +530,10 @@ class XmlDescriptor extends Descriptor
         return $dom;
     }
 
+    /**
+     * @param \DOMElement $element
+     * @param array       $eventListeners
+     */
     private function appendEventListenerDocument(EventDispatcherInterface $eventDispatcher, $event, \DOMElement $element, array $eventListeners)
     {
         foreach ($eventListeners as $listener) {
@@ -472,17 +544,22 @@ class XmlDescriptor extends Descriptor
         }
     }
 
-    private function getCallableDocument($callable): \DOMDocument
+    /**
+     * @param callable $callable
+     *
+     * @return \DOMDocument
+     */
+    private function getCallableDocument($callable)
     {
         $dom = new \DOMDocument('1.0', 'UTF-8');
         $dom->appendChild($callableXML = $dom->createElement('callable'));
 
-        if (\is_array($callable)) {
+        if (is_array($callable)) {
             $callableXML->setAttribute('type', 'function');
 
-            if (\is_object($callable[0])) {
+            if (is_object($callable[0])) {
                 $callableXML->setAttribute('name', $callable[1]);
-                $callableXML->setAttribute('class', \get_class($callable[0]));
+                $callableXML->setAttribute('class', get_class($callable[0]));
             } else {
                 if (0 !== strpos($callable[1], 'parent::')) {
                     $callableXML->setAttribute('name', $callable[1]);
@@ -499,7 +576,7 @@ class XmlDescriptor extends Descriptor
             return $dom;
         }
 
-        if (\is_string($callable)) {
+        if (is_string($callable)) {
             $callableXML->setAttribute('type', 'function');
 
             if (false === strpos($callable, '::')) {
@@ -523,7 +600,7 @@ class XmlDescriptor extends Descriptor
 
         if (method_exists($callable, '__invoke')) {
             $callableXML->setAttribute('type', 'object');
-            $callableXML->setAttribute('name', \get_class($callable));
+            $callableXML->setAttribute('name', get_class($callable));
 
             return $dom;
         }

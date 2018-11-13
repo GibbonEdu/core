@@ -1,5 +1,5 @@
-Services
-========
+Public services
+===============
 
 Definitions
 -----------
@@ -18,18 +18,6 @@ Definitions
 - Factory Class: `Full\Qualified\FactoryClass`
 - Factory Method: `get`
 
-### service_container
-
-- Class: `Symfony\Component\DependencyInjection\ContainerInterface`
-- Public: yes
-- Synthetic: yes
-- Lazy: no
-- Shared: yes
-- Abstract: no
-- Autowired: no
-- Autoconfigured: no
-- Arguments: no
-
 
 Aliases
 -------
@@ -39,3 +27,8 @@ Aliases
 - Service: `service_1`
 - Public: yes
 
+
+Services
+--------
+
+- `service_container`: `Symfony\Component\DependencyInjection\ContainerBuilder`

@@ -17,7 +17,12 @@ class ApcuCache extends AbstractCache
 {
     use ApcuTrait;
 
-    public function __construct(string $namespace = '', int $defaultLifetime = 0, string $version = null)
+    /**
+     * @param string      $namespace
+     * @param int         $defaultLifetime
+     * @param string|null $version
+     */
+    public function __construct($namespace = '', $defaultLifetime = 0, $version = null)
     {
         $this->init($namespace, $defaultLifetime, $version);
     }

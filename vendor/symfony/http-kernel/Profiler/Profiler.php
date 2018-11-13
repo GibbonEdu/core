@@ -11,12 +11,12 @@
 
 namespace Symfony\Component\HttpKernel\Profiler;
 
-use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Exception\ConflictingHeadersException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollectorInterface;
 use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * Profiler.
@@ -25,6 +25,9 @@ use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
  */
 class Profiler
 {
+    /**
+     * @var ProfilerStorageInterface
+     */
     private $storage;
 
     /**
@@ -32,15 +35,26 @@ class Profiler
      */
     private $collectors = array();
 
+    /**
+     * @var LoggerInterface
+     */
     private $logger;
-    private $initiallyEnabled = true;
+
+    /**
+     * @var bool
+     */
     private $enabled = true;
 
-    public function __construct(ProfilerStorageInterface $storage, LoggerInterface $logger = null, bool $enable = true)
+    /**
+     * Constructor.
+     *
+     * @param ProfilerStorageInterface $storage A ProfilerStorageInterface instance
+     * @param LoggerInterface          $logger  A LoggerInterface instance
+     */
+    public function __construct(ProfilerStorageInterface $storage, LoggerInterface $logger = null)
     {
         $this->storage = $storage;
         $this->logger = $logger;
-        $this->initiallyEnabled = $this->enabled = $enable;
     }
 
     /**
@@ -61,6 +75,8 @@ class Profiler
 
     /**
      * Loads the Profile for the given Response.
+     *
+     * @param Response $response A Response instance
      *
      * @return Profile|false A Profile instance
      */
@@ -88,6 +104,8 @@ class Profiler
     /**
      * Saves a Profile.
      *
+     * @param Profile $profile A Profile instance
+     *
      * @return bool
      */
     public function saveProfile(Profile $profile)
@@ -100,7 +118,7 @@ class Profiler
         }
 
         if (!($ret = $this->storage->write($profile)) && null !== $this->logger) {
-            $this->logger->warning('Unable to store the profiler information.', array('configured_storage' => \get_class($this->storage)));
+            $this->logger->warning('Unable to store the profiler information.', array('configured_storage' => get_class($this->storage)));
         }
 
         return $ret;
@@ -137,6 +155,10 @@ class Profiler
     /**
      * Collects data for the given Response.
      *
+     * @param Request    $request   A Request instance
+     * @param Response   $response  A Response instance
+     * @param \Exception $exception An exception instance if the request threw one
+     *
      * @return Profile|null A Profile instance or null if the profiler is disabled
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
@@ -156,10 +178,6 @@ class Profiler
             $profile->setIp('Unknown');
         }
 
-        if ($prevToken = $response->headers->get('X-Debug-Token')) {
-            $response->headers->set('X-Previous-Debug-Token', $prevToken);
-        }
-
         $response->headers->set('X-Debug-Token', $profile->getToken());
 
         foreach ($this->collectors as $collector) {
@@ -170,14 +188,6 @@ class Profiler
         }
 
         return $profile;
-    }
-
-    public function reset()
-    {
-        foreach ($this->collectors as $collector) {
-            $collector->reset();
-        }
-        $this->enabled = $this->initiallyEnabled;
     }
 
     /**
@@ -205,6 +215,8 @@ class Profiler
 
     /**
      * Adds a Collector.
+     *
+     * @param DataCollectorInterface $collector A DataCollectorInterface instance
      */
     public function add(DataCollectorInterface $collector)
     {

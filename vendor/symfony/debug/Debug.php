@@ -25,6 +25,9 @@ class Debug
      *
      * This method registers an error handler and an exception handler.
      *
+     * If the Symfony ClassLoader component is available, a special
+     * class loader is also registered.
+     *
      * @param int  $errorReportingLevel The level of error reporting you want
      * @param bool $displayErrors       Whether to display errors (for development) or just log them (for production)
      */
@@ -42,10 +45,10 @@ class Debug
             error_reporting(E_ALL);
         }
 
-        if (!\in_array(\PHP_SAPI, array('cli', 'phpdbg'), true)) {
+        if ('cli' !== PHP_SAPI) {
             ini_set('display_errors', 0);
             ExceptionHandler::register();
-        } elseif ($displayErrors && (!filter_var(ini_get('log_errors'), FILTER_VALIDATE_BOOLEAN) || ini_get('error_log'))) {
+        } elseif ($displayErrors && (!ini_get('log_errors') || ini_get('error_log'))) {
             // CLI - display errors only if they're not already logged to STDERR
             ini_set('display_errors', 1);
         }

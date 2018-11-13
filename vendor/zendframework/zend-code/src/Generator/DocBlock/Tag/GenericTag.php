@@ -12,19 +12,17 @@ namespace Zend\Code\Generator\DocBlock\Tag;
 use Zend\Code\Generator\AbstractGenerator;
 use Zend\Code\Generic\Prototype\PrototypeGenericInterface;
 
-use function ltrim;
-
 class GenericTag extends AbstractGenerator implements TagInterface, PrototypeGenericInterface
 {
     /**
      * @var string
      */
-    protected $name;
+    protected $name = null;
 
     /**
      * @var string
      */
-    protected $content;
+    protected $content = null;
 
     /**
      * @param string $name
@@ -32,11 +30,11 @@ class GenericTag extends AbstractGenerator implements TagInterface, PrototypeGen
      */
     public function __construct($name = null, $content = null)
     {
-        if (! empty($name)) {
+        if (!empty($name)) {
             $this->setName($name);
         }
 
-        if (! empty($content)) {
+        if (!empty($content)) {
             $this->setContent($content);
         }
     }
@@ -83,7 +81,7 @@ class GenericTag extends AbstractGenerator implements TagInterface, PrototypeGen
     public function generate()
     {
         $output = '@' . $this->name
-            . (! empty($this->content) ? ' ' . $this->content : '');
+            . ((!empty($this->content)) ? ' ' . $this->content : '');
 
         return $output;
     }

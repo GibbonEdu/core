@@ -12,9 +12,9 @@
 namespace Symfony\Component\Config\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Tests\Resource\ResourceStub;
 use Symfony\Component\Config\Resource\FileResource;
 use Symfony\Component\Config\ResourceCheckerConfigCache;
-use Symfony\Component\Config\Tests\Resource\ResourceStub;
 
 class ResourceCheckerConfigCacheTest extends TestCase
 {
@@ -57,17 +57,11 @@ class ResourceCheckerConfigCacheTest extends TestCase
         $this->assertFalse($cache->isFresh());
     }
 
-    public function testCacheIsFreshIfNoCheckerProvided()
+    public function testCacheIsFreshIfNocheckerProvided()
     {
         /* For example in prod mode, you may choose not to run any checkers
            at all. In that case, the cache should always be considered fresh. */
         $cache = new ResourceCheckerConfigCache($this->cacheFile);
-        $this->assertTrue($cache->isFresh());
-    }
-
-    public function testCacheIsFreshIfEmptyCheckerIteratorProvided()
-    {
-        $cache = new ResourceCheckerConfigCache($this->cacheFile, new \ArrayIterator(array()));
         $this->assertTrue($cache->isFresh());
     }
 

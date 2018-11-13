@@ -1,10 +1,10 @@
 - Path: /name/add
-- Path Regex: #PATH_REGEX#
+- Path Regex: #^/name/add$#s
 - Host: localhost
-- Host Regex: #HOST_REGEX#
+- Host Regex: #^localhost$#si
 - Scheme: http|https
 - Method: PUT|POST
-- Class: Symfony\Bundle\FrameworkBundle\Tests\Console\Descriptor\RouteStub
+- Class: Symfony\Component\Routing\Route
 - Defaults: NONE
 - Requirements: NO CUSTOM
 - Options: 

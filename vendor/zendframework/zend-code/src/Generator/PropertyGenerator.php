@@ -11,10 +11,6 @@ namespace Zend\Code\Generator;
 
 use Zend\Code\Reflection\PropertyReflection;
 
-use function sprintf;
-use function str_replace;
-use function strtolower;
-
 class PropertyGenerator extends AbstractMemberGenerator
 {
     const FLAG_CONSTANT = 0x08;
@@ -22,17 +18,12 @@ class PropertyGenerator extends AbstractMemberGenerator
     /**
      * @var bool
      */
-    protected $isConst;
+    protected $isConst = null;
 
     /**
      * @var PropertyValueGenerator
      */
-    protected $defaultValue;
-
-    /**
-     * @var bool
-     */
-    private $omitDefaultValue = false;
+    protected $defaultValue = null;
 
     /**
      * @param  PropertyReflection $reflectionProperty
@@ -72,15 +63,14 @@ class PropertyGenerator extends AbstractMemberGenerator
     /**
      * Generate from array
      *
-     * @configkey name               string                                          [required] Class Name
-     * @configkey const              bool
-     * @configkey defaultvalue       null|bool|string|int|float|array|ValueGenerator
-     * @configkey flags              int
-     * @configkey abstract           bool
-     * @configkey final              bool
-     * @configkey static             bool
-     * @configkey visibility         string
-     * @configkey omitdefaultvalue   bool
+     * @configkey name         string                                          [required] Class Name
+     * @configkey const        bool
+     * @configkey defaultvalue null|bool|string|int|float|array|ValueGenerator
+     * @configkey flags        int
+     * @configkey abstract     bool
+     * @configkey final        bool
+     * @configkey static       bool
+     * @configkey visibility   string
      *
      * @throws Exception\InvalidArgumentException
      * @param  array $array
@@ -88,7 +78,7 @@ class PropertyGenerator extends AbstractMemberGenerator
      */
     public static function fromArray(array $array)
     {
-        if (! isset($array['name'])) {
+        if (!isset($array['name'])) {
             throw new Exception\InvalidArgumentException(
                 'Property generator requires that a name is provided for this object'
             );
@@ -105,7 +95,7 @@ class PropertyGenerator extends AbstractMemberGenerator
                     $property->setDefaultValue($value);
                     break;
                 case 'docblock':
-                    $docBlock = $value instanceof DocBlockGenerator ? $value : DocBlockGenerator::fromArray($value);
+                    $docBlock = ($value instanceof DocBlockGenerator) ? $value : DocBlockGenerator::fromArray($value);
                     $property->setDocBlock($docBlock);
                     break;
                 case 'flags':
@@ -122,9 +112,6 @@ class PropertyGenerator extends AbstractMemberGenerator
                     break;
                 case 'visibility':
                     $property->setVisibility($value);
-                    break;
-                case 'omitdefaultvalue':
-                    $property->omitDefaultValue($value);
                     break;
             }
         }
@@ -186,7 +173,7 @@ class PropertyGenerator extends AbstractMemberGenerator
         $defaultValueType = PropertyValueGenerator::TYPE_AUTO,
         $defaultValueOutputMode = PropertyValueGenerator::OUTPUT_MULTIPLE_LINE
     ) {
-        if (! $defaultValue instanceof PropertyValueGenerator) {
+        if (!($defaultValue instanceof PropertyValueGenerator)) {
             $defaultValue = new PropertyValueGenerator($defaultValue, $defaultValueType, $defaultValueOutputMode);
         }
 
@@ -220,7 +207,7 @@ class PropertyGenerator extends AbstractMemberGenerator
         }
 
         if ($this->isConst()) {
-            if ($defaultValue !== null && ! $defaultValue->isValidConstantType()) {
+            if ($defaultValue !== null && !$defaultValue->isValidConstantType()) {
                 throw new Exception\RuntimeException(sprintf(
                     'The property %s is said to be '
                     . 'constant but does not have a valid constant value.',
@@ -228,28 +215,15 @@ class PropertyGenerator extends AbstractMemberGenerator
                 ));
             }
             $output .= $this->indentation . 'const ' . $name . ' = '
-                . ($defaultValue !== null ? $defaultValue->generate() : 'null;');
-
-            return $output;
+                . (($defaultValue !== null) ? $defaultValue->generate() : 'null;');
+        } else {
+            $output .= $this->indentation
+                . $this->getVisibility()
+                . (($this->isStatic()) ? ' static' : '')
+                . ' $' . $name . ' = '
+                . (($defaultValue !== null) ? $defaultValue->generate() : 'null;');
         }
 
-        $output .= $this->indentation . $this->getVisibility() . ($this->isStatic() ? ' static' : '') . ' $' . $name;
-
-        if ($this->omitDefaultValue) {
-            return $output . ';';
-        }
-
-        return $output . ' = ' . ($defaultValue !== null ? $defaultValue->generate() : 'null;');
-    }
-
-    /**
-     * @param bool $omit
-     * @return PropertyGenerator
-     */
-    public function omitDefaultValue(bool $omit = true)
-    {
-        $this->omitDefaultValue = $omit;
-
-        return $this;
+        return $output;
     }
 }

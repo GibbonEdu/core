@@ -1,4 +1,20 @@
 <?php
+/*
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ * A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ * OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ * SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ * DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ * THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ * This software consists of voluntary contributions made by many individuals
+ * and is licensed under the MIT license.
+ */
 
 declare(strict_types=1);
 
@@ -33,6 +49,8 @@ class PublicScopeSimulator
      *                                              to read the property. `$this` if none provided
      * @param string|null       $returnPropertyName name of the property to which we want to assign the result of
      *                                              the operation. Return directly if none provided
+     *
+     * @return string
      *
      * @throws \InvalidArgumentException
      */
@@ -84,17 +102,12 @@ class PublicScopeSimulator
             return '';
         }
 
+        //
         return '    $backtrace = debug_backtrace(false);' . "\n"
-            . '    trigger_error(' . "\n"
-            . '        sprintf(' . "\n"
-            . '            \'Undefined property: %s::$%s in %s on line %s\',' . "\n"
-            . '            get_parent_class($this),' . "\n"
-            . '            $' . $nameParameter . ',' . "\n"
-            . '            $backtrace[0][\'file\'],' . "\n"
-            . '            $backtrace[0][\'line\']' . "\n"
-            . '        ),' . "\n"
-            . '        \E_USER_NOTICE' . "\n"
-            . '    );' . "\n";
+            . '    trigger_error(\'Undefined property: \' . get_parent_class($this) . \'::$\' . $'
+            . $nameParameter
+            . ' . \' in \' . $backtrace[0][\'file\'] . \' on line \' . $backtrace[0][\'line\'], \E_USER_NOTICE);'
+            . "\n";
     }
 
     /**
@@ -103,6 +116,10 @@ class PublicScopeSimulator
      * Note: if the object is a wrapper, the wrapped instance is accessed directly. If the object
      * is a ghost or the proxy has no wrapper, then an instance of the parent class is created via
      * on-the-fly unserialization
+     *
+     * @param string $operationType
+     *
+     * @return string
      */
     private static function getByRefReturnValue(string $operationType) : string
     {
@@ -126,15 +143,21 @@ class PublicScopeSimulator
     }
 
     /**
+     * @param string      $operationType
+     * @param string      $nameParameter
+     * @param string|null $valueParameter
+     *
+     * @return string
+     *
      * @throws \InvalidArgumentException
      */
-    private static function getOperation(string $operationType, string $nameParameter, ?string $valueParameter) : string
+    private static function getOperation(string $operationType, string $nameParameter, $valueParameter) : string
     {
         switch ($operationType) {
             case static::OPERATION_GET:
-                return 'return $targetObject->$' . $nameParameter . ';';
+                return 'return $targetObject->$' . $nameParameter . ";";
             case static::OPERATION_SET:
-                if (null === $valueParameter) {
+                if (! $valueParameter) {
                     throw new \InvalidArgumentException('Parameter $valueParameter not provided');
                 }
 
@@ -155,9 +178,9 @@ class PublicScopeSimulator
      */
     private static function getScopeReBind() : string
     {
-        return '$backtrace = debug_backtrace(true);' . "\n"
-            . '$scopeObject = isset($backtrace[1][\'object\'])'
+        return '    $backtrace = debug_backtrace(true);' . "\n"
+            . '    $scopeObject = isset($backtrace[1][\'object\'])'
             . ' ? $backtrace[1][\'object\'] : new \ProxyManager\Stub\EmptyClassStub();' . "\n"
-            . '$accessor = $accessor->bindTo($scopeObject, get_class($scopeObject));' . "\n";
+            . '    $accessor = $accessor->bindTo($scopeObject, get_class($scopeObject));' . "\n";
     }
 }

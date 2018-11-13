@@ -12,34 +12,38 @@
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Bundle\FrameworkBundle\Controller\ControllerNameParser;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Routing\RouteCollection;
+use Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Route;
 
 /**
  * A console command for retrieving information about routes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
  * @author Tobias Schultze <http://tobion.de>
- *
- * @final
  */
-class RouterDebugCommand extends Command
+class RouterDebugCommand extends ContainerAwareCommand
 {
-    protected static $defaultName = 'debug:router';
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
     {
-        parent::__construct();
+        if (!$this->getContainer()->has('router')) {
+            return false;
+        }
+        $router = $this->getContainer()->get('router');
+        if (!$router instanceof RouterInterface) {
+            return false;
+        }
 
-        $this->router = $router;
+        return parent::isEnabled();
     }
 
     /**
@@ -48,6 +52,7 @@ class RouterDebugCommand extends Command
     protected function configure()
     {
         $this
+            ->setName('debug:router')
             ->setDefinition(array(
                 new InputArgument('name', InputArgument::OPTIONAL, 'A route name'),
                 new InputOption('show-controllers', null, InputOption::VALUE_NONE, 'Show assigned controllers in overview'),
@@ -68,33 +73,34 @@ EOF
     /**
      * {@inheritdoc}
      *
-     * @throws InvalidArgumentException When route does not exist
+     * @throws \InvalidArgumentException When route does not exist
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
         $name = $input->getArgument('name');
         $helper = new DescriptorHelper();
-        $routes = $this->router->getRouteCollection();
+        $routes = $this->getContainer()->get('router')->getRouteCollection();
 
         if ($name) {
-            if (!($route = $routes->get($name)) && $matchingRoutes = $this->findRouteNameContaining($name, $routes)) {
-                $default = 1 === \count($matchingRoutes) ? $matchingRoutes[0] : null;
-                $name = $io->choice('Select one of the matching routes', $matchingRoutes, $default);
-                $route = $routes->get($name);
+            if (!$route = $routes->get($name)) {
+                throw new \InvalidArgumentException(sprintf('The route "%s" does not exist.', $name));
             }
 
-            if (!$route) {
-                throw new InvalidArgumentException(sprintf('The route "%s" does not exist.', $name));
-            }
+            $callable = $this->extractCallable($route);
 
             $helper->describe($io, $route, array(
                 'format' => $input->getOption('format'),
                 'raw_text' => $input->getOption('raw'),
                 'name' => $name,
                 'output' => $io,
+                'callable' => $callable,
             ));
         } else {
+            foreach ($routes as $route) {
+                $this->convertController($route);
+            }
+
             $helper->describe($io, $routes, array(
                 'format' => $input->getOption('format'),
                 'raw_text' => $input->getOption('raw'),
@@ -104,15 +110,40 @@ EOF
         }
     }
 
-    private function findRouteNameContaining(string $name, RouteCollection $routes): array
+    private function convertController(Route $route)
     {
-        $foundRoutesNames = array();
-        foreach ($routes as $routeName => $route) {
-            if (false !== stripos($routeName, $name)) {
-                $foundRoutesNames[] = $routeName;
+        if ($route->hasDefault('_controller')) {
+            $nameParser = new ControllerNameParser($this->getApplication()->getKernel());
+            try {
+                $route->setDefault('_controller', $nameParser->build($route->getDefault('_controller')));
+            } catch (\InvalidArgumentException $e) {
+            }
+        }
+    }
+
+    private function extractCallable(Route $route)
+    {
+        if (!$route->hasDefault('_controller')) {
+            return;
+        }
+
+        $controller = $route->getDefault('_controller');
+
+        if (1 === substr_count($controller, ':')) {
+            list($service, $method) = explode(':', $controller);
+            try {
+                return sprintf('%s::%s', get_class($this->getContainer()->get($service)), $method);
+            } catch (ServiceNotFoundException $e) {
             }
         }
 
-        return $foundRoutesNames;
+        $nameParser = new ControllerNameParser($this->getApplication()->getKernel());
+        try {
+            $shortNotation = $nameParser->build($controller);
+            $route->setDefault('_controller', $shortNotation);
+
+            return $controller;
+        } catch (\InvalidArgumentException $e) {
+        }
     }
 }

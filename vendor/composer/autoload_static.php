@@ -7,26 +7,24 @@ namespace Composer\Autoload;
 class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
 {
     public static $files = array (
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
+        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
-        '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
     );
 
     public static $prefixLengthsPsr4 = array (
-<<<<<<< HEAD
+        'p' => 
+        array (
+            'phpseclib\\' => 10,
+        ),
         'Z' => 
         array (
             'Zend\\EventManager\\' => 18,
             'Zend\\Code\\' => 10,
-=======
-        'p' => 
-        array (
-            'phpseclib\\' => 10,
->>>>>>> upstream/v17.0.00
         ),
         'T' => 
         array (
@@ -36,6 +34,8 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\Stopwatch\\' => 28,
             'Symfony\\Component\\Routing\\' => 26,
             'Symfony\\Component\\HttpKernel\\' => 29,
             'Symfony\\Component\\HttpFoundation\\' => 33,
@@ -46,6 +46,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
+            'Symfony\\Component\\ClassLoader\\' => 30,
             'Symfony\\Component\\Cache\\' => 24,
             'Symfony\\Bundle\\FrameworkBundle\\' => 31,
             'Symfony\\Bridge\\Doctrine\\' => 24,
@@ -53,22 +54,16 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'P' => 
         array (
-<<<<<<< HEAD
             'Psr\\SimpleCache\\' => 16,
-=======
->>>>>>> upstream/v17.0.00
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
-<<<<<<< HEAD
             'PackageVersions\\' => 16,
-=======
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
->>>>>>> upstream/v17.0.00
         ),
         'L' => 
         array (
@@ -93,8 +88,6 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'D' => 
         array (
-            'Doctrine\\ORM\\' => 13,
-            'Doctrine\\Migrations\\' => 20,
             'Doctrine\\Instantiator\\' => 22,
             'Doctrine\\DBAL\\Migrations\\' => 25,
             'Doctrine\\Common\\Inflector\\' => 26,
@@ -112,7 +105,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     );
 
     public static $prefixDirsPsr4 = array (
-<<<<<<< HEAD
+        'phpseclib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+        ),
         'Zend\\EventManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-eventmanager/src',
@@ -120,11 +116,6 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Zend\\Code\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-code/src',
-=======
-        'phpseclib\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
->>>>>>> upstream/v17.0.00
         ),
         'Twig\\' => 
         array (
@@ -137,6 +128,14 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Component\\Yaml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Symfony\\Component\\Stopwatch\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/stopwatch',
         ),
         'Symfony\\Component\\Routing\\' => 
         array (
@@ -178,6 +177,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
+        'Symfony\\Component\\ClassLoader\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/class-loader',
+        ),
         'Symfony\\Component\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/cache',
@@ -194,13 +197,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
-<<<<<<< HEAD
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
-=======
->>>>>>> upstream/v17.0.00
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -217,15 +217,13 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
-<<<<<<< HEAD
         'PackageVersions\\' => 
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
-=======
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
->>>>>>> upstream/v17.0.00
         ),
         'League\\Container\\' => 
         array (
@@ -264,14 +262,6 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
         ),
-        'Doctrine\\ORM\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/orm/lib/Doctrine/ORM',
-        ),
-        'Doctrine\\Migrations\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/migrations/lib/Doctrine/Migrations',
-        ),
         'Doctrine\\Instantiator\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/instantiator/src/Doctrine/Instantiator',
@@ -295,9 +285,6 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Doctrine\\Common\\' => 
         array (
             0 => __DIR__ . '/..' . '/doctrine/common/lib/Doctrine/Common',
-            1 => __DIR__ . '/..' . '/doctrine/event-manager/lib/Doctrine/Common',
-            2 => __DIR__ . '/..' . '/doctrine/persistence/lib/Doctrine/Common',
-            3 => __DIR__ . '/..' . '/doctrine/reflection/lib/Doctrine/Common',
         ),
         'Doctrine\\Bundle\\MigrationsBundle\\' => 
         array (
@@ -327,26 +314,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'P' => 
         array (
-<<<<<<< HEAD
             'ProxyManager\\' => 
             array (
                 0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
             ),
-        ),
-        'D' => 
-        array (
-            'Doctrine\\DBAL\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/dbal/lib',
-            ),
-            'Doctrine\\Common\\Lexer\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
-            ),
-            'Doctrine\\Common\\Collections\\' => 
-            array (
-                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
-=======
             'PHPExcel' => 
             array (
                 0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
@@ -361,15 +332,30 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
             'Google_' => 
             array (
                 0 => __DIR__ . '/..' . '/google/apiclient/src',
->>>>>>> upstream/v17.0.00
+            ),
+        ),
+        'D' => 
+        array (
+            'Doctrine\\ORM\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/orm/lib',
+            ),
+            'Doctrine\\DBAL\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/dbal/lib',
+            ),
+            'Doctrine\\Common\\Lexer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/lexer/lib',
+            ),
+            'Doctrine\\Common\\Collections\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/collections/lib',
             ),
         ),
     );
 
     public static $classMap = array (
-<<<<<<< HEAD
-        'SqlFormatter' => __DIR__ . '/..' . '/jdorn/sql-formatter/lib/SqlFormatter.php',
-=======
         'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
         'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
         'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
@@ -378,9 +364,9 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
         'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
         'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
+        'SqlFormatter' => __DIR__ . '/..' . '/jdorn/sql-formatter/lib/SqlFormatter.php',
         'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
         'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
->>>>>>> upstream/v17.0.00
     );
 
     public static function getInitializer(ClassLoader $loader)

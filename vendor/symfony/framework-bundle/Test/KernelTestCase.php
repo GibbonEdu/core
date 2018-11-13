@@ -12,8 +12,8 @@
 namespace Symfony\Bundle\FrameworkBundle\Test;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ResettableContainerInterface;
+use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
@@ -31,31 +31,121 @@ abstract class KernelTestCase extends TestCase
     protected static $kernel;
 
     /**
-     * @var ContainerInterface
+     * Finds the directory where the phpunit.xml(.dist) is stored.
+     *
+     * If you run tests with the PHPUnit CLI tool, everything will work as expected.
+     * If not, override this method in your test classes.
+     *
+     * @return string The directory where phpunit.xml(.dist) is stored
+     *
+     * @throws \RuntimeException
      */
-    protected static $container;
+    protected static function getPhpUnitXmlDir()
+    {
+        if (!isset($_SERVER['argv']) || false === strpos($_SERVER['argv'][0], 'phpunit')) {
+            throw new \RuntimeException('You must override the KernelTestCase::createKernel() method.');
+        }
+
+        $dir = static::getPhpUnitCliConfigArgument();
+        if (null === $dir &&
+            (is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml') ||
+            is_file(getcwd().DIRECTORY_SEPARATOR.'phpunit.xml.dist'))) {
+            $dir = getcwd();
+        }
+
+        // Can't continue
+        if (null === $dir) {
+            throw new \RuntimeException('Unable to guess the Kernel directory.');
+        }
+
+        if (!is_dir($dir)) {
+            $dir = dirname($dir);
+        }
+
+        return $dir;
+    }
 
     /**
+     * Finds the value of the CLI configuration option.
+     *
+     * PHPUnit will use the last configuration argument on the command line, so this only returns
+     * the last configuration argument.
+     *
+     * @return string The value of the PHPUnit CLI configuration option
+     */
+    private static function getPhpUnitCliConfigArgument()
+    {
+        $dir = null;
+        $reversedArgs = array_reverse($_SERVER['argv']);
+        foreach ($reversedArgs as $argIndex => $testArg) {
+            if (preg_match('/^-[^ \-]*c$/', $testArg) || $testArg === '--configuration') {
+                $dir = realpath($reversedArgs[$argIndex - 1]);
+                break;
+            } elseif (0 === strpos($testArg, '--configuration=')) {
+                $argPath = substr($testArg, strlen('--configuration='));
+                $dir = realpath($argPath);
+                break;
+            } elseif (0 === strpos($testArg, '-c')) {
+                $argPath = substr($testArg, strlen('-c'));
+                $dir = realpath($argPath);
+                break;
+            }
+        }
+
+        return $dir;
+    }
+
+    /**
+     * Attempts to guess the kernel location.
+     *
+     * When the Kernel is located, the file is required.
+     *
      * @return string The Kernel class name
      *
      * @throws \RuntimeException
-     * @throws \LogicException
      */
     protected static function getKernelClass()
     {
-        if (!isset($_SERVER['KERNEL_CLASS']) && !isset($_ENV['KERNEL_CLASS'])) {
-            throw new \LogicException(sprintf('You must set the KERNEL_CLASS environment variable to the fully-qualified class name of your Kernel in phpunit.xml / phpunit.xml.dist or override the %1$s::createKernel() or %1$s::getKernelClass() method.', static::class));
+        if (isset($_SERVER['KERNEL_CLASS'])) {
+            if (!class_exists($class = $_SERVER['KERNEL_CLASS'])) {
+                throw new \RuntimeException(sprintf('Class "%s" doesn\'t exist or cannot be autoloaded. Check that the KERNEL_CLASS value in phpunit.xml matches the fully-qualified class name of your Kernel or override the %s::createKernel() method.', $class, static::class));
+            }
+
+            return $class;
         }
 
-        if (!class_exists($class = $_ENV['KERNEL_CLASS'] ?? $_SERVER['KERNEL_CLASS'])) {
-            throw new \RuntimeException(sprintf('Class "%s" doesn\'t exist or cannot be autoloaded. Check that the KERNEL_CLASS value in phpunit.xml matches the fully-qualified class name of your Kernel or override the %s::createKernel() method.', $class, static::class));
+        if (isset($_SERVER['KERNEL_DIR'])) {
+            $dir = $_SERVER['KERNEL_DIR'];
+
+            if (!is_dir($dir)) {
+                $phpUnitDir = static::getPhpUnitXmlDir();
+                if (is_dir("$phpUnitDir/$dir")) {
+                    $dir = "$phpUnitDir/$dir";
+                }
+            }
+        } else {
+            $dir = static::getPhpUnitXmlDir();
         }
+
+        $finder = new Finder();
+        $finder->name('*Kernel.php')->depth(0)->in($dir);
+        $results = iterator_to_array($finder);
+        if (!count($results)) {
+            throw new \RuntimeException('Either set KERNEL_DIR in your phpunit.xml according to https://symfony.com/doc/current/book/testing.html#your-first-functional-test or override the WebTestCase::createKernel() method.');
+        }
+
+        $file = current($results);
+        $class = $file->getBasename('.php');
+
+        require_once $file;
 
         return $class;
     }
 
     /**
      * Boots the Kernel for this test.
+     *
+     * @param array $options
      *
      * @return KernelInterface A KernelInterface instance
      */
@@ -65,9 +155,6 @@ abstract class KernelTestCase extends TestCase
 
         static::$kernel = static::createKernel($options);
         static::$kernel->boot();
-
-        $container = static::$kernel->getContainer();
-        static::$container = $container->has('test.service_container') ? $container->get('test.service_container') : $container;
 
         return static::$kernel;
     }
@@ -80,6 +167,8 @@ abstract class KernelTestCase extends TestCase
      *  * environment
      *  * debug
      *
+     * @param array $options An array of options
+     *
      * @return KernelInterface A KernelInterface instance
      */
     protected static function createKernel(array $options = array())
@@ -88,27 +177,10 @@ abstract class KernelTestCase extends TestCase
             static::$class = static::getKernelClass();
         }
 
-        if (isset($options['environment'])) {
-            $env = $options['environment'];
-        } elseif (isset($_ENV['APP_ENV'])) {
-            $env = $_ENV['APP_ENV'];
-        } elseif (isset($_SERVER['APP_ENV'])) {
-            $env = $_SERVER['APP_ENV'];
-        } else {
-            $env = 'test';
-        }
-
-        if (isset($options['debug'])) {
-            $debug = $options['debug'];
-        } elseif (isset($_ENV['APP_DEBUG'])) {
-            $debug = $_ENV['APP_DEBUG'];
-        } elseif (isset($_SERVER['APP_DEBUG'])) {
-            $debug = $_SERVER['APP_DEBUG'];
-        } else {
-            $debug = true;
-        }
-
-        return new static::$class($env, $debug);
+        return new static::$class(
+            isset($options['environment']) ? $options['environment'] : 'test',
+            isset($options['debug']) ? $options['debug'] : true
+        );
     }
 
     /**
@@ -123,7 +195,6 @@ abstract class KernelTestCase extends TestCase
                 $container->reset();
             }
         }
-        static::$container = null;
     }
 
     /**

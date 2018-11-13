@@ -23,9 +23,7 @@ use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeIntIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeStringIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\GroupableEntity;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleAssociationToIntIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdNoToStringEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleStringCastableIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleStringIdEntity;
 use Symfony\Component\Form\ChoiceList\View\ChoiceGroupView;
@@ -33,6 +31,9 @@ use Symfony\Component\Form\ChoiceList\View\ChoiceView;
 use Symfony\Component\Form\Forms;
 use Symfony\Component\Form\Tests\Extension\Core\Type\BaseTypeTest;
 use Symfony\Component\Form\Tests\Extension\Core\Type\FormTypeTest;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleAssociationToIntIdEntity;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdNoToStringEntity;
 
 class EntityTypeTest extends BaseTypeTest
 {
@@ -1119,7 +1120,10 @@ class EntityTypeTest extends BaseTypeTest
 
         $repo = $this->em->getRepository(self::SINGLE_IDENT_CLASS);
 
-        $entityType = new EntityType($this->emRegistry);
+        $entityType = new EntityType(
+            $this->emRegistry,
+            PropertyAccess::createPropertyAccessor()
+        );
 
         $entityTypeGuesser = new DoctrineOrmTypeGuesser($this->emRegistry);
 
@@ -1179,7 +1183,10 @@ class EntityTypeTest extends BaseTypeTest
 
         $repo = $this->em->getRepository(self::SINGLE_IDENT_CLASS);
 
-        $entityType = new EntityType($this->emRegistry);
+        $entityType = new EntityType(
+            $this->emRegistry,
+            PropertyAccess::createPropertyAccessor()
+        );
 
         $entityTypeGuesser = new DoctrineOrmTypeGuesser($this->emRegistry);
 
@@ -1446,40 +1453,6 @@ class EntityTypeTest extends BaseTypeTest
 
         $this->assertEquals($collection, $form->getData());
         $this->assertEquals($collection, $form->getNormData());
-        $this->assertSame(array(), $form->getViewData(), 'View data is always an array');
-    }
-
-    public function testSetDataEmptyArraySubmitNullMultiple()
-    {
-        $emptyArray = array();
-        $form = $this->factory->create(static::TESTED_TYPE, null, array(
-            'em' => 'default',
-            'class' => self::SINGLE_IDENT_CLASS,
-            'multiple' => true,
-        ));
-        $form->setData($emptyArray);
-        $form->submit(null);
-        $this->assertInternalType('array', $form->getData());
-        $this->assertEquals(array(), $form->getData());
-        $this->assertEquals(array(), $form->getNormData());
-        $this->assertSame(array(), $form->getViewData(), 'View data is always an array');
-    }
-
-    public function testSetDataNonEmptyArraySubmitNullMultiple()
-    {
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-        $this->persist(array($entity1));
-        $form = $this->factory->create(static::TESTED_TYPE, null, array(
-            'em' => 'default',
-            'class' => self::SINGLE_IDENT_CLASS,
-            'multiple' => true,
-        ));
-        $existing = array(0 => $entity1);
-        $form->setData($existing);
-        $form->submit(null);
-        $this->assertInternalType('array', $form->getData());
-        $this->assertEquals(array(), $form->getData());
-        $this->assertEquals(array(), $form->getNormData());
         $this->assertSame(array(), $form->getViewData(), 'View data is always an array');
     }
 }

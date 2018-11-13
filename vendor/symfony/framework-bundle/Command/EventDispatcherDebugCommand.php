@@ -12,10 +12,9 @@
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Console\Helper\DescriptorHelper;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
@@ -24,27 +23,16 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
  * A console command for retrieving information about event dispatcher.
  *
  * @author Matthieu Auger <mail@matthieuauger.com>
- *
- * @final
  */
-class EventDispatcherDebugCommand extends Command
+class EventDispatcherDebugCommand extends ContainerAwareCommand
 {
-    protected static $defaultName = 'debug:event-dispatcher';
-    private $dispatcher;
-
-    public function __construct(EventDispatcherInterface $dispatcher)
-    {
-        parent::__construct();
-
-        $this->dispatcher = $dispatcher;
-    }
-
     /**
      * {@inheritdoc}
      */
     protected function configure()
     {
         $this
+            ->setName('debug:event-dispatcher')
             ->setDefinition(array(
                 new InputArgument('event', InputArgument::OPTIONAL, 'An event name'),
                 new InputOption('format', null, InputOption::VALUE_REQUIRED, 'The output format  (txt, xml, json, or md)', 'txt'),
@@ -72,10 +60,11 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $io = new SymfonyStyle($input, $output);
+        $dispatcher = $this->getEventDispatcher();
 
         $options = array();
         if ($event = $input->getArgument('event')) {
-            if (!$this->dispatcher->hasListeners($event)) {
+            if (!$dispatcher->hasListeners($event)) {
                 $io->getErrorStyle()->warning(sprintf('The event "%s" does not have any registered listeners.', $event));
 
                 return;
@@ -88,6 +77,16 @@ EOF
         $options['format'] = $input->getOption('format');
         $options['raw_text'] = $input->getOption('raw');
         $options['output'] = $io;
-        $helper->describe($io, $this->dispatcher, $options);
+        $helper->describe($io, $dispatcher, $options);
+    }
+
+    /**
+     * Loads the Event Dispatcher from the container.
+     *
+     * @return EventDispatcherInterface
+     */
+    protected function getEventDispatcher()
+    {
+        return $this->getContainer()->get('event_dispatcher');
     }
 }

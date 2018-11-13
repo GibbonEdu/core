@@ -11,25 +11,22 @@ namespace Zend\Code\Reflection\DocBlock\Tag;
 
 use Zend\Code\Generic\Prototype\PrototypeGenericInterface;
 
-use function explode;
-use function trim;
-
 class GenericTag implements TagInterface, PrototypeGenericInterface
 {
     /**
      * @var string
      */
-    protected $name;
+    protected $name = null;
 
     /**
      * @var string
      */
-    protected $content;
+    protected $content = null;
 
     /**
      * @var null|string
      */
-    protected $contentSplitCharacter;
+    protected $contentSplitCharacter = null;
 
     /**
      * @var array

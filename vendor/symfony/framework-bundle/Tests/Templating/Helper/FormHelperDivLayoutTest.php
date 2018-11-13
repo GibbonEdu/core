@@ -11,14 +11,14 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Tests\Templating\Helper;
 
-use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
+use Symfony\Component\Form\FormView;
+use Symfony\Component\Form\Extension\Templating\TemplatingExtension;
+use Symfony\Component\Form\Tests\AbstractDivLayoutTest;
 use Symfony\Bundle\FrameworkBundle\Tests\Templating\Helper\Fixtures\StubTemplateNameParser;
 use Symfony\Bundle\FrameworkBundle\Tests\Templating\Helper\Fixtures\StubTranslator;
-use Symfony\Component\Form\Extension\Templating\TemplatingExtension;
-use Symfony\Component\Form\FormView;
-use Symfony\Component\Form\Tests\AbstractDivLayoutTest;
-use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\PhpEngine;
+use Symfony\Component\Templating\Loader\FilesystemLoader;
+use Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper;
 
 class FormHelperDivLayoutTest extends AbstractDivLayoutTest
 {
@@ -32,7 +32,7 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
         // should be moved to the Form component once absolute file paths are supported
         // by the default name parser in the Templating component
         $reflClass = new \ReflectionClass('Symfony\Bundle\FrameworkBundle\FrameworkBundle');
-        $root = realpath(\dirname($reflClass->getFileName()).'/Resources/views');
+        $root = realpath(dirname($reflClass->getFileName()).'/Resources/views');
         $rootTheme = realpath(__DIR__.'/Resources');
         $templateNameParser = new StubTemplateNameParser($root, $rootTheme);
         $loader = new FilesystemLoader(array());
@@ -81,18 +81,6 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
         $this->assertSame('<form name="form" method="get" action="0">', $html);
     }
 
-    public function testMoneyWidgetInIso()
-    {
-        $this->engine->setCharset('ISO-8859-1');
-
-        $view = $this->factory
-            ->createNamed('name', 'Symfony\Component\Form\Extension\Core\Type\MoneyType')
-            ->createView()
-        ;
-
-        $this->assertSame('&euro; <input type="text" id="name" name="name" required="required" />', $this->renderWidget($view));
-    }
-
     protected function renderForm(FormView $view, array $vars = array())
     {
         return (string) $this->engine->get('form')->form($view, $vars);
@@ -101,11 +89,6 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
     protected function renderLabel(FormView $view, $label = null, array $vars = array())
     {
         return (string) $this->engine->get('form')->label($view, $label, $vars);
-    }
-
-    protected function renderHelp(FormView $view)
-    {
-        return (string) $this->engine->get('form')->help($view);
     }
 
     protected function renderErrors(FormView $view)
@@ -138,9 +121,9 @@ class FormHelperDivLayoutTest extends AbstractDivLayoutTest
         return (string) $this->engine->get('form')->end($view, $vars);
     }
 
-    protected function setTheme(FormView $view, array $themes, $useDefaultThemes = true)
+    protected function setTheme(FormView $view, array $themes)
     {
-        $this->engine->get('form')->setTheme($view, $themes, $useDefaultThemes);
+        $this->engine->get('form')->setTheme($view, $themes);
     }
 
     public static function themeBlockInheritanceProvider()

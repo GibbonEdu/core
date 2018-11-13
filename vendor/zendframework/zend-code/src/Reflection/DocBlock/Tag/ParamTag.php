@@ -9,11 +9,6 @@
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
 
-use function explode;
-use function preg_match;
-use function preg_replace;
-use function trim;
-
 class ParamTag implements TagInterface, PhpDocTypedTagInterface
 {
     /**
@@ -24,12 +19,12 @@ class ParamTag implements TagInterface, PhpDocTypedTagInterface
     /**
      * @var string
      */
-    protected $variableName;
+    protected $variableName = null;
 
     /**
      * @var string
      */
-    protected $description;
+    protected $description = null;
 
     /**
      * @return string
@@ -48,7 +43,7 @@ class ParamTag implements TagInterface, PhpDocTypedTagInterface
     {
         $matches = [];
 
-        if (! preg_match('#((?:[\w|\\\]+(?:\[\])*\|?)+)(?:\s+(\$\S+))?(?:\s+(.*))?#s', $tagDocBlockLine, $matches)) {
+        if (!preg_match('#((?:[\w|\\\]+(?:\[\])*\|?)+)(?:\s+(\$\S+))?(?:\s+(.*))?#s', $tagDocBlockLine, $matches)) {
             return;
         }
 

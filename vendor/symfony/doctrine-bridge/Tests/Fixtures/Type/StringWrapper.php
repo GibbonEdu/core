@@ -13,9 +13,15 @@ namespace Symfony\Bridge\Doctrine\Tests\Fixtures\Type;
 
 class StringWrapper
 {
+    /**
+     * @var string
+     */
     private $string;
 
-    public function __construct(string $string = null)
+    /**
+     * @param string $string
+     */
+    public function __construct($string = null)
     {
         $this->string = $string;
     }

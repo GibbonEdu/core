@@ -11,49 +11,44 @@
 
 namespace Symfony\Component\Routing\Matcher\Dumper;
 
-use Symfony\Component\Routing\RouteCollection;
-
 /**
  * Prefix tree of routes preserving routes order.
  *
  * @author Frank de Jonge <info@frankdejonge.nl>
- * @author Nicolas Grekas <p@tchwork.com>
  *
  * @internal
  */
 class StaticPrefixCollection
 {
+    /**
+     * @var string
+     */
     private $prefix;
 
     /**
-     * @var string[]
-     */
-    private $staticPrefixes = array();
-
-    /**
-     * @var string[]
-     */
-    private $prefixes = array();
-
-    /**
-     * @var array[]|self[]
+     * @var array[]|StaticPrefixCollection[]
      */
     private $items = array();
 
-    public function __construct(string $prefix = '/')
+    /**
+     * @var int
+     */
+    private $matchStart = 0;
+
+    public function __construct($prefix = '')
     {
         $this->prefix = $prefix;
     }
 
-    public function getPrefix(): string
+    public function getPrefix()
     {
         return $this->prefix;
     }
 
     /**
-     * @return array[]|self[]
+     * @return mixed[]|StaticPrefixCollection[]
      */
-    public function getRoutes(): array
+    public function getItems()
     {
         return $this->items;
     }
@@ -61,142 +56,183 @@ class StaticPrefixCollection
     /**
      * Adds a route to a group.
      *
-     * @param array|self $route
+     * @param string $prefix
+     * @param mixed  $route
      */
-    public function addRoute(string $prefix, $route)
+    public function addRoute($prefix, $route)
     {
-        list($prefix, $staticPrefix) = $this->getCommonPrefix($prefix, $prefix);
+        $prefix = '/' === $prefix ? $prefix : rtrim($prefix, '/');
+        $this->guardAgainstAddingNotAcceptedRoutes($prefix);
 
-        for ($i = \count($this->items) - 1; 0 <= $i; --$i) {
-            $item = $this->items[$i];
-
-            list($commonPrefix, $commonStaticPrefix) = $this->getCommonPrefix($prefix, $this->prefixes[$i]);
-
-            if ($this->prefix === $commonPrefix) {
-                // the new route and a previous one have no common prefix, let's see if they are exclusive to each others
-
-                if ($this->prefix !== $staticPrefix && $this->prefix !== $this->staticPrefixes[$i]) {
-                    // the new route and the previous one have exclusive static prefixes
-                    continue;
-                }
-
-                if ($this->prefix === $staticPrefix && $this->prefix === $this->staticPrefixes[$i]) {
-                    // the new route and the previous one have no static prefix
-                    break;
-                }
-
-                if ($this->prefixes[$i] !== $this->staticPrefixes[$i] && $this->prefix === $this->staticPrefixes[$i]) {
-                    // the previous route is non-static and has no static prefix
-                    break;
-                }
-
-                if ($prefix !== $staticPrefix && $this->prefix === $staticPrefix) {
-                    // the new route is non-static and has no static prefix
-                    break;
-                }
-
-                continue;
-            }
-
-            if ($item instanceof self && $this->prefixes[$i] === $commonPrefix) {
-                // the new route is a child of a previous one, let's nest it
-                $item->addRoute($prefix, $route);
-            } else {
-                // the new route and a previous one have a common prefix, let's merge them
-                $child = new self($commonPrefix);
-                list($child->prefixes[0], $child->staticPrefixes[0]) = $child->getCommonPrefix($this->prefixes[$i], $this->prefixes[$i]);
-                list($child->prefixes[1], $child->staticPrefixes[1]) = $child->getCommonPrefix($prefix, $prefix);
-                $child->items = array($this->items[$i], $route);
-
-                $this->staticPrefixes[$i] = $commonStaticPrefix;
-                $this->prefixes[$i] = $commonPrefix;
-                $this->items[$i] = $child;
-            }
+        if ($this->prefix === $prefix) {
+            // When a prefix is exactly the same as the base we move up the match start position.
+            // This is needed because otherwise routes that come afterwards have higher precedence
+            // than a possible regular expression, which goes against the input order sorting.
+            $this->items[] = array($prefix, $route);
+            $this->matchStart = count($this->items);
 
             return;
         }
 
+        foreach ($this->items as $i => $item) {
+            if ($i < $this->matchStart) {
+                continue;
+            }
+
+            if ($item instanceof self && $item->accepts($prefix)) {
+                $item->addRoute($prefix, $route);
+
+                return;
+            }
+
+            $group = $this->groupWithItem($item, $prefix, $route);
+
+            if ($group instanceof self) {
+                $this->items[$i] = $group;
+
+                return;
+            }
+        }
+
         // No optimised case was found, in this case we simple add the route for possible
         // grouping when new routes are added.
-        $this->staticPrefixes[] = $staticPrefix;
-        $this->prefixes[] = $prefix;
-        $this->items[] = $route;
+        $this->items[] = array($prefix, $route);
     }
 
     /**
-     * Linearizes back a set of nested routes into a collection.
+     * Tries to combine a route with another route or group.
+     *
+     * @param StaticPrefixCollection|array $item
+     * @param string                       $prefix
+     * @param mixed                        $route
+     *
+     * @return null|StaticPrefixCollection
      */
-    public function populateCollection(RouteCollection $routes): RouteCollection
+    private function groupWithItem($item, $prefix, $route)
     {
-        foreach ($this->items as $route) {
-            if ($route instanceof self) {
-                $route->populateCollection($routes);
-            } else {
-                $routes->add(...$route);
-            }
+        $itemPrefix = $item instanceof self ? $item->prefix : $item[0];
+        $commonPrefix = $this->detectCommonPrefix($prefix, $itemPrefix);
+
+        if (!$commonPrefix) {
+            return;
         }
 
-        return $routes;
+        $child = new self($commonPrefix);
+
+        if ($item instanceof self) {
+            $child->items = array($item);
+        } else {
+            $child->addRoute($item[0], $item[1]);
+        }
+
+        $child->addRoute($prefix, $route);
+
+        return $child;
     }
 
     /**
-     * Gets the full and static common prefixes between two route patterns.
+     * Checks whether a prefix can be contained within the group.
      *
-     * The static prefix stops at last at the first opening bracket.
+     * @param string $prefix
+     *
+     * @return bool Whether a prefix could belong in a given group
      */
-    private function getCommonPrefix(string $prefix, string $anotherPrefix): array
+    private function accepts($prefix)
     {
-        $baseLength = \strlen($this->prefix);
-        $end = min(\strlen($prefix), \strlen($anotherPrefix));
-        $staticLength = null;
-        set_error_handler(array(__CLASS__, 'handleError'));
+        return '' === $this->prefix || strpos($prefix, $this->prefix) === 0;
+    }
 
-        for ($i = $baseLength; $i < $end && $prefix[$i] === $anotherPrefix[$i]; ++$i) {
-            if ('(' === $prefix[$i]) {
-                $staticLength = $staticLength ?? $i;
-                for ($j = 1 + $i, $n = 1; $j < $end && 0 < $n; ++$j) {
-                    if ($prefix[$j] !== $anotherPrefix[$j]) {
-                        break 2;
-                    }
-                    if ('(' === $prefix[$j]) {
-                        ++$n;
-                    } elseif (')' === $prefix[$j]) {
-                        --$n;
-                    } elseif ('\\' === $prefix[$j] && (++$j === $end || $prefix[$j] !== $anotherPrefix[$j])) {
-                        --$j;
-                        break;
-                    }
-                }
-                if (0 < $n) {
-                    break;
-                }
-                if (('?' === ($prefix[$j] ?? '') || '?' === ($anotherPrefix[$j] ?? '')) && ($prefix[$j] ?? '') !== ($anotherPrefix[$j] ?? '')) {
-                    break;
-                }
-                $subPattern = substr($prefix, $i, $j - $i);
-                if ($prefix !== $anotherPrefix && !preg_match('/^\(\[[^\]]++\]\+\+\)$/', $subPattern) && !preg_match('{(?<!'.$subPattern.')}', '')) {
-                    // sub-patterns of variable length are not considered as common prefixes because their greediness would break in-order matching
-                    break;
-                }
-                $i = $j - 1;
-            } elseif ('\\' === $prefix[$i] && (++$i === $end || $prefix[$i] !== $anotherPrefix[$i])) {
-                --$i;
+    /**
+     * Detects whether there's a common prefix relative to the group prefix and returns it.
+     *
+     * @param string $prefix
+     * @param string $anotherPrefix
+     *
+     * @return false|string A common prefix, longer than the base/group prefix, or false when none available
+     */
+    private function detectCommonPrefix($prefix, $anotherPrefix)
+    {
+        $baseLength = strlen($this->prefix);
+        $commonLength = $baseLength;
+        $end = min(strlen($prefix), strlen($anotherPrefix));
+
+        for ($i = $baseLength; $i <= $end; ++$i) {
+            if (substr($prefix, 0, $i) !== substr($anotherPrefix, 0, $i)) {
                 break;
             }
-        }
-        restore_error_handler();
-        if ($i < $end && 0b10 === (\ord($prefix[$i]) >> 6) && preg_match('//u', $prefix.' '.$anotherPrefix)) {
-            do {
-                // Prevent cutting in the middle of an UTF-8 characters
-                --$i;
-            } while (0b10 === (\ord($prefix[$i]) >> 6));
+
+            $commonLength = $i;
         }
 
-        return array(substr($prefix, 0, $i), substr($prefix, 0, $staticLength ?? $i));
+        $commonPrefix = rtrim(substr($prefix, 0, $commonLength), '/');
+
+        if (strlen($commonPrefix) > $baseLength) {
+            return $commonPrefix;
+        }
+
+        return false;
     }
 
-    public static function handleError($type, $msg)
+    /**
+     * Optimizes the tree by inlining items from groups with less than 3 items.
+     */
+    public function optimizeGroups()
     {
-        return 0 === strpos($msg, 'preg_match(): Compilation failed: lookbehind assertion is not fixed length');
+        $index = -1;
+
+        while (isset($this->items[++$index])) {
+            $item = $this->items[$index];
+
+            if ($item instanceof self) {
+                $item->optimizeGroups();
+
+                // When a group contains only two items there's no reason to optimize because at minimum
+                // the amount of prefix check is 2. In this case inline the group.
+                if ($item->shouldBeInlined()) {
+                    array_splice($this->items, $index, 1, $item->items);
+
+                    // Lower index to pass through the same index again after optimizing.
+                    // The first item of the replacements might be a group needing optimization.
+                    --$index;
+                }
+            }
+        }
+    }
+
+    private function shouldBeInlined()
+    {
+        if (count($this->items) >= 3) {
+            return false;
+        }
+
+        foreach ($this->items as $item) {
+            if ($item instanceof self) {
+                return true;
+            }
+        }
+
+        foreach ($this->items as $item) {
+            if (is_array($item) && $item[0] === $this->prefix) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Guards against adding incompatible prefixes in a group.
+     *
+     * @param string $prefix
+     *
+     * @throws \LogicException When a prefix does not belong in a group.
+     */
+    private function guardAgainstAddingNotAcceptedRoutes($prefix)
+    {
+        if (!$this->accepts($prefix)) {
+            $message = sprintf('Could not add route with prefix %s to collection with prefix %s', $prefix, $this->prefix);
+
+            throw new \LogicException($message);
+        }
     }
 }

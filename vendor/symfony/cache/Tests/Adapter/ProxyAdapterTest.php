@@ -24,7 +24,6 @@ class ProxyAdapterTest extends AdapterTestCase
     protected $skippedTests = array(
         'testDeferredSaveWithoutCommit' => 'Assumes a shared cache which ArrayAdapter is not.',
         'testSaveWithoutExpire' => 'Assumes a shared cache which ArrayAdapter is not.',
-        'testPrune' => 'ProxyAdapter just proxies',
     );
 
     public function createCachePool($defaultLifetime = 0)
@@ -43,7 +42,7 @@ class ProxyAdapterTest extends AdapterTestCase
 
         $proxyItem = $pool->getItem('foo');
 
-        $this->assertNotSame($item, $proxyItem);
+        $this->assertFalse($proxyItem === $item);
         $pool->save($proxyItem->set('bar'));
     }
 }

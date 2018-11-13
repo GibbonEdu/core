@@ -13,8 +13,8 @@ namespace Symfony\Component\DependencyInjection\Tests\Compiler;
 
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Compiler\DecoratorServicePass;
 
 class DecoratorServicePassTest extends TestCase
 {
@@ -144,27 +144,28 @@ class DecoratorServicePassTest extends TestCase
         $this->assertEquals(array('bar' => array('attr' => 'baz'), 'foobar' => array('attr' => 'bar')), $container->getDefinition('baz')->getTags());
     }
 
-    public function testProcessMovesTagsFromDecoratedDefinitionToDecoratingDefinitionMultipleTimes()
+    /**
+     * @group legacy
+     */
+    public function testProcessMergesAutowiringTypesInDecoratingDefinitionAndRemoveThemFromDecoratedDefinition()
     {
         $container = new ContainerBuilder();
+
         $container
-            ->register('foo')
-            ->setPublic(true)
-            ->setTags(array('bar' => array('attr' => 'baz')))
+            ->register('parent')
+            ->addAutowiringType('Bar')
         ;
+
         $container
-            ->register('deco1')
-            ->setDecoratedService('foo', null, 50)
-        ;
-        $container
-            ->register('deco2')
-            ->setDecoratedService('foo', null, 2)
+            ->register('child')
+            ->setDecoratedService('parent')
+            ->addAutowiringType('Foo')
         ;
 
         $this->process($container);
 
-        $this->assertEmpty($container->getDefinition('deco1')->getTags());
-        $this->assertEquals(array('bar' => array('attr' => 'baz')), $container->getDefinition('deco2')->getTags());
+        $this->assertEquals(array('Bar', 'Foo'), $container->getDefinition('child')->getAutowiringTypes());
+        $this->assertEmpty($container->getDefinition('child.inner')->getAutowiringTypes());
     }
 
     protected function process(ContainerBuilder $container)

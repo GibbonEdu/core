@@ -21,9 +21,15 @@ class Reference
     private $id;
     private $invalidBehavior;
 
-    public function __construct(string $id, int $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
+    /**
+     * @param string $id              The service identifier
+     * @param int    $invalidBehavior The behavior when the service does not exist
+     *
+     * @see Container
+     */
+    public function __construct($id, $invalidBehavior = ContainerInterface::EXCEPTION_ON_INVALID_REFERENCE)
     {
-        $this->id = $id;
+        $this->id = (string) $id;
         $this->invalidBehavior = $invalidBehavior;
     }
 

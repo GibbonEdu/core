@@ -11,8 +11,8 @@
 
 namespace Symfony\Component\Finder\Tests\Iterator;
 
-use Symfony\Component\Finder\Comparator\NumberComparator;
 use Symfony\Component\Finder\Iterator\SizeRangeFilterIterator;
+use Symfony\Component\Finder\Comparator\NumberComparator;
 
 class SizeRangeFilterIteratorTest extends RealIteratorTestCase
 {

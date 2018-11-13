@@ -1,11 +1,11 @@
 {
     "path": "\/hello\/{name}",
-    "pathRegex": "#PATH_REGEX#",
+    "pathRegex": "#^\/hello(?:\/(?P<name>[a-z]+))?$#s",
     "host": "localhost",
-    "hostRegex": "#HOST_REGEX#",
+    "hostRegex": "#^localhost$#si",
     "scheme": "http|https",
     "method": "GET|HEAD",
-    "class": "Symfony\\Bundle\\FrameworkBundle\\Tests\\Console\\Descriptor\\RouteStub",
+    "class": "Symfony\\Component\\Routing\\Route",
     "defaults": {
         "name": "Joseph"
     },

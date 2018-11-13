@@ -39,6 +39,18 @@ class ChainCacheClearerTest extends TestCase
         $chainClearer->clear(self::$cacheDir);
     }
 
+    public function testInjectClearerUsingAdd()
+    {
+        $clearer = $this->getMockClearer();
+        $clearer
+            ->expects($this->once())
+            ->method('clear');
+
+        $chainClearer = new ChainCacheClearer();
+        $chainClearer->add($clearer);
+        $chainClearer->clear(self::$cacheDir);
+    }
+
     protected function getMockClearer()
     {
         return $this->getMockBuilder('Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface')->getMock();

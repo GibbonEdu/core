@@ -11,9 +11,9 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Templating\Helper;
 
+use Symfony\Component\Templating\Helper\Helper;
 use Symfony\Component\Form\FormRendererInterface;
 use Symfony\Component\Form\FormView;
-use Symfony\Component\Templating\Helper\Helper;
 
 /**
  * FormHelper provides helpers to help display forms.
@@ -23,8 +23,14 @@ use Symfony\Component\Templating\Helper\Helper;
  */
 class FormHelper extends Helper
 {
+    /**
+     * @var FormRendererInterface
+     */
     private $renderer;
 
+    /**
+     * @param FormRendererInterface $renderer
+     */
     public function __construct(FormRendererInterface $renderer)
     {
         $this->renderer = $renderer;
@@ -43,13 +49,12 @@ class FormHelper extends Helper
      *
      * The theme format is "<Bundle>:<Controller>".
      *
-     * @param FormView     $view             A FormView instance
-     * @param string|array $themes           A theme or an array of theme
-     * @param bool         $useDefaultThemes If true, will use default themes defined in the renderer
+     * @param FormView     $view   A FormView instance
+     * @param string|array $themes A theme or an array of theme
      */
-    public function setTheme(FormView $view, $themes, $useDefaultThemes = true)
+    public function setTheme(FormView $view, $themes)
     {
-        $this->renderer->setTheme($view, $themes, $useDefaultThemes);
+        $this->renderer->setTheme($view, $themes);
     }
 
     /**
@@ -170,19 +175,9 @@ class FormHelper extends Helper
     }
 
     /**
-     * Renders the help of the given view.
-     *
-     * @param FormView $view The parent view
-     *
-     * @return string The HTML markup
-     */
-    public function help(FormView $view): string
-    {
-        return $this->renderer->searchAndRenderBlock($view, 'help');
-    }
-
-    /**
      * Renders the errors of the given view.
+     *
+     * @param FormView $view The view to render the errors for
      *
      * @return string The HTML markup
      */
@@ -224,20 +219,24 @@ class FormHelper extends Helper
      * Use this helper for CSRF protection without the overhead of creating a
      * form.
      *
-     *     echo $view['form']->csrfToken('rm_user_'.$user->getId());
+     * <code>
+     * echo $view['form']->csrfToken('rm_user_'.$user->getId());
+     * </code>
      *
      * Check the token in your action using the same CSRF token id.
      *
-     *     // $csrfProvider being an instance of Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface
-     *     if (!$csrfProvider->isCsrfTokenValid('rm_user_'.$user->getId(), $token)) {
-     *         throw new \RuntimeException('CSRF attack detected.');
-     *     }
+     * <code>
+     * $csrfProvider = $this->get('security.csrf.token_generator');
+     * if (!$csrfProvider->isCsrfTokenValid('rm_user_'.$user->getId(), $token)) {
+     *     throw new \RuntimeException('CSRF attack detected.');
+     * }
+     * </code>
      *
      * @param string $tokenId The CSRF token id of the protected action
      *
      * @return string A CSRF token
      *
-     * @throws \BadMethodCallException when no CSRF provider was injected in the constructor
+     * @throws \BadMethodCallException When no CSRF provider was injected in the constructor.
      */
     public function csrfToken($tokenId)
     {
@@ -247,21 +246,5 @@ class FormHelper extends Helper
     public function humanize($text)
     {
         return $this->renderer->humanize($text);
-    }
-
-    /**
-     * @internal
-     */
-    public function formEncodeCurrency($text, $widget = '')
-    {
-        if ('UTF-8' === $charset = $this->getCharset()) {
-            $text = htmlspecialchars($text, ENT_QUOTES | (\defined('ENT_SUBSTITUTE') ? ENT_SUBSTITUTE : 0), 'UTF-8');
-        } else {
-            $text = htmlentities($text, ENT_QUOTES | (\defined('ENT_SUBSTITUTE') ? ENT_SUBSTITUTE : 0), 'UTF-8');
-            $text = iconv('UTF-8', $charset, $text);
-            $widget = iconv('UTF-8', $charset, $widget);
-        }
-
-        return str_replace('{{ widget }}', $widget, $text);
     }
 }

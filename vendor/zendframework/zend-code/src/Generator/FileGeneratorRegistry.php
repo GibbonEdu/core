@@ -11,8 +11,6 @@ namespace Zend\Code\Generator;
 
 use Zend\Code\Generator\Exception\RuntimeException;
 
-use function str_replace;
-
 class FileGeneratorRegistry
 {
     /**

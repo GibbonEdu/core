@@ -11,7 +11,6 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Tests\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\ControllerTrait;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -22,6 +21,8 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\AnonymousToken;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Symfony\Component\Security\Core\User\User;
@@ -372,9 +373,6 @@ abstract class ControllerTraitTest extends TestCase
         $this->assertSame(302, $response->getStatusCode());
     }
 
-    /**
-     * @runInSeparateProcess
-     */
     public function testAddFlash()
     {
         $flashBag = new FlashBag();
@@ -453,7 +451,7 @@ abstract class ControllerTraitTest extends TestCase
     public function testRenderTemplating()
     {
         $templating = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Templating\EngineInterface')->getMock();
-        $templating->expects($this->once())->method('render')->willReturn('bar');
+        $templating->expects($this->once())->method('renderResponse')->willReturn(new Response('bar'));
 
         $container = new Container();
         $container->set('templating', $templating);
@@ -532,25 +530,98 @@ abstract class ControllerTraitTest extends TestCase
 
 trait TestControllerTrait
 {
-    use ControllerTrait {
-        generateUrl as public;
-        redirect as public;
-        forward as public;
-        getUser as public;
-        json as public;
-        file as public;
-        isGranted as public;
-        denyAccessUnlessGranted as public;
-        redirectToRoute as public;
-        addFlash as public;
-        isCsrfTokenValid as public;
-        renderView as public;
-        render as public;
-        stream as public;
-        createNotFoundException as public;
-        createAccessDeniedException as public;
-        createForm as public;
-        createFormBuilder as public;
-        getDoctrine as public;
+    public function generateUrl($route, $parameters = array(), $referenceType = UrlGeneratorInterface::ABSOLUTE_PATH)
+    {
+        return parent::generateUrl($route, $parameters, $referenceType);
+    }
+
+    public function redirect($url, $status = 302)
+    {
+        return parent::redirect($url, $status);
+    }
+
+    public function forward($controller, array $path = array(), array $query = array())
+    {
+        return parent::forward($controller, $path, $query);
+    }
+
+    public function getUser()
+    {
+        return parent::getUser();
+    }
+
+    public function json($data, $status = 200, $headers = array(), $context = array())
+    {
+        return parent::json($data, $status, $headers, $context);
+    }
+
+    public function file($file, $fileName = null, $disposition = ResponseHeaderBag::DISPOSITION_ATTACHMENT)
+    {
+        return parent::file($file, $fileName, $disposition);
+    }
+
+    public function isGranted($attributes, $object = null)
+    {
+        return parent::isGranted($attributes, $object);
+    }
+
+    public function denyAccessUnlessGranted($attributes, $object = null, $message = 'Access Denied.')
+    {
+        parent::denyAccessUnlessGranted($attributes, $object, $message);
+    }
+
+    public function redirectToRoute($route, array $parameters = array(), $status = 302)
+    {
+        return parent::redirectToRoute($route, $parameters, $status);
+    }
+
+    public function addFlash($type, $message)
+    {
+        parent::addFlash($type, $message);
+    }
+
+    public function isCsrfTokenValid($id, $token)
+    {
+        return parent::isCsrfTokenValid($id, $token);
+    }
+
+    public function renderView($view, array $parameters = array())
+    {
+        return parent::renderView($view, $parameters);
+    }
+
+    public function render($view, array $parameters = array(), Response $response = null)
+    {
+        return parent::render($view, $parameters, $response);
+    }
+
+    public function stream($view, array $parameters = array(), StreamedResponse $response = null)
+    {
+        return parent::stream($view, $parameters, $response);
+    }
+
+    public function createNotFoundException($message = 'Not Found', \Exception $previous = null)
+    {
+        return parent::createNotFoundException($message, $previous);
+    }
+
+    public function createAccessDeniedException($message = 'Access Denied.', \Exception $previous = null)
+    {
+        return parent::createAccessDeniedException($message, $previous);
+    }
+
+    public function createForm($type, $data = null, array $options = array())
+    {
+        return parent::createForm($type, $data, $options);
+    }
+
+    public function createFormBuilder($data = null, array $options = array())
+    {
+        return parent::createFormBuilder($data, $options);
+    }
+
+    public function getDoctrine()
+    {
+        return parent::getDoctrine();
     }
 }

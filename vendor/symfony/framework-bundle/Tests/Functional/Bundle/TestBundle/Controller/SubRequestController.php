@@ -21,8 +21,10 @@ class SubRequestController implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    public function indexAction($handler)
+    public function indexAction()
     {
+        $handler = $this->container->get('fragment.handler');
+
         $errorUrl = $this->generateUrl('subrequest_fragment_error', array('_locale' => 'fr', '_format' => 'json'));
         $altUrl = $this->generateUrl('subrequest_fragment', array('_locale' => 'fr', '_format' => 'json'));
 
@@ -33,7 +35,7 @@ class SubRequestController implements ContainerAwareInterface
         // ...to check that the FragmentListener still references the right Request
         // when rendering another fragment after the error occurred
         // should render en/html instead of fr/json
-        $content .= $handler->render(new ControllerReference(self::class.'::fragmentAction'));
+        $content .= $handler->render(new ControllerReference('TestBundle:SubRequest:fragment'));
 
         // forces the LocaleListener to set fr for the locale...
         // should render fr/json

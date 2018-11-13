@@ -32,10 +32,12 @@ class ClassExistenceResource implements SelfCheckingResourceInterface, \Serializ
      * @param string    $resource The fully-qualified class name
      * @param bool|null $exists   Boolean when the existency check has already been done
      */
-    public function __construct(string $resource, bool $exists = null)
+    public function __construct($resource, $exists = null)
     {
         $this->resource = $resource;
-        $this->exists = $exists;
+        if (null !== $exists) {
+            $this->exists = (bool) $exists;
+        }
     }
 
     /**
@@ -63,7 +65,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface, \Serializ
     {
         $loaded = class_exists($this->resource, false) || interface_exists($this->resource, false) || trait_exists($this->resource, false);
 
-        if (null !== $exists = &self::$existsCache[(int) (0 >= $timestamp)][$this->resource]) {
+        if (null !== $exists = &self::$existsCache[$this->resource]) {
             $exists = $exists || $loaded;
         } elseif (!$exists = $loaded) {
             if (!self::$autoloadLevel++) {
@@ -74,11 +76,6 @@ class ClassExistenceResource implements SelfCheckingResourceInterface, \Serializ
 
             try {
                 $exists = class_exists($this->resource) || interface_exists($this->resource, false) || trait_exists($this->resource, false);
-            } catch (\ReflectionException $e) {
-                if (0 >= $timestamp) {
-                    unset(self::$existsCache[1][$this->resource]);
-                    throw $e;
-                }
             } finally {
                 self::$autoloadedClass = $autoloadedClass;
                 if (!--self::$autoloadLevel) {
@@ -152,7 +149,7 @@ class ClassExistenceResource implements SelfCheckingResourceInterface, \Serializ
             $props = array(
                 'file' => $trace[$i]['file'],
                 'line' => $trace[$i]['line'],
-                'trace' => \array_slice($trace, 1 + $i),
+                'trace' => array_slice($trace, 1 + $i),
             );
 
             foreach ($props as $p => $v) {

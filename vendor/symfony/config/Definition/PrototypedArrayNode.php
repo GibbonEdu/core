@@ -11,10 +11,10 @@
 
 namespace Symfony\Component\Config\Definition;
 
-use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
+use Symfony\Component\Config\Definition\Exception\DuplicateKeyException;
 use Symfony\Component\Config\Definition\Exception\UnsetKeyException;
+use Symfony\Component\Config\Definition\Exception\Exception;
 
 /**
  * Represents a prototyped Array node in the config tree.
@@ -94,7 +94,7 @@ class PrototypedArrayNode extends ArrayNode
      */
     public function setDefaultValue($value)
     {
-        if (!\is_array($value)) {
+        if (!is_array($value)) {
             throw new \InvalidArgumentException($this->getPath().': the default value of an array node has to be an array.');
         }
 
@@ -102,7 +102,9 @@ class PrototypedArrayNode extends ArrayNode
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if the node has a default value.
+     *
+     * @return bool
      */
     public function hasDefaultValue()
     {
@@ -119,15 +121,17 @@ class PrototypedArrayNode extends ArrayNode
         if (null === $children) {
             $this->defaultChildren = array('defaults');
         } else {
-            $this->defaultChildren = \is_int($children) && $children > 0 ? range(1, $children) : (array) $children;
+            $this->defaultChildren = is_int($children) && $children > 0 ? range(1, $children) : (array) $children;
         }
     }
 
     /**
-     * {@inheritdoc}
+     * Retrieves the default value.
      *
      * The default value could be either explicited or derived from the prototype
      * default value.
+     *
+     * @return array The default value
      */
     public function getDefaultValue()
     {
@@ -146,6 +150,8 @@ class PrototypedArrayNode extends ArrayNode
 
     /**
      * Sets the node prototype.
+     *
+     * @param PrototypeNodeInterface $node
      */
     public function setPrototype(PrototypeNodeInterface $node)
     {
@@ -164,6 +170,8 @@ class PrototypedArrayNode extends ArrayNode
 
     /**
      * Disable adding concrete children for prototyped nodes.
+     *
+     * @param NodeInterface $node The child node to add
      *
      * @throws Exception
      */
@@ -185,7 +193,8 @@ class PrototypedArrayNode extends ArrayNode
     protected function finalizeValue($value)
     {
         if (false === $value) {
-            throw new UnsetKeyException(sprintf('Unsetting key for path "%s", value: %s', $this->getPath(), json_encode($value)));
+            $msg = sprintf('Unsetting key for path "%s", value: %s', $this->getPath(), json_encode($value));
+            throw new UnsetKeyException($msg);
         }
 
         foreach ($value as $k => $v) {
@@ -197,8 +206,9 @@ class PrototypedArrayNode extends ArrayNode
             }
         }
 
-        if (\count($value) < $this->minNumberOfElements) {
-            $ex = new InvalidConfigurationException(sprintf('The path "%s" should have at least %d element(s) defined.', $this->getPath(), $this->minNumberOfElements));
+        if (count($value) < $this->minNumberOfElements) {
+            $msg = sprintf('The path "%s" should have at least %d element(s) defined.', $this->getPath(), $this->minNumberOfElements);
+            $ex = new InvalidConfigurationException($msg);
             $ex->setPath($this->getPath());
 
             throw $ex;
@@ -225,12 +235,13 @@ class PrototypedArrayNode extends ArrayNode
 
         $value = $this->remapXml($value);
 
-        $isAssoc = array_keys($value) !== range(0, \count($value) - 1);
+        $isAssoc = array_keys($value) !== range(0, count($value) - 1);
         $normalized = array();
         foreach ($value as $k => $v) {
-            if (null !== $this->keyAttribute && \is_array($v)) {
-                if (!isset($v[$this->keyAttribute]) && \is_int($k) && !$isAssoc) {
-                    $ex = new InvalidConfigurationException(sprintf('The attribute "%s" must be set for path "%s".', $this->keyAttribute, $this->getPath()));
+            if (null !== $this->keyAttribute && is_array($v)) {
+                if (!isset($v[$this->keyAttribute]) && is_int($k) && !$isAssoc) {
+                    $msg = sprintf('The attribute "%s" must be set for path "%s".', $this->keyAttribute, $this->getPath());
+                    $ex = new InvalidConfigurationException($msg);
                     $ex->setPath($this->getPath());
 
                     throw $ex;
@@ -249,9 +260,9 @@ class PrototypedArrayNode extends ArrayNode
                             $valuePrototype = current($this->valuePrototypes) ?: clone $children['value'];
                             $valuePrototype->parent = $this;
                             $originalClosures = $this->prototype->normalizationClosures;
-                            if (\is_array($originalClosures)) {
+                            if (is_array($originalClosures)) {
                                 $valuePrototypeClosures = $valuePrototype->normalizationClosures;
-                                $valuePrototype->normalizationClosures = \is_array($valuePrototypeClosures) ? array_merge($originalClosures, $valuePrototypeClosures) : $originalClosures;
+                                $valuePrototype->normalizationClosures = is_array($valuePrototypeClosures) ? array_merge($originalClosures, $valuePrototypeClosures) : $originalClosures;
                             }
                             $this->valuePrototypes[$k] = $valuePrototype;
                         }
@@ -259,7 +270,8 @@ class PrototypedArrayNode extends ArrayNode
                 }
 
                 if (array_key_exists($k, $normalized)) {
-                    $ex = new DuplicateKeyException(sprintf('Duplicate key "%s" for path "%s".', $k, $this->getPath()));
+                    $msg = sprintf('Duplicate key "%s" for path "%s".', $k, $this->getPath());
+                    $ex = new DuplicateKeyException($msg);
                     $ex->setPath($this->getPath());
 
                     throw $ex;
@@ -310,7 +322,11 @@ class PrototypedArrayNode extends ArrayNode
             // no conflict
             if (!array_key_exists($k, $leftSide)) {
                 if (!$this->allowNewKeys) {
-                    $ex = new InvalidConfigurationException(sprintf('You are not allowed to define new elements for path "%s". Please define all elements for this path in one config file.', $this->getPath()));
+                    $ex = new InvalidConfigurationException(sprintf(
+                        'You are not allowed to define new elements for path "%s". '.
+                        'Please define all elements for this path in one config file.',
+                        $this->getPath()
+                    ));
                     $ex->setPath($this->getPath());
 
                     throw $ex;
@@ -334,38 +350,36 @@ class PrototypedArrayNode extends ArrayNode
      * one is same as this->keyAttribute and the other is 'value', then the prototype will be different.
      *
      * For example, assume $this->keyAttribute is 'name' and the value array is as follows:
-     *
+     * array(
      *     array(
-     *         array(
-     *             'name' => 'name001',
-     *             'value' => 'value001'
-     *         )
+     *         'name' => 'name001',
+     *         'value' => 'value001'
      *     )
+     * )
      *
      * Now, the key is 0 and the child node is:
-     *
-     *     array(
-     *        'name' => 'name001',
-     *        'value' => 'value001'
-     *     )
+     * array(
+     *    'name' => 'name001',
+     *    'value' => 'value001'
+     * )
      *
      * When normalizing the value array, the 'name' element will removed from the child node
      * and its value becomes the new key of the child node:
-     *
-     *     array(
-     *         'name001' => array('value' => 'value001')
-     *     )
+     * array(
+     *     'name001' => array('value' => 'value001')
+     * )
      *
      * Now only 'value' element is left in the child node which can be further simplified into a string:
-     *
-     *     array('name001' => 'value001')
+     * array('name001' => 'value001')
      *
      * Now, the key becomes 'name001' and the child node becomes 'value001' and
      * the prototype of child node 'name001' should be a ScalarNode instead of an ArrayNode instance.
      *
+     * @param string $key The key of the child node
+     *
      * @return mixed The prototype instance
      */
-    private function getPrototypeForChild(string $key)
+    private function getPrototypeForChild($key)
     {
         $prototype = isset($this->valuePrototypes[$key]) ? $this->valuePrototypes[$key] : $this->prototype;
         $prototype->setName($key);

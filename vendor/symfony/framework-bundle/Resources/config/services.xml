@@ -7,14 +7,8 @@
     <services>
         <defaults public="false" />
 
-        <service id="parameter_bag" class="Symfony\Component\DependencyInjection\ParameterBag\ContainerBag">
+        <service id="event_dispatcher" class="Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher" public="true">
             <argument type="service" id="service_container" />
-        </service>
-        <service id="Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface" alias="parameter_bag" />
-        <service id="Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface" alias="parameter_bag" />
-
-        <service id="event_dispatcher" class="Symfony\Component\EventDispatcher\EventDispatcher" public="true">
-            <tag name="container.hot_path" />
         </service>
         <service id="Symfony\Component\EventDispatcher\EventDispatcherInterface" alias="event_dispatcher" />
 
@@ -23,7 +17,6 @@
             <argument type="service" id="controller_resolver" />
             <argument type="service" id="request_stack" />
             <argument type="service" id="argument_resolver" />
-            <tag name="container.hot_path" />
         </service>
         <service id="Symfony\Component\HttpKernel\HttpKernelInterface" alias="http_kernel" />
 
@@ -31,11 +24,23 @@
         <service id="Symfony\Component\HttpFoundation\RequestStack" alias="request_stack" />
 
         <service id="cache_warmer" class="Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerAggregate" public="true">
-            <argument type="tagged" tag="kernel.cache_warmer" />
+            <argument type="collection" />
+        </service>
+
+        <service id="kernel.class_cache.cache_warmer" class="Symfony\Bundle\FrameworkBundle\CacheWarmer\ClassCacheCacheWarmer" public="true">
+            <argument type="collection">
+                <argument>Symfony\Component\HttpFoundation\ParameterBag</argument>
+                <argument>Symfony\Component\HttpFoundation\HeaderBag</argument>
+                <argument>Symfony\Component\HttpFoundation\FileBag</argument>
+                <argument>Symfony\Component\HttpFoundation\ServerBag</argument>
+                <argument>Symfony\Component\HttpFoundation\Request</argument>
+                <argument>Symfony\Component\HttpKernel\Kernel</argument>
+            </argument>
+            <deprecated>The "%service_id%" option is deprecated since version 3.3, to be removed in 4.0.</deprecated>
         </service>
 
         <service id="cache_clearer" class="Symfony\Component\HttpKernel\CacheClearer\ChainCacheClearer" public="true">
-            <argument type="tagged" tag="kernel.cache_clearer" />
+            <argument type="collection" />
         </service>
 
         <service id="kernel" synthetic="true" public="true" />
@@ -44,7 +49,7 @@
         <service id="filesystem" class="Symfony\Component\Filesystem\Filesystem" public="true" />
         <service id="Symfony\Component\Filesystem\Filesystem" alias="filesystem" />
 
-        <service id="file_locator" class="Symfony\Component\HttpKernel\Config\FileLocator">
+        <service id="file_locator" class="Symfony\Component\HttpKernel\Config\FileLocator" public="true">
             <argument type="service" id="kernel" />
             <argument>%kernel.root_dir%/Resources</argument>
             <argument type="collection">
@@ -53,23 +58,21 @@
         </service>
         <service id="Symfony\Component\HttpKernel\Config\FileLocator" alias="file_locator" />
 
-        <service id="uri_signer" class="Symfony\Component\HttpKernel\UriSigner">
+        <service id="uri_signer" class="Symfony\Component\HttpKernel\UriSigner" public="true">
             <argument>%kernel.secret%</argument>
         </service>
 
-        <service id="config_cache_factory" class="Symfony\Component\Config\ResourceCheckerConfigCacheFactory">
-            <argument type="tagged" tag="config_cache.resource_checker" />
+        <service id="config_cache_factory" class="Symfony\Component\Config\ResourceCheckerConfigCacheFactory" public="true">
+            <argument /> <!-- resource checkers -->
         </service>
 
-        <service id="dependency_injection.config.container_parameters_resource_checker" class="Symfony\Component\DependencyInjection\Config\ContainerParametersResourceChecker">
+        <service class="Symfony\Component\DependencyInjection\Config\ContainerParametersResourceChecker">
             <argument type="service" id="service_container" />
             <tag name="config_cache.resource_checker" priority="-980" />
         </service>
 
-        <service id="config.resource.self_checking_resource_checker" class="Symfony\Component\Config\Resource\SelfCheckingResourceChecker">
+        <service class="Symfony\Component\Config\Resource\SelfCheckingResourceChecker">
             <tag name="config_cache.resource_checker" priority="-990" />
         </service>
-
-        <service id="services_resetter" class="Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter" public="true" />
     </services>
 </container>

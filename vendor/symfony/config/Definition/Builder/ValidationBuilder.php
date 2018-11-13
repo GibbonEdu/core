@@ -21,6 +21,11 @@ class ValidationBuilder
     protected $node;
     public $rules = array();
 
+    /**
+     * Constructor.
+     *
+     * @param NodeDefinition $node The related node
+     */
     public function __construct(NodeDefinition $node)
     {
         $this->node = $node;
@@ -28,6 +33,8 @@ class ValidationBuilder
 
     /**
      * Registers a closure to run as normalization or an expression builder to build it if null is provided.
+     *
+     * @param \Closure $closure
      *
      * @return ExprBuilder|$this
      */

@@ -115,18 +115,18 @@ class EnvPlaceholderParameterBagTest extends TestCase
     {
         $bag = new EnvPlaceholderParameterBag();
         $bag->get('env(INT_VAR)');
-        $bag->set('env(INT_VAR)', 2);
+        $bag->set('env(Int_Var)', 2);
         $bag->resolve();
-        $this->assertSame('2', $bag->all()['env(INT_VAR)']);
+        $this->assertSame('2', $bag->all()['env(int_var)']);
     }
 
     public function testResolveEnvAllowsNull()
     {
         $bag = new EnvPlaceholderParameterBag();
         $bag->get('env(NULL_VAR)');
-        $bag->set('env(NULL_VAR)', null);
+        $bag->set('env(Null_Var)', null);
         $bag->resolve();
-        $this->assertNull($bag->all()['env(NULL_VAR)']);
+        $this->assertNull($bag->all()['env(null_var)']);
     }
 
     /**
@@ -137,7 +137,7 @@ class EnvPlaceholderParameterBagTest extends TestCase
     {
         $bag = new EnvPlaceholderParameterBag();
         $bag->get('env(ARRAY_VAR)');
-        $bag->set('env(ARRAY_VAR)', array());
+        $bag->set('env(Array_Var)', array());
         $bag->resolve();
     }
 
@@ -148,7 +148,7 @@ class EnvPlaceholderParameterBagTest extends TestCase
         $bag->get('env(NULL_VAR)');
         $bag->resolve();
 
-        $this->assertNull($bag->all()['env(NULL_VAR)']);
+        $this->assertNull($bag->all()['env(null_var)']);
     }
 
     /**

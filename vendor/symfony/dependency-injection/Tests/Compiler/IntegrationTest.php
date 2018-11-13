@@ -14,9 +14,9 @@ namespace Symfony\Component\DependencyInjection\Tests\Compiler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * This class tests the integration of the different compiler passes.
@@ -40,7 +40,6 @@ class IntegrationTest extends TestCase
         $a = $container
             ->register('a', '\stdClass')
             ->addArgument(new Reference('c'))
-            ->setPublic(true)
         ;
 
         $b = $container
@@ -71,7 +70,6 @@ class IntegrationTest extends TestCase
         $a = $container
             ->register('a', '\stdClass')
             ->addArgument(new Reference('b'))
-            ->setPublic(true)
         ;
 
         $container->setAlias('b', new Alias('c', false));
@@ -99,7 +97,6 @@ class IntegrationTest extends TestCase
             ->register('a', '\stdClass')
             ->addArgument(new Reference('b'))
             ->addMethodCall('setC', array(new Reference('c')))
-            ->setPublic(true)
         ;
 
         $container
@@ -126,7 +123,7 @@ class IntegrationTest extends TestCase
     public function testYamlContainerCompiles($directory, $actualServiceId, $expectedServiceId, ContainerBuilder $mainContainer = null)
     {
         // allow a container to be passed in, which might have autoconfigure settings
-        $container = $mainContainer ?: new ContainerBuilder();
+        $container = $mainContainer ? $mainContainer : new ContainerBuilder();
         $container->setResourceTracking(false);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Fixtures/yaml/integration/'.$directory));
         $loader->load('main.yml');
@@ -206,16 +203,6 @@ class IntegrationTest extends TestCase
             'instanceof_parent_child',
             'child_service',
             'child_service_expected',
-        );
-
-        $container = new ContainerBuilder();
-        $container->registerForAutoconfiguration(IntegrationTestStub::class)
-            ->addMethodCall('setSunshine', array('supernova'));
-        yield array(
-            'instanceof_and_calls',
-            'main_service',
-            'main_service_expected',
-            $container,
         );
     }
 }

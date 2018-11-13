@@ -11,22 +11,17 @@ namespace Zend\Code\Scanner;
 
 use Zend\Code\Exception;
 
-use function array_keys;
-use function array_merge;
-use function sprintf;
-use function trigger_error;
-
 class DerivedClassScanner extends ClassScanner
 {
     /**
      * @var DirectoryScanner
      */
-    protected $directoryScanner;
+    protected $directoryScanner = null;
 
     /**
      * @var ClassScanner
      */
-    protected $classScanner;
+    protected $classScanner = null;
 
     /**
      * @var array
@@ -128,7 +123,7 @@ class DerivedClassScanner extends ClassScanner
      */
     public function hasParentClass()
     {
-        return $this->classScanner->getParentClass() !== null;
+        return ($this->classScanner->getParentClass() !== null);
     }
 
     /**

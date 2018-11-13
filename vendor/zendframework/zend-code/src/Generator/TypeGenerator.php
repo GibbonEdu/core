@@ -11,14 +11,6 @@ namespace Zend\Code\Generator;
 
 use Zend\Code\Generator\Exception\InvalidArgumentException;
 
-use function in_array;
-use function ltrim;
-use function preg_match;
-use function sprintf;
-use function strpos;
-use function strtolower;
-use function substr;
-
 final class TypeGenerator implements GeneratorInterface
 {
     /**
@@ -41,17 +33,7 @@ final class TypeGenerator implements GeneratorInterface
      *
      * @link http://php.net/manual/en/functions.arguments.php#functions.arguments.type-declaration
      */
-    private static $internalPhpTypes = [
-        'void',
-        'int',
-        'float',
-        'string',
-        'bool',
-        'array',
-        'callable',
-        'iterable',
-        'object'
-    ];
+    private static $internalPhpTypes = ['void', 'int', 'float', 'string', 'bool', 'array', 'callable', 'iterable'];
 
     /**
      * @var string a regex pattern to match valid class names or types
@@ -96,7 +78,7 @@ final class TypeGenerator implements GeneratorInterface
 
         $instance->type              = $trimmedType;
         $instance->nullable          = $nullable;
-        $instance->isInternalPhpType = $isInternalPhpType;
+        $instance->isInternalPhpType = self::isInternalPhpType($trimmedType);
 
         return $instance;
     }

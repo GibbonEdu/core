@@ -11,12 +11,14 @@
 
 namespace Symfony\Component\Console\Helper;
 
-use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Exception\LogicException;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Formatter\OutputFormatter;
 
 /**
  * Symfony Style Guide compliant question helper.
@@ -25,6 +27,28 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class SymfonyQuestionHelper extends QuestionHelper
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function ask(InputInterface $input, OutputInterface $output, Question $question)
+    {
+        $validator = $question->getValidator();
+        $question->setValidator(function ($value) use ($validator) {
+            if (null !== $validator) {
+                $value = $validator($value);
+            } else {
+                // make required
+                if (!is_array($value) && !is_bool($value) && 0 === strlen($value)) {
+                    throw new LogicException('A value is required.');
+                }
+            }
+
+            return $value;
+        });
+
+        return parent::ask($input, $output, $question);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -58,7 +82,7 @@ class SymfonyQuestionHelper extends QuestionHelper
 
             case $question instanceof ChoiceQuestion:
                 $choices = $question->getChoices();
-                $text = sprintf(' <info>%s</info> [<comment>%s</comment>]:', $text, OutputFormatter::escape(isset($choices[$default]) ? $choices[$default] : $default));
+                $text = sprintf(' <info>%s</info> [<comment>%s</comment>]:', $text, OutputFormatter::escape($choices[$default]));
 
                 break;
 

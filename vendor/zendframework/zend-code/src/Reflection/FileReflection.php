@@ -11,29 +11,17 @@ namespace Zend\Code\Reflection;
 
 use Zend\Code\Scanner\CachingFileScanner;
 
-use function basename;
-use function count;
-use function current;
-use function file_get_contents;
-use function get_included_files;
-use function in_array;
-use function realpath;
-use function reset;
-use function sprintf;
-use function stream_resolve_include_path;
-use function substr_count;
-
 class FileReflection implements ReflectionInterface
 {
     /**
      * @var string
      */
-    protected $filePath;
+    protected $filePath = null;
 
     /**
      * @var string
      */
-    protected $docComment;
+    protected $docComment = null;
 
     /**
      * @var int
@@ -43,7 +31,7 @@ class FileReflection implements ReflectionInterface
     /**
      * @var int
      */
-    protected $endLine;
+    protected $endLine = null;
 
     /**
      * @var string[]
@@ -73,7 +61,7 @@ class FileReflection implements ReflectionInterface
     /**
      * @var string
      */
-    protected $contents;
+    protected $contents = null;
 
     /**
      * @param  string $filename
@@ -87,15 +75,15 @@ class FileReflection implements ReflectionInterface
             $fileRealPath = stream_resolve_include_path($filename);
         }
 
-        if (! $fileRealPath) {
+        if (!$fileRealPath) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'No file for %s was found.',
                 $filename
             ));
         }
 
-        if (! in_array($fileRealPath, get_included_files())) {
-            if (! $includeIfNotAlreadyIncluded) {
+        if (!in_array($fileRealPath, get_included_files())) {
+            if (!$includeIfNotAlreadyIncluded) {
                 throw new Exception\RuntimeException(sprintf(
                     'File %s must be required before it can be reflected',
                     $filename
@@ -113,10 +101,11 @@ class FileReflection implements ReflectionInterface
      * Required by the Reflector interface.
      *
      * @todo   What should this do?
-     * @return void
+     * @return null
      */
     public static function export()
     {
+        return;
     }
 
     /**
@@ -158,11 +147,11 @@ class FileReflection implements ReflectionInterface
     }
 
     /**
-     * @return DocBlockReflection|false
+     * @return DocBlockReflection
      */
     public function getDocBlock()
     {
-        if (! ($docComment = $this->getDocComment())) {
+        if (!($docComment = $this->getDocComment())) {
             return false;
         }
 
@@ -180,7 +169,7 @@ class FileReflection implements ReflectionInterface
     }
 
     /**
-     * @return null|string
+     * @return string
      */
     public function getNamespace()
     {

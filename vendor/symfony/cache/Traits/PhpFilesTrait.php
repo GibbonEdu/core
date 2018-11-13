@@ -17,7 +17,6 @@ use Symfony\Component\Cache\Exception\InvalidArgumentException;
 /**
  * @author Piotr Stankowski <git@trakos.pl>
  * @author Nicolas Grekas <p@tchwork.com>
- * @author Rob Frawley 2nd <rmf@src.run>
  *
  * @internal
  */
@@ -26,40 +25,10 @@ trait PhpFilesTrait
     use FilesystemCommonTrait;
 
     private $includeHandler;
-    private $zendDetectUnicode;
 
     public static function isSupported()
     {
-        return \function_exists('opcache_invalidate') && ini_get('opcache.enable');
-    }
-
-    /**
-     * @return bool
-     */
-    public function prune()
-    {
-        $time = time();
-        $pruned = true;
-        $allowCompile = 'cli' !== \PHP_SAPI || ini_get('opcache.enable_cli');
-
-        set_error_handler($this->includeHandler);
-        try {
-            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($this->directory, \FilesystemIterator::SKIP_DOTS), \RecursiveIteratorIterator::LEAVES_ONLY) as $file) {
-                list($expiresAt) = include $file;
-
-                if ($time >= $expiresAt) {
-                    $pruned = @unlink($file) && !file_exists($file) && $pruned;
-
-                    if ($allowCompile) {
-                        @opcache_invalidate($file, true);
-                    }
-                }
-            }
-        } finally {
-            restore_error_handler();
-        }
-
-        return $pruned;
+        return function_exists('opcache_invalidate') && ini_get('opcache.enable');
     }
 
     /**
@@ -70,9 +39,6 @@ trait PhpFilesTrait
         $values = array();
         $now = time();
 
-        if ($this->zendDetectUnicode) {
-            $zmb = ini_set('zend.detect_unicode', 0);
-        }
         set_error_handler($this->includeHandler);
         try {
             foreach ($ids as $id) {
@@ -88,15 +54,12 @@ trait PhpFilesTrait
             }
         } finally {
             restore_error_handler();
-            if ($this->zendDetectUnicode) {
-                ini_set('zend.detect_unicode', $zmb);
-            }
         }
 
         foreach ($values as $id => $value) {
             if ('N;' === $value) {
                 $values[$id] = null;
-            } elseif (\is_string($value) && isset($value[2]) && ':' === $value[1]) {
+            } elseif (is_string($value) && isset($value[2]) && ':' === $value[1]) {
                 $values[$id] = parent::unserialize($value);
             }
         }
@@ -119,25 +82,25 @@ trait PhpFilesTrait
     {
         $ok = true;
         $data = array($lifetime ? time() + $lifetime : PHP_INT_MAX, '');
-        $allowCompile = 'cli' !== \PHP_SAPI || ini_get('opcache.enable_cli');
+        $allowCompile = 'cli' !== PHP_SAPI || ini_get('opcache.enable_cli');
 
         foreach ($values as $key => $value) {
-            if (null === $value || \is_object($value)) {
+            if (null === $value || is_object($value)) {
                 $value = serialize($value);
-            } elseif (\is_array($value)) {
+            } elseif (is_array($value)) {
                 $serialized = serialize($value);
                 $unserialized = parent::unserialize($serialized);
                 // Store arrays serialized if they contain any objects or references
                 if ($unserialized !== $value || (false !== strpos($serialized, ';R:') && preg_match('/;R:[1-9]/', $serialized))) {
                     $value = $serialized;
                 }
-            } elseif (\is_string($value)) {
+            } elseif (is_string($value)) {
                 // Serialize strings if they could be confused with serialized objects or arrays
                 if ('N;' === $value || (isset($value[2]) && ':' === $value[1])) {
                     $value = serialize($value);
                 }
-            } elseif (!\is_scalar($value)) {
-                throw new InvalidArgumentException(sprintf('Cache key "%s" has non-serializable %s value.', $key, \gettype($value)));
+            } elseif (!is_scalar($value)) {
+                throw new InvalidArgumentException(sprintf('Cache key "%s" has non-serializable %s value.', $key, gettype($value)));
             }
 
             $data[1] = $value;

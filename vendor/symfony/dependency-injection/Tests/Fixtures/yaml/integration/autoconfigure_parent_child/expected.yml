@@ -3,4 +3,3 @@ services:
         class: Symfony\Component\DependencyInjection\Tests\Compiler\IntegrationTestStub
         # autoconfigure is set on the parent, but not on the child
         autoconfigure: false
-        public: true

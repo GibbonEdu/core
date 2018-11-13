@@ -23,6 +23,11 @@ use Symfony\Component\Config\Exception\FileLoaderLoadException;
  */
 class DelegatingLoader extends Loader
 {
+    /**
+     * Constructor.
+     *
+     * @param LoaderResolverInterface $resolver A LoaderResolverInterface instance
+     */
     public function __construct(LoaderResolverInterface $resolver)
     {
         $this->resolver = $resolver;

@@ -12,8 +12,8 @@
 namespace Symfony\Bridge\Doctrine\Tests\DependencyInjection;
 
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 
 /**
@@ -68,7 +68,7 @@ class DoctrineExtensionTest extends TestCase
             'SecondBundle' => 'My\SecondBundle',
         );
 
-        $reflection = new \ReflectionClass(\get_class($this->extension));
+        $reflection = new \ReflectionClass(get_class($this->extension));
         $method = $reflection->getMethod('fixManagersAutoMappings');
         $method->setAccessible(true);
 
@@ -157,7 +157,7 @@ class DoctrineExtensionTest extends TestCase
             'SecondBundle' => 'My\SecondBundle',
         );
 
-        $reflection = new \ReflectionClass(\get_class($this->extension));
+        $reflection = new \ReflectionClass(get_class($this->extension));
         $method = $reflection->getMethod('fixManagersAutoMappings');
         $method->setAccessible(true);
 
@@ -181,14 +181,18 @@ class DoctrineExtensionTest extends TestCase
             array('doctrine.orm.cache.wincache.class',  array('type' => 'wincache')),
             array('doctrine.orm.cache.zenddata.class',  array('type' => 'zenddata')),
             array('doctrine.orm.cache.redis.class',     array('type' => 'redis'),     array('setRedis')),
+            array('doctrine.orm.cache.memcache.class',  array('type' => 'memcache'),  array('setMemcache')),
             array('doctrine.orm.cache.memcached.class', array('type' => 'memcached'), array('setMemcached')),
         );
     }
 
     /**
+     * @param string $class
+     * @param array  $config
+     *
      * @dataProvider providerBasicDrivers
      */
-    public function testLoadBasicCacheDriver(string $class, array $config, array $expectedCalls = array())
+    public function testLoadBasicCacheDriver($class, array $config, array $expectedCalls = array())
     {
         $container = $this->createContainer();
         $cacheName = 'metadata_cache';
@@ -204,7 +208,9 @@ class DoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.default_metadata_cache');
         $defCalls = $definition->getMethodCalls();
         $expectedCalls[] = 'setNamespace';
-        $actualCalls = array_column($defCalls, 0);
+        $actualCalls = array_map(function ($call) {
+            return $call[0];
+        }, $defCalls);
 
         $this->assertFalse($definition->isPublic());
         $this->assertEquals("%$class%", $definition->getClass());
@@ -262,6 +268,8 @@ class DoctrineExtensionTest extends TestCase
     }
 
     /**
+     * @param array $data
+     *
      * @return \Symfony\Component\DependencyInjection\ContainerBuilder
      */
     protected function createContainer(array $data = array())

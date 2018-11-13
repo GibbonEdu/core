@@ -11,7 +11,6 @@
 
 namespace Symfony\Component\Cache\Tests\Adapter;
 
-use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 /**
@@ -34,7 +33,7 @@ class FilesystemAdapterTest extends AdapterTestCase
         if (!file_exists($dir)) {
             return;
         }
-        if (!$dir || 0 !== strpos(\dirname($dir), sys_get_temp_dir())) {
+        if (!$dir || 0 !== strpos(dirname($dir), sys_get_temp_dir())) {
             throw new \Exception(__METHOD__."() operates only on subdirs of system's temp dir");
         }
         $children = new \RecursiveIteratorIterator(
@@ -49,13 +48,5 @@ class FilesystemAdapterTest extends AdapterTestCase
             }
         }
         rmdir($dir);
-    }
-
-    protected function isPruned(CacheItemPoolInterface $cache, $name)
-    {
-        $getFileMethod = (new \ReflectionObject($cache))->getMethod('getFile');
-        $getFileMethod->setAccessible(true);
-
-        return !file_exists($getFileMethod->invoke($cache, $name));
     }
 }

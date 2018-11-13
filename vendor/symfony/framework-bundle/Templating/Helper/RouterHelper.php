@@ -11,8 +11,8 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Templating\Helper;
 
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Templating\Helper\Helper;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
  * RouterHelper manages links between pages in a template context.
@@ -23,6 +23,11 @@ class RouterHelper extends Helper
 {
     protected $generator;
 
+    /**
+     * Constructor.
+     *
+     * @param UrlGeneratorInterface $router A Router instance
+     */
     public function __construct(UrlGeneratorInterface $router)
     {
         $this->generator = $router;

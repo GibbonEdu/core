@@ -12,8 +12,12 @@
 namespace Symfony\Component\Config\Tests\Definition\Builder;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Config\Tests\Definition\Builder\NodeBuilder as CustomNodeBuilder;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-use Symfony\Component\Config\Tests\Fixtures\Builder\NodeBuilder as CustomNodeBuilder;
+
+require __DIR__.'/../../Fixtures/Builder/NodeBuilder.php';
+require __DIR__.'/../../Fixtures/Builder/BarNodeDefinition.php';
+require __DIR__.'/../../Fixtures/Builder/VariableNodeDefinition.php';
 
 class TreeBuilderTest extends TestCase
 {
@@ -24,11 +28,11 @@ class TreeBuilderTest extends TestCase
 
         $nodeBuilder = $root->children();
 
-        $this->assertInstanceOf('Symfony\Component\Config\Tests\Fixtures\Builder\NodeBuilder', $nodeBuilder);
+        $this->assertInstanceOf('Symfony\Component\Config\Tests\Definition\Builder\NodeBuilder', $nodeBuilder);
 
         $nodeBuilder = $nodeBuilder->arrayNode('deeper')->children();
 
-        $this->assertInstanceOf('Symfony\Component\Config\Tests\Fixtures\Builder\NodeBuilder', $nodeBuilder);
+        $this->assertInstanceOf('Symfony\Component\Config\Tests\Definition\Builder\NodeBuilder', $nodeBuilder);
     }
 
     public function testOverrideABuiltInNodeType()
@@ -38,7 +42,7 @@ class TreeBuilderTest extends TestCase
 
         $definition = $root->children()->variableNode('variable');
 
-        $this->assertInstanceOf('Symfony\Component\Config\Tests\Fixtures\Builder\VariableNodeDefinition', $definition);
+        $this->assertInstanceOf('Symfony\Component\Config\Tests\Definition\Builder\VariableNodeDefinition', $definition);
     }
 
     public function testAddANodeType()
@@ -48,7 +52,7 @@ class TreeBuilderTest extends TestCase
 
         $definition = $root->children()->barNode('variable');
 
-        $this->assertInstanceOf('Symfony\Component\Config\Tests\Fixtures\Builder\BarNodeDefinition', $definition);
+        $this->assertInstanceOf('Symfony\Component\Config\Tests\Definition\Builder\BarNodeDefinition', $definition);
     }
 
     public function testCreateABuiltInNodeTypeWithACustomNodeBuilder()
@@ -130,66 +134,5 @@ class TreeBuilderTest extends TestCase
 
         $this->assertInternalType('array', $tree->getExample());
         $this->assertEquals('example', $children['child']->getExample());
-    }
-
-    public function testDefaultPathSeparatorIsDot()
-    {
-        $builder = new TreeBuilder();
-
-        $builder->root('propagation')
-            ->children()
-                ->node('foo', 'variable')->end()
-                ->arrayNode('child')
-                    ->children()
-                        ->node('foo', 'variable')
-                    ->end()
-                ->end()
-            ->end()
-        ->end();
-
-        $node = $builder->buildTree();
-        $children = $node->getChildren();
-
-        $this->assertArrayHasKey('foo', $children);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\BaseNode', $children['foo']);
-        $this->assertSame('propagation.foo', $children['foo']->getPath());
-
-        $this->assertArrayHasKey('child', $children);
-        $childChildren = $children['child']->getChildren();
-
-        $this->assertArrayHasKey('foo', $childChildren);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\BaseNode', $childChildren['foo']);
-        $this->assertSame('propagation.child.foo', $childChildren['foo']->getPath());
-    }
-
-    public function testPathSeparatorIsPropagatedToChildren()
-    {
-        $builder = new TreeBuilder();
-
-        $builder->root('propagation')
-            ->children()
-                ->node('foo', 'variable')->end()
-                ->arrayNode('child')
-                    ->children()
-                        ->node('foo', 'variable')
-                    ->end()
-                ->end()
-            ->end()
-        ->end();
-
-        $builder->setPathSeparator('/');
-        $node = $builder->buildTree();
-        $children = $node->getChildren();
-
-        $this->assertArrayHasKey('foo', $children);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\BaseNode', $children['foo']);
-        $this->assertSame('propagation/foo', $children['foo']->getPath());
-
-        $this->assertArrayHasKey('child', $children);
-        $childChildren = $children['child']->getChildren();
-
-        $this->assertArrayHasKey('foo', $childChildren);
-        $this->assertInstanceOf('Symfony\Component\Config\Definition\BaseNode', $childChildren['foo']);
-        $this->assertSame('propagation/child/foo', $childChildren['foo']->getPath());
     }
 }

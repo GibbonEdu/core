@@ -26,12 +26,12 @@ class ContainerDebugCommandTest extends WebTestCase
         $application = new Application(static::$kernel);
         $application->setAutoExit(false);
 
-        @unlink(static::$container->getParameter('debug.container.dump'));
+        @unlink(static::$kernel->getContainer()->getParameter('debug.container.dump'));
 
         $tester = new ApplicationTester($application);
         $tester->run(array('command' => 'debug:container'));
 
-        $this->assertFileExists(static::$container->getParameter('debug.container.dump'));
+        $this->assertFileExists(static::$kernel->getContainer()->getParameter('debug.container.dump'));
     }
 
     public function testNoDebug()
@@ -55,12 +55,12 @@ class ContainerDebugCommandTest extends WebTestCase
         $application->setAutoExit(false);
 
         $tester = new ApplicationTester($application);
-        $tester->run(array('command' => 'debug:container', '--show-hidden' => true));
-        $this->assertNotContains('public', $tester->getDisplay());
-        $this->assertNotContains('private_alias', $tester->getDisplay());
+        $tester->run(array('command' => 'debug:container', '--show-private' => true));
+        $this->assertContains('public', $tester->getDisplay());
+        $this->assertContains('private_alias', $tester->getDisplay());
 
         $tester->run(array('command' => 'debug:container'));
         $this->assertContains('public', $tester->getDisplay());
-        $this->assertContains('private_alias', $tester->getDisplay());
+        $this->assertNotContains('private_alias', $tester->getDisplay());
     }
 }

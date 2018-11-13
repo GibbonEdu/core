@@ -11,8 +11,6 @@
 
 namespace Symfony\Bundle\FrameworkBundle\CacheWarmer;
 
-use Psr\Container\ContainerInterface;
-use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -21,17 +19,19 @@ use Symfony\Component\Routing\RouterInterface;
  * Generates the router matcher and generator classes.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @final
  */
-class RouterCacheWarmer implements CacheWarmerInterface, ServiceSubscriberInterface
+class RouterCacheWarmer implements CacheWarmerInterface
 {
-    private $container;
+    protected $router;
 
-    public function __construct(ContainerInterface $container)
+    /**
+     * Constructor.
+     *
+     * @param RouterInterface $router A Router instance
+     */
+    public function __construct(RouterInterface $router)
     {
-        // As this cache warmer is optional, dependencies should be lazy-loaded, that's why a container should be injected.
-        $this->container = $container;
+        $this->router = $router;
     }
 
     /**
@@ -41,15 +41,9 @@ class RouterCacheWarmer implements CacheWarmerInterface, ServiceSubscriberInterf
      */
     public function warmUp($cacheDir)
     {
-        $router = $this->container->get('router');
-
-        if ($router instanceof WarmableInterface) {
-            $router->warmUp($cacheDir);
-
-            return;
+        if ($this->router instanceof WarmableInterface) {
+            $this->router->warmUp($cacheDir);
         }
-
-        @trigger_error(sprintf('Passing a %s without implementing %s is deprecated since Symfony 4.1.', RouterInterface::class, WarmableInterface::class), \E_USER_DEPRECATED);
     }
 
     /**
@@ -60,15 +54,5 @@ class RouterCacheWarmer implements CacheWarmerInterface, ServiceSubscriberInterf
     public function isOptional()
     {
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public static function getSubscribedServices()
-    {
-        return array(
-            'router' => RouterInterface::class,
-        );
     }
 }

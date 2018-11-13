@@ -41,41 +41,31 @@ class PassConfig
 
         $this->beforeOptimizationPasses = array(
             100 => array(
-                new ResolveClassPass(),
+                $resolveClassPass = new ResolveClassPass(),
                 new ResolveInstanceofConditionalsPass(),
-                new RegisterEnvVarProcessorsPass(),
             ),
-            -1000 => array(new ExtensionCompilerPass()),
         );
 
         $this->optimizationPasses = array(array(
-            new ValidateEnvPlaceholdersPass(),
-            new ResolveChildDefinitionsPass(),
+            new ExtensionCompilerPass(),
+            new ResolveDefinitionTemplatesPass(),
             new ServiceLocatorTagPass(),
             new DecoratorServicePass(),
-            new ResolveParameterPlaceHoldersPass(false),
+            new ResolveParameterPlaceHoldersPass(),
             new ResolveFactoryClassPass(),
+            new FactoryReturnTypePass($resolveClassPass),
             new CheckDefinitionValidityPass(),
             new RegisterServiceSubscribersPass(),
             new ResolveNamedArgumentsPass(),
-            new AutowireRequiredMethodsPass(),
-            new ResolveBindingsPass(),
-            new AutowirePass(false),
-            new ResolveTaggedIteratorArgumentPass(),
+            $autowirePass = new AutowirePass(false),
             new ResolveServiceSubscribersPass(),
             new ResolveReferencesToAliasesPass(),
             new ResolveInvalidReferencesPass(),
             new AnalyzeServiceReferencesPass(true),
             new CheckCircularReferencesPass(),
             new CheckReferenceValidityPass(),
-            new CheckArgumentsValidityPass(false),
+            new CheckArgumentsValidityPass(),
         ));
-
-        $this->beforeRemovingPasses = array(
-            -100 => array(
-                new ResolvePrivatesPass(),
-            ),
-        );
 
         $this->removingPasses = array(array(
             new RemovePrivateAliasesPass(),
@@ -83,13 +73,12 @@ class PassConfig
             new RemoveAbstractDefinitionsPass(),
             new RepeatedPass(array(
                 new AnalyzeServiceReferencesPass(),
-                new InlineServiceDefinitionsPass(),
+                $inlinedServicePass = new InlineServiceDefinitionsPass(),
                 new AnalyzeServiceReferencesPass(),
                 new RemoveUnusedDefinitionsPass(),
             )),
-            new DefinitionErrorExceptionPass(),
+            new AutowireExceptionPass($autowirePass, $inlinedServicePass),
             new CheckExceptionOnInvalidReferenceBehaviorPass(),
-            new ResolveHotPathPass(),
         ));
     }
 
@@ -119,8 +108,21 @@ class PassConfig
      *
      * @throws InvalidArgumentException when a pass type doesn't exist
      */
-    public function addPass(CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION, int $priority = 0)
+    public function addPass(CompilerPassInterface $pass, $type = self::TYPE_BEFORE_OPTIMIZATION/*, int $priority = 0*/)
     {
+        if (func_num_args() >= 3) {
+            $priority = func_get_arg(2);
+        } else {
+            if (__CLASS__ !== get_class($this)) {
+                $r = new \ReflectionMethod($this, __FUNCTION__);
+                if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
+                    @trigger_error(sprintf('Method %s() will have a third `int $priority = 0` argument in version 4.0. Not defining it is deprecated since 3.2.', __METHOD__), E_USER_DEPRECATED);
+                }
+            }
+
+            $priority = 0;
+        }
+
         $property = $type.'Passes';
         if (!isset($this->$property)) {
             throw new InvalidArgumentException(sprintf('Invalid type "%s".', $type));
@@ -194,6 +196,11 @@ class PassConfig
         return $this->mergePass;
     }
 
+    /**
+     * Sets the Merge Pass.
+     *
+     * @param CompilerPassInterface $pass The merge pass
+     */
     public function setMergePass(CompilerPassInterface $pass)
     {
         $this->mergePass = $pass;
@@ -258,13 +265,13 @@ class PassConfig
      */
     private function sortPasses(array $passes)
     {
-        if (0 === \count($passes)) {
+        if (0 === count($passes)) {
             return array();
         }
 
         krsort($passes);
 
         // Flatten the array
-        return array_merge(...$passes);
+        return call_user_func_array('array_merge', $passes);
     }
 }

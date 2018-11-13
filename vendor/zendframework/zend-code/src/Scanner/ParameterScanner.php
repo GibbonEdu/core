@@ -11,13 +11,6 @@ namespace Zend\Code\Scanner;
 
 use Zend\Code\NameInformation;
 
-use function current;
-use function is_string;
-use function ltrim;
-use function next;
-use function reset;
-use function trim;
-
 class ParameterScanner
 {
     /**
@@ -28,42 +21,42 @@ class ParameterScanner
     /**
      * @var null|ClassScanner
      */
-    protected $declaringScannerClass;
+    protected $declaringScannerClass = null;
 
     /**
      * @var null|string
      */
-    protected $declaringClass;
+    protected $declaringClass = null;
 
     /**
      * @var null|MethodScanner
      */
-    protected $declaringScannerFunction;
+    protected $declaringScannerFunction = null;
 
     /**
      * @var null|string
      */
-    protected $declaringFunction;
+    protected $declaringFunction = null;
 
     /**
      * @var null|string
      */
-    protected $defaultValue;
+    protected $defaultValue = null;
 
     /**
      * @var null|string
      */
-    protected $class;
+    protected $class = null;
 
     /**
      * @var null|string
      */
-    protected $name;
+    protected $name = null;
 
     /**
      * @var null|int
      */
-    protected $position;
+    protected $position = null;
 
     /**
      * @var bool
@@ -88,12 +81,12 @@ class ParameterScanner
     /**
      * @var array|null
      */
-    protected $tokens;
+    protected $tokens = null;
 
     /**
      * @var null|NameInformation
      */
-    protected $nameInformation;
+    protected $nameInformation = null;
 
     /**
      * @param  array $parameterTokens
@@ -202,7 +195,7 @@ class ParameterScanner
         }
 
         if ($this->name !== null) {
-            $this->defaultValue .= trim(is_string($token) ? $token : $token[1]);
+            $this->defaultValue .= trim((is_string($token)) ? $token : $token[1]);
         }
 
         SCANNER_CONTINUE:

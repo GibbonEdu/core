@@ -22,9 +22,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 abstract class AbstractRecursivePass implements CompilerPassInterface
 {
-    /**
-     * @var ContainerBuilder
-     */
     protected $container;
     protected $currentId;
 
@@ -52,7 +49,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
      */
     protected function processValue($value, $isRoot = false)
     {
-        if (\is_array($value)) {
+        if (is_array($value)) {
             foreach ($value as $k => $v) {
                 if ($isRoot) {
                     $this->currentId = $k;
@@ -90,9 +87,9 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
      */
     protected function getConstructor(Definition $definition, $required)
     {
-        if (\is_string($factory = $definition->getFactory())) {
-            if (!\function_exists($factory)) {
-                throw new RuntimeException(sprintf('Invalid service "%s": function "%s" does not exist.', $this->currentId, $factory));
+        if (is_string($factory = $definition->getFactory())) {
+            if (!function_exists($factory)) {
+                throw new RuntimeException(sprintf('Unable to resolve service "%s": function "%s" does not exist.', $this->currentId, $factory));
             }
             $r = new \ReflectionFunction($factory);
             if (false !== $r->getFileName() && file_exists($r->getFileName())) {
@@ -110,7 +107,7 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
                 $class = $definition->getClass();
             }
             if ('__construct' === $method) {
-                throw new RuntimeException(sprintf('Invalid service "%s": "__construct()" cannot be used as a factory method.', $this->currentId));
+                throw new RuntimeException(sprintf('Unable to resolve service "%s": "__construct()" cannot be used as a factory method.', $this->currentId));
             }
 
             return $this->getReflectionMethod(new Definition($class), $method);
@@ -118,19 +115,15 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
         $class = $definition->getClass();
 
-        try {
-            if (!$r = $this->container->getReflectionClass($class)) {
-                throw new RuntimeException(sprintf('Invalid service "%s": class "%s" does not exist.', $this->currentId, $class));
-            }
-        } catch (\ReflectionException $e) {
-            throw new RuntimeException(sprintf('Invalid service "%s": %s.', $this->currentId, lcfirst(rtrim($e->getMessage(), '.'))));
+        if (!$r = $this->container->getReflectionClass($class)) {
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": class "%s" does not exist.', $this->currentId, $class));
         }
         if (!$r = $r->getConstructor()) {
             if ($required) {
-                throw new RuntimeException(sprintf('Invalid service "%s": class%s has no constructor.', $this->currentId, sprintf($class !== $this->currentId ? ' "%s"' : '', $class)));
+                throw new RuntimeException(sprintf('Unable to resolve service "%s": class%s has no constructor.', $this->currentId, sprintf($class !== $this->currentId ? ' "%s"' : '', $class)));
             }
         } elseif (!$r->isPublic()) {
-            throw new RuntimeException(sprintf('Invalid service "%s": %s must be public.', $this->currentId, sprintf($class !== $this->currentId ? 'constructor of class "%s"' : 'its constructor', $class)));
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": %s must be public.', $this->currentId, sprintf($class !== $this->currentId ? 'constructor of class "%s"' : 'its constructor', $class)));
         }
 
         return $r;
@@ -151,20 +144,20 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
         }
 
         if (!$class = $definition->getClass()) {
-            throw new RuntimeException(sprintf('Invalid service "%s": the class is not set.', $this->currentId));
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": the class is not set.', $this->currentId));
         }
 
         if (!$r = $this->container->getReflectionClass($class)) {
-            throw new RuntimeException(sprintf('Invalid service "%s": class "%s" does not exist.', $this->currentId, $class));
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": class "%s" does not exist.', $this->currentId, $class));
         }
 
         if (!$r->hasMethod($method)) {
-            throw new RuntimeException(sprintf('Invalid service "%s": method "%s()" does not exist.', $this->currentId, $class !== $this->currentId ? $class.'::'.$method : $method));
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": method "%s()" does not exist.', $this->currentId, $class !== $this->currentId ? $class.'::'.$method : $method));
         }
 
         $r = $r->getMethod($method);
         if (!$r->isPublic()) {
-            throw new RuntimeException(sprintf('Invalid service "%s": method "%s()" must be public.', $this->currentId, $class !== $this->currentId ? $class.'::'.$method : $method));
+            throw new RuntimeException(sprintf('Unable to resolve service "%s": method "%s()" must be public.', $this->currentId, $class !== $this->currentId ? $class.'::'.$method : $method));
         }
 
         return $r;

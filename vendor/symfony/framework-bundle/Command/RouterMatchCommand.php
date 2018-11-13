@@ -11,34 +11,36 @@
 
 namespace Symfony\Bundle\FrameworkBundle\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Routing\Matcher\TraceableUrlMatcher;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Routing\Matcher\TraceableUrlMatcher;
 
 /**
  * A console command to test route matching.
  *
  * @author Fabien Potencier <fabien@symfony.com>
- *
- * @final
  */
-class RouterMatchCommand extends Command
+class RouterMatchCommand extends ContainerAwareCommand
 {
-    protected static $defaultName = 'router:match';
-
-    private $router;
-
-    public function __construct(RouterInterface $router)
+    /**
+     * {@inheritdoc}
+     */
+    public function isEnabled()
     {
-        parent::__construct();
+        if (!$this->getContainer()->has('router')) {
+            return false;
+        }
+        $router = $this->getContainer()->get('router');
+        if (!$router instanceof RouterInterface) {
+            return false;
+        }
 
-        $this->router = $router;
+        return parent::isEnabled();
     }
 
     /**
@@ -47,6 +49,7 @@ class RouterMatchCommand extends Command
     protected function configure()
     {
         $this
+            ->setName('router:match')
             ->setDefinition(array(
                 new InputArgument('path_info', InputArgument::REQUIRED, 'A path info'),
                 new InputOption('method', null, InputOption::VALUE_REQUIRED, 'Sets the HTTP method'),
@@ -75,7 +78,8 @@ EOF
     {
         $io = new SymfonyStyle($input, $output);
 
-        $context = $this->router->getContext();
+        $router = $this->getContainer()->get('router');
+        $context = $router->getContext();
         if (null !== $method = $input->getOption('method')) {
             $context->setMethod($method);
         }
@@ -86,7 +90,7 @@ EOF
             $context->setHost($host);
         }
 
-        $matcher = new TraceableUrlMatcher($this->router->getRouteCollection(), $context);
+        $matcher = new TraceableUrlMatcher($router->getRouteCollection(), $context);
 
         $traces = $matcher->getTraces($input->getArgument('path_info'));
 

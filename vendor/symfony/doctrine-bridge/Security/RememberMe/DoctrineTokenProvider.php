@@ -11,12 +11,12 @@
 
 namespace Symfony\Bridge\Doctrine\Security\RememberMe;
 
+use Symfony\Component\Security\Core\Authentication\RememberMe\TokenProviderInterface;
+use Symfony\Component\Security\Core\Authentication\RememberMe\PersistentTokenInterface;
+use Symfony\Component\Security\Core\Authentication\RememberMe\PersistentToken;
+use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Types\Type as DoctrineType;
-use Symfony\Component\Security\Core\Authentication\RememberMe\PersistentToken;
-use Symfony\Component\Security\Core\Authentication\RememberMe\PersistentTokenInterface;
-use Symfony\Component\Security\Core\Authentication\RememberMe\TokenProviderInterface;
-use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
 
 /**
  * This class provides storage for the tokens that is set in "remember me"
@@ -27,19 +27,29 @@ use Symfony\Component\Security\Core\Exception\TokenNotFoundException;
  * and to do the conversion of the datetime column.
  *
  * In order to use this class, you need the following table in your database:
- *
- *     CREATE TABLE `rememberme_token` (
- *         `series`   char(88)     UNIQUE PRIMARY KEY NOT NULL,
- *         `value`    char(88)     NOT NULL,
- *         `lastUsed` datetime     NOT NULL,
- *         `class`    varchar(100) NOT NULL,
- *         `username` varchar(200) NOT NULL
- *     );
+ * CREATE TABLE `rememberme_token` (
+ *  `series`   char(88)     UNIQUE PRIMARY KEY NOT NULL,
+ *  `value`    char(88)     NOT NULL,
+ *  `lastUsed` datetime     NOT NULL,
+ *  `class`    varchar(100) NOT NULL,
+ *  `username` varchar(200) NOT NULL
+ * );
  */
 class DoctrineTokenProvider implements TokenProviderInterface
 {
+    /**
+     * Doctrine DBAL database connection
+     * F.ex. service id: doctrine.dbal.default_connection.
+     *
+     * @var Connection
+     */
     private $conn;
 
+    /**
+     * new DoctrineTokenProvider for the RememberMe authentication service.
+     *
+     * @param Connection $conn
+     */
     public function __construct(Connection $conn)
     {
         $this->conn = $conn;

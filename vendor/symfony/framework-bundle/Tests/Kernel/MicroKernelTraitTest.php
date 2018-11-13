@@ -18,7 +18,7 @@ class MicroKernelTraitTest extends TestCase
 {
     public function test()
     {
-        $kernel = new ConcreteMicroKernel('test', false);
+        $kernel = new ConcreteMicroKernel('test', true);
         $kernel->boot();
 
         $request = Request::create('/');
@@ -27,16 +27,5 @@ class MicroKernelTraitTest extends TestCase
         $this->assertEquals('halloween', $response->getContent());
         $this->assertEquals('Have a great day!', $kernel->getContainer()->getParameter('halloween'));
         $this->assertInstanceOf('stdClass', $kernel->getContainer()->get('halloween'));
-    }
-
-    public function testAsEventSubscriber()
-    {
-        $kernel = new ConcreteMicroKernel('test', false);
-        $kernel->boot();
-
-        $request = Request::create('/danger');
-        $response = $kernel->handle($request);
-
-        $this->assertSame('It\'s dangerous to go alone. Take this ⚔', $response->getContent());
     }
 }

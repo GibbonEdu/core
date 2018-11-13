@@ -11,7 +11,7 @@
 
 namespace Symfony\Component\DependencyInjection\Loader;
 
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Config\Resource\FileResource;
 
 /**
  * PhpFileLoader loads service definitions from a PHP file.
@@ -33,19 +33,10 @@ class PhpFileLoader extends FileLoader
         $loader = $this;
 
         $path = $this->locator->locate($resource);
-        $this->setCurrentDir(\dirname($path));
+        $this->setCurrentDir(dirname($path));
         $this->container->fileExists($path);
 
-        // the closure forbids access to the private scope in the included file
-        $load = \Closure::bind(function ($path) use ($container, $loader, $resource, $type) {
-            return include $path;
-        }, $this, ProtectedPhpFileLoader::class);
-
-        $callback = $load($path);
-
-        if (\is_object($callback) && \is_callable($callback)) {
-            $callback(new ContainerConfigurator($this->container, $this, $this->instanceof, $path, $resource), $this->container, $this);
-        }
+        include $path;
     }
 
     /**
@@ -53,7 +44,7 @@ class PhpFileLoader extends FileLoader
      */
     public function supports($resource, $type = null)
     {
-        if (!\is_string($resource)) {
+        if (!is_string($resource)) {
             return false;
         }
 
@@ -63,11 +54,4 @@ class PhpFileLoader extends FileLoader
 
         return 'php' === $type;
     }
-}
-
-/**
- * @internal
- */
-final class ProtectedPhpFileLoader extends PhpFileLoader
-{
 }

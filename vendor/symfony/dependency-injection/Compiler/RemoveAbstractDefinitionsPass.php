@@ -20,6 +20,8 @@ class RemoveAbstractDefinitionsPass implements CompilerPassInterface
 {
     /**
      * Removes abstract definitions from the ContainerBuilder.
+     *
+     * @param ContainerBuilder $container
      */
     public function process(ContainerBuilder $container)
     {

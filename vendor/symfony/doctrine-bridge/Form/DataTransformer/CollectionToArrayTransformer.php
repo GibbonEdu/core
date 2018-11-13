@@ -11,10 +11,10 @@
 
 namespace Symfony\Bridge\Doctrine\Form\DataTransformer;
 
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Form\DataTransformerInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
@@ -23,6 +23,8 @@ class CollectionToArrayTransformer implements DataTransformerInterface
 {
     /**
      * Transforms a collection into an array.
+     *
+     * @param Collection $collection A collection of entities
      *
      * @return mixed An array of entities
      *
@@ -36,7 +38,7 @@ class CollectionToArrayTransformer implements DataTransformerInterface
 
         // For cases when the collection getter returns $collection->toArray()
         // in order to prevent modifications of the returned collection
-        if (\is_array($collection)) {
+        if (is_array($collection)) {
             return $collection;
         }
 

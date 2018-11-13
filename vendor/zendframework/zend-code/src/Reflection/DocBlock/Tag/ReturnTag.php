@@ -9,11 +9,6 @@
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
 
-use function explode;
-use function preg_match;
-use function preg_replace;
-use function trim;
-
 class ReturnTag implements TagInterface, PhpDocTypedTagInterface
 {
     /**
@@ -24,7 +19,7 @@ class ReturnTag implements TagInterface, PhpDocTypedTagInterface
     /**
      * @var string
      */
-    protected $description;
+    protected $description = null;
 
     /**
      * @return string
@@ -41,7 +36,7 @@ class ReturnTag implements TagInterface, PhpDocTypedTagInterface
     public function initialize($tagDocBlockLine)
     {
         $matches = [];
-        if (! preg_match('#((?:[\w|\\\]+(?:\[\])*\|?)+)(?:\s+(.*))?#s', $tagDocBlockLine, $matches)) {
+        if (!preg_match('#((?:[\w|\\\]+(?:\[\])*\|?)+)(?:\s+(.*))?#s', $tagDocBlockLine, $matches)) {
             return;
         }
 

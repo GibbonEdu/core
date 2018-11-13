@@ -38,7 +38,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Static route',
                 array('/foo'),
-                '/foo', '#^/foo$#sD', array(), array(
+                '/foo', '#^/foo$#s', array(), array(
                     array('text', '/foo'),
                 ),
             ),
@@ -46,7 +46,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a variable',
                 array('/foo/{bar}'),
-                '/foo', '#^/foo/(?P<bar>[^/]++)$#sD', array('bar'), array(
+                '/foo', '#^/foo/(?P<bar>[^/]++)$#s', array('bar'), array(
                     array('variable', '/', '[^/]++', 'bar'),
                     array('text', '/foo'),
                 ),
@@ -55,7 +55,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a variable that has a default value',
                 array('/foo/{bar}', array('bar' => 'bar')),
-                '/foo', '#^/foo(?:/(?P<bar>[^/]++))?$#sD', array('bar'), array(
+                '/foo', '#^/foo(?:/(?P<bar>[^/]++))?$#s', array('bar'), array(
                     array('variable', '/', '[^/]++', 'bar'),
                     array('text', '/foo'),
                 ),
@@ -64,7 +64,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with several variables',
                 array('/foo/{bar}/{foobar}'),
-                '/foo', '#^/foo/(?P<bar>[^/]++)/(?P<foobar>[^/]++)$#sD', array('bar', 'foobar'), array(
+                '/foo', '#^/foo/(?P<bar>[^/]++)/(?P<foobar>[^/]++)$#s', array('bar', 'foobar'), array(
                     array('variable', '/', '[^/]++', 'foobar'),
                     array('variable', '/', '[^/]++', 'bar'),
                     array('text', '/foo'),
@@ -74,7 +74,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with several variables that have default values',
                 array('/foo/{bar}/{foobar}', array('bar' => 'bar', 'foobar' => '')),
-                '/foo', '#^/foo(?:/(?P<bar>[^/]++)(?:/(?P<foobar>[^/]++))?)?$#sD', array('bar', 'foobar'), array(
+                '/foo', '#^/foo(?:/(?P<bar>[^/]++)(?:/(?P<foobar>[^/]++))?)?$#s', array('bar', 'foobar'), array(
                     array('variable', '/', '[^/]++', 'foobar'),
                     array('variable', '/', '[^/]++', 'bar'),
                     array('text', '/foo'),
@@ -84,7 +84,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with several variables but some of them have no default values',
                 array('/foo/{bar}/{foobar}', array('bar' => 'bar')),
-                '/foo', '#^/foo/(?P<bar>[^/]++)/(?P<foobar>[^/]++)$#sD', array('bar', 'foobar'), array(
+                '/foo', '#^/foo/(?P<bar>[^/]++)/(?P<foobar>[^/]++)$#s', array('bar', 'foobar'), array(
                     array('variable', '/', '[^/]++', 'foobar'),
                     array('variable', '/', '[^/]++', 'bar'),
                     array('text', '/foo'),
@@ -94,7 +94,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with an optional variable as the first segment',
                 array('/{bar}', array('bar' => 'bar')),
-                '', '#^/(?P<bar>[^/]++)?$#sD', array('bar'), array(
+                '', '#^/(?P<bar>[^/]++)?$#s', array('bar'), array(
                     array('variable', '/', '[^/]++', 'bar'),
                 ),
             ),
@@ -102,7 +102,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a requirement of 0',
                 array('/{bar}', array('bar' => null), array('bar' => '0')),
-                '', '#^/(?P<bar>0)?$#sD', array('bar'), array(
+                '', '#^/(?P<bar>0)?$#s', array('bar'), array(
                     array('variable', '/', '0', 'bar'),
                 ),
             ),
@@ -110,15 +110,15 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with an optional variable as the first segment with requirements',
                 array('/{bar}', array('bar' => 'bar'), array('bar' => '(foo|bar)')),
-                '', '#^/(?P<bar>(?:foo|bar))?$#sD', array('bar'), array(
-                    array('variable', '/', '(?:foo|bar)', 'bar'),
+                '', '#^/(?P<bar>(foo|bar))?$#s', array('bar'), array(
+                    array('variable', '/', '(foo|bar)', 'bar'),
                 ),
             ),
 
             array(
                 'Route with only optional variables',
                 array('/{foo}/{bar}', array('foo' => 'foo', 'bar' => 'bar')),
-                '', '#^/(?P<foo>[^/]++)?(?:/(?P<bar>[^/]++))?$#sD', array('foo', 'bar'), array(
+                '', '#^/(?P<foo>[^/]++)?(?:/(?P<bar>[^/]++))?$#s', array('foo', 'bar'), array(
                     array('variable', '/', '[^/]++', 'bar'),
                     array('variable', '/', '[^/]++', 'foo'),
                 ),
@@ -127,7 +127,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a variable in last position',
                 array('/foo-{bar}'),
-                '/foo-', '#^/foo\-(?P<bar>[^/]++)$#sD', array('bar'), array(
+                '/foo-', '#^/foo\-(?P<bar>[^/]++)$#s', array('bar'), array(
                     array('variable', '-', '[^/]++', 'bar'),
                     array('text', '/foo'),
                 ),
@@ -136,7 +136,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with nested placeholders',
                 array('/{static{var}static}'),
-                '/{static', '#^/\{static(?P<var>[^/]+)static\}$#sD', array('var'), array(
+                '/{static', '#^/\{static(?P<var>[^/]+)static\}$#s', array('var'), array(
                     array('text', 'static}'),
                     array('variable', '', '[^/]+', 'var'),
                     array('text', '/{static'),
@@ -146,10 +146,10 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route without separator between variables',
                 array('/{w}{x}{y}{z}.{_format}', array('z' => 'default-z', '_format' => 'html'), array('y' => '(y|Y)')),
-                '', '#^/(?P<w>[^/\.]+)(?P<x>[^/\.]+)(?P<y>(?:y|Y))(?:(?P<z>[^/\.]++)(?:\.(?P<_format>[^/]++))?)?$#sD', array('w', 'x', 'y', 'z', '_format'), array(
+                '', '#^/(?P<w>[^/\.]+)(?P<x>[^/\.]+)(?P<y>(y|Y))(?:(?P<z>[^/\.]++)(?:\.(?P<_format>[^/]++))?)?$#s', array('w', 'x', 'y', 'z', '_format'), array(
                     array('variable', '.', '[^/]++', '_format'),
                     array('variable', '', '[^/\.]++', 'z'),
-                    array('variable', '', '(?:y|Y)', 'y'),
+                    array('variable', '', '(y|Y)', 'y'),
                     array('variable', '', '[^/\.]+', 'x'),
                     array('variable', '/', '[^/\.]+', 'w'),
                 ),
@@ -158,7 +158,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a format',
                 array('/foo/{bar}.{_format}'),
-                '/foo', '#^/foo/(?P<bar>[^/\.]++)\.(?P<_format>[^/]++)$#sD', array('bar', '_format'), array(
+                '/foo', '#^/foo/(?P<bar>[^/\.]++)\.(?P<_format>[^/]++)$#s', array('bar', '_format'), array(
                     array('variable', '.', '[^/]++', '_format'),
                     array('variable', '/', '[^/\.]++', 'bar'),
                     array('text', '/foo'),
@@ -168,7 +168,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Static non UTF-8 route',
                 array("/fo\xE9"),
-                "/fo\xE9", "#^/fo\xE9$#sD", array(), array(
+                "/fo\xE9", "#^/fo\xE9$#s", array(), array(
                     array('text', "/fo\xE9"),
                 ),
             ),
@@ -176,7 +176,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with an explicit UTF-8 requirement',
                 array('/{bar}', array('bar' => null), array('bar' => '.'), array('utf8' => true)),
-                '', '#^/(?P<bar>.)?$#sDu', array('bar'), array(
+                '', '#^/(?P<bar>.)?$#su', array('bar'), array(
                     array('variable', '/', '.', 'bar', true),
                 ),
             ),
@@ -184,8 +184,9 @@ class RouteCompilerTest extends TestCase
     }
 
     /**
+     * @group legacy
      * @dataProvider provideCompileImplicitUtf8Data
-     * @expectedException \LogicException
+     * @expectedDeprecation Using UTF-8 route %s without setting the "utf8" option is deprecated %s.
      */
     public function testCompileImplicitUtf8Data($name, $arguments, $prefix, $regex, $variables, $tokens, $deprecationType)
     {
@@ -205,7 +206,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Static UTF-8 route',
                 array('/foé'),
-                '/foé', '#^/foé$#sDu', array(), array(
+                '/foé', '#^/foé$#su', array(), array(
                     array('text', '/foé'),
                 ),
                 'patterns',
@@ -214,7 +215,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with an implicit UTF-8 requirement',
                 array('/{bar}', array('bar' => null), array('bar' => 'é')),
-                '', '#^/(?P<bar>é)?$#sDu', array('bar'), array(
+                '', '#^/(?P<bar>é)?$#su', array('bar'), array(
                     array('variable', '/', 'é', 'bar', true),
                 ),
                 'requirements',
@@ -223,7 +224,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a UTF-8 class requirement',
                 array('/{bar}', array('bar' => null), array('bar' => '\pM')),
-                '', '#^/(?P<bar>\pM)?$#sDu', array('bar'), array(
+                '', '#^/(?P<bar>\pM)?$#su', array('bar'), array(
                     array('variable', '/', '\pM', 'bar', true),
                 ),
                 'requirements',
@@ -232,7 +233,7 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with a UTF-8 separator',
                 array('/foo/{bar}§{_format}', array(), array(), array('compiler_class' => Utf8RouteCompiler::class)),
-                '/foo', '#^/foo/(?P<bar>[^/§]++)§(?P<_format>[^/]++)$#sDu', array('bar', '_format'), array(
+                '/foo', '#^/foo/(?P<bar>[^/§]++)§(?P<_format>[^/]++)$#su', array('bar', '_format'), array(
                     array('variable', '§', '[^/]++', '_format', true),
                     array('variable', '/', '[^/§]++', 'bar', true),
                     array('text', '/foo'),
@@ -326,21 +327,21 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with host pattern',
                 array('/hello', array(), array(), array(), 'www.example.com'),
-                '/hello', '#^/hello$#sD', array(), array(), array(
+                '/hello', '#^/hello$#s', array(), array(), array(
                     array('text', '/hello'),
                 ),
-                '#^www\.example\.com$#sDi', array(), array(
+                '#^www\.example\.com$#si', array(), array(
                     array('text', 'www.example.com'),
                 ),
             ),
             array(
                 'Route with host pattern and some variables',
                 array('/hello/{name}', array(), array(), array(), 'www.example.{tld}'),
-                '/hello', '#^/hello/(?P<name>[^/]++)$#sD', array('tld', 'name'), array('name'), array(
+                '/hello', '#^/hello/(?P<name>[^/]++)$#s', array('tld', 'name'), array('name'), array(
                     array('variable', '/', '[^/]++', 'name'),
                     array('text', '/hello'),
                 ),
-                '#^www\.example\.(?P<tld>[^\.]++)$#sDi', array('tld'), array(
+                '#^www\.example\.(?P<tld>[^\.]++)$#si', array('tld'), array(
                     array('variable', '.', '[^\.]++', 'tld'),
                     array('text', 'www.example'),
                 ),
@@ -348,10 +349,10 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with variable at beginning of host',
                 array('/hello', array(), array(), array(), '{locale}.example.{tld}'),
-                '/hello', '#^/hello$#sD', array('locale', 'tld'), array(), array(
+                '/hello', '#^/hello$#s', array('locale', 'tld'), array(), array(
                     array('text', '/hello'),
                 ),
-                '#^(?P<locale>[^\.]++)\.example\.(?P<tld>[^\.]++)$#sDi', array('locale', 'tld'), array(
+                '#^(?P<locale>[^\.]++)\.example\.(?P<tld>[^\.]++)$#si', array('locale', 'tld'), array(
                     array('variable', '.', '[^\.]++', 'tld'),
                     array('text', '.example'),
                     array('variable', '', '[^\.]++', 'locale'),
@@ -360,10 +361,10 @@ class RouteCompilerTest extends TestCase
             array(
                 'Route with host variables that has a default value',
                 array('/hello', array('locale' => 'a', 'tld' => 'b'), array(), array(), '{locale}.example.{tld}'),
-                '/hello', '#^/hello$#sD', array('locale', 'tld'), array(), array(
+                '/hello', '#^/hello$#s', array('locale', 'tld'), array(), array(
                     array('text', '/hello'),
                 ),
-                '#^(?P<locale>[^\.]++)\.example\.(?P<tld>[^\.]++)$#sDi', array('locale', 'tld'), array(
+                '#^(?P<locale>[^\.]++)\.example\.(?P<tld>[^\.]++)$#si', array('locale', 'tld'), array(
                     array('variable', '.', '[^\.]++', 'tld'),
                     array('text', '.example'),
                     array('variable', '', '[^\.]++', 'locale'),
@@ -379,26 +380,6 @@ class RouteCompilerTest extends TestCase
     {
         $route = new Route(sprintf('/{%s}', str_repeat('a', RouteCompiler::VARIABLE_MAXIMUM_LENGTH + 1)));
         $route->compile();
-    }
-
-    /**
-     * @dataProvider provideRemoveCapturingGroup
-     */
-    public function testRemoveCapturingGroup($regex, $requirement)
-    {
-        $route = new Route('/{foo}', array(), array('foo' => $requirement));
-
-        $this->assertSame($regex, $route->compile()->getRegex());
-    }
-
-    public function provideRemoveCapturingGroup()
-    {
-        yield array('#^/(?P<foo>a(?:b|c)(?:d|e)f)$#sD', 'a(b|c)(d|e)f');
-        yield array('#^/(?P<foo>a\(b\)c)$#sD', 'a\(b\)c');
-        yield array('#^/(?P<foo>(?:b))$#sD', '(?:b)');
-        yield array('#^/(?P<foo>(?(b)b))$#sD', '(?(b)b)');
-        yield array('#^/(?P<foo>(*F))$#sD', '(*F)');
-        yield array('#^/(?P<foo>(?:(?:foo)))$#sD', '((foo))');
     }
 }
 

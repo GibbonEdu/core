@@ -16,8 +16,8 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\Console\Logger\ConsoleLogger;
 use Symfony\Component\Console\Output\BufferedOutput;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Tests\Fixtures\DummyOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Console logger test.
@@ -166,7 +166,9 @@ class ConsoleLoggerTest extends TestCase
         } else {
             $dummy = $this->getMock('Symfony\Component\Console\Tests\Logger\DummyTest', array('__toString'));
         }
-        $dummy->method('__toString')->will($this->returnValue('DUMMY'));
+        $dummy->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('DUMMY'));
 
         $this->getLogger()->warning($dummy);
 

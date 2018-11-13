@@ -35,7 +35,7 @@ class ErrorHandlerTest extends TestCase
 
             $newHandler = new ErrorHandler();
 
-            $this->assertSame($handler, ErrorHandler::register($newHandler, false));
+            $this->assertSame($newHandler, ErrorHandler::register($newHandler, false));
             $h = set_error_handler('var_dump');
             restore_error_handler();
             $this->assertSame(array($handler, 'handleError'), $h);
@@ -61,30 +61,6 @@ class ErrorHandlerTest extends TestCase
         restore_exception_handler();
 
         if (isset($e)) {
-            throw $e;
-        }
-    }
-
-    public function testErrorGetLast()
-    {
-        $handler = ErrorHandler::register();
-        $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
-        $handler->setDefaultLogger($logger);
-        $handler->screamAt(E_ALL);
-
-        try {
-            @trigger_error('Hello', E_USER_WARNING);
-            $expected = array(
-                'type' => E_USER_WARNING,
-                'message' => 'Hello',
-                'file' => __FILE__,
-                'line' => __LINE__ - 5,
-            );
-            $this->assertSame($expected, error_get_last());
-        } catch (\Exception $e) {
-            restore_error_handler();
-            restore_exception_handler();
-
             throw $e;
         }
     }
@@ -122,6 +98,8 @@ class ErrorHandlerTest extends TestCase
     // dummy function to test trace in error handler.
     private static function triggerNotice($that)
     {
+        // dummy variable to check for in error handler.
+        $foobar = 123;
         $that->assertSame('', $foo.$foo.$bar);
     }
 
@@ -364,6 +342,35 @@ class ErrorHandlerTest extends TestCase
         }
     }
 
+    public function testErrorStacking()
+    {
+        try {
+            $handler = ErrorHandler::register();
+            $handler->screamAt(E_USER_WARNING);
+
+            $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
+
+            $logger
+                ->expects($this->exactly(2))
+                ->method('log')
+                ->withConsecutive(
+                    array($this->equalTo(LogLevel::WARNING), $this->equalTo('Dummy log')),
+                    array($this->equalTo(LogLevel::DEBUG), $this->equalTo('User Warning: Silenced warning'))
+                )
+            ;
+
+            $handler->setDefaultLogger($logger, array(E_USER_WARNING => LogLevel::WARNING));
+
+            ErrorHandler::stackErrors();
+            @trigger_error('Silenced warning', E_USER_WARNING);
+            $logger->log(LogLevel::WARNING, 'Dummy log');
+            ErrorHandler::unstackErrors();
+        } finally {
+            restore_error_handler();
+            restore_exception_handler();
+        }
+    }
+
     public function testBootstrappingLogger()
     {
         $bootLogger = new BufferingLogger();
@@ -474,13 +481,16 @@ class ErrorHandlerTest extends TestCase
         }
     }
 
+    /**
+     * @requires PHP 7
+     */
     public function testHandleErrorException()
     {
         $exception = new \Error("Class 'Foo' not found");
 
         $handler = new ErrorHandler();
         $handler->setExceptionHandler(function () use (&$args) {
-            $args = \func_get_args();
+            $args = func_get_args();
         });
 
         $handler->handleException($exception);
@@ -489,16 +499,37 @@ class ErrorHandlerTest extends TestCase
         $this->assertStringStartsWith("Attempted to load class \"Foo\" from the global namespace.\nDid you forget a \"use\" statement", $args[0]->getMessage());
     }
 
-    /**
-     * @expectedException \Exception
-     */
-    public function testCustomExceptionHandler()
+    public function testHandleFatalErrorOnHHVM()
     {
-        $handler = new ErrorHandler();
-        $handler->setExceptionHandler(function ($e) use ($handler) {
-            $handler->handleException($e);
-        });
+        try {
+            $handler = ErrorHandler::register();
 
-        $handler->handleException(new \Exception());
+            $logger = $this->getMockBuilder('Psr\Log\LoggerInterface')->getMock();
+            $logger
+                ->expects($this->once())
+                ->method('log')
+                ->with(
+                    $this->equalTo(LogLevel::CRITICAL),
+                    $this->equalTo('Fatal Error: foo')
+                )
+            ;
+
+            $handler->setDefaultLogger($logger, E_ERROR);
+
+            $error = array(
+                'type' => E_ERROR + 0x1000000, // This error level is used by HHVM for fatal errors
+                'message' => 'foo',
+                'file' => 'bar',
+                'line' => 123,
+                'context' => array(123),
+                'backtrace' => array(456),
+            );
+
+            call_user_func_array(array($handler, 'handleError'), $error);
+            $handler->handleFatalError($error);
+        } finally {
+            restore_error_handler();
+            restore_exception_handler();
+        }
     }
 }

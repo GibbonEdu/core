@@ -9,20 +9,17 @@
 
 namespace Zend\Code\Reflection\DocBlock\Tag;
 
-use function preg_match;
-use function rtrim;
-
 class AuthorTag implements TagInterface
 {
     /**
      * @var string
      */
-    protected $authorName;
+    protected $authorName = null;
 
     /**
      * @var string
      */
-    protected $authorEmail;
+    protected $authorEmail = null;
 
     /**
      * @return string
@@ -41,7 +38,7 @@ class AuthorTag implements TagInterface
     {
         $match = [];
 
-        if (! preg_match('/^([^\<]*)(\<([^\>]*)\>)?(.*)$/u', $tagDocblockLine, $match)) {
+        if (!preg_match('/^([^\<]*)(\<([^\>]*)\>)?(.*)$/u', $tagDocblockLine, $match)) {
             return;
         }
 

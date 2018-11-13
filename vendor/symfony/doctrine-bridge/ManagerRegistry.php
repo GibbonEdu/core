@@ -11,21 +11,20 @@
 
 namespace Symfony\Bridge\Doctrine;
 
-use Doctrine\Common\Persistence\AbstractManagerRegistry;
 use ProxyManager\Proxy\LazyLoadingInterface;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareTrait;
+use Doctrine\Common\Persistence\AbstractManagerRegistry;
 
 /**
  * References Doctrine connections and entity/document managers.
  *
  * @author  Lukas Kahwe Smith <smith@pooteeweet.org>
  */
-abstract class ManagerRegistry extends AbstractManagerRegistry
+abstract class ManagerRegistry extends AbstractManagerRegistry implements ContainerAwareInterface
 {
-    /**
-     * @var Container
-     */
-    protected $container;
+    use ContainerAwareTrait;
 
     /**
      * {@inheritdoc}
@@ -46,22 +45,22 @@ abstract class ManagerRegistry extends AbstractManagerRegistry
         $manager = $this->container->get($name);
 
         if (!$manager instanceof LazyLoadingInterface) {
-            throw new \LogicException(sprintf('Resetting a non-lazy manager service is not supported. Set the "%s" service as lazy and require "symfony/proxy-manager-bridge" in your composer.json file instead.', $name));
+            @trigger_error(sprintf('Resetting a non-lazy manager service is deprecated since Symfony 3.2 and will throw an exception in version 4.0. Set the "%s" service as lazy and require "symfony/proxy-manager-bridge" in your composer.json file instead.', $name), E_USER_DEPRECATED);
+
+            $this->container->set($name, null);
+
+            return;
         }
         $manager->setProxyInitializer(\Closure::bind(
             function (&$wrappedInstance, LazyLoadingInterface $manager) use ($name) {
-                if (isset($this->normalizedIds[$normalizedId = strtolower($name)])) { // BC with DI v3.4
+                if (isset($this->normalizedIds[$normalizedId = strtolower($name)])) {
                     $name = $this->normalizedIds[$normalizedId];
                 }
                 if (isset($this->aliases[$name])) {
                     $name = $this->aliases[$name];
                 }
-                if (isset($this->fileMap[$name])) {
-                    $wrappedInstance = $this->load($this->fileMap[$name]);
-                } else {
-                    $method = $this->methodMap[$name] ?? 'get'.strtr($name, $this->underscoreMap).'Service'; // BC with DI v3.4
-                    $wrappedInstance = $this->{$method}(false);
-                }
+                $method = !isset($this->methodMap[$name]) ? 'get'.strtr($name, $this->underscoreMap).'Service' : $this->methodMap[$name];
+                $wrappedInstance = $this->{$method}(false);
 
                 $manager->setProxyInitializer(null);
 

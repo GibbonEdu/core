@@ -74,12 +74,26 @@ class InputOptionTest extends TestCase
     }
 
     /**
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Option mode "-1" is not valid.
+     * @dataProvider provideInvalidModes
      */
-    public function testInvalidModes()
+    public function testInvalidModes($mode)
     {
-        new InputOption('foo', 'f', '-1');
+        if (method_exists($this, 'expectException')) {
+            $this->expectException('InvalidArgumentException');
+            $this->expectExceptionMessage(sprintf('Option mode "%s" is not valid.', $mode));
+        } else {
+            $this->setExpectedException('InvalidArgumentException', sprintf('Option mode "%s" is not valid.', $mode));
+        }
+
+        new InputOption('foo', 'f', $mode);
+    }
+
+    public function provideInvalidModes()
+    {
+        return array(
+            array('ANOTHER_ONE'),
+            array(-1),
+        );
     }
 
     /**

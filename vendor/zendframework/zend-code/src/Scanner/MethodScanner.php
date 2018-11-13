@@ -13,51 +13,42 @@ use Zend\Code\Annotation\AnnotationManager;
 use Zend\Code\Exception;
 use Zend\Code\NameInformation;
 
-use function array_slice;
-use function count;
-use function is_int;
-use function is_string;
-use function ltrim;
-use function strtolower;
-use function substr_count;
-use function var_export;
-
 class MethodScanner implements ScannerInterface
 {
     /**
      * @var bool
      */
-    protected $isScanned = false;
+    protected $isScanned    = false;
 
     /**
      * @var string
      */
-    protected $docComment;
+    protected $docComment   = null;
 
     /**
      * @var ClassScanner
      */
-    protected $scannerClass;
+    protected $scannerClass = null;
 
     /**
      * @var string
      */
-    protected $class;
+    protected $class        = null;
 
     /**
      * @var string
      */
-    protected $name;
+    protected $name         = null;
 
     /**
      * @var int
      */
-    protected $lineStart;
+    protected $lineStart    = null;
 
     /**
      * @var int
      */
-    protected $lineEnd;
+    protected $lineEnd      = null;
 
     /**
      * @var bool
@@ -102,7 +93,7 @@ class MethodScanner implements ScannerInterface
     /**
      * @var NameInformation
      */
-    protected $nameInformation;
+    protected $nameInformation = null;
 
     /**
      * @var array
@@ -140,7 +131,7 @@ class MethodScanner implements ScannerInterface
     }
 
     /**
-     * @return ClassScanner
+     * @return MethodScanner
      */
     public function getClassScanner()
     {
@@ -189,7 +180,7 @@ class MethodScanner implements ScannerInterface
 
     /**
      * @param  AnnotationManager $annotationManager
-     * @return AnnotationScanner|false
+     * @return AnnotationScanner
      */
     public function getAnnotations(AnnotationManager $annotationManager)
     {
@@ -264,7 +255,7 @@ class MethodScanner implements ScannerInterface
      * Override the given name for a method, this is necessary to
      * support traits.
      *
-     * @param string $name
+     * @param $name
      * @return self
      */
     public function setName($name)
@@ -277,13 +268,13 @@ class MethodScanner implements ScannerInterface
      * Visibility must be of T_PUBLIC, T_PRIVATE or T_PROTECTED
      * Needed to support traits
      *
-     * @param int $visibility   T_PUBLIC | T_PRIVATE | T_PROTECTED
+     * @param $visibility   T_PUBLIC | T_PRIVATE | T_PROTECTED
      * @return self
-     * @throws \Zend\Code\Exception\InvalidArgumentException
+     * @throws \Zend\Code\Exception
      */
     public function setVisibility($visibility)
     {
-        switch ($visibility) {
+        switch (strtolower($visibility)) {
             case T_PUBLIC:
                 $this->isPublic = true;
                 $this->isPrivate = false;
@@ -303,7 +294,7 @@ class MethodScanner implements ScannerInterface
                 break;
 
             default:
-                throw new Exception\InvalidArgumentException('Invalid visibility argument passed to setVisibility.');
+                throw new Exception("Invalid visibility argument passed to setVisibility.");
         }
 
         return $this;
@@ -332,7 +323,7 @@ class MethodScanner implements ScannerInterface
                 continue;
             }
 
-            if (! $returnScanner) {
+            if (!$returnScanner) {
                 $return[] = $info['name'];
             } else {
                 $return[] = $this->getParameter($info['name']);
@@ -363,7 +354,7 @@ class MethodScanner implements ScannerInterface
                 }
                 unset($info);
             }
-            if (! isset($info)) {
+            if (!isset($info)) {
                 throw new Exception\InvalidArgumentException('Index of info offset is not about a parameter');
             }
         }
@@ -409,13 +400,14 @@ class MethodScanner implements ScannerInterface
             return;
         }
 
-        if (! $this->tokens) {
+        if (!$this->tokens) {
             throw new Exception\RuntimeException('No tokens were provided');
         }
 
         /**
          * Variables & Setup
          */
+
         $tokens       = &$this->tokens; // localize
         $infos        = &$this->infos; // localize
         $tokenIndex   = null;
@@ -438,8 +430,8 @@ class MethodScanner implements ScannerInterface
             &$tokenLine
         ) {
             static $lastTokenArray = null;
-            $tokenIndex = $tokenIndex === null ? 0 : $tokenIndex + 1;
-            if (! isset($tokens[$tokenIndex])) {
+            $tokenIndex = ($tokenIndex === null) ? 0 : $tokenIndex + 1;
+            if (!isset($tokens[$tokenIndex])) {
                 $token        = false;
                 $tokenContent = false;
                 $tokenType    = false;
@@ -483,12 +475,13 @@ class MethodScanner implements ScannerInterface
         /**
          * START FINITE STATE MACHINE FOR SCANNING TOKENS
          */
+
         // Initialize token
         $MACRO_TOKEN_ADVANCE();
 
         SCANNER_TOP:
 
-        $this->lineStart = $this->lineStart ? : $tokenLine;
+        $this->lineStart = ($this->lineStart) ? : $tokenLine;
 
         switch ($tokenType) {
             case T_DOC_COMMENT:
@@ -530,7 +523,7 @@ class MethodScanner implements ScannerInterface
                 // goto (no break needed);
 
             case T_NS_SEPARATOR:
-                if (! isset($infos[$infoIndex])) {
+                if (!isset($infos[$infoIndex])) {
                     $MACRO_INFO_START();
                 }
                 goto SCANNER_CONTINUE_SIGNATURE;
@@ -543,7 +536,7 @@ class MethodScanner implements ScannerInterface
                 }
 
                 if ($parentCount === 1) {
-                    if (! isset($infos[$infoIndex])) {
+                    if (!isset($infos[$infoIndex])) {
                         $MACRO_INFO_START();
                     }
                     if ($tokenType === T_VARIABLE) {
@@ -557,7 +550,7 @@ class MethodScanner implements ScannerInterface
             case null:
                 switch ($tokenContent) {
                     case '&':
-                        if (! isset($infos[$infoIndex])) {
+                        if (!isset($infos[$infoIndex])) {
                             $MACRO_INFO_START();
                         }
                         goto SCANNER_CONTINUE_SIGNATURE;
@@ -613,5 +606,7 @@ class MethodScanner implements ScannerInterface
         SCANNER_END:
 
         $this->isScanned = true;
+
+        return;
     }
 }

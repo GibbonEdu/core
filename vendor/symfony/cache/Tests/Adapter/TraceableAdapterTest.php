@@ -19,10 +19,6 @@ use Symfony\Component\Cache\Adapter\TraceableAdapter;
  */
 class TraceableAdapterTest extends AdapterTestCase
 {
-    protected $skippedTests = array(
-        'testPrune' => 'TraceableAdapter just proxies',
-    );
-
     public function createCachePool($defaultLifetime = 0)
     {
         return new TraceableAdapter(new FilesystemAdapter('', $defaultLifetime));

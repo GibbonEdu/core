@@ -12,14 +12,12 @@ namespace Zend\Code\Generator\DocBlock\Tag;
 use Zend\Code\Generator\DocBlock\TagManager;
 use Zend\Code\Reflection\DocBlock\Tag\TagInterface as ReflectionTagInterface;
 
-use function ltrim;
-
 class ParamTag extends AbstractTypeableTag implements TagInterface
 {
     /**
      * @var string
      */
-    protected $variableName;
+    protected $variableName = null;
 
     /**
      * @param string $variableName
@@ -28,7 +26,7 @@ class ParamTag extends AbstractTypeableTag implements TagInterface
      */
     public function __construct($variableName = null, $types = [], $description = null)
     {
-        if (! empty($variableName)) {
+        if (!empty($variableName)) {
             $this->setVariableName($variableName);
         }
 
@@ -37,7 +35,7 @@ class ParamTag extends AbstractTypeableTag implements TagInterface
 
     /**
      * @param ReflectionTagInterface $reflectionTag
-     * @return ParamTag
+     * @return ReturnTag
      * @deprecated Deprecated in 2.3. Use TagManager::createTagFromReflection() instead
      */
     public static function fromReflection(ReflectionTagInterface $reflectionTag)
@@ -75,7 +73,7 @@ class ParamTag extends AbstractTypeableTag implements TagInterface
 
     /**
      * @param string $datatype
-     * @return ParamTag
+     * @return ReturnTag
      * @deprecated Deprecated in 2.3. Use setTypes() instead
      */
     public function setDatatype($datatype)
@@ -117,9 +115,9 @@ class ParamTag extends AbstractTypeableTag implements TagInterface
     public function generate()
     {
         $output = '@param'
-            . (! empty($this->types) ? ' ' . $this->getTypesAsString() : '')
-            . (! empty($this->variableName) ? ' $' . $this->variableName : '')
-            . (! empty($this->description) ? ' ' . $this->description : '');
+            . ((!empty($this->types)) ? ' ' . $this->getTypesAsString() : '')
+            . ((!empty($this->variableName)) ? ' $' . $this->variableName : '')
+            . ((!empty($this->description)) ? ' ' . $this->description : '');
 
         return $output;
     }

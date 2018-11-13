@@ -2,13 +2,6 @@
 
 namespace Symfony\Component\DependencyInjection\Tests\Fixtures\Prototype;
 
-class Foo implements FooInterface, Sub\BarInterface
+class Foo
 {
-    public function __construct($bar = null)
-    {
-    }
-
-    public function setFoo(self $foo)
-    {
-    }
 }

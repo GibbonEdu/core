@@ -24,8 +24,6 @@ trait AbstractTrait
     use LoggerAwareTrait;
 
     private $namespace;
-    private $namespaceVersion = '';
-    private $versioningIsEnabled = false;
     private $deferred = array();
 
     /**
@@ -105,20 +103,9 @@ trait AbstractTrait
     public function clear()
     {
         $this->deferred = array();
-        if ($cleared = $this->versioningIsEnabled) {
-            $namespaceVersion = substr_replace(base64_encode(pack('V', mt_rand())), ':', 5);
-            try {
-                $cleared = $this->doSave(array('@'.$this->namespace => $namespaceVersion), 0);
-            } catch (\Exception $e) {
-                $cleared = false;
-            }
-            if ($cleared = true === $cleared || array() === $cleared) {
-                $this->namespaceVersion = $namespaceVersion;
-            }
-        }
 
         try {
-            return $this->doClear($this->namespace) || $cleared;
+            return $this->doClear($this->namespace);
         } catch (\Exception $e) {
             CacheItem::log($this->logger, 'Failed to clear the cache', array('exception' => $e));
 
@@ -172,38 +159,6 @@ trait AbstractTrait
     }
 
     /**
-     * Enables/disables versioning of items.
-     *
-     * When versioning is enabled, clearing the cache is atomic and doesn't require listing existing keys to proceed,
-     * but old keys may need garbage collection and extra round-trips to the back-end are required.
-     *
-     * Calling this method also clears the memoized namespace version and thus forces a resynchonization of it.
-     *
-     * @param bool $enable
-     *
-     * @return bool the previous state of versioning
-     */
-    public function enableVersioning($enable = true)
-    {
-        $wasEnabled = $this->versioningIsEnabled;
-        $this->versioningIsEnabled = (bool) $enable;
-        $this->namespaceVersion = '';
-
-        return $wasEnabled;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function reset()
-    {
-        if ($this->deferred) {
-            $this->commit();
-        }
-        $this->namespaceVersion = '';
-    }
-
-    /**
      * Like the native unserialize() function but throws an exception if anything goes wrong.
      *
      * @param string $value
@@ -234,25 +189,11 @@ trait AbstractTrait
     {
         CacheItem::validateKey($key);
 
-        if ($this->versioningIsEnabled && '' === $this->namespaceVersion) {
-            $this->namespaceVersion = '1:';
-            try {
-                foreach ($this->doFetch(array('@'.$this->namespace)) as $v) {
-                    $this->namespaceVersion = $v;
-                }
-                if ('1:' === $this->namespaceVersion) {
-                    $this->namespaceVersion = substr_replace(base64_encode(pack('V', time())), ':', 5);
-                    $this->doSave(array('@'.$this->namespace => $this->namespaceVersion), 0);
-                }
-            } catch (\Exception $e) {
-            }
-        }
-
         if (null === $this->maxIdLength) {
-            return $this->namespace.$this->namespaceVersion.$key;
+            return $this->namespace.$key;
         }
-        if (\strlen($id = $this->namespace.$this->namespaceVersion.$key) > $this->maxIdLength) {
-            $id = $this->namespace.$this->namespaceVersion.substr_replace(base64_encode(hash('sha256', $key, true)), ':', -(\strlen($this->namespaceVersion) + 22));
+        if (strlen($id = $this->namespace.$key) > $this->maxIdLength) {
+            $id = $this->namespace.substr_replace(base64_encode(hash('sha256', $key, true)), ':', -22);
         }
 
         return $id;

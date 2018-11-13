@@ -16,28 +16,30 @@ use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Persistence\ObjectRepository;
 use Doctrine\DBAL\Types\Type;
-use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bridge\Doctrine\Test\DoctrineTestHelper;
 use Symfony\Bridge\Doctrine\Test\TestRepositoryFactory;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity2;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeObjectNoToStringIdEntity;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNameEntity;
-use Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNullableNameEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\Employee;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\Person;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\CompositeObjectNoToStringIdEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNameEntity;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\DoubleNullableNameEntity;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity;
+use Symfony\Bridge\Doctrine\Tests\Fixtures\AssociationEntity2;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdNoToStringEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdStringWrapperNameEntity;
 use Symfony\Bridge\Doctrine\Tests\Fixtures\Type\StringWrapper;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntityValidator;
-use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
+use Symfony\Component\Validator\Tests\Constraints\AbstractConstraintValidatorTest;
+use Doctrine\ORM\Tools\SchemaTool;
 
 /**
  * @author Bernhard Schussek <bschussek@gmail.com>
+ *
+ * @todo use ConstraintValidatorTestCase when symfony/validator ~3.2 is required.
  */
-class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
+class UniqueEntityValidatorTest extends AbstractConstraintValidatorTest
 {
     const EM_NAME = 'foo';
 
@@ -190,7 +192,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.name')
             ->setParameter('{{ value }}', '"Foo"')
             ->setInvalidValue($entity2)
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -216,7 +217,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.bar')
             ->setParameter('{{ value }}', '"Foo"')
             ->setInvalidValue($entity2)
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -270,7 +270,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.name')
             ->setParameter('{{ value }}', '"Foo"')
             ->setInvalidValue('Foo')
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -349,7 +348,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.name2')
             ->setParameter('{{ value }}', '"Bar"')
             ->setInvalidValue('Bar')
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -482,10 +480,9 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
 
         $this->buildViolation('myMessage')
             ->atPath('property.path.single')
-            ->setParameter('{{ value }}', 'foo')
+            ->setParameter('{{ value }}', 'object("Symfony\Bridge\Doctrine\Tests\Fixtures\SingleIntIdEntity") identified by (id => 1)')
             ->setInvalidValue($entity1)
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
-            ->setCause(array($associated, $associated2))
             ->assertRaised();
     }
 
@@ -522,7 +519,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.single')
             ->setParameter('{{ value }}', $expectedValue)
             ->setInvalidValue($entity1)
-            ->setCause(array($associated, $associated2))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -581,7 +577,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.phoneNumbers')
             ->setParameter('{{ value }}', 'array')
             ->setInvalidValue(array(123))
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -630,34 +625,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
         $this->validator->validate($entity, $constraint);
     }
 
-    public function testValidateUniquenessOnNullResult()
-    {
-        $repository = $this->createRepositoryMock();
-        $repository
-             ->method('find')
-             ->will($this->returnValue(null))
-        ;
-
-        $this->em = $this->createEntityManagerMock($repository);
-        $this->registry = $this->createRegistryMock($this->em);
-        $this->validator = $this->createValidator();
-        $this->validator->initialize($this->context);
-
-        $constraint = new UniqueEntity(array(
-            'message' => 'myMessage',
-            'fields' => array('name'),
-            'em' => self::EM_NAME,
-        ));
-
-        $entity = new SingleIntIdEntity(1, null);
-
-        $this->em->persist($entity);
-        $this->em->flush();
-
-        $this->validator->validate($entity, $constraint);
-        $this->assertNoViolation();
-    }
-
     public function testValidateInheritanceUniqueness()
     {
         $constraint = new UniqueEntity(array(
@@ -687,7 +654,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.name')
             ->setInvalidValue('Foo')
             ->setCode('23bd9dbf-6b9b-41cd-a99e-4844bcf3077f')
-            ->setCause(array($entity1))
             ->setParameters(array('{{ value }}' => '"Foo"'))
             ->assertRaised();
     }
@@ -739,7 +705,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.objectOne')
             ->setParameter('{{ value }}', $expectedValue)
             ->setInvalidValue($objectOne)
-            ->setCause(array($entity))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }
@@ -767,43 +732,6 @@ class UniqueEntityValidatorTest extends ConstraintValidatorTestCase
             ->atPath('property.path.name')
             ->setParameter('{{ value }}', $expectedValue)
             ->setInvalidValue($existingEntity->name)
-            ->setCause(array($existingEntity))
-            ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
-            ->assertRaised();
-    }
-
-    /**
-     * This is a functional test as there is a large integration necessary to get the validator working.
-     */
-    public function testValidateUniquenessCause()
-    {
-        $constraint = new UniqueEntity(array(
-            'message' => 'myMessage',
-            'fields' => array('name'),
-            'em' => self::EM_NAME,
-        ));
-
-        $entity1 = new SingleIntIdEntity(1, 'Foo');
-        $entity2 = new SingleIntIdEntity(2, 'Foo');
-
-        $this->validator->validate($entity1, $constraint);
-
-        $this->assertNoViolation();
-
-        $this->em->persist($entity1);
-        $this->em->flush();
-
-        $this->validator->validate($entity1, $constraint);
-
-        $this->assertNoViolation();
-
-        $this->validator->validate($entity2, $constraint);
-
-        $this->buildViolation('myMessage')
-            ->atPath('property.path.name')
-            ->setParameter('{{ value }}', '"Foo"')
-            ->setInvalidValue($entity2)
-            ->setCause(array($entity1))
             ->setCode(UniqueEntity::NOT_UNIQUE_ERROR)
             ->assertRaised();
     }

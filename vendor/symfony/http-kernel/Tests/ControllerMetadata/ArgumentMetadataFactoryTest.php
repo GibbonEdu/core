@@ -84,6 +84,9 @@ class ArgumentMetadataFactoryTest extends TestCase
         ), $arguments);
     }
 
+    /**
+     * @requires PHP 5.6
+     */
     public function testVariadicSignature()
     {
         $arguments = $this->factory->createArgumentMetadata(array(new VariadicController(), 'action'));
@@ -94,6 +97,9 @@ class ArgumentMetadataFactoryTest extends TestCase
         ), $arguments);
     }
 
+    /**
+     * @requires PHP 7.0
+     */
     public function testBasicTypesSignature()
     {
         $arguments = $this->factory->createArgumentMetadata(array(new BasicTypesController(), 'action'));
@@ -105,6 +111,9 @@ class ArgumentMetadataFactoryTest extends TestCase
         ), $arguments);
     }
 
+    /**
+     * @requires PHP 7.1
+     */
     public function testNullableTypesSignature()
     {
         $arguments = $this->factory->createArgumentMetadata(array(new NullableController(), 'action'));
@@ -117,11 +126,11 @@ class ArgumentMetadataFactoryTest extends TestCase
         ), $arguments);
     }
 
-    private function signature1(self $foo, array $bar, callable $baz)
+    private function signature1(ArgumentMetadataFactoryTest $foo, array $bar, callable $baz)
     {
     }
 
-    private function signature2(self $foo = null, FakeClassThatDoesNotExist $bar = null, ImportedAndFake $baz = null)
+    private function signature2(ArgumentMetadataFactoryTest $foo = null, FakeClassThatDoesNotExist $bar = null, ImportedAndFake $baz = null)
     {
     }
 

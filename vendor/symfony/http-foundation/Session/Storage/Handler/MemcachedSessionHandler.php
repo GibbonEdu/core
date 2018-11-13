@@ -12,6 +12,8 @@
 namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
 
 /**
+ * MemcachedSessionHandler.
+ *
  * Memcached based session storage handler based on the Memcached class
  * provided by the PHP memcached extension.
  *
@@ -19,8 +21,11 @@ namespace Symfony\Component\HttpFoundation\Session\Storage\Handler;
  *
  * @author Drak <drak@zikula.org>
  */
-class MemcachedSessionHandler extends AbstractSessionHandler
+class MemcachedSessionHandler implements \SessionHandlerInterface
 {
+    /**
+     * @var \Memcached Memcached driver
+     */
     private $memcached;
 
     /**
@@ -38,7 +43,7 @@ class MemcachedSessionHandler extends AbstractSessionHandler
      *
      * List of available options:
      *  * prefix: The prefix to use for the memcached keys in order to avoid collision
-     *  * expiretime: The time to live in seconds.
+     *  * expiretime: The time to live in seconds
      *
      * @param \Memcached $memcached A \Memcached instance
      * @param array      $options   An associative array of Memcached options
@@ -50,11 +55,21 @@ class MemcachedSessionHandler extends AbstractSessionHandler
         $this->memcached = $memcached;
 
         if ($diff = array_diff(array_keys($options), array('prefix', 'expiretime'))) {
-            throw new \InvalidArgumentException(sprintf('The following options are not supported "%s"', implode(', ', $diff)));
+            throw new \InvalidArgumentException(sprintf(
+                'The following options are not supported "%s"', implode(', ', $diff)
+            ));
         }
 
         $this->ttl = isset($options['expiretime']) ? (int) $options['expiretime'] : 86400;
         $this->prefix = isset($options['prefix']) ? $options['prefix'] : 'sf2s';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function open($savePath, $sessionName)
+    {
+        return true;
     }
 
     /**
@@ -68,7 +83,7 @@ class MemcachedSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doRead($sessionId)
+    public function read($sessionId)
     {
         return $this->memcached->get($this->prefix.$sessionId) ?: '';
     }
@@ -76,17 +91,7 @@ class MemcachedSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    public function updateTimestamp($sessionId, $data)
-    {
-        $this->memcached->touch($this->prefix.$sessionId, time() + $this->ttl);
-
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function doWrite($sessionId, $data)
+    public function write($sessionId, $data)
     {
         return $this->memcached->set($this->prefix.$sessionId, $data, time() + $this->ttl);
     }
@@ -94,11 +99,9 @@ class MemcachedSessionHandler extends AbstractSessionHandler
     /**
      * {@inheritdoc}
      */
-    protected function doDestroy($sessionId)
+    public function destroy($sessionId)
     {
-        $result = $this->memcached->delete($this->prefix.$sessionId);
-
-        return $result || \Memcached::RES_NOTFOUND == $this->memcached->getResultCode();
+        return $this->memcached->delete($this->prefix.$sessionId);
     }
 
     /**

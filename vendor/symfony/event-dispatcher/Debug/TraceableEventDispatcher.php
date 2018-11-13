@@ -11,11 +11,11 @@
 
 namespace Symfony\Component\EventDispatcher\Debug;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Psr\Log\LoggerInterface;
 
 /**
  * Collects some data about event listeners.
@@ -32,8 +32,14 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
     private $called;
     private $dispatcher;
     private $wrappedListeners;
-    private $orphanedEvents;
 
+    /**
+     * Constructor.
+     *
+     * @param EventDispatcherInterface $dispatcher An EventDispatcherInterface instance
+     * @param Stopwatch                $stopwatch  A Stopwatch instance
+     * @param LoggerInterface          $logger     A LoggerInterface instance
+     */
     public function __construct(EventDispatcherInterface $dispatcher, Stopwatch $stopwatch, LoggerInterface $logger = null)
     {
         $this->dispatcher = $dispatcher;
@@ -41,7 +47,6 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
         $this->logger = $logger;
         $this->called = array();
         $this->wrappedListeners = array();
-        $this->orphanedEvents = array();
     }
 
     /**
@@ -209,17 +214,6 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
         return $notCalled;
     }
 
-    public function getOrphanedEvents(): array
-    {
-        return $this->orphanedEvents;
-    }
-
-    public function reset()
-    {
-        $this->called = array();
-        $this->orphanedEvents = array();
-    }
-
     /**
      * Proxies all method calls to the original event dispatcher.
      *
@@ -230,7 +224,7 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
      */
     public function __call($method, $arguments)
     {
-        return \call_user_func_array(array($this->dispatcher, $method), $arguments);
+        return call_user_func_array(array($this->dispatcher, $method), $arguments);
     }
 
     /**
@@ -255,12 +249,6 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
 
     private function preProcess($eventName)
     {
-        if (!$this->dispatcher->hasListeners($eventName)) {
-            $this->orphanedEvents[] = $eventName;
-
-            return;
-        }
-
         foreach ($this->dispatcher->getListeners($eventName) as $listener) {
             $priority = $this->getListenerPriority($eventName, $listener);
             $wrappedListener = new WrappedListener($listener, null, $this->stopwatch, $this);
@@ -315,11 +303,11 @@ class TraceableEventDispatcher implements TraceableEventDispatcherInterface
 
     private function sortListenersByPriority($a, $b)
     {
-        if (\is_int($a['priority']) && !\is_int($b['priority'])) {
+        if (is_int($a['priority']) && !is_int($b['priority'])) {
             return 1;
         }
 
-        if (!\is_int($a['priority']) && \is_int($b['priority'])) {
+        if (!is_int($a['priority']) && is_int($b['priority'])) {
             return -1;
         }
 

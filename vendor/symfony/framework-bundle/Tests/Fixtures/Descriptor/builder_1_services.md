@@ -1,10 +1,23 @@
-Hidden services
-===============
+Public and private services
+===========================
 
 Definitions
 -----------
 
-### .definition_2
+### definition_1
+
+- Class: `Full\Qualified\Class1`
+- Public: yes
+- Synthetic: no
+- Lazy: yes
+- Shared: yes
+- Abstract: yes
+- Autowired: no
+- Autoconfigured: no
+- Factory Class: `Full\Qualified\FactoryClass`
+- Factory Method: `get`
+
+### definition_2
 
 - Class: `Full\Qualified\Class2`
 - Public: no
@@ -29,8 +42,18 @@ Definitions
 Aliases
 -------
 
-### .alias_2
+### alias_1
 
-- Service: `.service_2`
+- Service: `service_1`
+- Public: yes
+
+### alias_2
+
+- Service: `service_2`
 - Public: no
 
+
+Services
+--------
+
+- `service_container`: `Symfony\Component\DependencyInjection\ContainerBuilder`

@@ -12,17 +12,12 @@ namespace Zend\Code\Scanner;
 use Zend\Code\Annotation\AnnotationManager;
 use Zend\Code\Exception;
 
-use function file_exists;
-use function file_get_contents;
-use function sprintf;
-use function token_get_all;
-
 class FileScanner extends TokenArrayScanner implements ScannerInterface
 {
     /**
      * @var string
      */
-    protected $file;
+    protected $file = null;
 
     /**
      * @param  string $file
@@ -32,7 +27,7 @@ class FileScanner extends TokenArrayScanner implements ScannerInterface
     public function __construct($file, AnnotationManager $annotationManager = null)
     {
         $this->file = $file;
-        if (! file_exists($file)) {
+        if (!file_exists($file)) {
             throw new Exception\InvalidArgumentException(sprintf(
                 'File "%s" not found',
                 $file

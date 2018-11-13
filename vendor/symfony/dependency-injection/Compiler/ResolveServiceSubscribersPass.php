@@ -35,12 +35,7 @@ class ResolveServiceSubscribersPass extends AbstractRecursivePass
         }
 
         $serviceLocator = $this->serviceLocator;
-        $this->serviceLocator = null;
-
-        if ($value->hasTag('container.service_subscriber.locator')) {
-            $this->serviceLocator = $value->getTag('container.service_subscriber.locator')[0]['id'];
-            $value->clearTag('container.service_subscriber.locator');
-        }
+        $this->serviceLocator = $value->hasTag('container.service_subscriber.locator') ? $value->getTag('container.service_subscriber.locator')[0]['id'] : null;
 
         try {
             return parent::processValue($value);

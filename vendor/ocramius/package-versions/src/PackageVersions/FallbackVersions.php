@@ -12,8 +12,6 @@ namespace PackageVersions;
  */
 final class FallbackVersions
 {
-    const ROOT_PACKAGE_NAME = 'unknown/root-package@UNKNOWN';
-
     private function __construct()
     {
     }
@@ -75,6 +73,6 @@ final class FallbackVersions
             );
         }
 
-        yield self::ROOT_PACKAGE_NAME;
+        yield 'unknown/root-package@UNKNOWN';
     }
 }

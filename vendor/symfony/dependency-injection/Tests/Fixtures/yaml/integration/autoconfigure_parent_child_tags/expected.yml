@@ -4,4 +4,3 @@ services:
         # from an autoconfigured "instanceof" applied to parent class
         # but NOT inherited down to child
         # tags: [from_autoconfigure]
-        public: true

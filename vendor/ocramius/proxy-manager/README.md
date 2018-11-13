@@ -10,6 +10,7 @@ This library aims at providing abstraction for generating various kinds of [prox
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/69fe5f97-b1c8-4ddd-93ce-900b8b788cf2/mini.png)](https://insight.sensiolabs.com/projects/69fe5f97-b1c8-4ddd-93ce-900b8b788cf2)
 [![Dependency Status](https://www.versioneye.com/package/php--ocramius--proxy-manager/badge.png)](https://www.versioneye.com/package/php--ocramius--proxy-manager)
 [![Reference Status](https://www.versioneye.com/php/ocramius:proxy-manager/reference_badge.svg)](https://www.versioneye.com/php/ocramius:proxy-manager/references)
+[![HHVM Status](http://hhvm.h4cc.de/badge/ocramius/proxy-manager.png)](http://hhvm.h4cc.de/package/ocramius/proxy-manager)
 
 [![Total Downloads](https://poser.pugx.org/ocramius/proxy-manager/downloads.png)](https://packagist.org/packages/ocramius/proxy-manager)
 [![Latest Stable Version](https://poser.pugx.org/ocramius/proxy-manager/v/stable.png)](https://packagist.org/packages/ocramius/proxy-manager)
@@ -43,7 +44,7 @@ $factory = new \ProxyManager\Factory\LazyLoadingValueHolderFactory();
 $proxy = $factory->createProxy(
     \MyApp\HeavyComplexObject::class,
     function (& $wrappedObject, $proxy, $method, $parameters, & $initializer) {
-        $wrappedObject = new \MyApp\HeavyComplexObject(); // instantiation logic here
+        $wrappedObject = new HeavyComplexObject(); // instantiation logic here
         $initializer   = null; // turning off further lazy initialization
     }
 );

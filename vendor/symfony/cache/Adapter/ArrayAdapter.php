@@ -14,13 +14,12 @@ namespace Symfony\Component\Cache\Adapter;
 use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerAwareInterface;
 use Symfony\Component\Cache\CacheItem;
-use Symfony\Component\Cache\ResettableInterface;
 use Symfony\Component\Cache\Traits\ArrayTrait;
 
 /**
  * @author Nicolas Grekas <p@tchwork.com>
  */
-class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, ResettableInterface
+class ArrayAdapter implements AdapterInterface, LoggerAwareInterface
 {
     use ArrayTrait;
 
@@ -30,7 +29,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
      * @param int  $defaultLifetime
      * @param bool $storeSerialized Disabling serialization can lead to cache corruptions when storing mutable values but increases performance otherwise
      */
-    public function __construct(int $defaultLifetime = 0, bool $storeSerialized = true)
+    public function __construct($defaultLifetime = 0, $storeSerialized = true)
     {
         $this->storeSerialized = $storeSerialized;
         $this->createCacheItem = \Closure::bind(
@@ -121,7 +120,7 @@ class ArrayAdapter implements AdapterInterface, LoggerAwareInterface, Resettable
             try {
                 $value = serialize($value);
             } catch (\Exception $e) {
-                $type = \is_object($value) ? \get_class($value) : \gettype($value);
+                $type = is_object($value) ? get_class($value) : gettype($value);
                 CacheItem::log($this->logger, 'Failed to save key "{key}" ({type})', array('key' => $key, 'type' => $type, 'exception' => $e));
 
                 return false;
