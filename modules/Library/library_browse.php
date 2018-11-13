@@ -22,6 +22,8 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Browse The Library'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -29,10 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Browse The Library').'</div>';
-    echo '</div>';
-
     //Get display settings
     $browseBGColorStyle = null;
     $browseBGColor = getSettingByScope($connection2, 'Library', 'browseBGColor');

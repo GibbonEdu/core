@@ -1,13 +1,33 @@
 <?php
 
+/*
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+*/
+
 use Gibbon\Domain\Planner\PlannerEntryGateway;
 use Gibbon\Domain\Markbook\MarkbookColumnGateway;
+use Gibbon\Module\Markbook\MarkbookView;
+use Gibbon\Services\Format;
 
 	// Lock the file so other scripts cannot call it
 	if (MARKBOOK_VIEW_LOCK !== sha1( $highestAction . $_SESSION[$guid]['gibbonPersonID'] ) . date('zWy') ) return;
 
-	require_once __DIR__ . '/src/markbookView.php';
-	require_once __DIR__ . '/src/markbookColumn.php';
+	require_once __DIR__ . '/src/MarkbookView.php';
+	require_once __DIR__ . '/src/MarkbookColumn.php';
 
     //Check for access to multiple column add
     $multiAdd = false;
@@ -40,9 +60,8 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
     }
 
     if ($gibbonCourseClassID == '') {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Markbook').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Markbook'));
+
         //Add multiple columns
         if ($multiAdd) {
             echo "<div class='linkTop'>";
@@ -60,9 +79,7 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
     $class = getClass($pdo, $_SESSION[$guid]['gibbonPersonID'], $gibbonCourseClassID, $highestAction );
 
     if ($class == NULL) {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Markbook').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Markbook'));
 
         //Get class chooser
         echo classChooser($guid, $pdo, $gibbonCourseClassID);
@@ -82,9 +99,14 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
 
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>View ".$class['course'].'.'.$class['class'].' Markbook</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(strtr(
+        ':action :courseClass :property',
+        [
+            ':action' => __('View'),
+            ':courseClass' => Format::courseClassName($class['course'], $class['class']),
+            ':property' => __('Markbook'),
+        ]
+    ));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -131,14 +153,14 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
         ->fromPOST();
 
     $columns = $markbookGateway->queryMarkbookColumnsByClass($criteria, $gibbonCourseClassID);
-    $columns->transform(function ($column) use ($plannerGateway) {
+    $columns->transform(function (&$column) use ($plannerGateway) {
         if (isset($column['gibbonPlannerEntryID'])) {
             $column['gibbonPlannerEntry'] = $plannerGateway->getPlannerEntryByID($column['gibbonPlannerEntryID']);
         }
     });
 
     // Build the markbook object for this class
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // Load the columns for the current page
     $markbook->loadColumnsFromDataSet($columns);
@@ -1029,7 +1051,3 @@ use Gibbon\Domain\Markbook\MarkbookColumnGateway;
         echo '</div><br/>';
 
     }
-
-
-
-?>

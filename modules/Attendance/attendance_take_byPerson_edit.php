@@ -18,12 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
+require_once __DIR__ . '/src/AttendanceView.php';
 
-require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+$urlParams = ['gibbonPersonID' => $_GET['gibbonPersonID'], 'currentDate' => $_GET['currentDate']];
 
+$page->breadcrumbs
+	->add(__('Take Attendance by Person'), 'attendance_take_byPerson.php', $urlParams)
+	->add(__('Edit Attendance by Person'));      
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == false) {
     //Acess denied
@@ -41,15 +46,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         echo '</div>';
 	} else {
 	    //Proceed!
-	    echo "<div class='trail'>";
-	    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Attendance by Person').'</div>';
-	    echo '</div>';
-
 	    if (isset($_GET['return'])) {
 	        returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because the specified date is not in the future, or is not a school day.'));
 	    }
 
-	    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+	    $attendance = new AttendanceView($gibbon, $pdo);
 
 	    try {
 			$dataPerson = array('gibbonPersonID' => $gibbonPersonID, 'gibbonAttendanceLogPersonID' => $gibbonAttendanceLogPersonID );

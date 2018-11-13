@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -47,8 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {
             echo "<div class='error'>";
             echo __($guid, 'You have not specified one or more required parameters.');
@@ -94,9 +95,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                     $course = $result->fetch();
                     $values = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Column').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(
+                            strtr(
+                                ':action :courseClass :property',
+                                [
+                                    ':action' => __('View'),
+                                    ':courseClass' => Format::courseClassName($course['course'], $course['class']),
+                                    ':property' => __('Markbook'),
+                                ]
+                            ),
+                            'markbook_view.php',
+                            [
+                                'gibbonCourseClassID' => $gibbonCourseClassID,
+                            ]
+                        )
+                        ->add(__('Edit Column'));
 
                     if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                         echo "<div class='error'>";
@@ -244,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_edi
                                 $row = $form->addRow()->addClass('effortRow');
                                     $row->addLabel('gibbonRubricIDEffort', $effortRubricLabel)->description(__('Choose predefined rubric, if desired.'));
                                     $row->addSelectRubric('gibbonRubricIDEffort', $course['gibbonYearGroupIDList'], $course['gibbonDepartmentID'])->placeholder();
-                            } 
+                            }
                         }
 
                         $row = $form->addRow();

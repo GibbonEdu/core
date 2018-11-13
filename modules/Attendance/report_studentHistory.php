@@ -23,6 +23,9 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// set page breadcrumb
+$page->breadcrumbs->add(__('Student History'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Student History').'</div>';
-    echo '</div>';
-
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {

@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $emailLabel = $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email');
         
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
@@ -179,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('emailAlternate', __('Alternate Email'));
-        $row->addEmail('emailAlternate')->maxLength(50);
+        $row->addEmail('emailAlternate');
 
     $row = $form->addRow();
     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')

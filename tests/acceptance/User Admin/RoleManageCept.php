@@ -46,7 +46,6 @@ $I->see('Your request was completed successfully.', '.success');
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'role_manage_delete.php', array('gibbonRoleID' => $gibbonRoleID));
-$I->seeBreadcrumb('Delete Role');
 
 $I->click('Yes');
 $I->see('Your request was completed successfully.', '.success');

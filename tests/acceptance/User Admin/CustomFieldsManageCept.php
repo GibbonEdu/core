@@ -51,7 +51,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('User Admin', 'userFields_delete.php', array('gibbonPersonFieldID' => $gibbonPersonFieldID));
-$I->seeBreadcrumb('Delete Custom Field');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

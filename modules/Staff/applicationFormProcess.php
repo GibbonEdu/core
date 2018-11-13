@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 
 include '../../gibbon.php';
-require_once __DIR__ . '/../../lib/PHPMailer/PHPMailerAutoload.php';
 
 //Check to see if system settings are set from databases
 if (empty($_SESSION[$guid]['systemSettingsSet'])) {

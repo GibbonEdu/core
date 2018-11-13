@@ -34,16 +34,13 @@ else {
 		print "</div>" ;
 	}
 	else {
-		$search=NULL ;
-		if (isset($_GET["search"])) {
-			$search=$_GET["search"] ;
-		}
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : '';
 
-		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php&search=$search'>" . __($guid, 'Manage Messages') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Message') . "</div>" ;
-		print "</div>" ;
+        $page->breadcrumbs
+            ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
+            ->add(__('Edit Message'));
 
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
@@ -664,4 +661,3 @@ else {
 		}
 	}
 }
-?>

@@ -289,13 +289,13 @@ div.minorLinks a:hover {
 	padding: 2px;
 	position: absolute;
 	font-weight:normal;
-	left: -999em;
 	text-shadow: none;
-	width: 180px ;
+    width: 180px ;
+    display: none;
 }
 #nav li:hover ul, #nav li.sfhover ul {
-	left: 0;
-	z-index:99999;
+    z-index:99999;
+    display: block;
 }
 
 #nav li li {

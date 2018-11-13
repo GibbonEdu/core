@@ -19,9 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
+
+// set page breadcrumb
+$page->breadcrumbs->add(__('Students Not Present'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentsNotPresent_byDate.php') == false) {
     //Acess denied
@@ -30,10 +34,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Students Not Present').'</div>';
-    echo '</div>';
-
     echo '<h2>';
     echo __($guid, 'Choose Date');
     echo '</h2>';
@@ -48,8 +48,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
     $gibbonYearGroupIDList = (!empty($_GET['gibbonYearGroupIDList']) && is_array($_GET['gibbonYearGroupIDList'])) ? $_GET['gibbonYearGroupIDList'] : null ;
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
@@ -244,4 +244,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
         }
     }
 }
-?>

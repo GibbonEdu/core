@@ -22,4 +22,14 @@ nbproject/
 # Dev Dependencies
 /vendor/twbs
 
+# examples and tests in the vendor folder
+/vendor/**/tests
+/vendor/**/unitTests
+/vendor/**/Examples
+/vendor/**/examples
+
 /.idea/
+
+*.lock
+
+

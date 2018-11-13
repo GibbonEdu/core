@@ -61,7 +61,7 @@ class MedicalGateway extends QueryableGateway
     public function selectMedicalConditionsByID($gibbonPersonMedicalID)
     {
         $data = array('gibbonPersonMedicalID' => $gibbonPersonMedicalID);
-        $sql = "SELECT gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name 
+        $sql = "SELECT gibbonPersonMedicalCondition.*, gibbonAlertLevel.name AS risk, gibbonAlertLevel.color as alertColor, (CASE WHEN gibbonMedicalCondition.gibbonMedicalConditionID IS NOT NULL THEN gibbonMedicalCondition.name ELSE gibbonPersonMedicalCondition.name END) as name 
                 FROM gibbonPersonMedicalCondition 
                 JOIN gibbonAlertLevel ON (gibbonPersonMedicalCondition.gibbonAlertLevelID=gibbonAlertLevel.gibbonAlertLevelID) 
                 LEFT JOIN gibbonMedicalCondition ON (gibbonMedicalCondition.gibbonMedicalConditionID=gibbonPersonMedicalCondition.name)

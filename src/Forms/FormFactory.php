@@ -127,7 +127,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createEmail($name)
     {
-        return (new Input\TextField($name))->addValidation('Validate.Email');
+        return (new Input\TextField($name))->addValidation('Validate.Email')->maxLength(75);
     }
 
     //A URL web link

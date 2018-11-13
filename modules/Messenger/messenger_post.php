@@ -21,6 +21,8 @@ use Gibbon\Forms\Form;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('New Message'));
+
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
@@ -35,10 +37,6 @@ else {
 	}
 	else {
 		//Proceed!
-		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('New Message') . "</div>" ;
-		print "</div>" ;
-
 		if (isset($_GET["addReturn"])) { $addReturn=$_GET["addReturn"] ; } else { $addReturn="" ; }
 		$addReturnMessage="" ;
 		$class="error" ;
@@ -106,7 +104,7 @@ else {
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_fromSchool")) {
 				$row = $form->addRow()->addClass('email');
 					$row->addLabel('emailReplyTo', __('Reply To'));
-					$row->addEmail('emailReplyTo')->maxLength(50);
+					$row->addEmail('emailReplyTo');
 			}
 		}
 

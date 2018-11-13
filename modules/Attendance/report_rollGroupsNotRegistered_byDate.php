@@ -23,6 +23,9 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// set page breadcrumb
+$page->breadcrumbs->add(__('Roll Groups Not Registered'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,9 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGrou
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Roll Groups Not Registered').'</div>';
-    echo '</div>';
     echo '<h2>';
     echo __($guid, 'Choose Date');
     echo '</h2>';

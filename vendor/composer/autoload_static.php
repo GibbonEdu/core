@@ -7,16 +7,26 @@ namespace Composer\Autoload;
 class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
 {
     public static $files = array (
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
+        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
+        'decc78cc4436b1292c6c0d151b19445c' => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib/bootstrap.php',
         '320cde22f66dd4f5d3fd621d3e88b98f' => __DIR__ . '/..' . '/symfony/polyfill-ctype/bootstrap.php',
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+<<<<<<< HEAD
         'Z' => 
         array (
             'Zend\\EventManager\\' => 18,
             'Zend\\Code\\' => 10,
+=======
+        'p' => 
+        array (
+            'phpseclib\\' => 10,
+>>>>>>> upstream/v17.0.00
         ),
         'T' => 
         array (
@@ -43,12 +53,22 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'P' => 
         array (
+<<<<<<< HEAD
             'Psr\\SimpleCache\\' => 16,
+=======
+>>>>>>> upstream/v17.0.00
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
             'Psr\\Cache\\' => 10,
+<<<<<<< HEAD
             'PackageVersions\\' => 16,
+=======
+        ),
+        'M' => 
+        array (
+            'Monolog\\' => 8,
+>>>>>>> upstream/v17.0.00
         ),
         'L' => 
         array (
@@ -60,10 +80,15 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'G' => 
         array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
+            'Google\\Auth\\' => 12,
             'Gibbon\\' => 7,
         ),
         'F' => 
         array (
+            'Firebase\\JWT\\' => 13,
             'FastRoute\\' => 10,
         ),
         'D' => 
@@ -87,6 +112,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     );
 
     public static $prefixDirsPsr4 = array (
+<<<<<<< HEAD
         'Zend\\EventManager\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-eventmanager/src',
@@ -94,6 +120,11 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Zend\\Code\\' => 
         array (
             0 => __DIR__ . '/..' . '/zendframework/zend-code/src',
+=======
+        'phpseclib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpseclib/phpseclib/phpseclib',
+>>>>>>> upstream/v17.0.00
         ),
         'Twig\\' => 
         array (
@@ -163,10 +194,13 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
+<<<<<<< HEAD
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
+=======
+>>>>>>> upstream/v17.0.00
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -183,9 +217,15 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+<<<<<<< HEAD
         'PackageVersions\\' => 
         array (
             0 => __DIR__ . '/..' . '/ocramius/package-versions/src/PackageVersions',
+=======
+        'Monolog\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+>>>>>>> upstream/v17.0.00
         ),
         'League\\Container\\' => 
         array (
@@ -195,10 +235,30 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
+        ),
+        'Google\\Auth\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/google/auth/src',
+        ),
         'Gibbon\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
             1 => __DIR__ . '/../..' . '/src/Gibbon',
+        ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
         ),
         'FastRoute\\' => 
         array (
@@ -267,6 +327,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         ),
         'P' => 
         array (
+<<<<<<< HEAD
             'ProxyManager\\' => 
             array (
                 0 => __DIR__ . '/..' . '/ocramius/proxy-manager/src',
@@ -285,12 +346,41 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
             'Doctrine\\Common\\Collections\\' => 
             array (
                 0 => __DIR__ . '/..' . '/doctrine/collections/lib',
+=======
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
+        'G' => 
+        array (
+            'Google_Service_' => 
+            array (
+                0 => __DIR__ . '/..' . '/google/apiclient-services/src',
+            ),
+            'Google_' => 
+            array (
+                0 => __DIR__ . '/..' . '/google/apiclient/src',
+>>>>>>> upstream/v17.0.00
             ),
         ),
     );
 
     public static $classMap = array (
+<<<<<<< HEAD
         'SqlFormatter' => __DIR__ . '/..' . '/jdorn/sql-formatter/lib/SqlFormatter.php',
+=======
+        'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
+        'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
+        'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
+        'PHPMailer' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
+        'PHPMailerOAuth' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauth.php',
+        'PHPMailerOAuthGoogle' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmaileroauthgoogle.php',
+        'POP3' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.pop3.php',
+        'SMTP' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.smtp.php',
+        'ntlm_sasl_client_class' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/ntlm_sasl_client.php',
+        'phpmailerException' => __DIR__ . '/..' . '/phpmailer/phpmailer/class.phpmailer.php',
+>>>>>>> upstream/v17.0.00
     );
 
     public static function getInitializer(ClassLoader $loader)
