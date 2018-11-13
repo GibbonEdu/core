@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Attendance by Activity')); 
+    $page->breadcrumbs->add(__('Attendance History by Activity')); 
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
