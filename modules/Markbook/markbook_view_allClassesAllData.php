@@ -153,7 +153,7 @@ use Gibbon\Services\Format;
         ->fromPOST();
 
     $columns = $markbookGateway->queryMarkbookColumnsByClass($criteria, $gibbonCourseClassID);
-    $columns->transform(function ($column) use ($plannerGateway) {
+    $columns->transform(function (&$column) use ($plannerGateway) {
         if (isset($column['gibbonPlannerEntryID'])) {
             $column['gibbonPlannerEntry'] = $plannerGateway->getPlannerEntryByID($column['gibbonPlannerEntryID']);
         }
