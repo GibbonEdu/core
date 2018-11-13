@@ -63,24 +63,6 @@ class RollGroupGateway extends QueryableGateway
         return $this->runQuery($query, $criteria);
     }
 
-    public function selectRollGroupsBySchoolYear($gibbonSchoolYearID)
-    {
-        $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonRollGroup.gibbonRollGroupID, gibbonRollGroup.name, gibbonRollGroup.nameShort, gibbonSpace.name AS space, gibbonRollGroup.website, gibbonPersonIDTutor, gibbonPersonIDTutor2, gibbonPersonIDTutor3, COUNT(DISTINCT students.gibbonPersonID) as students
-                FROM gibbonRollGroup 
-                LEFT JOIN (
-                    SELECT gibbonPerson.gibbonPersonID, gibbonStudentEnrolment.gibbonRollGroupID FROM gibbonStudentEnrolment 
-                    JOIN gibbonPerson ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-                    WHERE status='Full' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)
-                ) AS students ON (students.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-                LEFT JOIN gibbonSpace ON (gibbonRollGroup.gibbonSpaceID=gibbonSpace.gibbonSpaceID) 
-                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID 
-                GROUP BY gibbonRollGroup.gibbonRollGroupID
-                ORDER BY gibbonRollGroup.name";
-
-        return $this->db()->select($sql, $data);
-    }
-
     public function selectTutorsByRollGroup($gibbonRollGroupID)
     {
         $data = array('gibbonRollGroupID' => $gibbonRollGroupID);

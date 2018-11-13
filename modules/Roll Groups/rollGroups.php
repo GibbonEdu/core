@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\RollGroupGateway;
+use Gibbon\Domain\DataSet;
 
 $doctrine = new Gibbon\Database\DoctrineConnector($container);
 
@@ -37,15 +37,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     echo __('This page shows all roll groups in the current school year.');
     echo '</p>';
 
-    $gateway = $container->get(RollGroupGateway::class);
-    $rollGroups = $gateway->selectRollGroupsBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
-    
-    $formatTutorsList = function($row) use ($gateway) {
-        $tutors = $gateway->selectTutorsByRollGroup($row['gibbonRollGroupID'])->fetchAll();
+    require 'RollGroupManager.php';
+    $manager = new RollGroupManager($doctrine->getEntityManager());
+
+    $rollGroups = $manager->findBySchoolYear($_SESSION[$guid]['gibbonSchoolYearID']);
+
+    $formatTutorsList = function($row) use ($manager) {
+        $tutors = $manager->findTutors($row['gibbonRollGroupID']);
         if (count($tutors) > 1) $tutors[0]['surname'] .= ' ('.__('Main Tutor').')';
 
         return Format::nameList($tutors, 'Staff', false, true);
     };
+    foreach ($rollGroups as $q=>$w)
+        $rollGroups[$q]['students'] =  $manager->getStudentCount($w['gibbonRollGroupID']);
 
     $table = DataTable::create('rollGroups');
 
@@ -59,5 +63,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     $actions->addAction('view', __('View'))
             ->setURL('/modules/Roll Groups/rollGroups_details.php');
 
-    echo $table->render($rollGroups->toDataSet());
+    echo $table->render(new DataSet($rollGroups));
 }
