@@ -16,10 +16,11 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
-
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\School\RollGroupGateway;
+
+$doctrine = new Gibbon\Database\DoctrineConnector($container);
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
     //Acess denied

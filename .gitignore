@@ -21,3 +21,10 @@ nbproject/
 
 # Dev Dependencies
 /vendor/twbs
+
+# Vendor
+/vendor/
+!/vendor/autoload.php
+!/vendor/composer/
+
+/.idea/

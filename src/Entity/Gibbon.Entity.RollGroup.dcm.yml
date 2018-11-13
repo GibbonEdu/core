@@ -1,0 +1,88 @@
+Gibbon\Entity\RollGroup:
+    type: entity
+    table: gibbonRollGroup
+    repositoryClass: Gibbon\Repository\RollGroupRepository
+    uniqueConstraints:
+        name_year:
+            columns:
+                - gibbonSchoolYearID
+                - name
+        name_short_year:
+            columns:
+                - gibbonSchoolYearID
+                - name_short
+    id:
+        gibbonRollGroupID:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        name:
+            length: 10
+            nullable: false
+        nameShort:
+            length: 5
+            nullable: false
+            column: name_short
+        attendance:
+            type: boolean
+            options:
+                default: '1'
+        website:
+            length: 255
+            nullable: true
+    manyToOne:
+        gibbonSchoolYearID:
+            targetEntity: Gibbon\Entity\SchoolYear
+            joinColumn:
+                name: gibbonSchoolYearID
+                referencedColumnName: gibbonSchoolGroupID
+                nullable: false
+        gibbonRollGroupIDNext:
+            targetEntity: Gibbon\Entity\RollGroup
+            joinColumn:
+                name: gibbonRollGroupIDNext
+                referencedColumnName: gibbonRollGroupID
+                nullable: true
+        gibbonSpaceID:
+            targetEntity: Gibbon\Entity\Space
+            joinColumn:
+                name: gibbonSpaceID
+                referencedColumnName: gibbonSpaceID
+                nullable: true
+        gibbonPersonIDTutor:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDTutor
+                referencedColumnName: gibbonPersonIDTutor
+                nullable: true
+        gibbonPersonIDTutor2:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDTutor2
+                referencedColumnName: gibbonPersonIDTutor2
+                nullable: true
+        gibbonPersonIDTutor3:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDTutor3
+                referencedColumnName: gibbonPersonIDTutor3
+                nullable: true
+        gibbonPersonIDEA:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDEA
+                referencedColumnName: gibbonPersonIDEA
+                nullable: true
+        gibbonPersonIDEA2:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDEA2
+                referencedColumnName: gibbonPersonIDEA2
+                nullable: true
+        gibbonPersonIDEA3:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonIDEA3
+                referencedColumnName: gibbonPersonIDEA3
+                nullable: true

@@ -1,0 +1,9 @@
+Gibbon\Entity\Space:
+    type: entity
+    table: gibbonSpace
+    repositoryClass: Gibbon\Repository\SpaceRepository
+    id:
+        gibbonSpaceID:
+            type: integer
+            generator:
+                strategy: AUTO
