@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use DateTime;
+use Gibbon\Entity\Person;
 use Gibbon\Session;
 
 /**
@@ -394,7 +395,7 @@ class Format
     /**
      * Formats a list of names from an array containing standard title, preferredName & surname fields.
      * 
-     * @param array $list
+     * @param array|Person $list
      * @param string $roleCategory
      * @param bool $reverse
      * @param bool $informal
@@ -404,7 +405,10 @@ class Format
     {
         $output = '';
         foreach ($list as $person) {
-            $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+            if ($person instanceof Person)
+                $output .= static::name($person->getTitle(), $person->getPreferredName(), $person->getSurname(), $roleCategory, $reverse, $informal);
+            else
+                $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
             $output .= '<br/>';
         }
 
