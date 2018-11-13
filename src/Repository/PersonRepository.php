@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  *
- * This file is part of the Gibbon.
+ * This file is part of the Busybee Project.
  *
  * (c) Craig Rayner <craig@craigrayner.com>
  *
@@ -11,25 +11,25 @@
  *
  * User: craig
  * Date: 13/11/2018
- * Time: 09:13
+ * Time: 14:24
  */
 namespace Gibbon\Repository;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Gibbon\Entity\RollGroup;
+use Gibbon\Entity\Person;
 
 /**
- * Class RollGroupRepository
+ * Class PersonRepository
  * @package Gibbon\Repository
  */
-class RollGroupRepository extends GibbonEntityRepository
+class PersonRepository extends GibbonEntityRepository
 {
     /**
-     * RollGroupRepository constructor.
+     * PersonRepository constructor.
      * @param EntityManagerInterface $entityManager
      */
     public function __construct(EntityManagerInterface $entityManager)
     {
-        parent::__construct($entityManager, RollGroup::class);
+        parent::__construct($entityManager, Person::class);
     }
 }

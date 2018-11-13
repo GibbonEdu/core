@@ -19,5 +19,95 @@ namespace Gibbon\Entity;
 
 class Person
 {
+    /**
+     * @var int|null
+     */
+    private $gibbonPersonID;
 
+    /**
+     * @return int|null
+     */
+    public function getGibbonPersonID()
+    {
+        return $this->gibbonPersonID;
+    }
+
+    /**
+     * @param int|null $gibbonPersonID
+     * @return Person
+     */
+    public function setGibbonPersonID($gibbonPersonID)
+    {
+        $this->gibbonPersonID = $gibbonPersonID;
+        return $this;
+    }
+
+    /**
+     * @var string|null
+     */
+    private $title;
+
+    /**
+     * @return null|string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param null|string $title
+     * @return Person
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
+
+    /**
+     * @var string|null
+     */
+    private $surname;
+
+    /**
+     * @return null|string
+     */
+    public function getSurname()
+    {
+        return $this->surname;
+    }
+
+    /**
+     * @param null|string $surname
+     * @return Person
+     */
+    public function setSurname($surname)
+    {
+        $this->surname = $surname;
+        return $this;
+    }
+
+    /**
+     * @var null|string
+     */
+    private $preferredName;
+
+    /**
+     * @return null|string
+     */
+    public function getPreferredName()
+    {
+        return $this->preferredName;
+    }
+
+    /**
+     * @param null|string $preferredName
+     * @return Person
+     */
+    public function setPreferredName($preferredName)
+    {
+        $this->preferredName = $preferredName;
+        return $this;
+    }
 }

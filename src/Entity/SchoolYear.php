@@ -22,4 +22,30 @@ namespace Gibbon\Entity;
  */
 class SchoolYear
 {
+    /**
+     * @var int|null
+     */
+    private $gibbonSchoolYearID;
+
+    /**
+     * getGibbonSchoolYearID
+     *
+     * @return int|null
+     */
+    public function getGibbonSchoolYearID()
+    {
+        return $this->gibbonSchoolYearID;
+    }
+
+    /**
+     * setGibbonSchoolYearID
+     *
+     * @param $gibbonSchoolYearID
+     * @return $this
+     */
+    public function setGibbonSchoolYearID($gibbonSchoolYearID)
+    {
+        $this->gibbonSchoolYearID = $gibbonSchoolYearID;
+        return $this;
+    }
 }

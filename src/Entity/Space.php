@@ -19,4 +19,49 @@ namespace Gibbon\Entity;
 
 class Space
 {
+    /**
+     * @var int|null
+     */
+    private $gibbonSpaceID;
+
+    /**
+     * @return int|null
+     */
+    public function getGibbonSpaceID()
+    {
+        return $this->gibbonSpaceID;
+    }
+
+    /**
+     * @param int|null $gibbonSpaceID
+     * @return Space
+     */
+    public function setGibbonSpaceID($gibbonSpaceID)
+    {
+        $this->gibbonSpaceID = $gibbonSpaceID;
+        return $this;
+    }
+
+    /**
+     * @var string|null
+     */
+    private $name;
+
+    /**
+     * @return null|string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param null|string $name
+     * @return Space
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
 }

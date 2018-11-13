@@ -24,7 +24,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  * Class GibbonEntityRepository
  * @package Gibbon\Repository
  */
-class GibbonEntityRepository extends EntityRepository implements ServiceEntityRepositoryInterface
+class GibbonEntityRepository extends EntityRepository
 {
     /**
      * GibbonEntityRepository constructor.
