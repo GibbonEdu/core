@@ -51,10 +51,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
             return;
         }
     }
-
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_manage.php'>".__($guid, 'Manage Activities')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage_enrolment.php&gibbonActivityID='.$_GET['gibbonActivityID'].'&search='.$_GET['search'].'&gibbonSchoolYearTermID='.$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Activity Enrolment')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Student').'</div>';
-    echo '</div>';
+    
+    $urlParams = ['gibbonActivityID' => $_GET['gibbonActivityID'], 'search' => $_GET['search'], 'gibbonSchoolYearTermID' => $_GET['gibbonSchoolYearTermID']];
+    
+    $page->breadcrumbs
+        ->add(__('Manage Activities'), 'activities_manage.php')
+        ->add(__('Activity Enrolment'), 'activities_manage_enrolment.php',  $urlParams)
+        ->add(__('Add Student'));   
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

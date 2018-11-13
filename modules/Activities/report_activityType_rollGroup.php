@@ -41,9 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     $viewMode = isset($_REQUEST['format']) ? $_REQUEST['format'] : '';
 
     if (empty($viewMode)) {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Type by Roll Group').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Activity Type by Roll Group'));
 
         $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
 
