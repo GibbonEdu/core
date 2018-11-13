@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Create Invoices'));
+    $page->breadcrumbs->add(__('Generate Invoices'));
     
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
