@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Enter Activity Attendance').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Enter Activity Attendance'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
