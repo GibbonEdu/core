@@ -23,7 +23,6 @@ Gibbon\Entity\RollGroup:
         nameShort:
             length: 5
             nullable: false
-            column: name_short
         attendance:
             type: boolean
             options:
@@ -36,7 +35,7 @@ Gibbon\Entity\RollGroup:
             targetEntity: Gibbon\Entity\SchoolYear
             joinColumn:
                 name: gibbonSchoolYearID
-                referencedColumnName: gibbonSchoolGroupID
+                referencedColumnName: gibbonSchoolYearID
                 nullable: false
         gibbonRollGroupIDNext:
             targetEntity: Gibbon\Entity\RollGroup
@@ -54,35 +53,35 @@ Gibbon\Entity\RollGroup:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDTutor
-                referencedColumnName: gibbonPersonIDTutor
+                referencedColumnName: gibbonPersonID
                 nullable: true
         gibbonPersonIDTutor2:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDTutor2
-                referencedColumnName: gibbonPersonIDTutor2
+                referencedColumnName: gibbonPersonID
                 nullable: true
         gibbonPersonIDTutor3:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDTutor3
-                referencedColumnName: gibbonPersonIDTutor3
+                referencedColumnName: gibbonPersonID
                 nullable: true
         gibbonPersonIDEA:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDEA
-                referencedColumnName: gibbonPersonIDEA
+                referencedColumnName: gibbonPersonID
                 nullable: true
         gibbonPersonIDEA2:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDEA2
-                referencedColumnName: gibbonPersonIDEA2
+                referencedColumnName: gibbonPersonID
                 nullable: true
         gibbonPersonIDEA3:
             targetEntity: Gibbon\Entity\Person
             joinColumn:
                 name: gibbonPersonIDEA3
-                referencedColumnName: gibbonPersonIDEA3
+                referencedColumnName: gibbonPersonID
                 nullable: true

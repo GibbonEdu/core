@@ -7,3 +7,10 @@ Gibbon\Entity\Person:
             type: integer
             generator:
                 strategy: AUTO
+    fields:
+        title:
+            length: 5
+        surname:
+            length: 60
+        preferredName:
+            length: 60

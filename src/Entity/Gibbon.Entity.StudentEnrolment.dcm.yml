@@ -1,0 +1,20 @@
+Gibbon\Entity\StudentEnrolment:
+    type: entity
+    table: gibbonStudentEnrolment
+    repositoryClass: Gibbon\Repository\StudentEnrolmentRepository
+    id:
+        gibbonStudentEnrolmentID:
+            type: integer
+            generator:
+                strategy: AUTO
+    manyToOne:
+        gibbonPersonID:
+            targetEntity: Gibbon\Entity\Person
+            joinColumn:
+                name: gibbonPersonID
+                referencedColumnName: gibbonPersonID
+        gibbonRollGroupID:
+            targetEntity: Gibbon\Entity\RollGroup
+            joinColumn:
+                name: gibbonRollGroupID
+                referencedColumnName: gibbonRollGroupID
