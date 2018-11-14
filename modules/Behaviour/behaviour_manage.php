@@ -42,9 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         echo __($guid, 'The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Behaviour Records').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Manage Behaviour Records'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);

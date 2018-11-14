@@ -38,9 +38,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_view_d
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
 
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_view.php'>".__($guid, 'View Behaviour Records')."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Record').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('View Behaviour Records'), 'behaviour_manage.php')
+            ->add(__('View Student Record'));        
 
         try {
             if ($highestAction == 'View Behaviour Records_all') {
