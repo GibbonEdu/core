@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-            $form->addRow()->addHeading(__('Add Adult'));
+            $form->addRow()->addHeading(__('Edit Child'));
 
             $row = $form->addRow();
                 $row->addLabel('child', __('Childs\'s Name'));
