@@ -23,7 +23,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
     if ($gibbonGroupID == '' || $gibbonPersonID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         $groupGateway = $container->get(GroupGateway::class);
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
         if ($result->isEmpty()) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
             if ($result->isEmpty()) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record cannot be found.');
+                echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/groups_manage_edit_deleteProcess.php?gibbonGroupID=$gibbonGroupID&gibbonPersonID=$gibbonPersonID");

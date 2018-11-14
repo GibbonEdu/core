@@ -25,12 +25,12 @@ use Gibbon\Domain\Students\StudentNoteGateway;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Students Settings').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Students Settings').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -38,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     }
 
     echo '<h3>';
-    echo __($guid, 'Student Note Categories');
+    echo __('Student Note Categories');
     echo '</h3>';
     echo '<p>';
-    echo __($guid, 'This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student note on selection.');
+    echo __('This section allows you to manage the categories which can be associated with student notes. Categories can be given templates, which will pre-populate the student note on selection.');
     echo '</p>';
 
 
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
     echo $table->render($studentNoteCategories);
 
     echo '<h3>';
-    echo __($guid, 'Settings');
+    echo __('Settings');
     echo '</h3>';
 
     $form = Form::create('studentsSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/studentsSettingsProcess.php');

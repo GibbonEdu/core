@@ -25,15 +25,15 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View All Assessments').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View All Assessments').'</div>';
     echo '</div>';
 
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
 
     $search = isset($_GET['search'])? $_GET['search'] : '';
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Choose A Student');
+    echo __('Choose A Student');
     echo '</h2>';
 
     //Set pagination variable
@@ -97,7 +97,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -107,16 +107,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Name');
+        echo __('Name');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Year Group');
+        echo __('Year Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '</td>';
             echo '<td>';
             if ($row['yearGroup'] != '') {
-                echo __($guid, $row['yearGroup']);
+                echo __($row['yearGroup']);
             }
             echo '</td>';
             echo '<td>';

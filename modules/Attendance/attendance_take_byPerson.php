@@ -31,7 +31,7 @@ $page->breadcrumbs->add(__('Take Attendance by Person'));
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     if ($gibbonPersonID != '') {
         if ($currentDate > $today) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified date is in the future: it must be today or earlier.');
+            echo __('The specified date is in the future: it must be today or earlier.');
             echo '</div>';
         } else {
             if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
@@ -97,26 +97,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                 }
                 if ($resultLog->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There is currently no attendance data today for the selected student.');
+                    echo __('There is currently no attendance data today for the selected student.');
                     echo '</div>';
                 } else {
                     echo '<h4>';
-                        echo __($guid, 'Attendance Log');
+                        echo __('Attendance Log');
                     echo '</h4>';
 
                     echo "<p><span class='emphasis small'>";
-                        echo __($guid, 'The following attendance log has been recorded for the selected student today:');
+                        echo __('The following attendance log has been recorded for the selected student today:');
                     echo '</span></p>';
 
                     echo '<table class="mini smallIntBorder fullWidth colorOddEven" cellspacing=0>';
                     echo '<tr class="head">';
-                        echo '<th>'.__($guid, 'Time').'</th>';
-                        echo '<th>'.__($guid, 'Attendance').'</th>';
-                        echo '<th>'.__($guid, 'Where').'</th>';
-                        echo '<th>'.__($guid, 'Recorded By').'</th>';
+                        echo '<th>'.__('Time').'</th>';
+                        echo '<th>'.__('Attendance').'</th>';
+                        echo '<th>'.__('Where').'</th>';
+                        echo '<th>'.__('Recorded By').'</th>';
 
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
-                            echo '<th style="width: 60px;">'.__($guid, 'Actions').'</th>';
+                            echo '<th style="width: 60px;">'.__('Actions').'</th>';
                         }
                     echo '</tr>';
                     while ($rowLog = $resultLog->fetch()) {
@@ -141,11 +141,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         if ($rowLog['context'] != '') {
                             if ($rowLog['context'] == 'Class' && $rowLog['gibbonCourseClassID'] > 0)
-                                echo '<td>'.__($guid, $rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
+                                echo '<td>'.__($rowLog['context']).' ('.$rowLog['courseName'].'.'.$rowLog['className'].')</td>';
                             else
-                                echo '<td>'.__($guid, $rowLog['context']).'</td>';
+                                echo '<td>'.__($rowLog['context']).'</td>';
                         } else {
-                            echo '<td>'.__($guid, 'Roll Group').'</td>';
+                            echo '<td>'.__('Roll Group').'</td>';
                         }
 
                         echo '<td>';
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {
                             echo '<td>';
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_edit.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=".dateConvertBack($guid, $currentDate)."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_edit.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=".dateConvertBack($guid, $currentDate)."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                 echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL']. '/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/attendance_take_byPerson_delete.php&gibbonAttendanceLogPersonID='.$rowLog['gibbonAttendanceLogPersonID']."&gibbonPersonID=$gibbonPersonID&currentDate=".dateConvertBack($guid, $currentDate)."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']. "/img/garbage.png'/></a> ";
                             echo '</td>';
                         }
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                     function dateCheck() {
                         var date = new Date();
                         if ('".$currentDate."'<getDate()) {
-                            return confirm(\"".__($guid, 'The selected date for attendance is in the past. Are you sure you want to continue?').'")
+                            return confirm(\"".__('The selected date for attendance is in the past. Are you sure you want to continue?').'")
                         }
                     }
                 </script>';

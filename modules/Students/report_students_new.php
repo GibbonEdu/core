@@ -26,16 +26,16 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'New Students').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('New Students').'</div>';
     echo '</div>';
 
     echo '<h2>';
-    echo __($guid, 'Choose Options');
+    echo __('Choose Options');
     echo '</h2>';
 
     $type = null;
@@ -88,13 +88,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
     if ($type != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         $proceed = true;
         if ($type == 'Date Range') {
             echo '<p>';
-            echo __($guid, 'This report shows all students whose Start Date is on or between the indicated dates.');
+            echo __('This report shows all students whose Start Date is on or between the indicated dates.');
             echo '</p>';
 
             if ($startDateFrom == '' or $startDateTo == '') {
@@ -102,13 +102,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
             }
         } elseif ($type == 'Current School Year') {
             echo '<p>';
-            echo __($guid, 'This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).');
+            echo __('This report shows all students who are newly arrived in the school during the current academic year (e.g. they were not enroled in the previous academic year).');
             echo '</p>';
         }
 
         if ($proceed == false) {
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo __('Your request failed because your inputs were invalid.');
             echo '</div>';
         } else {
             try {
@@ -134,25 +134,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Count');
+                    echo __('Count');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Name');
+                    echo __('Name');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Roll Group');
+                    echo __('Roll Group');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Username');
+                    echo __('Username');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Start Date');
+                    echo __('Start Date');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Last School');
+                    echo __('Last School');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Parents');
+                    echo __('Parents');
                     echo '</th>';
                     echo '</tr>';
 
@@ -251,22 +251,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                     echo 'Count';
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Name');
+                    echo __('Name');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Roll Group');
+                    echo __('Roll Group');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Username');
+                    echo __('Username');
                     echo '</th>';
                     echo '<th>';
                     echo 'Start Date';
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Last School');
+                    echo __('Last School');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Parents');
+                    echo __('Parents');
                     echo '</th>';
                     echo '</tr>';
 
@@ -352,7 +352,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 }
             } else {
                 echo "<div class='warning'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             }
         }

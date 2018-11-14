@@ -29,7 +29,7 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
     //Show class picker in sidebar
     $output .= '<h2>';
-    $output .= __($guid, 'Choose A Class');
+    $output .= __('Choose A Class');
     $output .= '</h2>';
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -57,7 +57,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output = '';
 
     $output .= "<h3 style='margin-top: 0px'>";
-    $output .= __($guid, 'Choose Class');
+    $output .= __('Choose Class');
     $output .= '</h3>';
 
     $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -97,7 +97,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $_SESSION[$guid]['markbookTerm'] = $selectTerm;
     } else {
         $_SESSION[$guid]['markbookTerm'] = 0;
-        $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
+        $_SESSION[$guid]['markbookTermName'] = __('All Columns');
     }
 
     // SORT BY

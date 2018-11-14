@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/notificationSettings.php'>".__($guid, 'Notification Settings')."</a> > </div><div class='trailEnd'>".__('Edit Notification Event').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/notificationSettings.php'>".__('Notification Settings')."</a> > </div><div class='trailEnd'>".__('Edit Notification Event').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $event = $result->fetch();
