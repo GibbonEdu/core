@@ -27,7 +27,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 }
 //If still false, show warning, otherwise display page
 if ($_SESSION[$guid]['systemSettingsSet'] == false) {
-    echo __($guid, 'System Settings are not set: the system cannot be displayed');
+    echo __('System Settings are not set: the system cannot be displayed');
 } else {
     ?>
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -96,7 +96,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 						<?php
                         echo "<div style='padding-top: 10px'>";
 						echo "<p style='margin-bottom: 0; padding-bottom: 0'>";
-						echo sprintf(__($guid, 'This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]['organisationName'], $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['organisationAdministratorEmail']);
+						echo sprintf(__('This printout contains information that is the property of %1$s. If you find this report, and do not have permission to read it, please return it to %2$s (%3$s). In the event that it cannot be returned, please destroy it.'), $_SESSION[$guid]['organisationName'], $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['organisationAdministratorEmail']);
 						echo '</p>';
 						echo '</div>';
 						?>
@@ -114,7 +114,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 
 					if (strstr($_SESSION[$guid]['address'], '..') != false) {
 						echo "<div class='error'>";
-						echo __($guid, 'Illegal address detected: access denied.');
+						echo __('Illegal address detected: access denied.');
 						echo '</div>';
 					} else {
 						if (is_file('./'.$_SESSION[$guid]['address'])) {
@@ -126,7 +126,7 @@ if ($_SESSION[$guid]['systemSettingsSet'] == false) {
 					?>
 				</div>
 				<div id="footer-report">
-					<?php echo sprintf(__($guid, 'Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]['username'], $_SESSION[$guid]['organisationNameShort'], date('H:i'), date($_SESSION[$guid]['i18n']['dateFormatPHP']));?>
+					<?php echo sprintf(__('Created by %1$s (%2$s) at %3$s on %4$s.'), $_SESSION[$guid]['username'], $_SESSION[$guid]['organisationNameShort'], date('H:i'), date($_SESSION[$guid]['i18n']['dateFormatPHP']));?>
 				</div>
 			</div>
 		</body>
