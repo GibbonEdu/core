@@ -55,19 +55,47 @@ function emailBodyConvert($body)
     return $return ;
 }
 
-//Custom translation function to allow custom string replacement
-function __($arg1, $arg2 = null, $arg3 = null)
+/**
+ * Custom translation function to allow custom string replacement
+ *
+ * @param string $text   String to translate.
+ * @param array  $params Replacement parameter for output.
+ * @param string $domain Text domain for translation (e.g. name of module).
+ *
+ * @return string The resulted translation string.
+ */
+function __()
 {
     global $gibbon, $guid; // For backwards compatibilty
 
-    // Handle __($guid, $text) and __($guid, $text, $domain)
-    if ($arg1 == $guid) {
-        $text = $arg2;
-        $domain = $arg3;
-    } else {
-        // Handle __($text) and __($text, $domain)
-        $text = $arg1;
-        $domain = $arg2;
+    $args = func_get_args();
+
+    // Note: should remove the compatibility code in next
+    // version, then properly state function signature.
+
+    // Compatibility with __($guid, $text) and __($guid, $text, $domain) calls.
+    // Deprecated.
+    if ($args[0] === $guid) {
+        array_shift($args); // discard $guid
+    }
+
+    // Basic __($text) signature handle by default.
+    $text = array_shift($args);
+    $params = [];
+    $options = [];
+
+    // Handle replacement parameters, if exists.
+    if (!empty($args) && is_array($args[0])) {
+        $params = array_shift($args);
+    }
+
+    // Handle options, if exists.
+    if (!empty($args)) {
+        $options = array_shift($args);
+
+        // Backward compatibility layer.
+        // Treat non-array options as 'domain'.
+        $options = is_array($options) ? $options : ['domain' => $options];
     }
 
     // Cancel out early for empty translations
@@ -75,7 +103,7 @@ function __($arg1, $arg2 = null, $arg3 = null)
         return $text;
     }
 
-    return $gibbon->locale->translate($text, $domain);
+    return $gibbon->locale->translate($text, $params, $options);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
