@@ -1,7 +1,7 @@
 before_script:
   # install apt packages
   - apt-get update -qy
-  - apt-get install -qy git zip unzip zlib1g-dev gettext
+  - apt-get install -qy git zip unzip zlib1g-dev gettext locales
   # install php extensions
   - docker-php-ext-install zip gettext pdo_mysql > /dev/null
   # properly setup php
@@ -22,11 +22,19 @@ before_script:
   - COMPOSER_HOME=$HOME/.phpunit composer global require "phpunit/phpunit" "$PHPUNIT_VERSION" --no-progress
   # install dependencies for test
   - composer install --prefer-dist --no-interaction --no-progress
+  # setup system locale for test
+  - echo -e "zh_TW.UTF-8 UTF-8" > /etc/locale.gen
+  - cat /etc/locale.gen
+  - locale-gen zh_TW.utf8
+  - localedef --list-archive
+  - locale -a
 
 services:
   - mariadb:latest
 
 variables:
+  # supporess interative prompt from debian-based OS
+  DEBIAN_FRONTEND: noninteractive
   # variables required for Gibbon to test with
   TEST_ENV: codeception
   CI_PLATFORM: gitlab_ci
