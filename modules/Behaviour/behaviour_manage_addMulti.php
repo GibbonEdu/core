@@ -33,9 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
     echo '</div>';
 } else {
     //Get action with highest precendence
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Manage Behaviour Records')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Multiple').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
+        ->add(__('Add Multiple'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
