@@ -1,0 +1,38 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-17 10:49+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. L10N: Untranslated plain text.
+#: LocaleTest.php:110 LocaleTest.php:147
+msgid "Not translated"
+msgstr ""
+
+#. L10N: Untranslated string for string replacement.
+#: LocaleTest.php:117 LocaleTest.php:154
+msgid "Untranslated @action @name"
+msgstr ""
+
+#. L10N: Translated plain text.
+#: LocaleTest.php:127 LocaleTest.php:164
+msgid "Hello world"
+msgstr ""
+
+#. L10N: Translated string for string replacement.
+#: LocaleTest.php:134 LocaleTest.php:171
+msgid "Hello @name from @planet"
+msgstr ""
