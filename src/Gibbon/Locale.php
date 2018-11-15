@@ -21,7 +21,6 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
-use Psr\Container\ContainerInterface;
 
 /**
  * Localization & Internationalization Class
@@ -33,16 +32,24 @@ class Locale implements LocaleInterface
 {
     protected $i18ncode;
 
+    protected $absolutePath;
+
     protected $session;
 
     protected $stringReplacements;
 
+
     /**
      * Construct
+     *
+     * @param string  $absolutePath Absolute path to the Gibbon installation
+     * @param Session $session      Global session object for string
+     *                              replacement cache.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(string $absolutePath, Session $session)
     {
-        $this->session = $container->get('session');
+        $this->absolutePath = $absolutePath;
+        $this->session = $session;
     }
 
     /**
@@ -93,7 +100,7 @@ class Locale implements LocaleInterface
      */
     public function setTextDomain(Connection $pdo) {
         
-        $this->setSystemTextDomain($this->session->get('absolutePath'));
+        $this->setSystemTextDomain($this->absolutePath);
 
         // Parse additional modules, adding domains for those
         if ($pdo->getConnection() != null) {
@@ -101,7 +108,7 @@ class Locale implements LocaleInterface
             $modules = $pdo->select($sql)->fetchAll();
 
             foreach ($modules as $module) {
-                $this->setModuleTextDomain($module['name'], $this->session->get('absolutePath'));
+                $this->setModuleTextDomain($module['name'], $this->absolutePath);
             }
         }
     }
