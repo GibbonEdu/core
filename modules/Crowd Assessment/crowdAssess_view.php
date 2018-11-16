@@ -26,10 +26,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     echo __($guid, 'You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__($guid, 'View All Assessments')."</a> > </div><div class='trailEnd'>".__($guid, 'View Assessment').'</div>';
-    echo '</div>';
-
+    //Proceed
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'crowdAssess.php')
+        ->add(__('View Assessment'));
+        
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
