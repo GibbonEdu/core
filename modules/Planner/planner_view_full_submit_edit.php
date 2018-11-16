@@ -87,28 +87,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             } else {
                 $row = $result->fetch();
 
-                $extra = '';
-                if ($viewBy == 'class') {
-                    $extra = $row['course'].'.'.$row['class'];
-                } else {
-                    $extra = dateConvertBack($guid, $date);
-                }
+                // target of the planner
+                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                $params = '';
-                if ($_GET['date'] != '') {
-                    $params = $params.'&date='.$_GET['date'];
+                // planner's parameters
+                $params = [];
+                if ($date != '') {
+                    $params['date'] = $_GET['date'];
                 }
-                if ($_GET['viewBy'] != '') {
-                    $params = $params.'&viewBy='.$_GET['viewBy'];
+                if ($viewBy != '') {
+                    $params['viewBy'] = $_GET['viewBy'] ?? '';
                 }
-                if ($_GET['gibbonCourseClassID'] != '') {
-                    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+                if ($gibbonCourseClassID != '') {
+                    $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                 }
-                $params = $params."&subView=$subView";
+                $params['subView'] = $subView;
+                $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__('Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>".__('View Lesson Plan')."</a> > </div><div class='trailEnd'>".__('Add Comment').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(strtr(':planner :target', [
+                        ':planner' => __('Planner'),
+                        ':target' => $extra,
+                    ]), 'planner.php', $params)
+                    ->add(__('Add Comment'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -179,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											<td class="right" colspan=2>
 												<?php
                                                 echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='params' value='$paramsVar'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 												echo "<input type='hidden' name='submission' value='true'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryHomeworkID' value='$gibbonPlannerEntryHomeworkID'>";
@@ -368,18 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 									
 										<tr>
 											<td class="right" colspan=2>
-												<?php
-                                                $params = '';
-												if ($_GET['date'] != '') {
-													$params = $params.'&date='.$_GET['date'];
-												}
-												if ($_GET['viewBy'] != '') {
-													$params = $params.'&viewBy='.$_GET['viewBy'];
-												}
-												if ($_GET['gibbonCourseClassID'] != '') {
-													$params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
-												}
-												$params = $params."&subView=$subView";
+                                                <?php
 
 												$count = 0;
 												try {
@@ -398,7 +388,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 												echo "<input type='hidden' name='count' value='$count'>";
 												echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
 												echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='params' value='$paramsVar'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 												echo "<input type='hidden' name='submission' value='false'>";
 												echo "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>";
@@ -420,4 +410,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         }
     }
 }
-?>

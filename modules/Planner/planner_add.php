@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
         //Proceed!
         //Get viewBy, date and class variables
-        $params = '';
+        $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
         $date = null;
         $dateStamp = null;
         if ($viewBy == 'date') {
-            $date = $_GET['date'];
+            $date = $_GET['date'] ?? '';
             if (isset($_GET['dateHuman']) == true) {
                 $date = dateConvert($guid, $_GET['dateHuman']);
             }
@@ -62,14 +62,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-            $params = "&viewBy=date&date=$date";
+            $params += [
+                'viewBy' => 'date',
+                'date' => $date,
+            ];
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-            $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
+            $params += [
+                'viewBy' => 'class',
+                'date' => $class,
+                'gibbonCourseClassID' => $gibbonCourseClassID,
+                'subView' => $subView,
+            ];
         }
 
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
@@ -113,13 +121,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             echo __('Your request failed because you do not have access to this action.');
             echo '</div>';
         } else {
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__('Planner')." $extra</a> > </div><div class='trailEnd'>".__('Add Lesson Plan').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(strtr(':planner :target', [
+                    ':planner' => __('Planner'),
+                    ':target' => $extra,
+                ]), 'planner.php', $params)
+                ->add(__('Add Lesson Plan'));
 
             $editLink = '';
             if (isset($_GET['editID'])) {
-                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$_GET['editID'].$params;
+                $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?' . http_build_query($params + [
+                    'q' => '/modules/Planner/planner_edit.php',
+                    'gibbonPlannerEntryID' => $_GET['editID'] ?? '',
+                ]);
             }
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], $editLink, null);

@@ -22,6 +22,8 @@ use Gibbon\Forms\Form;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Outcomes By Course'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_outcomesByCourse.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -29,9 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Outcomes By Course').'</div>';
-    echo '</div>';
     echo '<p>';
     echo __('This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.');
     echo '</p>';
@@ -319,4 +318,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         }
     }
 }
-?>

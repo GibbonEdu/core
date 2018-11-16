@@ -20,7 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
 $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs->add(__('Learn With Us'));
+
 if ($makeUnitsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
@@ -28,14 +34,6 @@ if ($makeUnitsPublic != 'Y') {
     echo '</div>';
 } else {
     //Get action with highest precendence
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Learn With Us').'</div>';
-    echo '</div>';
-
-    $gibbonSchoolYearID = '';
-    if (isset($_GET['gibbonSchoolYearID'])) {
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    }
     if ($gibbonSchoolYearID == '') {
         try {
             $data = array();

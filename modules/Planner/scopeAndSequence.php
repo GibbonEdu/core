@@ -23,6 +23,8 @@ use Gibbon\Forms\DatabaseFormFactory;
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+$page->breadcrumbs->add(__('Scope And Sequence'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -30,10 +32,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Scope And Sequence').'</div>';
-    echo '</div>';
-
     echo '<h2>';
     echo __('Choose Course');
     echo '</h2>';
@@ -240,7 +238,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                 print '<i>'.substr($unitsNoKeywords, 0, -2).'</i><br/>';
             }
         echo "</div>";
-
     }
 }
-?>
