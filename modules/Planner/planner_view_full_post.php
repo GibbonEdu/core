@@ -68,6 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         if (isset($_GET['replyTo'])) {
             $replyTo = $_GET['replyTo'];
         }
+        $search = $_GET['search'] ?? '';
 
         //Get class variable
         $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
@@ -146,10 +147,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                         ':planner' => __('Planner'),
                         ':target' => $target,
                     ]), 'planner.php', $params)
-                    ->add(strtr(':action :target', [
-                        ':action' => __('View Lesson Plan'),
-                        ':target' => $target,
-                    ]), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
+                    ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Comment'));
 
                 if (isset($_GET['return'])) {
@@ -177,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 							<tr>
 								<td class="right" colspan=2>
 									<?php
-                                    echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
+                                    echo "<input type='hidden' name='search' value='$search'>";
 									echo "<input type='hidden' name='replyTo' value='".$replyTo."'>";
 									echo "<input type='hidden' name='params' value='$paramsVar'>";
 									echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";

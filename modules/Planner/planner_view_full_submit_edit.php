@@ -34,13 +34,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         echo '</div>';
     } else {
         $viewBy = $_GET['viewBy'];
-        $subView = $_GET['subView'];
+		$subView = $_GET['subView'];
+		$class = null;
+		$date = null;
+		$gibbonCourseClassID = null;
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
         }
         if ($viewBy == 'date') {
             $date = $_GET['date'];
-            if ($_GET['dateHuman'] != '') {
+            if (!empty($_GET['dateHuman'])) {
                 $date = dateConvert($guid, $_GET['dateHuman']);
             }
             if ($date == '') {
@@ -49,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
-            $class = null;
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
@@ -107,8 +109,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 $page->breadcrumbs
                     ->add(strtr(':planner :target', [
                         ':planner' => __('Planner'),
-                        ':target' => $extra,
-                    ]), 'planner.php', $params)
+                        ':target' => $target,
+					]), 'planner.php', $params)
+					->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Comment'));
 
                 if (isset($_GET['return'])) {

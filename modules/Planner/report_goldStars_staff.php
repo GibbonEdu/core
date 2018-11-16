@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
-$page->breadcrumbs->add(__('Staff Like'));
+$page->breadcrumbs->add(__('Staff Likes'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_goldStars_staff.php') == false) {
     //Acess denied
