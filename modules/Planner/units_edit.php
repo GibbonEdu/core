@@ -20,6 +20,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,7 +46,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         echo '</div>';
     } else {
         //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if (strpos($gibbonUnitID, '-') == false) {
             $hooked = false;
         } else {
@@ -44,10 +55,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         }
 
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__('Unit Planner')."</a> > </div><div class='trailEnd'>".__('Edit Unit').'</div>';
-        echo '</div>';
-
         $returns = array();
         $returns['success1'] = __('Smart Blockify was successful.');
         $returns['success2'] = __('Copy was successful. The blocks from the selected working unit have replaced those in the master unit (see below for the new block listing).');
@@ -57,8 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');

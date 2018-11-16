@@ -20,6 +20,34 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitBlockID = $_GET['gibbonUnitBlockID'] ?? '';
+$gibbonUnitClassBlockID = $_GET['gibbonUnitClassBlockID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'), 'units_edit.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+    ])
+    ->add(__('Edit Working Copy'), 'units_edit_working.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'gibbonUnitClassID' => $gibbonUnitClassID,
+    ])
+    ->add(__('Copy Back Block'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
@@ -34,22 +62,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__('Unit Planner')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."'>".__('Edit Unit')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit_working.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitClassID='.$_GET['gibbonUnitClassID']."'>".__('Edit Working Copy')."</a> > </div><div class='trailEnd'>".__('Copy Back Block').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
-        $gibbonUnitBlockID = $_GET['gibbonUnitBlockID'];
-        $gibbonUnitClassBlockID = $_GET['gibbonUnitClassBlockID'];
-        $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -173,4 +190,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     //Print sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
 }
-?>

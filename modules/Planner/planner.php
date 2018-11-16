@@ -84,9 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if (isset($_GET['search'])) {
                 $search = $_GET['search'];
             }
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('My Children\'s Classes').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('My Children\'s Classes');
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -530,9 +528,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
             if ($viewBy == 'date') {
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Planner').' '.dateConvertBack($guid, $date).'</div>';
-                echo '</div>';
+                $page->breadcrumbs->add(strtr(':planner :target', [
+                    ':planner' => __('Planner'),
+                    ':target' => dateConvertBack($guid, $date),
+                ]));
 
                 //Get Smart Workflow help message
                 $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -752,9 +751,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     } else {
                         $row = $result->fetch();
 
-                        echo "<div class='trail'>";
-                        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Planner').' '.$row['course'].'.'.$row['class'].'</div>';
-                        echo '</div>';
+                        $page->breadcrumbs->add(strtr(':planner :target', [
+                            ':planner' => __('Planner'),
+                            ':target' => $row['course'].'.'.$row['class'],
+                        ]));
 
                         //Get Smart Workflow help message
                         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);

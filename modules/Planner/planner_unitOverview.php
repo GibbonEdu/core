@@ -131,28 +131,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             } else {
                 $row = $result->fetch();
 
-                $extra = '';
-                if ($viewBy == 'class') {
-                    $extra = $row['course'].'.'.$row['class'];
-                } else {
-                    $extra = dateConvertBack($guid, $date);
-                }
+                // target of the planner
+                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                $params = '';
-                if ($_GET['date'] != '') {
-                    $params = $params.'&date='.$_GET['date'];
+                // planner parameters
+                $params = [];
+                if ($date != '') {
+                    $params['date'] = $_GET['date'];
                 }
-                if ($_GET['viewBy'] != '') {
-                    $params = $params.'&viewBy='.$_GET['viewBy'];
+                if ($viewBy != '') {
+                    $params['viewBy'] = $_GET['viewBy'] ?? '';
                 }
-                if ($_GET['gibbonCourseClassID'] != '') {
-                    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+                if ($gibbonCourseClassID != '') {
+                    $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                 }
-                $params .= "&subView=$subView";
+                $params['subView'] = $subView;
+                $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params&search=$gibbonPersonID'>".__('Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$gibbonPersonID'>".__('View Lesson Plan')."</a> > </div><div class='trailEnd'>".__('Unit Overview').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(strtr(':planner :target', [
+                        ':planner' => __('Planner'),
+                        ':target' => $target,
+                    ]), 'planner.php', $params)
+                    ->add(strtr(':action :target', [
+                        ':action' => __('View Lesson Plan'),
+                        ':target' => $target,
+                    ]), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'search' => $gibbonPersonID])
+                    ->add(__('Unit Overview'));
 
                 if ($row['gibbonUnitID'] == '') {
                     echo __('The selected record does not exist, or you do not have access to it.');
@@ -593,4 +598,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
         }
     }
 }
-?>

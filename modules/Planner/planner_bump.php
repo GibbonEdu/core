@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 
         //Proceed!
         //Get viewBy, date and class variables
-        $params = '';
+        $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -58,7 +58,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                 $class = $_GET['class'];
             }
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-            $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
+            $params += [
+                'viewBy' => 'class',
+                'date' => $class,
+                'gibbonCourseClassID' => $gibbonCourseClassID,
+                'subView' => $subView,
+            ];
         }
 
         if ($viewBy == 'date') {
@@ -99,11 +104,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                 } else {
                     //Let's go!
                     $row = $result->fetch();
-                    $extra = $row['course'].'.'.$row['class'];
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__('Planner')." $extra</a> > </div><div class='trailEnd'>".__('Bump Forward Lesson Plan').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(strtr(':planner :target', [
+                            ':planner' => __('Planner'),
+                            ':target' => $row['course'].'.'.$row['class'],
+                        ]), 'planner.php', $params)
+                        ->add(__('Bump Forward Lesson Plan'));
 
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, null);
@@ -153,4 +160,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
         }
     }
 }
-?>
