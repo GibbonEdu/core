@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
                         $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
 
-                        $event->setNotificationText(sprintf(__($guid, '%1$s has added a student note ("%2$s") about %3$s.'), $staffName, $title, $studentName));
+                        $event->setNotificationText(sprintf(__('%1$s has added a student note ("%2$s") about %3$s.'), $staffName, $title, $studentName));
                         $event->setActionLink("/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']);
 
                         $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);

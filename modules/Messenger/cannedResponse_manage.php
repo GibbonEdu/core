@@ -22,7 +22,7 @@ $page->breadcrumbs->add(__('Manage Canned Responses'));
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -40,24 +40,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
     }
 
     echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/cannedResponse_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Subject');
+        echo __('Subject');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Body');
+        echo __('Body');
         echo '</th>';
         echo "<th style='width:110px'>";
-        echo __($guid, 'Action');
+        echo __('Action');
         echo '</th>';
         echo '</tr>';
 
@@ -80,8 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             echo $row['body'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_delete.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_delete.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

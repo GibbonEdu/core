@@ -23,14 +23,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_post.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $viewBy = null;
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         }
         //Check existence of and access to this class.
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                 if ($_GET['search'] == '') {
                     echo "<div class='warning'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     $gibbonPersonID = $_GET['search'];
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                     }
                     if ($resultChild->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $data = array('date' => $date);
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
             if ($result->rowCount() != 1) {
                 echo "<div class='warning'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -144,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 $params .= "&subView=$subView";
 
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>".__($guid, 'View Lesson Plan')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Comment').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__('Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>".__('View Lesson Plan')."</a> > </div><div class='trailEnd'>".__('Add Comment').'</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {
@@ -153,11 +153,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                 if (($row['role'] == 'Student' and $row['viewableStudents'] == 'N') and ($highestAction == 'Lesson Planner_viewMyChildrensClasses' and $row['viewableParents'] == 'N')) {
                     echo "<div class='warning'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     echo '<h2>';
-                    echo __($guid, 'Planner Discussion Post');
+                    echo __('Planner Discussion Post');
                     echo '</h2>';
 
                     ?>
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td colspan=2> 
-									<b><?php echo __($guid, 'Write your comment below:') ?></b> 
+									<b><?php echo __('Write your comment below:') ?></b> 
 									<?php echo getEditor($guid,  true, 'comment', '', 20, true) ?>
 								</td>
 							</tr>
@@ -178,7 +178,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 									echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 									echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>"; ?>
 									
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+									<input type="submit" value="<?php echo __('Submit'); ?>">
 								</td>
 							</tr>
 						</table>

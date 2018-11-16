@@ -24,11 +24,11 @@ $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic')
 if ($makeUnitsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Learn With Us')."</a> > </div><div class='trailEnd'>".__($guid, 'View Unit').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Learn With Us')."</a> > </div><div class='trailEnd'>".__('View Unit').'</div>';
     echo '</div>';
 
     //Check if courseschool year specified
@@ -36,7 +36,7 @@ if ($makeUnitsPublic != 'Y') {
     $gibbonUnitID = $_GET['gibbonUnitID'];
     if ($gibbonUnitID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -50,7 +50,7 @@ if ($makeUnitsPublic != 'Y') {
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -86,20 +86,20 @@ if ($makeUnitsPublic != 'Y') {
 
                 //Tab links
                 echo '<ul>';
-            echo "<li><a href='#tabs1'>".__($guid, 'Overview').'</a></li>';
-            echo "<li><a href='#tabs2'>".__($guid, 'Content').'</a></li>';
-            echo "<li><a href='#tabs3'>".__($guid, 'Resources').'</a></li>';
-            echo "<li><a href='#tabs4'>".__($guid, 'Outcomes').'</a></li>';
+            echo "<li><a href='#tabs1'>".__('Overview').'</a></li>';
+            echo "<li><a href='#tabs2'>".__('Content').'</a></li>';
+            echo "<li><a href='#tabs3'>".__('Resources').'</a></li>';
+            echo "<li><a href='#tabs4'>".__('Outcomes').'</a></li>';
             echo '</ul>';
 
                 //Tabs
                 echo "<div id='tabs1'>";
             echo '<h4>';
-            echo __($guid, 'Description');
+            echo __('Description');
             echo '</h4>';
             if ($row['description'] == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo '<p>';
@@ -109,10 +109,10 @@ if ($makeUnitsPublic != 'Y') {
 
             if ($row['license'] != '') {
                 echo '<h4>';
-                echo __($guid, 'License');
+                echo __('License');
                 echo '</h4>';
                 echo '<p>';
-                echo __($guid, 'This work is shared under the following license:').' '.$row['license'];
+                echo __('This work is shared under the following license:').' '.$row['license'];
                 echo '</p>';
             }
             echo '</div>';
@@ -258,7 +258,7 @@ if ($makeUnitsPublic != 'Y') {
 			//No resources!
 			if ($noReosurces) {
 				echo "<div class='error'>";
-				echo __($guid, 'There are no records to display.');
+				echo __('There are no records to display.');
 				echo '</div>';
 			}
             echo '</div>';
@@ -276,19 +276,19 @@ if ($makeUnitsPublic != 'Y') {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Scope');
+                echo __('Scope');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Category');
+                echo __('Category');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Year Groups');
+                echo __('Year Groups');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -327,7 +327,7 @@ if ($makeUnitsPublic != 'Y') {
                     echo '});';
                     echo '</script>';
                     if ($rowBlocks['content'] != '') {
-                        echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                     }
                     echo '</td>';
                     echo '</tr>';

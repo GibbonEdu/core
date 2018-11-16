@@ -23,12 +23,12 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__($guid, 'Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Budget Cycle').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__('Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__('Add Budget Cycle').'</div>';
     echo '</div>';
 
     $editLink = '';
@@ -88,9 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 			$description = "";
 
 			if ($_SESSION[$guid]['currency'] != '') {
-                $description = sprintf(__($guid, 'Numeric value in %1$s.'), $_SESSION[$guid]['currency']);
+                $description = sprintf(__('Numeric value in %1$s.'), $_SESSION[$guid]['currency']);
             } else {
-                $description = __($guid, 'Numeric value.');
+                $description = __('Numeric value.');
             }
 
 			$row = $form->addRow();

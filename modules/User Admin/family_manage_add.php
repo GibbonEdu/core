@@ -23,7 +23,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_a
     $search = $_GET['search'];
     if ($search != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 

@@ -26,7 +26,7 @@ if (isset($_SESSION[$guid]['gibbonThemeName'])) {
 }
 
 if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
-    die( __($guid, 'Your request failed because you do not have access to this action.') );
+    die( __('Your request failed because you do not have access to this action.') );
 } else {
 
     $searchTerm = (isset($_REQUEST['q']))? $_REQUEST['q'] : '';
@@ -204,13 +204,13 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     foreach ($resultSet as $type => $results) {
         foreach ($results as $token) {
             if ($token['type'] == 'Core') {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep(__($guid, $token['name'])).'"},';
+                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep(__($token['name'])).'"},';
             }
             else if ($token['type'] == 'Additional') {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep(__($guid, $token['name'], $token['module'])).'"},';
+                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep(__($token['name'], $token['module'])).'"},';
             }
             else {
-                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($guid, $type)).' - '.htmlPrep($token['name']).'"},';
+                $list .= '{"id": "'.substr($type, 0, 3).'-'.$token['id'].'", "name": "'.htmlPrep(__($type)).' - '.htmlPrep($token['name']).'"},';
             }
         }
     }

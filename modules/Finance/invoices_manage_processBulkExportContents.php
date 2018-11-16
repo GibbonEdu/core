@@ -22,7 +22,7 @@ include '../../config.php';
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
 
     if ($gibbonFinanceInvoiceIDs == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'List of invoices or school year have not been specified, and so this export cannot be completed.');
+        echo __('List of invoices or school year have not been specified, and so this export cannot be completed.');
         echo '</div>';
     } else {
 
@@ -90,43 +90,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         for($col = 'A'; $col !== 'I'; $col++)
             $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, "Invoice Number"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __("Invoice Number"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, "Student"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __("Student"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, "Roll Group"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __("Roll Group"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, "Invoice To"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __("Invoice To"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, "DOB"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __("DOB"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __($guid, "Gender"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __("Gender"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __($guid, "Status"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Status"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, "Schedule"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Schedule"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __($guid, "Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __("Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __($guid, "Issue Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Issue Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __($guid, "Due Date"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Due Date"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __($guid, "Date Paid"));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __("Date Paid"));
         $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(12, 1, __($guid, "Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(12, 1, __("Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
         $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);

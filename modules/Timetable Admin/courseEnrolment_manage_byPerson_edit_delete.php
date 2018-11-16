@@ -22,7 +22,7 @@ use Gibbon\Forms\Prefab\DeleteForm;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check if school year specified
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     if ($gibbonPersonID == '' or $gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -49,13 +49,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
             $row = $result->fetch();
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__($guid, 'Enrolment by Person')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&type='.$_GET['type'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonPersonID='.$_GET['gibbonPersonID']."&allUsers=$allUsers'>".$row['preferredName'].' '.$row['surname']."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Participant').'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__('Enrolment by Person')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&type='.$_GET['type'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonPersonID='.$_GET['gibbonPersonID']."&allUsers=$allUsers'>".$row['preferredName'].' '.$row['surname']."</a> > </div><div class='trailEnd'>".__('Delete Participant').'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {

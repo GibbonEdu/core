@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,7 +30,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print __($guid, "The highest grouped action cannot be determined.") ;
+		print __("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -45,22 +45,22 @@ else {
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;
+				$updateReturnMessage=__("Your request failed because you do not have access to this action.") ;
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;
+				$updateReturnMessage=__("Your request failed due to a database error.") ;
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;
+				$updateReturnMessage=__("Your request was completed successfully.") ;
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -72,7 +72,7 @@ else {
 		$gibbonMessengerID=$_GET["gibbonMessengerID"] ;
 		if ($gibbonMessengerID=="") {
 			print "<div class='error'>" ;
-				print __($guid, "You have not specified one or more required parameters.") ;
+				print __("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -95,14 +95,14 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print __($guid, "The specified record cannot be found.") ;
+					print __("The specified record cannot be found.") ;
 				print "</div>" ;
 			}
 			else {
 				//Let's go!
 				$values=$result->fetch() ;
 				echo '<div class="warning">';
-					echo '<b><u>'.__($guid, 'Note').'</u></b>: '.__($guid, 'Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
+					echo '<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
 				echo '</div>';
 
 				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_manage_editProcess.php');
@@ -116,10 +116,10 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
 						if ($values["email"]=="Y") {
-							$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 				}
 
@@ -152,10 +152,10 @@ else {
 						$row = $form->addRow();
 							$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
 							if ($values["sms"]=="Y") {
-								$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+								$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 							}
 							else {
-								$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+								$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 							}
 					}
 				}
@@ -182,10 +182,10 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 						if ($values["emailReceipt"]=="Y") {
-							$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 
 					$row = $form->addRow()->addClass('emailReceipt');

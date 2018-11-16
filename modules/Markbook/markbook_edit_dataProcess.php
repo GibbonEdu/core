@@ -170,12 +170,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                                 //Below target
                                 if ($attainmentSequence > $target) {
                                     $attainmentConcern = 'Y';
-                                    $attainmentDescriptor = sprintf(__($guid, 'Below personalised target of %1$s'), $rowTarget['value']);
+                                    $attainmentDescriptor = sprintf(__('Below personalised target of %1$s'), $rowTarget['value']);
                                 }
                                 //Above target
                                 elseif ($attainmentSequence <= $target) {
                                     $attainmentConcern = 'P';
-                                    $attainmentDescriptor = sprintf(__($guid, 'Equal to or above personalised target of %1$s'), $rowTarget['value']);
+                                    $attainmentDescriptor = sprintf(__('Equal to or above personalised target of %1$s'), $rowTarget['value']);
                                 }
                             }
                         }

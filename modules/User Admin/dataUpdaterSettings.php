@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -74,8 +74,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     echo $form->getOutput();
     
 
-    echo '<h2>'.__($guid, 'Required Fields for Personal Updates').'</h2>';
-	echo '<p>'.__($guid, 'These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
+    echo '<h2>'.__('Required Fields for Personal Updates').'</h2>';
+	echo '<p>'.__('These required field settings apply to all users, except those who hold the ability to submit a data update request for all users in the system (generally just admins).').'</p>';
 
     $form = Form::create('dataUpdaterSettingsFields', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/dataUpdaterSettingsFieldsProcess.php');
     

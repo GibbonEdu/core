@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $allStudents = '';
@@ -33,14 +33,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
         echo "<div class='error'>";
-        echo __($guid, 'You do not have access to this action.');
+        echo __('You do not have access to this action.');
         echo '</div>';
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
         $subpage = $_GET['subpage'];
         if ($gibbonPersonID == '' or $subpage == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -53,14 +53,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $student = $result->fetch();
 
                 //Proceed!
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $student['preferredName'], $student['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Student Note').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__('View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $student['preferredName'], $student['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__('Edit Student Note').'</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 $gibbonStudentNoteID = $_GET['gibbonStudentNoteID'];
                 if ($gibbonStudentNoteID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     try {
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                         if ($_GET['search'] != '') {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__($guid, 'Back to Search Results').'</a>';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
                             echo '</div>';
                         }
 

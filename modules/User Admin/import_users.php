@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -79,72 +79,72 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
         ?>
 
         <h4>
-            <?php echo __($guid, 'Notes') ?>
+            <?php echo __('Notes') ?>
         </h4>
         <ol>
-            <li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-            <li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-            <li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-            <li><?php echo __($guid, 'Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
-            <li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+            <li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __('You may only submit CSV files.') ?></li>
+            <li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __('Your import should only include those users whose status is set "Full" (e.g. current users).') ?></li>
+            <li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
                 <ol>
-                    <li><b><?php echo __($guid, 'Title') ?></b> - <?php echo __($guid, 'e.g. Ms., Miss, Mr., Mrs., Dr.') ?></li>
-                    <li><b><?php echo __($guid, 'Surname') ?> *</b> - <?php echo __($guid, 'Family name') ?></li>
-                    <li><b><?php echo __($guid, 'First Name') ?> *</b> - <?php echo __($guid, 'Given name') ?></li>
-                    <li><b><?php echo __($guid, 'Preferred Name') ?> *</b> - <?php echo __($guid, 'Most common name, alias, nickname, handle, etc') ?></li>
-                    <li><b><?php echo __($guid, 'Official Name') ?> *</b> - <?php echo __($guid, 'Full name as shown in ID documents.') ?></li>
-                    <li><b><?php echo __($guid, 'Name In Characters') ?></b> - <?php echo __($guid, 'e.g. Chinese name') ?></li>
-                    <li><b><?php echo __($guid, 'Gender') ?> *</b> - <?php echo __($guid, 'F or M') ?></li>
-                    <li><b><?php echo __($guid, 'Username') ?> *</b> - <?php echo __($guid, 'Must be unique') ?></li>
-                    <li><b><?php echo __($guid, 'Password') ?></b> - <?php echo __($guid, 'If blank, default password or random password will be used.') ?></li>
-                    <li><b><?php echo __($guid, 'House') ?></b> - <?php echo __($guid, 'House short name, as set in School Admin. Must already exist).') ?></li>
-                    <li><b><?php echo __($guid, 'DOB') ?></b> - <?php echo __($guid, 'Date of birth') ?> (yyyy-mm-dd)</li>
-                    <li><b><?php echo __($guid, 'Role') ?> *</b> - <?php echo __($guid, 'Teacher, Support Staff, Student or Parent') ?></li>
-                    <li><b><?php echo __($guid, 'Email') ?></b></li>
-                    <li><b><?php echo __($guid, 'Image (240)') ?></b> - <?php echo __($guid, 'path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
-                    <li><b><?php echo __($guid, 'Address 1') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
-                    <li><b><?php echo __($guid, 'Address 1 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
-                    <li><b><?php echo __($guid, 'Address 1 (Country)') ?></b></li>
-                    <li><b><?php echo __($guid, 'Address 2') ?></b> - <?php echo __($guid, 'Unit, Building, Street') ?></li>
-                    <li><b><?php echo __($guid, 'Address 2 (District)') ?></b> - <?php echo __($guid, 'County, State, District') ?></li>
-                    <li><b><?php echo __($guid, 'Address 2 (Country)') ?></b></li>
-                    <li><b><?php echo __($guid, 'Phone 1 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 1 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 1') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 2 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 2 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 2') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 3 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 3 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 3') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 4 (Type)') ?></b> - <?php echo __($guid, 'Mobile, Home, Work, Fax, Pager, Other') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 4 (Country Code)') ?></b> - <?php echo __($guid, 'IDD code, without 00 or +') ?></li>
-                    <li><b><?php echo __($guid, 'Phone 4') ?></b> - <?php echo __($guid, 'No spaces or punctuation, just numbers') ?></li>
-                    <li><b><?php echo __($guid, 'Website') ?></b> - <?php echo __($guid, 'Must start with http:// or https://') ?></li>
-                    <li><b><?php echo __($guid, 'First Language') ?></b></li>
-                    <li><b><?php echo __($guid, 'Second Language') ?></b></li>
-                    <li><b><?php echo __($guid, 'Profession') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-                    <li><b><?php echo __($guid, 'Employer') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-                    <li><b><?php echo __($guid, 'Job Title') ?></b> - <?php echo __($guid, 'For parents only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 1 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 1 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 1 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 1  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 2 Name') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 2 Number 1') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 2 Number 2') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Emergency 2  Relationship') ?></b> - <?php echo __($guid, 'For students and staff only') ?></li>
-                    <li><b><?php echo __($guid, 'Start Date') ?></b> - yyyy-mm-dd</li>
+                    <li><b><?php echo __('Title') ?></b> - <?php echo __('e.g. Ms., Miss, Mr., Mrs., Dr.') ?></li>
+                    <li><b><?php echo __('Surname') ?> *</b> - <?php echo __('Family name') ?></li>
+                    <li><b><?php echo __('First Name') ?> *</b> - <?php echo __('Given name') ?></li>
+                    <li><b><?php echo __('Preferred Name') ?> *</b> - <?php echo __('Most common name, alias, nickname, handle, etc') ?></li>
+                    <li><b><?php echo __('Official Name') ?> *</b> - <?php echo __('Full name as shown in ID documents.') ?></li>
+                    <li><b><?php echo __('Name In Characters') ?></b> - <?php echo __('e.g. Chinese name') ?></li>
+                    <li><b><?php echo __('Gender') ?> *</b> - <?php echo __('F or M') ?></li>
+                    <li><b><?php echo __('Username') ?> *</b> - <?php echo __('Must be unique') ?></li>
+                    <li><b><?php echo __('Password') ?></b> - <?php echo __('If blank, default password or random password will be used.') ?></li>
+                    <li><b><?php echo __('House') ?></b> - <?php echo __('House short name, as set in School Admin. Must already exist).') ?></li>
+                    <li><b><?php echo __('DOB') ?></b> - <?php echo __('Date of birth') ?> (yyyy-mm-dd)</li>
+                    <li><b><?php echo __('Role') ?> *</b> - <?php echo __('Teacher, Support Staff, Student or Parent') ?></li>
+                    <li><b><?php echo __('Email') ?></b></li>
+                    <li><b><?php echo __('Image (240)') ?></b> - <?php echo __('path from /uploads/ to medium portrait image (240px by 320px)') ?></li>
+                    <li><b><?php echo __('Address 1') ?></b> - <?php echo __('Unit, Building, Street') ?></li>
+                    <li><b><?php echo __('Address 1 (District)') ?></b> - <?php echo __('County, State, District') ?></li>
+                    <li><b><?php echo __('Address 1 (Country)') ?></b></li>
+                    <li><b><?php echo __('Address 2') ?></b> - <?php echo __('Unit, Building, Street') ?></li>
+                    <li><b><?php echo __('Address 2 (District)') ?></b> - <?php echo __('County, State, District') ?></li>
+                    <li><b><?php echo __('Address 2 (Country)') ?></b></li>
+                    <li><b><?php echo __('Phone 1 (Type)') ?></b> - <?php echo __('Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __('Phone 1 (Country Code)') ?></b> - <?php echo __('IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __('Phone 1') ?></b> - <?php echo __('No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __('Phone 2 (Type)') ?></b> - <?php echo __('Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __('Phone 2 (Country Code)') ?></b> - <?php echo __('IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __('Phone 2') ?></b> - <?php echo __('No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __('Phone 3 (Type)') ?></b> - <?php echo __('Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __('Phone 3 (Country Code)') ?></b> - <?php echo __('IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __('Phone 3') ?></b> - <?php echo __('No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __('Phone 4 (Type)') ?></b> - <?php echo __('Mobile, Home, Work, Fax, Pager, Other') ?></li>
+                    <li><b><?php echo __('Phone 4 (Country Code)') ?></b> - <?php echo __('IDD code, without 00 or +') ?></li>
+                    <li><b><?php echo __('Phone 4') ?></b> - <?php echo __('No spaces or punctuation, just numbers') ?></li>
+                    <li><b><?php echo __('Website') ?></b> - <?php echo __('Must start with http:// or https://') ?></li>
+                    <li><b><?php echo __('First Language') ?></b></li>
+                    <li><b><?php echo __('Second Language') ?></b></li>
+                    <li><b><?php echo __('Profession') ?></b> - <?php echo __('For parents only') ?></li>
+                    <li><b><?php echo __('Employer') ?></b> - <?php echo __('For parents only') ?></li>
+                    <li><b><?php echo __('Job Title') ?></b> - <?php echo __('For parents only') ?></li>
+                    <li><b><?php echo __('Emergency 1 Name') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 1 Number 1') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 1 Number 2') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 1  Relationship') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 2 Name') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 2 Number 1') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 2 Number 2') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Emergency 2  Relationship') ?></b> - <?php echo __('For students and staff only') ?></li>
+                    <li><b><?php echo __('Start Date') ?></b> - yyyy-mm-dd</li>
                 </ol>
             </li>
-            <li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+            <li><?php echo __('Do not include a header row in the CSV files.') ?></li>
         </ol>
     <?php
 
     } elseif ($step == 2) {
         ?>
         <h2>
-            <?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+            <?php echo __('Step 2 - Data Check & Confirm') ?>
         </h2>
         <?php
 
@@ -152,21 +152,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
         if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
             ?>
             <div class='error'>
-                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+                <?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
             </div>
             <?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
             <div class='error'>
-                <?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+                <?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
             </div>
             <?php
 
         } elseif ($_POST['mode'] != 'sync' and $_POST['mode'] != 'import') {
             ?>
             <div class='error'>
-                <?php echo __($guid, 'Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
+                <?php echo __('Import cannot proceed, as the "Mode" field have been left blank.') ?><br/>
             </div>
             <?php
 
@@ -177,7 +177,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
             if ($mode == 'sync') { //SYNC
                 //PREPARE TABLES
                 echo '<h4>';
-                echo __($guid, 'Prepare Database Tables');
+                echo __('Prepare Database Tables');
                 echo '</h4>';
                 //Lock tables
                 $lockFail = false;
@@ -190,11 +190,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                 }
                 if ($lockFail == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The database could not be locked for use.');
+                    echo __('The database could not be locked for use.');
                     echo '</div>';
                 } elseif ($lockFail == false) {
                     echo "<div class='success'>";
-                    echo __($guid, 'The database was successfully locked.');
+                    echo __('The database was successfully locked.');
                     echo '</div>';
                 }
 
@@ -202,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                     //READ IN DATA
                     if ($proceed == true) {
                         echo '<h4>';
-                        echo __($guid, 'File Import');
+                        echo __('File Import');
                         echo '</h4>';
                         $importFail = false;
                         $csvFile = $_FILES['file']['tmp_name'];
@@ -404,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                                 ++$userSuccessCount;
                             } else {
                                 echo "<div class='error'>";
-                                echo sprintf(__($guid, 'User with username %1$s had some information malformations.'), $data[7]);
+                                echo sprintf(__('User with username %1$s had some information malformations.'), $data[7]);
                                 echo '</div>';
                             }
                             ++$userCount;
@@ -412,21 +412,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                         fclose($handle);
                         if ($userSuccessCount == 0) {
                             echo "<div class='error'>";
-                            echo __($guid, 'No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+                            echo __('No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         } elseif ($userSuccessCount < $userCount) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Some users could not be successfully read or used, so the import will be aborted.');
+                            echo __('Some users could not be successfully read or used, so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         } elseif ($userSuccessCount == $userCount) {
                             echo "<div class='success'>";
-                            echo __($guid, 'All users could be read and used, so the import will proceed.');
+                            echo __('All users could be read and used, so the import will proceed.');
                             echo '</div>';
                         } else {
                             echo "<div class='error'>";
-                            echo __($guid, 'An unknown error occured, so the import will be aborted.');
+                            echo __('An unknown error occured, so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         }
@@ -435,7 +435,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                     if ($proceed == true) {
                         //SET USERS NOT IN IMPORT TO LEFT
                         echo '<h4>';
-                        echo __($guid, 'Set To Left');
+                        echo __('Set To Left');
                         echo '</h4>';
                         $setLeftFail = false;
                         $usernameWhere = '(';
@@ -456,17 +456,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
                         if ($setLeftFail == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'An error was encountered in setting users not in the import to Left');
+                            echo __('An error was encountered in setting users not in the import to Left');
                             echo '</div>';
                         } else {
                             echo "<div class='success'>";
-                            echo __($guid, 'All users not in the import (except you) have been set to left.');
+                            echo __('All users not in the import (except you) have been set to left.');
                             echo '</div>';
                         }
 
                         //CHECK USERS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
                         echo '<h4>';
-                        echo __($guid, 'Update & Insert');
+                        echo __('Update & Insert');
                         echo '</h4>';
                         foreach ($users as $user) {
                             $userProceed = true;
@@ -481,7 +481,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
                             if ($userProceed == false) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There was an error locating user:').' '.$user['username'].'.';
+                                echo __('There was an error locating user:').' '.$user['username'].'.';
                                 echo '</div>';
                             } else {
                                 if ($result->rowCount() == 1) {
@@ -519,11 +519,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                                     //Spit out results
                                     if ($updateUserFail == true) {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'There was an error updating user:').' '.$user['username'].'.';
+                                        echo __('There was an error updating user:').' '.$user['username'].'.';
                                         echo '</div>';
                                     } else {
                                         echo "<div class='success'>";
-                                        echo sprintf(__($guid, 'User %1$s was successfully updated.'), $user['username']);
+                                        echo sprintf(__('User %1$s was successfully updated.'), $user['username']);
                                         echo '</div>';
                                     }
                                 } elseif ($result->rowCount() == 0) {
@@ -555,7 +555,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
                                     if ($role == '') {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'There was an error with the role of user:').' '.$user['username'].'.';
+                                        echo __('There was an error with the role of user:').' '.$user['username'].'.';
                                         echo '</div>';
                                     } else {
                                         try {
@@ -571,17 +571,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                                         //Spit out results
                                         if ($addUserFail == true) {
                                             echo "<div class='error'>";
-                                            echo __($guid, 'There was an error creating user:').' '.$user['username'].'.';
+                                            echo __('There was an error creating user:').' '.$user['username'].'.';
                                             echo '</div>';
                                         } else {
                                             echo "<div class='success'>";
-                                            echo sprintf(__($guid, 'User %1$s was successfully created with password %2$s.'), $user['username'], $password);
+                                            echo sprintf(__('User %1$s was successfully created with password %2$s.'), $user['username'], $password);
                                             echo '</div>';
                                         }
                                     }
                                 } else {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error locating user:').' '.$user['username'].'.';
+                                    echo __('There was an error locating user:').' '.$user['username'].'.';
                                     echo '</div>';
                                 }
                             }
@@ -598,7 +598,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
             } elseif ($mode == 'import') { //IMPORT
                 //PREPARE TABLES
                 echo '<h4>';
-                echo __($guid, 'Prepare Database Tables');
+                echo __('Prepare Database Tables');
                 echo '</h4>';
                 //Lock tables
                 $lockFail = false;
@@ -611,11 +611,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                 }
                 if ($lockFail == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The database could not be locked for use.');
+                    echo __('The database could not be locked for use.');
                     echo '</div>';
                 } elseif ($lockFail == false) {
                     echo "<div class='success'>";
-                    echo __($guid, 'The database was successfully locked.');
+                    echo __('The database was successfully locked.');
                     echo '</div>';
                 }
 
@@ -623,7 +623,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                     //READ IN DATA
                     if ($proceed == true) {
                         echo '<h4>';
-                        echo __($guid, 'File Import');
+                        echo __('File Import');
                         echo '</h4>';
                         $importFail = false;
                         $csvFile = $_FILES['file']['tmp_name'];
@@ -825,7 +825,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                                 ++$userSuccessCount;
                             } else {
                                 echo "<div class='error'>";
-                                echo sprintf(__($guid, 'User with username %1$s had some information malformations.'), $data[7]);
+                                echo sprintf(__('User with username %1$s had some information malformations.'), $data[7]);
                                 echo '</div>';
                             }
                             ++$userCount;
@@ -833,21 +833,21 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                         fclose($handle);
                         if ($userSuccessCount == 0) {
                             echo "<div class='error'>";
-                            echo __($guid, 'No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+                            echo __('No useful users were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         } elseif ($userSuccessCount < $userCount) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Some users could not be successfully read or used, so the import will be aborted.');
+                            echo __('Some users could not be successfully read or used, so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         } elseif ($userSuccessCount == $userCount) {
                             echo "<div class='success'>";
-                            echo __($guid, 'All users could be read and used, so the import will proceed.');
+                            echo __('All users could be read and used, so the import will proceed.');
                             echo '</div>';
                         } else {
                             echo "<div class='error'>";
-                            echo __($guid, 'An unknown error occured, so the import will be aborted.');
+                            echo __('An unknown error occured, so the import will be aborted.');
                             echo '</div>';
                             $proceed = false;
                         }
@@ -856,7 +856,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                     if ($proceed == true) {
                         //CHECK USERS IN IMPORT FOR EXISTENCE, IF NOT EXIST, ADD THEM, IF THEY ARE UPDATE THEM
                         echo '<h4>';
-                        echo __($guid, 'Check & Insert');
+                        echo __('Check & Insert');
                         echo '</h4>';
                         foreach ($users as $user) {
                             $userProceed = true;
@@ -871,14 +871,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
                             if ($userProceed == false) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There was an error locating user:').' '.$user['username'].'.';
+                                echo __('There was an error locating user:').' '.$user['username'].'.';
                                 echo '</div>';
                             } else {
                                 if ($result->rowCount() == 1) {
                                     $row = $result->fetch();
                                     //USER ALREADY EXISTS
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error inserting user:').' '.$user['username'].'.';
+                                    echo __('There was an error inserting user:').' '.$user['username'].'.';
                                     echo '</div>';
                                 } elseif ($result->rowCount() == 0) {
                                     //ADD USER
@@ -909,7 +909,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
 
                                     if ($role == '') {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'There was an error with the role of user:').' '.$user['username'].'.';
+                                        echo __('There was an error with the role of user:').' '.$user['username'].'.';
                                         echo '</div>';
                                     } else {
                                         try {
@@ -925,17 +925,17 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_users.ph
                                         //Spit out results
                                         if ($addUserFail == true) {
                                             echo "<div class='error'>";
-                                            echo __($guid, 'There was an error creating user:').' '.$user['username'].'.';
+                                            echo __('There was an error creating user:').' '.$user['username'].'.';
                                             echo '</div>';
                                         } else {
                                             echo "<div class='success'>";
-                                            echo sprintf(__($guid, 'User %1$s was successfully created with password %2$s.'), $user['username'], $password);
+                                            echo sprintf(__('User %1$s was successfully created with password %2$s.'), $user['username'], $password);
                                             echo '</div>';
                                         }
                                     }
                                 } else {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error locating user:').' '.$user['username'].'.';
+                                    echo __('There was an error locating user:').' '.$user['username'].'.';
                                     echo '</div>';
                                 }
                             }

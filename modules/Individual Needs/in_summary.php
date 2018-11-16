@@ -29,11 +29,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Individual Needs Summary').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Individual Needs Summary').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     }
 
     echo '<h3>';
-    echo __($guid, 'Filter');
+    echo __('Filter');
     echo '</h3>';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -93,10 +93,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_summar
     echo $form->getOutput();
 
     echo '<h3>';
-    echo __($guid, 'Students With Records');
+    echo __('Students With Records');
     echo '</h3>';
     echo '<p>';
-    echo __($guid, 'Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.');
+    echo __('Students only show up in this list if they have an Individual Needs record with descriptors set. If a student does not show up here, check in Individual Needs Records.');
     echo '</p>';
 
     $individualNeedsGateway = $container->get(INGateway::class);
