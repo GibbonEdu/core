@@ -1302,6 +1302,73 @@
         ]
     },
     {
+        "name": "tecnickcom/tcpdf",
+        "version": "6.0.038",
+        "version_normalized": "6.0.038.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/yookoala/TCPDF.git",
+            "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/yookoala/TCPDF/zipball/fff2d972d34ce6334e1939d7fae9d56f2acc6010",
+            "reference": "fff2d972d34ce6334e1939d7fae9d56f2acc6010",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.0"
+        },
+        "time": "2013-10-06T16:51:54+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "classmap": [
+                "fonts",
+                "config",
+                "include",
+                "tcpdf.php",
+                "tcpdf_parser.php",
+                "tcpdf_import.php",
+                "tcpdf_barcodes_1d.php",
+                "tcpdf_barcodes_2d.php",
+                "include/tcpdf_colors.php",
+                "include/tcpdf_filters.php",
+                "include/tcpdf_font_data.php",
+                "include/tcpdf_fonts.php",
+                "include/tcpdf_images.php",
+                "include/tcpdf_static.php",
+                "include/barcodes/datamatrix.php",
+                "include/barcodes/pdf417.php",
+                "include/barcodes/qrcode.php"
+            ]
+        },
+        "license": [
+            "LGPLv3"
+        ],
+        "authors": [
+            {
+                "name": "Nicola Asuni",
+                "email": "info@tecnick.com",
+                "homepage": "http://nicolaasuni.tecnick.com"
+            }
+        ],
+        "description": "TCPDF is a PHP class for generating PDF documents.",
+        "homepage": "http://www.tcpdf.org/",
+        "keywords": [
+            "PDF",
+            "PDFD32000-2008",
+            "barcodes",
+            "datamatrix",
+            "pdf417",
+            "qrcode",
+            "tcpdf"
+        ],
+        "support": {
+            "source": "https://github.com/yookoala/TCPDF/tree/6.0.038"
+        }
+    },
+    {
         "name": "twig/twig",
         "version": "v2.5.0",
         "version_normalized": "2.5.0.0",
