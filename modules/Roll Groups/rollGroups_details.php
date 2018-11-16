@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 
             $page->breadcrumbs
                 ->add(__('View Roll Groups'), 'rollGroups.php')
-                ->add(__($row['name']));
+                ->add($row['name']);
 
             echo '<h3>';
             echo __('Basic Information');
