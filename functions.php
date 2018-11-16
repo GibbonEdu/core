@@ -113,9 +113,9 @@ function renderGradeScaleSelect($connection2, $guid, $gibbonScaleID, $fieldName,
             }
         }
         if ($valueMode == 'value') {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['value'])."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='".htmlPrep($rowSelect['value'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
         } else {
-            $return .= "<option $selected value='".htmlPrep($rowSelect['gibbonScaleGradeID'])."'>".htmlPrep(__($guid, $rowSelect['value'])).'</option>';
+            $return .= "<option $selected value='".htmlPrep($rowSelect['gibbonScaleGradeID'])."'>".htmlPrep(__($rowSelect['value'])).'</option>';
         }
     }
     $return .= '</select>';
@@ -206,12 +206,12 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
             $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
             if (isset($_SESSION[$guid]['messageWallCount']) == false) {
-                $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                $return .= " . <a class='inactive' title='".__('Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
             } else {
                 if ($_SESSION[$guid]['messageWallCount'] < 1) {
-                    $return .= " . <a class='inactive' title='".__($guid, 'Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= " . <a class='inactive' title='".__('Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                 } else {
-                    $return .= " . <a title='".__($guid, 'Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= " . <a title='".__('Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
                         $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
@@ -231,7 +231,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                         $return .= "<div id='messageBubbleArrow' style=\"left: 1058px; top: 162px; z-index: 9999\" class='arrow top'></div>";
                         $return .= "<div id='messageBubble' style=\"left: ".$bubbleLeft.'px; top: 178px; width: '.$bubbleWidth.'px; min-width: '.$bubbleWidth.'px; max-width: '.$bubbleWidth.'px; min-height: 100px; text-align: center; padding-bottom: 10px" class="ui-tooltip ui-widget ui-corner-all ui-widget-content" role="tooltip">';
                         $return .= '<div class="ui-tooltip-content">';
-                        $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__($guid, 'New Messages').'</div>';
+                        $return .= "<div style='font-weight: bold; font-style: italic; font-size: 120%; margin-top: 10px; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px dotted rgba(255,255,255,0.5); display: block'>".__('New Messages').'</div>';
                         $test = count($output);
                         if ($test > 3) {
                             $test = 3;
@@ -248,12 +248,12 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                             $return .= '<i>'.$output[$i]['author'].'</i><br/><br/>';
                         }
                         if (count($output) > 3) {
-                            $return .= '<i>'.__($guid, 'Plus more').'...</i>';
+                            $return .= '<i>'.__('Plus more').'...</i>';
                         }
                         $return .= '</div>';
                         $return .= "<div style='text-align: right; margin-top: 20px; color: #666'>";
-                        $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__($guid, 'Read All').'</a> . ';
-                        $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__($guid, 'Dismiss').'</a>';
+                        $return .= "<a onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1)' style='text-decoration: none; color: #666' href='".$URL."'>".__('Read All').'</a> . ';
+                        $return .= "<a style='text-decoration: none; color: #666' onclick='$(\"#messageBubble\").hide(\"fade\", {}, 1000); $(\"#messageBubbleArrow\").hide(\"fade\", {}, 1000)' href='#'>".__('Dismiss').'</a>';
                         $return .= '</div>';
                         $return .= '</div>';
 
@@ -303,9 +303,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
         //Show likes
         if (isset($_SESSION[$guid]['likesCount'])) {
             if ($_SESSION[$guid]['likesCount'] > 0) {
-                $return .= " . <a title='".__($guid, 'Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
+                $return .= " . <a title='".__('Likes')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=likes.php'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
             } else {
-                $return .= " . <a class='inactive' title='".__($guid, 'Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
+                $return .= " . <a class='inactive' title='".__('Likes')."' href='#'>".$_SESSION[$guid]['likesCount']." x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_large.png'></a>";
             }
         }
         $return .= "</div>";
@@ -359,9 +359,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                 }
             }
         if ($resultNotifications->rowCount() > 0) {
-            $return .= "<a title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         } else {
-            $return .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a class='inactive' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         }
         $return .= '</div>';
     }
@@ -376,7 +376,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
 
     if (isset($_SESSION[$guid]['username']) == false) {
         if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= __($guid, 'Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
+            $return .= __('Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
     } else {
         $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
@@ -389,15 +389,15 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             }
         }
         $return .= $name.' . ';
-        $return .= "<a href='./logout.php'>".__($guid, 'Logout')."</a> . <a href='./index.php?q=preferences.php'>".__($guid, 'Preferences').'</a>';
+        $return .= "<a href='./logout.php'>".__('Logout')."</a> . <a href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__($guid, 'Email').'</a>';
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a>';
         }
         if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Website').'</a>';
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
         if ($_SESSION[$guid]['website'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__($guid, 'My Website').'</a>';
+            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a>';
         }
 
         //Check for house logo (needed to get bubble, below, in right spot)
@@ -428,37 +428,37 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         $planner .= "<div class='error'>".$e->getMessage().'</div>';
     }
     $planner .= '<h2>';
-    $planner .= __($guid, "Today's Lessons");
+    $planner .= __("Today's Lessons");
     $planner .= '</h2>';
     if ($result->rowCount() < 1) {
         $planner .= "<div class='warning'>";
-        $planner .= __($guid, 'There are no records to display.');
+        $planner .= __('There are no records to display.');
         $planner .= '</div>';
     } else {
         $planner .= "<div class='linkTop'>";
-        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
+        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
         $planner .= '</div>';
 
         $planner .= "<table cellspacing='0' style='width: 100%'>";
         $planner .= "<tr class='head'>";
         $planner .= '<th>';
-        $planner .= __($guid, 'Class').'<br/>';
+        $planner .= __('Class').'<br/>';
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Lesson').'</br>';
-        $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+        $planner .= __('Lesson').'</br>';
+        $planner .= "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Homework');
+        $planner .= __('Homework');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Summary');
+        $planner .= __('Summary');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Like');
+        $planner .= __('Like');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Action');
+        $planner .= __('Action');
         $planner .= '</th>';
         $planner .= '</tr>';
 
@@ -491,26 +491,26 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                 if (isset($unit[0])) {
                     $planner .= $unit[0];
                     if ($unit[1] != '') {
-                        $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                        $planner .= '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                     }
                 }
                 $planner .= '</div>';
                 $planner .= '</td>';
                 $planner .= '<td>';
                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                    $planner .= __($guid, 'No');
+                    $planner .= __('No');
                 } else {
                     if ($row['homework'] == 'Y') {
-                        $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                        $planner .= __('Yes').': '.__('Teacher Recorded').'<br/>';
                         if ($row['homeworkSubmission'] == 'Y') {
-                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                             if ($row['homeworkCrowdAssess'] == 'Y') {
-                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                             }
                         }
                     }
                     if ($row['myHomeworkDueDateTime'] != '') {
-                        $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                        $planner .= __('Yes').': '.__('Student Recorded').'</br>';
                     }
                 }
                 $planner .= '</td>';
@@ -530,7 +530,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 $planner .= '</td>';
                 $planner .= '<td>';
-                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                 $planner .= '</td>';
                 $planner .= '</tr>';
             }
@@ -549,9 +549,9 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
 			});
         </script>   ';
 
-        $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
+        $timetable .= '<h2>'.__('My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
-        $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
+        $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
         $timetable .= '</div>';
     }
 
@@ -577,9 +577,9 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         //Roll group table
         $rollGroups[$count][2] = "<div class='linkTop' style='margin-top: 0px'>";
         if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
-            $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__($guid, 'Take Attendance')."<img style='margin-left: 5px' title='".__($guid, 'Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> | ";
+            $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Take Attendance')."<img style='margin-left: 5px' title='".__('Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> | ";
         }
-        $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/indexExport.php?gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__($guid, 'Export to Excel')."<img style='margin-left: 5px' title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+        $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/indexExport.php?gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
         $rollGroups[$count][2] .= '</div>';
         $rollGroups[$count][2] .= getRollGroupTable($guid, $rowRollGroups['gibbonRollGroupID'], 5, $connection2);
 
@@ -602,38 +602,38 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
 
             if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php')) {
                 $rollGroups[$count][3] .= "<div class='linkTop'>";
-                $rollGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>".__($guid, 'Add')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                $rollGroups[$count][3] .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage_add.php&gibbonPersonID=&gibbonRollGroupID=&gibbonYearGroupID=&type='>".__('Add')."<img style='margin: 0 0 -4px 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                 $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
                 if ($policyLink != '') {
-                    $rollGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__($guid, 'View Behaviour Policy').'</a>';
+                    $rollGroups[$count][3] .= " | <a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
                 }
                 $rollGroups[$count][3] .= '</div>';
             }
 
             if ($resultBehaviour->rowCount() < 1) {
                 $rollGroups[$count][3] .= "<div class='error'>";
-                $rollGroups[$count][3] .= __($guid, 'There are no records to display.');
+                $rollGroups[$count][3] .= __('There are no records to display.');
                 $rollGroups[$count][3] .= '</div>';
             } else {
                 $rollGroups[$count][3] .= "<table cellspacing='0' style='width: 100%'>";
                 $rollGroups[$count][3] .= "<tr class='head'>";
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Student & Date');
+                $rollGroups[$count][3] .= __('Student & Date');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Type');
+                $rollGroups[$count][3] .= __('Type');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Descriptor');
+                $rollGroups[$count][3] .= __('Descriptor');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Level');
+                $rollGroups[$count][3] .= __('Level');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Teacher');
+                $rollGroups[$count][3] .= __('Teacher');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '<th>';
-                $rollGroups[$count][3] .= __($guid, 'Action');
+                $rollGroups[$count][3] .= __('Action');
                 $rollGroups[$count][3] .= '</th>';
                 $rollGroups[$count][3] .= '</tr>';
 
@@ -652,17 +652,17 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                     $rollGroups[$count][3] .= '<td>';
                     $rollGroups[$count][3] .= '<b>'.formatName('', $rowBehaviour['preferredNameStudent'], $rowBehaviour['surnameStudent'], 'Student', false).'</b><br/>';
                     if (substr($rowBehaviour['timestamp'], 0, 10) > $rowBehaviour['date']) {
-                        $rollGroups[$count][3] .= __($guid, 'Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
-                        $rollGroups[$count][3] .= __($guid, 'Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
+                        $rollGroups[$count][3] .= __('Date Updated').': '.dateConvertBack($guid, substr($rowBehaviour['timestamp'], 0, 10)).'<br/>';
+                        $rollGroups[$count][3] .= __('Incident Date').': '.dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
                     } else {
                         $rollGroups[$count][3] .= dateConvertBack($guid, $rowBehaviour['date']).'<br/>';
                     }
                     $rollGroups[$count][3] .= '</td>';
                     $rollGroups[$count][3] .= "<td style='text-align: center'>";
                     if ($rowBehaviour['type'] == 'Negative') {
-                        $rollGroups[$count][3] .= "<img title='".__($guid, 'Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                        $rollGroups[$count][3] .= "<img title='".__('Negative')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                     } elseif ($rowBehaviour['type'] == 'Positive') {
-                        $rollGroups[$count][3] .= "<img title='".__($guid, 'Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                        $rollGroups[$count][3] .= "<img title='".__('Positive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                     }
                     $rollGroups[$count][3] .= '</td>';
                     $rollGroups[$count][3] .= '<td>';
@@ -685,7 +685,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                     $rollGroups[$count][3] .= '});';
                     $rollGroups[$count][3] .= '</script>';
                     if ($rowBehaviour['comment'] != '') {
-                        $rollGroups[$count][3] .= "<a title='".__($guid, 'View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                        $rollGroups[$count][3] .= "<a title='".__('View Description')."' class='show_hide-$count2' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                     }
                     $rollGroups[$count][3] .= '</td>';
                     $rollGroups[$count][3] .= '</tr>';
@@ -746,7 +746,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
 
     if ($planner == false and $timetable == false and count($hooks) < 1) {
         $return .= "<div class='warning'>";
-        $return .= __($guid, 'There are no records to display.');
+        $return .= __('There are no records to display.');
         $return .= '</div>';
     } else {
         $staffDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab');
@@ -756,7 +756,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= '<ul>';
         $tabCount = 1;
         if ($planner != false or $timetable != false) {
-            $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, 'Planner').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCount."'>".__('Planner').'</a></li>';
             if ($staffDashboardDefaultTab == 'Planner')
                 $staffDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
@@ -766,14 +766,14 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
                 $return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].'</a></li>';
                 ++$tabCount;
                 if ($behaviourView) {
-                    $return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].' '.__($guid, 'Behaviour').'</a></li>';
+                    $return .= "<li><a href='#tabs".$tabCount."'>".$rollGroup[1].' '.__('Behaviour').'</a></li>';
                     ++$tabCount;
                 }
             }
         }
 
         foreach ($hooks as $hook) {
-            $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, $hook['name']).'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCount."'>".__($hook['name']).'</a></li>';
             if ($staffDashboardDefaultTab == $hook['name'])
                 $staffDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
@@ -808,7 +808,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
             $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
             if (!file_exists($include)) {
                 $return .= "<div class='error'>";
-                $return .= __($guid, 'The selected page cannot be displayed due to a hook error.');
+                $return .= __('The selected page cannot be displayed due to a hook error.');
                 $return .= '</div>';
             } else {
                 $return .= include $include;
@@ -859,37 +859,37 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         $planner .= "<div class='error'>".$e->getMessage().'</div>';
     }
     $planner .= '<h2>';
-    $planner .= __($guid, "Today's Lessons");
+    $planner .= __("Today's Lessons");
     $planner .= '</h2>';
     if ($result->rowCount() < 1) {
         $planner .= "<div class='warning'>";
-        $planner .= __($guid, 'There are no records to display.');
+        $planner .= __('There are no records to display.');
         $planner .= '</div>';
     } else {
         $planner .= "<div class='linkTop'>";
-        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__($guid, 'View Planner').'</a>';
+        $planner .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".__('View Planner').'</a>';
         $planner .= '</div>';
 
         $planner .= "<table cellspacing='0' style='width: 100%'>";
         $planner .= "<tr class='head'>";
         $planner .= '<th>';
-        $planner .= __($guid, 'Class').'<br/>';
+        $planner .= __('Class').'<br/>';
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Lesson').'</br>';
-        $planner .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+        $planner .= __('Lesson').'</br>';
+        $planner .= "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Homework');
+        $planner .= __('Homework');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Summary');
+        $planner .= __('Summary');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Like');
+        $planner .= __('Like');
         $planner .= '</th>';
         $planner .= '<th>';
-        $planner .= __($guid, 'Action');
+        $planner .= __('Action');
         $planner .= '</th>';
         $planner .= '</tr>';
 
@@ -922,26 +922,26 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                 if (isset($unit[0])) {
                     $planner .= $unit[0];
                     if ($unit[1] != '') {
-                        $planner .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                        $planner .= '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                     }
                 }
                 $planner .= '</div>';
                 $planner .= '</td>';
                 $planner .= '<td>';
                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                    $planner .= __($guid, 'No');
+                    $planner .= __('No');
                 } else {
                     if ($row['homework'] == 'Y') {
-                        $planner .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                        $planner .= __('Yes').': '.__('Teacher Recorded').'<br/>';
                         if ($row['homeworkSubmission'] == 'Y') {
-                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                            $planner .= "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                             if ($row['homeworkCrowdAssess'] == 'Y') {
-                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                $planner .= "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                             }
                         }
                     }
                     if ($row['myHomeworkDueDateTime'] != '') {
-                        $planner .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                        $planner .= __('Yes').': '.__('Student Recorded').'</br>';
                     }
                 }
                 $planner .= '</td>';
@@ -961,7 +961,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 $planner .= '</td>';
                 $planner .= '<td>';
-                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+                $planner .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                 $planner .= '</td>';
                 $planner .= '</tr>';
             }
@@ -980,9 +980,9 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
 			});
         </script>';
         
-        $timetable .= '<h2>'.__($guid, 'My Timetable').'</h2>';
+        $timetable .= '<h2>'.__('My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
-        $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__($guid, 'Loading').'</p>';
+        $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
         $timetable .= '</div>';
     }
 
@@ -1020,7 +1020,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
 
     if ($planner == false and $timetable == false and count($hooks) < 1) {
         $return .= "<div class='warning'>";
-        $return .= __($guid, 'There are no records to display.');
+        $return .= __('There are no records to display.');
         $return .= '</div>';
     } else {
         $studentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab');
@@ -1030,13 +1030,13 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= '<ul>';
         $tabCount = 1;
         if ($planner != false or $timetable != false) {
-            $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, 'Planner').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCount."'>".__('Planner').'</a></li>';
             if ($studentDashboardDefaultTab == 'Planner')
                 $studentDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
         }
         foreach ($hooks as $hook) {
-            $return .= "<li><a href='#tabs".$tabCount."'>".__($guid, $hook['name']).'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCount."'>".__($hook['name']).'</a></li>';
             if ($studentDashboardDefaultTab == $hook['name'])
                 $studentDashboardDefaultTabCount = $tabCount;
             ++$tabCount;
@@ -1056,7 +1056,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
             $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
             if (!file_exists($include)) {
                 $return .= "<div class='error'>";
-                $return .= __($guid, 'The selected page cannot be displayed due to a hook error.');
+                $return .= __('The selected page cannot be displayed due to a hook error.');
                 $return .= '</div>';
             } else {
                 $return .= include $include;
@@ -1097,7 +1097,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $entryCount = 0;
 
     //PREPARE PLANNER SUMMARY
-    $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__($guid, 'Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&search='.$gibbonPersonID."'>".__($guid, 'View Planner').'</a></span>';
+    $plannerOutput = "<span style='font-size: 85%; font-weight: bold'>".__('Today\'s Classes')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&search='.$gibbonPersonID."'>".__('View Planner').'</a></span>';
 
     $classes = false;
     $date = date('Y-m-d');
@@ -1115,20 +1115,20 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $plannerOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
             $plannerOutput .= "<tr class='head'>";
             $plannerOutput .= '<th>';
-            $plannerOutput .= __($guid, 'Class').'<br/>';
+            $plannerOutput .= __('Class').'<br/>';
             $plannerOutput .= '</th>';
             $plannerOutput .= '<th>';
-            $plannerOutput .= __($guid, 'Lesson').'<br/>';
-            $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__($guid, 'Summary').'</span>';
+            $plannerOutput .= __('Lesson').'<br/>';
+            $plannerOutput .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'>".__('Summary').'</span>';
             $plannerOutput .= '</th>';
             $plannerOutput .= '<th>';
-            $plannerOutput .= __($guid, 'Homework');
+            $plannerOutput .= __('Homework');
             $plannerOutput .= '</th>';
             $plannerOutput .= '<th>';
-            $plannerOutput .= __($guid, 'Like');
+            $plannerOutput .= __('Like');
             $plannerOutput .= '</th>';
             $plannerOutput .= '<th>';
-            $plannerOutput .= __($guid, 'Action');
+            $plannerOutput .= __('Action');
             $plannerOutput .= '</th>';
             $plannerOutput .= '</tr>';
 
@@ -1158,7 +1158,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 if (isset($unit[0])) {
                     $plannerOutput .= $unit[0];
                     if ($unit[1] != '') {
-                        $plannerOutput .= '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i><br/>';
+                        $plannerOutput .= '<br/><i>'.$unit[1].' '.__('Unit').'</i><br/>';
                     }
                 }
                 $plannerOutput .= "<div style='font-size: 85%; font-weight: normal; font-style: italic'>";
@@ -1167,19 +1167,19 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 $plannerOutput .= '</td>';
                 $plannerOutput .= '<td>';
                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                    $plannerOutput .= __($guid, 'No');
+                    $plannerOutput .= __('No');
                 } else {
                     if ($row['homework'] == 'Y') {
-                        $plannerOutput .= __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                        $plannerOutput .= __('Yes').': '.__('Teacher Recorded').'<br/>';
                         if ($row['homeworkSubmission'] == 'Y') {
-                            $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                            $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                             if ($row['homeworkCrowdAssess'] == 'Y') {
-                                $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                $plannerOutput .= "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                             }
                         }
                     }
                     if ($row['myHomeworkDueDateTime'] != '') {
-                        $plannerOutput .= __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                        $plannerOutput .= __('Yes').': '.__('Student Recorded').'</br>';
                     }
                 }
                 $plannerOutput .= '</td>';
@@ -1192,7 +1192,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 $plannerOutput .= '</td>';
                 $plannerOutput .= '<td>';
-                $plannerOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&viewBy=date&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&date=$date&width=1000&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                $plannerOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&viewBy=date&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&date=$date&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                 $plannerOutput .= '</td>';
                 $plannerOutput .= '</tr>';
             }
@@ -1201,12 +1201,12 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     }
     if ($classes == false) {
         $plannerOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $plannerOutput .= __($guid, 'There are no records to display.');
+        $plannerOutput .= __('There are no records to display.');
         $plannerOutput .= '</div>';
     }
 
     //PREPARE RECENT GRADES
-    $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__($guid, 'View Markbook').'</a></span></div>';
+    $gradesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Recent Feedback')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&search='.$gibbonPersonID."'>".__('View Markbook').'</a></span></div>';
     $grades = false;
 
     //Get settings
@@ -1233,18 +1233,18 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $gradesOutput .= "<table cellspacing='0' style='margin: 3px 0px; width: 100%'>";
         $gradesOutput .= "<tr class='head'>";
         $gradesOutput .= "<th style='width: 120px'>";
-        $gradesOutput .= __($guid, 'Assessment');
+        $gradesOutput .= __('Assessment');
         $gradesOutput .= '</th>';
         if ($enableModifiedAssessment == 'Y') {
             $gradesOutput .= "<th style='width: 75px'>";
-            $gradesOutput .= __($guid, 'Modified');
+            $gradesOutput .= __('Modified');
             $gradesOutput .= '</th>';
         }
         $gradesOutput .= "<th style='width: 75px'>";
         if ($attainmentAlternativeName != '') {
             $gradesOutput .= $attainmentAlternativeName;
         } else {
-            $gradesOutput .= __($guid, 'Attainment');
+            $gradesOutput .= __('Attainment');
         }
         $gradesOutput .= '</th>';
         if ($enableEffort == 'Y') {
@@ -1252,15 +1252,15 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             if ($effortAlternativeName != '') {
                 $gradesOutput .= $effortAlternativeName;
             } else {
-                $gradesOutput .= __($guid, 'Effort');
+                $gradesOutput .= __('Effort');
             }
         }
         $gradesOutput .= '</th>';
         $gradesOutput .= '<th>';
-        $gradesOutput .= __($guid, 'Comment');
+        $gradesOutput .= __('Comment');
         $gradesOutput .= '</th>';
         $gradesOutput .= "<th style='width: 75px'>";
-        $gradesOutput .= __($guid, 'Submission');
+        $gradesOutput .= __('Submission');
         $gradesOutput .= '</th>';
         $gradesOutput .= '</tr>';
 
@@ -1279,7 +1279,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $gradesOutput .= '<td>';
             $gradesOutput .= "<span title='".htmlPrep($rowEntry['description'])."'>".$rowEntry['name'].'</span><br/>';
             $gradesOutput .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-            $gradesOutput .= __($guid, 'Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
+            $gradesOutput .= __('Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
             $gradesOutput .= '</span>';
             $gradesOutput .= '</td>';
             if ($enableModifiedAssessment == 'Y') {
@@ -1290,13 +1290,13 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 else {
                     $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                    $gradesOutput .= __($guid, 'N/A');
+                    $gradesOutput .= __('N/A');
                     $gradesOutput .= '</td>';
                 }
             }
             if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                 $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                $gradesOutput .= __($guid, 'N/A');
+                $gradesOutput .= __('N/A');
                 $gradesOutput .= '</td>';
             } else {
                 $gradesOutput .= "<td style='text-align: center'>";
@@ -1310,7 +1310,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 if ($resultAttainment->rowCount() == 1) {
                     $rowAttainment = $resultAttainment->fetch();
-                    $attainmentExtra = '<br/>'.__($guid, $rowAttainment['usage']);
+                    $attainmentExtra = '<br/>'.__($rowAttainment['usage']);
                 }
                 $styleAttainment = "style='font-weight: bold'";
                 if ($rowEntry['attainmentConcern'] == 'Y' and $showParentAttainmentWarning == 'Y') {
@@ -1324,14 +1324,14 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 $gradesOutput .= '</div>';
                 if ($rowEntry['attainmentValue'] != '') {
-                    $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
+                    $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($rowEntry['attainmentDescriptor'])).'</b>'.__($attainmentExtra).'</div>';
                 }
                 $gradesOutput .= '</td>';
             }
             if ($enableEffort == 'Y') {
                 if ($rowEntry['effort'] == 'N' or ($rowEntry['gibbonScaleIDEffort'] == '' and $rowEntry['gibbonRubricIDEffort'] == '')) {
                     $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                    $gradesOutput .= __($guid, 'N/A');
+                    $gradesOutput .= __('N/A');
                     $gradesOutput .= '</td>';
                 } else {
                     $gradesOutput .= "<td style='text-align: center'>";
@@ -1345,7 +1345,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     if ($resultEffort->rowCount() == 1) {
                         $rowEffort = $resultEffort->fetch();
-                        $effortExtra = '<br/>'.__($guid, $rowEffort['usage']);
+                        $effortExtra = '<br/>'.__($rowEffort['usage']);
                     }
                     $styleEffort = "style='font-weight: bold'";
                     if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
@@ -1357,14 +1357,14 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                     }
                     $gradesOutput .= '</div>';
                     if ($rowEntry['effortValue'] != '') {
-                        $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['effortDescriptor'])).'</b>'.__($guid, $effortExtra).'</div>';
+                        $gradesOutput .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($rowEntry['effortDescriptor'])).'</b>'.__($effortExtra).'</div>';
                     }
                     $gradesOutput .= '</td>';
                 }
             }
             if ($rowEntry['commentOn'] == 'N' and $rowEntry['uploadedResponseOn'] == 'N') {
                 $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: left'>";
-                $gradesOutput .= __($guid, 'N/A');
+                $gradesOutput .= __('N/A');
                 $gradesOutput .= '</td>';
             } else {
                 $gradesOutput .= '<td>';
@@ -1380,20 +1380,20 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $gradesOutput .= '});';
                         $gradesOutput .= '</script>';
                         $gradesOutput .= '<span>'.mb_substr($rowEntry['comment'], 0, 50).'...<br/>';
-                        $gradesOutput .= "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>".__($guid, 'Read more').'</a></span><br/>';
+                        $gradesOutput .= "<a title='".__('View Description')."' class='show_hide-$entryCount-$gibbonPersonID' onclick='return false;' href='#'>".__('Read more').'</a></span><br/>';
                     } else {
                         $gradesOutput .= nl2br($rowEntry['comment']);
                     }
                     $gradesOutput .= '<br/>';
                 }
                 if ($rowEntry['response'] != '') {
-                    $gradesOutput .= "<a title='".__($guid, 'Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__($guid, 'Uploaded Response').'</a><br/>';
+                    $gradesOutput .= "<a title='".__('Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>".__('Uploaded Response').'</a><br/>';
                 }
                 $gradesOutput .= '</td>';
             }
             if ($rowEntry['gibbonPlannerEntryID'] == 0) {
                 $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: left'>";
-                $gradesOutput .= __($guid, 'N/A');
+                $gradesOutput .= __('N/A');
                 $gradesOutput .= '</td>';
             } else {
                 try {
@@ -1406,7 +1406,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                 }
                 if ($resultSub->rowCount() != 1) {
                     $gradesOutput .= "<td class='dull' style='color: #bbb; text-align: left'>";
-                    $gradesOutput .= __($guid, 'N/A');
+                    $gradesOutput .= __('N/A');
                     $gradesOutput .= '</td>';
                 } else {
                     $gradesOutput .= '<td>';
@@ -1424,40 +1424,40 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                         $rowWork = $resultWork->fetch();
 
                         if ($rowWork['status'] == 'Exemption') {
-                            $linkText = __($guid, 'Exemption');
+                            $linkText = __('Exemption');
                         } elseif ($rowWork['version'] == 'Final') {
-                            $linkText = __($guid, 'Final');
+                            $linkText = __('Final');
                         } else {
-                            $linkText = __($guid, 'Draft').' '.$rowWork['count'];
+                            $linkText = __('Draft').' '.$rowWork['count'];
                         }
 
                         $style = '';
                         $status = 'On Time';
                         if ($rowWork['status'] == 'Exemption') {
-                            $status = __($guid, 'Exemption');
+                            $status = __('Exemption');
                         } elseif ($rowWork['status'] == 'Late') {
                             $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                            $status = __($guid, 'Late');
+                            $status = __('Late');
                         }
 
                         if ($rowWork['type'] == 'File') {
-                            $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                            $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
                         } elseif ($rowWork['type'] == 'Link') {
-                            $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                            $gradesOutput .= "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                         } else {
-                            $gradesOutput .= "<span title='$status. ".sprintf(__($guid, 'Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
+                            $gradesOutput .= "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
                         }
                     } else {
                         if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
-                            $gradesOutput .= "<span title='Pending'>".__($guid, 'Pending').'</span>';
+                            $gradesOutput .= "<span title='Pending'>".__('Pending').'</span>';
                         } else {
                             if ($row['dateStart'] > $rowSub['date']) {
-                                $gradesOutput .= "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
+                                $gradesOutput .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                             } else {
                                 if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
-                                    $gradesOutput .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__($guid, 'Incomplete').'</div>';
+                                    $gradesOutput .= "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                 } else {
-                                    $gradesOutput .= __($guid, 'Not submitted online');
+                                    $gradesOutput .= __('Not submitted online');
                                 }
                             }
                         }
@@ -1480,12 +1480,12 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     }
     if ($grades == false) {
         $gradesOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $gradesOutput .= __($guid, 'There are no records to display.');
+        $gradesOutput .= __('There are no records to display.');
         $gradesOutput .= '</div>';
     }
 
     //PREPARE UPCOMING DEADLINES
-    $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__($guid, 'Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__($guid, 'View All Deadlines').'</a></span></div>';
+    $deadlinesOutput = "<div style='margin-top: 20px'><span style='font-size: 85%; font-weight: bold'>".__('Upcoming Deadlines')."</span> . <span style='font-size: 70%'><a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&search='.$gibbonPersonID."'>".__('View All Deadlines').'</a></span></div>';
     $deadlines = false;
 
     try {
@@ -1514,7 +1514,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             }
             $deadlinesOutput .= "<li $style>";
             $deadlinesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&search='.$gibbonPersonID.'&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=date&date=$date&width=1000&height=550'>".$row['course'].'.'.$row['class'].'</a> ';
-            $deadlinesOutput .= "<span style='font-style: italic'>".sprintf(__($guid, 'Due at %1$s on %2$s'), substr($row['homeworkDueDateTime'], 11, 5), dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10)));
+            $deadlinesOutput .= "<span style='font-style: italic'>".sprintf(__('Due at %1$s on %2$s'), substr($row['homeworkDueDateTime'], 11, 5), dateConvertBack($guid, substr($row['homeworkDueDateTime'], 0, 10)));
             $deadlinesOutput .= '</li>';
         }
         $deadlinesOutput .= '</ol>';
@@ -1522,7 +1522,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
 
     if ($deadlines == false) {
         $deadlinesOutput .= "<div style='margin-top: 2px' class='warning'>";
-        $deadlinesOutput .= __($guid, 'There are no records to display.');
+        $deadlinesOutput .= __('There are no records to display.');
         $deadlinesOutput .= '</div>';
     }
 
@@ -1550,13 +1550,13 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
     $activitiesOutput = false;
     if (!(isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php'))) {
         $activitiesOutput .= "<div class='error'>";
-        $activitiesOutput .= __($guid, 'Your request failed because you do not have access to this action.');
+        $activitiesOutput .= __('Your request failed because you do not have access to this action.');
         $activitiesOutput .= '</div>';
     } else {
         $activities = true;
 
         $activitiesOutput .= "<div class='linkTop'>";
-        $activitiesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=".$gibbonPersonID."'>".__($guid, 'View Available Activities').'</a>';
+        $activitiesOutput .= "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=".$gibbonPersonID."'>".__('View Available Activities').'</a>';
         $activitiesOutput .= '</div>';
 
         $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
@@ -1574,7 +1574,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
 
         if ($resultYears->rowCount() < 1) {
             $activitiesOutput .= "<div class='error'>";
-            $activitiesOutput .= __($guid, 'There are no records to display.');
+            $activitiesOutput .= __('There are no records to display.');
             $activitiesOutput .= '</div>';
         } else {
             $yearCount = 0;
@@ -1591,32 +1591,32 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
 
                 if ($result->rowCount() < 1) {
                     $activitiesOutput .= "<div class='error'>";
-                    $activitiesOutput .= __($guid, 'There are no records to display.');
+                    $activitiesOutput .= __('There are no records to display.');
                     $activitiesOutput .= '</div>';
                 } else {
                     $activitiesOutput .= "<table cellspacing='0' style='width: 100%'>";
                     $activitiesOutput .= "<tr class='head'>";
                     $activitiesOutput .= '<th>';
-                    $activitiesOutput .= __($guid, 'Activity');
+                    $activitiesOutput .= __('Activity');
                     $activitiesOutput .= '</th>';
                     $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
                     if ($options != '') {
                         $activitiesOutput .= '<th>';
-                        $activitiesOutput .= __($guid, 'Type');
+                        $activitiesOutput .= __('Type');
                         $activitiesOutput .= '</th>';
                     }
                     $activitiesOutput .= '<th>';
                     if ($dateType != 'Date') {
-                        $activitiesOutput .= __($guid, 'Term');
+                        $activitiesOutput .= __('Term');
                     } else {
-                        $activitiesOutput .= __($guid, 'Dates');
+                        $activitiesOutput .= __('Dates');
                     }
                     $activitiesOutput .= '</th>';
                     $activitiesOutput .= '<th>';
-                    $activitiesOutput .= __($guid, 'Slots');
+                    $activitiesOutput .= __('Slots');
                     $activitiesOutput .= '</th>';
                     $activitiesOutput .= '<th>';
-                    $activitiesOutput .= __($guid, 'Status');
+                    $activitiesOutput .= __('Status');
                     $activitiesOutput .= '</th>';
                     $activitiesOutput .= '</tr>';
 
@@ -1674,23 +1674,23 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
                             $count = 0;
                             while ($rowSlots = $resultSlots->fetch()) {
                                 $activitiesOutput .= '<b>'.$rowSlots['dayOfWeek'].'</b><br/>';
-                                $activitiesOutput .= '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
+                                $activitiesOutput .= '<i>'.__('Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                                 if ($rowSlots['gibbonSpaceID'] != '') {
-                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['facility'];
+                                    $activitiesOutput .= '<i>'.__('Location').'</i>: '.$rowSlots['facility'];
                                 } else {
-                                    $activitiesOutput .= '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
+                                    $activitiesOutput .= '<i>'.__('Location').'</i>: '.$rowSlots['locationExternal'];
                                 }
                                 ++$count;
                             }
                             if ($count == 0) {
-                                $activitiesOutput .= '<i>'.__($guid, 'None').'</i>';
+                                $activitiesOutput .= '<i>'.__('None').'</i>';
                             }
                         $activitiesOutput .= '</td>';
                         $activitiesOutput .= '<td>';
                         if ($row['status'] != '') {
                             $activitiesOutput .= $row['status'];
                         } else {
-                            $activitiesOutput .= '<i>'.__($guid, 'NA').'</i>';
+                            $activitiesOutput .= '<i>'.__('NA').'</i>';
                         }
                         $activitiesOutput .= '</td>';
                         $activitiesOutput .= '</tr>';
@@ -1735,7 +1735,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
 
     if ($classes == false and $grades == false and $deadlines == false and $timetable == false and $activities == false and count($hooks) < 1) {
         $return .= "<div class='warning'>";
-        $return .= __($guid, 'There are no records to display.');
+        $return .= __('There are no records to display.');
         $return .= '</div>';
     } else {
         $parentDashboardDefaultTab = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab');
@@ -1745,19 +1745,19 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $return .= '<ul>';
         $tabCountExtraReset = 0;
         if ($classes != false or $grades != false or $deadlines != false) {
-            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Learning').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Learning').'</a></li>';
             $tabCountExtraReset++;
             if ($parentDashboardDefaultTab == 'Planner')
                 $parentDashboardDefaultTabCount = $tabCountExtraReset;
         }
         if ($timetable != false) {
-            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Timetable').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Timetable').'</a></li>';
             $tabCountExtraReset++;
             if ($parentDashboardDefaultTab == 'Timetable')
                 $parentDashboardDefaultTabCount = $tabCountExtraReset;
         }
         if ($activities != false) {
-            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__($guid, 'Activities').'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtraReset."'>".__('Activities').'</a></li>';
             $tabCountExtraReset++;
             if ($parentDashboardDefaultTab == 'Activities')
                 $parentDashboardDefaultTabCount = $tabCountExtraReset;
@@ -1765,7 +1765,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
         $tabCountExtra = $tabCountExtraReset;
         foreach ($hooks as $hook) {
             ++$tabCountExtra;
-            $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($guid, $hook['name']).'</a></li>';
+            $return .= "<li><a href='#tabs".$tabCountExtra."'>".__($hook['name']).'</a></li>';
         }
         $return .= '</ul>';
 
@@ -1799,7 +1799,7 @@ function getParentDashboardContents($connection2, $guid, $gibbonPersonID)
             $include = $_SESSION[$guid]['absolutePath'].'/modules/'.$hook['sourceModuleName'].'/'.$hook['sourceModuleInclude'];
             if (!file_exists($include)) {
                 $return .= "<div class='error'>";
-                $return .= __($guid, 'The selected page cannot be displayed due to a hook error.');
+                $return .= __('The selected page cannot be displayed due to a hook error.');
                 $return .= '</div>';
             } else {
                 $return .= include $include;
@@ -1924,64 +1924,64 @@ function getSmartWorkflowHelp($connection2, $guid, $step = '')
         if ($row['smartWorkflowHelp'] == 'Y') {
             $output = "<div id='smartWorkflowHelp' class='message' style='padding-top: 14px'>";
             $output .= "<div style='padding: 0 7px'>";
-            $output .= "<span style='font-size: 175%'><i><b>".__($guid, 'Smart Workflow').'</b></i> '.__($guid, 'Getting Started').'</span><br/>';
-            $output .= __($guid, "Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.").'<br/>';
+            $output .= "<span style='font-size: 175%'><i><b>".__('Smart Workflow').'</b></i> '.__('Getting Started').'</span><br/>';
+            $output .= __("Designed and built by teachers, Gibbon's Smart Workflow takes care of the boring stuff, so you can get on with teaching.").'<br/>';
             $output .= '</div>';
             $output .= "<table cellspacing='0' style='width: 100%; margin: 10px 0px; border-spacing: 4px;'>";
             $output .= '<tr>';
             if ($step == 1) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'One').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__($guid, 'Create %1$s Outcomes'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('One').'</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Create %1$s Outcomes'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'One').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/outcomes.php'>".sprintf(__($guid, 'Create %1$s Outcomes'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('One').'</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/outcomes.php'>".sprintf(__('Create %1$s Outcomes'), '<br/>').'</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 2) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Two').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__($guid, 'Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Two').'</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Two').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>".sprintf(__($guid, 'Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Two').'</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>".sprintf(__('Plan & Deploy %1$s Smart Units'), '<br/>').'</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 3) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Three').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__($guid, 'Share, Teach %1$s & Interact'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Three').'</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Share, Teach %1$s & Interact'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Three').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".sprintf(__($guid, 'Share, Teach %1$s & Interact'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Three').'</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>".sprintf(__('Share, Teach %1$s & Interact'), '<br/>').'</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 4) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Four<').'/span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__($guid, 'Assign & Collect %1$s Work'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four<').'/span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Assign & Collect %1$s Work'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Four').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".sprintf(__($guid, 'Assign & Collect %1$s Work'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four').'</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".sprintf(__('Assign & Collect %1$s Work'), '<br/>').'</span><br/></a>';
                 $output .= '</td>';
             }
             if ($step == 5) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Five').'</span><br/>';
-                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__($guid, 'Assess & Give %1$s Feedback'), '<br/>').'</span><br/></span>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Five').'</span><br/>';
+                $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Assess & Give %1$s Feedback'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__($guid, 'Five').'</span><br/>';
-                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php'>".sprintf(__($guid, 'Assess & Give %1$s Feedback'), '<br/>').'</span><br/></a>';
+                $output .= "<span style='font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Five').'</span><br/>';
+                $output .= "<span style='font-size: 140%; letter-spacing: 70%'><a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php'>".sprintf(__('Assess & Give %1$s Feedback'), '<br/>').'</span><br/></a>';
                 $output .= '</td>';
             }
             $output .= '</tr>';
@@ -1989,27 +1989,27 @@ function getSmartWorkflowHelp($connection2, $guid, $step = '')
                 $output .= '<tr>';
                 $output .= "<td style='text-align: justify; font-size: 125%; border-bottom: 2px solid #fff; background-color: rgba(255,255,255,0.25); padding: 15px 4px' colspan=5>";
                 if ($step == 1) {
-                    $output .= __($guid, '<b>Outcomes</b> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__($guid, '<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__($guid, 'Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= __('<b>Outcomes</b> provide a way to plan and track what is being taught in school, and so are a great place to get started.<br/><br/>Click on the "Add" button (below this message, on the right) to add a new outcome, which can either be school-wide, or attached to a particular department.').'<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
                 } elseif ($step == 2) {
-                    $output .= __($guid, '<b>Smart Units</b> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__($guid, '<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__($guid, 'Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= __('<b>Smart Units</b> support you in the design of course content, and can be quickly turned into individual lesson plans using intuitive drag and drop. Smart Units cut planning time dramatically, and support ongoing improvement and reuse of content.<br/><br/>Choose a course, using the dropdown menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit. Once your master unit is complete, deploy it to a class to create your lesson plans.').'<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to be in a department, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
                 } elseif ($step == 3) {
-                    $output .= sprintf(__($guid, '<b>Planner</b> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__($guid, '<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__($guid, 'Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Planner</b> supports online lesson plans which can be shared with students, parents and other teachers. Create your lesson by hand, or automatically via %1$sSmart Units%2$s. Lesson plans facilitate sharing of course content, homework assignment and submission, text chat, and attendance taking.<br/><br/>Choose a date or class, using the menu on the right, and then click on the "Add" button (below this message, on the right) to add a new unit.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units.php'>", '</a>').'<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
                 } elseif ($step == 4) {
-                    $output .= sprintf(__($guid, '<b>Homework + Deadlines</b> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__($guid, '<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__($guid, 'Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Homework + Deadlines</b> allows teachers and students to see upcoming deadlines, cleanly displayed in one place. Click on an entry to view the details for that piece of homework, and the lesson it is attached to.<br/><br/>Homework can be assigned using the %1$sPlanner%2$s, which also allows teachers to view all submitted work, and records late and incomplete work.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
                 } elseif ($step == 5) {
-                    $output .= sprintf(__($guid, '<b>Markbook</b> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
-                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__($guid, '<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__($guid, 'Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
+                    $output .= sprintf(__('<b>Markbook</b> provides an organised way to assess, record and report on student progress. Use grade scales, rubrics, comments and file uploads to keep students and parents up to date. Link markbooks to the %1$sPlanner%2$s, and see student work as you are marking it.<br/><br/>Choose a class from the menu on the right, and then click on the "Add" button (below this message, on the right) to create a new markbook column.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php'>", '</a>').'<br/>';
+                    $output .= "<div style='font-size: 75%; font-style: italic; margin-top: 10px'>".__('<b>Note</b>: You need to have classes assigned to you, with the correct permissions, in order to be able to do this.').' '.sprintf(__('Please contact %1$s for help.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>').'</div>';
                 }
                 $output .= '</td>';
                 $output .= '</tr>';
             }
             $output .= '</table>';
             $output .= "<div style='text-align: right; font-size: 90%; padding: 0 7px'>";
-            $output .= "<a title='".__($guid, 'Dismiss Smart Workflow Help')."' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"".$_SESSION[$guid]['absoluteURL']."/index_SmartWorkflowHelpAjax.php\"})' href='#'>".__($guid, 'Dismiss Smart Workflow Help').'</a>';
+            $output .= "<a title='".__('Dismiss Smart Workflow Help')."' onclick='$(\"#smartWorkflowHelp\").fadeOut(1000); $.ajax({ url: \"".$_SESSION[$guid]['absoluteURL']."/index_SmartWorkflowHelpAjax.php\"})' href='#'>".__('Dismiss Smart Workflow Help').'</a>';
             $output .= '</div>';
             $output .= '</div>';
         }
@@ -2067,21 +2067,21 @@ function getPasswordPolicy($guid, $connection2)
     $minLength = getSettingByScope($connection2, 'System', 'passwordPolicyMinLength');
 
     if ($alpha == false or $numeric == false or $punctuation == false or $minLength == false) {
-        $output .= __($guid, 'An error occurred.');
+        $output .= __('An error occurred.');
     } elseif ($alpha != 'N' or $numeric != 'N' or $punctuation != 'N' or $minLength >= 0) {
-        $output .= __($guid, 'The password policy stipulates that passwords must:').'<br/>';
+        $output .= __('The password policy stipulates that passwords must:').'<br/>';
         $output .= '<ul>';
         if ($alpha == 'Y') {
-            $output .= '<li>'.__($guid, 'Contain at least one lowercase letter, and one uppercase letter.').'</li>';
+            $output .= '<li>'.__('Contain at least one lowercase letter, and one uppercase letter.').'</li>';
         }
         if ($numeric == 'Y') {
-            $output .= '<li>'.__($guid, 'Contain at least one number.').'</li>';
+            $output .= '<li>'.__('Contain at least one number.').'</li>';
         }
         if ($punctuation == 'Y') {
-            $output .= '<li>'.__($guid, 'Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).').'</li>';
+            $output .= '<li>'.__('Contain at least one non-alphanumeric character (e.g. a punctuation mark or space).').'</li>';
         }
         if ($minLength >= 0) {
-            $output .= '<li>'.sprintf(__($guid, 'Must be at least %1$s characters in length.'), $minLength).'</li>';
+            $output .= '<li>'.sprintf(__('Must be at least %1$s characters in length.'), $minLength).'</li>';
         }
         $output .= '</ul>';
     }
@@ -2173,7 +2173,7 @@ function getParentPhotoUploader($connection2, $guid)
 
         if ($_SESSION[$guid]['image_240'] == '') { //No photo, so show uploader
             $output .= '<p>';
-            $output .= __($guid, 'Please upload a passport photo to use as a profile picture.').' '.__($guid, '240px by 320px').'.';
+            $output .= __('Please upload a passport photo to use as a profile picture.').' '.__('240px by 320px').'.';
             $output .= '</p>';
 
             $form = Form::create('photoUpload', $_SESSION[$guid]['absoluteURL'].'/index_parentPhotoUploadProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']);
@@ -2189,7 +2189,7 @@ function getParentPhotoUploader($connection2, $guid)
             $output .= '<p>';
             $output .= getUserPhoto($guid, $_SESSION[$guid]['image_240'], 240);
             $output .= "<div style='margin-left: 220px; margin-top: -50px'>";
-            $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index_parentPhotoDeleteProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/><br/>";
+            $output .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index_parentPhotoDeleteProcess.php?gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."' onclick='return confirm(\"Are you sure you want to delete this record? Unsaved changes will be lost.\")'><img style='margin-bottom: -8px' id='image_240_delete' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a><br/><br/>";
             $output .= '</div>';
             $output .= '</p>';
         }
@@ -2212,11 +2212,11 @@ function getAlert($guid, $connection2, $gibbonAlertLevelID)
     if ($resultAlert->rowCount() == 1) {
         $rowAlert = $resultAlert->fetch();
         $output = array();
-        $output['name'] = __($guid, $rowAlert['name']);
+        $output['name'] = __($rowAlert['name']);
         $output['nameShort'] = $rowAlert['nameShort'];
         $output['color'] = $rowAlert['color'];
         $output['colorBG'] = $rowAlert['colorBG'];
-        $output['description'] = __($guid, $rowAlert['description']);
+        $output['description'] = __($rowAlert['description']);
         $output['sequenceNumber'] = $rowAlert['sequenceNumber'];
     }
 
@@ -2383,7 +2383,7 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
 
     $output .= "<div id='editor-toolbar'>";
     $output .= "<a style='margin-top:-4px' id='".$id."edButtonHTML' class='hide-if-no-js edButtonHTML'>HTML</a>";
-    $output .= "<a style='margin-top:-4px' id='".$id."edButtonPreview' class='active hide-if-no-js edButtonPreview'>".__($guid, 'Visual').'</a>';
+    $output .= "<a style='margin-top:-4px' id='".$id."edButtonPreview' class='active hide-if-no-js edButtonPreview'>".__('Visual').'</a>';
 
     $output .= "<div id='media-buttons'>";
     $output .= "<div style='padding-top: 2px; height: 15px'>";
@@ -2424,13 +2424,13 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
         $output .= '});';
         $output .= '</script>';
 
-        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__($guid, 'Shared Resources').'</u>:</div> ';
-        $output .= "<a title='".__($guid, 'Insert Existing Resource')."' style='float: left' class='".$id."show_hide' onclick='\$(\".".$id.'resourceSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_insert_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/search_mini.png' alt='".__($guid, 'Insert Existing Resource')."' onclick='return false;' /></a>";
+        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__('Shared Resources').'</u>:</div> ';
+        $output .= "<a title='".__('Insert Existing Resource')."' style='float: left' class='".$id."show_hide' onclick='\$(\".".$id.'resourceSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_insert_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/search_mini.png' alt='".__('Insert Existing Resource')."' onclick='return false;' /></a>";
         if ($allowUpload == true) {
-            $output .= "<a title='".__($guid, 'Create & Insert New Resource')."' style='float: left' class='".$id."show_hideAdd' onclick='\$(\".".$id.'resourceAddSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_add_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/upload_mini.png' alt='".__($guid, 'Create & Insert New Resource')."' onclick='return false;' /></a>";
+            $output .= "<a title='".__('Create & Insert New Resource')."' style='float: left' class='".$id."show_hideAdd' onclick='\$(\".".$id.'resourceAddSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_add_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/upload_mini.png' alt='".__('Create & Insert New Resource')."' onclick='return false;' /></a>";
         }
-        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__($guid, 'Quick File Upload').'</u>:</div> ';
-        $output .= "<a title='".__($guid, 'Quick Add')."' style='float: left' class='".$id."show_hideQuickAdd' onclick='\$(\".".$id.'resourceQuickSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_addQuick_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_new_mini.png' alt='".__($guid, 'Quick Add')."' onclick='return false;' /></a>";
+        $output .= "<div style='float: left; padding-top:1px; margin-right: 5px'><u>".__('Quick File Upload').'</u>:</div> ';
+        $output .= "<a title='".__('Quick Add')."' style='float: left' class='".$id."show_hideQuickAdd' onclick='\$(\".".$id.'resourceQuickSlider").load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/resources_addQuick_ajax.php?alpha='.$resourceAlphaSort.'&'.$initialFilter.'","id='.$id."&allowUpload=$allowUpload\");' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/page_new_mini.png' alt='".__('Quick Add')."' onclick='return false;' /></a>";
         $output .= '</div>';
     }
     $output .= '</div>';
@@ -2440,16 +2440,16 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
         //DEFINE MEDIA INPUT DISPLAY
         $output .= "<div class='".$id."resourceSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
-        $output .= __($guid, 'Loading');
+        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
+        $output .= __('Loading');
         $output .= '</div>';
         $output .= '</div>';
 
         //DEFINE QUICK INSERT
         $output .= "<div class='".$id."resourceQuickSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
-        $output .= __($guid, 'Loading');
+        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
+        $output .= __('Loading');
         $output .= '</div>';
         $output .= '</div>';
     }
@@ -2458,8 +2458,8 @@ function getEditor($guid, $tinymceInit = true, $id, $value = '', $rows = 10, $sh
         //DEFINE MEDIA ADD DISPLAY
         $output .= "<div class='".$id."resourceAddSlider' style='display: none; width: 100%; min-height: 60px;'>";
         $output .= "<div style='text-align: center; width: 100%; margin-top: 5px'>";
-        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__($guid, 'Loading')."' onclick='return false;' /><br/>";
-        $output .= __($guid, 'Loading');
+        $output .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/>";
+        $output .= __('Loading');
         $output .= '</div>';
         $output .= '</div>';
     }
@@ -2582,7 +2582,7 @@ function getYearGroupsFromIDList($guid, $connection2, $ids, $vertical = false, $
                         }
                     }
                     if ($translated == true) {
-                        $output .= __($guid, $rowYears['nameShort']);
+                        $output .= __($rowYears['nameShort']);
                     } else {
                         $output .= $rowYears['nameShort'];
                     }
@@ -2669,21 +2669,21 @@ function sidebar($gibbon, $pdo)
     $loginReturnMessage = '';
     if (!($loginReturn == '')) {
         if ($loginReturn == 'fail0b') {
-            $loginReturnMessage = __($guid, 'Username or password not set.');
+            $loginReturnMessage = __('Username or password not set.');
         } elseif ($loginReturn == 'fail1') {
-            $loginReturnMessage = __($guid, 'Incorrect username and password.');
+            $loginReturnMessage = __('Incorrect username and password.');
         } elseif ($loginReturn == 'fail2') {
-            $loginReturnMessage = __($guid, 'You do not have sufficient privileges to login.');
+            $loginReturnMessage = __('You do not have sufficient privileges to login.');
         } elseif ($loginReturn == 'fail5') {
-            $loginReturnMessage = __($guid, 'Your request failed due to a database error.');
+            $loginReturnMessage = __('Your request failed due to a database error.');
         } elseif ($loginReturn == 'fail6') {
-            $loginReturnMessage = sprintf(__($guid, 'Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php'>", '</a>');
+            $loginReturnMessage = sprintf(__('Too many failed logins: please %1$sreset password%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php'>", '</a>');
         } elseif ($loginReturn == 'fail7') {
-            $loginReturnMessage = sprintf(__($guid, 'Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $loginReturnMessage = sprintf(__('Error with Google Authentication. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         } elseif ($loginReturn == 'fail8') {
-            $loginReturnMessage = sprintf(__($guid, 'Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         } elseif ($loginReturn == 'fail9') {
-            $loginReturnMessage = __($guid, 'Your primary role does not support the ability to log into the specified year.');
+            $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
         }
 
         echo "<div class='error'>";
@@ -2701,7 +2701,7 @@ function sidebar($gibbon, $pdo)
     if ((isset($_SESSION[$guid]['username']) == false) && (isset($_SESSION[$guid]['email']) == false)) {
         if ($googleOAuth == 'Y') {
             echo '<h2>';
-            echo __($guid, 'Login with Google');
+            echo __('Login with Google');
             echo '</h2>';
 
             ?>
@@ -2786,10 +2786,10 @@ function sidebar($gibbon, $pdo)
             $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
             if ($enablePublicRegistration == 'Y') {
                 echo "<h2 style='margin-top: 30px'>";
-                echo __($guid, 'Register');
+                echo __('Register');
                 echo '</h2>';
                 echo '<p>';
-                echo sprintf(__($guid, '%1$sJoin our learning community.%2$s'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__($guid, "It's free!");
+                echo sprintf(__('%1$sJoin our learning community.%2$s'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/publicRegistration.php'>", '</a>').' '.__("It's free!");
                 echo '</p>';
             }
         }
@@ -2824,16 +2824,16 @@ function sidebar($gibbon, $pdo)
                 $attainmentAlternativeName = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget');
                 if ($attainmentAlternativeName == 'Y') {
                     echo '<h2>';
-                    echo __($guid, 'Message Wall');
+                    echo __('Message Wall');
                     echo '</h2>';
 
                     if (count($_SESSION[$guid]['messageWallOutput']) < 1) {
                         echo "<div class='warning'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } elseif (is_array($_SESSION[$guid]['messageWallOutput']) == false) {
                         echo "<div class='error'>";
-                        echo __($guid, 'An error occurred.');
+                        echo __('An error occurred.');
                         echo '</div>';
                     } else {
                         $height = 283;
@@ -2943,7 +2943,7 @@ function sidebar($gibbon, $pdo)
 							</script>";
                     }
                     echo "<p style='padding-top: 5px; text-align: right'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>".__($guid, 'View Message Wall').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messageWall_view.php'>".__('View Message Wall').'</a>';
                     echo '</p>';
                 }
             }
@@ -2955,7 +2955,7 @@ function sidebar($gibbon, $pdo)
         $highestAction = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
         if ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             echo '<h2>';
-            echo __($guid, 'Homework & Deadlines');
+            echo __('Homework & Deadlines');
             echo '</h2>';
 
             try {
@@ -2972,7 +2972,7 @@ function sidebar($gibbon, $pdo)
             }
             if ($result->rowCount() < 1) {
                 echo "<div class='success'>";
-                echo __($guid, 'No upcoming deadlines. Yay!');
+                echo __('No upcoming deadlines. Yay!');
                 echo '</div>';
             } else {
                 echo '<ol>';
@@ -3038,7 +3038,7 @@ function sidebar($gibbon, $pdo)
             }
 
             echo "<p style='padding-top: 0px; text-align: right'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".__($guid, 'View Homework').'</a>';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php'>".__('View Homework').'</a>';
             echo '</p>';
         }
     }
@@ -3057,7 +3057,7 @@ function sidebar($gibbon, $pdo)
 
             if ($resultEntry->rowCount() > 0) {
                 echo '<h2>';
-                echo __($guid, 'Recent Marks');
+                echo __('Recent Marks');
                 echo '</h2>';
 
                 echo '<ol>';
@@ -3085,30 +3085,30 @@ function sidebar($gibbon, $pdo)
 
         if ($result->rowCount() > 0) {
             echo "<h2 style='margin-bottom: 10px'  class='sidebar'>";
-            echo __($guid, 'My Classes');
+            echo __('My Classes');
             echo '</h2>';
 
             echo "<table class='mini' cellspacing='0' style='width: 100%; table-layout: fixed;'>";
             echo "<tr class='head'>";
             echo "<th style='width: 36%; font-size: 85%; text-transform: uppercase'>";
-            echo __($guid, 'Class');
+            echo __('Class');
             echo '</th>';
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                 echo "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>";
-                echo __($guid, 'Plan');
+                echo __('Plan');
                 echo '</th>';
             }
             if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                 echo "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>";
-                echo __($guid, 'Mark');
+                echo __('Mark');
                 echo '</th>';
             }
             echo "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>";
-            echo __($guid, 'People');
+            echo __('People');
             echo '</th>';
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                 echo "<th style='width: 16%; font-size: 60%; text-align: center; text-transform: uppercase'>";
-                echo __($guid, 'Tasks');
+                echo __('Tasks');
                 echo '</th>';
             }
             echo '</tr>';
@@ -3130,24 +3130,24 @@ function sidebar($gibbon, $pdo)
                 echo '</td>';
                 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                     echo "<td style='text-align: center'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&viewBy=class'><img style='margin-top: 3px' title='".__($guid, 'View Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."&viewBy=class'><img style='margin-top: 3px' title='".__('View Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> ";
                     echo '</td>';
                 }
                 if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                     echo "<td style='text-align: center'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."'><img style='margin-top: 3px' title='".__($guid, 'View Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID='.$row['gibbonCourseClassID']."'><img style='margin-top: 3px' title='".__('View Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
                     echo '</td>';
                 }
                 echo "<td style='text-align: center'>";
                 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php') && $row['attendance'] == 'Y') {
-                    echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'><img title='".__($guid, 'Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                    echo "<a href='index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."'><img title='".__('Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
                 } else {
-                    echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants'><img title='".__($guid, 'Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
+                    echo "<a href='index.php?q=/modules/Departments/department_course_class.php&gibbonCourseClassID=".$row['gibbonCourseClassID']."#participants'><img title='".__('Participants')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a>";
                 }
                 echo '</td>';
                 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                     echo "<td style='text-align: center'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'><img style='margin-top: 3px' title='".__($guid, 'View Homework')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter='.$row['gibbonCourseClassID']."'><img style='margin-top: 3px' title='".__('View Homework')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework.png'/></a> ";
                     echo '</td>';
                 }
                 echo '</tr>';
@@ -3160,11 +3160,11 @@ function sidebar($gibbon, $pdo)
     if ($_SESSION[$guid]['address'] == '' and isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php')) {
         include_once './modules/Planner/moduleFunctions.php';
         echo "<h2 class='sidebar'>";
-        echo __($guid, 'Resource Tags');
+        echo __('Resource Tags');
         echo '</h2>';
         echo getResourcesTagCloud($guid, $connection2, 20);
         echo "<p style='margin-bototm: 20px; text-align: right'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>".__($guid, 'View Resources').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>".__('View Resources').'</a>';
         echo '</p>';
     }
 
@@ -3172,19 +3172,19 @@ function sidebar($gibbon, $pdo)
     if (isset($_SESSION[$guid]['username'])) {
         if (count($_SESSION[$guid]['gibbonRoleIDAll']) > 1 and $_SESSION[$guid]['address'] == '') {
             echo "<h2 style='margin-bottom: 10px' class='sidebar'>";
-            echo __($guid, 'Role Switcher');
+            echo __('Role Switcher');
             echo '</h2>';
 
             echo '<p>';
-            echo __($guid, 'You have multiple roles within the system. Use the list below to switch role:');
+            echo __('You have multiple roles within the system. Use the list below to switch role:');
             echo '</p>';
 
             echo '<ul>';
             for ($i = 0; $i < count($_SESSION[$guid]['gibbonRoleIDAll']); ++$i) {
                 if ($_SESSION[$guid]['gibbonRoleIDAll'][$i][0] == $_SESSION[$guid]['gibbonRoleIDCurrent']) {
-                    echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$_SESSION[$guid]['gibbonRoleIDAll'][$i][0]."'>".__($guid, $_SESSION[$guid]['gibbonRoleIDAll'][$i][1]).'</a> <i>'.__($guid, '(Active)').'</i></li>';
+                    echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$_SESSION[$guid]['gibbonRoleIDAll'][$i][0]."'>".__($_SESSION[$guid]['gibbonRoleIDAll'][$i][1]).'</a> <i>'.__('(Active)').'</i></li>';
                 } else {
-                    echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$_SESSION[$guid]['gibbonRoleIDAll'][$i][0]."'>".__($guid, $_SESSION[$guid]['gibbonRoleIDAll'][$i][1]).'</a></li>';
+                    echo "<li><a href='roleSwitcherProcess.php?gibbonRoleID=".$_SESSION[$guid]['gibbonRoleIDAll'][$i][0]."'>".__($_SESSION[$guid]['gibbonRoleIDAll'][$i][1]).'</a></li>';
                 }
             }
             echo '</ul>';
@@ -3216,15 +3216,15 @@ function getMaxUpload($guid, $multiple = '')
     $output .= "<div style='margin-top: 10px; font-style: italic; color: #c00'>";
     if ($multiple == true) {
         if ($post < $file) {
-            $output .= sprintf(__($guid, 'Maximum size for all files: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $post).'<br/>';
         } else {
-            $output .= sprintf(__($guid, 'Maximum size for all files: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum size for all files: %1$sMB'), $file).'<br/>';
         }
     } else {
         if ($post < $file) {
-            $output .= sprintf(__($guid, 'Maximum file size: %1$sMB'), $post).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $post).'<br/>';
         } else {
-            $output .= sprintf(__($guid, 'Maximum file size: %1$sMB'), $file).'<br/>';
+            $output .= sprintf(__('Maximum file size: %1$sMB'), $file).'<br/>';
         }
     }
     $output .= '</div>';
@@ -3255,7 +3255,7 @@ function getHighestMedicalRisk($guid, $gibbonPersonID, $connection2)
         $rowAlert = $resultAlert->fetch();
         $output = array();
         $output[0] = $rowAlert['gibbonAlertLevelID'];
-        $output[1] = __($guid, $rowAlert['name']);
+        $output[1] = __($rowAlert['name']);
         $output[2] = $rowAlert['nameShort'];
         $output[3] = $rowAlert['color'];
         $output[4] = $rowAlert['colorBG'];
@@ -3431,7 +3431,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 
     if ($print) {
         echo "<div class='linkTop'>";
-        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Students/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID&view=Basic'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/report.php?q=/modules/Students/report_students_byRollGroup_print.php&gibbonRollGroupID=$gibbonRollGroupID&view=Basic'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
         echo '</div>';
     }
 
@@ -3442,7 +3442,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
         $return .= '<tr>';
         $return .= "<td style='text-align: right' colspan='$columns'>";
         $return .= "<input checked type='checkbox' name='confidential' class='confidential' id='confidential".$gibbonRollGroupID."' value='Yes' />";
-        $return .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show Confidential Data').'</span>';
+        $return .= "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show Confidential Data').'</span>';
         $return .= '</td>';
         $return .= '</tr>';
     }
@@ -3464,13 +3464,13 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
         //HEY SHORTY IT'S YOUR BIRTHDAY!
         $daysUntilNextBirthday = daysUntilNextBirthday($rowRollGroup['dob']);
         if ($daysUntilNextBirthday == 0) {
-            $return .= "<img title='".sprintf(__($guid, '%1$s  birthday today!'), $rowRollGroup['preferredName'].'&#39;s')."' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
+            $return .= "<img title='".sprintf(__('%1$s  birthday today!'), $rowRollGroup['preferredName'].'&#39;s')."' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
         } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
             $return .= "<img title='";
             if ($daysUntilNextBirthday != 1) {
-                $return .= sprintf(__($guid, '%1$s days until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup['preferredName'].'&#39;s');
+                $return .= sprintf(__('%1$s days until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup['preferredName'].'&#39;s');
             } else {
-                $return .= sprintf(__($guid, '%1$s day until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup['preferredName'].'&#39;s');
+                $return .= sprintf(__('%1$s day until %2$s birthday!'), $daysUntilNextBirthday, $rowRollGroup['preferredName'].'&#39;s');
             }
             $return .= "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
         }
@@ -3548,13 +3548,13 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
         //HEY SHORTY IT'S YOUR BIRTHDAY!
         $daysUntilNextBirthday = daysUntilNextBirthday($rowClassGroup['dob']);
         if ($daysUntilNextBirthday == 0) {
-            echo "<img title='".sprintf(__($guid, '%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
+            echo "<img title='".sprintf(__('%1$s  birthday today!'), $rowClassGroup['preferredName'].'&#39;s')."' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift_pink.png'/>";
         } elseif ($daysUntilNextBirthday > 0 and $daysUntilNextBirthday < 8) {
             echo "<img title='$daysUntilNextBirthday ";
             if ($daysUntilNextBirthday != 1) {
-                echo sprintf(__($guid, 'days until %1$s birthday!'), $rowClassGroup['preferredName'].'&#39;s');
+                echo sprintf(__('days until %1$s birthday!'), $rowClassGroup['preferredName'].'&#39;s');
             } else {
-                echo sprintf(__($guid, 'day until %1$s birthday!'), $rowClassGroup['preferredName'].'&#39;s');
+                echo sprintf(__('day until %1$s birthday!'), $rowClassGroup['preferredName'].'&#39;s');
             }
             echo "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
         }
@@ -3615,15 +3615,15 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
         } catch (PDOException $e) { }
         if ($resultAlert->rowCount() > 0) {
             $rowAlert = $resultAlert->fetch();
-            $highestLevel = __($guid, $rowAlert['name']);
+            $highestLevel = __($rowAlert['name']);
             $highestColour = $rowAlert['color'];
             $highestColourBG = $rowAlert['colorBG'];
             if ($resultAlert->rowCount() == 1) {
-                $title = $resultAlert->rowCount().' '.sprintf(__($guid, 'Individual Needs alert is set, with an alert level of %1$s.'), $rowAlert['name']);
+                $title = $resultAlert->rowCount().' '.sprintf(__('Individual Needs alert is set, with an alert level of %1$s.'), $rowAlert['name']);
             } else {
-                $title = $resultAlert->rowCount().' '.sprintf(__($guid, 'Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $rowAlert['name']);
+                $title = $resultAlert->rowCount().' '.sprintf(__('Individual Needs alerts are set, up to a maximum alert level of %1$s.'), $rowAlert['name']);
             }
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'>".__($guid, 'IN').'</div></a>';
+            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Individual Needs'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'>".__('IN').'</div></a>';
         }
 
         //Academic
@@ -3655,19 +3655,19 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
         if ($resultAlert->rowCount() >= $academicAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
+            $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $academicAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $academicAlertMediumThreshold) {
             $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertMediumThreshold, ($academicAlertHighThreshold-1));
         } elseif ($resultAlert->rowCount() >= $academicAlertLowThreshold) {
             $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $academicAlertLowThreshold, ($academicAlertMediumThreshold-1));
         }
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for academic concern over the past 60 days.'), __($guid, $alert['name'])).' '.$alertThresholdText;
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'A').'</div></a>';
+                $title = sprintf(__('Student has a %1$s alert for academic concern over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText;
+                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID.'&subpage=Markbook&filter='.$_SESSION[$guid]['gibbonSchoolYearID']."'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__('A').'</div></a>';
             }
         }
 
@@ -3689,20 +3689,20 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
 
         if ($resultAlert->rowCount() >= $behaviourAlertHighThreshold) {
             $gibbonAlertLevelID = 001;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
+            $alertThresholdText = sprintf(__('This alert level occurs when there are more than %1$s events recorded for a student.'), $behaviourAlertHighThreshold);
         } elseif ($resultAlert->rowCount() >= $behaviourAlertMediumThreshold) {
             $gibbonAlertLevelID = 002;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertMediumThreshold, ($behaviourAlertHighThreshold-1));
         } elseif ($resultAlert->rowCount() >= $behaviourAlertLowThreshold) {
             $gibbonAlertLevelID = 003;
-            $alertThresholdText = sprintf(__($guid, 'This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
+            $alertThresholdText = sprintf(__('This alert level occurs when there are between %1$s and %2$s events recorded for a student.'), $behaviourAlertLowThreshold, ($behaviourAlertMediumThreshold-1));
         }
 
         if ($gibbonAlertLevelID != '') {
             $alert = getAlert($guid, $connection2, $gibbonAlertLevelID);
             if ($alert != false) {
-                $title = sprintf(__($guid, 'Student has a %1$s alert for behaviour over the past 60 days.'), __($guid, $alert['name'])).' '.$alertThresholdText;
-                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__($guid, 'B').'</div></a>';
+                $title = sprintf(__('Student has a %1$s alert for behaviour over the past 60 days.'), __($alert['name'])).' '.$alertThresholdText;
+                $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$alert['color']."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Behaviour'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; background-color: #'.$alert['colorBG']."'>".__('B').'</div></a>';
             }
         }
 
@@ -3712,16 +3712,16 @@ function getAlertBar($guid, $connection2, $gibbonPersonID, $privacy = '', $divEx
             $highestLevel = $alert[1];
             $highestColour = $alert[3];
             $highestColourBG = $alert[4];
-            $title = sprintf(__($guid, 'Medical alerts are set, up to a maximum of %1$s'), $highestLevel);
-            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Medical'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'><b>".__($guid, 'M').'</b></div></a>';
+            $title = sprintf(__('Medical alerts are set, up to a maximum of %1$s'), $highestLevel);
+            $output .= "<a style='font-size: ".$fontSize.'px; color: #'.$highestColour."; text-decoration: none' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$gibbonPersonID."&subpage=Medical'><div title='$title' style='float: left; text-align: center; vertical-align: middle; max-height: ".$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$highestColour.'; margin-right: 2px; background-color: #'.$highestColourBG."'><b>".__('M').'</b></div></a>';
         }
 
         //Privacy
         $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
         if ($privacySetting == 'Y' and $privacy != '') {
             $alert = getAlert($guid, $connection2, 001);
-            $title = sprintf(__($guid, 'Privacy is required: %1$s'), $privacy);
-            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__($guid, 'P').'</div>';
+            $title = sprintf(__('Privacy is required: %1$s'), $privacy);
+            $output .= "<div title='$title' style='font-size: ".$fontSize.'px; float: left; text-align: center; vertical-align: middle; max-height: '.$height.'px; height: '.$height.'px; width: '.$width.'px; border-top: 2px solid #'.$alert['color'].'; margin-right: 2px; color: #'.$alert['color'].'; background-color: #'.$alert['colorBG']."'>".__('P').'</div>';
         }
 
         if ($div == true) {
@@ -3956,13 +3956,13 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
     echo "<div class='$class'>";
     $totalPages = ceil($total / $pagination);
     $i = 0;
-    echo __($guid, 'Records').' '.(($page - 1) * $_SESSION[$guid]['pagination'] + 1).'-';
+    echo __('Records').' '.(($page - 1) * $_SESSION[$guid]['pagination'] + 1).'-';
     if (($page * $_SESSION[$guid]['pagination']) > $total) {
         echo $total;
     } else {
         echo $page * $_SESSION[$guid]['pagination'];
     }
-    echo ' '.__($guid, 'of').' '.$total.' : ';
+    echo ' '.__('of').' '.$total.' : ';
 
     if ($totalPages <= 10) {
         for ($i = 0;$i <= ($total / $pagination);++$i) {
@@ -3974,10 +3974,10 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
         }
     } else {
         if ($page > 1) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__($guid, 'First').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page - 1)."&$get'>".__($guid, 'Previous').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address']."&page=1&$get'>".__('First').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page - 1)."&$get'>".__('Previous').'</a> ';
         } else {
-            echo __($guid, 'First').' '.__($guid, 'Previous').' ';
+            echo __('First').' '.__('Previous').' ';
         }
 
         $spread = 10;
@@ -3990,10 +3990,10 @@ function printPagination($guid, $total, $page, $pagination, $position, $get = ''
         }
 
         if ($page != $totalPages) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page + 1)."&$get'>".__($guid, 'Next').'</a> ';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__($guid, 'Last').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.($page + 1)."&$get'>".__('Next').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'].'&page='.$totalPages."&$get'>".__('Last').'</a> ';
         } else {
-            echo __($guid, 'Next').' '.__($guid, 'Last');
+            echo __('Next').' '.__('Last');
         }
     }
     echo '</div>';
@@ -4080,7 +4080,7 @@ function getModuleCategory($address, $connection2)
     }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        $output = __($guid, $row['category']);
+        $output = __($row['category']);
     }
 
     return $output;
@@ -4101,7 +4101,7 @@ function setCurrentSchoolYear($guid,  $connection2)
     //Check number of rows returned.
     //If it is not 1, show error
     if (!($result->rowCount() == 1)) {
-        die(__($guid, 'Configuration Error: there is a problem accessing the current Academic Year from the database.'));
+        die(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
     }
     //Else get schoolYearID
     else {

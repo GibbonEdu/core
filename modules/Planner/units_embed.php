@@ -51,7 +51,7 @@ echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/li
 echo '<script type="text/javascript" src='.$_SESSION[$guid]['absoluteURL'].'/lib/jquery-ui/js/jquery-ui.min.js"></script>';
 
 if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='error'>";
-    echo __($guid, 'You have not specified one or more required parameters.');
+    echo __('You have not specified one or more required parameters.');
     echo '</div>';
 } else {
     try {
@@ -65,7 +65,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='erro
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
-        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+        echo __('The selected record does not exist, or you do not have access to it.');
         echo '</div>';
     } else {
         $row = $result->fetch();
@@ -75,12 +75,12 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='erro
         //Check if unit specified
         if ($gibbonUnitID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             if ($gibbonUnitID == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'You have not specified one or more required parameters.');
+                echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 try {
@@ -94,7 +94,7 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='erro
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record cannot be found.');
+                    echo __('The specified record cannot be found.');
                     echo '</div>';
                 } else {
                     //Let's go!
@@ -146,10 +146,10 @@ if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') { echo "<div class='erro
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo '<th>';
-                        echo __($guid, 'Name');
+                        echo __('Name');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Year Groups');
+                        echo __('Year Groups');
                         echo '</th>';
                         echo '<th>';
                         echo 'Description';

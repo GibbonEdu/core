@@ -45,19 +45,19 @@ $date = isset($_GET['date'])? $_GET['date'] : date('Y-m-d');
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $course = $result->fetch();
@@ -98,8 +98,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     ->add(__('Add Column'));
 
                 $returns = array();
-                $returns['error6'] = __($guid, 'Your request failed because you already have one "End of Year" column for this class.');
-                $returns['success1'] = __($guid, 'Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below.');
+                $returns['error6'] = __('Your request failed because you already have one "End of Year" column for this class.');
+                $returns['success1'] = __('Planner was successfully added: you opted to add a linked Markbook column, and you can now do so below.');
                 $editLink = '';
                 if (isset($_GET['editID'])) {
                     $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_edit.php&gibbonMarkbookColumnID='.$_GET['editID'].'&gibbonCourseClassID='.$gibbonCourseClassID;

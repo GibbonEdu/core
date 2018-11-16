@@ -23,7 +23,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get class variable
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                 if ($resultList->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There is currently no work to assess.');
+                    echo __('There is currently no work to assess.');
                     echo '</div>';
                 } else {
                     $rowList = $resultList->fetch();
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                     if ($resultWork->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There is currently no work to assess.');
+                        echo __('There is currently no work to assess.');
                         echo '</div>';
                     } else {
                         $rowWork = $resultWork->fetch();
@@ -109,9 +109,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>";
                         if ($rowWork['version'] == 'Final') {
-                            $linkText = __($guid, 'Final');
+                            $linkText = __('Final');
                         } else {
-                            $linkText = __($guid, 'Draft').$rowWork['count'];
+                            $linkText = __('Draft').$rowWork['count'];
                         }
 
                         if ($rowWork['type'] == 'File') {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo '</table>';
 
                         echo "<div style='margin: 0px' class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
 
                         //Get discussion

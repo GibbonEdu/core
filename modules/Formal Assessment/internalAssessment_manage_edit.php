@@ -30,7 +30,7 @@ $effortAlternativeName = getSettingByScope($connection2, 'Markbook', 'effortAlte
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check if school year specified
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
     if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             try {
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
             if ($result2->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 //Let's go!
@@ -74,12 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $values = $result2->fetch();
 
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/internalAssessment_manage.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Manage').' '.$class['course'].'.'.$class['class'].' '.__($guid, 'Internal Assessments')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Column').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/internalAssessment_manage.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__('Manage').' '.$class['course'].'.'.$class['class'].' '.__('Internal Assessments')."</a> > </div><div class='trailEnd'>".__('Edit Column').'</div>';
                 echo '</div>';
 
                 if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                     echo "<div class='error'>";
-                    echo __($guid, 'This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
+                    echo __('This column is part of a set of columns, which you did not create, and so cannot be individually edited.');
                     echo '</div>';
                 } else {
                     if (isset($_GET['return'])) {

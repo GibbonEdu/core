@@ -23,7 +23,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check if school year specified
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $gibbonCourseID = $_GET['gibbonCourseID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -45,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
             $values = $result->fetch();
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentEnrolment_manage.php'>".__($guid, 'Manage Student Enrolment')."</a> > </div><div class='trailEnd'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentEnrolment_manage.php'>".__('Manage Student Enrolment')."</a> > </div><div class='trailEnd'>".sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
             echo '</div>';
 
             if (isset($_GET['return'])) {
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             }
 
             echo '<h2>';
-            echo __($guid, 'Add Participants');
+            echo __('Add Participants');
             echo '</h2>';
 
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
@@ -115,7 +115,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Current Participants');
+            echo __('Current Participants');
             echo '</h2>';
 
             try {
@@ -129,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_editProcessBulk.php');
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             }
 
             echo '<h2>';
-            echo __($guid, 'Former Students');
+            echo __('Former Students');
             echo '</h2>';
 
             try {
@@ -195,22 +195,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Email');
+                echo __('Email');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Class Role');
+                echo __('Class Role');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -240,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     echo $row['role'];
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
                 }

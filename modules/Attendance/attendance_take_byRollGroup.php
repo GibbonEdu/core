@@ -31,13 +31,13 @@ $page->breadcrumbs->add(__('Take Attendance by Roll Group'));
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
@@ -92,12 +92,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
         if ($gibbonRollGroupID != '') {
             if ($currentDate > $today) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified date is in the future: it must be today or earlier.');
+                echo __('The specified date is in the future: it must be today or earlier.');
                 echo '</div>';
             } else {
                 if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
                     echo "<div class='error'>";
-                    echo __($guid, 'School is closed on the specified date, and so attendance information cannot be recorded.');
+                    echo __('School is closed on the specified date, and so attendance information cannot be recorded.');
                     echo '</div>';
                 } else {
                     $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillRollGroup');
@@ -140,14 +140,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         if ($resultLog->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');
+                            echo __('Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.');
                             echo '</div>';
                         } else {
                             echo "<div class='success'>";
-                            echo __($guid, 'Attendance has been taken at the following times for the specified date for this group:');
+                            echo __('Attendance has been taken at the following times for the specified date for this group:');
                             echo '<ul>';
                             while ($rowLog = $resultLog->fetch()) {
-                                echo '<li>'.sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
+                                echo '<li>'.sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog['timestampTaken'], 11), dateConvertBack($guid, substr($rowLog['timestampTaken'], 0, 10)), formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true)).'</li>';
                             }
                             echo '</ul>';
                             echo '</div>';
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
                         if ($resultRollGroup->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             $count = 0;

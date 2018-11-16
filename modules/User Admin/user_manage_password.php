@@ -23,7 +23,7 @@ use Gibbon\Domain\User\RoleGateway;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_password.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
          ->add(__('Reset User Password'));
 
     $returns = array();
-    $returns['error5'] = __($guid, 'Your request failed because your passwords did not match.');
-    $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error5'] = __('Your request failed because your passwords did not match.');
+    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
     $gibbonPersonID = $_GET['gibbonPersonID'];
     if ($gibbonPersonID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
             $search = (isset($_GET['search']))? $_GET['search'] : '';
             if (!empty($search)) {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/User Admin/user_manage.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 

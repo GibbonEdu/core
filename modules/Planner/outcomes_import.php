@@ -19,10 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
+$page->breadcrumbs->add(__('Import Outcomes'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check access based on privileges in Manage Outcomes
@@ -37,14 +39,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
     if ($permission != 'Learning Area' and $permission != 'School') {
         //Acess denied due to privileges in Manage Outcomes
         echo "<div class='error'>";
-        echo __($guid, 'You do not have access to this action.');
+        echo __('You do not have access to this action.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import Outcomes').'</div>';
-        echo '</div>';
-
         $step = null;
         if (isset($_GET['step'])) {
             $step = $_GET['step'];
@@ -92,42 +90,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
             ?>
 		
 			<h4>
-				<?php echo __($guid, 'Notes') ?>
+				<?php echo __('Notes') ?>
 			</h4>
 			<ol>
-				<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-				<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-				<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
+				<li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+				<li><?php echo __('You may only submit CSV files.') ?></li>
+				<li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li> 
 					<ol>
 						<?php
                         if ($permission == 'Learning Area') {
-                            echo '<li><b>'.__($guid, 'Scope').' *</b> - '.__($guid, 'Learning Area').'</li>';
+                            echo '<li><b>'.__('Scope').' *</b> - '.__('Learning Area').'</li>';
                         } elseif ($permission == 'School') {
-                            echo '<li><b>'.__($guid, 'Scope').' *</b> - '.__($guid, 'School or Learning Area').'</li>';
+                            echo '<li><b>'.__('Scope').' *</b> - '.__('School or Learning Area').'</li>';
                         }
             		?>
-						<li><b><?php echo __($guid, 'Learning Area') ?></b> - <?php echo __($guid, 'Learning Area name, or blank if scope is School') ?></li>
-						<li><b><?php echo __($guid, 'Name') ?> *</b></li>
-						<li><b><?php echo __($guid, 'Short Name') ?> *</b></li>
-						<li><b><?php echo __($guid, 'Category') ?></b></li>
-						<li><b><?php echo __($guid, 'Description') ?></b></li>
+						<li><b><?php echo __('Learning Area') ?></b> - <?php echo __('Learning Area name, or blank if scope is School') ?></li>
+						<li><b><?php echo __('Name') ?> *</b></li>
+						<li><b><?php echo __('Short Name') ?> *</b></li>
+						<li><b><?php echo __('Category') ?></b></li>
+						<li><b><?php echo __('Description') ?></b></li>
 						<?php
                         $yearGroupList = '';
 						for ($i = 0; $i < count($yearGroups); $i = $i + 2) {
-							$yearGroupList .= __($guid, $yearGroups[($i + 1)]).', ';
+							$yearGroupList .= __($yearGroups[($i + 1)]).', ';
 						}
 						$yearGroupList = substr($yearGroupList, 0, -2); ?>
-						<li><b><?php echo __($guid, 'Year Groups') ?></b> - <?php echo sprintf(__($guid, 'Comma separated list, e.g: %1$s'), '<i>'.$yearGroupList.'</i>') ?></li>
+						<li><b><?php echo __('Year Groups') ?></b> - <?php echo sprintf(__('Comma separated list, e.g: %1$s'), '<i>'.$yearGroupList.'</i>') ?></li>
 					</ol>
 				</li>
-				<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+				<li><?php echo __('Do not include a header row in the CSV files.') ?></li>
 			</ol>
 			<?php
 
 			} elseif ($step == 2) {
             ?>
 			<h2>
-				<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+				<?php echo __('Step 2 - Data Check & Confirm') ?>
 			</h2>
 			<?php
 
@@ -135,14 +133,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
             if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
                 ?>
 				<div class='error'>
-					<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+					<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 				</div>
 				<?php
 
             } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
                 ?>
 				<div class='error'>
-					<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+					<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 				</div>
 				<?php
 
@@ -150,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                 $proceed = true;
 
                 echo '<h4>';
-                echo __($guid, 'File Import');
+                echo __('File Import');
                 echo '</h4>';
                 $importFail = false;
                 $csvFile = $_FILES['file']['tmp_name'];
@@ -192,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                         ++$userSuccessCount;
                     } else {
                         echo "<div class='error'>";
-                        echo sprintf(__($guid, 'Outcome with name %1$s had some information malformations.'), $data[2]);
+                        echo sprintf(__('Outcome with name %1$s had some information malformations.'), $data[2]);
                         echo '</div>';
                     }
                     ++$userCount;
@@ -200,21 +198,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                 fclose($handle);
                 if ($userSuccessCount == 0) {
                     echo "<div class='error'>";
-                    echo __($guid, 'No useful outcomes were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+                    echo __('No useful outcomes were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
                     echo '</div>';
                     $proceed = false;
                 } elseif ($userSuccessCount < $userCount) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Some outcomes could not be successfully read or used, so the import will be aborted.');
+                    echo __('Some outcomes could not be successfully read or used, so the import will be aborted.');
                     echo '</div>';
                     $proceed = false;
                 } elseif ($userSuccessCount == $userCount) {
                     echo "<div class='success'>";
-                    echo __($guid, 'All outcomes could be read and used, so the import will proceed.');
+                    echo __('All outcomes could be read and used, so the import will proceed.');
                     echo '</div>';
                 } else {
                     echo "<div class='error'>";
-                    echo __($guid, 'An unknown error occured, so the import will be aborted.');
+                    echo __('An unknown error occured, so the import will be aborted.');
                     echo '</div>';
                     $proceed = false;
                 }
@@ -228,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                     //Check permisison
                     if ($user['scope'] == 'School' and $permission != 'School') {
                         echo "<div class='error'>";
-                        echo __($guid, 'There was an error creating outcome:').' '.$user['name'].'.';
+                        echo __('There was an error creating outcome:').' '.$user['name'].'.';
                         echo '</div>';
                     } else {
                         $gibbonDepartmentID = null;
@@ -272,11 +270,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
                         //Spit out results
                         if ($addUserFail == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There was an error creating outcome:').' '.$user['name'].'.';
+                            echo __('There was an error creating outcome:').' '.$user['name'].'.';
                             echo '</div>';
                         } else {
                             echo "<div class='success'>";
-                            echo sprintf(__($guid, 'Outcome %1$s was successfully created.'), $user['name']);
+                            echo sprintf(__('Outcome %1$s was successfully created.'), $user['name']);
                             echo '</div>';
                         }
                     }
@@ -285,4 +283,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/outcomes_import.ph
         }
     }
 }
-?>
