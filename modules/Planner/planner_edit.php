@@ -80,13 +80,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
         }
         $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-        $page->breadcrumbs
-            ->add(strtr(':planner :target', [
-                ':planner' => __('Planner'),
-                ':target' => $extra,
-            ]), 'planner.php', $params)
-            ->add(__('Edit Lesson Plan'));
-
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
 
@@ -141,6 +134,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
 
+				$page->breadcrumbs
+					->add(strtr(':planner :target', [
+						':planner' => __('Planner'),
+						':target' => $extra,
+					]), 'planner.php', $params)
+					->add(__('Edit Lesson Plan'));
+			
                 //CHECK IF UNIT IS GIBBON OR HOOKED
                 if ($row['gibbonHookID'] == null) {
                     $hooked = false;

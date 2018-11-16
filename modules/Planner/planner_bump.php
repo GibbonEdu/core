@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                             ':planner' => __('Planner'),
                             ':target' => $row['course'].'.'.$row['class'],
                         ]), 'planner.php', $params)
-                        ->add(__('Bump Forward Lesson Plan'));
+                        ->add(__('Bump Lesson Plan'));
 
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, null);

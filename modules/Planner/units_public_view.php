@@ -172,93 +172,95 @@ if ($makeUnitsPublic != 'Y') {
             echo "<div id='tabs3'>";
 			//Resources
 			$noReosurces = true;
+            
+            if (!empty($resourceContents)) {
+                //Links
+                $links = '';
+                $linksArray = array();
+                $linksCount = 0;
+                $dom = new DOMDocument();
+                $dom->loadHTML($resourceContents);
+                foreach ($dom->getElementsByTagName('a') as $node) {
+                    if ($node->nodeValue != '') {
+                        $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
+                        ++$linksCount;
+                    }
+                }
 
-			//Links
-			$links = '';
-            $linksArray = array();
-            $linksCount = 0;
-            $dom = new DOMDocument();
-            $dom->loadHTML($resourceContents);
-            foreach ($dom->getElementsByTagName('a') as $node) {
-                if ($node->nodeValue != '') {
-                    $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
-                    ++$linksCount;
+                $linksArray = array_unique($linksArray);
+                natcasesort($linksArray);
+
+                foreach ($linksArray as $link) {
+                    $links .= $link;
+                }
+
+                if ($links != '') {
+                    echo '<h2>';
+                    echo 'Links';
+                    echo '</h2>';
+                    echo '<ul>';
+                    echo $links;
+                    echo '</ul>';
+                    $noReosurces = false;
+                }
+
+                //Images
+                $images = '';
+                $imagesArray = array();
+                $imagesCount = 0;
+                $dom2 = new DOMDocument();
+                $dom2->loadHTML($resourceContents);
+                foreach ($dom2->getElementsByTagName('img') as $node) {
+                    if ($node->getAttribute('src') != '') {
+                        $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
+                        ++$imagesCount;
+                    }
+                }
+
+                $imagesArray = array_unique($imagesArray);
+                natcasesort($imagesArray);
+
+                foreach ($imagesArray as $image) {
+                    $images .= $image;
+                }
+
+                if ($images != '') {
+                    echo '<h2>';
+                    echo 'Images';
+                    echo '</h2>';
+                    echo $images;
+                    $noReosurces = false;
+                }
+
+                //Embeds
+                $embeds = '';
+                $embedsArray = array();
+                $embedsCount = 0;
+                $dom2 = new DOMDocument();
+                $dom2->loadHTML($resourceContents);
+                foreach ($dom2->getElementsByTagName('iframe') as $node) {
+                    if ($node->getAttribute('src') != '') {
+                        $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
+                        ++$embedsCount;
+                    }
+                }
+
+                $embedsArray = array_unique($embedsArray);
+                natcasesort($embedsArray);
+
+                foreach ($embedsArray as $embed) {
+                    $embeds .= $embed.'<br/><br/>';
+                }
+
+                if ($embeds != '') {
+                    echo '<h2>';
+                    echo 'Embeds';
+                    echo '</h2>';
+                    echo $embeds;
+                    $noReosurces = false;
                 }
             }
-
-            $linksArray = array_unique($linksArray);
-            natcasesort($linksArray);
-
-            foreach ($linksArray as $link) {
-                $links .= $link;
-            }
-
-            if ($links != '') {
-                echo '<h2>';
-                echo 'Links';
-                echo '</h2>';
-                echo '<ul>';
-                echo $links;
-                echo '</ul>';
-                $noReosurces = false;
-            }
-
-			//Images
-			$images = '';
-            $imagesArray = array();
-            $imagesCount = 0;
-            $dom2 = new DOMDocument();
-            $dom2->loadHTML($resourceContents);
-            foreach ($dom2->getElementsByTagName('img') as $node) {
-                if ($node->getAttribute('src') != '') {
-                    $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
-                    ++$imagesCount;
-                }
-            }
-
-            $imagesArray = array_unique($imagesArray);
-            natcasesort($imagesArray);
-
-            foreach ($imagesArray as $image) {
-                $images .= $image;
-            }
-
-            if ($images != '') {
-                echo '<h2>';
-                echo 'Images';
-                echo '</h2>';
-                echo $images;
-                $noReosurces = false;
-            }
-
-			//Embeds
-			$embeds = '';
-            $embedsArray = array();
-            $embedsCount = 0;
-            $dom2 = new DOMDocument();
-            $dom2->loadHTML($resourceContents);
-            foreach ($dom2->getElementsByTagName('iframe') as $node) {
-                if ($node->getAttribute('src') != '') {
-                    $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
-                    ++$embedsCount;
-                }
-            }
-
-            $embedsArray = array_unique($embedsArray);
-            natcasesort($embedsArray);
-
-            foreach ($embedsArray as $embed) {
-                $embeds .= $embed.'<br/><br/>';
-            }
-
-            if ($embeds != '') {
-                echo '<h2>';
-                echo 'Embeds';
-                echo '</h2>';
-                echo $embeds;
-                $noReosurces = false;
-            }
-
+            
 			//No resources!
 			if ($noReosurces) {
 				echo "<div class='error'>";

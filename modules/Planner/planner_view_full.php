@@ -237,7 +237,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                     $page->breadcrumbs
                         ->add(strtr(':planner :target', [
                             ':planner' => __('Planner'),
-                            ':target' => $extra,
+                            ':target' => $target,
                         ]), 'planner.php', $params)
                         ->add(__('View Lesson Plan'));
 
