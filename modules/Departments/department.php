@@ -26,13 +26,13 @@ $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDep
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php') == false and $makeDepartmentsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonDepartmentID = $_GET['gibbonDepartmentID'];
     if ($gibbonDepartmentID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -58,15 +58,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             }
 
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__($guid, 'View All')."</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
             echo '</div>';
 
             //Print overview
             if ($row['blurb'] != '' or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
                 echo '<h2>';
-                echo __($guid, 'Overview');
+                echo __('Overview');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 }
                 echo '</h2>';
                 echo '<p>';
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             if ($resultStaff->rowCount() > 0) {
                 echo '<h2>';
-                echo __($guid, 'Staff');
+                echo __('Staff');
                 echo '</h2>';
                 echo "<table class='noIntBorder' cellspacing='0' style='width:100%; margin-top: 20px'>";
                 $count = 0;
@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             //Print subject list
             if ($row['subjectListing'] != '') {
                 $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Subject List');
+                $_SESSION[$guid]['sidebarExtra'] .= __('Subject List');
                 $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
 
                 $_SESSION[$guid]['sidebarExtra'] .= '<ul>';
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
                 } else {
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Course List');
+                    $_SESSION[$guid]['sidebarExtra'] .= __('Course List');
                     $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
                 }
 
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             //Print other courses
             if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') {
                 $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Non-Current Courses');
+                $_SESSION[$guid]['sidebarExtra'] .= __('Non-Current Courses');
                 $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
 
                 $form = Form::create('courseSelect', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -224,9 +224,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
 
             if ($resultReading->rowCount() > 0 or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
                 $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Useful Reading');
+                $_SESSION[$guid]['sidebarExtra'] .= __('Useful Reading');
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
-                    $_SESSION[$guid]['sidebarExtra'] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    $_SESSION[$guid]['sidebarExtra'] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/department_edit.php&gibbonDepartmentID=$gibbonDepartmentID'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 }
                 $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
 

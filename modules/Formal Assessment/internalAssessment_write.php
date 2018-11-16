@@ -29,14 +29,14 @@ $effortAlternativeNameAbrev = getSettingByScope($connection2, 'Markbook', 'effor
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $alert = getAlert($guid, $connection2, 002);
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         }
         if ($gibbonCourseClassID == '') {
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Write Internal Assessments').'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Write Internal Assessments').'</div>';
             echo '</div>';
             echo "<div class='warning'>";
             echo 'Use the class listing on the right to choose a Internal Assessment to write.';
@@ -86,17 +86,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Write Internal Assessments').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Write Internal Assessments').'</div>';
                 echo '</div>';
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist or you do not have access to it.');
+                echo __('The specified record does not exist or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
                 $courseName = $row['courseName'];
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Write ".$row['course'].'.'.$row['class'].' Internal Assessments</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Write ".$row['course'].'.'.$row['class'].' Internal Assessments</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 if ($result->rowCount() > 0) {
                     echo "<h3 style='margin-top: 0px'>";
-                    echo __($guid, 'Teachers');
+                    echo __('Teachers');
                     echo '</h3>';
                     echo '<ul>';
                     while ($row = $result->fetch()) {
@@ -130,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                 //Print marks
                 echo '<h3>';
-                echo __($guid, 'Marks');
+                echo __('Marks');
                 echo '</h3>';
 
                 //Count number of columns
@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $columns = $result->rowCount();
                 if ($columns < 1) {
                     echo "<div class='warning'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     $x = null;
@@ -160,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                     if ($columns < 1) {
                         echo "<div class='warning'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         if ($columns < 3) {
@@ -234,24 +234,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
                         //Print table header
                         echo '<p>';
-                        echo __($guid, 'To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
+                        echo __('To see more detail on an item (such as a comment or a grade), hover your mouse over it.');
                         if ($externalAssessment == true) {
-                            echo ' '.__($guid, 'The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the Internal Assessment.');
+                            echo ' '.__('The Baseline column is populated based on student performance in external assessments, and can be used as a reference point for the grades in the Internal Assessment.');
                         }
                         echo '</p>';
 
                         echo "<div class='linkTop'>";
                         echo "<div style='padding-top: 12px; margin-left: 10px; float: right'>";
                         if ($x <= 0) {
-                            echo __($guid, 'Newer');
+                            echo __('Newer');
                         } else {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x - 1)."'>".__($guid, 'Newer').'</a>';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x - 1)."'>".__('Newer').'</a>';
                         }
                         echo ' | ';
                         if ((($x + 1) * $columnsPerPage) >= $columns) {
-                            echo __($guid, 'Older');
+                            echo __('Older');
                         } else {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x + 1)."'>".__($guid, 'Older').'</a>';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID&page=".($x + 1)."'>".__('Older').'</a>';
                         }
                         echo '</div>';
                         echo '</div>';
@@ -259,19 +259,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         echo "<table class='mini' cellspacing='0' style='width: 100%; margin-top: 0px'>";
                         echo "<tr class='head' style='height: 120px'>";
                         echo "<th style='width: 150px; max-width: 200px'rowspan=2>";
-                        echo __($guid, 'Student');
+                        echo __('Student');
                         echo '</th>';
 
 						//Show Baseline data header
 						if ($externalAssessment == true) {
 							echo "<th rowspan=2 style='width: 20px'>";
-							$title = __($guid, $externalAssessmentFields[2]).' | ';
-							$title .= __($guid, substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
-							$title .= __($guid, $externalAssessmentFields[1]);
-                            $title .= ' | '.$externalAssessmentFields[4].' '.__($guid, 'Scale').' ';
+							$title = __($externalAssessmentFields[2]).' | ';
+							$title .= __(substr($externalAssessmentFields[3], (strpos($externalAssessmentFields[3], '_') + 1))).' | ';
+							$title .= __($externalAssessmentFields[1]);
+                            $title .= ' | '.$externalAssessmentFields[4].' '.__('Scale').' ';
 
                             echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);' title='$title'>";
-							echo __($guid, 'Baseline').'<br/>';
+							echo __('Baseline').'<br/>';
 							echo '</div>';
 							echo '</th>';
                         }
@@ -317,17 +317,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                             echo "<span title='".htmlPrep($row['description'])."'>".$row['name'].'</span><br/>';
                             echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                             if ($row['completeDate'] != '') {
-                                echo __($guid, 'Marked on').' '.dateConvertBack($guid, $row['completeDate']).'<br/>';
+                                echo __('Marked on').' '.dateConvertBack($guid, $row['completeDate']).'<br/>';
                             } else {
-                                echo __($guid, 'Unmarked').'<br/>';
+                                echo __('Unmarked').'<br/>';
                             }
                             echo $row['type'];
                             if ($row['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$row['attachment'])) {
-                                echo " | <a 'title='".__($guid, 'Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
+                                echo " | <a 'title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>More info</a>";
                             }
                             echo '</span><br/>';
                             if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonInternalAssessmentColumnID=".$row['gibbonInternalAssessmentColumnID']."'><img style='margin-top: 3px' title='".__('Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
                             }
                             echo '</th>';
                         }
@@ -363,7 +363,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     if ($attainmentAlternativeName != '' and $attainmentAlternativeNameAbrev != '') {
                                         echo "<span title='".$attainmentAlternativeName.htmlPrep($scale)."'>".$attainmentAlternativeNameAbrev.'</span>';
                                     } else {
-                                        echo "<span title='".__($guid, 'Attainment').htmlPrep($scale)."'>".__($guid, 'Att').'</span>';
+                                        echo "<span title='".__('Attainment').htmlPrep($scale)."'>".__('Att').'</span>';
                                     }
                                     echo '</th>';
                                 }
@@ -394,7 +394,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     if ($effortAlternativeName != '' and $effortAlternativeNameAbrev != '') {
                                         echo "<span title='".$effortAlternativeName.htmlPrep($scale)."'>".$effortAlternativeNameAbrev.'</span>';
                                     } else {
-                                        echo "<span title='".__($guid, 'Effort').htmlPrep($scale)."'>".__($guid, 'Eff').'</span>';
+                                        echo "<span title='".__('Effort').htmlPrep($scale)."'>".__('Eff').'</span>';
                                     }
                                     echo '</th>';
                                 }
@@ -406,7 +406,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $leftBorderStyle = 'border-left: 2px solid #666;';
                                     }
                                     echo "<th style='$leftBorderStyle text-align: center; width: 80px'>";
-                                    echo "<span title='".__($guid, 'Comment')."'>".__($guid, 'Com').'</span>';
+                                    echo "<span title='".__('Comment')."'>".__('Com').'</span>';
                                     echo '</th>';
                                 }
                                 if ($uploadedResponse[$i] == 'Y') {
@@ -416,7 +416,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                         $leftBorderStyle = 'border-left: 2px solid #666;';
                                     }
                                     echo "<th style='$leftBorderStyle text-align: center; width: 30px'>";
-                                    echo "<span title='".__($guid, 'Uploaded Response')."'>".__($guid, 'Upl').'</span>';
+                                    echo "<span title='".__('Uploaded Response')."'>".__('Upl').'</span>';
                                     echo '</th>';
                                 }
                             }
@@ -437,7 +437,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         if ($resultStudents->rowCount() < 1) {
                             echo '<tr>';
                             echo '<td colspan='.($columns + 1).'>';
-                            echo '<i>'.__($guid, 'There are no records to display.').'</i>';
+                            echo '<i>'.__('There are no records to display.').'</i>';
                             echo '</td>';
                             echo '</tr>';
                         } else {
@@ -474,7 +474,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                     }
                                     if ($resultEntry->rowCount() >= 1) {
                                         $rowEntry = $resultEntry->fetch();
-                                        echo "<a title='".__($guid, $rowEntry['descriptor']).' | '.__($guid, 'Test taken on').' '.dateConvertBack($guid, $rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($guid, $rowEntry['value']).'</a>';
+                                        echo "<a title='".__($rowEntry['descriptor']).' | '.__('Test taken on').' '.dateConvertBack($guid, $rowEntry['date'])."' href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowStudents['gibbonPersonID']."&subpage=External Assessment'>".__($rowEntry['value']).'</a>';
                                     }
                                     echo '</td>';
                                 }
@@ -500,12 +500,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 $styleAttainment = '';
                                                 $attainment = '';
                                                 if ($rowEntry['attainmentValue'] != '') {
-                                                    $attainment = __($guid, $rowEntry['attainmentValue']);
+                                                    $attainment = __($rowEntry['attainmentValue']);
                                                 }
                                                 if ($rowEntry['attainmentValue'] == 'Complete') {
-                                                    $attainment = __($guid, 'Com');
+                                                    $attainment = __('Com');
                                                 } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
-                                                    $attainment = __($guid, 'Inc');
+                                                    $attainment = __('Inc');
                                                 }
                                                 echo "<div $styleAttainment title='".htmlPrep($rowEntry['attainmentDescriptor'])."'>$attainment";
                                             }
@@ -525,12 +525,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 $styleEffort = '';
                                                 $effort = '';
                                                 if ($rowEntry['effortValue'] != '') {
-                                                    $effort = __($guid, $rowEntry['effortValue']);
+                                                    $effort = __($rowEntry['effortValue']);
                                                 }
                                                 if ($rowEntry['effortValue'] == 'Complete') {
-                                                    $effort = __($guid, 'Com');
+                                                    $effort = __('Com');
                                                 } elseif ($rowEntry['effortValue'] == 'Incomplete') {
-                                                    $effort = __($guid, 'Inc');
+                                                    $effort = __('Inc');
                                                 }
                                                 echo "<div $styleEffort title='".htmlPrep($rowEntry['effortDescriptor'])."'>$effort";
                                             }
@@ -565,7 +565,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                             }
                                             echo "<td style='$leftBorderStyle text-align: center;'>";
                                             if ($rowEntry['response'] != '') {
-                                                echo "<a title='".__($guid, 'Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Up</a><br/>";
+                                                echo "<a title='".__('Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowEntry['response']."'>Up</a><br/>";
                                             }
                                         }
                                         echo '</td>';
@@ -607,40 +607,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                                                 $rowWork = $resultWork->fetch();
 
                                                 if ($rowWork['status'] == 'Exemption') {
-                                                    $linkText = __($guid, 'Exe');
+                                                    $linkText = __('Exe');
                                                 } elseif ($rowWork['version'] == 'Final') {
-                                                    $linkText = __($guid, 'Fin');
+                                                    $linkText = __('Fin');
                                                 } else {
-                                                    $linkText = __($guid, 'Dra').$rowWork['count'];
+                                                    $linkText = __('Dra').$rowWork['count'];
                                                 }
 
                                                 $style = '';
                                                 $status = 'On Time';
                                                 if ($rowWork['status'] == 'Exemption') {
-                                                    $status = __($guid, 'Exemption');
+                                                    $status = __('Exemption');
                                                 } elseif ($rowWork['status'] == 'Late') {
                                                     $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                                                    $status = __($guid, 'Late');
+                                                    $status = __('Late');
                                                 }
 
                                                 if ($rowWork['type'] == 'File') {
-                                                    echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                                    echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
                                                 } elseif ($rowWork['type'] == 'Link') {
-                                                    echo "<span title='".$rowWork['version'].". $status. ".__($guid, 'Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                                    echo "<span title='".$rowWork['version'].". $status. ".__('Submitted at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                                 } else {
-                                                    echo "<span title='$status. ".__($guid, 'Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__($guid, 'on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
+                                                    echo "<span title='$status. ".__('Recorded at').' '.substr($rowWork['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10))."' $style>$linkText</span>";
                                                 }
                                             } else {
                                                 if (date('Y-m-d H:i:s') < $homeworkDueDateTime[$i]) {
-                                                    echo "<span title='".__($guid, 'Pending')."'>Pen</span>";
+                                                    echo "<span title='".__('Pending')."'>Pen</span>";
                                                 } else {
                                                     if ($rowStudents['dateStart'] > $lessonDate[$i]) {
-                                                        echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
+                                                        echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                     } else {
                                                         if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                            echo "<span title='".__($guid, 'Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__($guid, 'Inc').'</span>';
+                                                            echo "<span title='".__('Incomplete')."' style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'>".__('Inc').'</span>';
                                                         } else {
-                                                            echo "<span title='".__($guid, 'Not submitted online')."'>".__($guid, 'NA').'</span>';
+                                                            echo "<span title='".__('Not submitted online')."'>".__('NA').'</span>';
                                                         }
                                                     }
                                                 }

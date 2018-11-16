@@ -23,12 +23,12 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__($guid, 'Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Budget Cycle').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__('Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__('Edit Budget Cycle').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     if ($gibbonFinanceBudgetCycleID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($resultBudget->rowCount() < 1) {
-                $form->addRow()->addAlert(__($guid, 'There are no records to display.'), 'error');
+                $form->addRow()->addAlert(__('There are no records to display.'), 'error');
             } else {
                 while ($rowBudget = $resultBudget->fetch()) {
                     $row = $form->addRow();

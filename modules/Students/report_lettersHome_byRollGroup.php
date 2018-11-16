@@ -23,12 +23,12 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Letters Home by Roll Group').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Letters Home by Roll Group').'</div>';
     echo '</div>';
 
     try {
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     }
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $siblings = array();
@@ -72,22 +72,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Total Count');
+                echo __('Total Count');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Form Count');
+                echo __('Form Count');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Student');
+                echo __('Student');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Younger Siblings');
+                echo __('Younger Siblings');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Family');
+                echo __('Family');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Sibling Count');
+                echo __('Sibling Count');
                 echo '</th>';
                 echo '</tr>';
             }

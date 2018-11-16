@@ -25,7 +25,7 @@ $gibbonPersonID = $_POST['gibbonPersonID'];
 
 //Proceed!
 if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
-    echo __($guid, 'An error has occurred.');
+    echo __('An error has occurred.');
     echo '</div>';
 } else {
     //Check confirmation of alarm
@@ -40,7 +40,7 @@ if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
 
     if ($resultConfirm->rowCount() != 1) {
         echo "<div class='error'>";
-        echo __($guid, 'An error has occurred.');
+        echo __('An error has occurred.');
         echo '</div>';
     } else {
         $rowConfirm = $resultConfirm->fetch();
@@ -50,7 +50,7 @@ if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
         echo '</td>';
         echo "<td style='color: #fff'>";
         if ($rowConfirm['sounder'] == $rowConfirm['confirmer']) {
-            echo __($guid, 'NA');
+            echo __('NA');
         } else {
             if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
                 echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
@@ -60,7 +60,7 @@ if ($gibbonAlarmID == '' or $gibbonPersonID == '') { echo "<div class='error'>";
         echo "<td style='color: #fff'>";
         if ($rowConfirm['sounder'] != $rowConfirm['confirmer']) {
             if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
-                echo "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['confirmer']."&gibbonAlarmID=$gibbonAlarmID'><img title='".__($guid, 'Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+                echo "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['confirmer']."&gibbonAlarmID=$gibbonAlarmID'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
             }
         }
         echo '</td>';

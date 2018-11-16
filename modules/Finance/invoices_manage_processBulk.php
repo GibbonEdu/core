@@ -307,7 +307,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
                                 $mail = getGibbonMailer($guid);
-                                $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                                $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
                                 }
@@ -459,7 +459,7 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                         }
 
                         $mail = getGibbonMailer($guid);
-                        $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                        $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                         foreach ($emails as $address) {
                             $mail->AddBCC($address);
                         }

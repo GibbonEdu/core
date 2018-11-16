@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_edit_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -30,12 +30,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2, true) != true) {
             echo "<div class='error'>";
-            echo __($guid, 'School is not open on the specified day.');
+            echo __('School is not open on the specified day.');
             echo '</div>';
         } else {
             try {
@@ -49,14 +49,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $values = $result->fetch();
 
                 //Proceed!
                 echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/ttDates.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Tie Days to Dates')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>".__($guid, 'Edit Days in Date')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Day to Date').'</div>';
+                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/ttDates.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Tie Days to Dates')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>".__('Edit Days in Date')."</a> > </div><div class='trailEnd'>".__('Add Day to Date').'</div>';
                 echo '</div>';
 
                 if (isset($_GET['return'])) {

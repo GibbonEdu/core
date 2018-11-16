@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicationFormSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Staff', 'applicationFormRefereeLink', true);
-    $row = $form->addRow()->addHeading(__($guid, $setting['nameDisplay']))->append(__($guid, $setting['description']));
+    $row = $form->addRow()->addHeading(__($setting['nameDisplay']))->append(__($setting['description']));
 
     $applicationFormRefereeLink = unserialize($setting['value']);
 
@@ -91,9 +91,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     foreach ($types AS $type) {
         $row = $form->addRow();
         if ($typeCount==0 || $typeCount==1)
-            $row->addLabel($setting['name'], __($guid, "Staff Type").": ".__($guid, $type));
+            $row->addLabel($setting['name'], __("Staff Type").": ".__($type));
         else
-            $row->addLabel($setting['name'], __($guid, "Staff Role").": ".__($guid, $type));
+            $row->addLabel($setting['name'], __("Staff Role").": ".__($type));
         $form->addHiddenValue("types[".$typeCount."]", $type);
         $row->addURL("refereeLinks[]")->setID('refereeLink'.$typeCount)->setValue(isset($applicationFormRefereeLink[$type]) ? $applicationFormRefereeLink[$type] : '');
         $typeCount++;

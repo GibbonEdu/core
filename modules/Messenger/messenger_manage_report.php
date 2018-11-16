@@ -23,7 +23,7 @@ use Gibbon\Forms\Prefab\BulkActionForm;
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_report.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -31,7 +31,7 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print __($guid, "The highest grouped action cannot be determined.") ;
+		print __("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
@@ -43,7 +43,7 @@ else {
             ->add(__('View Send Report'));
 
 		echo '<h2>';
-		echo __($guid, 'Report Data');
+		echo __('Report Data');
 		echo '</h2>';
 		
 		$nonConfirm = 0;
@@ -61,7 +61,7 @@ else {
 
 		if ($result->rowCount() < 1) {
 			echo "<div class='error'>";
-			echo __($guid, 'The specified record cannot be found.');
+			echo __('The specified record cannot be found.');
 			echo '</div>';
 		}
 		else {
@@ -69,7 +69,7 @@ else {
 
 			if ($row['emailReceiptText'] != '') {
 				echo '<p>';
-				echo "<b>".__($guid, 'Receipt Confirmation Text') . "</b>: ".$row['emailReceiptText'];
+				echo "<b>".__('Receipt Confirmation Text') . "</b>: ".$row['emailReceiptText'];
 				echo '</p>';
 			}
 			?>
@@ -121,8 +121,8 @@ else {
 			echo "<div id='tabs' style='margin: 20px 0'>";
 				//Tab links
 				echo '<ul>';
-				echo "<li><a href='#tabs1'>".__($guid, 'By Roll Group').'</a></li>';
-				echo "<li><a href='#tabs2'>".__($guid, 'By Recipient').'</a></li>';
+				echo "<li><a href='#tabs1'>".__('By Roll Group').'</a></li>';
+				echo "<li><a href='#tabs2'>".__('By Recipient').'</a></li>';
 				echo '</ul>';
 
 				//Tab content
@@ -151,7 +151,7 @@ else {
 
 					if ($result->rowCount() < 1) {
 						echo "<div class='error'>";
-						echo __($guid, 'There are no records to display.');
+						echo __('There are no records to display.');
 						echo '</div>';
 					} else {
 						//Store receipt for this message data in an array

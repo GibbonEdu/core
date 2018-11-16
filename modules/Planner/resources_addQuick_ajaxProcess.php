@@ -23,7 +23,7 @@ $time = time();
 
 if (empty($_POST) or empty($_FILES)) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
-    echo __($guid, 'Your request failed due to an attachment error.');
+    echo __('Your request failed due to an attachment error.');
     echo '</span>';
     exit();
 } else {
@@ -36,7 +36,7 @@ if (empty($_POST) or empty($_FILES)) {
 
     if ($id == '') {
         echo "<span style='font-weight: bold; color: #ff0000'>";
-        echo __($guid, 'Your request failed because your inputs were invalid.');
+        echo __('Your request failed because your inputs were invalid.');
         echo '</span>';
         exit();
     } else {
@@ -65,7 +65,7 @@ if (empty($_POST) or empty($_FILES)) {
 
                 if (empty($attachment)) {
                     echo "<span style='font-weight: bold; color: #ff0000'>";
-                        echo __($guid, 'Your request failed due to an attachment error.');
+                        echo __('Your request failed due to an attachment error.');
                         echo ' '.$fileUploader->getLastError();
                     echo '</span>';
                     exit();

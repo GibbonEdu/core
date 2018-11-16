@@ -29,7 +29,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Set returnTo point for upcoming pages
@@ -86,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Activities');
+    echo __('Activities');
     echo '</h2>';
 
     $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);

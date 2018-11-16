@@ -23,14 +23,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonPersonID = null;
@@ -81,17 +81,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else if ($highestAction == 'View Timetable by Person_my' && $gibbonPersonID != $_SESSION[$guid]['gibbonPersonID']) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
 
             echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt.php&allUsers=$allUsers'>".__($guid, 'View Timetable by Person')."</a> > </div><div class='trailEnd'>".formatName($row['title'], $row['preferredName'], $row['surname'], $row['type']).'</div>';
+            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt.php&allUsers=$allUsers'>".__('View Timetable by Person')."</a> > </div><div class='trailEnd'>".formatName($row['title'], $row['preferredName'], $row['surname'], $row['type']).'</div>';
             echo '</div>';
 
             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
@@ -100,13 +100,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     echo "<div class='linkTop'>";
 
                     if ($search != '') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__($guid, 'Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__('Back to Search Results').'</a>';
                     }
                     if ($role == 'Student' or $role == 'Staff' or $allUsers == 'on') {
                         if ($search != '') {
                             echo ' | ';
                         }
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role&allUsers=$allUsers'>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role&allUsers=$allUsers'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     }
                     echo '</div>';
                 }
@@ -115,17 +115,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
             echo formatName($row['title'], $row['preferredName'], $row['surname'], $row['type'], false);
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year Group').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
             if ($row['yearGroup'] != '') {
-                echo '<i>'.__($guid, $row['yearGroup']).'</i>';
+                echo '<i>'.__($row['yearGroup']).'</i>';
             }
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Roll Group').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
             echo '<i>'.$row['rollGroup'].'</i>';
             echo '</td>';
             echo '</tr>';
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 echo $tt;
             } else {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             }
 

@@ -30,13 +30,13 @@ $page->breadcrumbs
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_item_signOut.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     if (empty($gibbonLibraryItemID)) {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $values = $result->fetch();
@@ -78,24 +78,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
                 echo "<div class='warning'>";
                 if ($values['returnAction'] == 'Make Available') {
-                    echo __($guid, 'This item has been marked to be <u>made available</u> for loan on return.');
+                    echo __('This item has been marked to be <u>made available</u> for loan on return.');
                 }
                 if ($values['returnAction'] == 'Reserve' and $values['gibbonPersonIDReturnAction'] != '') {
-                    echo __($guid, "This item has been marked to be <u>reserved</u> for <u>$person</u> on return.");
+                    echo __("This item has been marked to be <u>reserved</u> for <u>$person</u> on return.");
                 }
                 if ($values['returnAction'] == 'Decommission' and $values['gibbonPersonIDReturnAction'] != '') {
-                    echo __($guid, "This item has been marked to be <u>decommissioned</u> by <u>$person</u> on return.");
+                    echo __("This item has been marked to be <u>decommissioned</u> by <u>$person</u> on return.");
                 }
                 if ($values['returnAction'] == 'Repair' and $values['gibbonPersonIDReturnAction'] != '') {
-                    echo __($guid, "This item has been marked to be <u>repaired</u> by <u>$person</u> on return.");
+                    echo __("This item has been marked to be <u>repaired</u> by <u>$person</u> on return.");
                 }
-                echo ' '.__($guid, 'You can change this below if you wish.');
+                echo ' '.__('You can change this below if you wish.');
                 echo '</div>';
             }
 
             if ($_GET['name'] != '' or $_GET['gibbonLibraryTypeID'] != '' or $_GET['gibbonSpaceID'] != '' or $_GET['status'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_lending_item.php&name='.$_GET['name']."&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryTypeID=".$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']."'>".__($guid, 'Back').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Library/library_lending_item.php&name='.$_GET['name']."&gibbonLibraryItemID=$gibbonLibraryItemID&gibbonLibraryTypeID=".$_GET['gibbonLibraryTypeID'].'&gibbonSpaceID='.$_GET['gibbonSpaceID'].'&status='.$_GET['status']."'>".__('Back').'</a>';
                 echo '</div>';
             }
 

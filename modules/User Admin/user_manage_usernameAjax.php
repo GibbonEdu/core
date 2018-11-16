@@ -23,7 +23,7 @@ use Gibbon\Data\UsernameGenerator;
 include '../../gibbon.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add.php') == false) {
-    die( __($guid, 'Your request failed because you do not have access to this action.') );
+    die( __('Your request failed because you do not have access to this action.') );
 } else {
     $gibbonRoleID = isset($_POST['gibbonRoleID'])? $_POST['gibbonRoleID'] : '003';
     $preferredName = isset($_POST['preferredName'])? $_POST['preferredName'] : '';

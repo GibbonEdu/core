@@ -22,12 +22,12 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_results.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import External Assessments').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Import External Assessments').'</div>';
     echo '</div>';
 
     $step = null;
@@ -73,31 +73,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
         ?>
 
 		<h4>
-			<?php echo __($guid, 'Notes') ?>
+			<?php echo __('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Your import can only include users whose status is set "Expected", "Full" or "Left" (e.g. all users).') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+			<li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><?php echo __('You may only submit CSV files.') ?></li>
+			<li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><?php echo __('Your import can only include users whose status is set "Expected", "Full" or "Left" (e.g. all users).') ?></li>
+			<li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
-					<li><b><?php echo __($guid, 'Assessment Name') ?>* </b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessment.name in database.') ?></li>
-					<li><b><?php echo __($guid, 'Official Name') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonPerson.officialName in database,') ?></li>
-					<li><b><?php echo __($guid, 'Assessment Date') ?> *</b> - <?php echo __($guid, 'dd/mm/yyyy') ?></li>
-					<li><b><?php echo __($guid, 'Field Name') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessmentField.name in database.') ?></li>
-					<li><b><?php echo __($guid, 'Field Name Category') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix.') ?></li>
-					<li><b><?php echo __($guid, 'Result') ?> *</b> - <?php echo __($guid, 'Must match value of gibbonScaleGrade.value in database.') ?></li>
+					<li><b><?php echo __('Assessment Name') ?>* </b> - <?php echo __('Must match value of gibbonExternalAssessment.name in database.') ?></li>
+					<li><b><?php echo __('Official Name') ?> *</b> - <?php echo __('Must match value of gibbonPerson.officialName in database,') ?></li>
+					<li><b><?php echo __('Assessment Date') ?> *</b> - <?php echo __('dd/mm/yyyy') ?></li>
+					<li><b><?php echo __('Field Name') ?> *</b> - <?php echo __('Must match value of gibbonExternalAssessmentField.name in database.') ?></li>
+					<li><b><?php echo __('Field Name Category') ?> *</b> - <?php echo __('Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix.') ?></li>
+					<li><b><?php echo __('Result') ?> *</b> - <?php echo __('Must match value of gibbonScaleGrade.value in database.') ?></li>
 				</ol>
 			</li>
-			<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+			<li><?php echo __('Do not include a header row in the CSV files.') ?></li>
 		</ol>
 	<?php
 
     } elseif ($step == 2) {
         ?>
 		<h2>
-			<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+			<?php echo __('Step 2 - Data Check & Confirm') ?>
 		</h2>
 		<?php
 
@@ -105,14 +105,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
         if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
             ?>
 			<div class='error'>
-				<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+				<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 			</div>
 			<?php
 
         } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
             ?>
 			<div class='error'>
-				<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+				<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 			</div>
 			<?php
 
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 
             //PREPARE TABLES
             echo '<h4>';
-            echo __($guid, 'Prepare Database Tables');
+            echo __('Prepare Database Tables');
             echo '</h4>';
             //Lock tables
             $lockFail = false;
@@ -134,11 +134,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
             }
             if ($lockFail == true) {
                 echo "<div class='error'>";
-                echo __($guid, 'The database could not be locked for use.');
+                echo __('The database could not be locked for use.');
                 echo '</div>';
             } elseif ($lockFail == false) {
                 echo "<div class='success'>";
-                echo __($guid, 'The database was successfully locked.');
+                echo __('The database was successfully locked.');
                 echo '</div>';
             }
 
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                 //READ IN DATA
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'File Import');
+                    echo __('File Import');
                     echo '</h4>';
                     $importFail = false;
                     $csvFile = $_FILES['file']['tmp_name'];
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                             ++$resultSuccessCount;
                         } else {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'User with official Name %1$s had some information malformations.'), $data[1]);
+                            echo sprintf(__('User with official Name %1$s had some information malformations.'), $data[1]);
                             echo '</div>';
                         }
                         ++$resultCount;
@@ -191,21 +191,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                     fclose($handle);
                     if ($resultSuccessCount == 0) {
                         echo "<div class='error'>";
-                        echo __($guid, 'No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+                        echo __('No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     } elseif ($resultSuccessCount < $resultCount) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Some results could not be successfully read or used, so the import will be aborted.');
+                        echo __('Some results could not be successfully read or used, so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     } elseif ($resultSuccessCount == $resultCount) {
                         echo "<div class='success'>";
-                        echo __($guid, 'All results could be read and used, so the import will proceed.');
+                        echo __('All results could be read and used, so the import will proceed.');
                         echo '</div>';
                     } else {
                         echo "<div class='error'>";
-                        echo __($guid, 'An unknown error occured, so the import will be aborted.');
+                        echo __('An unknown error occured, so the import will be aborted.');
                         echo '</div>';
                         $proceed = false;
                     }
@@ -213,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
 
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'Results');
+                    echo __('Results');
                     echo '</h4>';
 
                     $users = array();
@@ -232,13 +232,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                 $resultUser->execute($dataUser);
                             } catch (PDOException $e) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'Your request failed due to a database error.');
+                                echo __('Your request failed due to a database error.');
                                 echo '</div>';
                                 $users[$result['officialName']] = null;
                             }
                             if ($resultUser->rowCount() != 1) {
                                 echo "<div class='error'>";
-                                echo sprintf(__($guid, 'User with official name %1$s in import cannot be found.'), $result['officialName']);
+                                echo sprintf(__('User with official name %1$s in import cannot be found.'), $result['officialName']);
                                 echo '</div>';
                                 $users[$result['officialName']] = null;
                             } else {
@@ -259,13 +259,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                     $resultAssessment->execute($dataAssessment);
                                 } catch (PDOException $e) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'Your request failed due to a database error.');
+                                    echo __('Your request failed due to a database error.');
                                     echo '</div>';
                                     $assessments[$result['assessmentName']] = null;
                                 }
                                 if ($resultAssessment->rowCount() != 1) {
                                     echo "<div class='error'>";
-                                    echo sprintf(__($guid, 'External Assessment with name %1$s in import cannot be found.'), $result['assessmentName']);
+                                    echo sprintf(__('External Assessment with name %1$s in import cannot be found.'), $result['assessmentName']);
                                     echo '</div>';
                                     $assessments[$result['assessmentName']] = null;
                                 } else {
@@ -287,13 +287,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                         $resultAssessmentField->execute($dataAssessmentField);
                                     } catch (PDOException $e) {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'Your request failed due to a database error.');
+                                        echo __('Your request failed due to a database error.');
                                         echo '</div>';
                                         $fields[$result['fieldName'].$result['fieldCategory']] = null;
                                     }
                                     if ($resultAssessmentField->rowCount() != 1) {
                                         echo "<div class='error'>";
-                                        echo sprintf(__($guid, 'External Assessment field with name %1$s in import cannot be found.'), $result['fieldName']);
+                                        echo sprintf(__('External Assessment field with name %1$s in import cannot be found.'), $result['fieldName']);
                                         echo '</div>';
                                         $fields[$result['fieldName'].$result['fieldCategory']] = null;
                                     } else {
@@ -312,7 +312,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                         $resultAssessmentStudent->execute($dataAssessmentStudent);
                                     } catch (PDOException $e) {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'Your request failed due to a database error.');
+                                        echo __('Your request failed due to a database error.');
                                         echo '</div>';
                                     }
                                     if ($resultAssessmentStudent->rowCount() == 1) { //Assessment exists for this student
@@ -326,7 +326,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                             $resultAssessmentStudentField->execute($dataAssessmentStudentField);
                                         } catch (PDOException $e) {
                                             echo "<div class='error'>";
-                                            echo __($guid, 'Your request failed due to a database error.');
+                                            echo __('Your request failed due to a database error.');
                                             echo '</div>';
                                         }
                                         if ($resultAssessmentStudentField->rowCount() == 1) { //If exists, update
@@ -340,13 +340,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                 $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
                                             } catch (PDOException $e) {
                                                 echo "<div class='error'>";
-                                                echo __($guid, 'Your request failed due to a database error.');
+                                                echo __('Your request failed due to a database error.');
                                                 echo '</div>';
                                                 $updateFail = true;
                                             }
                                             if ($updateFail == false) {
                                                 echo "<div class='success'>";
-                                                echo sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
+                                                echo sprintf(__('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
                                                 echo '</div>';
                                             }
                                         } else { //If not, insert
@@ -359,13 +359,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                 $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
                                             } catch (PDOException $e) {
                                                 echo "<div class='error'>";
-                                                echo __($guid, 'Your request failed due to a database error.');
+                                                echo __('Your request failed due to a database error.');
                                                 echo '</div>';
                                                 $insertFail = true;
                                             }
                                             if ($insertFail == false) {
                                                 echo "<div class='success'>";
-                                                echo sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
+                                                echo sprintf(__('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
                                                 echo '</div>';
                                             }
                                         }
@@ -379,7 +379,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                             $resultAssessmentStudentInsert->execute($dataAssessmentStudentInsert);
                                         } catch (PDOException $e) {
                                             echo "<div class='error'>";
-                                            echo __($guid, 'Your request failed due to a database error.');
+                                            echo __('Your request failed due to a database error.');
                                             echo '</div>';
                                             $insertFail = true;
                                         }
@@ -389,7 +389,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                             //Insert field
                                             if ($gibbonExternalAssessmentStudentID == '') {
                                                 echo "<div class='error'>";
-                                                echo __($guid, 'Your request failed due to a database error.');
+                                                echo __('Your request failed due to a database error.');
                                                 echo '</div>';
                                             } else {
                                                 try {
@@ -400,13 +400,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/import_r
                                                     $resultAssessmentStudentFieldUpdate->execute($dataAssessmentStudentFieldUpdate);
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>";
-                                                    echo __($guid, 'Your request failed due to a database error.');
+                                                    echo __('Your request failed due to a database error.');
                                                     echo '</div>';
                                                     $insertFail = true;
                                                 }
                                                 if ($insertFail == false) {
                                                     echo "<div class='success'>";
-                                                    echo sprintf(__($guid, '%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
+                                                    echo sprintf(__('%1$s %2$s grade %3$s was successfully recorded for %4$s.'), $result['assessmentName'], $result['fieldName'], $result['result'], $result['officialName']);
                                                     echo '</div>';
                                                 }
                                             }

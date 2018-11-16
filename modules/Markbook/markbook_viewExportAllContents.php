@@ -41,7 +41,7 @@ else
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     // Check existence of and access to this class.
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $columns = $result->rowCount();
     if ($columns < 1) {
         echo "<div class='warning'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
 
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         //Auto set first column width
         $excel->getActiveSheet()->getColumnDimension('A')->setAutoSize(true);
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('Student'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
 
@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             if ($attainmentAlternativeNameAbrev != '') {
     			$x = $attainmentAlternativeNameAbrev;
     		} else {
-    			$x = __($guid, 'Att');
+    			$x = __('Att');
     		}
     		$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), 2, $x);
             $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
@@ -144,13 +144,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 if ($effortAlternativeNameAbrev != '') {
                     $x = $effortAlternativeNameAbrev;
                 } else {
-                    $x = __($guid, 'Eff');
+                    $x = __('Eff');
                 }
         		$excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2, $x);
                 $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
                 $excel->getActiveSheet()->getStyleByColumnAndRow((2 + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
             }
-            $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2, __($guid, 'Com'));
+            $excel->getActiveSheet()->setCellValueByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2, __('Com'));
             $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow(((3-$effortAdjust) + ($i * (3-$effortAdjust))), 2)->applyFromArray($style_head_fill2);
         }
@@ -175,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             // Cumulative Average
             $finalColumnNum++;
             $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
-            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __($guid, 'Cumulative'));
+            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __('Cumulative'));
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
             
@@ -194,12 +194,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                 // Final Grade
                 $finalColumnNum++;
                 $excel->getActiveSheet()->getColumnDimension( $excel->num2alpha($finalColumnNum) )->setAutoSize(true);
-                $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __($guid, 'Final Grade'));
+                $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnNum, 2, __('Final Grade'));
                 $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_border);
                 $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnNum, 2)->applyFromArray($style_head_fill2);
             }
 
-            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnStart, 1, __($guid, 'Overall Grades'));
+            $excel->getActiveSheet()->setCellValueByColumnAndRow( $finalColumnStart, 1, __('Overall Grades'));
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow($finalColumnStart, 1)->applyFromArray($style_head_fill);
             $excel->getActiveSheet()->mergeCells( $excel->num2alpha($finalColumnStart).'1:' .$excel->num2alpha($finalColumnNum).'1');
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 		$sqlStudents = "SELECT title, surname, preferredName, gibbonPerson.gibbonPersonID, dateStart FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE role='Student' AND gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
 		$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents);
         if ($resultStudents->rowCount() < 1) {
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 3, __($guid, 'There are no records to display.'));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 3, __('There are no records to display.'));
             $excel->getActiveSheet()->getStyleByColumnAndRow(0, 3)->applyFromArray($style_border);
 
         } else {
@@ -236,12 +236,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                         $rowEntry = $resultEntry->fetch();
                         $attainment = '';
                         if ($rowEntry['attainmentValue'] != '') {
-                            $attainment = __($guid, $rowEntry['attainmentValue']);
+                            $attainment = __($rowEntry['attainmentValue']);
                         }
                         if ($rowEntry['attainmentValue'] == 'Complete') {
-                            $attainment = __($guid, 'Com');
+                            $attainment = __('Com');
                         } elseif ($rowEntry['attainmentValue'] == 'Incomplete') {
-                            $attainment = __($guid, 'Inc');
+                            $attainment = __('Inc');
                         }
 						$excel->getActiveSheet()->setCellValueByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r, htmlPrep($rowEntry['attainmentValue']));
                         $excel->getActiveSheet()->getStyleByColumnAndRow((1 + ($i * (3-$effortAdjust))), $r)->applyFromArray($style_border);
@@ -249,12 +249,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                         $effort = '';
                         if ($rowEntry['effortValue'] != '') {
-                            $effort = __($guid, $rowEntry['effortValue']);
+                            $effort = __($rowEntry['effortValue']);
                         }
                         if ($rowEntry['effortValue'] == 'Complete') {
-                            $effort = __($guid, 'Com');
+                            $effort = __('Com');
                         } elseif ($rowEntry['effortValue'] == 'Incomplete') {
-                            $effort = __($guid, 'Inc');
+                            $effort = __('Inc');
                         }
  						if ($enableEffort == 'Y') {
                             $excel->getActiveSheet()->setCellValueByColumnAndRow((2 + ($i * (3-$effortAdjust))), $r, $rowEntry['effortValue']);

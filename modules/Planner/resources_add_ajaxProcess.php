@@ -23,7 +23,7 @@ $time = time();
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {
     echo "<span style='font-weight: bold; color: #ff0000'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</span>';
     exit();
 } else {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
         if (($type != 'File' and $type != 'Link') or is_null($content) or $name == '' or $category == '' or $tags == '' or $id == '') {
             echo "<span style='font-weight: bold; color: #ff0000'>";
-            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo __('Your request failed because your inputs were invalid.');
             echo '</span>';
             exit();
         } else {
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
                     if (empty($attachment)) {
                         echo "<span style='font-weight: bold; color: #ff0000'>";
-                            echo __($guid, 'Your request failed due to an attachment error.');
+                            echo __('Your request failed due to an attachment error.');
                             echo ' '.$fileUploader->getLastError();
                         echo '</span>';
                         exit();
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 $result = $connection2->query($sql);
             } catch (PDOException $e) {
                 echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</span>';
                 exit();
             }
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
                 $result = $connection2->query($sql);
             } catch (PDOException $e) {
                 echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</span>';
                 exit();
             }
@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
             if ($partialFail == true) {
                 echo "<span style='font-weight: bold; color: #ff0000'>";
-                echo __($guid, 'Your request was successful, but some data was not properly saved.');
+                echo __('Your request was successful, but some data was not properly saved.');
                 echo '</span>';
             } else {
                 $html = '';

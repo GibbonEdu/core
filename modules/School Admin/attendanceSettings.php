@@ -25,12 +25,12 @@ use Gibbon\Domain\Attendance\AttendanceCodeGateway;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance Settings').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Attendance Settings').'</div>';
     echo '</div>';
 
     if (isset($_GET['return'])) {
@@ -38,10 +38,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     }
 
     echo '<h3>';
-    echo __($guid, 'Attendance Codes');
+    echo __('Attendance Codes');
     echo '</h3>';
     echo '<p>';
-    echo __($guid, 'These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.');
+    echo __('These codes should not be changed during an active school year. Removing an attendace code after attendance has been recorded can result in lost information.');
     echo '</p>';
 
     $attendanceCodeGateway = $container->get(AttendanceCodeGateway::class);
@@ -87,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo $table->render($attendanceCodes);
 
     echo '<h3>';
-    echo __($guid, __('Miscellaneous'));
+    echo __(__('Miscellaneous'));
     echo '</h3>';
 
     $form = Form::create('attendanceSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/attendanceSettingsProcess.php');

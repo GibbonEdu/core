@@ -30,12 +30,12 @@ $page->breadcrumbs->add(__('Student Borrowing Record'));
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorrowingRecord.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo '<h2>';
-    echo __($guid, 'Choose Student');
+    echo __('Choose Student');
     echo '</h2>';
 
     $gibbonPersonID = null;
@@ -62,13 +62,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_studentBorr
 
     if ($gibbonPersonID != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         $output = getBorrowingRecord($guid, $connection2, $gibbonPersonID);
         if ($output == false) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             echo $output;

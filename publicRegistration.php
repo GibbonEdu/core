@@ -34,21 +34,21 @@ if (isset($_SESSION[$guid]['username']) == false) {
 if ($proceed == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Public Registration').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Public Registration').'</div>';
     echo '</div>';
 
     $publicRegistrationMinimumAge = getSettingByScope($connection2, 'User Admin', 'publicRegistrationMinimumAge');
 
     $returns = array();
-    $returns['fail5'] = sprintf(__($guid, 'Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge);
-    $returns['fail7'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
-    $returns['success1'] = __($guid, 'Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
-    $returns['success0'] = __($guid, 'Your registration was successfully submitted, and you may now log into the system using your new username and password.');
+    $returns['fail5'] = sprintf(__('Your request failed because you do not meet the minimum age for joining this site (%1$s years of age).'), $publicRegistrationMinimumAge);
+    $returns['fail7'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['success1'] = __('Your registration was successfully submitted and is now pending approval. Our team will review your registration and be in touch in due course.');
+    $returns['success0'] = __('Your registration was successfully submitted, and you may now log into the system using your new username and password.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -57,7 +57,7 @@ if ($proceed == false) {
     $intro = getSettingByScope($connection2, 'User Admin', 'publicRegistrationIntro');
     if ($intro != '') {
         echo '<h3>';
-        echo __($guid, 'Introduction');
+        echo __('Introduction');
         echo '</h3>';
         echo '<p>';
         echo $intro;
@@ -155,7 +155,7 @@ if ($proceed == false) {
     $postscript = getSettingByScope($connection2, 'User Admin', 'publicRegistrationPostscript');
     if ($postscript != '') {
         echo '<h2>';
-        echo __($guid, 'Further Information');
+        echo __('Further Information');
         echo '</h2>';
         echo "<p style='padding-bottom: 15px'>";
         echo $postscript;

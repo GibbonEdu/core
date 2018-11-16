@@ -26,20 +26,20 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupSummary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Roll Group Summary').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Roll Group Summary').'</div>';
     echo '</div>';
 
     echo '<h2>';
-    echo __($guid, 'Choose Options');
+    echo __('Choose Options');
     echo '</h2>';
 
     echo '<p>';
-        echo __($guid, 'By default this report counts all students who are enroled in the current academic year and whose status is currently set to full. However, if dates are set, only those students who have start and end dates outside of the specified dates, or have no start and end dates, will be shown (irrespective of their status).');
+        echo __('By default this report counts all students who are enroled in the current academic year and whose status is currently set to full. However, if dates are set, only those students who have start and end dates outside of the specified dates, or have no start and end dates, will be shown (irrespective of their status).');
     echo '</p>';
 
     $today = time();
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Results');
+    echo __('Results');
     echo '</h2>';
 
     //Get roll groups in current school year
@@ -127,25 +127,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
 
     if ($result->rowCount() == 0) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Mean Age');
+        echo __('Mean Age');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Male');
+        echo __('Male');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Female');
+        echo __('Female');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Total');
+        echo __('Total');
         echo '</th>';
         echo '</tr>';
 
@@ -216,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_rollGroupS
         }
         echo "<tr style='background-color: #FFD2A9'>";
         echo '<td>';
-        echo '<b>'.__($guid, 'All Roll Groups').'</b>';
+        echo '<b>'.__('All Roll Groups').'</b>';
         echo '</td>';
         echo '<td>';
         $cellCount = 0;

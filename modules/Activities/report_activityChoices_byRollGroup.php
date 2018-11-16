@@ -26,14 +26,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     $page->breadcrumbs->add(__('Activity Choices by Roll Group'));
 
     echo '<h2>';
-    echo __($guid, 'Choose Roll Group');
+    echo __('Choose Roll Group');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     if ($gibbonRollGroupID != '') {
         $output = '';
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {

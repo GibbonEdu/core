@@ -26,13 +26,13 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_copy.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check if school year specified
@@ -41,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
         if ( empty($gibbonCourseClassID) or empty($gibbonMarkbookCopyClassID) ) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
 
@@ -63,10 +63,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
-                echo __($guid, 'Copy Columns');
+                echo __('Copy Columns');
                 echo '</h1>';
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $course = $result->fetch();
@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	            if ($canEditThisClass == false) {
 	            	//Acess denied
 				    echo "<div class='error'>";
-				    echo __($guid, 'You do not have access to this action.');
+				    echo __('You do not have access to this action.');
 				    echo '</div>';
 	            } else {
                     $page->breadcrumbs
@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
 			        if ($result->rowCount() < 1) {
 	                    echo "<div class='error'>";
-	                    echo __($guid, 'There are no records to display.');
+	                    echo __('There are no records to display.');
 	                    echo '</div>';
 	                } else {
 
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 		                $courseFrom = $result2->fetch();
 
 	                	echo '<p>';
-	                	printf( __($guid, 'This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
+	                	printf( __('This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
                         echo '</p>';
                         
                         echo '<fieldset>';

@@ -186,7 +186,7 @@ else {
                             //Check number of rows returned.
                             //If it is not 1, show error
                             if (!($resultYear->rowCount() == 1)) {
-                                die(__($guid, 'Configuration Error: there is a problem accessing the current Academic Year from the database.'));
+                                die(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
                             }
                             //Else get year details
                             else {

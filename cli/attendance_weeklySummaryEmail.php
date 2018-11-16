@@ -28,7 +28,7 @@ setCurrentSchoolYear($guid, $connection2);
 
 //Check for CLI, so this cannot be run through browser
 if (!isCommandLineInterface()) { 
-    echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+    echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     setCurrentSchoolYear($guid, $connection2);
 
@@ -161,7 +161,7 @@ if (!isCommandLineInterface()) {
             $event = new NotificationEvent('Attendance', 'Weekly Attendance Summary');
 
             $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
-            $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
+            $event->setNotificationText(__('An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
             $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=rollGroup');
 
             // Push the event to the notification sender

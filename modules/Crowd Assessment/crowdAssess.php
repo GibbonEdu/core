@@ -23,11 +23,11 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View All Assessments').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View All Assessments').'</div>';
     echo '</div>';
 
     $sql = getLessons($guid, $connection2);
@@ -40,28 +40,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     }
 
     echo '<p>';
-    echo __($guid, 'The list below shows all lessons in which there is work that you can crowd assess.');
+    echo __('The list below shows all lessons in which there is work that you can crowd assess.');
     echo '</p>';
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are currently no lessons to for you to crowd asess.');
+        echo __('There are currently no lessons to for you to crowd asess.');
         echo '</div>';
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Class');
+        echo __('Class');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Lesson').'</br>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+        echo __('Lesson').'</br>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Date');
+        echo __('Date');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             echo dateConvertBack($guid, $row['date']);
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/crowdAssess_view.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/crowdAssess_view.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }

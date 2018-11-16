@@ -29,7 +29,7 @@ $page->breadcrumbs->add(__('Student History'));
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -37,12 +37,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         if ($highestAction == 'Student History_all') {
             echo '<h2>';
-            echo __($guid, 'Choose Student');
+            echo __('Choose Student');
             echo '</h2>';
 
             $gibbonPersonID = null;
@@ -70,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             if ($gibbonPersonID != '') {
                 $output = '';
                 echo '<h2>';
-                echo __($guid, 'Report Data');
+                echo __('Report Data');
                 echo '</h2>';
 
                 try {
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                 }
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record does not exist.');
+                    echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Access denied.');
+                echo __('Access denied.');
                 echo '</div>';
             } else {
                 //Get child list
@@ -140,11 +140,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                 if ($countChild == 0) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
+                    echo __('Access denied.');
                     echo '</div>';
                 } else {
                     echo '<h2>';
-                    echo __($guid, 'Choose');
+                    echo __('Choose');
                     echo '</h2>';
 
                     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
 
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $rowChild = $resultChild->fetch();
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                         if ($gibbonPersonID != '') {
                             $output = '';
                             echo '<h2>';
-                            echo __($guid, 'Report Data');
+                            echo __('Report Data');
                             echo '</h2>';
 
                             try {
@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
                             }
                             if ($result->rowCount() != 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'The specified record does not exist.');
+                                echo __('The specified record does not exist.');
                                 echo '</div>';
                             } else {
                                 $row = $result->fetch();
@@ -220,7 +220,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
         else if ($highestAction == 'Student History_my') {
             $output = '';
             echo '<h2>';
-            echo __($guid, 'Report Data');
+            echo __('Report Data');
             echo '</h2>';
 
             try {
@@ -233,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();

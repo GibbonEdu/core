@@ -23,7 +23,7 @@ use Gibbon\Domain\User\RoleGateway;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!

@@ -23,19 +23,19 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
         echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Unit').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__('Unit Planner')."</a> > </div><div class='trailEnd'>".__('Add Unit').'</div>';
         echo '</div>';
 
         if (isset($_GET['return'])) {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
         if ($gibbonSchoolYearID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -61,14 +61,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
 
                 if ($gibbonCourseID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     try {
@@ -94,17 +94,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                         $gibbonYearGroupIDList = $rowCourse['gibbonYearGroupIDList'];
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_addProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&address=".$_GET['q'] ?>" enctype="multipart/form-data">
-                            <h3><?php echo __($guid, 'Unit Basics') ?></h3>
+                            <h3><?php echo __('Unit Basics') ?></h3>
                             <table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr class='break'>
 									<td colspan=2>
-										<h3><?php echo __($guid, 'Overview') ?></h3>
+										<h3><?php echo __('Overview') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td style='width: 275px'>
-										<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+										<b><?php echo __('School Year') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<input readonly name="yearName" id="yearName" maxlength=20 value="<?php echo $row['name'] ?>" type="text" class="standardWidth">
@@ -112,8 +112,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Course') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+										<b><?php echo __('Course') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo $rowCourse['nameShort'] ?>" type="text" class="standardWidth">
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Name') ?> *</b><br/>
+										<b><?php echo __('Name') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td colspan=2>
-										<b><?php echo __($guid, 'Description') ?> *</b>
+										<b><?php echo __('Description') ?> *</b>
 										<textarea name='description' id='description' rows=5 style='width: 300px'></textarea>
 										<script type="text/javascript">
 											var description=new LiveValidation('description');
@@ -144,32 +144,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
             					<tr>
             						<td>
-            							<b><?php echo __($guid, 'Active') ?> *</b><br/>
+            							<b><?php echo __('Active') ?> *</b><br/>
             							<span class="emphasis small"></span>
             						</td>
             						<td class="right">
             							<select name="active" id="active" class="standardWidth">
-            								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-            								<option value="N"><?php echo __($guid, 'No') ?></option>
+            								<option value="Y"><?php echo __('Yes') ?></option>
+            								<option value="N"><?php echo __('No') ?></option>
             							</select>
             						</td>
             					</tr>
             					<tr>
             						<td>
-            							<b><?php echo __($guid, 'Include In Curriculum Map') ?> *</b><br/>
+            							<b><?php echo __('Include In Curriculum Map') ?> *</b><br/>
             							<span class="emphasis small"></span>
             						</td>
             						<td class="right">
             							<select name="map" id="map" class="standardWidth">
-            								<option value="Y"><?php echo __($guid, 'Yes') ?></option>
-            								<option value="N"><?php echo __($guid, 'No') ?></option>
+            								<option value="Y"><?php echo __('Yes') ?></option>
+            								<option value="N"><?php echo __('No') ?></option>
             							</select>
             						</td>
             					</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Ordering') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Units are arranged form lowest to highest ordering value, then alphabetically.'); ?></span>
+										<b><?php echo __('Ordering') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('Units are arranged form lowest to highest ordering value, then alphabetically.'); ?></span>
 									</td>
 									<td class="right">
 										<input name="ordering" id="ordering" maxlength=4 value="0" type="text" class="standardWidth">
@@ -182,8 +182,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
                                 <tr>
                                     <td class='long' colspan=2>
-                                        <b><?php echo __($guid, 'Concepts & Keywords') ?></b><br/>
-                                        <span class="emphasis small"><?php echo __($guid, 'Use tags to describe unit and its contents.') ?></span><br/>
+                                        <b><?php echo __('Concepts & Keywords') ?></b><br/>
+                                        <span class="emphasis small"><?php echo __('Use tags to describe unit and its contents.') ?></span><br/>
                 						<?php
                                         $tags = getTagList($connection2);
                                         $list = '';
@@ -212,12 +212,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
                                 <tr class='break' id="datesHeaderRow">
     								<td colspan=2>
-    									<h3><?php echo __($guid, 'Classes') ?></h3>
+    									<h3><?php echo __('Classes') ?></h3>
     								</td>
     							</tr>
     							<tr id="datesRow">
     								<td colspan=2>
-    									<p><?php echo __($guid, 'Select classes which will have access to this unit.') ?></p>
+    									<p><?php echo __('Select classes which will have access to this unit.') ?></p>
     									<?php
     									$classCount = 0;
 										try {
@@ -231,16 +231,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
 										if ($resultClass->rowCount() < 1) {
 											echo "<div class='error'>";
-											echo __($guid, 'There are no records to display.');
+											echo __('There are no records to display.');
 											echo '</div>';
 										} else {
 											echo "<table cellspacing='0' style='width: 100%'>";
 											echo "<tr class='head'>";
 											echo '<th>';
-											echo __($guid, 'Class');
+											echo __('Class');
 											echo '</th>';
 											echo '<th>';
-											echo __($guid, 'Running')."<br/><span style='font-size: 80%'>".__($guid, 'Is class studying this unit?').'</span>';
+											echo __('Running')."<br/><span style='font-size: 80%'>".__('Is class studying this unit?').'</span>';
 											echo '</th>';
 											echo '</tr>';
 
@@ -263,8 +263,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 												?>
 													<input name="gibbonCourseClassID<?php echo $classCount?>" id="gibbonCourseClassID<?php echo $classCount?>" maxlength=10 value="<?php echo $rowClass['gibbonCourseClassID'] ?>" type="hidden" class="standardWidth">
 													<select name="running<?php echo $classCount?>" id="running<?php echo $classCount?>" style="width:100%">
-														<option value="N"><?php echo __($guid, 'No') ?></option>
-														<option value="Y"><?php echo __($guid, 'Yes') ?></option>
+														<option value="N"><?php echo __('No') ?></option>
+														<option value="Y"><?php echo __('Yes') ?></option>
 													</select>
 													<?php
 												echo '</td>';
@@ -279,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
 								<tr class='break'>
 									<td colspan=2>
-										<h3><?php echo __($guid, 'Unit Outline') ?></h3>
+										<h3><?php echo __('Unit Outline') ?></h3>
 									</td>
 								</tr>
 								<tr>
@@ -288,10 +288,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 										<p><?php
                                         $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
                                         if ($shareUnitOutline == 'Y') {
-                                            echo __($guid, 'The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
+                                            echo __('The contents of both the Unit Outline field and the Downloadable Unit Outline are available to all users who can access this unit via the Lesson Planner (possibly include parents and students).');
                                         }
                                         else {
-                                            echo __($guid, 'The contents of the Unit Outline field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).');
+                                            echo __('The contents of the Unit Outline field are viewable only to those with full access to the Planner (usually teachers and administrators, but not students and parents), whereas the downloadable version (below) is available to more users (usually parents).');
                                         }
                                         ?></p>
 										<?php echo getEditor($guid,  true, 'details', $unitOutline, 40, true, false, false) ?>
@@ -299,8 +299,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Downloadable Unit Outline') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Available to most users.') ?></span>
+										<b><?php echo __('Downloadable Unit Outline') ?></b><br/>
+										<span class="emphasis small"><?php echo __('Available to most users.') ?></span>
 									</td>
 									<td class="right">
 										<input type="file" name="file" id="file"><br/><br/>
@@ -330,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                             </table>
 
 
-                            <h3 class='bigTop'><?php echo __($guid, 'Advanced Options') ?></h3>
+                            <h3 class='bigTop'><?php echo __('Advanced Options') ?></h3>
                             <table class='smallIntBorder fullWidth' cellspacing='0'>
                                 <script type="text/javascript">
                                     /* Advanced Options Control */
@@ -351,12 +351,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
             						<td class="right">
             							<?php
                                         echo "<input type='checkbox' name='advanced' class='advanced' id='advanced' value='Yes' />";
-                        				echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__($guid, 'Show Advanced Options').'</span>'; ?>
+                        				echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show Advanced Options').'</span>'; ?>
             						</td>
             					</tr>
                                 <tr class='break hiddenRow'>
 									<td colspan=2>
-										<h3><?php echo __($guid, 'Outcomes') ?></h3>
+										<h3><?php echo __('Outcomes') ?></h3>
 									</td>
 								</tr>
 								<?php
@@ -383,10 +383,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 								</script>
 								<tr class='hiddenRow'>
 									<td colspan=2>
-										<p><?php echo __($guid, 'Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.') ?></p>
+										<p><?php echo __('Link this unit to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which units, classes and courses.') ?></p>
 										<div class="outcome" id="outcome" style='width: 100%; padding: 5px 0px 0px 0px; min-height: 66px'>
 											<div id="outcomeOuter0">
-												<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php echo __($guid, 'Key outcomes listed here...') ?></div>
+												<div style='color: #ddd; font-size: 230%; margin: 15px 0 0 6px'><?php echo __('Key outcomes listed here...') ?></div>
 											</div>
 										</div>
 										<div style='width: 100%; padding: 0px 0px 0px 0px;'>
@@ -404,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																});
 															</script>
 															<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
-																<option class='all' value='0'><?php echo __($guid, 'Choose an outcome to add it to this unit') ?></option>
+																<option class='all' value='0'><?php echo __('Choose an outcome to add it to this unit') ?></option>
 																<?php
                                                                 $currentCategory = '';
 																$lastCategory = '';
@@ -424,12 +424,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																} catch (PDOException $e) {
 																	echo "<div class='error'>".$e->getMessage().'</div>';
 																}
-																echo "<optgroup label='--".__($guid, 'SCHOOL OUTCOMES')."--'>";
+																echo "<optgroup label='--".__('SCHOOL OUTCOMES')."--'>";
 																while ($rowSelect = $resultSelect->fetch()) {
 																	$currentCategory = $rowSelect['category'];
 																	if (($currentCategory != $lastCategory) and $currentCategory != '') {
 																		echo "<optgroup label='--".$currentCategory."--'>";
-																		echo "<option class='$currentCategory' value='0'>".__($guid, 'Choose an outcome to add it to this unit').'</option>';
+																		echo "<option class='$currentCategory' value='0'>".__('Choose an outcome to add it to this unit').'</option>';
 																		$categories[$categoryCount] = $currentCategory;
 																		++$categoryCount;
 																	}
@@ -467,7 +467,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																		$currentCategory = $rowSelect['category'];
 																		$currentLA = $rowSelect['learningArea'];
 																		if (($currentLA != $lastLA) and $currentLA != '') {
-																			echo "<optgroup label='--".strToUpper($currentLA).' '.__($guid, 'OUTCOMES')."--'>";
+																			echo "<optgroup label='--".strToUpper($currentLA).' '.__('OUTCOMES')."--'>";
 																		}
 																		if (($currentCategory != $lastCategory) and $currentCategory != '') {
 																			echo "<optgroup label='--".$currentCategory."--'>";
@@ -492,7 +492,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                                             if (count($categories) > 0) {
                                                                 ?>
 																<select id='outcomeFilter' style='float: none; margin-left: 3px; margin-top: 0px; width: 350px'>
-																	<option value='all'><?php echo __($guid, 'View All') ?></option>
+																	<option value='all'><?php echo __('View All') ?></option>
 																	<?php
                                                                     $categories = array_unique($categories);
                                                                 $categories = msort($categories);
@@ -522,7 +522,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																	}
 																}
 																else {
-																	alert("<?php echo __($guid, 'This element has already been selected!') ?>") ;
+																	alert("<?php echo __('This element has already been selected!') ?>") ;
 																	$('#newOutcome').val('0');
 																}
 															}
@@ -536,13 +536,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 							    </tr>
 								<tr class='break hiddenRow'>
 									<td colspan=2>
-										<h3><?php echo __($guid, 'Smart Blocks') ?></h3>
+										<h3><?php echo __('Smart Blocks') ?></h3>
 									</td>
 								</tr>
 								<tr class='hiddenRow'>
 									<td colspan=2>
 										<p>
-											<?php echo __($guid, 'Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
+											<?php echo __('Smart Blocks aid unit planning by giving teachers help in creating and maintaining new units, splitting material into smaller units which can be deployed to lesson plans. As well as predefined fields to fill, Smart Units provide a visual view of the content blocks that make up a unit. Blocks may be any kind of content, such as discussion, assessments, group work, outcome etc.') ?>
 										</p>
 										<style>
 											#sortable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
@@ -583,7 +583,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 																	 });
 																});
 															</script>
-															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php echo __($guid, 'Click to create a new block') ?></div><br/>
+															<div id='new' style='cursor: default; float: none; border: 1px dotted #aaa; background: none; margin-left: 3px; color: #999; margin-top: 0px; font-size: 140%; font-weight: bold; width: 350px'><?php echo __('Click to create a new block') ?></div><br/>
 														</td>
 													</tr>
 												</table>
@@ -594,22 +594,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
 								<tr class='break hiddenRow'>
                                     <td colspan=2>
-                                        <h3><?php echo __($guid, 'Miscellaneous Settings') ?></h3>
+                                        <h3><?php echo __('Miscellaneous Settings') ?></h3>
                                     </td>
                                 </tr>
                                 <tr class='hiddenRow'>
                                     <td>
-                                        <b><?php echo __($guid, 'License') ?></b><br/>
-                                        <span class="emphasis small"><?php echo __($guid, 'Under what conditions can this work be reused?'); ?></span>
+                                        <b><?php echo __('License') ?></b><br/>
+                                        <span class="emphasis small"><?php echo __('Under what conditions can this work be reused?'); ?></span>
                                     </td>
                                     <td class="right">
                                         <select name="license" id="license" class="standardWidth">
                                             <option value=""></option>
-                                            <option value="Copyright"><?php echo __($guid, 'Copyright') ?></option>
-                                            <option value="Creative Commons BY"><?php echo __($guid, 'Creative Commons BY') ?></option>
-                                            <option value="Creative Commons BY-SA"><?php echo __($guid, 'Creative Commons BY-SA') ?></option>
-                                            <option value="Creative Commons BY-SA-NC"><?php echo __($guid, 'Creative Commons BY-SA-NC') ?></option>
-                                            <option value="Public Domain"><?php echo __($guid, 'Public Domain') ?></option>
+                                            <option value="Copyright"><?php echo __('Copyright') ?></option>
+                                            <option value="Creative Commons BY"><?php echo __('Creative Commons BY') ?></option>
+                                            <option value="Creative Commons BY-SA"><?php echo __('Creative Commons BY-SA') ?></option>
+                                            <option value="Creative Commons BY-SA-NC"><?php echo __('Creative Commons BY-SA-NC') ?></option>
+                                            <option value="Public Domain"><?php echo __('Public Domain') ?></option>
                                         </select>
                                     </td>
                                 </tr>
@@ -619,12 +619,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
                                     ?>
                                     <tr class='break hiddenRow'>
                                         <td>
-                                            <b><?php echo __($guid, 'Shared Publically') ?> * </b><br/>
-                                            <span class="emphasis small"><?php echo __($guid, 'Share this unit via the public listing of units? Useful for building MOOCS.'); ?></span>
+                                            <b><?php echo __('Shared Publically') ?> * </b><br/>
+                                            <span class="emphasis small"><?php echo __('Share this unit via the public listing of units? Useful for building MOOCS.'); ?></span>
                                         </td>
                                         <td class="right">
-                                            <input type="radio" name="sharedPublic" value="Y" /> <?php echo __($guid, 'Yes') ?>
-                                            <input checked type="radio" name="sharedPublic" value="N" /> <?php echo __($guid, 'No') ?>
+                                            <input type="radio" name="sharedPublic" value="Y" /> <?php echo __('Yes') ?>
+                                            <input checked type="radio" name="sharedPublic" value="N" /> <?php echo __('No') ?>
                                         </td>
                                     </tr>
                                     <?php
@@ -650,7 +650,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_add.php') ==
 
 								<tr>
 									<td class="right" colspan=2>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+										<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 									</td>
 								</tr>
 							</table>

@@ -553,7 +553,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     $studentName = formatName('', $preferredName, $surname, 'Student', false);
                                     $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
-                                    $event->setNotificationText(sprintf(__($guid, '%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
+                                    $event->setNotificationText(sprintf(__('%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
                                     $event->setActionLink($actionLink);
 
                                     $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
@@ -564,7 +564,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
                                     // Add direct notifications to roll group tutors
                                     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                                        $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
+                                        $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
 
                                         if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
                                             $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);

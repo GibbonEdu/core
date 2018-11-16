@@ -30,14 +30,14 @@ if (isset($_GET['key'])) {
 }
 
 if (isset($_GET['return'])) {
-    returnProcess($guid, $_GET['return'], null, array('error3' => "Your payment could not be made as the payment gateway does not support the system's currency.", 'success1' => 'Your payment has been successfully made to your credit card. A receipt has been emailed to you.', 'success2' => 'Your payment could not be made to your credit card. Please try an alternative payment method.', 'success3' => sprintf(__($guid, 'Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonFinanceInvoiceID)));
+    returnProcess($guid, $_GET['return'], null, array('error3' => "Your payment could not be made as the payment gateway does not support the system's currency.", 'success1' => 'Your payment has been successfully made to your credit card. A receipt has been emailed to you.', 'success2' => 'Your payment could not be made to your credit card. Please try an alternative payment method.', 'success3' => sprintf(__('Your payment has been successfully made to your credit card, but there has been an error recording your payment in %1$s. Please print this screen and contact the school ASAP, quoting code %2$s.'), $_SESSION[$guid]['systemName'], $gibbonFinanceInvoiceID)));
 }
 
 if (!isset($_GET['return'])) { //No return message, so must just be landing to make payment
     //Check variables
     if ($gibbonFinanceInvoiceID == '' or $key == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         //Check for record
@@ -49,13 +49,13 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
             $resultKeyRead->execute($dataKeyRead);
         } catch (PDOException $e) {
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed due to a database error.');
+            echo __('Your request failed due to a database error.');
             echo '</div>';
         }
 
         if ($resultKeyRead->rowCount() != 1) { //If not exists, report error
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {    //If exists check confirmed
             $rowKeyRead = $resultKeyRead->fetch();
@@ -69,7 +69,7 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
                 $resultFees->execute($dataFees);
             } catch (PDOException $e) {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</div>';
                 $feeOK = false;
             }
@@ -91,11 +91,11 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
                     $financeOnlinePaymentThreshold = getSettingByScope($connection2, 'Finance', 'financeOnlinePaymentThreshold');
                     if ($financeOnlinePaymentEnabled == 'Y') {
                         echo "<h3 style='margin-top: 40px'>";
-                        echo __($guid, 'Online Payment');
+                        echo __('Online Payment');
                         echo '</h3>';
                         echo '<p>';
                         if ($financeOnlinePaymentThreshold == '' or $financeOnlinePaymentThreshold >= $feeTotal) {
-                            echo sprintf(__($guid, 'Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]['systemName']).' ';
+                            echo sprintf(__('Payment can be made by credit card, using our secure PayPal payment gateway. When you press Pay Online Now, you will be directed to PayPal in order to make payment. During this process we do not see or store your credit card details. Once the transaction is complete you will be returned to %1$s.'), $_SESSION[$guid]['systemName']).' ';
 
                             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/invoices_payOnlineProcess.php');
                 
@@ -109,17 +109,17 @@ if (!isset($_GET['return'])) { //No return message, so must just be landing to m
 
                             echo $form->getOutput();
                         } else {
-                            echo "<div class='error'>".__($guid, 'Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.').'</div>';
+                            echo "<div class='error'>".__('Payment is not permitted for this invoice, as the total amount is greater than the permitted online payment threshold.').'</div>';
                         }
                         echo '</p>';
                     } else {
                         echo "<div class='error'>";
-                        echo __($guid, 'Your request failed due to a database error.');
+                        echo __('Your request failed due to a database error.');
                         echo '</div>';
                     }
                 } else {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your request failed due to a database error.');
+                    echo __('Your request failed due to a database error.');
                     echo '</div>';
                 }
             }

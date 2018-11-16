@@ -24,7 +24,7 @@ $page->breadcrumbs->add(__('Import Records'));
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -41,10 +41,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
     //STEP 1, SELECT TERM
     if ($step == 1) {
         echo "<h2>" ;
-			echo __($guid, 'Step 1 - Select CSV Files');
+			echo __('Step 1 - Select CSV Files');
 		echo "</h2>";
 		echo "<p>";
-		      echo __($guid, 'This page allows you to import library records from a CSV file. The import includes one row for each record. The system will match records by ID, updating any matching results, whilst creating new records not already existing in the system.')."<br/>";
+		      echo __('This page allows you to import library records from a CSV file. The import includes one row for each record. The system will match records by ID, updating any matching results, whilst creating new records not already existing in the system.')."<br/>";
 		echo "</p>";
 
         $form = Form::create('importUserPhotos', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_import.php&step=2');
@@ -71,18 +71,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 
         ?>
 		<h4>
-			<?php echo __($guid, 'Notes') ?>
+			<?php echo __('Notes') ?>
 		</h4>
 		<ol>
-			<li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-			<li><?php echo __($guid, 'You may only submit CSV files.') ?></li>
-			<li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-			<li><?php echo __($guid, 'Imports can only be for one Type (e.g. Print Publication, Computer, etc). The type of the first item in the import will be applied to all other entries.') ?></li>
-			<li><?php echo __($guid, 'The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
+			<li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+			<li><?php echo __('You may only submit CSV files.') ?></li>
+			<li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+			<li><?php echo __('Imports can only be for one Type (e.g. Print Publication, Computer, etc). The type of the first item in the import will be applied to all other entries.') ?></li>
+			<li><?php echo __('The submitted file must have the following fields in the following order (* denotes required field):') ?></li>
 				<ol>
-					<li><b><?php echo __($guid, 'General Details'); ?></b></li>
+					<li><b><?php echo __('General Details'); ?></b></li>
 					<ol>
-						<li><b><?php echo __($guid, 'Type') ?>* </b> - <?php echo __($guid, 'One of:').' ';
+						<li><b><?php echo __('Type') ?>* </b> - <?php echo __('One of:').' ';
 						try {
 							$dataType = array();
 							$sqlType = "SELECT name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 						}
 						$typeCount = 1;
 						while ($rowType = $resultType->fetch()) {
-							echo "'".__($guid, $rowType['name'])."'";
+							echo "'".__($rowType['name'])."'";
 							if ($typeCount < $resultType->rowCount()) {
 								echo ', ';
 							} else {
@@ -101,25 +101,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 							++$typeCount;
 						}
 						?></li>
-						<li><b><?php echo __($guid, 'Name') ?> *</b> - <?php echo __($guid, 'Volume or product name.') ?></li>
-						<li><b><?php echo __($guid, 'ID') ?> *</b> - <?php echo __($guid, 'Must be unique, or will lead to update not insert.') ?></li>
-						<li><b><?php echo __($guid, 'Author/Brand') ?> *</b> - <?php echo __($guid, 'Who created the item?') ?></li>
-						<li><b><?php echo __($guid, 'Vendor') ?></b> - <?php echo __($guid, 'Who supplied the item?') ?></li>
-						<li><b><?php echo __($guid, 'Purchase Date') ?></b> - <?php echo __($guid, 'dd/mm/yyyy') ?></li>
-						<li><b><?php echo __($guid, 'Invoice Number') ?></b></li>
-						<li><b><?php echo __($guid, 'Location') ?> *</b> - <?php echo __($guid, 'Space \'Name\' field.') ?></li>
-						<li><b><?php echo __($guid, 'Location Detail') ?></b> - <?php echo __($guid, 'Shelf, cabinet, sector, etc') ?></li>
-						<li><b><?php echo __($guid, 'Ownership Type') ?> *</b> - <?php echo __($guid, 'One of: \'School\' or \'Individual\'.') ?></li>
-						<li><b><?php echo __($guid, 'Main User').'/'.__($guid, 'Owner') ?></b> - <?php echo __($guid, 'Username of person the device is assigned to.') ?></li>
-						<li><b><?php echo __($guid, 'Department') ?></b> - <?php echo __($guid, '\'Name\' field for department responsible for the item.') ?></li>
-						<li><b><?php echo __($guid, 'Borrowable?') ?> *</b> - <?php echo __($guid, 'Is item available for loan?'.' '.__($guid, 'One of: \'Y\' or \'N\'.')) ?></li>
-						<li><b><?php echo __($guid, 'Status?') ?> *</b> - <?php echo __($guid, 'Initial availability.'.' '.'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
-                        <li><b><?php echo __($guid, 'Replacement?') ?> *</b> - <?php echo __($guid, 'One of: \'Y\' or \'N\'.') ?></li>
-                        <li><b><?php echo __($guid, 'Replacement Cost') ?> </b></li>
-                        <li><b><?php echo __($guid, 'Replacement Year') ?> </b> - <?php echo __($guid, 'School year name, as set in School Admin. Must already exist.') ?></li>
-                        <li><b><?php echo __($guid, 'Comments/Notes') ?></b></li>
+						<li><b><?php echo __('Name') ?> *</b> - <?php echo __('Volume or product name.') ?></li>
+						<li><b><?php echo __('ID') ?> *</b> - <?php echo __('Must be unique, or will lead to update not insert.') ?></li>
+						<li><b><?php echo __('Author/Brand') ?> *</b> - <?php echo __('Who created the item?') ?></li>
+						<li><b><?php echo __('Vendor') ?></b> - <?php echo __('Who supplied the item?') ?></li>
+						<li><b><?php echo __('Purchase Date') ?></b> - <?php echo __('dd/mm/yyyy') ?></li>
+						<li><b><?php echo __('Invoice Number') ?></b></li>
+						<li><b><?php echo __('Location') ?> *</b> - <?php echo __('Space \'Name\' field.') ?></li>
+						<li><b><?php echo __('Location Detail') ?></b> - <?php echo __('Shelf, cabinet, sector, etc') ?></li>
+						<li><b><?php echo __('Ownership Type') ?> *</b> - <?php echo __('One of: \'School\' or \'Individual\'.') ?></li>
+						<li><b><?php echo __('Main User').'/'.__('Owner') ?></b> - <?php echo __('Username of person the device is assigned to.') ?></li>
+						<li><b><?php echo __('Department') ?></b> - <?php echo __('\'Name\' field for department responsible for the item.') ?></li>
+						<li><b><?php echo __('Borrowable?') ?> *</b> - <?php echo __('Is item available for loan?'.' '.__('One of: \'Y\' or \'N\'.')) ?></li>
+						<li><b><?php echo __('Status?') ?> *</b> - <?php echo __('Initial availability.'.' '.'One of: \'Available\',\'In Use\',\'Decommissioned\',\'Lost\',\'On Loan\',\'Repair\' or \'Reserved\'.') ?></li>
+                        <li><b><?php echo __('Replacement?') ?> *</b> - <?php echo __('One of: \'Y\' or \'N\'.') ?></li>
+                        <li><b><?php echo __('Replacement Cost') ?> </b></li>
+                        <li><b><?php echo __('Replacement Year') ?> </b> - <?php echo __('School year name, as set in School Admin. Must already exist.') ?></li>
+                        <li><b><?php echo __('Comments/Notes') ?></b></li>
 					</ol>
-					<li><b><?php echo __($guid, 'Type-Specific Details');?></b></li>
+					<li><b><?php echo __('Type-Specific Details');?></b></li>
 						<ol>
 							<?php
                             try {
@@ -150,14 +150,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 						</ol>
 					</ol>
 				</li>
-				<li><?php echo __($guid, 'Do not include a header row in the CSV files.') ?></li>
+				<li><?php echo __('Do not include a header row in the CSV files.') ?></li>
 			</ol>
 		<?php
 
 		} elseif ($step == 2) {
 			?>
 			<h2>
-				<?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+				<?php echo __('Step 2 - Data Check & Confirm') ?>
 			</h2>
 			<?php
 
@@ -165,14 +165,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 			if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
 				?>
 				<div class='error'>
-					<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+					<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 				</div>
 				<?php
 
 			} elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
 				?>
 				<div class='error'>
-					<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+					<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 				</div>
 				<?php
 
@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 
 				//PREPARE TABLES
 				echo '<h4>';
-				echo __($guid, 'Prepare Database Tables');
+				echo __('Prepare Database Tables');
 				echo '</h4>';
 				//Lock tables
 				$lockFail = false;
@@ -194,11 +194,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 				}
 				if ($lockFail == true) {
 					echo "<div class='error'>";
-					echo __($guid, 'The database could not be locked for use.');
+					echo __('The database could not be locked for use.');
 					echo '</div>';
 				} elseif ($lockFail == false) {
 					echo "<div class='success'>";
-					echo __($guid, 'The database was successfully locked.');
+					echo __('The database was successfully locked.');
 					echo '</div>';
 				}
 
@@ -206,7 +206,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 					//READ IN DATA
 					if ($proceed == true) {
 						echo '<h4>';
-						echo __($guid, 'File Import');
+						echo __('File Import');
 						echo '</h4>';
 						$importFail = false;
 						$csvFile = $_FILES['file']['tmp_name'];
@@ -224,14 +224,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 									$resultType->execute($dataType);
 								} catch (PDOException $e) {
 									echo "<div class='error'>";
-									echo __($guid, 'Your request failed due to a database error.');
+									echo __('Your request failed due to a database error.');
 									echo '</div>';
 									$types = null;
 									$typeFields = null;
 								}
 								if ($resultType->rowCount() != 1) {
 									echo "<div class='error'>";
-									echo sprintf(__($guid, 'Type with name %1$s in import cannot be found.'), $data[0]);
+									echo sprintf(__('Type with name %1$s in import cannot be found.'), $data[0]);
 									echo '</div>';
 									$types = null;
 									$typeFields = null;
@@ -343,7 +343,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 								++$resultSuccessCount;
 							} else {
 								echo "<div class='error'>";
-								echo sprintf(__($guid, 'Record with ID %1$s had some information malformations.'), $data[2]);
+								echo sprintf(__('Record with ID %1$s had some information malformations.'), $data[2]);
 								echo '</div>';
 							}
 							++$resultCount;
@@ -351,21 +351,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 						fclose($handle);
 						if ($resultSuccessCount == 0) {
 							echo "<div class='error'>";
-							echo __($guid, 'No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
+							echo __('No useful results were detected in the import file (perhaps they did not meet minimum requirements), so the import will be aborted.');
 							echo '</div>';
 							$proceed = false;
 						} elseif ($resultSuccessCount < $resultCount) {
 							echo "<div class='error'>";
-							echo __($guid, 'Some results could not be successfully read or used, so the import will be aborted.');
+							echo __('Some results could not be successfully read or used, so the import will be aborted.');
 							echo '</div>';
 							$proceed = false;
 						} elseif ($resultSuccessCount == $resultCount) {
 							echo "<div class='success'>";
-							echo __($guid, 'All results could be read and used, so the import will proceed.');
+							echo __('All results could be read and used, so the import will proceed.');
 							echo '</div>';
 						} else {
 							echo "<div class='error'>";
-							echo __($guid, 'An unknown error occured, so the import will be aborted.');
+							echo __('An unknown error occured, so the import will be aborted.');
 							echo '</div>';
 							$proceed = false;
 						}
@@ -373,7 +373,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 
 					if ($proceed == true) {
 						echo '<h4>';
-						echo __($guid, 'Results');
+						echo __('Results');
 						echo '</h4>';
 
 						$locations = array();
@@ -393,13 +393,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 										$resultLocation->execute($dataLocation);
 									} catch (PDOException $e) {
 										echo "<div class='error'>";
-										echo __($guid, 'Your request failed due to a database error.');
+										echo __('Your request failed due to a database error.');
 										echo '</div>';
 										$locations[$result['location']] = null;
 									}
 									if ($resultLocation->rowCount() != 1) {
 										echo "<div class='error'>";
-										echo sprintf(__($guid, 'Location with name %1$s in import cannot be found.'), $result['location']);
+										echo sprintf(__('Location with name %1$s in import cannot be found.'), $result['location']);
 										echo '</div>';
 										$locations[$result['location']] = null;
 									} else {
@@ -420,13 +420,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 												$resultUser->execute($dataUser);
 											} catch (PDOException $e) {
 												echo "<div class='error'>";
-												echo __($guid, 'Your request failed due to a database error.');
+												echo __('Your request failed due to a database error.');
 												echo '</div>';
 												$users[$result['username']] = null;
 											}
 											if ($resultUser->rowCount() != 1) {
 												echo "<div class='error'>";
-												echo sprintf(__($guid, 'User with username %1$s in import cannot be found.'), $result['username']);
+												echo sprintf(__('User with username %1$s in import cannot be found.'), $result['username']);
 												echo '</div>';
 												$users[$result['username']] = null;
 											} else {
@@ -446,13 +446,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 												$resultUser->execute($dataUser);
 											} catch (PDOException $e) {
 												echo "<div class='error'>";
-												echo __($guid, 'Your request failed due to a database error.');
+												echo __('Your request failed due to a database error.');
 												echo '</div>';
 												$departments[$result['department']] = null;
 											}
 											if ($resultUser->rowCount() != 1) {
 												echo "<div class='error'>";
-												echo sprintf(__($guid, 'Department with name %1$s in import cannot be found.'), $result['department']);
+												echo sprintf(__('Department with name %1$s in import cannot be found.'), $result['department']);
 												echo '</div>';
 												$departments[$result['department']] = null;
 											} else {
@@ -465,7 +465,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 									//Check if we are OK to go
 									if ($type == '' or $locations[$result['location']] == '' or ($result['username'] != '' and $users[$result['username']] == '') or ($result['department'] != '' and $departments[$result['department']] == '')) { //NOT OK!
 										echo "<div class='error'>";
-										echo sprintf(__($guid, 'Record with ID %1$s had some information malformations.'), $data[2]);
+										echo sprintf(__('Record with ID %1$s had some information malformations.'), $data[2]);
 										echo '</div>';
 									} else { //OK!
 										//GET FIELDS READY
@@ -505,7 +505,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 											$resultCheck->execute($dataCheck);
 										} catch (PDOException $e) {
 											echo "<div class='error'>";
-											echo __($guid, 'Your request failed due to a database error.');
+											echo __('Your request failed due to a database error.');
 											echo '</div>';
 										}
 										if ($resultCheck->rowCount() == 1) { //IF IT DOES, UPDATE
@@ -518,13 +518,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 											} catch (PDOException $e) {
 												echo "<div class='error'>";
 												echo $e->getMEssage();
-												echo __($guid, 'Your request failed due to a database error.');
+												echo __('Your request failed due to a database error.');
 												echo '</div>';
 												$updateFail = true;
 											}
 											if ($updateFail == false) {
 												echo "<div class='success'>";
-												echo sprintf(__($guid, '%1$s was successfully updated.'), $result['id']);
+												echo sprintf(__('%1$s was successfully updated.'), $result['id']);
 												echo '</div>';
 											}
 										} else { //IF IT DOES NOT, INSERT
@@ -537,13 +537,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_import.php
 											} catch (PDOException $e) {
 												echo "<div class='error'>";
 												echo $e->getMEssage();
-												echo __($guid, 'Your request failed due to a database error.');
+												echo __('Your request failed due to a database error.');
 												echo '</div>';
 												$insertFail = true;
 											}
 											if ($insertFail == false) {
 												echo "<div class='success'>";
-												echo sprintf(__($guid, '%1$s was successfully inserted into the system.'), $result['id']);
+												echo sprintf(__('%1$s was successfully inserted into the system.'), $result['id']);
 												echo '</div>';
 											}
 										}

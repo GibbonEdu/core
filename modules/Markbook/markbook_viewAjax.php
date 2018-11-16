@@ -25,7 +25,7 @@ $order = (isset($_POST['order']))? $_POST['order'] : '';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
 
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
 
 } else {
 
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {
-                print __($guid, 'Your request failed due to a database error.');
+                print __('Your request failed due to a database error.');
             }
 
         }

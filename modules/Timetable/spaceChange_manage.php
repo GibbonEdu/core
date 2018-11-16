@@ -24,26 +24,26 @@ use Gibbon\Domain\Timetable\FacilityChangeGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
         echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Facility Changes').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Facility Changes').'</div>';
         echo '</div>';
         if ($highestAction == 'Manage Facility Changes_allClasses') {
-            echo '<p>'.__($guid, 'This page allows you to create and manage one-off location changes within any class in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
+            echo '<p>'.__('This page allows you to create and manage one-off location changes within any class in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
         } else if ($highestAction == 'Manage Facility Changes_myDepartment') {
-            echo '<p>'.__($guid, 'This page allows you to create and manage one-off location changes within any of the classes departments for which have have the role Coordinator. Only current and future changes are shown: past changes are hidden.').'</p>';
+            echo '<p>'.__('This page allows you to create and manage one-off location changes within any of the classes departments for which have have the role Coordinator. Only current and future changes are shown: past changes are hidden.').'</p>';
         } else {
-            echo '<p>'.__($guid, 'This page allows you to create and manage one-off location changes within any of your classes in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
+            echo '<p>'.__('This page allows you to create and manage one-off location changes within any of your classes in the timetable. Only current and future changes are shown: past changes are hidden.').'</p>';
         }
 
         if (isset($_GET['return'])) {

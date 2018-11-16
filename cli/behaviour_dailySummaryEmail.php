@@ -36,7 +36,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 
@@ -88,7 +88,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
             // Raise a new notification event
             $event = new NotificationEvent('Behaviour', 'Daily Behaviour Summary');
 
-            $event->setNotificationText(__($guid, 'A Behaviour CLI script has run.').'<br/><br/>'.$report);
+            $event->setNotificationText(__('A Behaviour CLI script has run.').'<br/><br/>'.$report);
             $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_pattern.php&minimumCount=1&fromDate='.dateConvertBack($guid, $currentDate));
 
             // Send all notifications

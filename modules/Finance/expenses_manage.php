@@ -26,19 +26,19 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
         echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Expenses').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Expenses').'</div>';
         echo '</div>';
 
         if (isset($_GET['return'])) {
@@ -47,9 +47,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
         echo '<p>';
         if ($highestAction == 'Manage Expenses_all') {
-            echo __($guid, 'This action allows you to manage all expenses for all budgets, regardless of your access rights to individual budgets.').'<br/>';
+            echo __('This action allows you to manage all expenses for all budgets, regardless of your access rights to individual budgets.').'<br/>';
         } else {
-            echo __($guid, 'This action allows you to manage expenses for the budgets in which you have relevant access rights.').'<br/>';
+            echo __('This action allows you to manage expenses for the budgets in which you have relevant access rights.').'<br/>';
         }
         echo '</p>';
 
@@ -72,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
         if ($budgetsAccess == false) {
             echo "<div class='error'>";
-            echo __($guid, 'You do not have Full or Write access to any budgets.');
+            echo __('You do not have Full or Write access to any budgets.');
             echo '</div>';
         } else {
             //Get and check settings
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
             $budgetLevelExpenseApproval = getSettingByScope($connection2, 'Finance', 'budgetLevelExpenseApproval');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'An error has occurred with your expense and budget settings.');
+                echo __('An error has occurred with your expense and budget settings.');
                 echo '</div>';
             } else {
                 //Check if there are approvers
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error has occurred with your expense and budget settings.');
+                    echo __('An error has occurred with your expense and budget settings.');
                     echo '</div>';
                 } else {
                     //Ready to go!
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         }
                         if ($result->rowcount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The Current budget cycle cannot be determined.');
+                            echo __('The Current budget cycle cannot be determined.');
                             echo '</div>';
                         } else {
                             $row = $result->fetch();
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         }
                         if ($result->rowcount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The specified budget cycle cannot be determined.');
+                            echo __('The specified budget cycle cannot be determined.');
                             echo '</div>';
                         } else {
                             $row = $result->fetch();
@@ -148,16 +148,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                             //Print year picker
                             $previousCycle = getPreviousBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
                         if ($previousCycle != false) {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__($guid, 'Previous Cycle').'</a> ';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage.php&gibbonFinanceBudgetCycleID='.$previousCycle."'>".__('Previous Cycle').'</a> ';
                         } else {
-                            echo __($guid, 'Previous Cycle').' ';
+                            echo __('Previous Cycle').' ';
                         }
                         echo ' | ';
                         $nextCycle = getNextBudgetCycleID($gibbonFinanceBudgetCycleID, $connection2);
                         if ($nextCycle != false) {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__($guid, 'Next Cycle').'</a> ';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage.php&gibbonFinanceBudgetCycleID='.$nextCycle."'>".__('Next Cycle').'</a> ';
                         } else {
-                            echo __($guid, 'Next Cycle').' ';
+                            echo __('Next Cycle').' ';
                         }
                         echo '</div>';
 
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         }
 
                         echo '<h3>';
-                        echo __($guid, 'Filters');
+                        echo __('Filters');
                         echo '</h3>';
 
                         $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -256,13 +256,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                         }
 
                         echo '<h3>';
-                        echo __($guid, 'View');
+                        echo __('View');
                         echo '</h3>';
 
                         $allowExpenseAdd = getSettingByScope($connection2, 'Finance', 'allowExpenseAdd');
                         if ($highestAction == 'Manage Expenses_all' and $allowExpenseAdd == 'Y') { //Access to everything
                             echo "<div class='linkTop' style='text-align: right'>";
-                            echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
+                            echo "<a style='margin-right: 3px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_add.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a><br/>";
                             echo '</div>';
                         }
                         

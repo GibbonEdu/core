@@ -29,7 +29,7 @@ $page->breadcrumbs->add(__('Student Self Registration'));
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_studentSelfRegister.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     if (isset($_GET['return'])) {
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_stud
     $realIP = getIPAddress();
     if ($studentSelfRegistrationIPAddresses == '' || is_null($studentSelfRegistrationIPAddresses)) {
         echo "<div class='error'>";
-        echo __($guid, 'You do not have access to this action.');
+        echo __('You do not have access to this action.');
         echo '</div>';
     } else {
         //Check if school day

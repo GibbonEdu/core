@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
 
                         // Add direct notifications to roll group tutors
                         if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                            $notificationText = sprintf(__($guid, 'Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
+                            $notificationText = sprintf(__('Someone has created a negative behaviour record for your tutee, %1$s.'), $studentName);
 
                             if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
                                 $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Behaviour', $actionLink);

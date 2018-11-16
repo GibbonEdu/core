@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 echo "<div class='trail'>";
-echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Password Reset').'</div>';
+echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Password Reset').'</div>';
 echo '</div>';
 
 $step = 1;
@@ -87,11 +87,11 @@ else {
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
-        echo __($guid, 'Your reset request is invalid: you may not proceed.');
+        echo __('Your reset request is invalid: you may not proceed.');
         echo '</div>';
     } else {
         echo "<div class='success'>";
-        echo __($guid, 'Your reset request is valid: you may proceed.');
+        echo __('Your reset request is valid: you may proceed.');
         echo '</div>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/passwordResetProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key");

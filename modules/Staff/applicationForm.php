@@ -47,15 +47,15 @@ if (isset($_SESSION[$guid]['gibbonPersonID'])) {
 if ($proceed == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
     if (isset($_SESSION[$guid]['username'])) {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Staff Application Form').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Staff Application Form').'</div>';
     } else {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Staff Application Form').'</div>';
+        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Staff Application Form').'</div>';
     }
     echo '</div>';
 
@@ -68,22 +68,22 @@ if ($proceed == false) {
     }
 
     if (isset($_SESSION[$guid]['username']) == false) {
-        echo "<div class='warning' style='font-weight: bold'>".sprintf(__($guid, 'If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Staff in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__($guid, 'If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';
+        echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Staff in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';
     }
 
     $returnExtra = '';
     if (isset($_GET['id'])) {
         if ($_GET['id'] != '') {
-            $returnExtra .= '<br/><br/>'.__($guid, 'If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$_GET['id'].'</b></u>.';
+            $returnExtra .= '<br/><br/>'.__('If you need to contact the school in reference to this application, please quote the following number(s):').' <b><u>'.$_GET['id'].'</b></u>.';
         }
     }
     if ($_SESSION[$guid]['organisationHRName'] != '' and $_SESSION[$guid]['organisationHREmail'] != '') {
-        $returnExtra .= '<br/><br/>'.sprintf(__($guid, 'Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$_SESSION[$guid]['organisationHREmail']."'>".$_SESSION[$guid]['organisationHRName'].'</a>');
+        $returnExtra .= '<br/><br/>'.sprintf(__('Please contact %1$s if you have any questions, comments or complaints.'), "<a href='mailto:".$_SESSION[$guid]['organisationHREmail']."'>".$_SESSION[$guid]['organisationHRName'].'</a>');
     }
 
     $returns = array();
-    $returns['success0'] = __($guid, 'Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.').$returnExtra;
-    $returns['warning1'] = __($guid, 'Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.').$returnExtra;
+    $returns['success0'] = __('Your application was successfully submitted. Our Human Resources team will review your application and be in touch in due course.').$returnExtra;
+    $returns['warning1'] = __('Your application was submitted, but some errors occured. We recommend you contact our Human Resources team to review your application.').$returnExtra;
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -96,19 +96,19 @@ if ($proceed == false) {
         $result->execute($data);
     } catch (PDOException $e) {
         echo "<div class='error'>";
-        echo __($guid, 'Your request failed due to a database error.');
+        echo __('Your request failed due to a database error.');
         echo '</div>';
     }
 
     if ($result->rowCount() < 1) {
         echo "<div class='warning'>";
-        echo __($guid, 'There are no job openings at this time: please try again later.');
+        echo __('There are no job openings at this time: please try again later.');
         echo '</div>';
     } else {
         $jobOpenings = $result->fetchAll();
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_jobOpenings_view.php'>".__($guid, 'View Current Job Openings')."<img style='margin-left: 5px' title='".__($guid, 'View Current Job Openings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_jobOpenings_view.php'>".__('View Current Job Openings')."<img style='margin-left: 5px' title='".__('View Current Job Openings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
         echo '</div>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/applicationFormProcess.php');
@@ -338,7 +338,7 @@ if ($proceed == false) {
         $postscript = getSettingByScope($connection2, 'Staff', 'staffApplicationFormPostscript');
         if ($postscript != '') {
             echo '<h2>';
-            echo __($guid, 'Further Information');
+            echo __('Further Information');
             echo '</h2>';
             echo "<p style='padding-bottom: 15px'>";
             echo $postscript;
