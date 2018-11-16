@@ -49,9 +49,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/rollGroups.php'>".__('View Roll Groups')."</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('View Roll Groups'), 'rollGroups.php')
+                ->add($row['name']);
 
             echo '<h3>';
             echo __('Basic Information');
