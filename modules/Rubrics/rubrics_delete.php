@@ -51,10 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_delete.php
             echo '</div>';
         } else {
             //Proceed!
-            $page->breadcrumbs
-                ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
-                ->add(__('Delete Rubric'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
