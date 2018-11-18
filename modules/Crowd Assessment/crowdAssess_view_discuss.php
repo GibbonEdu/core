@@ -26,18 +26,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__('View All Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/crowdAssess_view.php&gibbonPlannerEntryID='.$_GET['gibbonPlannerEntryID']."'>".__('View Assessment')."</a> > </div><div class='trailEnd'>".__('Discuss').'</div>';
-    echo '</div>';
+    //Get class variable
+    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+
+    $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID];
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'crowdAssess.php')
+        ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
+        ->add(__('Discuss'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
         echo "<div class='warning'>";
         echo 'Student, lesson or homework has not been specified .';

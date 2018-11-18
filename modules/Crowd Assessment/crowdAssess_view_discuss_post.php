@@ -28,18 +28,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__('View All Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/crowdAssess_view.php&gibbonPlannerEntryID='.$_GET['gibbonPlannerEntryID']."'>".__('View Assessment')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/crowdAssess_view_discuss.php&gibbonPlannerEntryID='.$_GET['gibbonPlannerEntryID'].'&gibbonPlannerEntryHomeworkID='.$_GET['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$_GET['gibbonPersonID']."'>".__('Discuss')."</a> > </div><div class='trailEnd'>".__('Add Post').'</div>';
-    echo '</div>';
-
-    if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, null);
-    }
-
     //Get class variable
     $gibbonPersonID = $_GET['gibbonPersonID'];
     $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
     $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+
+    $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'gibbonPersonID' => $gibbonPersonID, 'gibbonPlannerEntryHomeworkID' => $gibbonPlannerEntryHomeworkID];
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'crowdAssess.php')
+        ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
+        ->add(__('Discuss'),'crowdAssess_view_discuss.php', $urlParams)
+        ->add(__('Add Post'));    
+    
+    if (isset($_GET['return'])) {
+        returnProcess($guid, $_GET['return'], null, null);
+    }
+
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
         echo "<div class='warning'>";
         echo __('You have not specified one or more required parameters.');
