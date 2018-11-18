@@ -42,6 +42,7 @@ v17.0.00
         System: updated robots.txt to disallow all indexing
         System: added ability to set background image
         System: increased the max email length to 75 chars for all forms
+        System: added Sri Lankan Rupee as a currency option
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
