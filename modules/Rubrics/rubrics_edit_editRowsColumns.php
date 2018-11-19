@@ -51,9 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
             echo '</div>';
         } else {
             //Proceed!
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/rubrics.php&search=$search&filter2=$filter2'>".__('Manage Rubrics')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/rubrics_edit.php&gibbonRubricID='.$_GET['gibbonRubricID']."&search=$search&filter2=$filter2'>".__('Edit Rubric')."</a> > </div><div class='trailEnd'>".__('Edit Rubric Rows & Columns').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
+                ->add(__('Edit Rubric'), 'rubrics_edit.php', ['gibbonRubricID' => $_GET['gibbonRubricID'], 'search' => $search, 'filter2' => $filter2])
+                ->add(__('Edit Rubric Rows & Columns'));
 
             if ($search != '' or $filter2 != '') {
                 echo "<div class='linkTop'>";
