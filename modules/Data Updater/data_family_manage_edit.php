@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family_m
 } else {
     //Proceed!
     $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
-
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_family_manage.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__('Family Data Updates')."</a> > </div><div class='trailEnd'>".__('Edit Request').'</div>';
-    echo '</div>';
     $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
     
     $page->breadcrumbs
