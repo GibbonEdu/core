@@ -26,8 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
-    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+    $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
+    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
     if ($gibbonExternalAssessmentFieldID == '' or $gibbonExternalAssessmentID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -47,17 +47,17 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__('Manage External Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__('Edit External Assessment')."</a> > </div><div class='trailEnd'>".__('Delete Grade').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
+                ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
+                ->add(__('Delete Grade'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_edit_field_deleteProcess.php?gibbonExternalAssessmentFieldID=$gibbonExternalAssessmentFieldID&gibbonExternalAssessmentID=$gibbonExternalAssessmentID");
-	        echo $form->getOutput();
+            echo $form->getOutput();
         }
     }
 }
-?>

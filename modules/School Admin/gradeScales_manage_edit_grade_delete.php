@@ -26,8 +26,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonScaleGradeID = $_GET['gibbonScaleGradeID'];
-    $gibbonScaleID = $_GET['gibbonScaleID'];
+    $gibbonScaleGradeID = $_GET['gibbonScaleGradeID'] ?? '';
+    $gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
     if ($gibbonScaleGradeID == '' or $gibbonScaleID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -50,9 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             //Let's go!
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage.php'>".__('Manage Grade Scales')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>".__('Edit Grade Scale')."</a> > </div><div class='trailEnd'>".__('Delete Grade').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
+                ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])
+                ->add(__('Delete Grade'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -63,4 +64,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         }
     }
 }
-?>

@@ -30,9 +30,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/department_manage.php'>".__('Manage Departments')."</a> > </div><div class='trailEnd'>".__('Edit Department').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Departments'), 'department_manage.php')
+        ->add(__('Edit Department'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

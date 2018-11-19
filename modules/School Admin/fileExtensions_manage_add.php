@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/fileExtensions_manage.php'>".__('Manage File Extensions')."</a> > </div><div class='trailEnd'>".__('Add File Extension').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Finance Settings'), 'fileExtensions_manage.php')
+        ->add(__('Add File Extension'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
