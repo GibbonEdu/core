@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Finance Settings'));
+    $page->breadcrumbs->add(__('Manage File Extensions'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

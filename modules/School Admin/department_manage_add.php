@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 } else {
     $page->breadcrumbs
         ->add(__('Manage Departments'), 'department_manage.php')
-        ->add(__('Add Learning Area'));
+        ->add(__('Add Department'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
