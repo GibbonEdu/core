@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit_editR
             //Proceed!
             $page->breadcrumbs
                 ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
-                ->add(__('Edit Rubric'), 'rubrics_edit.php', ['gibbonRubricID' => $_GET['gibbonRubricID'], 'search' => $search, 'filter2' => $filter2])
+                ->add(__('Edit Rubric'), 'rubrics_edit.php', ['gibbonRubricID' => $_GET['gibbonRubricID'], 'search' => $search, 'filter2' => $filter2, 'sidebar' => 'false'])
                 ->add(__('Edit Rubric Rows & Columns'));
 
             if ($search != '' or $filter2 != '') {
