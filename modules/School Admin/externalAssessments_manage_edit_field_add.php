@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     echo '</div>';
 } else {
     //Proceed!
-    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
 
     if ($gibbonExternalAssessmentID == '') {
         echo "<div class='error'>";
@@ -50,9 +50,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__('Manage External Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__('Edit External Assessment')."</a> > </div><div class='trailEnd'>".__('Add Field').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
+                ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
+                ->add(__('Add Field'));
 
             $editLink = '';
             if (isset($_GET['editID'])) {

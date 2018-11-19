@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ed
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/inSettings.php'>".__('Manage Individual Needs Settings')."</a> > </div><div class='trailEnd'>".__('Edit Descriptor').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Individual Needs Settings'), 'inSettings.php')
+        ->add(__('Edit Descriptor'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

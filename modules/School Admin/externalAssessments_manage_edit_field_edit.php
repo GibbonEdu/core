@@ -27,8 +27,8 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'];
-    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'];
+    $gibbonExternalAssessmentFieldID = $_GET['gibbonExternalAssessmentFieldID'] ?? '';
+    $gibbonExternalAssessmentID = $_GET['gibbonExternalAssessmentID'] ?? '';
     if ($gibbonExternalAssessmentFieldID == '' or $gibbonExternalAssessmentID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -52,9 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $values = $result->fetch();
             $values['gibbonYearGroupIDList'] = explode(',', $values['gibbonYearGroupIDList']);
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage.php'>".__('Manage External Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessments_manage_edit.php&gibbonExternalAssessmentID=$gibbonExternalAssessmentID'>".__('Edit External Assessment')."</a> > </div><div class='trailEnd'>".__('Edit Grade').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
+                ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
+                ->add(__('Edit Field'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
