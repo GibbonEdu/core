@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/department_manage.php'>".__('Manage Departments')."</a> > </div><div class='trailEnd'>".__('Delete Department').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -59,8 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
             echo '</div>';
         } else {
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_manage_deleteProcess.php?gibbonDepartmentID=$gibbonDepartmentID", true);
-	        echo $form->getOutput();
+            echo $form->getOutput();
         }
     }
 }
-?>

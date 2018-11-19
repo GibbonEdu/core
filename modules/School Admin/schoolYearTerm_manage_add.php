@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/schoolYearTerm_manage.php'>".__('Manage Terms')."</a> > </div><div class='trailEnd'>".__('Add Term').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
+        ->add(__('Add Term'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {

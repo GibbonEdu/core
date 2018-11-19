@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/yearGroup_manage.php'>".__('Manage Year Groups')."</a> > </div><div class='trailEnd'>".__('Add Year Group').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
+        ->add(__('Add Year Group'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -67,4 +67,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     echo $form->getOutput();
 
 }
-?>

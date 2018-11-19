@@ -26,16 +26,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Special Days')."</a> > </div><div class='trailEnd'>".__('Delete Special Day').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonSchoolYearSpecialDayID = $_GET['gibbonSchoolYearSpecialDayID'];
     if ($gibbonSchoolYearSpecialDayID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -60,4 +58,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
         }
     }
 }
-?>

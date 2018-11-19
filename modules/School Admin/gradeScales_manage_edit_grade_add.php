@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
     echo '</div>';
 } else {
     //Proceed!
-    $gibbonScaleID = $_GET['gibbonScaleID'];
+    $gibbonScaleID = $_GET['gibbonScaleID'] ?? '';
 
     if ($gibbonScaleID == '') {
         echo "<div class='error'>";
@@ -49,9 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage.php'>".__('Manage Grade Scales')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/gradeScales_manage_edit.php&gibbonScaleID=$gibbonScaleID'>".__('Edit Grade Scale')."</a> > </div><div class='trailEnd'>".__('Add Grade').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
+                ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])
+                ->add(__('Add Grade'));
 
             $editLink = '';
             if (isset($_GET['editID'])) {
