@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Attendance Settings'), 'attendanceSettings.php')
-        ->add(__('Delete Attendance Code'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

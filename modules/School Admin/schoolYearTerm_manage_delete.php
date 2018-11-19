@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Terms'), 'schoolYearTerm_manage.php')
-        ->add(__('Delete Term'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

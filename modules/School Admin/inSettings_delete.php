@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_de
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Individual Needs Settings'), 'inSettings.php')
-        ->add(__('Delete Descriptor'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

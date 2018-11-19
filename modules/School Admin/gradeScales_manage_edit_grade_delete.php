@@ -50,11 +50,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
             //Let's go!
             $row = $result->fetch();
 
-            $page->breadcrumbs
-                ->add(__('Manage Grade Scales'), 'gradeScales_manage.php')
-                ->add(__('Edit Grade Scale'), 'gradeScales_manage_edit.php', ['gibbonScaleID' => $gibbonScaleID])
-                ->add(__('Delete Grade'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }

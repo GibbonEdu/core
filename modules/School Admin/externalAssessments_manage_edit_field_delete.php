@@ -47,11 +47,6 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            $page->breadcrumbs
-                ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
-                ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
-                ->add(__('Delete Field'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
