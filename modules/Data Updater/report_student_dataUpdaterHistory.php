@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_studen
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Student Data Updater History').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student Data Updater History'));
     echo '<p>';
     echo __('This report allows a user to select a range of students and check whether or not they have had their personal and medical data updated after a specified date.');
     echo '</p>';
