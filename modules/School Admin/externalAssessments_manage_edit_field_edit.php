@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
             $page->breadcrumbs
                 ->add(__('Manage External Assessments'), 'externalAssessments_manage.php')
                 ->add(__('Edit External Assessment'), 'externalAssessments_manage_edit.php', ['gibbonExternalAssessmentID' => $gibbonExternalAssessmentID])
-                ->add(__('Edit Grade'));
+                ->add(__('Edit Field'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
