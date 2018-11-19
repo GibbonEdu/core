@@ -33,10 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/report_family
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Family Data Updater History').'</div>';
-    echo '</div>';
-
+    $page->breadcrumbs->add(__('Family Data Updater History'));
+    
     echo '<p>';
     echo __('This report allows a user to select a range of families, with at least one child enroled in the target year group, and check whether or not they have had their family and personal data updated after a specified date.');
     echo '</p>';
