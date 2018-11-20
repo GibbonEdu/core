@@ -29,11 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_fa
     $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
     $gibbonSpacePersonID = $_GET['gibbonSpacePersonID'] ?? '';
 
-    $page->breadcrumbs
-        ->add(__('Manage Staff'), 'staff_manage.php')
-        ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonSpacePersonID' => $gibbonSpacePersonID])
-        ->add(__('Delete Facility'));
-
     $allStaff = '';
     if (isset($_GET['allStaff'])) {
         $allStaff = $_GET['allStaff'];

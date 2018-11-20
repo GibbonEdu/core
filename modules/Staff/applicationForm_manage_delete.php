@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applicationForm_manage.php')
-        ->add(__('Delete Form'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

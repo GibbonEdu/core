@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_delete.
     $allStaff = $_GET['allStaff'] ?? '';
     $search = $_GET['search'] ?? '' ;
 
-    $page->breadcrumbs
-        ->add(__('Manage Staff', 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff]))
-        ->add(__('Delete Staff'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_d
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Job Openings', 'jobOpenings_manage.php'))
-        ->add(__('Delete Job Opening'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
