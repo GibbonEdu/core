@@ -58,13 +58,16 @@ function emailBodyConvert($body)
 /**
  * Custom translation function to allow custom string replacement
  *
- * @param string $text   String to translate.
- * @param array  $params Replacement parameter for output.
- * @param string $domain Text domain for translation (e.g. name of module).
+ * @param string        $text    Text to Translate.
+ * @param array         $params  Assoc array of key value pairs for named
+ *                               string replacement.
+ * @param array|string  $options Options for translations (e.g. domain).
+ *                               Or string of domain (for backward
+ *                               compatibility, deprecated).
  *
  * @return string The resulted translation string.
  */
-function __()
+function __($text, $params=[], $options=[])
 {
     global $gibbon, $guid; // For backwards compatibilty
 
@@ -77,6 +80,9 @@ function __()
     // Deprecated.
     if ($args[0] === $guid) {
         array_shift($args); // discard $guid
+    }
+    if (empty($args)) {
+        return ''; // if there is nothing after $guid, return nothing
     }
 
     // Basic __($text) signature handle by default.
