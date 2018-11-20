@@ -32,7 +32,7 @@ if [ ! -f "mock/i18n/$TEST_LOCALE/LC_MESSAGES/$DOMAIN.po" ]; then
 		-o mock/i18n/$TEST_LOCALE/LC_MESSAGES/$DOMAIN.po
 else
 	msgmerge \
-        --update \
+		--update \
 		mock/i18n/$TEST_LOCALE/LC_MESSAGES/$DOMAIN.po \
 		mock/i18n/gibbon.pot
 fi
