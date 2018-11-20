@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -77,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             $form->addHiddenValue('gibbonStaffApplicationFormID', $gibbonStaffApplicationFormID);
 
             $row = $form->addRow();
-                $row->addContent(sprintf(__('Are you sure you want to reject the application for %1$s?'), formatName('', $values['preferredName'], $values['surname'], 'Student')));
+                $row->addContent(sprintf(__('Are you sure you want to reject the application for %1$s?'), Format::name('', $values['preferredName'], $values['surname'], 'Student')));
 
             $row = $form->addRow();
                 $row->addFooter();

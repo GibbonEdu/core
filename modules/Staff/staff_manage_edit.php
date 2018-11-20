@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     //Acess denied
@@ -89,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonName', __('Person'))->description(__('Must be unique.'));
-                    $row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName($values['title'], $values['preferredName'], $values['surname'], 'Staff', false, true));
+                    $row->addTextField('gibbonPersonName')->readOnly()->setValue(Format::name($values['title'], $values['preferredName'], $values['surname'], 'Staff', false, true));
 
                 $row = $form->addRow();
                     $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
@@ -108,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('jobTitle')->maxlength(100);
 
                 $row = $form->addRow();
-    				$row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
-    				$row->addDate('dateStart');
+                    $row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
+                    $row->addDate('dateStart');
 
-    			$row = $form->addRow();
+                $row = $form->addRow();
                     $row->addLabel('dateEnd', __('End Date'))->description(__("Users's last day at school."));
                     $row->addDate('dateEnd');
 
@@ -213,8 +214,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                             echo $row['usageType'];
                             echo '</td>';
                             echo '<td>';
-                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable')
+                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable') {
                                 echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            }
                             echo '</td>';
                             echo '</tr>';
                         }

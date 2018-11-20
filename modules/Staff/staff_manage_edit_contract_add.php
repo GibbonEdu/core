@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_contract_add.php') == false) {
     //Acess denied
@@ -81,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
 
             $row = $form->addRow();
                 $row->addLabel('person', __('Person'));
-                $row->addTextField('person')->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->isRequired();
+                $row->addTextField('person')->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student'))->readonly()->isRequired();
 
             $row = $form->addRow();
                 $row->addLabel('title', __('Title'))->description(__('A name to identify this contract.'));
@@ -158,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
             $row = $form->addRow();
                 $column = $row->addColumn();
                 $column->addLabel('education', __('Education Benefits'));
-            	$column->addTextArea('education')->setRows(5)->setClass('fullWidth');
+                $column->addTextArea('education')->setRows(5)->setClass('fullWidth');
 
             $row = $form->addRow();
                 $column = $row->addColumn();
