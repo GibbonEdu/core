@@ -6,7 +6,7 @@ $I->amOnModulePage('School Admin', 'department_manage.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
-$I->seeBreadcrumb('Add Learning Area');
+$I->seeBreadcrumb('Add Department');
 
 $addFormValues = array(
     'type'           => 'Learning Area',
