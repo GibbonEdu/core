@@ -191,7 +191,10 @@ class Locale implements LocaleInterface
         $text = empty($domain) ? _($text) : dgettext($domain, $text);
 
         // apply named replacement parameters, if presents.
-        $text = strtr($text, $params);
+        $text = strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
+            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
+            return $carry;
+        }, []));
 
         // apply custom string replacement logic.
         if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {

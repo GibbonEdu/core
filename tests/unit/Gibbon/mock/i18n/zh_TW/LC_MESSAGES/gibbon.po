@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:28+0800\n"
+"POT-Creation-Date: 2018-11-20 14:58+0800\n"
 "PO-Revision-Date: 2018-11-17 10:35+0800\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -18,21 +18,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. L10N: Untranslated plain text.
-#: LocaleTest.php:109 LocaleTest.php:146
+#: LocaleTest.php:76 LocaleTest.php:134
 msgid "Not translated"
 msgstr ""
 
 #. L10N: Untranslated string for string replacement.
-#: LocaleTest.php:116 LocaleTest.php:153
-msgid "Untranslated @action @name"
+#: LocaleTest.php:83 LocaleTest.php:141
+msgid "Untranslated {action} {name}"
 msgstr ""
 
 #. L10N: Translated plain text.
-#: LocaleTest.php:126 LocaleTest.php:163
+#: LocaleTest.php:93 LocaleTest.php:151
 msgid "Hello world"
 msgstr "你好世界"
 
 #. L10N: Translated string for string replacement.
-#: LocaleTest.php:133 LocaleTest.php:170
-msgid "Hello @name from @planet"
-msgstr "你好，來自 @planet 的 @name"
+#: LocaleTest.php:100 LocaleTest.php:158
+msgid "Hello {name} from {planet}"
+msgstr "你好，來自 {planet} 的 {name}"
+
+#. L10N: Translated string for numerical replacement.
+#. L10N: Translated string for numerical placeholder replacement.
+#: LocaleTest.php:110 LocaleTest.php:168
+msgid "Hello {0} from {1}"
+msgstr "你好，來自 {1} 的 {0}"
+
+#. L10N: Translated string with mixed numerical and string placeholder.
+#: LocaleTest.php:120 LocaleTest.php:178
+msgid "Hello {0} from {1}. Today is {dayOfWeek}."
+msgstr "你好，來自 {1} 的 {0}。今天是 {dayOfWeek}。"

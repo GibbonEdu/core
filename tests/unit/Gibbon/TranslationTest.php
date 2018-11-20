@@ -82,7 +82,7 @@ class TranslationTest extends TestCase
      */
     public function testTranslateUsingNamedParameters()
     {
-        $this->assertEquals('Foo Baz Bar', __('Foo {test} Bar', ['{test}' => 'Baz']));
+        $this->assertEquals('Foo Baz Bar', __('Foo {test} Bar', ['test' => 'Baz']));
     }
 
     /**

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-17 10:49+0800\n"
+"POT-Creation-Date: 2018-11-20 14:59+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,21 +18,32 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. L10N: Untranslated plain text.
-#: LocaleTest.php:110 LocaleTest.php:147
+#: LocaleTest.php:76 LocaleTest.php:134
 msgid "Not translated"
 msgstr ""
 
 #. L10N: Untranslated string for string replacement.
-#: LocaleTest.php:117 LocaleTest.php:154
-msgid "Untranslated @action @name"
+#: LocaleTest.php:83 LocaleTest.php:141
+msgid "Untranslated {action} {name}"
 msgstr ""
 
 #. L10N: Translated plain text.
-#: LocaleTest.php:127 LocaleTest.php:164
+#: LocaleTest.php:93 LocaleTest.php:151
 msgid "Hello world"
 msgstr ""
 
 #. L10N: Translated string for string replacement.
-#: LocaleTest.php:134 LocaleTest.php:171
-msgid "Hello @name from @planet"
+#: LocaleTest.php:100 LocaleTest.php:158
+msgid "Hello {name} from {planet}"
+msgstr ""
+
+#. L10N: Translated string for numerical replacement.
+#. L10N: Translated string for numerical placeholder replacement.
+#: LocaleTest.php:110 LocaleTest.php:168
+msgid "Hello {0} from {1}"
+msgstr ""
+
+#. L10N: Translated string with mixed numerical and string placeholder.
+#: LocaleTest.php:120 LocaleTest.php:178
+msgid "Hello {0} from {1}. Today is {dayOfWeek}."
 msgstr ""

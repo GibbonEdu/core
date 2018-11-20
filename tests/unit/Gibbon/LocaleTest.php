@@ -80,9 +80,9 @@ class LocaleTest extends TestCase
         $this->assertEquals(
             'Untranslated hello world',
             # L10N: Untranslated string for string replacement.
-            $gibbon->locale->translate('Untranslated @action @name', [
-                '@action' => 'hello',
-                '@name' => 'world',
+            $gibbon->locale->translate('Untranslated {action} {name}', [
+                'action' => 'hello',
+                'name' => 'world',
             ]),
             'Named string replacement works on untranslated strings'
         );
@@ -97,11 +97,32 @@ class LocaleTest extends TestCase
         $this->assertEquals(
             '你好，來自 earth 的 stranger',
             # L10N: Translated string for string replacement.
-            $gibbon->locale->translate('Hello @name from @planet', [
-                '@name' => 'stranger',
-                '@planet' => 'earth',
+            $gibbon->locale->translate('Hello {name} from {planet}', [
+                'name' => 'stranger',
+                'planet' => 'earth',
             ]),
             'Translated string with named string replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger',
+            # L10N: Translated string for numerical replacement.
+            $gibbon->locale->translate('Hello {0} from {1}', [
+                'stranger',
+                'earth',
+            ]),
+            'Translated string with named string replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger。今天是 monday。',
+            # L10N: Translated string with mixed numerical and string placeholder.
+            $gibbon->locale->translate('Hello {0} from {1}. Today is {dayOfWeek}.', [
+                'stranger',
+                'dayOfWeek' => 'monday',
+                'earth',
+            ]),
+            'Translated string with mixed numerical and string placeholder'
         );
     }
 
@@ -117,9 +138,9 @@ class LocaleTest extends TestCase
         $this->assertEquals(
             'Untranslated hello world',
             # L10N: Untranslated string for string replacement.
-            __('Untranslated @action @name', [
-                '@action' => 'hello',
-                '@name' => 'world',
+            __('Untranslated {action} {name}', [
+                'action' => 'hello',
+                'name' => 'world',
             ]),
             'Named string replacement works on untranslated strings'
         );
@@ -134,11 +155,32 @@ class LocaleTest extends TestCase
         $this->assertEquals(
             '你好，來自 earth 的 stranger',
             # L10N: Translated string for string replacement.
-            __('Hello @name from @planet', [
-                '@name' => 'stranger',
-                '@planet' => 'earth',
+            __('Hello {name} from {planet}', [
+                'name' => 'stranger',
+                'planet' => 'earth',
             ]),
             'Translated string with named string replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger',
+            # L10N: Translated string for numerical placeholder replacement.
+            __('Hello {0} from {1}', [
+                'stranger',
+                'earth',
+            ]),
+            'Translated string with numerical placeholder replacement'
+        );
+
+        $this->assertEquals(
+            '你好，來自 earth 的 stranger。今天是 monday。',
+            # L10N: Translated string with mixed numerical and string placeholder.
+            __('Hello {0} from {1}. Today is {dayOfWeek}.', [
+                'stranger',
+                'dayOfWeek' => 'monday',
+                'earth',
+            ]),
+            'Translated string with mixed numerical and string placeholder'
         );
     }
 }
