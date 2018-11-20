@@ -67,9 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 } else {
                     $row = $result->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/staff_view.php'>".__('View Staff Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Staff Profiles'), 'staff_view.php')
+                        ->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
                     if ($search != '') {
                         echo "<div class='linkTop'>";
@@ -154,9 +154,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                 } else {
                     $row = $result->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/staff_view.php&search=$search&allStaff=$allStaff'>".__('View Staff Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Staff Profiles'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
+                        ->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
                     $subpage = null;
                     if (isset($_GET['subpage'])) {

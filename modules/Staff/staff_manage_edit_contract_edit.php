@@ -27,18 +27,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a>  > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php'>".__('Manage Staff')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_manage_edit.php&gibbonStaffID='.$_GET['gibbonStaffID']."'>".__('Edit Staff')."</a> > </div><div class='trailEnd'>".__('Edit Contract').'</div>';
-    echo '</div>';
+    $gibbonStaffID = $_GET['gibbonStaffID'] ?? '';
+    $gibbonStaffContractID = $_GET['gibbonStaffContractID'] ?? '';
+    $search = $_GET['search'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Staff'), 'staff_manage.php')
+        ->add(__('Edit Staff'), 'staff_manage_edit.php', ['gibbonStaffID' => $gibbonStaffID])
+        ->add(__('Edit Contract'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonStaffID = $_GET['gibbonStaffID'];
-    $gibbonStaffContractID = $_GET['gibbonStaffContractID'];
-    $search = $_GET['search'];
     if ($gibbonStaffID == '' or $gibbonStaffContractID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -178,4 +180,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit_co
         }
     }
 }
-?>

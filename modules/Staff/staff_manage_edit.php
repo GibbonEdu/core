@@ -34,12 +34,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php'>".__('Manage Staff')."</a> > </div><div class='trailEnd'>".__('Edit Staff').'</div>';
-        echo '</div>';
+        $search = $_GET['search'] ?? '';
+        $allStaff = $_GET['allStaff'] ?? '';
 
-        $search = (isset($_GET['search']) ? $_GET['search'] : '');
-        $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
+        $page->breadcrumbs
+            ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
+            ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -295,4 +295,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         }
     }
 }
-?>

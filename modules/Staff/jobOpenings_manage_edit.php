@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/jobOpenings_manage.php'>".__('Job Openings')."</a> > </div><div class='trailEnd'>".__('Edit Job Opening').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Job Openings', 'jobOpenings_manage.php'))
+        ->add(__('Edit Job Opening'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -99,4 +99,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
         }
     }
 }
-?>
