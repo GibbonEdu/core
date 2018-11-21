@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         echo '</div>';
     } else {
         //Proceed!
-        $page->breadcrumbs
-            ->add(__('Manage Facility Bookings'), 'spaceBooking_manage.php')
-            ->add(__('Delete Facility Booking'));
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }

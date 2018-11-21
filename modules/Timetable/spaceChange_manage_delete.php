@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         echo '</div>';
     } else {
         //Proceed!
-        $page->breadcrumbs
-            ->add(__('Manage Facility Changes'), 'spaceChange_manage.php')
-            ->add(__('Delete Facility Change'));
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
