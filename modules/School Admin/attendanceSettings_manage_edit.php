@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Attendance Settings'), 'attendanceSettings.php')
+        ->add(__('Manage Attendance Settings'), 'attendanceSettings.php')
         ->add(__('Edit Attendance Code'));
 
     if (isset($_GET['return'])) {

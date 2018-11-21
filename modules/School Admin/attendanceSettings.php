@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/attendanceSet
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Attendance Settings'));
+    $page->breadcrumbs->add(__('Manage Attendance Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
