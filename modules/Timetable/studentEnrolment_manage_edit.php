@@ -50,9 +50,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
         } else {
             //Let's go!
             $values = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentEnrolment_manage.php'>".__('Manage Student Enrolment')."</a> > </div><div class='trailEnd'>".sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
-            echo '</div>';
+
+            $page->breadcrumbs
+                ->add(__('Manage Student Enrolment'), 'studentEnrolment_manage.php')
+                ->add(strtr(__('Edit :courseNameShort.:name Enrolment'), [
+                    ':courseNameShort' => $values['courseNameShort'],
+                    ':name' => $values['name'],
+                ]));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -249,4 +253,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
         }
     }
 }
-?>

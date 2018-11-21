@@ -90,9 +90,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt.php&allUsers=$allUsers'>".__('View Timetable by Person')."</a> > </div><div class='trailEnd'>".formatName($row['title'], $row['preferredName'], $row['surname'], $row['type']).'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('View Timetable by Person'), 'tt.php', ['allUsers' => $allUsers])
+                ->add(formatName($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);

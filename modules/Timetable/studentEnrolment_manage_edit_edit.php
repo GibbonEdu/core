@@ -51,15 +51,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             //Let's go!
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentEnrolment_manage.php'>".__('Manage Student Enrolment')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/studentEnrolment_manage_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name'])."</a> > </div><div class='trailEnd'>".__('Edit Participant').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Student Enrolment'), 'studentEnrolment_manage.php')
+                ->add(strtr(__('Edit :courseNameShort.:name Enrolment'), [
+                    ':courseNameShort' => $values['courseNameShort'],
+                    ':name' => $values['name'],
+                ]), 'studentEnrolment_manage_edit.php', [
+                    'gibbonCourseClassID' => $_GET['gibbonCourseClassID'],
+                    'gibbonCourseID' => $_GET['gibbonCourseID'],
+                ])
+                ->add(__('Edit Participant'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
-			}
-			
-			$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
+            }
+
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_editProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
             $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
