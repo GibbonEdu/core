@@ -32,9 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Modules').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Modules'));
 
     $returns = array();
     $returns['warning0'] = __("Uninstall was successful. You will still need to remove the module's files yourself.");
