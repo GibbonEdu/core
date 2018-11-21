@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manage_condition_add.php') == false) {
     //Acess denied
@@ -28,13 +29,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php'>".__('Manage Medical Forms')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_edit.php&&gibbonPersonMedicalID='.$_GET['gibbonPersonMedicalID']."'>".__('Edit Medical Form')."</a> > </div><div class='trailEnd'>".__('Add Condition').'</div>';
-    echo '</div>';
+    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $editID = $_GET['editID'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Medical Forms'), 'medicalForm_manage.php')
+        ->add(__('Manage Medical Forms'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
+        ->add(__('Add Condition'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
-        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_condition_edit.php&gibbonPersonMedicalConditionID='.$_GET['editID'].'&search='.$_GET['search'].'&gibbonPersonMedicalID='.$_GET['gibbonPersonMedicalID'];
+        $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_condition_edit.php&'.
+            http_build_query([
+                'gibbonPersonMedicalConditionID' => $editID,
+                'search' => $search,
+                'gibbonPersonMedicalID' => $gibbonPersonMedicalID,
+            ]);
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
@@ -76,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $row = $form->addRow();
                 $row->addLabel('personName', __('Student'));
-                $row->addTextField('personName')->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
+                $row->addTextField('personName')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
 
             $sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
             $row = $form->addRow();
@@ -123,4 +134,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         }
     }
 }
-?>

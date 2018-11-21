@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -33,15 +34,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Applications')."</a> > </div><div class='trailEnd'>".__('Edit Form').'</div>';
-    echo '</div>';
+    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Form'));
 
     //Check if school year specified
-    $gibbonApplicationFormID = (isset($_GET['gibbonApplicationFormID']))? $_GET['gibbonApplicationFormID'] : '';
-    $gibbonSchoolYearID = (isset($_GET['gibbonSchoolYearID']))? $_GET['gibbonSchoolYearID'] : '';
-    $search = (isset($_GET['search']))? $_GET['search'] : '';
-
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -254,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         foreach ($linkedApplications as $linkedApplicationFormID => $rowLinked) {
             $row = $table->addRow();
             $row->addContent(str_pad(intval($linkedApplicationFormID), 7, '0', STR_PAD_LEFT));
-            $row->addContent(formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
+            $row->addContent(Format::name('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
             $row->addContent($rowLinked['status']);
 
         }
@@ -275,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $linkedApplications = array_reduce($resultApplications->fetchAll(), function($applications, $item) {
                 $group = $item['schoolYearName'];
                 $value = $item['gibbonApplicationFormID'];
-                $applications[$group][$value] = formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                $applications[$group][$value] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
 
                 return $applications;
             }, array());
@@ -717,7 +718,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $column = $row->addColumn()->setClass('blank');
 
             while ($rowRelationships = $resultRelationships->fetch()) {
-                $column->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
+                $column->addContent(Format::name($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
             }
         }
     }
@@ -978,4 +979,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     </script>
     <?php
 }
-?>

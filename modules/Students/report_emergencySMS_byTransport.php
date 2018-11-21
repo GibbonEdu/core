@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -30,9 +31,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Emergency SMS by Transport</div>";
-    echo '</div>';
+    $page->breadcrumbs->add(__('Emergency SMS by Transport'));
+
     echo '<p>';
     echo __('This report prints all parent mobile phone numbers, whether or not they are set to receive messages from the school. It is useful when sending emergency SMS messages to groups of students. If no parent mobile is available it will display the emergency numbers given in the student record, and this will appear in red.');
     echo '</p>';
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
             echo "<tr class=$rowNum>";
             if ($hideName == 'N') {
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
             }
             echo '<td>';
@@ -171,4 +171,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
         echo '</table>';
     }
 }
-?>

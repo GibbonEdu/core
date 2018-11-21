@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -30,9 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Left Students').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Left Students'));
 
     echo '<h2>';
     echo __('Choose Options');
@@ -168,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                     echo $count;
                     echo '</td>';
                     echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
                     try {
                         $dataCurrent = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sqlCurrent = 'SELECT name FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -211,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         while ($rowFamily2 = $resultFamily2->fetch()) {
-                            echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                            echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                             $numbers = 0;
                             for ($i = 1; $i < 5; ++$i) {
                                 if ($rowFamily2['phone'.$i] != '') {
@@ -250,4 +249,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
         }
     }
 }
-?>

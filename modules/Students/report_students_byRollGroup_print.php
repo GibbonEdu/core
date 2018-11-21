@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -62,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                     $tutorCount = 0;
                     echo "<p style=''><b>".__('Tutors').'</b>: ';
                     while ($rowDetail = $resultDetail->fetch()) {
-                        echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                        echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                         ++$tutorCount;
                         if ($tutorCount < $resultDetail->rowCount()) {
                             echo ', ';
@@ -141,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
             echo $row['name'];
             echo '</td>';
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             if ($view == 'Extended') {
                 echo '<td>';

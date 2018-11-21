@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
@@ -77,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['transport']);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
         //Column B
- 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName('', $row['preferredName'], $row['surname'], 'Student', true));
+ 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, Format::name('', $row['preferredName'], $row['surname'], 'Student', true));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
         //Column C
 		$dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
@@ -132,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                 $contact .= $e->getMessage().'. ';
             }
             while ($rowFamily2 = $resultFamily2->fetch()) {
-                $contact .= formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').': ';
+                $contact .= Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').': ';
                 $numbers = 0;
                 for ($i = 1; $i < 5; ++$i) {
                     if ($rowFamily2['phone'.$i] != '') {

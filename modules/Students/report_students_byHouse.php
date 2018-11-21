@@ -26,9 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 	echo "</div>" ;
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Students by House').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Students by House'));
 
     $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : '';
     $gibbonYearGroupIDList = explode(',', $gibbonYearGroupIDList);
