@@ -26,10 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+    $allStudents = $_GET['allStudents'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $sort = $_GET['sort'] ?? '';
 
     $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
@@ -62,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 //Proceed!
                 $page->breadcrumbs
                     ->add(__('View Student Profiles'), 'student_view.php')
-                    ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
+                    ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents)
                     ->add(__('Edit Student Note'));
 
                 if (isset($_GET['return'])) {

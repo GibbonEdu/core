@@ -340,9 +340,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
 
-                    echo "<div class='trail'>";
-                    $page->breadcrumbs->add(__()); " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                    ->add(__('View Student Profiles'), 'student_view.php')
+                    ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
+
 
                     $subpage = null;
                     if (isset($_GET['subpage'])) {

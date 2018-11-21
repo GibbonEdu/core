@@ -35,7 +35,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     //Proceed!
     $page->breadcrumbs->add(__('Family Address by Student'));
 
-    echo '</div>';
     echo '<p>';
     echo __('This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
     echo '</p>';
