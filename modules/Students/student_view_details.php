@@ -111,9 +111,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Student Profiles'), 'student_view.php')
+                        ->add(formatName('', $row['preferredName'], $row['surname'], 'Student'));
 
                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
@@ -340,7 +340,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $studentImage=$row['image_240'] ;
 
                     echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
+                    $page->breadcrumbs->add(__()); " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
                     echo '</div>';
 
                     $subpage = null;
@@ -3355,4 +3355,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         }
     }
 }
-?>

@@ -31,17 +31,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
 } else {
     //Get action with highest precendence
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/firstAidRecord.php'>".__('Manage First Aid Records')."</a> > </div><div class='trailEnd'>".__('Edit').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('First Aid Records'), 'firstAidRecord.php')
+        ->add(__('Edit'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    $gibbonFirstAidID = isset($_GET['gibbonFirstAidID'])? $_GET['gibbonFirstAidID'] : null;
-    $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
-    $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
+    $gibbonFirstAidID = $_GET['gibbonFirstAidID'] ?? '';
+    $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
 
     if ($gibbonFirstAidID == '') {
         echo "<div class='error'>";
@@ -122,4 +122,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
         }
     }
 }
-?>

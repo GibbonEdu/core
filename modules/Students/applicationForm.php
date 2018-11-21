@@ -53,13 +53,7 @@ if ($proceed == false) {
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    if (isset($_SESSION[$guid]['username'])) {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Application Form').'</div>';
-    } else {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Application Form').'</div>';
-    }
-    echo '</div>';
+    $page->breadcrumbs->add(__('Application Form'));
 
     if (isset($_SESSION[$guid]['username']) == false) {
         echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';

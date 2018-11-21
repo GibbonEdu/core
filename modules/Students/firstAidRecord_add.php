@@ -36,13 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/firstAidRecord.php'>".__('Manage First Aid Records')."</a> > </div><div class='trailEnd'>".__('Add').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('First Aid Records'), 'firstAidRecord.php')
+            ->add(__('Add'));
 
-        $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
-        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID'])? $_GET['gibbonYearGroupID'] : null;
-
+        $gibbonRollGroupID = $_GET['gibbonRollGroupID'] ?? '';
+        $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    
         $editLink = '';
         $editID = '';
         if (isset($_GET['editID'])) {
@@ -97,4 +97,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ad
         echo $form->getOutput();
     }
 }
-?>

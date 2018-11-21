@@ -32,8 +32,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Family Address by Student</div>";
+    $page->breadcrumbs->add(__('Family Address by Student'));
+
     echo '</div>';
     echo '<p>';
     echo __('This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
@@ -188,4 +188,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         echo '</table>';
     }
 }
-?>
