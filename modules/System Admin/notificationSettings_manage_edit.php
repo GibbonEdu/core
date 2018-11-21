@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     //Acess denied
@@ -119,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 while ($listener = $result->fetch()) {
                     echo '<tr class="'.(($listener['receiveNotificationEmails'] == 'N')? 'warning' : '').'">';
                     echo '<td>';
-                    echo formatName($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
+                    echo Format::name($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
                     echo '</td>';
                     echo '<td>';
                     echo ynExpander($guid, $listener['receiveNotificationEmails']);
@@ -180,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
                 }
 
                 $row = $form->addRow();
