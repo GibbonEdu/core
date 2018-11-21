@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage String Replacements'), 'stringReplacement_manage.php')
-        ->add(__('Delete String'));
-
     $search = '';
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
