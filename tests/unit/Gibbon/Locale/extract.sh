@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This script generates / update
-# the translation files for LocalTest.php
+# the translation files for tests within this folder.
 
 # ensure that realpath exists in the environment
 # (compatibility with macos)
