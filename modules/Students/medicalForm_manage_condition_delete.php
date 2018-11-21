@@ -30,11 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    $page->breadcrumbs
-        ->add(__('Manage Medical Forms'), 'medicalForm_manage.php')
-        ->add(__('Manage Medical Forms'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
-        ->add(__('Delete Condition'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

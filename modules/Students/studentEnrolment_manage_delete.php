@@ -30,10 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
     $gibbonStudentEnrolmentID = $_GET['gibbonStudentEnrolmentID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    $page->breadcrumbs
-        ->add(__('Student Enrolment'), 'studentEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Delete Student Enrolment'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

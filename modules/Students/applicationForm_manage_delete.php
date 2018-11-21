@@ -33,10 +33,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     $search = $_GET['search'] ?? '';
 
-    $page->breadcrumbs
-        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Delete Form'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
