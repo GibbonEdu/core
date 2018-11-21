@@ -42,8 +42,8 @@ if ($proceed == false) {
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(strtr(__(':organisationName Application Form'), [
-        ':organisationName' => $_SESSION[$guid]['organisationNameShort'],
+    $page->breadcrumbs->add(__('{organisationName} Application Form', [
+        'organisationName' => $_SESSION[$guid]['organisationNameShort'],
     ]));
 
     //Check for job openings
