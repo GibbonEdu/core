@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -27,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Privacy Choices by Student').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Privacy Choices by Student'));
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
             echo '</td>';
             echo '<td style=\'text-align: center\'>';
             echo getUserPhoto($guid, $row['image_240'], 75).'<br/>';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'].'\'>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
+            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'].'\'>'.Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
             echo '</td>';
             $studentPrivacyOptions = explode(',', $row['privacy']);
             foreach ($privacyOptions as $option) {

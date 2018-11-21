@@ -26,18 +26,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/medicalForm_manage.php'>".__('Manage Medical Forms')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/medicalForm_manage_edit.php&&gibbonPersonMedicalID='.$_GET['gibbonPersonMedicalID']."'>".__('Edit Medical Form')."</a> > </div><div class='trailEnd'>".__('Delete Condition').'</div>';
-    echo '</div>';
+    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'] ?? '';
+    $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonPersonMedicalID = $_GET['gibbonPersonMedicalID'];
-    $gibbonPersonMedicalConditionID = $_GET['gibbonPersonMedicalConditionID'];
-    $search = $_GET['search'];
     if ($gibbonPersonMedicalID == '' or $gibbonPersonMedicalConditionID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -69,4 +66,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
         }
     }
 }
-?>

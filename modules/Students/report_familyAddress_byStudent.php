@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
@@ -32,8 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Family Address by Student</div>";
+    $page->breadcrumbs->add(__('Family Address by Student'));
+
     echo '</div>';
     echo '<p>';
     echo __('This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
@@ -128,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 $next = $array[($i + 1)]['gibbonFamilyID'];
             }
             if ($current == $next) {
-                $students .= formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                $students .= Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
@@ -136,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 echo '</td>';
                 echo '<td>';
                 echo $students;
-                echo formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                echo Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
                 echo '</td>';
                 echo '<td>';
 				//Print Name
@@ -188,4 +189,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         echo '</table>';
     }
 }
-?>

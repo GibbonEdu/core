@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -111,9 +112,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $row = $result->fetch();
                     $studentImage=$row['image_240'] ;
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Student Profiles'), 'student_view.php')
+                        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
@@ -226,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '<tr>';
                                     echo "<td style='width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                    echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                     echo '</td>';
                                     echo "<td style='width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('First Language').'</span><br/>';
@@ -340,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                     $studentImage=$row['image_240'] ;
 
                     echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
+                    $page->breadcrumbs->add(__()); " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php&search=$search&allStudents=$allStudents&sort=$sort'>".__('View Student Profiles')."</a> > </div><div class='trailEnd'>".Format::name('', $row['preferredName'], $row['surname'], 'Student').'</div>';
                     echo '</div>';
 
                     $subpage = null;
@@ -407,7 +408,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Preferred Name').'</span><br/>';
-                        echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+                        echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Official Name').'</span><br/>';
@@ -476,9 +477,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             while ($rowDetail = $resultDetail->fetch()) {
                                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                                 } else {
-                                    echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                                    echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                                 }
                                 if ($rowDetail['gibbonPersonID'] == $primaryTutor and $resultDetail->rowCount() > 1) {
                                     echo ' ('.__('Main Tutor').')';
@@ -512,9 +513,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo "<span style='font-size: 115%; font-weight: bold;'>".__('Head of Year').'</span><br/>';
                             $rowDetail = $resultDetail->fetch();
                             if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                             } else {
-                                echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                                echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                             }
                             echo '<br/>';
                         }
@@ -641,7 +642,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         } else {
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
                                 if ($rowDetail['email'] != '') {
                                     echo htmlPrep(' <'.$rowDetail['email'].'>');
                                 }
@@ -680,7 +681,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                             echo '<ul>';
                             while ($rowDetail = $resultDetail->fetch()) {
-                                echo '<li>'.htmlPrep(formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
                                 if ($rowDetail['email'] != '') {
                                     echo htmlPrep(' <'.$rowDetail['email'].'>');
                                 }
@@ -775,7 +776,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Preferred Name').'</span><br/>';
-                        echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+                        echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Official Name').'</span><br/>';
@@ -1094,9 +1095,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             }
                             while ($rowDetail = $resultDetail->fetch()) {
                                 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                                 } else {
-                                    echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                                    echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                                 }
                                 if ($rowDetail['gibbonPersonID'] == $primaryTutor and $resultDetail->rowCount() > 1) {
                                     echo ' ('.__('Main Tutor').')';
@@ -1138,9 +1139,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                             echo "<span style='font-size: 115%; font-weight: bold;'>".__('Head of Year').'</span><br/>';
                             $rowDetail = $resultDetail->fetch();
                             if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php')) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view_details.php&gibbonPersonID='.$rowDetail['gibbonPersonID']."'>".Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Staff', false, true).'</a>';
                             } else {
-                                echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                                echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                             }
                             echo '<br/>';
                         }
@@ -1363,7 +1364,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                     echo '</td>';
                                     echo "<td $class style='width: 33%; vertical-align: top'>";
                                     echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                    echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                    echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                     if ($rowMember['status'] != 'Full') {
                                         echo "<span style='font-weight: normal; font-style: italic'> (".$rowMember['status'].')</span>';
                                     }
@@ -1522,9 +1523,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         if ($rowMember['gibbonStudentEnrolmentID'] == null)
                                             $allStudents = '&allStudents=on';
                                         if ($rowMember['status'] == 'Full') {
-                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
+                                            echo "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowMember['gibbonPersonID'].$allStudents."'>".Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'</a><br/>';
                                         } else {
-                                            echo formatName('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
+                                            echo Format::name('', $rowMember['preferredName'], $rowMember['surname'], 'Student').'<br/>';
                                         }
                                         echo "<span style='font-weight: normal; font-style: italic'>".__('Status').': '.$rowMember['status'].'</span>';
                                         echo '</div>';
@@ -1594,7 +1595,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                 echo '<tr>';
                                 echo "<td style='width: 33%; vertical-align: top'>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-                                echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                 echo '</td>';
                                 echo "<td style='width: 33%; vertical-align: top'>";
                                 echo "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
@@ -1955,7 +1956,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                                         echo "<span style='font-size: 75%; font-style: italic'>".substr(strip_tags($row['note']), 0, 60).'</span>';
                                         echo '</td>';
                                         echo '<td>';
-                                        echo formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+                                        echo Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
                                         echo '</td>';
                                         echo '<td>';
                                         if ($row['gibbonPersonIDCreator'] == $_SESSION[$guid]['gibbonPersonID']) {
@@ -2575,7 +2576,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                 echo '<ul>';
                                 while ($rowDetail = $resultDetail->fetch()) {
-                                    echo '<li>'.htmlPrep(formatName('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
+                                    echo '<li>'.htmlPrep(Format::name('', $rowDetail['preferredName'], $rowDetail['surname'], 'Student', false));
                                     if ($rowDetail['email'] != '') {
                                         echo htmlPrep(' <'.$rowDetail['email'].'>');
                                     }
@@ -3355,4 +3356,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         }
     }
 }
-?>

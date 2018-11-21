@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -78,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
 
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             echo '<td colspan=3>';
 			//Get details of last personal data form update
@@ -126,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowFamily2 = $resultFamily2->fetch()) {
-                    echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                    echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                     $numbers = 0;
                     for ($i = 1; $i < 5; ++$i) {
                         if ($rowFamily2['phone'.$i] != '') {

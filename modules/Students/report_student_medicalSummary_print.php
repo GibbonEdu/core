@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -96,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                 $rowForm = $resultForm->fetch();
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                 echo '</td>';
                 echo '<td>';
                 echo __('Yes');
@@ -200,7 +202,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                 echo '</td>';
                 echo '<td colspan=4>';
                 echo "<span style='color: #ff0000; font-weight: bold'>".__('No').'</span>';

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -27,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Student Transport').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student Transport'));
 
     echo "<div class='linkTop'>";
     echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_transport_studentExport.php?address='.$_GET['q']."'><img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         echo $row['transport'];
         echo '</td>';
         echo '<td>';
-        echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+        echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
         echo '</td>';
         echo '<td>';
         try {
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowFamily2 = $resultFamily2->fetch()) {
-                echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                 $numbers = 0;
                 for ($i = 1; $i < 5; ++$i) {
                     if ($rowFamily2['phone'.$i] != '') {

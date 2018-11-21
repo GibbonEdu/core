@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -27,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Letters Home by Roll Group').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Letters Home by Roll Group'));
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                     $proceed = true;
                 }
                 else { //Store sibling away for later use
-                    $siblings[$rowSibling['gibbonFamilyID']][$row['gibbonPersonID']] = formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                    $siblings[$rowSibling['gibbonFamilyID']][$row['gibbonPersonID']] = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 }
             }
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo $count + 1;
                 echo '</td>';
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
                 echo '<td>';
                 if (!empty($siblings[$row['gibbonFamilyID']]) && is_array($siblings[$row['gibbonFamilyID']])) {

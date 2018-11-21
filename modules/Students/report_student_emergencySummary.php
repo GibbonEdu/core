@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
@@ -32,9 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Student Emergency Data Summary').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student Emergency Data Summary'));
+
     echo '<p>';
     echo __('This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.');
     echo '</p>';
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
 
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+            echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
             echo '</td>';
             echo '<td colspan=3>';
                         //Get details of last personal data form update
@@ -157,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowFamily2 = $resultFamily2->fetch()) {
-                    echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                    echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                     $numbers = 0;
                     for ($i = 1; $i < 5; ++$i) {
                         if ($rowFamily2['phone'.$i] != '') {
@@ -211,4 +211,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         echo '</table>';
     }
 }
-?>
