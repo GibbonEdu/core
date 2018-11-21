@@ -169,6 +169,61 @@ class Locale implements LocaleInterface
     }
 
     /**
+     * Format given string with the parameter array.
+     *
+     * @param string $text   A string template for parameter substitution. The placeholder in
+     *                       '{key}' format will be replaced by 'value' for the given parameter
+     *                       array: ['key' => 'value'].
+     * @param array  $params An array of key-value pairs to be used for parameter substitutions.
+     *
+     * @return string The substituted version of $text string.
+     */
+    protected static function formatString(string $text, array $params = [])
+    {
+        return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
+            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
+            return $carry;
+        }, []));
+    }
+
+    /**
+     * Apply custom string replacement logic from database.
+     *
+     * @param string  $text Raw string to apply the string replacement logics
+     *
+     * @return string The substituted version of $text string.
+     */
+    protected function doStringReplacement(string $text)
+    {
+        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
+            foreach ($this->stringReplacements as $replacement) {
+                if ($replacement['mode'] == 'Partial') { //Partial match
+                    if ($replacement['caseSensitive'] == 'Y') {
+                        if (strpos($text, $replacement['original']) !== false) {
+                            $text = str_replace($replacement['original'], $replacement['replacement'], $text);
+                        }
+                    } else {
+                        if (stripos($text, $replacement['original']) !== false) {
+                            $text = str_ireplace($replacement['original'], $replacement['replacement'], $text);
+                        }
+                    }
+                } else { //Whole match
+                    if ($replacement['caseSensitive'] == 'Y') {
+                        if ($replacement['original'] == $text) {
+                            $text = $replacement['replacement'];
+                        }
+                    } else {
+                        if (strtolower($replacement['original']) == strtolower($text)) {
+                            $text = $replacement['replacement'];
+                        }
+                    }
+                }
+            }
+        }
+        return $text;
+    }
+
+    /**
      * Custom translation function to allow custom string replacement
      *
      * @param string $text    Text to Translate.
@@ -188,42 +243,15 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        $text = empty($domain) ? _($text) : dgettext($domain, $text);
+        $text = empty($domain) ?
+            gettext($text) :
+            dgettext($domain, $text);
 
         // apply named replacement parameters, if presents.
-        $text = strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
-            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
-            return $carry;
-        }, []));
+        $text = static::formatString($text, $params);
 
-        // apply custom string replacement logic.
-        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
-            foreach ($this->stringReplacements as $replacement) {
-                if ($replacement["mode"]=="Partial") { //Partial match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if (strpos($text, $replacement["original"]) !== false) {
-                            $text=str_replace($replacement["original"], $replacement["replacement"], $text);
-                        }
-                    } else {
-                        if (stripos($text, $replacement["original"]) !== false) {
-                            $text=str_ireplace($replacement["original"], $replacement["replacement"], $text);
-                        }
-                    }
-                } else { //Whole match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if ($replacement["original"]==$text) {
-                            $text=$replacement["replacement"];
-                        }
-                    } else {
-                        if (strtolower($replacement["original"])==strtolower($text)) {
-                            $text=$replacement["replacement"];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $text;
+        // apply custom string replacement logics and return.
+        return $this->doStringReplacement($text);
     }
 
     /**
@@ -256,38 +284,9 @@ class Locale implements LocaleInterface
             dngettext($domain, $singular, $plural, $n);
 
         // apply named replacement parameters, if presents.
-        $text = strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
-            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
-            return $carry;
-        }, []));
+        $text = static::formatString($text, $params);
 
-        // apply custom string replacement logic.
-        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
-            foreach ($this->stringReplacements as $replacement) {
-                if ($replacement["mode"]=="Partial") { //Partial match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if (strpos($text, $replacement["original"]) !== false) {
-                            $text=str_replace($replacement["original"], $replacement["replacement"], $text);
-                        }
-                    } else {
-                        if (stripos($text, $replacement["original"]) !== false) {
-                            $text=str_ireplace($replacement["original"], $replacement["replacement"], $text);
-                        }
-                    }
-                } else { //Whole match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if ($replacement["original"]==$text) {
-                            $text=$replacement["replacement"];
-                        }
-                    } else {
-                        if (strtolower($replacement["original"])==strtolower($text)) {
-                            $text=$replacement["replacement"];
-                        }
-                    }
-                }
-            }
-        }
-
-        return $text;
+        // apply custom string replacement logics and return.
+        return $this->doStringReplacement($text);
     }
 }
