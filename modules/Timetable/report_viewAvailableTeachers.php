@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -403,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                                 if ($resultUnique->rowCount() < 1) {
 
                                                     if ($viewBy == 'name') {
-                                                        $vacancies .= formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                        $vacancies .= Format::name('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
                                                     }
                                                     else if ($viewBy == 'username') {
                                                         $vacancies .= $rowSelect['username'].', ';

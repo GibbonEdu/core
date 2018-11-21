@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -92,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
 
             $page->breadcrumbs
                 ->add(__('View Timetable by Person'), 'tt.php', ['allUsers' => $allUsers])
-                ->add(formatName($row['title'], $row['preferredName'], $row['surname'], $row['type']));
+                ->add(Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                 $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
@@ -116,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo formatName($row['title'], $row['preferredName'], $row['surname'], $row['type'], false);
+            echo Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type'], false);
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
