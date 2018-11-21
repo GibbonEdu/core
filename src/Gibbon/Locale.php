@@ -230,21 +230,21 @@ class Locale implements LocaleInterface
      * Custom translation function to allow custom string replacement with
      * plural string.
      *
-     * @param string $msgid1  The singular message ID.
-     * @param string $msgid2  The plural message ID.
-     * @param int    $n       The number (e.g. item count) to determine
-     *                        the translation for the respective grammatical
-     *                        number.
-     * @param array  $params  Assoc array of key value pairs for named
-     *                        string replacement.
-     * @param array  $options Options for translations (e.g. domain).
+     * @param string $singular The singular message ID.
+     * @param string $plural   The plural message ID.
+     * @param int    $n        The number (e.g. item count) to determine
+     *                         the translation for the respective grammatical
+     *                         number.
+     * @param array  $params   Assoc array of key value pairs for named
+     *                         string replacement.
+     * @param array  $options  Options for translations (e.g. domain).
      *
      * @return string Translated Text
      */
-    public function translateN(string $msgid1, string $msgid2, int $n, array $params = [], array $options = [])
+    public function translateN(string $singular, string $plural, int $n, array $params = [], array $options = [])
     {
-        if ($msgid1 === '') {
-            return $msgid1;
+        if ($singular === '') {
+            return $singular;
         }
 
         // get domain from options.
@@ -252,8 +252,8 @@ class Locale implements LocaleInterface
 
         // get raw translated string with or without domain.
         $text = empty($domain) ?
-            ngettext($msgid1, $msgid2, $n) :
-            dngettext($domain, $msgid1, $msgid2, $n);
+            ngettext($singular, $plural, $n) :
+            dngettext($domain, $singular, $plural, $n);
 
         // apply named replacement parameters, if presents.
         $text = strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
