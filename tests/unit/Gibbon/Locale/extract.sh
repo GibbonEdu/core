@@ -3,6 +3,16 @@
 # This script generates / update
 # the translation files for LocalTest.php
 
+# ensure that realpath exists in the environment
+# (compatibility with macos)
+if ! which realpath 2>&1 >/dev/null; then
+    # declare a bash function which functions as
+    # normal realpath in bash
+    function realpath() {
+        [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+    }
+fi
+
 # generates a pot file from the given information
 function genTemplate {
 
@@ -83,6 +93,11 @@ declare -a LOCALES=(
 
 set -x
 
+PWD_RETURN=$PWD
+BASE_DIR=$(realpath $(dirname $0))
+
+cd $BASE_DIR
+
 # extract raw text from source file
 genTemplate \
     "$PACKAGE_NAME" \
@@ -99,3 +114,5 @@ do
         "$LOCALE" \
         "$DOMAIN"
 done
+
+cd $PWD_RETURN

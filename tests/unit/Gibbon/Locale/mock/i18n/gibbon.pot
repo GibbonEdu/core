@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gibbon v17.0.00\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-11-21 11:56+0800\n"
+"POT-Creation-Date: 2018-11-21 12:15+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,14 +19,16 @@ msgstr ""
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
 #. L10N: Untranslated plural string with string placeholder
-#: TranslateNTest.php:76 TranslateNTest.php:85
+#: TranslateNTest.php:76 TranslateNTest.php:85 TranslateNTest.php:115
+#: TranslateNTest.php:124
 msgid "I have an orange"
 msgid_plural "I have {num} oranges"
 msgstr[0] ""
 msgstr[1] ""
 
 #. L10N: Translated plural string with string placeholder
-#: TranslateNTest.php:94 TranslateNTest.php:103
+#: TranslateNTest.php:94 TranslateNTest.php:103 TranslateNTest.php:133
+#: TranslateNTest.php:142
 msgid "I have an apple"
 msgid_plural "I have {num} apples"
 msgstr[0] ""
