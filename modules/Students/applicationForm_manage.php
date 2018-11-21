@@ -132,7 +132,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $applications = $applicationGateway->queryApplicationFormsBySchoolYear($criteria, $gibbonSchoolYearID);
 
         $familyIDs = $applications->getColumn('gibbonFamilyID');
-        $adults = $familyGateway->selectAdultsByFamily($familyIDs)->fetchGrouped();
+        $adults = $familyGateway->selectAdultsByFamily($familyIDs)->fetchAll();
+        $adults = array_reduce($adults, function ($group, $item) {
+            $group[$item['gibbonPersonID']] = $item;
+            return $group;
+        }, []);
+
         $applications->joinColumn('gibbonFamilyID', 'adults', $adults);
 
         // DATA TABLE
