@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * Test against PO file generated LocaleTest.sh in
  * the folder containing this file.
  */
-class LocaleTest extends TestCase
+class TranslateTest extends TestCase
 {
     private $mockPDO;
     private $mockSession;
@@ -32,10 +32,10 @@ class LocaleTest extends TestCase
     {
 
         // Setup the composer autoloader
-        $autoloader = require_once __DIR__.'/../../../vendor/autoload.php';
+        $autoloader = require_once __DIR__.'/../../../../vendor/autoload.php';
 
         // Require the system-wide functions
-        require_once __DIR__.'/../../../functions.php';
+        require_once __DIR__.'/../../../../functions.php';
 
         // Create a stub for the Gibbon\session class
         $this->mockSession = $this->createMock(session::class);

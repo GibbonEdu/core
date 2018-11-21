@@ -112,6 +112,27 @@ function __($text, $params=[], $options=[])
     return $gibbon->locale->translate($text, $params, $options);
 }
 
+/**
+ * Custom translation function to allow custom string replacement with
+ * plural string.
+ *
+ * @param string $msgid1  The singular message ID.
+ * @param string $msgid2  The plural message ID.
+ * @param int    $n       The number (e.g. item count) to determine
+ *                        the translation for the respective grammatical
+ *                        number.
+ * @param array  $params  Assoc array of key value pairs for named
+ *                        string replacement.
+ * @param array  $options Options for translations (e.g. domain).
+ *
+ * @return string Translated Text
+ */
+function __n(string $msgid1, string $msgid2, int $n, array $params = [], array $options = [])
+{
+    global $gibbon;
+    return $gibbon->locale->translateN($msgid1, $msgid2, $n, $params, $options);
+}
+
 //$valueMode can be "value" or "id" according to what goes into option's value field
 //$selectMode can be "value" or "id" according to what is used to preselect an option
 //$honourDefault can TRUE or FALSE, and determines whether or not the default grade is selected

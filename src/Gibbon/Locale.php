@@ -225,4 +225,69 @@ class Locale implements LocaleInterface
 
         return $text;
     }
+
+    /**
+     * Custom translation function to allow custom string replacement with
+     * plural string.
+     *
+     * @param string $msgid1  The singular message ID.
+     * @param string $msgid2  The plural message ID.
+     * @param int    $n       The number (e.g. item count) to determine
+     *                        the translation for the respective grammatical
+     *                        number.
+     * @param array  $params  Assoc array of key value pairs for named
+     *                        string replacement.
+     * @param array  $options Options for translations (e.g. domain).
+     *
+     * @return string Translated Text
+     */
+    public function translateN(string $msgid1, string $msgid2, int $n, array $params = [], array $options = [])
+    {
+        if ($msgid1 === '') {
+            return $msgid1;
+        }
+
+        // get domain from options.
+        $domain = $options['domain'] ?? '';
+
+        // get raw translated string with or without domain.
+        $text = empty($domain) ?
+            ngettext($msgid1, $msgid2, $n) :
+            dngettext($domain, $msgid1, $msgid2, $n);
+
+        // apply named replacement parameters, if presents.
+        $text = strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
+            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
+            return $carry;
+        }, []));
+
+        // apply custom string replacement logic.
+        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
+            foreach ($this->stringReplacements as $replacement) {
+                if ($replacement["mode"]=="Partial") { //Partial match
+                    if ($replacement["caseSensitive"]=="Y") {
+                        if (strpos($text, $replacement["original"]) !== false) {
+                            $text=str_replace($replacement["original"], $replacement["replacement"], $text);
+                        }
+                    } else {
+                        if (stripos($text, $replacement["original"]) !== false) {
+                            $text=str_ireplace($replacement["original"], $replacement["replacement"], $text);
+                        }
+                    }
+                } else { //Whole match
+                    if ($replacement["caseSensitive"]=="Y") {
+                        if ($replacement["original"]==$text) {
+                            $text=$replacement["replacement"];
+                        }
+                    } else {
+                        if (strtolower($replacement["original"])==strtolower($text)) {
+                            $text=$replacement["replacement"];
+                        }
+                    }
+                }
+            }
+        }
+
+        return $text;
+    }
 }
