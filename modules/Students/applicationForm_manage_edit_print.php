@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -356,7 +358,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Name').'</span><br/>';
-                        echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                        echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Relationship').'</span><br/>';
@@ -428,7 +430,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Name'), $i).'</span><br/>';
-                    echo formatName($row['parent'.$i.'title'], $row['parent'.$i.'preferredName'], $row['parent'.$i.'surname'], 'Parent');
+                    echo Format::name($row['parent'.$i.'title'], $row['parent'.$i.'preferredName'], $row['parent'.$i.'surname'], 'Parent');
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                     echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Relationship'), $i).'</span><br/>';
@@ -554,7 +556,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Name'), $count).'</span><br/>';
-                            echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                            echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Relationship'), $count).'</span><br/>';
@@ -665,7 +667,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Name'), $siblingCount).'</span><br/>';
-                            echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], $rowMember['category']);
+                            echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], $rowMember['category']);
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                             echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';

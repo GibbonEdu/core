@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -81,11 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
             $row = $form->addRow();
                 $row->addLabel('patient', __('Patient'));
-                $row->addTextField('patient')->setValue(formatName('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->isRequired()->readonly();
+                $row->addTextField('patient')->setValue(Format::name('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->isRequired()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('First Aider'));
-                $row->addTextField('name')->setValue(formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->isRequired()->readonly();
+                $row->addTextField('name')->setValue(Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Student'))->isRequired()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));

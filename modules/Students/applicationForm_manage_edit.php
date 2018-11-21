@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -254,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         foreach ($linkedApplications as $linkedApplicationFormID => $rowLinked) {
             $row = $table->addRow();
             $row->addContent(str_pad(intval($linkedApplicationFormID), 7, '0', STR_PAD_LEFT));
-            $row->addContent(formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
+            $row->addContent(Format::name('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
             $row->addContent($rowLinked['status']);
 
         }
@@ -275,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $linkedApplications = array_reduce($resultApplications->fetchAll(), function($applications, $item) {
                 $group = $item['schoolYearName'];
                 $value = $item['gibbonApplicationFormID'];
-                $applications[$group][$value] = formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                $applications[$group][$value] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
 
                 return $applications;
             }, array());
@@ -717,7 +718,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $column = $row->addColumn()->setClass('blank');
 
             while ($rowRelationships = $resultRelationships->fetch()) {
-                $column->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
+                $column->addContent(Format::name($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
             }
         }
     }

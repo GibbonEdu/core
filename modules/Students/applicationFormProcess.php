@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -702,7 +703,7 @@ if ($proceed == false) {
                 $event = new NotificationEvent('Students', 'New Application Form');
 
                 $event->addRecipient($_SESSION[$guid]['organisationAdmissions']);
-                $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), formatName('', $preferredName, $surname, 'Student')));
+                $event->setNotificationText(sprintf(__('An application form has been submitted for %1$s.'), Format::name('', $preferredName, $surname, 'Student')));
                 $event->setActionLink("/index.php?q=/modules/Students/applicationForm_manage_edit.php&gibbonApplicationFormID=$AI&gibbonSchoolYearID=$gibbonSchoolYearIDEntry&search=");
 
                 $event->sendNotifications($pdo, $gibbon->session);

@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -179,7 +180,7 @@ if ($proceed == false) {
             $linkedApplications = $resultLinked->fetchAll();
 
             foreach ($linkedApplications as $rowLinked) {
-                $linkedApplicationText .= '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
+                $linkedApplicationText .= '<li>'. Format::name('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
                 $linkedApplicationText .= ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
             }
             $linkedApplicationText .= '</ul>';
@@ -692,7 +693,7 @@ if ($proceed == false) {
                 $selected = ($rowRelationships['gender'] == 'F')? 'Mother' : (($rowRelationships['gender'] == 'M')? 'Father' : '');
 
                 $subTableRow = $subTable->addRow()->addClass('right');
-                $subTableRow->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent'))->setClass('mediumWidth');
+                $subTableRow->addContent(Format::name($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent'))->setClass('mediumWidth');
                 $subTableRow->addSelectRelationship($rowSelect['gibbonFamilyID'].'-relationships[]')->selected($selected)->setClass('mediumWidth');
                 $form->addHiddenValue($rowSelect['gibbonFamilyID'].'-relationshipsGibbonPersonID[]', $rowRelationships['gibbonPersonID']);
             }
@@ -729,7 +730,7 @@ if ($proceed == false) {
         }
 
         while ($rowSibling = $resultSibling->fetch()) {
-            $name = formatName('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
+            $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
 
             $row = $table->addRow();
             $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);

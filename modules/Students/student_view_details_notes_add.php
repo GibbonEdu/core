@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
     //Acess denied
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                 //Proceed!
                 $page->breadcrumbs
                     ->add(__('Student Enrolment'), 'studentEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                    ->add(formatName('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
+                    ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
                     ->add(__('Add Student Note'));
 
                 if (isset($_GET['return'])) {

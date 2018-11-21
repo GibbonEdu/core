@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage_edit.php') == false) {
     //Acess denied
@@ -88,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
 
             $row = $form->addRow();
                 $row->addLabel('studentName', __('Student'));
-                $row->addTextField('studentName')->readOnly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
+                $row->addTextField('studentName')->readOnly()->setValue(Format::name('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $row = $form->addRow();
                 $row->addLabel('gibbonYearGroupID', __('Year Group'));

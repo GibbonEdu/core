@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
@@ -128,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 $next = $array[($i + 1)]['gibbonFamilyID'];
             }
             if ($current == $next) {
-                $students .= formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                $students .= Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
@@ -136,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 echo '</td>';
                 echo '<td>';
                 echo $students;
-                echo formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                echo Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
                 echo '</td>';
                 echo '<td>';
 				//Print Name
