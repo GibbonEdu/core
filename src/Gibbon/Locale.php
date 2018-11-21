@@ -21,6 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Localization & Internationalization Class
