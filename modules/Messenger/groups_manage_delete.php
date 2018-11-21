@@ -23,7 +23,7 @@ use Gibbon\Domain\Messenger\GroupGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
 
     if ($gibbonGroupID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         $groupGateway = $container->get(GroupGateway::class);
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_de
 
         if ($result->isEmpty()) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!

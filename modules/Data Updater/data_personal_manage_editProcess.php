@@ -505,7 +505,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                                 // Add direct notifications to roll group tutors
                                 if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                                    $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
+                                    $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
                                     $notificationText .= $privacyText;
 
                                     if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {

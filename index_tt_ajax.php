@@ -42,7 +42,7 @@ if (isset($_POST['gibbonTTID'])) {
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == false) {
     //Acess denied
     $output .= "<div class='error'>";
-    $output .= __($guid, 'Your request failed because you do not have access to this action.');
+    $output .= __('Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
     include './modules/Timetable/moduleFunctions.php';
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         $output .= $tt;
     } else {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'There is no information for the date specified.');
+        $output .= __('There is no information for the date specified.');
         $output .= '</div>';
     }
 }

@@ -20,23 +20,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Dump Unit'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') == false && isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > </div><div class='trailEnd'>".__($guid, 'Dump Unit').'</div>';
-    echo '</div>';
-
     //Check if courseschool year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
-    $gibbonUnitID = $_GET['gibbonUnitID'];
     if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -50,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -60,12 +65,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
             //Check if unit specified
             if ($gibbonUnitID == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'You have not specified one or more required parameters.');
+                echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 if ($gibbonUnitID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     try {
@@ -79,14 +84,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
                         $row = $result->fetch();
 
                         echo '<p>';
-                        echo sprintf(__($guid, 'This page allows you to view all of the content of a selected unit (%1$s). If you wish to take this unit out of Gibbon, simply copy and paste the contents into a word processing application.'), '<b><u>'.$row['courseName'].' - '.$row['name'].'</u></b>');
+                        echo sprintf(__('This page allows you to view all of the content of a selected unit (%1$s). If you wish to take this unit out of Gibbon, simply copy and paste the contents into a word processing application.'), '<b><u>'.$row['courseName'].' - '.$row['name'].'</u></b>');
                         echo '</p>';
 
                         ?>
@@ -118,10 +123,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                         //Tab links
                         echo '<ul>';
-                        echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
-                        echo "<li><a href='#tabs2'>".__($guid, 'Smart Blocks').'</a></li>';
-                        echo "<li><a href='#tabs3'>".__($guid, 'Resources').'</a></li>';
-                        echo "<li><a href='#tabs4'>".__($guid, 'Outcomes').'</a></li>';
+                        echo "<li><a href='#tabs1'>".__('Unit Overview').'</a></li>';
+                        echo "<li><a href='#tabs2'>".__('Smart Blocks').'</a></li>';
+                        echo "<li><a href='#tabs3'>".__('Resources').'</a></li>';
+                        echo "<li><a href='#tabs4'>".__('Outcomes').'</a></li>';
                         $classes = array();
                         $classCount = 0;
                         while ($rowClass = $resultClass->fetch()) {
@@ -136,11 +141,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         echo "<div id='tabs1'>";
                         if ($row['details'] == '') {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             echo '<h2>';
-                            echo __($guid, 'Description');
+                            echo __('Description');
                             echo '</h2>';
                             echo '<p>';
                             echo $row['description'];
@@ -148,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                             if ($row['tags'] != '') {
                                 echo '<h2>';
-                                echo __($guid, 'Concepts & Keywords');
+                                echo __('Concepts & Keywords');
                                 echo '</h2>';
                                 echo '<p>';
                                 echo $row['tags'];
@@ -156,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                             }
                             if ($row['details'] != '') {
                                 echo '<h2>';
-                                echo __($guid, 'Unit Outline');
+                                echo __('Unit Outline');
                                 echo '</h2>';
                                 echo '<p>';
                                 echo $row['details'];
@@ -211,7 +216,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 $resourceContents .= $rowBlocks['contents'];
                             }
                             if ($rowBlocks['teachersNotes'] != '') {
-                                echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowBlocks['teachersNotes'].'</div>';
+                                echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowBlocks['teachersNotes'].'</div>';
                                 $resourceContents .= $rowBlocks['teachersNotes'];
                             }
                         }
@@ -310,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         //No resources!
                         if ($noReosurces) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         }
                         echo '</div>';
@@ -328,19 +333,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
                                 echo '<th>';
-                                echo __($guid, 'Scope');
+                                echo __('Scope');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Category');
+                                echo __('Category');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Name');
+                                echo __('Name');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Year Groups');
+                                echo __('Year Groups');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Actions');
+                                echo __('Actions');
                                 echo '</th>';
                                 echo '</tr>';
 
@@ -393,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                     echo '});';
                                     echo '</script>';
                                     if ($rowBlocks['content'] != '') {
-                                        echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                                     }
                                     echo '</td>';
                                     echo '</tr>';
@@ -417,7 +422,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                 echo "<div id='tabs".($classCount + 5)."'>";
 
                                 //Print Lessons
-                                echo '<h2>'.__($guid, 'Lessons').'</h2>';
+                                echo '<h2>'.__('Lessons').'</h2>';
                                 try {
                                     $dataLessons = array('gibbonCourseClassID' => $class[1], 'gibbonUnitID' => $gibbonUnitID);
                                     $sqlLessons = 'SELECT * FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID ORDER BY date';
@@ -429,14 +434,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
 
                                 if ($resultLessons->rowCount() < 1) {
                                     echo "<div class='warning'>";
-                                    echo __($guid, 'There are no records to display.');
+                                    echo __('There are no records to display.');
                                     echo '</div>';
                                 } else {
                                     while ($rowLessons = $resultLessons->fetch()) {
                                         echo '<h3>'.$rowLessons['name'].'</h3>';
                                         echo $rowLessons['description'].'<br/>';
                                         if ($rowLessons['teachersNotes'] != '') {
-                                            echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
+                                            echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
                                         }
 
                                         try {
@@ -451,17 +456,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                                         while ($rowBlock = $resultBlock->fetch()) {
                                             echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
                                             echo '<p>';
-                                            echo '<b>'.__($guid, 'Type').'</b>: '.$rowBlock['type'].'<br/>';
-                                            echo '<b>'.__($guid, 'Length').'</b>: '.$rowBlock['length'].'<br/>';
-                                            echo '<b>'.__($guid, 'Contents').'</b>: '.$rowBlock['contents'].'<br/>';
+                                            echo '<b>'.__('Type').'</b>: '.$rowBlock['type'].'<br/>';
+                                            echo '<b>'.__('Length').'</b>: '.$rowBlock['length'].'<br/>';
+                                            echo '<b>'.__('Contents').'</b>: '.$rowBlock['contents'].'<br/>';
                                             if ($rowBlock['teachersNotes'] != '') {
-                                                echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
+                                                echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
                                             }
                                             echo '</p>';
                                         }
 
                                         //Print chats
-                                        echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
+                                        echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
                                     echo getThread($guid, $connection2, $rowLessons['gibbonPlannerEntryID'], null, 0, null, null, null, null, null, $class[1], $_SESSION[$guid]['gibbonPersonID'], 'Teacher', false);
                                 }
                             }

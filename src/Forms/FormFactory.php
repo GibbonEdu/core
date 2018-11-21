@@ -416,6 +416,7 @@ class FormFactory implements FormFactoryInterface
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
                 'KES KSh' => 'Kenyan Shilling (KSh)',
+                'LKR Rs' => 'Sri Lankan Rupee (Rs)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MMK K' => 'Myanmar Kyat (K)',
                 'MAD' => 'Moroccan Dirham (MAD)',

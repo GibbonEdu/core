@@ -28,14 +28,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $page->breadcrumbs->add(__('View Activities'));          
@@ -53,19 +53,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         if (!($allActivityAccess == 'View' or $allActivityAccess == 'Register')) {
             echo "<div class='error'>";
-            echo __($guid, 'Activity listing is currently closed.');
+            echo __('Activity listing is currently closed.');
             echo '</div>';
         } else {
             if ($allActivityAccess == 'View') {
                 echo "<div class='warning'>";
-                echo __($guid, 'Registration is currently closed, but you can still view activities.');
+                echo __('Registration is currently closed, but you can still view activities.');
                 echo '</div>';
             }
 
             $disableExternalProviderSignup = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup');
             if ($disableExternalProviderSignup == 'Y') {
                 echo "<div class='warning'>";
-                echo __($guid, 'Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.');
+                echo __('Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.');
                 echo '</div>';
             }
 
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
+                    echo __('Access denied.');
                     echo '</div>';
                 } else {
                     $options = array();
@@ -120,14 +120,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($countChild == 0) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     }
                 }
             }
 
             echo '<h2>';
-            echo __($guid, 'Filter & Search');
+            echo __('Filter & Search');
             echo '</h2>';
 
             $search = isset($_GET['search'])? $_GET['search'] : null;
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Activities');
+            echo __('Activities');
             echo '</h2>';
 
             //Set pagination variable
@@ -256,7 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                 if ($allActivityAccess == 'Register' && $canAccessRegistration) {
                     if ($dateType == 'Term' and $maxPerTerm > 0) {
                         echo "<div class='warning'>";
-                        echo __($guid, "Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
+                        echo __("Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
                         $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
                         echo '<ul>';
                         for ($i = 0; $i < count($terms); $i = $i + 2) {

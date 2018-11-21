@@ -103,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                 $resultClassGroup->execute($dataClassGroup);
                 while ($rowClassGroup = $resultClassGroup->fetch()) {
                     if ($rowClassGroup['gibbonPersonID'] != $_SESSION[$guid]['gibbonPersonID'] and $rowClassGroup['gibbonPersonID'] != $replyToID) {
-                        $notificationText = sprintf(__($guid, 'Someone has commented on your lesson plan "%1$s".'), $row['name']);
+                        $notificationText = sprintf(__('Someone has commented on your lesson plan "%1$s".'), $row['name']);
 
                         $notificationSender->addNotification($rowClassGroup['gibbonPersonID'], $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
                     }
@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                 //Create notification to person I am replying to
                 if (is_null($replyToID) == false) {
-                    $notificationText = sprintf(__($guid, 'Someone has replied to a comment you made on lesson plan "%1$s".'), $row['name']);
+                    $notificationText = sprintf(__('Someone has replied to a comment you made on lesson plan "%1$s".'), $row['name']);
                     $notificationSender->addNotification($replyToID, $notificationText, 'Planner', "/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=date&date=".$row['date'].'&gibbonCourseClassID=&search=#chat');
 
                     $notificationSender->sendNotificationsAsBcc();

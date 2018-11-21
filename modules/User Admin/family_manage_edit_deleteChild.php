@@ -22,7 +22,7 @@ use Gibbon\Forms\Prefab\DeleteForm;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_deleteChild.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     $search = $_GET['search'];
     if ($gibbonPersonID == '' or $gibbonFamilyID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!

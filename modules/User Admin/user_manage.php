@@ -26,7 +26,7 @@ use Gibbon\Domain\User\UserGateway;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->fromPOST();
 
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
     
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
 
     // QUERY

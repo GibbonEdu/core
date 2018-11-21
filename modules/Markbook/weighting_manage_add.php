@@ -26,20 +26,20 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
 
         if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') != 'Y') {
             //Acess denied
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed because you do not have access to this action.');
+            echo __('Your request failed because you do not have access to this action.');
             echo '</div>';
         }
 
@@ -52,10 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
-            echo __($guid, 'Add Markbook Weighting');
+            echo __('Add Markbook Weighting');
             echo '</h1>';
             echo "<div class='warning'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
 
             return;
@@ -77,10 +77,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
-                echo __($guid, 'Add Markbook Weighting');
+                echo __('Add Markbook Weighting');
                 echo '</h1>';
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();

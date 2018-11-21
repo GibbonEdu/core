@@ -23,12 +23,12 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_student.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Privacy Choices by Student').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Privacy Choices by Student').'</div>';
     echo '</div>';
 
     try {
@@ -45,22 +45,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
 
     if (count($privacyOptions) < 1 or $privacy == 'N') {
         echo "<div class='error'>";
-        echo __($guid, 'There are no privacy options in place.');
+        echo __('There are no privacy options in place.');
         echo '</div>';
     } else {
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th rowspan=2>';
-        echo __($guid, 'Count');
+        echo __('Count');
         echo '</th>';
         echo '<th rowspan=2>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th rowspan=2 style=\'text-align: center\'>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th colspan='.count($privacyOptions).'>';
-        echo __($guid, 'Privacy');
+        echo __('Privacy');
         echo '</th>';
         echo '</tr>';
 
@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
                 echo '<td>';
                 foreach ($studentPrivacyOptions as $studentOption) {
                     if (trim($studentOption) == trim($option)) {
-                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> " . __($guid, 'Required');
+                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> " . __('Required');
                     }
                 }
                 echo '</td>';
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_st
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=3>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }
