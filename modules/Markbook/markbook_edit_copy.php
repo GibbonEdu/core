@@ -71,29 +71,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
             } else {
                 $course = $result->fetch();
 
-	        	//Get teacher list
-	            $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	            $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
-	            $isCoordinator = isDepartmentCoordinator( $pdo, $_SESSION[$guid]['gibbonPersonID'] );
+                //Get teacher list
+                $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
+                $teaching = isset($teacherList[$_SESSION[$guid]['gibbonPersonID']]);
+                $isCoordinator = isDepartmentCoordinator($pdo, $_SESSION[$guid]['gibbonPersonID']);
 
-	            $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
+                $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
 
-	            if ($canEditThisClass == false) {
-	            	//Acess denied
-				    echo "<div class='error'>";
-				    echo __('You do not have access to this action.');
-				    echo '</div>';
-	            } else {
+                if ($canEditThisClass == false) {
+                    //Acess denied
+                    echo "<div class='error'>";
+                    echo __('You do not have access to this action.');
+                    echo '</div>';
+                } else {
                     $page->breadcrumbs
                         ->add(
-                            strtr(
-                                ':action :courseClass :property',
-                                [
-                                    ':action' => __('Edit'),
-                                    ':courseClass' => Format::courseClassName($course['course'], $course['class']),
-                                    ':property' => __('Markbook'),
-                                ]
-                            ),
+                            __('Edit {courseClass} Markbook', [
+                                'courseClass' => Format::courseClassName($course['course'], $course['class']),
+                            ]),
                             'markbook_edit.php',
                             [
                                 'gibbonCourseClassID' => $gibbonCourseClassID,
@@ -115,7 +110,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 	                    echo __('There are no records to display.');
 	                    echo '</div>';
 	                } else {
-
 	                	try {
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 		                    $sql2 = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';

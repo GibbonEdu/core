@@ -82,14 +82,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $page->breadcrumbs
                     ->add(
-                        strtr(
-                            ':action :courseClass :property',
-                            [
-                                ':action' => __('View'),
-                                ':courseClass' => Format::courseClassName($course['course'], $course['class']),
-                                ':property' => __('Markbook'),
-                            ]
-                        ),
+                        __('View {courseClass} Markbook', [
+                            ':courseClass' => Format::courseClassName($course['course'], $course['class']),
+                        ]),
                         'markbook_view.php',
                         [
                             'gibbonCourseClassID' => $gibbonCourseClassID,
