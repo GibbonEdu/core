@@ -528,9 +528,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
             if ($viewBy == 'date') {
-                $page->breadcrumbs->add(strtr(':planner :target', [
-                    ':planner' => __('Planner'),
-                    ':target' => dateConvertBack($guid, $date),
+                $page->breadcrumbs->add(__('Planner of {classDesc}', [
+                    'classDesc' => dateConvertBack($guid, $date),
                 ]));
 
                 //Get Smart Workflow help message
@@ -751,9 +750,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     } else {
                         $row = $result->fetch();
 
-                        $page->breadcrumbs->add(strtr(':planner :target', [
-                            ':planner' => __('Planner'),
-                            ':target' => $row['course'].'.'.$row['class'],
+                        $page->breadcrumbs->add(__('Planner of {classDesc}', [
+                            'classDesc' => $row['course'].'.'.$row['class'],
                         ]));
 
                         //Get Smart Workflow help message
@@ -1250,4 +1248,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID);
     }
 }
-?>

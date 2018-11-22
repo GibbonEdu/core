@@ -134,13 +134,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 }
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
 
-				$page->breadcrumbs
-					->add(strtr(':planner :target', [
-						':planner' => __('Planner'),
-						':target' => $extra,
-					]), 'planner.php', $params)
-					->add(__('Edit Lesson Plan'));
-			
+                $page->breadcrumbs
+                    ->add(__('Planner of {classDesc}', [
+                        'classDesc' => $extra,
+                    ]), 'planner.php', $params)
+                    ->add(__('Edit Lesson Plan'));
+
                 //CHECK IF UNIT IS GIBBON OR HOOKED
                 if ($row['gibbonHookID'] == null) {
                     $hooked = false;

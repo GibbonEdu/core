@@ -122,10 +122,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             echo '</div>';
         } else {
             $page->breadcrumbs
-                ->add(strtr(':planner :target', [
-                    ':planner' => __('Planner'),
-                    ':target' => $extra,
-                ]), 'planner.php', $params)
+                ->add(
+                    empty($extra) ?
+                        __('Planner') :
+                        __('Planner of {classDesc}', ['classDesc' => $extra]),
+                    'planner.php',
+                    $params
+                )
                 ->add(__('Add Lesson Plan'));
 
             $editLink = '';
