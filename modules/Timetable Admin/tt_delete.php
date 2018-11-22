@@ -26,18 +26,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     echo '</div>';
 } else {
     //Proceed!
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
-
-    $page->breadcrumbs
-        ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Delete Timetable'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
     if ($gibbonTTID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');

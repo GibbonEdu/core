@@ -48,11 +48,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             echo '</div>';
         } else {
             //Let's go!
-            $page->breadcrumbs
-                ->add(__('Manage Columns'), 'ttColumn.php')
-                ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
-                ->add(__('Edit Column Row'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }

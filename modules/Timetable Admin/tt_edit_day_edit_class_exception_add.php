@@ -51,14 +51,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $gibbonTTDayRowClassID = $values['gibbonTTDayRowClassID'];
 
-            $page->breadcrumbs
-                ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID])
-                ->add(__('Class List Exception'). 'tt_edit_day_edit_class_exception.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID, 'gibbonTTDayRowClass' => $gibbonTTDayRowClassID, 'gibbonCourseClassID' => $gibbonCourseClassID])
-                ->add(__('Add Exception'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }

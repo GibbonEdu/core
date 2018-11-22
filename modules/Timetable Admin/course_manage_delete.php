@@ -27,11 +27,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 } else {
     //Proceed!
     $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-    $page->breadcrumbs
-        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Delete Course & Classes'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

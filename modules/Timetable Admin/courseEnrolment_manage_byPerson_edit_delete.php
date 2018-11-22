@@ -54,11 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $row = $result->fetch();
-            $page->breadcrumbs
-                ->add(__('Enrolment by Person'), 'courseEnrolment_manage_byPerson.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'allUsers' => $allUsers])
-                ->add($row['preferredName'].' '.$row['surname'], 'courseEnrolment_manage_byPerson_edit.php', ['gibbonCourseClassID' => $gibbonCourseClassID, 'type' => $type, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonPersonID' => $gibbonPersonID, 'allUsers' => $allUsers])
-                ->add(__('Delete Participant'));
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }

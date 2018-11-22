@@ -26,10 +26,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_d
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs
-        ->add(__('Manage Columns'), 'ttColumn.php')
-        ->add(__('Delete Column'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }

@@ -30,11 +30,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 } else {
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
-
-    $page->breadcrumbs
-        ->add(__('Sync Course Enrolment'), 'courseEnrolment_sync.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-        ->add(__('Sync Now'));
-
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
