@@ -37,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         echo '</div>';
     } else {
         //Get action with highest precendence
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Graphing').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add('Graphing');
 
         echo '<h2>';
         echo __('Filter');
@@ -409,4 +407,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         }
     }
 }
-?>
