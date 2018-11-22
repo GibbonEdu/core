@@ -106,9 +106,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                     $row = $result->fetch();
 
                     $page->breadcrumbs
-                        ->add(strtr(':planner :target', [
-                            ':planner' => __('Planner'),
-                            ':target' => $row['course'].'.'.$row['class'],
+                        ->add(__('Planner for {classDesc}', [
+                            'classDesc' => $row['course'].'.'.$row['class'],
                         ]), 'planner.php', $params)
                         ->add(__('Bump Lesson Plan'));
 
