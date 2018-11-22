@@ -51,13 +51,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $row = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Enrolment by Class')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_class_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".sprintf(__('Edit %1$s.%2$s Enrolment'), $row['courseNameShort'], $row['name'])."</a> > </div><div class='trailEnd'>".__('Delete Participant').'</div>';
-            echo '</div>';
+
+            $page->breadcrumbs
+                ->add(__('Enrolment by Person'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(sprintf(__('Edit %1$s.%2$s Enrolment'), $row['courseNameShort'], $row['name']), 'courseEnrolment_manage_class_edit.php', ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID])
+                ->add(__('Delete Participant'));
 
             $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_deleteProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID");
             echo $form->getOutput();
         }
     }
 }
-?>

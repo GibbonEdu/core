@@ -26,16 +26,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Timetables')."</a> > </div><div class='trailEnd'>".__('Delete Timetable').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Delete Timetable'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonTTID = $_GET['gibbonTTID'];
     if ($gibbonTTID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -61,4 +63,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
         }
     }
 }
-?>

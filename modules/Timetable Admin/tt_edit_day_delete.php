@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -51,9 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__('Edit Timetable')."</a> > </div><div class='trailEnd'>".__('Delete Timetable Day').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Delete Timetable Day'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -64,4 +65,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         }
     }
 }
-?>

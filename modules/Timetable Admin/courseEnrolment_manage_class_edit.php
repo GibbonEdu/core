@@ -54,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             echo '</div>';
         } else {
             //Let's go!
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Enrolment by Class')."</a> > </div><div class='trailEnd'>".sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -64,8 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             echo '<h2>';
             echo __('Add Participants');
-            echo '</h2>'; 
-            
+            echo '</h2>';
+
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_class_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID");
                 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
@@ -116,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $linkedName = function ($person) use ($guid) {
                 $isStudent = stripos($person['role'], 'Student') !== false;
                 $name = Format::name('', $person['preferredName'], $person['surname'], $isStudent ? 'Student' : 'Staff', true, true);
-                return $isStudent 
+                return $isStudent
                     ? Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$person['gibbonPersonID'].'&subpage=Timetable', $name)
                     : $name;
             };
@@ -210,7 +210,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 });
 
             echo $table->render($enrolmentLeft);
-            
         }
     }
 }

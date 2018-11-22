@@ -29,21 +29,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
+    $gibbonYearGroupID = $_REQUEST['gibbonYearGroupID'] ?? '';
+    $gibbonSchoolYearID = $_REQUEST['gibbonSchoolYearID'] ?? '';
+    $pattern = $_POST['pattern'] ?? '';
 
-    $gibbonYearGroupID = (isset($_REQUEST['gibbonYearGroupID']))? $_REQUEST['gibbonYearGroupID'] : null;
-    $gibbonSchoolYearID = (isset($_REQUEST['gibbonSchoolYearID']))? $_REQUEST['gibbonSchoolYearID'] : null;
-
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/courseEnrolment_sync.php&gibbonSchoolYearID=".$gibbonSchoolYearID."'>".__('Sync Course Enrolment')."</a> > </div><div class='trailEnd'>".__('Map Classes').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Sync Course Enrolment'), 'courseEnrolment_sync.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Map Classes'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
-
-    
-
-    $pattern = (isset($_POST['pattern']))? $_POST['pattern'] : null;
 
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
         echo "<div class='error'>";
