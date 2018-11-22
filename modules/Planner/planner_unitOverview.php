@@ -149,10 +149,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                 $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
                 $page->breadcrumbs
-                    ->add(__('Planner of {classDesc}', [
+                    ->add(__('Planner for {classDesc}', [
                         'classDesc' => $target,
                     ]), 'planner.php', $params)
-                    ->add(__('View Lesson Plan of {classDesc}', [
+                    ->add(__('View Lesson Plan for {classDesc}', [
                         'classDesc' => $target,
                     ]), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'search' => $gibbonPersonID])
                     ->add(__('Unit Overview'));

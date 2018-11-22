@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                 $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
 
                 $page->breadcrumbs
-                    ->add(__('Planner of {classDesc}', [
+                    ->add(__('Planner for {classDesc}', [
                         'classDesc' => $extra,
                     ]), 'planner.php', $params)
                     ->add(__('Edit Lesson Plan'));

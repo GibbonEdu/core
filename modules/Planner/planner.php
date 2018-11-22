@@ -528,7 +528,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
             if ($viewBy == 'date') {
-                $page->breadcrumbs->add(__('Planner of {classDesc}', [
+                $page->breadcrumbs->add(__('Planner for {classDesc}', [
                     'classDesc' => dateConvertBack($guid, $date),
                 ]));
 
@@ -750,7 +750,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     } else {
                         $row = $result->fetch();
 
-                        $page->breadcrumbs->add(__('Planner of {classDesc}', [
+                        $page->breadcrumbs->add(__('Planner for {classDesc}', [
                             'classDesc' => $row['course'].'.'.$row['class'],
                         ]));
 

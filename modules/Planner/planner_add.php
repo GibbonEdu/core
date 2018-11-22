@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 ->add(
                     empty($extra) ?
                         __('Planner') :
-                        __('Planner of {classDesc}', ['classDesc' => $extra]),
+                        __('Planner for {classDesc}', ['classDesc' => $extra]),
                     'planner.php',
                     $params
                 )
