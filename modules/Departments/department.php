@@ -57,9 +57,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                 $role = getRole($_SESSION[$guid]['gibbonPersonID'], $gibbonDepartmentID, $connection2);
             }
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
-            echo '</div>';
+            $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
+            
+            $page->breadcrumbs
+                ->add(__('View All'), 'departments.php')
+                ->add($row['name'], 'departments.php', $urlParams);
 
             //Print overview
             if ($row['blurb'] != '' or $role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Director' or $role == 'Manager') {
