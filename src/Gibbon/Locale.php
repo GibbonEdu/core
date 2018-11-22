@@ -182,7 +182,8 @@ class Locale implements LocaleInterface
     protected static function formatString(string $text, array $params = [])
     {
         return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
-            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
+            $placeholder = stripos($key, '$s') !== false ? $key : '{'.$key.'}';
+            $carry[$placeholder] = $params[$key]; // apply quote to the keys for replacement
             return $carry;
         }, []));
     }
