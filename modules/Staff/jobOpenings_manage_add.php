@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_a
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Job Openings', 'jobOpenings_manage.php'))
+        ->add(__('Job Openings'), 'jobOpenings_manage.php')
         ->add(__('Add Job Opening'));
 
     $editLink = '';
