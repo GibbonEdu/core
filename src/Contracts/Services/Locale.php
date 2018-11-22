@@ -74,9 +74,12 @@ interface Locale
     /**
      * Translate a string using the current locale and string replacements.
      *
-     * @param string $text
-     * @param string $domain
-     * @return string
+     * @param string $text    Text to Translate.
+     * @param array  $params  Assoc array of key value pairs for named
+     *                        string replacement.
+     * @param array  $options Options for translations (e.g. domain).
+     *
+     * @return string Translated Text
      */
-    public function translate($text, $domain = null);
+    public function translate(string $text, array $params = [], array $options = []);
 }

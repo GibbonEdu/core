@@ -14,9 +14,10 @@ tests/config/support/_generated/*
 # Template Cache
 /resources/templates/cache/*
 
-# Misc Files
+# Misc System Temp Files
 Thumb.db
 .DS_Store
+*~
 nbproject/
 
 # Dev Dependencies

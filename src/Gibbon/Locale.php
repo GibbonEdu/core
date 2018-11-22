@@ -21,7 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
-use Psr\Container\ContainerInterface;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Localization & Internationalization Class
@@ -33,16 +33,24 @@ class Locale implements LocaleInterface
 {
     protected $i18ncode;
 
+    protected $absolutePath;
+
     protected $session;
 
     protected $stringReplacements;
 
+
     /**
      * Construct
+     *
+     * @param string  $absolutePath Absolute path to the Gibbon installation
+     * @param Session $session      Global session object for string
+     *                              replacement cache.
      */
-    public function __construct(ContainerInterface $container)
+    public function __construct(string $absolutePath, Session $session)
     {
-        $this->session = $container->get('session');
+        $this->absolutePath = $absolutePath;
+        $this->session = $session;
     }
 
     /**
@@ -93,7 +101,7 @@ class Locale implements LocaleInterface
      */
     public function setTextDomain(Connection $pdo) {
         
-        $this->setSystemTextDomain($this->session->get('absolutePath'));
+        $this->setSystemTextDomain($this->absolutePath);
 
         // Parse additional modules, adding domains for those
         if ($pdo->getConnection() != null) {
@@ -101,7 +109,7 @@ class Locale implements LocaleInterface
             $modules = $pdo->select($sql)->fetchAll();
 
             foreach ($modules as $module) {
-                $this->setModuleTextDomain($module['name'], $this->session->get('absolutePath'));
+                $this->setModuleTextDomain($module['name'], $this->absolutePath);
             }
         }
     }
@@ -162,62 +170,124 @@ class Locale implements LocaleInterface
     }
 
     /**
+     * Format given string with the parameter array.
+     *
+     * @param string $text   A string template for parameter substitution. The placeholder in
+     *                       '{key}' format will be replaced by 'value' for the given parameter
+     *                       array: ['key' => 'value'].
+     * @param array  $params An array of key-value pairs to be used for parameter substitutions.
+     *
+     * @return string The substituted version of $text string.
+     */
+    protected static function formatString(string $text, array $params = [])
+    {
+        return strtr($text, array_reduce(array_keys($params), function ($carry, $key) use ($params) {
+            $carry['{' . $key . '}'] = $params[$key]; // apply quote to the keys for replacement
+            return $carry;
+        }, []));
+    }
+
+    /**
+     * Apply custom string replacement logic from database.
+     *
+     * @param string  $text Raw string to apply the string replacement logics
+     *
+     * @return string The substituted version of $text string.
+     */
+    protected function doStringReplacement(string $text)
+    {
+        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
+            foreach ($this->stringReplacements as $replacement) {
+                if ($replacement['mode'] == 'Partial') { //Partial match
+                    if ($replacement['caseSensitive'] == 'Y') {
+                        if (strpos($text, $replacement['original']) !== false) {
+                            $text = str_replace($replacement['original'], $replacement['replacement'], $text);
+                        }
+                    } else {
+                        if (stripos($text, $replacement['original']) !== false) {
+                            $text = str_ireplace($replacement['original'], $replacement['replacement'], $text);
+                        }
+                    }
+                } else { //Whole match
+                    if ($replacement['caseSensitive'] == 'Y') {
+                        if ($replacement['original'] == $text) {
+                            $text = $replacement['replacement'];
+                        }
+                    } else {
+                        if (strtolower($replacement['original']) == strtolower($text)) {
+                            $text = $replacement['replacement'];
+                        }
+                    }
+                }
+            }
+        }
+        return $text;
+    }
+
+    /**
      * Custom translation function to allow custom string replacement
      *
-     * @param	string	Text to Translate
-     * @param	boolean	Use guid.
+     * @param string $text    Text to Translate.
+     * @param array  $params  Assoc array of key value pairs for named
+     *                        string replacement.
+     * @param array  $options Options for translations (e.g. domain).
      *
-     * @return	string	Translated Text
+     * @return string Translated Text
      */
-    public function translate($text, $domain = null)
+    public function translate(string $text, array $params = [], array $options = [])
     {
-        if ($text === '') return $text;
-
-        if (empty($domain))
-            $text=_($text);
-
-        else {
-            $text = dgettext($domain, $text);
-
+        if ($text === '') {
+            return $text;
         }
 
-        if (isset($this->stringReplacements) && is_array($this->stringReplacements)) {
+        // get domain from options.
+        $domain = $options['domain'] ?? '';
 
-            foreach ($this->stringReplacements AS $replacement) {
-                if ($replacement["mode"]=="Partial") { //Partial match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if (strpos($text, $replacement["original"])!==FALSE) {
-                            $text=str_replace($replacement["original"], $replacement["replacement"], $text);
+        // get raw translated string with or without domain.
+        $text = empty($domain) ?
+            gettext($text) :
+            dgettext($domain, $text);
 
-                        }
-                    }
-                    else {
-                        if (stripos($text, $replacement["original"])!==FALSE) {
-                            $text=str_ireplace($replacement["original"], $replacement["replacement"], $text);
+        // apply named replacement parameters, if presents.
+        $text = static::formatString($text, $params);
 
-                        }
-                    }
-                }
-                else { //Whole match
-                    if ($replacement["caseSensitive"]=="Y") {
-                        if ($replacement["original"]==$text) {
-                            $text=$replacement["replacement"];
+        // apply custom string replacement logics and return.
+        return $this->doStringReplacement($text);
+    }
 
-                        }
-                    }
-                    else {
-                        if (strtolower($replacement["original"])==strtolower($text)) {
-                            $text=$replacement["replacement"];
-
-                        }
-                    }
-                }
-
-            }
-
+    /**
+     * Custom translation function to allow custom string replacement with
+     * plural string.
+     *
+     * @param string $singular The singular message ID.
+     * @param string $plural   The plural message ID.
+     * @param int    $n        The number (e.g. item count) to determine
+     *                         the translation for the respective grammatical
+     *                         number.
+     * @param array  $params   Assoc array of key value pairs for named
+     *                         string replacement.
+     * @param array  $options  Options for translations (e.g. domain).
+     *
+     * @return string Translated Text
+     */
+    public function translateN(string $singular, string $plural, int $n, array $params = [], array $options = [])
+    {
+        if ($singular === '') {
+            return $singular;
         }
 
-        return $text;
+        // get domain from options.
+        $domain = $options['domain'] ?? '';
 
+        // get raw translated string with or without domain.
+        $text = empty($domain) ?
+            ngettext($singular, $plural, $n) :
+            dngettext($domain, $singular, $plural, $n);
+
+        // apply named replacement parameters, if presents.
+        $text = static::formatString($text, $params);
+
+        // apply custom string replacement logics and return.
+        return $this->doStringReplacement($text);
     }
 }
