@@ -55,19 +55,53 @@ function emailBodyConvert($body)
     return $return ;
 }
 
-//Custom translation function to allow custom string replacement
-function __($arg1, $arg2 = null, $arg3 = null)
+/**
+ * Custom translation function to allow custom string replacement
+ *
+ * @param string        $text    Text to Translate.
+ * @param array         $params  Assoc array of key value pairs for named
+ *                               string replacement.
+ * @param array|string  $options Options for translations (e.g. domain).
+ *                               Or string of domain (for backward
+ *                               compatibility, deprecated).
+ *
+ * @return string The resulted translation string.
+ */
+function __($text, $params=[], $options=[])
 {
     global $gibbon, $guid; // For backwards compatibilty
 
-    // Handle __($guid, $text) and __($guid, $text, $domain)
-    if ($arg1 == $guid) {
-        $text = $arg2;
-        $domain = $arg3;
-    } else {
-        // Handle __($text) and __($text, $domain)
-        $text = $arg1;
-        $domain = $arg2;
+    $args = func_get_args();
+
+    // Note: should remove the compatibility code in next
+    // version, then properly state function signature.
+
+    // Compatibility with __($guid, $text) and __($guid, $text, $domain) calls.
+    // Deprecated.
+    if ($args[0] === $guid) {
+        array_shift($args); // discard $guid
+    }
+    if (empty($args)) {
+        return ''; // if there is nothing after $guid, return nothing
+    }
+
+    // Basic __($text) signature handle by default.
+    $text = array_shift($args);
+    $params = [];
+    $options = [];
+
+    // Handle replacement parameters, if exists.
+    if (!empty($args) && is_array($args[0])) {
+        $params = array_shift($args);
+    }
+
+    // Handle options, if exists.
+    if (!empty($args)) {
+        $options = array_shift($args);
+
+        // Backward compatibility layer.
+        // Treat non-array options as 'domain'.
+        $options = is_array($options) ? $options : ['domain' => $options];
     }
 
     // Cancel out early for empty translations
@@ -75,7 +109,28 @@ function __($arg1, $arg2 = null, $arg3 = null)
         return $text;
     }
 
-    return $gibbon->locale->translate($text, $domain);
+    return $gibbon->locale->translate($text, $params, $options);
+}
+
+/**
+ * Custom translation function to allow custom string replacement with
+ * plural string.
+ *
+ * @param string $singular The singular message ID.
+ * @param string $plural   The plural message ID.
+ * @param int    $n        The number (e.g. item count) to determine
+ *                         the translation for the respective grammatical
+ *                         number.
+ * @param array  $params   Assoc array of key value pairs for named
+ *                         string replacement.
+ * @param array  $options  Options for translations (e.g. domain).
+ *
+ * @return string Translated Text
+ */
+function __n(string $singular, string $plural, int $n, array $params = [], array $options = [])
+{
+    global $gibbon;
+    return $gibbon->locale->translateN($singular, $plural, $n, $params, $options);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field

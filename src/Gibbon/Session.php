@@ -29,7 +29,7 @@ use Psr\Container\ContainerInterface;
  * @version	v13
  * @since	v12
  */
-class Session
+class Session implements SessionInterface
 {
     /**
      * string
