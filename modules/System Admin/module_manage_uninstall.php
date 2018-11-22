@@ -33,9 +33,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/module_manage.php'>".__('Manage Modules')."</a> > </div><div class='trailEnd'>".__('Uninstall Module').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Modules'), 'module_manage.php')
+        ->add(__('Uninstall Module'));
 
     if (isset($_GET['deleteReturn'])) {
         $deleteReturn = $_GET['deleteReturn'];

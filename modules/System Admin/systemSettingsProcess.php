@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 include '../../config.php';
 
@@ -178,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdministratorName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
         }
 
@@ -203,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationDBAName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
         }
 
@@ -228,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationHRName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationHREmail'] = $row['email'];
         }
 
@@ -253,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdmissionsName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
         }
 

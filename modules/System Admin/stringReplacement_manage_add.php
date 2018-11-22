@@ -31,9 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     }
 
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/stringReplacement_manage.php&search=$search'>".__('Manage String Replacements')."</a> > </div><div class='trailEnd'>".__('Add String').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage String Replacements'), 'stringReplacement_manage.php')
+        ->add(__('Add String'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
