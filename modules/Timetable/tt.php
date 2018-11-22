@@ -39,9 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View Timetable by Person').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add('View Timetable by Person');
 
         $gibbonPersonID = isset($_GET['gibbonPersonID']) ? $_GET['gibbonPersonID'] : null;
         $search = isset($_GET['search']) ? $_GET['search'] : '';

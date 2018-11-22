@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_space.php'>View Timetable by Facility</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('View Timetable by Facility'), 'tt_space.php')
+                ->add($row['name']);
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

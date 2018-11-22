@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Checks whether or not a space is free over a given period of time, returning true or false accordingly.
 function isSpaceFree($guid, $connection2, $foreignKey, $foreignKeyID, $date, $timeStart, $timeEnd)
 {
@@ -128,7 +130,7 @@ function getSpaceBookingEvents($guid, $connection2, $startDayStamp, $gibbonPerso
             $return[$count][3] = $rowSpaceBooking['date'];
             $return[$count][4] = $rowSpaceBooking['timeStart'];
             $return[$count][5] = $rowSpaceBooking['timeEnd'];
-            $return[$count][6] = formatName($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
+            $return[$count][6] = Format::name($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
             ++$count;
         }
     }
@@ -158,7 +160,7 @@ function getSpaceBookingEventsSpace($guid, $connection2, $startDayStamp, $gibbon
             $return[$count][3] = $rowSpaceBooking['date'];
             $return[$count][4] = $rowSpaceBooking['timeStart'];
             $return[$count][5] = $rowSpaceBooking['timeEnd'];
-            $return[$count][6] = formatName($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
+            $return[$count][6] = Format::name($rowSpaceBooking['title'], $rowSpaceBooking['preferredName'], $rowSpaceBooking['surname'], 'Staff');
             ++$count;
         }
     }

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -28,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View Available Teachers').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add('View Available Teachers');
 
     echo '<h2>';
     echo __('Choose Options');
@@ -405,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                                 if ($resultUnique->rowCount() < 1) {
 
                                                     if ($viewBy == 'name') {
-                                                        $vacancies .= formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                        $vacancies .= Format::name('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
                                                     }
                                                     else if ($viewBy == 'username') {
                                                         $vacancies .= $rowSelect['username'].', ';
@@ -467,4 +466,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         }
     }
 }
-?>
