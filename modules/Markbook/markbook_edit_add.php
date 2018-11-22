@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $page->breadcrumbs
                     ->add(
                         __('View {courseClass} Markbook', [
-                            ':courseClass' => Format::courseClassName($course['course'], $course['class']),
+                            'courseClass' => Format::courseClassName($course['course'], $course['class']),
                         ]),
                         'markbook_view.php',
                         [
