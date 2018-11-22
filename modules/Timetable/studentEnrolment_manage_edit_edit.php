@@ -54,9 +54,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             $page->breadcrumbs
                 ->add(__('Manage Student Enrolment'), 'studentEnrolment_manage.php')
-                ->add(strtr(__('Edit :courseNameShort.:name Enrolment'), [
-                    ':courseNameShort' => $values['courseNameShort'],
-                    ':name' => $values['name'],
+                ->add(__('Edit %1$s.%2$s Enrolment', [
+                    '%1$s' => $values['courseNameShort'],
+                    '%2$s' => $values['name']
                 ]), 'studentEnrolment_manage_edit.php', [
                     'gibbonCourseClassID' => $_GET['gibbonCourseClassID'],
                     'gibbonCourseID' => $_GET['gibbonCourseID'],
