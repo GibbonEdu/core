@@ -51,13 +51,7 @@ if ($proceed == false) {
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    if (isset($_SESSION[$guid]['username'])) {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Staff Application Form').'</div>';
-    } else {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Staff Application Form').'</div>';
-    }
-    echo '</div>';
+    $page->breadcrumbs->add(__('Staff Application Form'));
 
     //Get intro
     $intro = getSettingByScope($connection2, 'Staff', 'staffApplicationFormIntroduction');
@@ -121,7 +115,7 @@ if ($proceed == false) {
         $form->addRow()->addHeading(__('Job Related Information'));
 
         $jobOpeningsProcessed = array();
-        foreach ($jobOpenings AS $jobOpening) {
+        foreach ($jobOpenings as $jobOpening) {
             $jobOpeningsProcessed[$jobOpening['gibbonStaffJobOpeningID']] = $jobOpening['jobTitle'];
         }
         $row = $form->addRow();
@@ -147,7 +141,6 @@ if ($proceed == false) {
             $row = $form->addRow();
                 $row->addLabel('preferredName', __('Preferred Name'));
                 $row->addTextField('preferredName')->isRequired()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['preferredName']);
-
         }
         else { //Not logged in
             $row = $form->addRow();
@@ -315,13 +308,12 @@ if ($proceed == false) {
             $row = $form->addRow();
                 $row->addLabel('referenceEmail2', __('Referee 2'))->description(__('An email address for a second referee.'));
                 $row->addEmail('referenceEmail2')->isRequired();
-
         }
 
         //AGREEMENT
         $agreement = getSettingByScope($connection2, 'Staff', 'staffApplicationFormAgreement');
         if (!empty($agreement)) {
-            $form->addRow()->addHeading(__('Agreement'))->append($agreement)->wrap('<p>','</p>');
+            $form->addRow()->addHeading(__('Agreement'))->append($agreement)->wrap('<p>', '</p>');
 
             $row = $form->addRow();
                 $row->addLabel('agreement', '<b>'.__('Do you agree to the above?').'</b>');
@@ -346,4 +338,3 @@ if ($proceed == false) {
         }
     }
 }
-?>
