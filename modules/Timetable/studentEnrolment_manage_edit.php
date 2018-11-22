@@ -54,10 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             $page->breadcrumbs
                 ->add(__('Manage Student Enrolment'), 'studentEnrolment_manage.php')
-                ->add(strtr(__('Edit :courseNameShort.:name Enrolment'), [
-                    ':courseNameShort' => $values['courseNameShort'],
-                    ':name' => $values['name'],
-                ]));
+                ->add(sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
