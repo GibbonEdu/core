@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/jobOpenings_manage_e
 } else {
     //Proceed!
     $page->breadcrumbs
-        ->add(__('Job Openings', 'jobOpenings_manage.php'))
+        ->add(__('Job Openings'), 'jobOpenings_manage.php')
         ->add(__('Edit Job Opening'));
 
     if (isset($_GET['return'])) {

@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $allStaff = $_GET['allStaff'] ?? '';
 
     $page->breadcrumbs
-        ->add(__('Manage Staff', 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff]))
+        ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
         ->add(__('Add Staff'));
 
     $editLink = '';
