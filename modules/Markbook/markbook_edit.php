@@ -88,14 +88,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
             } else {
                 $row = $result->fetch();
 
-                $page->breadcrumbs->add(strtr(
-                    ':action :courseClass :property',
-                    [
-                        ':action' => __('Edit'),
-                        ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                        ':property' => __('Markbook'),
-                    ]
-                ));
+                $page->breadcrumbs->add(__('Edit {courseClass} Markbook', [
+                    'courseClass' => Format::courseClassName($row['course'], $row['class']),
+                ]));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);

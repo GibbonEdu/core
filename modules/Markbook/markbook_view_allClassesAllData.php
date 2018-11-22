@@ -99,14 +99,9 @@ use Gibbon\Services\Format;
     $courseName = $class['courseName'];
     $gibbonYearGroupIDList = $class['gibbonYearGroupIDList'];
 
-    $page->breadcrumbs->add(strtr(
-        ':action :courseClass :property',
-        [
-            ':action' => __('View'),
-            ':courseClass' => Format::courseClassName($class['course'], $class['class']),
-            ':property' => __('Markbook'),
-        ]
-    ));
+    $page->breadcrumbs->add(__('View {courseClass} Markbook', [
+        'courseClass' => Format::courseClassName($class['course'], $class['class']),
+    ]));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
