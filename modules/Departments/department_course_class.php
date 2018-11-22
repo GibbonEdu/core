@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -100,15 +101,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                     ->add(__('View All'), 'departments.php')
                     ->add($row['department'], 'department.php', $urlParams)
                     ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
-                    ->add($row['course'].'.'.$row['class']);
+                    ->add(Format::courseClassName($row['course'], $row['class']));
             } else {
                 $page->breadcrumbs
                     ->add(__('View All'), 'departments.php')
-                    ->add($row['course'].'.'.$row['class']);
+                    ->add(Format::courseClassName($row['course'], $row['class']));
             }            
             
             echo '<h2>';
-            echo $row['course'].'.'.$row['class'];
+            echo Format::courseClassName($row['course'], $row['class']);
             echo '<br/><small><em>'.__('Course').': '.$row['courseLong'].'</em></small>';
             echo '</h2>';
 
