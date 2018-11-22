@@ -78,11 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 'gibbonCourseClassID' => $gibbonCourseClassID,
                 'subView' => $subView,
             ];
-        }
-
-        $page->breadcrumbs
-            ->add(__('Planner'), 'planner.php', $params)
-            ->add(__('Duplicate Lesson Plan'));
+		}
 
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
@@ -124,7 +120,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 }
             } else {
                 //Let's go!
-                $row = $result->fetch();
+				$row = $result->fetch();
+				
+				// target of the planner
+				$target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
+
+				$page->breadcrumbs
+					->add(__('Planner for {classDesc}', [
+						'classDesc' => $target,
+					]), 'planner.php', $params)
+					->add(__('Duplicate Lesson Plan'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);

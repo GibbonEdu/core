@@ -107,12 +107,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                 $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
                 $page->breadcrumbs
-                    ->add(strtr('Planner for {classDesc}', [
+                    ->add(__('Planner for {classDesc}', [
                         'classDesc' => $target,
                     ]), 'planner.php', $params)
-                    ->add(__('View Lesson Plan for {classDesc}', [
-                        'classDesc' => $target,
-                    ]), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
+                    ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
                     ->add(__('Add Comment'));
 
                 if (isset($_GET['return'])) {
