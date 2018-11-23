@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Course Enrolment by Class');
+    $page->breadcrumbs->add(__('Course Enrolment by Class'));
 
     $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
 

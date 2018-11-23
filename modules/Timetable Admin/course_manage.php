@@ -30,7 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Manage Courses & Classes');
+    $page->breadcrumbs->add(__('Manage Courses & Classes'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

@@ -33,6 +33,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     echo '</div>';
 } else {
     //Proceed!
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+
     $page->breadcrumbs
         ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
         ->add(__('Edit Course & Classes'));

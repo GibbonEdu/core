@@ -39,6 +39,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
+        $urlParams = [
+            'gibbonTTDayID' => $gibbonTTDayID,
+            'gibbonTTID' => $gibbonTTID,
+            'gibbonSchoolYearID' => $gibbonSchoolYearID,
+            'gibbonTTColumnRowID' => $gibbonTTColumnRowID,
+            'gibbonCourseClassID' => $gibbonCourseClassID,
+        ];
+
+        $page->breadcrumbs
+            ->add(__('Manage Timetables'), 'tt.php', $urlParams)
+            ->add(__('Edit Timetable'), 'tt_edit.php', $urlParams)
+            ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', $urlParams)
+            ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', $urlParams)
+            ->add(__('Class List Exception'), 'tt_edit_day_edit_class_exception.php', $urlParams)
+            ->add(__('Add Exception'));
 
         $timetableDayGateway = $container->get(TimetableDayGateway::class);
         $values = $timetableDayGateway->getTTDayRowClassByID($gibbonTTDayID, $gibbonTTColumnRowID, $gibbonCourseClassID);

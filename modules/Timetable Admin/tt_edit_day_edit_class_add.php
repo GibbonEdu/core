@@ -53,11 +53,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             //Let's go!
             $values = $result->fetch();
 
+            $urlParams = ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID];
+
             $page->breadcrumbs
-                ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Classes in Period'), '', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID])
+                ->add(__('Manage Timetables'), 'tt.php', $urlParams)
+                ->add(__('Edit Timetable'), 'tt_edit.php', $urlParams)
+                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', $urlParams)
+                ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', $urlParams)
                 ->add(__('Add Class to Period'));
 
             if (isset($_GET['return'])) {

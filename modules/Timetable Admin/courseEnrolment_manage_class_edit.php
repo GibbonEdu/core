@@ -55,8 +55,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $page->breadcrumbs
-                ->add(__('Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(sprintf(__('Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']));
+                ->add(__('Course Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Edit %1$s.%2$s Enrolment', ['%1$s' => $values['courseNameShort'], '%2$s' => $values['name']]));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Tie Days to Dates');
+    $page->breadcrumbs->add(__('Tie Days to Dates'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

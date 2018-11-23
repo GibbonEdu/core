@@ -53,9 +53,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             //Let's go!
             $values = $result->fetch();
 
+            $urlParams = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID];
+
             $page->breadcrumbs
-                ->add(__('Enrolment by Person'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(sprintf(__('Edit %1$s.%2$s Enrolment'), $row['courseNameShort'], $row['name']), 'courseEnrolment_manage_class_edit.php', ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonCourseID' => $gibbonCourseID])
+                ->add(__('Course Enrolment by Class'), 'courseEnrolment_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Edit %1$s.%2$s Enrolment', ['%1$s' => $values['courseNameShort'], '%2$s' => $values['name']]), 'courseEnrolment_manage_class_edit.php', $urlParams)
                 ->add(__('Edit Participant'));
 
             if (isset($_GET['return'])) {

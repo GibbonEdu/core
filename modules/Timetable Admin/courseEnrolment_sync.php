@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('Sync Course Enrolment');
+    $page->breadcrumbs->add(__('Sync Course Enrolment'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
