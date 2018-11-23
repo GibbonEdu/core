@@ -276,6 +276,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
     public static $classMap = array (
         'Datamatrix' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
         'EasyPeasyICS' => __DIR__ . '/..' . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
+        'Gibbon\\Module\\Attendance\\AttendanceView' => __DIR__ . '/../..' . '/modules/Attendance/src/AttendanceView.php',
+        'Gibbon\\Module\\Finance\\Forms\\FinanceFormFactory' => __DIR__ . '/../..' . '/modules/Finance/src/Forms/FinanceFormFactory.php',
+        'Gibbon\\Module\\Markbook\\MarkbookColumn' => __DIR__ . '/../..' . '/modules/Markbook/src/MarkbookColumn.php',
+        'Gibbon\\Module\\Markbook\\MarkbookView' => __DIR__ . '/../..' . '/modules/Markbook/src/MarkbookView.php',
         'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
         'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
         'PDF417' => __DIR__ . '/..' . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',

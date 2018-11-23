@@ -8,6 +8,10 @@ $baseDir = dirname($vendorDir);
 return array(
     'Datamatrix' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/datamatrix.php',
     'EasyPeasyICS' => $vendorDir . '/phpmailer/phpmailer/extras/EasyPeasyICS.php',
+    'Gibbon\\Module\\Attendance\\AttendanceView' => $baseDir . '/modules/Attendance/src/AttendanceView.php',
+    'Gibbon\\Module\\Finance\\Forms\\FinanceFormFactory' => $baseDir . '/modules/Finance/src/Forms/FinanceFormFactory.php',
+    'Gibbon\\Module\\Markbook\\MarkbookColumn' => $baseDir . '/modules/Markbook/src/MarkbookColumn.php',
+    'Gibbon\\Module\\Markbook\\MarkbookView' => $baseDir . '/modules/Markbook/src/MarkbookView.php',
     'Google_Service_Exception' => $vendorDir . '/google/apiclient/src/Google/Service/Exception.php',
     'Google_Service_Resource' => $vendorDir . '/google/apiclient/src/Google/Service/Resource.php',
     'PDF417' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/pdf417.php',

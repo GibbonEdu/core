@@ -63,6 +63,7 @@
         }
     },
     "autoload": {
+        "classmap": ["modules/"],
         "files": ["src/Scripts/autoload.php"],
         "psr-4": { "Gibbon\\": ["src/", "src/Gibbon"] }
     }
