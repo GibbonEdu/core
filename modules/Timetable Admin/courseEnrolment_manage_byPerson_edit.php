@@ -78,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             $values = $result->fetch();
 
             $page->breadcrumbs
-                ->add(__('Enrolment by Person'), 'courseEnrolment_manage_byPerson.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'allUsers' => $allUsers])
-                ->add($values['preferredName'].' '.$values['surname']);
+                ->add(__('Course Enrolment by Person'), 'courseEnrolment_manage_byPerson.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'allUsers' => $allUsers])
+                ->add(Format::name('', $values['preferredName'], $values['surname'], 'Student'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

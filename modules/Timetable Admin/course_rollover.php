@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('Course Enrolment Rollover');
+    $page->breadcrumbs->add(__('Course Enrolment Rollover'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

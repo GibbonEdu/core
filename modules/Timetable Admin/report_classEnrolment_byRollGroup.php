@@ -33,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Class Enrolment by Roll Group');
+    $page->breadcrumbs->add(__('Class Enrolment by Roll Group'));
 
     echo '<h2>';
     echo __('Choose Roll Group');

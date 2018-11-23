@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 $page->breadcrumbs
                     ->add(__('Tie Days to Dates'), 'ttDates.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
                     ->add(__('Edit Days in Date'), 'ttDates_edit.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStamp' => $dateStamp])
-                    ->add(__('Add Day from Date'));
+                    ->add(__('Add Day to Date'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);

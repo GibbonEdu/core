@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt.php') =
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Manage Timetables');
+    $page->breadcrumbs->add(__('Manage Timetables'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);

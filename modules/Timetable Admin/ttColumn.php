@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn.p
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Manage Columns');
+    $page->breadcrumbs->add(__('Manage Columns'));
     echo '<p>';
     echo __('In Gibbon a column is a holder for the structure of a day. A number of columns can be defined, and these can be tied to particular timetable days in the timetable interface.');
     echo '</p>';

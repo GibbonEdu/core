@@ -49,10 +49,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
+            $urlParams = ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+
             $page->breadcrumbs
-                ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
-                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Manage Timetables'), 'tt.php', $urlParams)
+                ->add(__('Edit Timetable'), 'tt_edit.php', $urlParams)
+                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', $urlParams)
                 ->add(__('Classes in Period'));
 
             if (isset($_GET['return'])) {
