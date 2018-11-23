@@ -25,7 +25,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+    $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
 
     if ($gibbonTTColumnID == '') {
         echo "<div class='error'>";
@@ -48,9 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn.php'>".__('Manage Columns')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>".__('Edit Column')."</a> > </div><div class='trailEnd'>".__('Add Column Row').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Columns'), 'ttColumn.php')
+                ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
+                ->add(__('Add Column Row'));
 
             $editLink = '';
             if (isset($_GET['editID'])) {
@@ -104,4 +105,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         }
     }
 }
-?>

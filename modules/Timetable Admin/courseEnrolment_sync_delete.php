@@ -28,13 +28,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/courseEnrolment_sync.php'>".__('Sync Course Enrolment')."</a> > </div><div class='trailEnd'>".__('Sync Now').'</div>';
-    echo '</div>';
-
-    $gibbonYearGroupID = (isset($_GET['gibbonYearGroupID']))? $_GET['gibbonYearGroupID'] : '';
-    $gibbonSchoolYearID = isset($_GET['gibbonSchoolYearID'])? $_GET['gibbonSchoolYearID'] : '';
-
+    $gibbonYearGroupID = $_GET['gibbonYearGroupID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if (empty($gibbonYearGroupID) || empty($gibbonSchoolYearID)) {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');

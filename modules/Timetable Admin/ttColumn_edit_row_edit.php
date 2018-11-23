@@ -26,8 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-    $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+    $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
     if ($gibbonTTColumnRowID == '' or $gibbonTTColumnID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -50,9 +51,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
             //Let's go!
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn.php'>".__('Manage Columns')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>".__('Edit Column')."</a> > </div><div class='trailEnd'>".__('Edit Column Row').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Columns'), 'ttColumn.php')
+                ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
+                ->add(__('Edit Column Row'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -105,4 +107,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         }
     }
 }
-?>

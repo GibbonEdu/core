@@ -26,18 +26,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Courses & Classes')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage_edit.php&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Edit Course & Classes')."</a> > </div><div class='trailEnd'>".__('Add Class').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $page->breadcrumbs
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Course & Classes'), 'course_manage_edit.php', ['gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Add Class'));
 
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
-
-	$editLink = '';
+    $editLink = '';
     if (isset($_GET['editID'])) {
         $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/course_manage_class_edit.php&gibbonCourseClassID='.$_GET['editID'].'&gibbonCourseID='.$gibbonCourseID.'&gibbonSchoolYearID='.$gibbonSchoolYearID;
-	}
-	
+    }
+
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
@@ -103,4 +103,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
     }
 }
-?>

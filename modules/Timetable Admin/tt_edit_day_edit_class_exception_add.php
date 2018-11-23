@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\TimetableDayGateway;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class_exception_add.php') == false) {
     //Acess denied
@@ -27,11 +28,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') {
         echo "<div class='error'>";
@@ -49,10 +50,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         } else {
             //Let's go!
             $gibbonTTDayRowClassID = $values['gibbonTTDayRowClassID'];
-
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > ... > ... > ... > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Edit Timetable Day')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>".__('Classes in Period')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>".__('Class List Exception')."</a> > </div><div class='trailEnd'>".__('Add Exception').'</div>';
-            echo '</div>';
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -81,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $resultSelect->execute($dataSelect);
             } catch (PDOException $e) { echo $e->getMessage();}
             while ($rowSelect = $resultSelect->fetch()) {
-                $participants[$rowSelect['gibbonPersonID']] = formatName('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
+                $participants[$rowSelect['gibbonPersonID']] = Format::name('', htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), 'Student', true);
             }
 
             $row = $form->addRow();

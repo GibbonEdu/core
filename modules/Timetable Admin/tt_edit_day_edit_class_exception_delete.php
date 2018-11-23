@@ -27,13 +27,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'];
-    $gibbonTTDayRowClassExceptionID = $_GET['gibbonTTDayRowClassExceptionID'];
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonTTDayRowClassID = $_GET['gibbonTTDayRowClassID'] ?? '';
+    $gibbonTTDayRowClassExceptionID = $_GET['gibbonTTDayRowClassExceptionID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '' or $gibbonTTDayRowClassID == '' or $gibbonTTDayRowClassExceptionID == '') {
         echo "<div class='error'>";
@@ -56,10 +56,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > ... > ... > ... > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Edit Timetable Day')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID'>".__('Classes in Period')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class_exception.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClass=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID'>".__('Class List Exception')."</a> > </div><div class='trailEnd'>".__('Delete Exception').'</div>';
-                echo '</div>';
-
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
@@ -67,8 +63,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
                 $form = DeleteForm::createForm($_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/tt_edit_day_edit_class_exception_deleteProcess.php?&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID&gibbonTTDayRowClassID=$gibbonTTDayRowClassID&gibbonCourseClassID=$gibbonCourseClassID&gibbonTTDayRowClassExceptionID=$gibbonTTDayRowClassExceptionID");
                 echo $form->getOutput();
             }
-            
         }
     }
 }
-?>
