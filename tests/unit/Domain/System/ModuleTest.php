@@ -30,14 +30,23 @@ class ModuleTest extends TestCase
     {
         $this->module->stylesheets->add('foo', 'bar/baz');
 
-        $this->assertArrayHasKey('foo',  $this->module->stylesheets->getAssets());
+        $this->assertArrayHasKey('foo', $this->module->stylesheets->getAssets());
     }
 
     public function testCanAddScripts()
     {
         $this->module->scripts->add('fiz', 'bar/baz');
 
-        $this->assertArrayHasKey('fiz',  $this->module->scripts->getAssets());
+        $this->assertArrayHasKey('fiz', $this->module->scripts->getAssets());
+    }
+
+    public function testGetNameFromNamespace()
+    {
+        $this->assertEquals(
+            'Foo Bar',
+            Module::getNameFromNamespace('FooBar'),
+            'Return properly spaced version of a module name.'
+        );
     }
 
     public function testGetAutoloadFilepath()

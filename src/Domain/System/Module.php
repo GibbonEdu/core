@@ -104,6 +104,18 @@ class Module
     }
 
     /**
+     * Get module full name from the namespace.
+     *
+     * @param string $moduleNS The namespace string.
+     *
+     * @return string The full module name (with space).
+     */
+    public static function getNameFromNamespace(string $moduleNS)
+    {
+        return trim(implode(' ', preg_split('/(?=[A-Z])/', $moduleNS)));
+    }
+
+    /**
      * Given a class fullpath string, returns the speculative
      * full path to the class file.
      *
@@ -125,17 +137,22 @@ class Module
      */
     public static function getAutoloadFilepath(string $class)
     {
-        if (preg_match('/^Gibbon\\\\Module\\\\(.+?)\\\\(.+)$/', $class, $matches)) {
-            list($all, $module, $subclass) = $matches;
-            $basePath = realpath(__DIR__ . '/../../../modules');
-            $modulePath = trim(implode(' ', preg_split('/(?=[A-Z])/', $module)), ' ');
-            $classPath = implode(DIRECTORY_SEPARATOR, explode('\\', $subclass));
-            return $basePath .
-                DIRECTORY_SEPARATOR . $modulePath .
-                DIRECTORY_SEPARATOR . 'src' .
-                DIRECTORY_SEPARATOR . $classPath . '.php';
+        $path = explode('\\', $class);
+        if (sizeof($path) < 4) {
+            return null;
         }
-        return null;
+        $namespace = array_shift($path);
+        $subnamespace = array_shift($path);
+        if ($namespace != 'Gibbon' || $subnamespace != 'Module') {
+            return null;
+        }
+
+        // build the class dir path
+        $module = static::getNameFromNamespace(array_shift($path));
+        return implode(
+            DIRECTORY_SEPARATOR,
+            array_merge([realpath(__DIR__ . '/../../../modules'), $module, 'src'], $path)
+        ) . '.php';
     }
 
     /**
