@@ -53,6 +53,8 @@ TODO: add template variable details.
                             {% for title, src in page.breadcrumbs %}
                                 {% if loop.last %}
                                     </div><div class="trailEnd">{{ title }}
+                                {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                    <a href="{{ absoluteURL }}/{{ src }}">...</a> > 
                                 {% else %}
                                     <a href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
                                 {% endif %}
