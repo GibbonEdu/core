@@ -26,11 +26,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'];
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTColumnRowID = $_GET['gibbonTTColumnRowID'] ?? '';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '' or $gibbonCourseClassID == '') {
         echo "<div class='error'>";
@@ -74,9 +74,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             } else {
                 $values = $result->fetch();
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > ... > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__('Edit Timetable')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__('Edit Timetable Day')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit_class.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonTTColumnRowID=$gibbonTTColumnRowID'>".__('Classes in Period')."</a> > </div><div class='trailEnd'>".__('Edit Class in Period').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                    ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+                    ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+                    ->add(__('Classes in Period'), 'tt_edit_day_edit_class.php', ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID, 'gibbonTTColumnRowID' => $gibbonTTColumnRowID])
+                    ->add(__('Edit Class in Period'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -137,4 +140,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         }
     }
 }
-?>

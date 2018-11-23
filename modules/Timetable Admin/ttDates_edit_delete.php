@@ -26,9 +26,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $dateStamp = $_GET['dateStamp'];
-    $gibbonTTDayID = $_GET['gibbonTTDayID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $dateStamp = $_GET['dateStamp'] ?? '';
+    $gibbonTTDayID = $_GET['gibbonTTDayID'] ?? '';
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonTTDayID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -52,10 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
             $row = $result->fetch();
 
             //Proceed!
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/ttDates.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Tie Days to Dates')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>".__('Edit Days in Date')."</a> > </div><div class='trailEnd'>".__('Delete Day from Date').'</div>';
-            echo '</div>';
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
@@ -65,4 +61,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         }
     }
 }
-?>

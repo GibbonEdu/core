@@ -26,18 +26,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Courses & Classes')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage_edit.php&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Edit Course & Classes')."</a> > </div><div class='trailEnd'>".__('Edit Class').'</div>';
-    echo '</div>';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $page->breadcrumbs
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Course & Classes'), 'course_manage_edit.php', ['gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Class'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -103,4 +104,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
     }
 }
-?>

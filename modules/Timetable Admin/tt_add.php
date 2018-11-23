@@ -30,9 +30,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Timetables')."</a> > </div><div class='trailEnd'>".__('Add Timetable').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Add Timetable'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -41,8 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
-
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
 
     if ($gibbonSchoolYearID == '') {
         echo "<div class='error'>";
@@ -110,4 +110,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         }
     }
 }
-?>

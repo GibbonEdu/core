@@ -33,9 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Class Enrolment by Roll Group').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add('Class Enrolment by Roll Group');
 
     echo '<h2>';
     echo __('Choose Roll Group');
