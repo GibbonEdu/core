@@ -59,4 +59,44 @@ class StudentReportGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryStudentCountByRollGroup(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from('gibbonRollGroup')
+            ->cols([
+                'gibbonRollGroup.name as rollGroup',
+                'gibbonYearGroup.sequenceNumber',
+                'FORMAT(AVG((TO_DAYS(NOW())-TO_DAYS(gibbonPerson.dob)))/365.242199, 1) as meanAge',
+                "count(DISTINCT gibbonPerson.gibbonPersonID) AS total",
+                "count(CASE WHEN gibbonPerson.gender='M' THEN gibbonPerson.gibbonPersonID END) as totalMale",
+                "count(CASE WHEN gibbonPerson.gender='F' THEN gibbonPerson.gibbonPersonID END) as totalFemale",
+            ])
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->leftJoin('gibbonPerson', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
+            ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->where('gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->groupBy(['gibbonRollGroup.gibbonRollGroupID']);
+
+        if (!$criteria->hasFilter('from')) {
+            $query->where("gibbonPerson.status='Full'");
+        }
+
+        $criteria->addFilterRules([
+            'from' => function ($query, $date) {
+                return $query
+                    ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:date)')
+                    ->bindValue('date', $date);
+            },
+            'to' => function ($query, $date) {
+                return $query
+                    ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:date)')
+                    ->bindValue('date', $date);
+            },
+        ]);
+
+        return $this->runQuery($query, $criteria);
+    }
 }
