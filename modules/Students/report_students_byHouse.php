@@ -69,13 +69,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     }, []);
 
     // Add the bottom row with a total count
-    $yearGroupCounts[] = $houses + ['yearGroupName' => 'Total'];
+    $yearGroupCounts[] = $houses + ['yearGroupName' => __('Total')];
 
     // DATA TABLE
     $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Students by House'));
     $table->modifyRows(function ($house, $row) {
-        if ($house['yearGroupName'] == 'Total') $row->addClass('dull');
+        if ($house['yearGroupName'] == __('Total')) $row->addClass('dull');
         return $row;
     });
 
