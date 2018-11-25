@@ -96,23 +96,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         });
     $table->addColumn('contacts', __('Parental Contacts'))
         ->notSortable()
-        ->format(function($student) {
-            $output = '';
-            foreach ($student['familyAdults'] as $index => $adult) {
-                $output .= '<strong>'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</strong><br/>';
-                if ($adult['childDataAccess'] == 'N') {
-                    $output .= '<strong style="color: #cc0000">'.__('Data Access').': '.__('No').'</strong><br/>';
-                }
-                if (!empty($adult['email'])) {
-                    $output .= __('Email').': '.Format::link('mailto:'.$adult['email'], $adult['email']).'<br/>';
-                }
-                for ($i = 1; $i <= 4; ++$i) {
-                    if (empty($adult["phone$i"])) continue;
-                    $output .= Format::phone($adult["phone{$i}"], $adult["phone{$i}CountryCode"], $adult["phone{$i}Type"]).'<br/>';
-                }
-                if ($index + 1 < count($student['familyAdults'])) $output .= '<br/>';
-            }
-            return $output;
+        ->format(function ($student) use ($page) {
+            return $page->fetchFromTemplate(
+                'formats/familyContacts.twig.html',
+                ['familyAdults' => $student['familyAdults']]
+            );
         });
     
 
