@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
 use Gibbon\Services\Format;
 use Gibbon\Domain\User\FamilyGateway;
 use Gibbon\Tables\Prefab\ReportTable;
@@ -69,40 +70,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $table->addColumn('student', __('Student'))
         ->sortable(['gibbonPerson.surname', 'gibbonPerson.preferredName'])
         ->format(Format::using('name', ['', 'preferredName', 'surname', 'Student', true]));
+    
+    $view = new View($container->get('twig'));
+
     $table->addColumn('address1', __('Address'))
         ->notSortable()
-        ->format(function ($student) {
-            $output = '';
-            if (!empty($student['families'])) {
-                $familyCount = count($student['families']);
-                foreach ($student['families'] as $index => $family) {
-                    $output .= $familyCount > 1 ? '<b>'.$family['name'].'</b><br/>' : '';
-                    $output .= Format::address(
-                        $family['homeAddress'],
-                        $family['homeAddressDistrict'],
-                        $family['homeAddressCountry']
-                    );
-
-                    if ($index + 1 < $familyCount) $output .= '<br/><br/>';
-                }
-            } else {
-                $output .= Format::address(
-                    $student['address1'],
-                    $student['address1District'],
-                    $student['address1Country']
-                );
-            }
-            return $output;
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
+                'formats/familyAddresses.twig.html',
+                ['families' => $student['families'], 'person' => $student]
+            );
         });
+
     $table->addColumn('contacts', __('Parental Contacts'))
         ->notSortable()
-        ->format(function ($student) use ($page) {
-            return $page->fetchFromTemplate(
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
                 'formats/familyContacts.twig.html',
                 ['familyAdults' => $student['familyAdults']]
             );
         });
-    
 
     echo $table->render($transport);
 }
