@@ -15,12 +15,12 @@ all stylesheets and scripts with a 'head' context.
         <b>{{ family.name }}</b><br/>
     {% endif %}
 
-    {{ format('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
+    {{ formatUsing('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
 
     {% if not loop.last %}<br/><br/>{% endif %}
 
 {% else %}
 
-    {{ format('address', person.address1, person.address1District, person.address1Country) }}
+    {{ formatUsing('address', person.address1, person.address1District, person.address1Country) }}
 
 {% endfor %}

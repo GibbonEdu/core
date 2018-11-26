@@ -12,7 +12,7 @@ all stylesheets and scripts with a 'head' context.
 {% for adult in familyAdults %}
 
     <strong>
-        {{ format('name', adult.title, adult.preferredName, adult.surname, "Parent") }}
+        {{ formatUsing('name', adult.title, adult.preferredName, adult.surname, "Parent") }}
     </strong><br/>
 
     {% if adult.childDataAccess == 'N' %}
@@ -20,12 +20,12 @@ all stylesheets and scripts with a 'head' context.
     {% endif %}
 
     {% if adult.email %}
-        {{ __('Email') }}: {{ format('link', "mailto:" ~ adult.email, adult.email)|raw }}<br/>
+        {{ __('Email') }}: {{ formatUsing('link', "mailto:" ~ adult.email, adult.email)|raw }}<br/>
     {% endif %}
 
     {% for i in 1..4 %}
         {% if adult["phone"~i] %}
-            {{ format('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], adult["phone"~i~"Type"]) }}<br/>
+            {{ formatUsing('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], adult["phone"~i~"Type"]) }}<br/>
         {% endif %}
     {% endfor %}
 
