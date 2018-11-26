@@ -17,12 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\View\View;
 use Gibbon\Forms\Form;
-use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Services\Format;
+use Gibbon\Domain\User\FamilyGateway;
+use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Tables\Prefab\ReportTable;
 use Gibbon\Domain\Activities\ActivityReportGateway;
-use Gibbon\Domain\User\FamilyGateway;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -75,6 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
 
     $participants = $activityGateway->queryParticipantsByActivity($criteria, $gibbonActivityID);
 
+    // Join a set of family adults per student
+    $people = $participants->getColumn('gibbonPersonID');
+    $familyAdults = $familyGateway->selectFamilyAdultsByStudent($people)->fetchGrouped();
+    $participants->joinColumn('gibbonPersonID', 'familyAdults', $familyAdults);
+
     // DATA TABLE
     $table = ReportTable::createPaginated('participants', $criteria)->setViewMode($viewMode, $gibbon->session);
 
@@ -88,27 +94,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_particip
             return Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'].'&subpage=Activities', $name);
         });
     $table->addColumn('status', __('Status'));
-    $table->addColumn('contacts', __('Parental Contacts'))
-        ->notSortable()
-        ->format(function($student) use ($familyGateway) {
-            $output = '';
-            $familyAdults = $familyGateway->selectFamilyAdultsByStudent($student['gibbonPersonID'])->fetchAll();
 
-            foreach ($familyAdults as $index => $adult) {
-                $output .= '<strong>'.Format::name($adult['title'], $adult['preferredName'], $adult['surname'], 'Parent').'</strong><br/>';
-                if ($adult['childDataAccess'] == 'N') {
-                    $output .= '<strong style="color: #cc0000">'.__('Data Access').': '.__('No').'</strong><br/>';
-                }
-                if (!empty($adult['email'])) {
-                    $output .= __('Email').': '.Format::link('mailto:'.$adult['email'], $adult['email']).'<br/>';
-                }
-                for ($i = 1; $i <= 4; ++$i) {
-                    if (empty($adult["phone$i"])) continue;
-                    $output .= Format::phone($adult["phone{$i}"], $adult["phone{$i}CountryCode"], $adult["phone{$i}Type"]).'<br/>';
-                }
-                if ($index + 1 < count($familyAdults)) $output .= '<br/>';
-            }
-            return $output;
+    $view = new View($container->get('twig'));
+
+    $table->addColumn('contacts', __('Parental Contacts'))
+        ->width('30%')
+        ->notSortable()
+        ->format(function ($student) use ($view) {
+            return $view->fetchFromTemplate(
+                'formats/familyContacts.twig.html',
+                ['familyAdults' => $student['familyAdults']]
+            );
         });
 
     echo $table->render($participants);
