@@ -23,8 +23,10 @@ before_script:
   # install dependencies for test
   - composer install --prefer-dist --no-interaction --no-progress
   # setup system locale for test
-  - echo -e "zh_TW.UTF-8 UTF-8" > /etc/locale.gen
+  - echo -e "es_ES.UTF-8 UTF-8\nfr_FR.UTF-8 UTF-8\nzh_TW.UTF-8 UTF-8" > /etc/locale.gen
   - cat /etc/locale.gen
+  - locale-gen es_ES.utf8
+  - locale-gen fr_FR.utf8
   - locale-gen zh_TW.utf8
   - localedef --list-archive
   - locale -a
