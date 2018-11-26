@@ -110,7 +110,7 @@ class Chart
      * @param  number $index
      * @return string
      */
-    private function getColor($index)
+    public function getColor($index)
     {
         $n = $index % count($this->defaultColors);
 
@@ -231,7 +231,7 @@ class Chart
      */
     public function onClick($function, $pointerOnHover = true)
     {
-        $this['options']['onClick'] = $this->addFunction($function);
+        $this->options['onClick'] = $this->addFunction($function);
 
         if ($pointerOnHover) {
             $this->onHover('function(elements) { document.body.style.cursor = (elements.length) ? "pointer" : "default";}');
@@ -247,7 +247,26 @@ class Chart
      */
     public function onHover($function)
     {
-        $config['options']['hover']['onHover'] = $this->addFunction($function);
+        $this->options['hover']['onHover'] = $this->addFunction($function);
+
+        return $this;
+    }
+
+    /**
+     * Add a custom tooltip function to the chart. Can be the name of a function or the function itself.
+     *
+     * @param string $function
+     * @return self
+     */
+    public function onTooltip($labelFunction = null, $titleFunction = null)
+    {
+        if ($labelFunction) {
+            $this->options['tooltips']['callbacks']['label'] = $this->addFunction($labelFunction);
+        }
+
+        if ($titleFunction) {
+            $this->options['tooltips']['callbacks']['title'] = $this->addFunction($titleFunction);
+        }
 
         return $this;
     }

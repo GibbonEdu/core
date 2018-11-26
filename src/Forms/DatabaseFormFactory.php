@@ -456,14 +456,16 @@ class DatabaseFormFactory extends FormFactory
     {
         // Check params and set defaults if not defined
         $params = array_replace(array(
-            'honourDefault' => true, 
-            'valueMode' => 'value'
+            'honourDefault' => true,
+            'valueMode' => 'value',
+            'labelMode' => 'value',
         ), $params);
 
         $valueQuery = ($params['valueMode'] == 'id')? 'gibbonScaleGradeID as value' : 'value';
+        $labelQuery = ($params['labelMode'] == 'descriptor')? 'descriptor' : 'value';
 
         $data = array('gibbonScaleID' => $gibbonScaleID);
-        $sql = "SELECT {$valueQuery}, value as name, isDefault FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber";
+        $sql = "SELECT {$valueQuery}, {$labelQuery} as name, isDefault FROM gibbonScaleGrade WHERE gibbonScaleID=:gibbonScaleID ORDER BY sequenceNumber";
         $results = $this->pdo->executeQuery($data, $sql);
 
         $grades = ($results->rowCount() > 0)? $results->fetchAll() : array();
