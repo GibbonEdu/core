@@ -80,7 +80,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add('config', new Core($this->absolutePath));
         $container->add('session', new Session($container));
-        $container->add('locale', new Locale($container));
+        $container->add('locale', new Locale($this->absolutePath, $container->get('session')));
 
         Format::setupFromSession($container->get('session'));
     }

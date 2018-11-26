@@ -85,21 +85,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage_
             } else {
                 $row = $result->fetch();
 
-                $page->breadcrumbs->add(
-                    strtr(
-                        ':action :courseClass :property',
-                        [
-                            ':action' => __('Manage'),
-                            ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                            ':property' => __('Weightings'),
-                        ]
-                    ),
-                    'weighting_manage.php',
-                    [
-                        'gibbonCourseClassID' => $gibbonCourseClassID,
-                    ]
-                )                    
-                ->add(__('Add Weighting'));
+                $page->breadcrumbs
+                    ->add(
+                        __('Manage {courseClass} Weightings', [
+                            'courseClass' => Format::courseClassName($row['course'], $row['class']),
+                        ]),
+                        'weighting_manage.php',
+                        ['gibbonCourseClassID' => $gibbonCourseClassID]
+                    )
+                    ->add(__('Add Weighting'));
                 // Show add weighting form
                 $form = Form::create('manageWeighting', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/weighting_manage_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID");
                 

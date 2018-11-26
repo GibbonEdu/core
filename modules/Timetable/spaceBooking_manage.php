@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Facility Bookings').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add('Manage Facility Bookings');
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             echo '<p>'.__('This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';

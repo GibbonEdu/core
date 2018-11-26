@@ -60,9 +60,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $values['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
                 $extra = ' '.$values['year'];
             }
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$values['department']."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department_course.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".$values['course']."$extra</a> ></div><div class='trailEnd'>".__('Edit Course').'</div>';
-            echo '</div>';
+            
+            $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
+            
+            $page->breadcrumbs
+                ->add(__('View All'), 'departments.php')
+                ->add($values['department'], 'department.php', $urlParams)
+                ->add($values['course'].$extra, 'department_course.php', $urlParams)
+                ->add(__('Edit Course'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

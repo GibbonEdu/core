@@ -25,8 +25,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonTTID = $_GET['gibbonTTID'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonTTID = $_GET['gibbonTTID'] ?? '';
 
     if ($gibbonSchoolYearID == '' or $gibbonTTID == '') {
         echo "<div class='error'>";
@@ -49,10 +49,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__('Edit Timetable')."</a> > </div><div class='trailEnd'>".__('Add Timetable Day').'</div>';
-            echo '</div>';
-
+            $page->breadcrumbs
+                ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Edit Timetable'), 'tt_edit.php', ['gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+                ->add(__('Add Timetable Day'));
+        
             $editLink = '';
             if (isset($_GET['editID'])) {
                 $editLink = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable Admin/tt_edit_day_edit.php&gibbonTTDayID='.$_GET['editID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonTTID='.$_GET['gibbonTTID'];
@@ -105,4 +106,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
         }
     }
 }
-?>

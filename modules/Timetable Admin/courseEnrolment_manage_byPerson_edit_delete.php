@@ -26,12 +26,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $type = $_GET['type'];
-    $allUsers = $_GET['allUsers'];
-    $search = $_GET['search'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $type = $_GET['type'] ?? '';
+    $allUsers = $_GET['allUsers'] ?? '';
+    $search = $_GET['search'] ?? '';
 
     if ($gibbonPersonID == '' or $gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
@@ -54,10 +54,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $row = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__('Enrolment by Person')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&type='.$_GET['type'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonPersonID='.$_GET['gibbonPersonID']."&allUsers=$allUsers'>".$row['preferredName'].' '.$row['surname']."</a> > </div><div class='trailEnd'>".__('Delete Participant').'</div>';
-            echo '</div>';
-
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
@@ -67,4 +63,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         }
     }
 }
-?>

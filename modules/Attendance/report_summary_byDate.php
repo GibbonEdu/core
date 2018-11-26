@@ -82,12 +82,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
 
-    $options = array("all" => "All Students");
+    $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-        $options["class"] = "Class";
+        $options["class"] = __('Class');
     }
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-        $options["rollGroup"] = "Roll Group";
+        $options["rollGroup"] = __('Roll Group');
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));

@@ -76,9 +76,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         } else {
             //Let's go!
             $values = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/courseEnrolment_manage_byPerson.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&allUsers=$allUsers'>".__('Enrolment by Person')."</a> > </div><div class='trailEnd'>".$values['preferredName'].' '.$values['surname'].'</div>';
-            echo '</div>';
+
+            $page->breadcrumbs
+                ->add(__('Course Enrolment by Person'), 'courseEnrolment_manage_byPerson.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'allUsers' => $allUsers])
+                ->add(Format::name('', $values['preferredName'], $values['surname'], 'Student'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -94,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             //INTERFACE TO ADD NEW CLASSES
             echo '<h2>';
             echo __('Add Classes');
-            echo '</h2>'; 
+            echo '</h2>';
             
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/courseEnrolment_manage_byPerson_edit_addProcess.php?type=$type&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID&allUsers=$allUsers&search=$search");
                 
@@ -257,7 +258,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                 });
 
             echo $table->render($enrolmentLeft);
-        
         }
     }
 }

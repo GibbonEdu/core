@@ -26,13 +26,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $search = (isset($_GET['search']) ? $_GET['search'] : '');
-    $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
-
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Manage Staff')."</a> > </div><div class='trailEnd'>".__('Add Staff').'</div>';
-    echo '</div>';
+    $search = $_GET['search'] ?? '';
+    $allStaff = $_GET['allStaff'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
+        ->add(__('Add Staff'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -117,4 +117,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     echo $form->getOutput();
 }
-?>

@@ -90,21 +90,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
             } else {
                 $row = $result->fetch();
 
-                $page->breadcrumbs->add(strtr(
-                    ':action :courseClass :property',
-                    [
-                        ':action' => __('Manage'),
-                        ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                        ':property' => __('Weightings'),
-                    ]
-                ));
+                $page->breadcrumbs->add(__('Manage {courseClass} Weightings', [
+                    'courseClass' => Format::courseClassName($row['course'], $row['class']),
+                ]));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
 
                 //Get teacher list
-                $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
+                $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
                 $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
 
                 //Print mark

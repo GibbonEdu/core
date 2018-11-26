@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -93,16 +94,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
                 $extra = ' '.$row['year'];
             }
-            echo "<div class='trail'>";
             if ($gibbonDepartmentID != '') {
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$row['department']."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department_course.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".$row['courseLong']."$extra</a> ></div><div class='trailEnd'>".$row['course'].'.'.$row['class'].'</div>';
+                
+                $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
+                $page->breadcrumbs
+                    ->add(__('View All'), 'departments.php')
+                    ->add($row['department'], 'department.php', $urlParams)
+                    ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
+                    ->add(Format::courseClassName($row['course'], $row['class']));
             } else {
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > Class ></div><div class='trailEnd'>".$row['course'].'.'.$row['class'].'</div>';
-            }
-            echo '</div>';
-
+                $page->breadcrumbs
+                    ->add(__('View All'), 'departments.php')
+                    ->add(Format::courseClassName($row['course'], $row['class']));
+            }            
+            
             echo '<h2>';
-            echo $row['course'].'.'.$row['class'];
+            echo Format::courseClassName($row['course'], $row['class']);
             echo '<br/><small><em>'.__('Course').': '.$row['courseLong'].'</em></small>';
             echo '</h2>';
 

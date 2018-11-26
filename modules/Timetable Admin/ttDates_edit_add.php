@@ -25,8 +25,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $dateStamp = $_GET['dateStamp'];
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $dateStamp = $_GET['dateStamp'] ?? '';
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '') {
         echo "<div class='error'>";
@@ -55,13 +55,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
                 $values = $result->fetch();
 
                 //Proceed!
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/ttDates.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Tie Days to Dates')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttDates_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=$dateStamp'>".__('Edit Days in Date')."</a> > </div><div class='trailEnd'>".__('Add Day to Date').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('Tie Days to Dates'), 'ttDates.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+                    ->add(__('Edit Days in Date'), 'ttDates_edit.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'dateStamp' => $dateStamp])
+                    ->add(__('Add Day to Date'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
-				}
+                }
 
 				$form = Form::create('addTTDate', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/ttDates_edit_addProcess.php');
 
@@ -102,4 +103,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates_ed
         }
     }
 }
-?>

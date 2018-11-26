@@ -380,7 +380,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             $output .= "<div id='visualise' style='display: none'>";
                 //Filter out columns to ignore from visualisation
                 $columns = array_filter($columns, function ($item) {
-                    return $item['visualise'] == 'Y'; 
+                    return (isset($item['visualise']) && $item['visualise'] == 'Y'); 
                 });
 
                 //Cycle through rows to calculate means
