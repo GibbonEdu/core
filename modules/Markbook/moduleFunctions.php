@@ -53,6 +53,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
     $enableGroupByTerm = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableGroupByTerm');
     $enableRawAttainment = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableRawAttainment');
+    $defaultAssessmentScale = getSettingByScope($pdo->getConnection(), 'System', 'defaultAssessmentScale');
 
     $output = '';
 
@@ -127,7 +128,9 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $_SESSION[$guid]['markbookFilter'] = $selectFilter;
 
     $filters = array('' => __('All Columns'));
-    if ($enableColumnWeighting == 'Y') $filters['averages'] = __('Overall Grades');
+    $filters['summative'] = __('Summative');
+    $filters['formative'] = __('Formative');
+    if ($enableColumnWeighting == 'Y' && $defaultAssessmentScale == 4) $filters['averages'] = __('Overall Grades');
     if ($enableRawAttainment == 'Y') $filters['raw'] = __('Raw Marks');
     $filters['marked'] = __('Marked');
     $filters['unmarked'] = __('Unmarked');

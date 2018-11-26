@@ -34,7 +34,7 @@ class MarkbookColumnGateway extends QueryableGateway
     use TableAware;
 
     private static $tableName = 'gibbonMarkbookColumn';
-    private static $searchableColumns = ['name', 'description', 'type'];
+    private static $searchableColumns = ['name', 'description', 'type', 'attainmentType'];
     
     /**
      * 
@@ -61,6 +61,8 @@ class MarkbookColumnGateway extends QueryableGateway
             },
             'show' => function ($query, $show) {
                 switch ($show) {
+                    case 'summative' : $query->where("attainmentType = 'Summative'"); break;
+                    case 'formative' : $query->where("attainmentType = 'Formative'"); break;
                     case 'marked'  : $query->where("complete = 'Y'"); break;
                     case 'unmarked': $query->where("complete = 'N'"); break;
                 }
