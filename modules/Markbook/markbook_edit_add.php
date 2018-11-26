@@ -182,10 +182,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 // ATTAINMENT
                 $attainmentLabel = !empty($attainmentAltName)? sprintf(__('Assess %1$s?'), $attainmentAltName) : __('Assess Attainment?');
                 $attainmentScaleLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Scale') : __('Attainment Scale');
-                $attainmentTypeLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Type') : __('Attainment Type');
                 $attainmentRawMaxLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Total Mark') : __('Attainment Total Mark');
                 $attainmentWeightingLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Weighting') : __('Attainment Weighting');
                 $attainmentRubricLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Rubric') : __('Attainment Rubric'); 
+
+                $row = $form->addRow();
+                    $row->addLabel('attainmentType', __('Assessment Type'));
+                    $row->addSelect('attainmentType')->fromArray(['Summative' => __('Summative'), 'Formative' => __('Formative')]);
 
                 $row = $form->addRow();
                     $row->addLabel('attainment', $attainmentLabel);
@@ -196,10 +199,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $row = $form->addRow()->addClass('attainmentRow');
                     $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
                     $row->addSelectGradeScale('gibbonScaleIDAttainment')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
-
-                $row = $form->addRow()->addClass('attainmentRow');
-                    $row->addLabel('attainmentType', $attainmentTypeLabel);
-                    $row->addSelect('attainmentType')->fromArray(['Summative' => __('Summative'), 'Formative' => __('Formative')]);
                     
                 if ($enableRawAttainment == 'Y') {
                     $row = $form->addRow()->addClass('attainmentRow');
