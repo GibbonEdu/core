@@ -366,3 +366,12 @@ table .dragtable-col-placeholder:first-of-type{
     opacity: 0.0; 
     visibility: hidden; 
 }
+
+
+.columnLabels.formative .columnLabel {
+    background: -moz-linear-gradient(top,  #EDF7FF, #DBECF9) !important;
+}
+
+.columnLabel.formative .columnLabels {
+    background: #EDF7FF66 !important;
+}

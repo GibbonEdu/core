@@ -786,4 +786,5 @@ ALTER TABLE `gibbonStaffApplicationForm` CHANGE `email` `email` VARCHAR(75) CHAR
 ALTER TABLE `gibbonApplicationForm` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent1email` `parent1email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent2email` `parent2email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+ALTER TABLE `gibbonMarkbookColumn` ADD `attainmentType` ENUM('Summative','Formative') NOT NULL DEFAULT 'Summative' AFTER `attainmentRawMax`;end
 ";
