@@ -456,8 +456,9 @@ class DatabaseFormFactory extends FormFactory
     {
         // Check params and set defaults if not defined
         $params = array_replace(array(
-            'honourDefault' => true, 
-            'valueMode' => 'value'
+            'honourDefault' => true,
+            'valueMode' => 'value',
+            'labelMode' => 'value',
         ), $params);
 
         $valueQuery = ($params['valueMode'] == 'id')? 'gibbonScaleGradeID as value' : 'value';
