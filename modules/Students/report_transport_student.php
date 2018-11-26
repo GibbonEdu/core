@@ -74,6 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     $view = new View($container->get('twig'));
 
     $table->addColumn('address1', __('Address'))
+        ->width('30%')
         ->notSortable()
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(
@@ -83,6 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         });
 
     $table->addColumn('contacts', __('Parental Contacts'))
+        ->width('30%')
         ->notSortable()
         ->format(function ($student) use ($view) {
             return $view->fetchFromTemplate(

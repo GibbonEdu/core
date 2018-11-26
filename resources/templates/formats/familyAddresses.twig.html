@@ -17,7 +17,7 @@ all stylesheets and scripts with a 'head' context.
 
     {{ format('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
 
-    {% if not loop.last %}<br/>{% endif %}
+    {% if not loop.last %}<br/><br/>{% endif %}
 
 {% else %}
 
