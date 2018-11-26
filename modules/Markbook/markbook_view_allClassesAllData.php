@@ -197,6 +197,8 @@ use Gibbon\Services\Format;
             $markbook->cacheExternalAssessments( $courseName, $gibbonYearGroupIDList );
         }
 
+        $defaultAssessmentScale = $markbook->getDefaultAssessmentScale();
+
         echo '<h3>';
         echo __('Results');
         echo '</h3>';
@@ -324,10 +326,8 @@ use Gibbon\Services\Format;
             echo "<th class='dataColumn studentTarget notdraggable dragtable-drag-boundary' data-header='target'>";
             $title = __('Personalised attainment target grade');
 
-            //Get DAS
-            $DAS = $markbook->getDefaultAssessmentScale();
-			if (!empty($DAS)) {
-                $title .= ' | '.$DAS['name'].' '.__('Scale').' ';
+			if (!empty($defaultAssessmentScale)) {
+                $title .= ' | '.$defaultAssessmentScale['name'].' '.__('Scale').' ';
             }
 
             echo "<div class='verticalText' title='$title'>";
@@ -532,7 +532,7 @@ use Gibbon\Services\Format;
         $markbook->getSetting('attainmentName') );
 
         // Headers for the columns at the end of the markbook
-        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked' && $defaultAssessmentScale['percent'] == '%') {
 
             // Display headings for overall term and category averages
             if ($columnFilter == 'averages') {
@@ -893,7 +893,7 @@ use Gibbon\Services\Format;
 
                 // These are the columns that show up at the end of the markbook, they must match their headers above the main loop
                 // Calculate and output weighted average marks
-                if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
+                if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked' && $defaultAssessmentScale['percent'] == '%') {
 
                     // Display overall term and category averages
                     if ($columnFilter == 'averages') {
@@ -968,7 +968,7 @@ use Gibbon\Services\Format;
         }
 
         // Class Average
-        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked') {
+        if ($markbook->getSetting('enableColumnWeighting') == 'Y' && $columnFilter != 'unmarked' && $defaultAssessmentScale['numeric'] == 'Y') {
             echo '<tr>';
             echo '<td class="firstColumn right dataDividerTop">'.__('Class Average').':</td>';
 
@@ -1018,8 +1018,10 @@ use Gibbon\Services\Format;
             }
 
             // Cumulative Average
-            $cumulativeAverage = ($count > 0 && !empty($totals['cumulativeAverage']))? ($totals['cumulativeAverage'] / $count) : '';
-            echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
+            if ($defaultAssessmentScale['percent'] == '%') {
+                $cumulativeAverage = ($count > 0 && !empty($totals['cumulativeAverage']))? ($totals['cumulativeAverage'] / $count) : '';
+                echo '<td class="dataColumn dataDivider dataDividerTop">'.$markbook->getFormattedAverage($cumulativeAverage).'</td>';
+            }
 
             if ($markbook->getSetting('enableTypeWeighting') == 'Y' && count($markbook->getGroupedMarkbookTypes('year')) > 0 && $gibbonSchoolYearTermID <= 0) {
 
