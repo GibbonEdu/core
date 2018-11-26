@@ -22,10 +22,10 @@ namespace Gibbon\Forms\Input;
 use Gibbon\Forms\Element;
 
 /**
- * Range
+ * Range Slider
  *
- * @version v14
- * @since   v14
+ * @version v17
+ * @since   v17
  */
 class Range extends Input
 {
