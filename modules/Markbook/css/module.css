@@ -366,3 +366,16 @@ table .dragtable-col-placeholder:first-of-type{
     opacity: 0.0; 
     visibility: hidden; 
 }
+
+
+
+/* .marksColumn.formative, */
+.columnLabels.formative .columnLabel {
+    background: -moz-linear-gradient(top,  #EDF7FF, #DBECF9) !important;
+    /* background: -moz-linear-gradient(top, #fffdf2, #fffbdf) !important; */
+}
+
+.columnLabel.formative .columnLabels {
+    background: #EDF7FF66 !important;
+    /* background: #fffbdf66 !important; */
+}
