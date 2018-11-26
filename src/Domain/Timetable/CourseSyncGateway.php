@@ -61,8 +61,7 @@ class CourseSyncGateway extends QueryableGateway
             ->where('FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)')
             ->where('gibbonCourse.gibbonSchoolYearID = :gibbonSchoolYearID')
             ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
-            ->groupBy(['gibbonYearGroup.gibbonYearGroupID'])
-            ->orderBy(['gibbonYearGroup.sequenceNumber']);
+            ->groupBy(['gibbonYearGroup.gibbonYearGroupID']);
 
         return $this->runQuery($query, $criteria);
     }

@@ -84,7 +84,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
     $syncGateway = $container->get(CourseSyncGateway::class);
 
     // QUERY
-    $criteria = $syncGateway->newQueryCriteria()->fromArray($_POST);
+    $criteria = $syncGateway->newQueryCriteria()
+        ->sortBy(['gibbonYearGroup.sequenceNumber'])
+        ->fromArray($_POST);
 
     $classMaps = $syncGateway->queryCourseClassMaps($criteria, $gibbonSchoolYearID);
     $classMapsAllYearGroups = implode(',', $classMaps->getColumn('gibbonYearGroupID'));
@@ -107,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
         ->setIcon('refresh')
         ->displayLabel();
 
-    $table->addColumn('yearGroupName', __('Year Group'));
+    $table->addColumn('yearGroupName', __('Year Group'))->sortable(['gibbonYearGroup.sequenceNumber']);
     $table->addColumn('rollGroupList', __('Roll Groups'));
     $table->addColumn('classCount', __('Classes'));
 
