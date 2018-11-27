@@ -220,7 +220,8 @@ class SpreadsheetRenderer implements RendererInterface
 
     protected function stripTags($content)
     {
-        $content = preg_replace('/\<br(\s*)?\/?\>/i', PHP_EOL, $content);
+        // Collapses consecutive spaces, removes newlines, then converts <br/> to newlines.
+        $content = preg_replace(['/\s\s+/', '/[\r\n]+/', '/\<br(\s*)?\/?\>/i'], ['', '', PHP_EOL], $content);
         return strip_tags($content);
     }
 
