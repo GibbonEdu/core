@@ -23,20 +23,20 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/spaceChange_manage.php'>".__($guid, 'Manage Facility Changes')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Facility Change').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('Manage Facility Changes'), 'spaceChange_manage.php')
+            ->add(__('Add Facility Change'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
         //Step 1
         if ($step == 1) {
             echo '<h2>';
-            echo __($guid, 'Step 1 - Choose Class');
+            echo __('Step 1 - Choose Class');
             echo '</h2>';
 
             $form = Form::create('spaceChangeStep1', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceChange_manage_add.php&step=2');
@@ -101,10 +101,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
 
         } elseif ($step == 2) {
             echo '<h2>';
-            echo __($guid, 'Step 2 - Choose Options');
+            echo __('Step 2 - Choose Options');
             echo '</h2>';
             echo '<p>';
-            echo __($guid, 'When choosing a facility, remember that they are not mutually exclusive: you can change two classes into one facility, change one class to join another class in their normal room, or assign no facility at all. The facilities listed below are not necessarily free at the requested time: please use the View Available Facilities report to check availability.');
+            echo __('When choosing a facility, remember that they are not mutually exclusive: you can change two classes into one facility, change one class to join another class in their normal room, or assign no facility at all. The facilities listed below are not necessarily free at the requested time: please use the View Available Facilities report to check availability.');
             echo '</p>';
 
             $gibbonCourseClassID = null;
@@ -129,13 +129,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceChange_mana
                 $resultSelect->execute($dataSelect);
             } catch (PDOException $e) {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</div>';
             }
 
             if ($resultSelect->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</div>';
             } else {
                 $rowSelect = $resultSelect->fetch();

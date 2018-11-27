@@ -24,12 +24,10 @@ $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDep
 if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.php') == false and $makeDepartmentsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View All').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View All'));
 
     $departments = false;
 
@@ -45,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     if ($resultLA->rowCount() > 0) {
         $departments = true;
         echo '<h2>';
-        echo __($guid, 'Learning Areas');
+        echo __('Learning Areas');
         echo '</h2>';
         echo "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>";
         $count = 0;
@@ -92,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
     if ($resultLA->rowCount() > 0) {
         $departments = true;
         echo '<h2>';
-        echo __($guid, 'Administration');
+        echo __('Administration');
         echo '</h2>';
         echo "<table class='blank' cellspacing='0' style='width:100%; margin-top: 20px'>";
         $count = 0;
@@ -129,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
     if ($departments == false) {
         echo "<div class='warning'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     }
 
@@ -148,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/departments.ph
 
         if ($result->rowCount() > 0) {
             $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra']."<h2 class='sidebar'>";
-            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__($guid, 'My Classes');
+            $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('My Classes');
             $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
 
             $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ul>';

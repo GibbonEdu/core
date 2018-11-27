@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -26,16 +27,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_left.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Left Students').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Left Students'));
 
     echo '<h2>';
-    echo __($guid, 'Choose Options');
+    echo __('Choose Options');
     echo '</h2>';
 
     $type = null;
@@ -88,13 +87,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
 
     if ($type != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         $proceed = true;
         if ($type == 'Date Range') {
             echo '<p>';
-            echo __($guid, 'This report shows all students whose End Date is on or between the indicated dates.');
+            echo __('This report shows all students whose End Date is on or between the indicated dates.');
             echo '</p>';
 
             if ($endDateFrom == '' or $endDateTo == '') {
@@ -102,13 +101,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
             }
         } elseif ($type == 'Current School Year') {
             echo '<p>';
-            echo __($guid, 'This report shows all students who left the school during the current academic year.');
+            echo __('This report shows all students who left the school during the current academic year.');
             echo '</p>';
         }
 
         if ($proceed == false) {
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo __('Your request failed because your inputs were invalid.');
             echo '</div>';
         } else {
             try {
@@ -132,24 +131,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Count');
+                echo __('Count');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Name');
-                echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Roll Group').'</span>';
+                echo __('Name');
+                echo "<span style='font-style: italic; font-size: 85%'>".__('Roll Group').'</span>';
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Username');
+                echo __('Username');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'End Date').'<br/>';
-                echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Departure Reason').'</span>';
+                echo __('End Date').'<br/>';
+                echo "<span style='font-style: italic; font-size: 85%'>".__('Departure Reason').'</span>';
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Next School');
+                echo __('Next School');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Parents');
+                echo __('Parents');
                 echo '</th>';
                 echo '</tr>';
 
@@ -168,7 +167,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                     echo $count;
                     echo '</td>';
                     echo '<td>';
-                    echo formatName('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
+                    echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true).'<br/>';
                     try {
                         $dataCurrent = array('gibbonPersonID' => $row['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
                         $sqlCurrent = 'SELECT name FROM gibbonStudentEnrolment JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -211,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                             echo "<div class='error'>".$e->getMessage().'</div>';
                         }
                         while ($rowFamily2 = $resultFamily2->fetch()) {
-                            echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                            echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                             $numbers = 0;
                             for ($i = 1; $i < 5; ++$i) {
                                 if ($rowFamily2['phone'.$i] != '') {
@@ -226,13 +225,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                                 }
                             }
                             if ($rowFamily2['citizenship1'] != '' or $rowFamily2['citizenship1Passport'] != '') {
-                                echo '<i>'.__($guid, 'Passport').'</i>: '.$rowFamily2['citizenship1'].' '.$rowFamily2['citizenship1Passport'].'<br/>';
+                                echo '<i>'.__('Passport').'</i>: '.$rowFamily2['citizenship1'].' '.$rowFamily2['citizenship1Passport'].'<br/>';
                             }
                             if ($rowFamily2['nationalIDCardNumber'] != '') {
                                 if ($_SESSION[$guid]['country'] == '') {
-                                    echo '<i>'.__($guid, 'National ID Card').'</i>: ';
+                                    echo '<i>'.__('National ID Card').'</i>: ';
                                 } else {
-                                    echo '<i>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card').'</i>: ';
+                                    echo '<i>'.$_SESSION[$guid]['country'].' '.__('ID Card').'</i>: ';
                                 }
                                 echo $rowFamily2['nationalIDCardNumber'].'<br/>';
                             }
@@ -244,10 +243,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_l
                 echo '</table>';
             } else {
                 echo "<div class='warning'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             }
         }
     }
 }
-?>

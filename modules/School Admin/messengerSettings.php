@@ -22,13 +22,11 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage SMS Settings').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Messenger Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -41,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 
     $row = $form->addRow()->addHeading(__('SMS Settings'));
 
-    $row = $form->addRow()->addAlert( sprintf(__($guid, 'Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>') );
+    $row = $form->addRow()->addAlert( sprintf(__('Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>') );
 
     $setting = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
 	$row = $form->addRow();
@@ -101,4 +99,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	echo $form->getOutput();
 
 }
-?>

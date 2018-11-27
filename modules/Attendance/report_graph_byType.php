@@ -46,12 +46,12 @@ function getDateRange($guid, $connection2, $first, $last, $step = '+1 day', $out
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_byType.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
     echo '<h2>';
-    echo __($guid, 'Choose Date');
+    echo __('Choose Date');
     echo '</h2>';
 
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
@@ -136,10 +136,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     if ($dateStart != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
-        echo '<p><span class="small emphasis">'.__($guid, 'Click a legend item to toggle visibility.').'</span></p>';
+        echo '<p><span class="small emphasis">'.__('Click a legend item to toggle visibility.').'</span></p>';
 
         //Produce array of attendance data
         try {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
 

@@ -23,14 +23,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonSpaceID = isset($_REQUEST['gibbonSpaceID']) ? $_REQUEST['gibbonSpaceID'] : '';
@@ -53,9 +53,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
         } else {
             $row = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_space.php'>View Timetable by Facility</a> > </div><div class='trailEnd'>".$row['name'].'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('View Timetable by Facility'), 'tt_space.php')
+                ->add($row['name']);
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable/tt_space.php&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -93,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space_view.ph
                 echo $tt;
             } else {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             }
         }

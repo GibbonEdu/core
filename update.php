@@ -48,7 +48,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         if ($type != 'regularRelease' and $type != 'cuttingEdge') {
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed because your inputs were invalid.');
+            echo __('Your request failed because your inputs were invalid.');
             echo '</div>';
         } elseif ($type == 'regularRelease') { //Do regular release update
             $versionDB = getSettingByScope($connection2, 'System', 'version');
@@ -57,7 +57,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             //Validate Inputs
             if ($versionDB == '' or $versionCode == '' or version_compare($versionDB, $versionCode) != -1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed because your inputs were invalid, or no update was required.');
+                echo __('Your request failed because your inputs were invalid, or no update was required.');
                 echo '</div>';
             } else {
                 include './CHANGEDB.php';
@@ -79,7 +79,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 if ($partialFail == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Some aspects of your update failed.');
+                    echo __('Some aspects of your update failed.');
                     echo '</div>';
                 } else {
                     //Update DB version
@@ -90,13 +90,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         $result->execute($data);
                     } catch (PDOException $e) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Some aspects of your update failed.');
+                        echo __('Some aspects of your update failed.');
                         echo '</div>';
                         exit;
                     }
 
                     echo "<div class='success'>";
-                    echo __($guid, 'Your request was completed successfully.');
+                    echo __('Your request was completed successfully.');
                     echo '</div>';
                 }
             }
@@ -120,7 +120,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
             if ($update == false) { //Something went wrong...abandon!
                 echo "<div class='error'>";
-                echo __($guid, 'Some aspects of your update failed.');
+                echo __('Some aspects of your update failed.');
                 echo '</div>';
                 exit;
             } else { //Let's do it
@@ -179,7 +179,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                 if ($partialFail == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Some aspects of your update failed.');
+                    echo __('Some aspects of your update failed.');
                     echo '</div>';
                 } else {
                     //Update DB version
@@ -190,7 +190,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         $result->execute($data);
                     } catch (PDOException $e) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Some aspects of your update failed.');
+                        echo __('Some aspects of your update failed.');
                         echo '</div>';
                         exit;
                     }
@@ -203,13 +203,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         $result->execute($data);
                     } catch (PDOException $e) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Some aspects of your update failed.');
+                        echo __('Some aspects of your update failed.');
                         echo '</div>';
                         exit;
                     }
 
                     echo "<div class='success'>";
-                    echo __($guid, 'Your request was completed successfully.');
+                    echo __('Your request was completed successfully.');
                     echo '</div>';
                 }
             }

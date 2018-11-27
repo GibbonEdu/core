@@ -55,16 +55,14 @@ function getDateRange($firstDate, $lastDate, $step = '+1 day', $output_format = 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_studentEnrolment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Student Enrolment Trends').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student Enrolment Trends'));
 
     echo '<h2>';
-    echo __($guid, 'Choose Date');
+    echo __('Choose Date');
     echo '</h2>';
 
     $dateStart = (isset($_POST['dateStart']))? dateConvert($guid, $_POST['dateStart']) : $_SESSION[$guid]['gibbonSchoolYearFirstDay'];
@@ -128,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
         }
 
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         $enrolment = array();
@@ -166,7 +164,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_graph_stud
 
         if (empty($enrolment)) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             //PLOT DATA

@@ -29,12 +29,10 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_letters.php') == false) {
     //Access denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Behaviour Letters').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View Behaviour Letters'));
 
     $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
 

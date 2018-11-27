@@ -22,25 +22,26 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_class_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Courses & Classes')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage_edit.php&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Course & Classes')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Class').'</div>';
-    echo '</div>';
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $page->breadcrumbs
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Course & Classes'), 'course_manage_edit.php', ['gibbonCourseID' => $gibbonCourseID, 'gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Class'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     //Check if school year specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonCourseID = $_GET['gibbonCourseID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -103,4 +104,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
     }
 }
-?>

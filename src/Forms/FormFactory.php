@@ -115,6 +115,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createRange($name, $min, $max, $step = null)
+    {
+        return new Input\Range($name, $min, $max, $step);
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
@@ -416,6 +421,7 @@ class FormFactory implements FormFactoryInterface
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
                 'KES KSh' => 'Kenyan Shilling (KSh)',
+                'LKR Rs' => 'Sri Lankan Rupee (Rs)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MMK K' => 'Myanmar Kyat (K)',
                 'MAD' => 'Moroccan Dirham (MAD)',

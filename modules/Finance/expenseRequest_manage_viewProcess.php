@@ -147,14 +147,14 @@ if ($gibbonFinanceBudgetCycleID == '') { echo 'Fatal error loading this page!';
                                     } catch (PDOException $e) {
                                     }
                                     while ($rowHolder = $resultHolder->fetch()) {
-                                        $notificationText = sprintf(__($guid, 'Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                                        $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                         setNotification($connection2, $guid, $rowHolder['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                     }
                                 }
 
                                 //Notify approvers that it is commented upon
                                 foreach ($approvers as $approver) {
-                                    $notificationText = sprintf(__($guid, 'Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
+                                    $notificationText = sprintf(__('Someone has commented on the expense request for "%1$s" in budget "%2$s".'), $row['title'], $row['budget']);
                                     setNotification($connection2, $guid, $approver['gibbonPersonID'], $notificationText, 'Finance', "/index.php?q=/modules/Finance/expenses_manage_view.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=&gibbonFinanceBudgetID2=".$row['gibbonFinanceBudgetID']);
                                 }
 

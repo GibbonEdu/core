@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit_editChild.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     $search = $_GET['search'];
     if ($gibbonPersonID == '' or $gibbonFamilyID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__($guid, 'Back').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage_edit.php&gibbonFamilyID=$gibbonFamilyID&search=$search'>".__('Back').'</a>';
                 echo '</div>';
             }
 
@@ -75,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-            $form->addRow()->addHeading(__('Add Adult'));
+            $form->addRow()->addHeading(__('Edit Child'));
 
             $row = $form->addRow();
                 $row->addLabel('child', __('Childs\'s Name'));

@@ -26,7 +26,7 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_issue.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -42,11 +42,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
     $linkParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
 
     echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&'.http_build_query($linkParams)."'>".__($guid, 'Manage Invoices')."</a> > </div><div class='trailEnd'>".__($guid, 'Issue Invoice').'</div>';
+    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&'.http_build_query($linkParams)."'>".__('Manage Invoices')."</a> > </div><div class='trailEnd'>".__('Issue Invoice').'</div>';
     echo '</div>';
 
     echo '<p>';
-    echo __($guid, 'Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients.');
+    echo __('Issuing an invoice confirms it in the system, meaning the financial details within the invoice can no longer be edited. On issue, you also have the choice to email the invoice to the appropriate family and company recipients.');
     echo '</p>';
 
     if (isset($_GET['return'])) {
@@ -55,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_is
 
             if ($status != '' or $gibbonFinanceInvoiceeID != '' or $monthOfIssue != '' or $gibbonFinanceBillingScheduleID != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($linkParams)."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/invoices_manage.php&".http_build_query($linkParams)."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
 			}
 			

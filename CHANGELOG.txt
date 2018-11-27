@@ -42,6 +42,7 @@ v17.0.00
         System: updated robots.txt to disallow all indexing
         System: added ability to set background image
         System: increased the max email length to 75 chars for all forms
+        System: added Sri Lankan Rupee as a currency option
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
@@ -60,6 +61,7 @@ v17.0.00
         Finance: adjusted Student filter in Manage Invoices to show Left students
         Finance: added default check to Company email checkbox when editing an invoice
         Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
+        Finance: removed Left parents from invoices and receipts
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality

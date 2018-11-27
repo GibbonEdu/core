@@ -27,20 +27,20 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_targets.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check if school year specified
         $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 //Let's go!
@@ -67,14 +67,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
                 $page->breadcrumbs
                     ->add(
-                        strtr(
-                            ':action :courseClass :property',
-                            [
-                                ':action' => __('View'),
-                                ':courseClass' => Format::courseClassName($course['course'], $course['class']),
-                                ':property' => __('Markbook'),
-                            ]
-                        ),
+                        __('View {courseClass} Markbook', [
+                            'courseClass' => Format::courseClassName($course['course'], $course['class']),
+                        ]),
                         'markbook_view.php',
                         [
                             'gibbonCourseClassID' => $gibbonCourseClassID,
@@ -149,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_tar
 
                     $form->addHiddenValue('count', $count);
                 } else {
-                    $table->addRow()->addAlert(__($guid, 'There are no records to display.'), 'error');
+                    $table->addRow()->addAlert(__('There are no records to display.'), 'error');
                 }
 
                 $row = $form->addRow();

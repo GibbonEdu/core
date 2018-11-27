@@ -55,7 +55,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
 
     if ($rowCount <= 0 or $columnCount <= 0) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'The rubric cannot be drawn.');
+        $output .= __('The rubric cannot be drawn.');
         $output .= '</div>';
     } else {
         $rows = $resultRows->fetchAll();
@@ -92,7 +92,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($columns[$n]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this column? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteColumnProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricColumnID=".$columns[$n]['gibbonRubricColumnID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a>");
         }
 
         // Rows
@@ -112,7 +112,7 @@ function rubricEdit($guid, $connection2, $gibbonRubricID, $scaleName = '', $sear
                 $col->addContent($rows[$i]['title'])->wrap('<b>', '</b>');
             }
 
-            $col->addContent("<a onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>");
+            $col->addContent("<a onclick='return confirm(\"".__('Are you sure you want to delete this row? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/rubrics_edit_deleteRowProcess.php?gibbonRubricID=$gibbonRubricID&gibbonRubricRowID=".$rows[$i]['gibbonRubricRowID'].'&address='.$_GET['q']."&search=$search&filter2=$filter2'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='margin: 2px 0px 0px 0px'></a><br/>");
 
             for ($n = 0; $n < $columnCount; ++$n) {
                 $cell = @$cells[$rows[$i]['gibbonRubricRowID']][$columns[$n]['gibbonRubricColumnID']];
@@ -154,7 +154,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
-        echo __($guid, 'The specified record cannot be found.');
+        echo __('The specified record cannot be found.');
         echo '</div>';
     } else {
         $values = $result->fetch();
@@ -211,7 +211,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
         if ($rowCount <= 0 or $columnCount <= 0) {
             $output .= "<div class='error'>";
-            $output .= __($guid, 'The rubric cannot be drawn.');
+            $output .= __('The rubric cannot be drawn.');
             $output .= '</div>';
         } else {
             $rows = $resultRows->fetchAll();
@@ -380,7 +380,7 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
             $output .= "<div id='visualise' style='display: none'>";
                 //Filter out columns to ignore from visualisation
                 $columns = array_filter($columns, function ($item) {
-                    return $item['visualise'] == 'Y'; 
+                    return (isset($item['visualise']) && $item['visualise'] == 'Y'); 
                 });
 
                 //Cycle through rows to calculate means

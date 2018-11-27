@@ -80,7 +80,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add('config', new Core($this->absolutePath));
         $container->add('session', new Session($container));
-        $container->add('locale', new Locale($container));
+        $container->add('locale', new Locale($this->absolutePath, $container->get('session')));
 
         Format::setupFromSession($container->get('session'));
     }
@@ -117,6 +117,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
             $twig->addFunction(new \Twig_Function('__', function ($string, $domain = null) {
                 return __($string, $domain);
+            }));
+
+            $twig->addFunction(new \Twig_Function('formatUsing', function ($method, ...$args) {
+                return Format::$method(...$args);
             }));
 
             return $twig;

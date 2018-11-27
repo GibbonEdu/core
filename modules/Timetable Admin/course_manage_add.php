@@ -26,13 +26,14 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/course_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Courses & Classes')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Course').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $page->breadcrumbs
+        ->add(__('Manage Courses & Classes'), 'course_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Add Course'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -46,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
     if ($gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -60,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
 			$schoolYear = $result->fetch(); 
@@ -113,4 +114,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
         }
     }
 }
-?>

@@ -48,7 +48,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'Access denied.');
+        echo __('Access denied.');
         echo '</div>';
     } else {
         //Get child list
@@ -70,7 +70,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
         if (count($options) == 0) {
             echo "<div class='error'>";
-            echo __($guid, 'Access denied.');
+            echo __('Access denied.');
             echo '</div>';
         } elseif (count($options) == 1) {
             $gibbonPersonID = key($options);
@@ -112,7 +112,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $rowChild = $resultChild->fetch();
@@ -250,33 +250,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
                             if ($rowList['target'] != '') {
                                 echo "<div style='font-weight: bold' class='linkTop'>";
-                                echo __($guid, 'Target').': '.$rowList['target'];
+                                echo __('Target').': '.$rowList['target'];
                                 echo '</div>';
                             }
 
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo "<tr class='head'>";
                             echo "<th style='width: 120px'>";
-                                echo __($guid, 'Assessment');
+                                echo __('Assessment');
                             echo '</th>';
                             if ($enableModifiedAssessment == 'Y') {
                                 echo "<th style='width: 75px'>";
-                                    echo __($guid, 'Modified');
+                                    echo __('Modified');
                                 echo '</th>';
                             }
                             echo "<th style='width: 75px; text-align: center'>";
-                                echo (!empty($attainmentAltName))? $attainmentAltName : __($guid, 'Attainment');
+                                echo (!empty($attainmentAltName))? $attainmentAltName : __('Attainment');
                             echo '</th>';
 							if ($enableEffort == 'Y') {
                                 echo "<th style='width: 75px; text-align: center'>";
-                                    echo (!empty($effortAltName))? $effortAltName : __($guid, 'Effort');
+                                    echo (!empty($effortAltName))? $effortAltName : __('Effort');
                                 echo '</th>';
                             }
                             echo '<th>';
-                                echo __($guid, 'Comment');
+                                echo __('Comment');
                             echo '</th>';
                             echo "<th style='width: 75px'>";
-                                echo __($guid, 'Submission');
+                                echo __('Submission');
                             echo '</th>';
                             echo '</tr>';
 
@@ -320,13 +320,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                     }
                                     else {
                                         echo "<td class='dull' style='color: #bbb; text-align: center'>";
-                                        echo __($guid, 'N/A');
+                                        echo __('N/A');
                                         echo '</td>';
                                     }
                                 }
                                 if ($rowEntry['attainment'] == 'N' or ($rowEntry['gibbonScaleIDAttainment'] == '' and $rowEntry['gibbonRubricIDAttainment'] == '')) {
                                     echo "<td class='dull' style='color: #bbb; text-align: center'>";
-                                    echo __($guid, 'N/A');
+                                    echo __('N/A');
                                     echo '</td>';
                                 } else {
                                     echo "<td style='text-align: center'>";
@@ -341,7 +341,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                     }
                                     if ($resultAttainment->rowCount() == 1) {
                                         $rowAttainment = $resultAttainment->fetch();
-                                        $attainmentExtra = '<br/>'.__($guid, $rowAttainment['usage']);
+                                        $attainmentExtra = '<br/>'.__($rowAttainment['usage']);
                                     }
                                     $styleAttainment = "style='font-weight: bold'";
                                     if ( ($rowEntry['attainmentConcern'] == 'Y' || $rowEntry['attainmentConcern'] == 'P') and $showParentAttainmentWarning == 'Y') {
@@ -353,14 +353,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                     }
                                     echo '</div>';
                                     if ($rowEntry['attainmentValue'] != '') {
-                                        echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($guid, $rowEntry['attainmentDescriptor'])).'</b>'.__($guid, $attainmentExtra).'</div>';
+                                        echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'><b>".htmlPrep(__($rowEntry['attainmentDescriptor'])).'</b>'.__($attainmentExtra).'</div>';
                                     }
                                     echo '</td>';
                                 }
 								if ($enableEffort == 'Y') {
 	                                if ($rowEntry['effort'] == 'N' or ($rowEntry['gibbonScaleIDEffort'] == '' and $rowEntry['gibbonRubricIDEffort'] == '')) {
 	                                    echo "<td class='dull' style='color: #bbb; text-align: center'>";
-	                                    echo __($guid, 'N/A');
+	                                    echo __('N/A');
 	                                    echo '</td>';
 	                                } else {
 	                                    echo "<td style='text-align: center'>";
@@ -375,7 +375,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	                                    }
 	                                    if ($resultEffort->rowCount() == 1) {
 	                                        $rowEffort = $resultEffort->fetch();
-	                                        $effortExtra = '<br/>'.__($guid, $rowEffort['usage']);
+	                                        $effortExtra = '<br/>'.__($rowEffort['usage']);
 	                                    }
 	                                    $styleEffort = "style='font-weight: bold'";
 	                                    if ($rowEntry['effortConcern'] == 'Y' and $showParentEffortWarning == 'Y') {
@@ -388,9 +388,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	                                    echo '</div>';
 	                                    if ($rowEntry['effortValue'] != '') {
 	                                        echo "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>";
-	                                        echo '<b>'.htmlPrep(__($guid, $rowEntry['effortDescriptor'])).'</b>';
+	                                        echo '<b>'.htmlPrep(__($rowEntry['effortDescriptor'])).'</b>';
 	                                        if ($effortExtra != '') {
-	                                            echo __($guid, $effortExtra);
+	                                            echo __($effortExtra);
 	                                        }
 	                                        echo '</div>';
 	                                    }
@@ -399,7 +399,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 								}
                                 if ($rowEntry['commentOn'] == 'N' and $rowEntry['uploadedResponseOn'] == 'N') {
                                     echo "<td class='dull' style='color: #bbb; text-align: left'>";
-                                    echo __($guid, 'N/A');
+                                    echo __('N/A');
                                     echo '</td>';
                                 } else {
                                     echo '<td>';
@@ -415,7 +415,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                             echo '});';
                                             echo '</script>';
                                             echo '<span>'.mb_substr($rowEntry['comment'], 0, 200).'...<br/>';
-                                            echo "<a title='".__($guid, 'View Description')."' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>";
+                                            echo "<a title='".__('View Description')."' class='show_hide-$entryCount' onclick='return false;' href='#'>Read more</a></span><br/>";
                                         } else {
                                             echo nl2br($rowEntry['comment']);
                                         }
@@ -428,7 +428,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 }
                                 if ($rowEntry['gibbonPlannerEntryID'] == 0) {
                                     echo "<td class='dull' style='color: #bbb; text-align: left'>";
-                                    echo __($guid, 'N/A');
+                                    echo __('N/A');
                                     echo '</td>';
                                 } else {
                                     try {
@@ -441,7 +441,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                     }
                                     if ($resultSub->rowCount() != 1) {
                                         echo "<td class='dull' style='color: #bbb; text-align: left'>";
-                                        echo __($guid, 'N/A');
+                                        echo __('N/A');
                                         echo '</td>';
                                     } else {
                                         echo '<td>';
@@ -459,40 +459,40 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                             $rowWork = $resultWork->fetch();
 
                                             if ($rowWork['status'] == 'Exemption') {
-                                                $linkText = __($guid, 'Exemption');
+                                                $linkText = __('Exemption');
                                             } elseif ($rowWork['version'] == 'Final') {
-                                                $linkText = __($guid, 'Final');
+                                                $linkText = __('Final');
                                             } else {
-                                                $linkText = __($guid, 'Draft').' '.$rowWork['count'];
+                                                $linkText = __('Draft').' '.$rowWork['count'];
                                             }
 
                                             $style = '';
                                             $status = 'On Time';
                                             if ($rowWork['status'] == 'Exemption') {
-                                                $status = __($guid, 'Exemption');
+                                                $status = __('Exemption');
                                             } elseif ($rowWork['status'] == 'Late') {
                                                 $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
-                                                $status = __($guid, 'Late');
+                                                $status = __('Late');
                                             }
 
                                             if ($rowWork['type'] == 'File') {
-                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
+                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowWork['location']."'>$linkText</a></span>";
                                             } elseif ($rowWork['type'] == 'Link') {
-                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__($guid, 'Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
+                                                echo "<span title='".$rowWork['version'].". $status. ".sprintf(__('Submitted at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style><a target='_blank' href='".$rowWork['location']."'>$linkText</a></span>";
                                             } else {
-                                                echo "<span title='$status. ".sprintf(__($guid, 'Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
+                                                echo "<span title='$status. ".sprintf(__('Recorded at %1$s on %2$s'), substr($rowWork['timestamp'], 11, 5), dateConvertBack($guid, substr($rowWork['timestamp'], 0, 10)))."' $style>$linkText</span>";
                                             }
                                         } else {
                                             if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
-                                                echo "<span title='Pending'>".__($guid, 'Pending').'</span>';
+                                                echo "<span title='Pending'>".__('Pending').'</span>';
                                             } else {
                                                 if ($row['dateStart'] > $rowSub['date']) {
-                                                    echo "<span title='".__($guid, 'Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__($guid, 'NA').'</span>';
+                                                    echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                                 } else {
                                                     if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
-                                                        echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__($guid, 'Incomplete').'</div>';
+                                                        echo "<div style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px; margin: 2px 0px'>".__('Incomplete').'</div>';
                                                     } else {
-                                                        echo __($guid, 'Not submitted online');
+                                                        echo __('Not submitted online');
                                                     }
                                                 }
                                             }
@@ -529,7 +529,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                             }
                             if ($resultEntry2->rowCount() > 0) {
                                 $_SESSION[$guid]['sidebarExtra'] = "<h2 class='sidebar'>";
-                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__($guid, 'Recent Marks');
+                                $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].__('Recent Marks');
                                 $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'</h2>';
 
                                 $_SESSION[$guid]['sidebarExtra'] = $_SESSION[$guid]['sidebarExtra'].'<ol>';
@@ -550,6 +550,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     }
     if ($entryCount < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     }

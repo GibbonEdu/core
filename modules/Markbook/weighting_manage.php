@@ -27,20 +27,20 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
 
         if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') != 'Y') {
             //Acess denied
             echo "<div class='error'>";
-            echo __($guid, 'Your request failed because you do not have access to this action.');
+            echo __('Your request failed because you do not have access to this action.');
             echo '</div>';
             return;
         }
@@ -54,10 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
-            echo __($guid, 'Manage Weighting');
+            echo __('Manage Weighting');
             echo '</h1>';
             echo "<div class='warning'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
 
             //Get class chooser
@@ -82,34 +82,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
-                echo __($guid, 'Manage Weightings');
+                echo __('Manage Weightings');
                 echo '</h1>';
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
 
-                $page->breadcrumbs->add(strtr(
-                    ':action :courseClass :property',
-                    [
-                        ':action' => __('Manage'),
-                        ':courseClass' => Format::courseClassName($row['course'], $row['class']),
-                        ':property' => __('Weightings'),
-                    ]
-                ));
+                $page->breadcrumbs->add(__('Manage {courseClass} Weightings', [
+                    'courseClass' => Format::courseClassName($row['course'], $row['class']),
+                ]));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
                 }
 
                 //Get teacher list
-                $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
+                $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
                 $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
 
                 //Print mark
                 echo '<h3>';
-                echo __($guid, 'Markbook Weightings');
+                echo __('Markbook Weightings');
                 echo '</h3>';
 
                 try {
@@ -123,34 +118,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
                 if ($teaching || $highestAction == 'Manage Weightings_everything') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     echo '</div>';
                 }
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     echo "<table class='colorOddEven' cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Type');
+                    echo __('Type');
                     echo '</th>';
                     echo '<th width="200px">';
-                    echo __($guid, 'Description');
+                    echo __('Description');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Weighting');
+                    echo __('Weighting');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Percent of');
+                    echo __('Percent of');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Reportable?');
+                    echo __('Reportable?');
                     echo '</th>';
                     echo '<th style="width:80px">';
-                    echo __($guid, 'Actions');
+                    echo __('Actions');
                     echo '</th>';
                     echo '</tr>';
 
@@ -178,14 +173,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo floatval($row['weighting']).'%';
                         echo '</td>';
                         echo '<td>';
-                        echo ($row['calculate'] == 'term')? __($guid, 'Cumulative Average') : __($guid, 'Final Grade');
+                        echo ($row['calculate'] == 'term')? __('Cumulative Average') : __('Final Grade');
                         echo '</td>';
                         echo '<td>';
-                        echo ($row['reportable'] == 'Y')? __($guid, 'Yes') : __($guid, 'No');
+                        echo ($row['reportable'] == 'Y')? __('Yes') : __('No');
                         echo '</td>';
                         echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookWeightID=".$row['gibbonMarkbookWeightID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                         echo '</td>';
                         echo '</tr>';
 
@@ -198,12 +193,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                     if ($totalTermWeight > 0) {
 
                         echo '<h4>';
-                        echo __($guid, 'Sample Calculation') .': '. __($guid, 'Cumulative Average');
+                        echo __('Sample Calculation') .': '. __('Cumulative Average');
                         echo '</h4>';
 
                         if ($totalTermWeight != 100) {
                             echo "<div class='warning'>";
-                            printf ( __($guid, 'Total cumulative weighting is %s. Calculated averages may not be accurate if the total weighting does not add up to 100%%.'), floatval($totalTermWeight).'%' );
+                            printf ( __('Total cumulative weighting is %s. Calculated averages may not be accurate if the total weighting does not add up to 100%%.'), floatval($totalTermWeight).'%' );
                             echo '</div>';
                         }
 
@@ -224,19 +219,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo '</tr>';
                         echo '<tr>';
                             echo '<td style="text-align:right;">=</td>';
-                            echo '<td style="text-align:left">'. __($guid, 'Cumulative Average') .'</td>';
+                            echo '<td style="text-align:left">'. __('Cumulative Average') .'</td>';
                         echo '</tr>';
                         echo '</table><br/>';
                     }
 
                     if ($totalYearWeight > 0) {
                         echo '<h4>';
-                        echo __($guid, 'Sample Calculation') .': '. __($guid, 'Final Grade');
+                        echo __('Sample Calculation') .': '. __('Final Grade');
                         echo '</h4>';
 
                         if ($totalYearWeight >= 100 || (100 - $totalYearWeight) <= 0) {
                             echo "<div class='warning'>";
-                            printf ( __($guid, 'Total final grade weighting is %s. Calculated averages may not be accurate if the total weighting  exceeds 100%%.'), floatval($totalYearWeight).'%' );
+                            printf ( __('Total final grade weighting is %s. Calculated averages may not be accurate if the total weighting  exceeds 100%%.'), floatval($totalYearWeight).'%' );
                             echo '</div>';
                         }
 
@@ -245,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
 
                         echo '<tr>';
                             echo '<td style="width:20px;"></td>';
-                            printf( '<td style="text-align:left">%s%% of %s</td>', floatval( max(0, 100 - $totalYearWeight) ), __($guid, 'Cumulative Average') );
+                            printf( '<td style="text-align:left">%s%% of %s</td>', floatval( max(0, 100 - $totalYearWeight) ), __('Cumulative Average') );
                         echo '</tr>';
 
                         foreach ($weightings as $row) {
@@ -263,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                         echo '</tr>';
                         echo '<tr>';
                             echo '<td style="text-align:right;">=</td>';
-                            echo '<td style="text-align:left">'. __($guid, 'Final Grade') .'</td>';
+                            echo '<td style="text-align:left">'. __('Final Grade') .'</td>';
                         echo '</tr>';
                         echo '</table>';
                     }
@@ -274,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.
                 echo '<br/>&nbsp;<br/>';
 
                 echo '<h3>';
-                echo __($guid, 'Copy Weightings');
+                echo __('Copy Weightings');
                 echo '</h3>';
 
                 $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/weighting_manage_copyProcess.php?gibbonCourseClassID='.$gibbonCourseClassID);

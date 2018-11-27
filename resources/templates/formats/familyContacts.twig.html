@@ -1,0 +1,34 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs the contents of the HTML <head> tag. This includes 
+all stylesheets and scripts with a 'head' context.
+-->#}
+
+{% for adult in familyAdults %}
+
+    <strong>
+        {{ formatUsing('name', adult.title, adult.preferredName, adult.surname, "Parent") }}
+    </strong><br/>
+
+    {% if adult.childDataAccess == 'N' %}
+        <strong style="color: #cc0000">{{ __('Data Access') }}: {{ __('No') }}</strong><br/>
+    {% endif %}
+
+    {% if adult.email %}
+        {{ __('Email') }}: {{ formatUsing('link', "mailto:" ~ adult.email, adult.email)|raw }}<br/>
+    {% endif %}
+
+    {% for i in 1..4 %}
+        {% if adult["phone"~i] %}
+            {{ formatUsing('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], adult["phone"~i~"Type"]) }}<br/>
+        {% endif %}
+    {% endfor %}
+
+    {% if not loop.last %}<br/>{% endif%}
+
+{% endfor %}

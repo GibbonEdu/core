@@ -19,11 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\Prefab\BulkActionForm;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check if school year specified
@@ -31,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     $gibbonCourseID = $_GET['gibbonCourseID'];
     if ($gibbonCourseClassID == '' or $gibbonCourseID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -45,21 +46,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
             $values = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/studentEnrolment_manage.php'>".__($guid, 'Manage Student Enrolment')."</a> > </div><div class='trailEnd'>".sprintf(__($guid, 'Edit %1$s.%2$s Enrolment'), $values['courseNameShort'], $values['name']).'</div>';
-            echo '</div>';
+
+            $page->breadcrumbs
+                ->add(__('Manage Student Enrolment'), 'studentEnrolment_manage.php')
+                ->add(__('Edit %1$s.%2$s Enrolment', [
+                    '%1$s' => $values['courseNameShort'],
+                    '%2$s' => $values['name']
+                ]));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
             }
 
             echo '<h2>';
-            echo __($guid, 'Add Participants');
+            echo __('Add Participants');
             echo '</h2>';
 
             $form = Form::create('manageEnrolment', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_addProcess.php?gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID");
@@ -80,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($result->rowCount() > 0) {
                 $people['--'.__('Enrolable Students').'--'] = array_reduce($result->fetchAll(), function ($group, $item) {
-                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
+                    $group[$item['gibbonPersonID']] = $item['rollGroupName'].' - '.Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')';
                     return $group;
                 }, array());
             }
@@ -91,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             if ($result->rowCount() > 0) {
                 $people['--'.__('All Students').'--'] = array_reduce($result->fetchAll(), function($group, $item) {
                     $expected = ($item['status'] == 'Expected')? '('.__('Expected').')' : '';
-                    $group[$item['gibbonPersonID']] = formatName('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
+                    $group[$item['gibbonPersonID']] = Format::name('', htmlPrep($item['preferredName']), htmlPrep($item['surname']), 'Student', true).' ('.$item['username'].')'.$expected;
                     return $group;
                 }, array());
             }
@@ -115,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Current Participants');
+            echo __('Current Participants');
             echo '</h2>';
 
             try {
@@ -129,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 $form = BulkActionForm::create('bulkAction', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/studentEnrolment_manage_editProcessBulk.php');
@@ -152,7 +157,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
                 while ($student = $result->fetch()) {
                     $row = $table->addRow();
-                    $name = formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', true);
+                    $name = Format::name('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', true);
                     if ($student['role'] == 'Student') {
                         $row->addWebLink($name)
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='. $student['gibbonPersonID'].'&subpage=Timetable');
@@ -181,7 +186,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
             }
 
             echo '<h2>';
-            echo __($guid, 'Former Students');
+            echo __('Former Students');
             echo '</h2>';
 
             try {
@@ -195,22 +200,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Email');
+                echo __('Email');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Class Role');
+                echo __('Class Role');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -228,9 +233,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                             echo "<tr class=$rowNum>";
                     echo '<td>';
                     if ($row['role'] == 'Student - Left') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID']."&subpage=Timetable'>".Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true).'</a>';
                     } else {
-                        echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                        echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                     }
                     echo '</td>';
                     echo '<td>';
@@ -240,7 +245,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     echo $row['role'];
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/studentEnrolment_manage_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonCourseID=$gibbonCourseID&gibbonPersonID=".$row['gibbonPersonID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -249,4 +254,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
         }
     }
 }
-?>

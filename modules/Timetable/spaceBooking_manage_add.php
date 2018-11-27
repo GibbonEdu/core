@@ -26,20 +26,20 @@ require_once __DIR__ . '/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/spaceBooking_manage.php'>".__($guid, 'Manage Facility Bookings')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Facility Booking').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('Manage Facility Bookings'), 'spaceBooking_manage.php')
+            ->add(__('Add Facility Booking'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         //Step 1
         if ($step == 1) {
             echo '<h2>';
-            echo __($guid, 'Step 1 - Choose Facility');
+            echo __('Step 1 - Choose Facility');
             echo '</h2>';
 
             $form = Form::create('spaceBookingStep1', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/spaceBooking_manage_add.php&step=2');
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         } elseif ($step == 2) {
             echo '<h2>';
-            echo __($guid, 'Step 2 - Availability Check');
+            echo __('Step 2 - Availability Check');
             echo '</h2>';
 
             $foreignKey = null;
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
             //Check for required fields
             if ($foreignKey == null or $foreignKeyID == null or $foreignKey == '' or $foreignKeyID == '' or $date == '' or $timeStart == '' or $timeEnd == '' or $repeat == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed because your inputs were invalid.');
+                echo __('Your request failed because your inputs were invalid.');
                 echo '</div>';
             } else {
                 try {
@@ -168,13 +168,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                     $resultSelect->execute($dataSelect);
                 } catch (PDOException $e) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your request failed due to a database error.');
+                    echo __('Your request failed due to a database error.');
                     echo '</div>';
                 }
 
                 if ($resultSelect->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your request failed due to a database error.');
+                    echo __('Your request failed due to a database error.');
                     echo '</div>';
                 } else {
                     $rowSelect = $resultSelect->fetch();

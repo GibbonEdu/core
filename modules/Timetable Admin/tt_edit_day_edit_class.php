@@ -25,7 +25,7 @@ use Gibbon\Domain\Timetable\TimetableDayGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_day_edit_class.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Check if school year specified
@@ -36,7 +36,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
     if ($gibbonTTDayID == '' or $gibbonTTID == '' or $gibbonSchoolYearID == '' or $gibbonTTColumnRowID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         //Timetable, day, period
@@ -46,12 +46,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
         if (empty($values)) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=".$_GET['gibbonSchoolYearID']."'>".__($guid, 'Edit Timetable')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/tt_edit_day_edit.php&gibbonTTDayID=$gibbonTTDayID&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID'>".__($guid, 'Edit Timetable Day')."</a> > </div><div class='trailEnd'>".__($guid, 'Classes in Period').'</div>';
-            echo '</div>';
+            $urlParams = ['gibbonTTDayID' => $gibbonTTDayID, 'gibbonTTID' => $gibbonTTID, 'gibbonSchoolYearID' => $gibbonSchoolYearID];
+
+            $page->breadcrumbs
+                ->add(__('Manage Timetables'), 'tt.php', $urlParams)
+                ->add(__('Edit Timetable'), 'tt_edit.php', $urlParams)
+                ->add(__('Edit Timetable Day'), 'tt_edit_day_edit.php', $urlParams)
+                ->add(__('Classes in Period'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -60,15 +64,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Timetable').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Timetable').'</span><br/>';
             echo $values['ttName'];
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Day').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Day').'</span><br/>';
             echo $values['dayName'];
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Period').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Period').'</span><br/>';
             echo $values['rowName'];
             echo '</td>';
             echo '</tr>';

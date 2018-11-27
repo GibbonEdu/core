@@ -39,7 +39,7 @@ else
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     // Check existence of and access to this class.
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 	$resultStudents = $pdo->executeQuery($dataStudents, $sqlStudents, '_');
     if ($resultStudents->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
 
@@ -89,14 +89,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
         for($col = 'A'; $col !== 'E'; $col++)
             $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Student'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('Student'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
 
         if ($attainmentAlternativeNameAbrev != '') {
             $x = $attainmentAlternativeNameAbrev;
         } else {
-            $x = __($guid, 'Att');
+            $x = __('Att');
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, $x);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
@@ -105,13 +105,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
             if ($effortAlternativeNameAbrev != '') {
                 $x = $effortAlternativeNameAbrev;
             } else {
-                $x = __($guid, 'Eff');
+                $x = __('Eff');
             }
     		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, $x);
             $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
             $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
         }
-		$excel->getActiveSheet()->setCellValueByColumnAndRow((3-$effortAdjust), 1, __($guid, 'Com'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow((3-$effortAdjust), 1, __('Com'));
         $excel->getActiveSheet()->getStyleByColumnAndRow((3-$effortAdjust), 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow((3-$effortAdjust), 1)->applyFromArray($style_head_fill);
 
