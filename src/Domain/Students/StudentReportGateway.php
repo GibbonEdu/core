@@ -22,6 +22,7 @@ namespace Gibbon\Domain\Students;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
 use Gibbon\Domain\Traits\TableAware;
+use Gibbon\Domain\Traits\SharedUserLogic;
 
 /**
  * @version v17
@@ -30,6 +31,7 @@ use Gibbon\Domain\Traits\TableAware;
 class StudentReportGateway extends QueryableGateway
 {
     use TableAware;
+    use SharedUserLogic;
 
     private static $tableName = 'gibbonStudentEnrolment';
     private static $searchableColumns = [];
@@ -119,6 +121,53 @@ class StudentReportGateway extends QueryableGateway
             ->where('(gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart <= :today)')
             ->where('(gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd >= :today)')
             ->bindValue('today', date('Y-m-d'));
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    public function queryStudentStatusBySchoolYear(QueryCriteria $criteria, $gibbonSchoolYearID, $status = 'Full', $dateFrom = null, $dateTo = null, $ignoreEnrolment = false)
+    {
+        $query = $this
+            ->newQuery()
+            ->distinct()
+            ->from('gibbonPerson')
+            ->cols([
+                'gibbonPerson.gibbonPersonID', 'gibbonStudentEnrolmentID', 'gibbonPerson.title', 'gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonYearGroup.nameShort AS yearGroup', 'gibbonRollGroup.nameShort AS rollGroup', 'gibbonStudentEnrolment.rollOrder', 'gibbonPerson.dateStart', 'gibbonPerson.dateEnd', 'gibbonPerson.status', 'gibbonPerson.lastSchool', 'gibbonPerson.departureReason', 'gibbonPerson.nextSchool', "'Student' as roleCategory"
+            ])
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID = :gibbonSchoolYearID')
+            ->leftJoin('gibbonSchoolYear AS currentSchoolYear', 'currentSchoolYear.gibbonSchoolYearID = gibbonStudentEnrolment.gibbonSchoolYearID')
+            ->leftJoin('gibbonYearGroup', 'gibbonStudentEnrolment.gibbonYearGroupID=gibbonYearGroup.gibbonYearGroupID')
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+
+        if ($ignoreEnrolment) {
+            $query->innerJoin('gibbonRole', 'FIND_IN_SET(gibbonRole.gibbonRoleID, gibbonPerson.gibbonRoleIDAll)')
+                  ->where("gibbonRole.category='Student'");
+        } else {
+            $query->where("gibbonStudentEnrolment.gibbonStudentEnrolmentID IS NOT NULL")
+                  ->where('gibbonPerson.status = :status')
+                  ->bindValue('status', $status);
+        }
+
+        if (!empty($dateFrom) && !empty($dateTo)) {
+            $query->where($status == 'Full'
+                ? 'gibbonPerson.dateStart BETWEEN :dateFrom AND :dateTo'
+                : 'gibbonPerson.dateEnd BETWEEN :dateFrom AND :dateTo')
+            ->bindValue('dateFrom', $dateFrom)
+            ->bindValue('dateTo', $dateTo);
+        }
+
+        if ($status == 'Full' && empty($dateFrom)) {
+            // This ensures the new student list for the current year excludes any students who were enrolled in the previous year
+            $query->cols(['(
+                SELECT COUNT(*) FROM gibbonStudentEnrolment AS pastEnrolment WHERE pastEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND pastEnrolment.gibbonSchoolYearID=(
+                    SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE sequenceNumber=(
+                        SELECT MAX(sequenceNumber) FROM gibbonSchoolYear WHERE sequenceNumber < currentSchoolYear.sequenceNumber
+                        )
+                    )
+                ) AS pastEnrolmentCount'])
+                ->having('pastEnrolmentCount = 0');
+        }
 
         return $this->runQuery($query, $criteria);
     }

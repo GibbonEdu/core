@@ -29,7 +29,7 @@ all stylesheets and scripts with a 'head' context.
         {% endif %}
     {% endfor %}
 
-    {% if fullDetails %}
+    {% if includeCitizenship %}
 
         {% if adult.citizenship1 or adult.citizenship1Passport %}
         <i>{{ __('Passport') }}</i>: {{ adult.citizenship1 }} {{ adult.citizenship1Passport }}<br/>
