@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -36,9 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo '</div>';
     } else {
         if ($highestAction == 'View External Assessments_myChildrens') { //MY CHILDREN
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View My Childrens\'s External Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('View My Childrens\'s External Assessments');
 
             //Test data access field for permission
             try {
@@ -68,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                         echo "<div class='error'>".$e->getMessage().'</div>';
                     }
                     while ($rowChild = $resultChild->fetch()) {
-                        $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                        $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
                     }
                 }
 
@@ -125,9 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 }
             }
         } else { //My External Assessments
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View My External Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('View My External Assessments');
 
             echo '<h3>';
             echo __('External Assessments');

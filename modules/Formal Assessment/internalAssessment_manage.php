@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -72,9 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '</div>';
         } else {
             $row = $result->fetch();
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments');
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo '</h3>';
                 echo '<ul>';
                 while ($row = $result->fetch()) {
-                    echo '<li>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
+                    echo '<li>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
                     if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
                         $teaching = true;
                     }
