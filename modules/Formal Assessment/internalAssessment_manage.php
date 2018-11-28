@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             echo '</div>';
         } else {
             $row = $result->fetch();
-            $page->breadcrumbs->add('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments');
+            $page->breadcrumbs->add(__('Manage').' '.$row['course'].'.'.$row['class'].' '.__('Internal Assessments'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
