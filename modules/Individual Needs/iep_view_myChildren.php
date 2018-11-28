@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
     //Acess denied
@@ -61,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowChild = $resultChild->fetch()) {
-                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
             }
         }
 

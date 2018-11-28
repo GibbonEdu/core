@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -57,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 
 	$students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 	$students = array_map(function($item) {
-		return formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
+		return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
 	}, $students);
 						
 	$row = $form->addRow();

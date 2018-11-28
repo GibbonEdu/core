@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 include '../../gibbon.php';
 
@@ -169,8 +170,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                 // Raise a new notification event
                 $event = new NotificationEvent('Individual Needs', 'Updated Individual Needs');
 
-                $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
-                $studentName = formatName('', $row['preferredName'], $row['surname'], 'Student', false);
+                $staffName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                $studentName = Format::name('', $row['preferredName'], $row['surname'], 'Student', false);
                 $actionLink = "/index.php?q=/modules/Individual Needs/in_edit.php&gibbonPersonID=$gibbonPersonID&search=";
 
                 $event->setNotificationText(sprintf(__('%1$s has updated the individual needs record for %2$s.'), $staffName, $studentName));
