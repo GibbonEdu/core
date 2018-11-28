@@ -62,8 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
         }
         if ($gibbonCourseClassID == '') {
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Write Internal Assessments').'</div>';
+            $page->breadcrumbs->add('Write Internal Assessments');
             echo '</div>';
             echo "<div class='warning'>";
             echo 'Use the class listing on the right to choose a Internal Assessment to write.';
@@ -85,19 +84,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             if ($result->rowCount() != 1) {
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Write Internal Assessments').'</div>';
-                echo '</div>';
+                $page->breadcrumbs->add(__('Write Internal Assessments'));
                 echo "<div class='error'>";
                 echo __('The specified record does not exist or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
-                $courseName = $row['courseName'];
-                $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Write ".$row['course'].'.'.$row['class'].' Internal Assessments</div>';
-                echo '</div>';
+                $courseName = $row['courseName'] ?? '';
+                $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'] ?? '';
+                $page->breadcrumbs->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $row['course'].'.'.$row['class']]));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));

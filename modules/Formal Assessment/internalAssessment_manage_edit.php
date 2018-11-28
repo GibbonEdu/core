@@ -34,8 +34,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
     echo '</div>';
 } else {
     //Check if school year specified
-    $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-    $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
+    $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+    $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
     if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -73,9 +73,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $class = $result->fetch();
                 $values = $result2->fetch();
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/internalAssessment_manage.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__('Manage').' '.$class['course'].'.'.$class['class'].' '.__('Internal Assessments')."</a> > </div><div class='trailEnd'>".__('Edit Column').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('Manage {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_manage.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
+                    ->add(__('Edit Column'));
 
                 if ($values['groupingID'] != '' and $values['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                     echo "<div class='error'>";
