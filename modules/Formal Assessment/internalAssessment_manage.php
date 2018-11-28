@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -99,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 echo '</h3>';
                 echo '<ul>';
                 while ($row = $result->fetch()) {
-                    echo '<li>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
+                    echo '<li>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Staff').'</li>';
                     if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
                         $teaching = true;
                     }

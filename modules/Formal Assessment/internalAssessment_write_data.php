@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -196,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $count = $index+1;
                         $row = $table->addRow();
             
-                        $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+                        $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Internal Assessment')
