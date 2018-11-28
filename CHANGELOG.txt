@@ -80,6 +80,7 @@ v17.0.00
         Planner: fixed school year name on Edit Unit page
         Planner: improved field labelling in Lesson Planner Add and Edit screens
         Planner: supressed autocomplete in Lesson Planner date fields
+        Planner: fixed multibyte string issue when dumping unit resources
         Staff: added a Mark as Left bulk action to Manage Staff
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
