@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -38,15 +39,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
 
-        echo "<div class='trail'>";
         if ($highestAction == 'Individual Needs Records_view') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__('All Student Records')."</a> > </div><div class='trailEnd'>".__('View Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('View Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewContribute') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__('All Student Records')."</a> > </div><div class='trailEnd'>".__('View & Contribute To Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('View & Contribute To Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewEdit') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__('All Student Records')."</a> > </div><div class='trailEnd'>".__('Edit Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('Edit Individual Needs Record'));
         }
-        echo '</div>';
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
@@ -139,7 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo formatName('', $student['preferredName'], $student['surname'], 'Student');
+            echo Format::name('', $student['preferredName'], $student['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
@@ -187,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
                     foreach ($educationalAssistants as $ea) {
                         $row = $table->addRow();
-                            $row->addContent(formatName('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
+                            $row->addContent(Format::name('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
                             $row->addContent($ea['comment']);
 
                         if ($highestAction == 'Individual Needs Records_viewEdit') {
