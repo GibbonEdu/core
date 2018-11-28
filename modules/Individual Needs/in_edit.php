@@ -41,15 +41,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
         if ($highestAction == 'Individual Needs Records_view') {
             $page->breadcrumbs
-                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('View Student Records'), 'in_view.php')
                 ->add(__('View Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewContribute') {
             $page->breadcrumbs
-                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('View Student Records'), 'in_view.php')
                 ->add(__('View & Contribute To Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewEdit') {
             $page->breadcrumbs
-                ->add(__('All Student Records'), 'in_view.php')
+                ->add(__('View Student Records'), 'in_view.php')
                 ->add(__('Edit Individual Needs Record'));
         }
 
