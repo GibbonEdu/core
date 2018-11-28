@@ -31,11 +31,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     $search = $_GET['search'] ?? '';
     $allStudents = $_GET['allStudents'] ?? '';
 
-    $page->breadcrumbs
-        ->add(__('View All Assessments'), 'externalAssessment.php')
-        ->add(__('Student Details'), 'externalAssessment_details.php', ['gibbonPersonID' => $gibbonPersonID])
-        ->add(__('Delete Assessment'));
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
