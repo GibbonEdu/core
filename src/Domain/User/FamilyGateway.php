@@ -77,7 +77,7 @@ class FamilyGateway extends QueryableGateway
         return $this->db()->select($sql, $data);
     }
 
-    public function selectFamilyAdultsByStudent($gibbonPersonID)
+    public function selectFamilyAdultsByStudent($gibbonPersonID, $allUsers = false)
     {
         $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
         $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
@@ -85,9 +85,11 @@ class FamilyGateway extends QueryableGateway
             FROM gibbonFamilyChild
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)
-            AND gibbonPerson.status='Full'
-            ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)";
+
+        if (!$allUsers) $sql .= " AND gibbonPerson.status='Full'";
+
+        $sql .= " ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
 
         return $this->db()->select($sql, $data);
     }

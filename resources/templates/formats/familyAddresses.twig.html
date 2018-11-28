@@ -12,7 +12,7 @@ all stylesheets and scripts with a 'head' context.
 {% for family in families %}
 
     {% if loop.length > 1 %}
-        <b>{{ family.name }}</b><br/>
+        <u>{{ family.name }}</u><br/>
     {% endif %}
 
     {{ formatUsing('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
