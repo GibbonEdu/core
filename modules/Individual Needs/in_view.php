@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View Student Records').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add('View Student Records');
 
         $studentGateway = $container->get(StudentGateway::class);
 
