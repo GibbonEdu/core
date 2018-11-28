@@ -78,4 +78,20 @@ class ReportTable extends DataTable
 
         return $this;
     }
+
+    /**
+     * Add an incremental row count. For paginated tables, the starting count from DataSet::getPageFrom should be passed in.
+     *
+     * @param int $count
+     * @return Column
+     */
+    public function addRowCountColumn($count = 1)
+    {
+        return $this->addColumn('count', '')
+            ->notSortable()
+            ->width('35px')
+            ->format(function ($row) use (&$count) {
+                return '<span class="subdued">'.$count++.'</span>';
+            });
+    }
 }
