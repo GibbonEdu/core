@@ -494,6 +494,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             $noReosurces = true;
 
                             if (!empty($resourceContents)) {
+                                $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
 
                                 //Links
                                 $links = '';

@@ -174,6 +174,8 @@ if ($makeUnitsPublic != 'Y') {
 			$noReosurces = true;
             
             if (!empty($resourceContents)) {
+                $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
+
                 //Links
                 $links = '';
                 $linksArray = array();
