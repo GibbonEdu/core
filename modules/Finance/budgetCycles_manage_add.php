@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__('Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__('Add Budget Cycle').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Budget Cycles'), 'budgetCycles_manage.php')
+        ->add(__('Add Budget Cycle'));    
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -51,24 +51,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 		$row->addLabel("name", __("Name"))->description(__("Must be unique."));
 		$row->addTextField("name")->isRequired()->maxLength(7);
 
-	$row = $form->addRow();
-		$row->addLabel("status", __("Status"));
+        $row = $form->addRow();
+	    $row->addLabel("status", __("Status"));
 		$row->addSelect("status")->fromArray(array(__("Upcoming"), __("Current"), __("Past")));
 
-    $row = $form->addRow();
-        $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle')->isRequired()->maxLength(3);
+        $row = $form->addRow();
+            $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
+            $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle')->isRequired()->maxLength(3);
 
 	$row = $form->addRow();
-		$row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-		$row->addDate("dateStart")->isRequired();
+	    $row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+	    $row->addDate("dateStart")->isRequired();
 
 	$row = $form->addRow();
-		$row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-		$row->addDate("dateEnd")->isRequired();
+	    $row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+	    $row->addDate("dateEnd")->isRequired();
 
 	$row = $form->addRow();
-		$row->addHeading(__("Budget Allocations"));
+	    $row->addHeading(__("Budget Allocations"));
 
 
 	try {

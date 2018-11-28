@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/expenseApprovers_manage.php'>".__('Manage Expense Approvers')."</a> > </div><div class='trailEnd'>".__('Edit Expense Approver').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Expense Approvers'),'expenseApprovers_manage.php')
+        ->add(__('Edit Expense Approver'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.'));

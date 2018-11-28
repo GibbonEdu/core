@@ -29,9 +29,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__('My Expense Requests')."</a> > </div><div class='trailEnd'>".__('Request Reimbursement').'</div>';
-    echo '</div>';
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+    $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+    $page->breadcrumbs
+        ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
+        ->add(__('Request Reimbursement'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -39,7 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
     //Check if params are specified
     $gibbonFinanceExpenseID = $_GET['gibbonFinanceExpenseID'];
-    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
     $status2 = $_GET['status2'];
     $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
