@@ -30,6 +30,7 @@ v17.0.00
         System: removed upgrade path for v11.0.00 and below
 
     Security
+        Added ability for robots trying to hack the system to be ignored.  Whitelist of IP's available to school admin.
 
     Tweaks & Bug Fixes
         System: fixed IE incompatibility with javascript and select inputs

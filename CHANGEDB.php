@@ -786,4 +786,5 @@ ALTER TABLE `gibbonStaffApplicationForm` CHANGE `email` `email` VARCHAR(75) CHAR
 ALTER TABLE `gibbonApplicationForm` CHANGE `email` `email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent1email` `parent1email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent2email` `parent2email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System', 'ipWhiteList', 'IP WhiteList', 'Comma-separated list of ip addresses, partial ip addresses and network subnets to ignore when checking login failures from machines. e.g. 127.0.0.1,172.16.0,10.0.0.0/24  This would match 127.0.0.1, 172.16.0.x and 10.0.0.x', '');end
 ";

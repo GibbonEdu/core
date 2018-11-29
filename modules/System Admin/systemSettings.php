@@ -258,8 +258,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
 
     $setting = getSettingByScope($connection2, 'System', 'defaultAssessmentScale', true);
     $row = $form->addRow();
-        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
+
+    $setting = getSettingByScope($connection2, 'System', 'ipWhiteList', true);
+    $row = $form->addRow();
+    $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8);
 
     $row = $form->addRow();
         $row->addFooter();
