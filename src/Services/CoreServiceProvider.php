@@ -135,10 +135,9 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $sql = "SELECT gibbonAction.* 
                     FROM gibbonAction
                     JOIN gibbonModule ON (gibbonModule.gibbonModuleID=gibbonAction.gibbonModuleID)
-                    JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID)
-                    JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
+                    LEFT JOIN gibbonPermission ON (gibbonPermission.gibbonActionID=gibbonAction.gibbonActionID AND gibbonPermission.gibbonRoleID=:gibbonRoleID)
+                    LEFT JOIN gibbonRole ON (gibbonRole.gibbonRoleID=gibbonPermission.gibbonRoleID)
                     WHERE gibbonAction.URLList LIKE :actionName 
-                    AND gibbonPermission.gibbonRoleID=:gibbonRoleID 
                     AND gibbonModule.name=:moduleName";
 
             $actionData = $pdo->selectOne($sql, $data);
