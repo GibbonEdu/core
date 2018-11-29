@@ -22,9 +22,7 @@ if (!isset($_SESSION[$guid]['username'])) {
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Notifications').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Notifications'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
