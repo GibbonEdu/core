@@ -1,0 +1,9 @@
+Gibbon\Entity\SchoolYear:
+    type: entity
+    table: gibbonSchoolYear
+    repositoryClass: Gibbon\Repository\SchoolYearRepository
+    id:
+        gibbonSchoolYearID:
+            type: integer
+            generator:
+                strategy: AUTO

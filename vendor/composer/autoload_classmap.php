@@ -17,6 +17,7 @@ return array(
     'POP3' => $vendorDir . '/phpmailer/phpmailer/class.pop3.php',
     'QRcode' => $vendorDir . '/tecnickcom/tcpdf/include/barcodes/qrcode.php',
     'SMTP' => $vendorDir . '/phpmailer/phpmailer/class.smtp.php',
+    'SqlFormatter' => $vendorDir . '/jdorn/sql-formatter/lib/SqlFormatter.php',
     'TCPDF' => $vendorDir . '/tecnickcom/tcpdf/tcpdf.php',
     'TCPDF2DBarcode' => $vendorDir . '/tecnickcom/tcpdf/tcpdf_barcodes_2d.php',
     'TCPDFBarcode' => $vendorDir . '/tecnickcom/tcpdf/tcpdf_barcodes_1d.php',

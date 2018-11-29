@@ -1,0 +1,16 @@
+Gibbon\Entity\Person:
+    type: entity
+    table: gibbonPerson
+    repositoryClass: Gibbon\Repository\PersonRepository
+    id:
+        gibbonPersonID:
+            type: integer
+            generator:
+                strategy: AUTO
+    fields:
+        title:
+            length: 5
+        surname:
+            length: 60
+        preferredName:
+            length: 60
