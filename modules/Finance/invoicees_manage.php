@@ -26,9 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Invoicees').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Invoicees'));
 
     echo '<p>';
     echo __('The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.');

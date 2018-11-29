@@ -26,9 +26,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/fees_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>Manage Fees</a> > </div><div class='trailEnd'>Add Fee</div>";
-    echo '</div>';
+    //Check if school year specified
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    
+    $urlParams = compact('gibbonSchoolYearID');
+    
+    $page->breadcrumbs
+        ->add(__('Manage Fees'),'fees_manage.php', $urlParams)
+        ->add(__('Add Fee'));     
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -38,8 +43,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_add.ph
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    //Check if school year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     $search = $_GET['search'];
     if ($gibbonSchoolYearID == '') {
         echo "<div class='error'>";

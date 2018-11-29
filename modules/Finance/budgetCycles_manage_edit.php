@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/budgetCycles_manage.php'>".__('Manage Budget Cycles')."</a> > </div><div class='trailEnd'>".__('Edit Budget Cycle').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Budget Cycles'), 'budgetCycles_manage.php')
+        ->add(__('Edit Budget Cycle'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed because some inputs did not meet a requirement for uniqueness.', 'warning1' => 'Your request was successful, but some data was not properly saved.'));
@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
         } else {
             //Let's go!
             $values = $result->fetch();
-
+            
             $form = Form::create('budgetCycle', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgetCycles_manage_editProcess.php?gibbonFinanceBudgetCycleID='.$gibbonFinanceBudgetCycleID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
