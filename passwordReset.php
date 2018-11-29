@@ -19,9 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-echo "<div class='trail'>";
-echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".__('Password Reset').'</div>';
-echo '</div>';
+$page->breadcrumbs->add(__('Password Reset'));
 
 $step = 1;
 if (isset($_GET['step'])) {

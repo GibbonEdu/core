@@ -20,14 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
+$page->breadcrumbs->add(__('Likes'));
+
 // data table definition
 $table = DataTable::create('likes');
+$table->setDescription(__('This page shows you a break down of all your likes in the current year, and they have been earned.'));
 
 $table->addColumn('photo', __('Photo'))
     ->width('90px')
     ->format(Format::using('userPhoto', ['image_240', 75]));
 
-$table->addColumn('giver',__('Giver'))
+$table->addColumn('giver', __('Giver'))
     ->description(__('Role'))
     ->width('180px')
     ->format(function ($data) use ($guid, $connection2) {
@@ -78,13 +81,4 @@ $resultLike = countLikesByRecipient(
     $_SESSION[$guid]['gibbonSchoolYearID']
 );
 
-?>
-
-<div class='trail'>
-    <div class='trailHead'><a href='<?php echo $_SESSION[$guid]['absoluteURL']; ?>'><?php echo __('Home'); ?></a> ></div><div class='trailEnd'><?php echo __('Likes'); ?></div>
-</div>
-<p>
-    <?php echo __('This page shows you a break down of all your likes in the current year, and they have been earned.'); ?>
-</p>
-
-<?php echo $table->render($resultLike->toDataSet()); ?>
+echo $table->render($resultLike->toDataSet());

@@ -70,12 +70,6 @@ class Page extends View
                 $this->$key = $value;
             }
         }
-
-        // Add the current module entry point to the trail.
-        if (!empty($this->module->name)) {
-            $this->breadcrumbs->setBaseURL('index.php?q=/modules/'.$this->module->name.'/');
-            $this->breadcrumbs->add(__($this->module->name), $this->module->entryURL);
-        }
     }
 
     /**
@@ -317,7 +311,7 @@ class Page extends View
         // It currently only displays the new breadcrumbs if some have been added via this class.
         // Eg: more than one on a non-module page, more than two on a module-page.
         $breadcrumbs = $this->breadcrumbs->getItems();
-        $displayTrail = (empty($this->getModule()) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
+        $displayTrail = ((!$this['isLoggedIn'] || empty($this->getModule())) && count($breadcrumbs) > 1) || (!empty($this->getModule()) && count($breadcrumbs) > 2);
         
         return [
             'title'        => $this->getTitle(),
