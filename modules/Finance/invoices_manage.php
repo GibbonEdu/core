@@ -34,9 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Invoices').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Invoices'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.', 'success1' => 'Your request was completed successfully, but one or more requested emails could not be sent.', 'error3' => 'Some elements of your request failed, but others were successful.'));

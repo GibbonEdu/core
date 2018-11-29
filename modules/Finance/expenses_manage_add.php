@@ -36,9 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__('Manage Expenses')."</a> > </div><div class='trailEnd'>".__('Add Expense').'</div>';
-        echo '</div>';
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+        $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+        $page->breadcrumbs
+            ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
+            ->add(__('Add Expense'));
 
         echo "<div class='warning'>";
         echo __('Expenses added here do not require authorisation: this is for pre-authorised, or recurring expenses only.');
@@ -53,7 +57,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ad
         }
 
         //Check if school year specified
-        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
         $status2 = $_GET['status2'];
         $gibbonFinanceBudgetID2 = $_GET['gibbonFinanceBudgetID2'];
         if ($gibbonFinanceBudgetCycleID == '') {

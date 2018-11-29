@@ -29,10 +29,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/feeCategories_manage.php'>".__('Manage Fee Categories')."</a> > </div><div class='trailEnd'>".__('Delete Category').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
