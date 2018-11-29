@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\SecurityManager;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
@@ -48,6 +49,23 @@ if (empty($username) or empty($password)) {
 }
 //VALIDATE LOGIN INFORMATION
 else {
+
+    $secMan = new SecurityManager($pdo);
+    if (! $secMan->isIPToBeIgnored()) {
+
+        $data = array('ip' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s', strtotime('-20 minutes')));
+        $sql = "SELECT title, timestamp FROM gibbonLog WHERE ip=:ip AND timestamp >= :timestamp ORDER BY timestamp DESC";
+        $ipCount = $pdo->select($sql, $data)->fetchAll();
+        if (count($ipCount) >= 3)
+        {
+            $last = new \DateTime($ipCount[0]['timestamp']);
+            $wasLast = 20 - $last->diff(new DateTime('now'), true)->format('%i');
+            $URL .= '?loginReturn=faila&loginAvailableTime='.$wasLast;
+            header("Location: {$URL}");
+            exit;
+        }
+    }
+
     try {
         $data = array('username' => $username);
         $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";

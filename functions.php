@@ -2739,6 +2739,8 @@ function sidebar($gibbon, $pdo)
             $loginReturnMessage = sprintf(__('Gmail account does not match the email stored in %1$s. If you have logged in with your school Gmail account please contact %2$s if you have any questions.'), $_SESSION[$guid]['systemName'], "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         } elseif ($loginReturn == 'fail9') {
             $loginReturnMessage = __('Your primary role does not support the ability to log into the specified year.');
+        } elseif ($loginReturn == 'faila') {
+            $loginReturnMessage = __('Too many failed logins from this machine.  The machine will be available in {minutes} minutes.', ['minutes' => $_GET['loginAvailableTime'] + 1]);
         }
 
         echo "<div class='error'>";

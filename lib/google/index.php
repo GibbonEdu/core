@@ -1,8 +1,25 @@
 <?php
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\SecurityManager;
 
 include "../../gibbon.php";
+
+$secMan = new SecurityManager($pdo);
+if (! $secMan->isIPToBeIgnored()) {
+
+    $data = array('ip' => $_SERVER['REMOTE_ADDR'], 'timestamp' => date('Y-m-d H:i:s', strtotime('-20 minutes')));
+    $sql = "SELECT title, timestamp FROM gibbonLog WHERE ip=:ip AND timestamp >= :timestamp ORDER BY timestamp DESC";
+    $ipCount = $pdo->select($sql, $data)->fetchAll();
+    if (count($ipCount) >= 3)
+    {
+        $last = new \DateTime($ipCount[0]['timestamp']);
+        $wasLast = 20 - $last->diff(new DateTime('now'), true)->format('%i');
+        $URL .= '?loginReturn=faila&loginAvailableTime='.$wasLast;
+        header("Location: {$URL}");
+        exit;
+    }
+}
 
 setCurrentSchoolYear($guid, $connection2);
 
