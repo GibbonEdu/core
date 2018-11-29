@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage School Year'));
+    $page->breadcrumbs->add(__('Manage Budget Cycles'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
