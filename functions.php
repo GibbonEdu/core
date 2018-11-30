@@ -4649,9 +4649,12 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
  */
 function getGibbonMailer($guid) {
 
-    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class.  ', E_USER_DEPRECATED);
-
     global $gibbon;
+    $displayErrors = ini_get('display_errors');
+
+    ini_set('display_errors', 'Off');
+    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class.  ', E_USER_DEPRECATED);
+    ini_set('display_errors', $displayErrors);
 
     $mail = new GibbonMailer($gibbon->session);
 
