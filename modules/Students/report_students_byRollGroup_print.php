@@ -151,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                 echo '</td>';
                 echo '<td>';
                 if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                    echo getAge($guid, dateConvertToTimestamp($row['dob']), true).'<br/>';
+                    echo Format::age(date('Y-m-d', Format::timestamp($row['dob'])), true).'<br/>';
                     echo "<span style='font-style: italic; font-size: 85%'>".dateConvertBack($guid, $row['dob']).'</span>';
                 }
                 echo '</td>';

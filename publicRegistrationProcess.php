@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
 
 include './gibbon.php';
 
@@ -139,7 +140,7 @@ if ($proceed == false) {
                 $ageFail = false;
                 if ($publicRegistrationMinimumAge == '') {
                     $ageFail = true;
-                } elseif ($publicRegistrationMinimumAge > 0 and $publicRegistrationMinimumAge > getAge($guid, dateConvertToTimestamp($dob), true, true)) {
+                } elseif ($publicRegistrationMinimumAge > 0 and $publicRegistrationMinimumAge > (new DateTime('@'.Format::timestamp($dob)))->diff(new DateTime())->y) {
                     $ageFail = true;
                 }
 
