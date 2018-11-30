@@ -63,6 +63,7 @@ v17.0.00
         Finance: added default check to Company email checkbox when editing an invoice
         Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
         Finance: removed Left parents from invoices and receipts
+        Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English 
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
