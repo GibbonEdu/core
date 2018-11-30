@@ -4322,51 +4322,6 @@ function randomPassword($length)
 }
 
 /**
- * @deprecated in v16. Use DataTables & SpreadsheetRenderer. To be removed in v17.
- */
-class ExportToExcel
-{
-    public function setHeader($excel_file_name)//this function used to set the header variable
-    {
-        header('Content-type: application/octet-stream');//A MIME attachment with the content type "application/octet-stream" is a binary file.
-        //Typically, it will be an application or a document that must be opened in an application, such as a spreadsheet or word processor.
-        header("Content-Disposition: attachment; filename=$excel_file_name");//with this extension of file name you tell what kind of file it is.
-        header('Pragma: no-cache');//Prevent Caching
-        header('Expires: 0');//Expires and 0 mean that the browser will not cache the page on your hard drive
-    }
-    public function exportWithQuery($qry, $excel_file_name, $conn)//to export with query
-    {
-        $body = null;
-
-        try {
-            $tmprst = $conn->query($qry);
-            $tmprst->setFetchMode(PDO::FETCH_NUM);
-        } catch (PDOException $e) {
-        }
-
-        $header = "<center><table cellspacing='0' border=1px>";
-        $num_field = $tmprst->columnCount();
-        while ($row = $tmprst->fetch()) {
-            $body .= '<tr>';
-            for ($i = 0;$i < $num_field;++$i) {
-                $body .= '<td>'.$row[$i].'</td>';
-            }
-            $body .= '</tr>';
-        }
-
-        $this->setHeader($excel_file_name);
-        echo $header.$body.'</table>';
-    }
-    //Ross Parker added the ability to specify paramaters to pass into the file, via a session variable.
-    public function exportWithPage($guid, $php_page, $excel_file_name, $params = '')
-    {
-        $this->setHeader($excel_file_name);
-        $_SESSION[$guid]['exportToExcelParams'] = $params;
-        require_once "$php_page";
-    }
-}
-
-/**
  * @deprecated in v16. Use Format::phone()
  */
 function formatPhone($num)
