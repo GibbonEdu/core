@@ -24,7 +24,6 @@ namespace Gibbon\Module\Markbook;
  *
  * @version 4th May 2016
  * @since   4th May 2016
- * @author  Sandra Kuipers
  */
 class MarkbookColumn
 {

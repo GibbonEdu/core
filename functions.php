@@ -4595,7 +4595,6 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
  *
  * @version 1st September 2016
  * @since   1st September 2016
- * @author  Sandra Kuipers
  */
 function getGibbonMailer($guid) {
     $mail = new PHPMailer();
