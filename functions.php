@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Comms\GibbonMailer;
 
 require_once dirname(__FILE__).'/gibbon.php';
 
@@ -4641,35 +4642,18 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
  * @version 1st September 2016
  * @since   1st September 2016
  * @author  Sandra Kuipers
+ * @deprecated 30th Nov 2018
+ * This method has been replaced by the GibbonMailer class, and remains here ONLY to handle legacy calls.
+ * The Deprecation error will be logged, and if asked for in php.ini stop execution.
+ * Productions sites should NOT have display_errors set to true, and therefore not a problem.
  */
 function getGibbonMailer($guid) {
-    $mail = new PHPMailer();
 
-    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP'];
+    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class.  ', E_USER_DEPRECATED);
 
-    if ($smtpEnabled == 'Y') {
+    global $gibbon;
 
-        $mail->IsSMTP();
-        $mail->CharSet = 'UTF-8';
-
-        $host = $_SESSION[$guid]['mailerSMTPHost'];
-        $port = $_SESSION[$guid]['mailerSMTPPort'];
-
-        if ( !empty($host) && !empty($port) ) {
-
-            $username = $_SESSION[$guid]['mailerSMTPUsername'];
-            $password = $_SESSION[$guid]['mailerSMTPPassword'];
-            $auth = ( !empty($username) && !empty($password) );
-
-            $mail->Host       = $host;      // SMTP server example
-            $mail->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
-            $mail->SMTPAuth   = $auth;      // enable SMTP authentication
-            $mail->Port       = $port;      // set the SMTP port for the GMAIL server
-            $mail->Username   = $username;  // SMTP account username example
-            $mail->Password   = $password;  // SMTP account password example
-            $mail->Helo       = parse_url($_SESSION[$guid]['absoluteURL'], PHP_URL_HOST);
-        }
-    }
+    $mail = new GibbonMailer($gibbon->session);
 
     return $mail;
 }
