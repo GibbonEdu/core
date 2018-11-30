@@ -145,7 +145,7 @@ if ($proceed == false) {
                 }
 
                 if ($ageFail == true) {
-                    $URL .= '&return=warning1';
+                    $URL .= '&return=fail5';
                     header("Location: {$URL}");
                 } else {
                     //Write to database
