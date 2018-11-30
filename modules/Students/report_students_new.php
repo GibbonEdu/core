@@ -126,9 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     $table->addColumn('rollGroup', __('Roll Group'));
     $table->addColumn('username', __('Username'));
     $table->addColumn('dateStart', __('Start Date'))
-        ->format(function ($student) {
-            return Format::date($student['dateStart']);
-        });
+          ->format(Format::using('date', 'dateStart'));
     $table->addColumn('lastSchool', __('Last School'));
 
     $view = new View($container->get('twig'));
