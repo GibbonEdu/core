@@ -498,7 +498,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Age').'</span><br/>';
                         if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                            echo getAge($guid, dateConvertToTimestamp($row['dob']));
+                            echo Format::age(date('Y-m-d', Format::timestamp($row['dob'])));
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -802,7 +802,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>".__('Age').'</span><br/>';
                         if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                            echo getAge($guid, dateConvertToTimestamp($row['dob']));
+                            echo Format::age(Format::timestamp($row['dob']));
                         }
                         echo '</td>';
                         echo '</tr>';
