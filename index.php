@@ -42,6 +42,14 @@ $session = $container->get('session');
 $isLoggedIn = $session->has('username') && $session->has('gibbonRoleIDCurrent');
 
 /**
+ * MODULE BREADCRUMBS
+ */
+if ($isLoggedIn && $module = $page->getModule()) {
+    $page->breadcrumbs->setBaseURL('index.php?q=/modules/'.$module->name.'/');
+    $page->breadcrumbs->add(__($module->name), $module->entryURL);
+}
+
+/**
  * CACHE & INITIAL PAGE LOAD
  *
  * The 'pageLoads' value is used to run code when the user first logs in, and

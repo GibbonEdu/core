@@ -227,6 +227,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_dump.php') =
                         $noReosurces = true;
 
                         if (!empty($resourceContents)) {
+                            $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
+
                             //Links
                             $links = '';
                             $linksArray = array();

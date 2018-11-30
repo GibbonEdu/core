@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -51,8 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+        $gibbonInternalAssessmentColumnID = $_GET['gibbonInternalAssessmentColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonInternalAssessmentColumnID == '') {
             echo "<div class='error'>";
             echo __('You have not specified one or more required parameters.');
@@ -99,9 +100,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     $class = $result->fetch();
                     $values = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/internalAssessment_write.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__('Write').' '.$class['course'].'.'.$class['class'].' '.__('Internal Assessments')."</a> > </div><div class='trailEnd'>".__('Enter Internal Assessment Results').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('Write {courseClass} Internal Assessments', ['courseClass' => $class['course'].'.'.$class['class']]), 'internalAssessment_write.php', ['gibbonCourseClassID' => $gibbonCourseClassID])
+                        ->add(__('Enter Internal Assessment Results'));
 
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed due to an attachment error.', 'success0' => 'Your request was completed successfully.'));
@@ -196,7 +197,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                         $count = $index+1;
                         $row = $table->addRow();
             
-                        $row->addWebLink(formatName('', $student['preferredName'], $student['surname'], 'Student', true))
+                        $row->addWebLink(Format::name('', $student['preferredName'], $student['surname'], 'Student', true))
                             ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php')
                             ->addParam('gibbonPersonID', $student['gibbonPersonID'])
                             ->addParam('subpage', 'Internal Assessment')

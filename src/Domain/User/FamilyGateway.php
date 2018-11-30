@@ -100,16 +100,32 @@ class FamilyGateway extends QueryableGateway
         return $this->insertRow('gibbonFamilyAdult', 'gibbonFamilyAdultID', $data);
     }
     
-    public function selectFamilyAdultsByStudent($gibbonPersonID)
+    public function selectFamilyAdultsByStudent($gibbonPersonID, $allUsers = false)
     {
-        $data = array('gibbonPersonID' => $gibbonPersonID);
-        $sql = "SELECT gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.*, gibbonFamilyAdult.childDataAccess, gibbonFamilyAdult.contactEmail, gibbonFamilyAdult.contactCall
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
+        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
+        $sql = "SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamilyAdult.gibbonFamilyID, gibbonPerson.*, gibbonFamilyAdult.childDataAccess, gibbonFamilyAdult.contactEmail, gibbonFamilyAdult.contactCall
             FROM gibbonFamilyChild
             JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
             JOIN gibbonPerson ON (gibbonFamilyAdult.gibbonPersonID=gibbonPerson.gibbonPersonID)
-            WHERE gibbonFamilyChild.gibbonPersonID=:gibbonPersonID
-            AND gibbonPerson.status='Full'
-            ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)";
+
+        if (!$allUsers) $sql .= " AND gibbonPerson.status='Full'";
+
+        $sql .= " ORDER BY gibbonFamilyAdult.contactPriority, gibbonPerson.surname, gibbonPerson.preferredName";
+
+        return $this->db()->select($sql, $data);
+    }
+
+    public function selectFamiliesByStudent($gibbonPersonID)
+    {
+        $gibbonPersonIDList = is_array($gibbonPersonID) ? implode(',', $gibbonPersonID) : $gibbonPersonID;
+        $data = array('gibbonPersonIDList' => $gibbonPersonIDList);
+        $sql = "SELECT gibbonFamilyChild.gibbonPersonID, gibbonFamily.*
+            FROM gibbonFamilyChild
+            JOIN gibbonFamily ON (gibbonFamily.gibbonFamilyID=gibbonFamilyChild.gibbonFamilyID)
+            WHERE FIND_IN_SET(gibbonFamilyChild.gibbonPersonID, :gibbonPersonIDList)
+            ORDER BY gibbonFamily.name";
 
         return $this->db()->select($sql, $data);
     }

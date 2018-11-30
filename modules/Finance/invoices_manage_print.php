@@ -36,9 +36,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
     $gibbonFinanceFeeCategoryID = $_GET['gibbonFinanceFeeCategoryID'];
 
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoices_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."&gibbonFinanceInvoiceID=$gibbonFinanceInvoiceID&gibbonSchoolYearID=$gibbonSchoolYearID&status=$status&gibbonFinanceInvoiceeID=$gibbonFinanceInvoiceeID&monthOfIssue=$monthOfIssue&gibbonFinanceBillingScheduleID=$gibbonFinanceBillingScheduleID&gibbonFinanceFeeCategoryID=$gibbonFinanceFeeCategoryID'>".__('Manage Invoices')."</a> > </div><div class='trailEnd'>".__('Print Invoices, Receipts & Reminders').'</div>';
-    echo '</div>';
+    $urlParams = compact('gibbonSchoolYearID', 'status', 'gibbonFinanceInvoiceeID', 'monthOfIssue', 'gibbonFinanceBillingScheduleID', 'gibbonFinanceFeeCategoryID'); 
+
+    //Proceed!
+    $page->breadcrumbs
+        ->add(__('Manage Invoices'), 'invoices_manage.php', $urlParams)
+        ->add(__('Print Invoices, Receipts & Reminders'));    
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";

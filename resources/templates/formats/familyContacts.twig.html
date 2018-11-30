@@ -1,0 +1,46 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs the contents of the HTML <head> tag. This includes 
+all stylesheets and scripts with a 'head' context.
+-->#}
+
+{% for adult in familyAdults %}
+
+    <u>{{ formatUsing('name', adult.title, adult.preferredName, adult.surname, "Parent") }}</u>
+    {% if adult.status != 'Full' %}<i>({{ __(adult.status) }})</i>{% endif %}
+    <br/>
+
+    {% if adult.childDataAccess == 'N' %}
+        <strong style="color: #cc0000">{{ __('Data Access') }}: {{ __('No') }}</strong><br/>
+    {% endif %}
+
+    {% if adult.email %}
+        <i>{{ __('Email') }}</i>: {{ formatUsing('link', "mailto:" ~ adult.email, adult.email)|raw }}<br/>
+    {% endif %}
+
+    {% for i in 1..4 %}
+        {% if adult["phone"~i] %}
+            {{ formatUsing('phone', adult["phone"~i], adult["phone"~i~"CountryCode"], "<i>"~adult["phone"~i~"Type"]~"</i>")|raw }}<br/>
+        {% endif %}
+    {% endfor %}
+
+    {% if includeCitizenship %}
+
+        {% if adult.citizenship1 or adult.citizenship1Passport %}
+        <i>{{ __('Passport') }}</i>: {{ adult.citizenship1 }} {{ adult.citizenship1Passport }}<br/>
+        {% endif %}
+
+        {% if adult.nationalIDCardNumber %}
+            <i>{{ __('National ID Card') }}</i>: {{ adult.nationalIDCardNumber }}<br/>
+        {% endif %}
+
+    {% endif %}
+
+    {% if not loop.last %}<br/>{% endif%}
+
+{% endfor %}

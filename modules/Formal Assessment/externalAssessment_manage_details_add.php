@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/externalAssessment_manage_details_add.php') == false) {
     //Acess denied
@@ -26,9 +27,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessment.php'>".__('View All Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/externalAssessment_details.php&gibbonPersonID='.$_GET['gibbonPersonID']."'>".__('Student Details')."</a> > </div><div class='trailEnd'>".__('Add Assessment').'</div>';
-    echo '</div>';
+    $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $allStudents = $_GET['allStudents'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'externalAssessment.php')
+        ->add(__('Student Details'), 'externalAssessment_details.php', ['gibbonPersonID' => $gibbonPersonID])
+        ->add(__('Add Assessment'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -36,13 +42,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     }
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], $editLink, null);
-    }
-
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $search = $_GET['search'];
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
     }
 
     if ($gibbonPersonID == '') {
@@ -80,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';

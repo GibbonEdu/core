@@ -28,7 +28,6 @@ use Gibbon\session;
  *
  * @version 3rd May 2016
  * @since   3rd May 2016
- * @author  Sandra Kuipers
  */
 class MarkbookView
 {

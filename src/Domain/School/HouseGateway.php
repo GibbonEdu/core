@@ -50,4 +50,33 @@ class HouseGateway extends QueryableGateway
 
         return $this->runQuery($query, $criteria);
     }
+
+    public function queryStudentHouseCountByYearGroup(QueryCriteria $criteria, $gibbonSchoolYearID)
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([
+                'gibbonYearGroup.gibbonYearGroupID',
+                'gibbonYearGroup.name as yearGroupName',
+                'gibbonHouse.name AS house',
+                'gibbonHouse.gibbonHouseID',
+                "count(gibbonStudentEnrolment.gibbonPersonID) AS total",
+                "count(CASE WHEN gibbonPerson.gender='M' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalMale",
+                "count(CASE WHEN gibbonPerson.gender='F' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalFemale",
+            ])
+            ->leftJoin('gibbonPerson', "gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID
+                        AND gibbonPerson.status='Full'
+                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
+                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today)")
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID')
+            ->leftJoin('gibbonYearGroup', 'gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID')
+            ->groupBy(['gibbonYearGroup.gibbonYearGroupID', 'gibbonHouse.gibbonHouseID'])
+            ->having('total > 0')
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->bindValue('today', date('Y-m-d'));
+
+        return $this->runQuery($query, $criteria);
+    }
 }

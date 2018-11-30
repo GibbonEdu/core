@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -28,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Archive Records').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add('Archive Records');
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
@@ -59,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 
 	$students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
 	$students = array_map(function($item) {
-		return formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
+		return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
 	}, $students);
 						
 	$row = $form->addRow();

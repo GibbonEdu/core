@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -34,19 +36,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo '</div>';
     } else {
         //Get action with highest precendence
-        $gibbonPersonID = $_GET['gibbonPersonID'];
-        $search = null;
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
-        $allStudents = '';
-        if (isset($_GET['allStudents'])) {
-            $allStudents = $_GET['allStudents'];
-        }
+        $gibbonPersonID = $_GET['gibbonPersonID'] ?? '';
+        $search = $_GET['search'] ?? '';
+        $allStudents = $_GET['allStudents'] ?? '';
 
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/externalAssessment.php'>".__('View All Assessments')."</a> > </div><div class='trailEnd'>".__('Student Details').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('View All Assessments'), 'externalAssessment.php')
+            ->add(__('Student Details'));
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
@@ -83,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student');
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';

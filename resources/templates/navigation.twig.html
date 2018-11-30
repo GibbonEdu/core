@@ -33,23 +33,25 @@ collapsed drop-down list in 'mini' view-mode.
 
 {% else %}
 
-    <select style='width: 200px' onchange="window.location.href=this.value">
-        {% for categoryName, items in menuModule %}
-        <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
+    {% if menuModule %}
+        <select style='width: 200px' onchange="window.location.href=this.value">
+            {% for categoryName, items in menuModule %}
+            <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
 
-            {% for item in items %}
-            <option value="{{ item.url }}" {{ item.active ? 'selected' : '' }}>
-                {{ __(item.name, item.textDomain) }}
-            </option>
+                {% for item in items %}
+                <option value="{{ item.url }}" {{ item.active ? 'selected' : '' }}>
+                    {{ __(item.name, item.textDomain) }}
+                </option>
+                {% endfor %}
+                
+            </optgroup>
             {% endfor %}
-            
-        </optgroup>
-        {% endfor %}
-    </select>
-    
-    <div style='float: right; padding-top: 10px; margin-left: 10px;'>
-        {{ __('Module Menu') }}
-    </div>
+        </select>
+        
+        <div style='float: right; padding-top: 10px; margin-left: 10px;'>
+            {{ __('Module Menu') }}
+        </div>
+    {% endif %}
 
 {% endif %}
 

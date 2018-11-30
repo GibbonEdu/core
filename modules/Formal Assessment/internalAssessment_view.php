@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -37,9 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo '</div>';
     } else {
         if ($highestAction == 'View Internal Assessments_all') { //ALL STUDENTS
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View All Internal Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('View All Internal Assessments');
 
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
@@ -89,9 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				}
 			}
 		} elseif ($highestAction == 'View Internal Assessments_myChildrens') { //MY CHILDREN
-			echo "<div class='trail'>";
-			echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View My Childrens\'s Internal Assessments').'</div>';
-			echo '</div>';
+			$page->breadcrumbs->add('View My Childrens\'s Internal Assessments');
 
 			//Test data access field for permission
 			try {
@@ -120,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 						echo "<div class='error'>".$e->getMessage().'</div>';
 					}
 					while ($rowChild = $resultChild->fetch()) {
-						$options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+						$options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
 					}
 				}
 
@@ -177,9 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 }
             }
         } else { //My Internal Assessments
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View My Internal Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add('View My Internal Assessments');
 
             echo '<h3>';
             echo __('Internal Assessments');

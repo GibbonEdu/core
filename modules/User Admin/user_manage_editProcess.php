@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -549,8 +550,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
                                     // Raise a new notification event
                                     $event = new NotificationEvent('Students', 'Updated Privacy Settings');
 
-                                    $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
-                                    $studentName = formatName('', $preferredName, $surname, 'Student', false);
+                                    $staffName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                                    $studentName = Format::name('', $preferredName, $surname, 'Student', false);
                                     $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
                                     $privacyText = __('Privacy').' (<i>'.__('New Value').'</i>): ';
