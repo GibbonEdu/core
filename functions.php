@@ -142,7 +142,7 @@ function __n(string $singular, string $plural, int $n, array $params = [], array
  * @param array  $options
  * @return string
  */
-function __d(string $text, array $params = [], array $options = [])
+function __m(string $text, array $params = [], array $options = [])
 {
     global $gibbon;
 
