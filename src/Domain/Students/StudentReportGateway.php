@@ -50,8 +50,11 @@ class StudentReportGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonPerson.*', "(SELECT timestamp FROM gibbonPersonUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastUpdate"
+                'gibbonPerson.gibbonPersonID', 'gibbonPerson.*', 'gibbonPersonMedical.*',
+                "(SELECT timestamp FROM gibbonPersonUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastPersonalUpdate",
+                "(SELECT timestamp FROM gibbonPersonMedicalUpdate WHERE gibbonPersonID=gibbonPerson.gibbonPersonID AND status='Complete' ORDER BY timestamp DESC LIMIT 1) as lastMedicalUpdate"
             ])
+            ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
             ->where('FIND_IN_SET(gibbonPerson.gibbonPersonID, :gibbonPersonIDList)')
             ->bindValue('gibbonPersonIDList', $gibbonPersonIDList);
 
