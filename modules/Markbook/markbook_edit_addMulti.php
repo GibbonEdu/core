@@ -232,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                     $row = $form->addRow()->addClass('effortRow');
                         $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
-                        $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                        $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected(19);
 
                     if ($enableRubrics == 'Y') {
                         $row = $form->addRow()->addClass('effortRow');
