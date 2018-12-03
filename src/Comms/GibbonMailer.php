@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Gibbon\Session;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Mailer class
@@ -59,13 +59,15 @@ class GibbonMailer extends \PHPMailer
             $this->Host       = $host;      // SMTP server example
             $this->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
             $this->SMTPAuth   = $auth;      // enable SMTP authentication
-            $this->Port       = $port;      // set the SMTP port for the GMAIL server
+            $this->Port       = $port;      // set the SMTP port for the Gmail server
             $this->Username   = $username;  // SMTP account username example
             $this->Password   = $password;  // SMTP account password example
 
-            if ($this->Host === 'smtp.gmail.com')
-            {
-                $this->SMTPSecure = 'ssl';
+            // Automatically applies the required type of SMTP security for Gmail 
+            // based on the port used. https://support.google.com/a/answer/176600?hl=en
+            if ($this->Host === 'smtp.gmail.com' || $this->Host === 'smtp-relay.gmail.com') {
+                if ($port == 465) $this->SMTPSecure = 'ssl';
+                if ($port == 587) $this->SMTPSecure = 'tls';
             }
         }
     }

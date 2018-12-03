@@ -4591,16 +4591,12 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
 }
 
 /**
- * getGibbonMailer
- * Wrapper for PHPMailer() object, to allow for SMTP settings (and any future settings)
+ * This method has been replaced by the GibbonMailer class, and remains here only to handle legacy calls.
+ * The Deprecation error will be logged, and if asked for in php.ini stop execution.
  *
+ * @deprecated 30th Nov 2018
  * @version 1st September 2016
  * @since   1st September 2016
- * @author  Sandra Kuipers
- * @deprecated 30th Nov 2018
- * This method has been replaced by the GibbonMailer class, and remains here ONLY to handle legacy calls.
- * The Deprecation error will be logged, and if asked for in php.ini stop execution.
- * Productions sites should NOT have display_errors set to true, and therefore not a problem.
  */
 function getGibbonMailer($guid) {
 
@@ -4608,7 +4604,7 @@ function getGibbonMailer($guid) {
     $displayErrors = ini_get('display_errors');
 
     ini_set('display_errors', 'Off');
-    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class.  ', E_USER_DEPRECATED);
+    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class', E_USER_DEPRECATED);
     ini_set('display_errors', $displayErrors);
 
     $mail = new GibbonMailer($gibbon->session);
