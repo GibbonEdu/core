@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\GibbonMailer;
+
 include '../../gibbon.php';
 
 //Increase max execution time, as this stuff gets big
@@ -1937,7 +1939,7 @@ else {
 
 				//Set up email
 				$emailCount=0 ;
-				$mail=getGibbonMailer($guid);
+				$mail= new GibbonMailer($gibbon->session);
 				$mail->SMTPKeepAlive = true;
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');

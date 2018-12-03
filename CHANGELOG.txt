@@ -76,6 +76,9 @@ v17.0.00
         Messenger: updated the Year Group target for Staff to only include tutors and teachers of courses in the same year group
         Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
         Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
+        Messenger: PHPMailer wrapper updated for use with GMAIL, which requires SMTPSecure = 'ssl'
+                   Deprecated getGibbonMailer and call GibbonMailer wrapper to remove duplicate code.
+                   Refactored Messenger Post Process to use GibbonMailer.
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
