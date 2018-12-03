@@ -62,6 +62,7 @@ class GibbonMailer extends \PHPMailer
             $this->Port       = $port;      // set the SMTP port for the Gmail server
             $this->Username   = $username;  // SMTP account username example
             $this->Password   = $password;  // SMTP account password example
+            $this->Helo       = parse_url($this->session->get('absoluteURL'), PHP_URL_HOST);
 
             // Automatically applies the required type of SMTP security for Gmail 
             // based on the port used. https://support.google.com/a/answer/176600?hl=en
