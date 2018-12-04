@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             if ($resultCourse->rowCount() > 0) {
                 if ($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)') {
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
-                    $_SESSION[$guid]['sidebarExtra'] .= 'Current Courses';
+                    $_SESSION[$guid]['sidebarExtra'] .= __('Current Courses');
                     $_SESSION[$guid]['sidebarExtra'] .= '</h4>';
                 } else {
                     $_SESSION[$guid]['sidebarExtra'] .= '<h4>';
