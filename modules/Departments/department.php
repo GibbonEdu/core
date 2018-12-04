@@ -154,7 +154,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
             //Print current course list
             try {
                 $dataCourse = array('gibbonDepartmentID' => $gibbonDepartmentID);
-                $sqlCourse = "SELECT * FROM gibbonCourse WHERE gibbonDepartmentID=:gibbonDepartmentID AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY nameShort, name";
+                $sqlCourse = "SELECT gibbonCourse.* FROM gibbonCourse 
+                    JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+                    WHERE gibbonDepartmentID=:gibbonDepartmentID 
+                    AND gibbonYearGroupIDList <> '' 
+                    AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') 
+                    GROUP BY gibbonCourse.gibbonCourseID 
+                    ORDER BY nameShort, name";
                 $resultCourse = $connection2->prepare($sqlCourse);
                 $resultCourse->execute($dataCourse);
             } catch (PDOException $e) {
