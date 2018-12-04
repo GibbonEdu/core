@@ -158,6 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
                     WHERE gibbonDepartmentID=:gibbonDepartmentID 
                     AND gibbonYearGroupIDList <> '' 
+                    AND gibbonCourse.gibbonCourseIDParent IS NULL
                     AND gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') 
                     GROUP BY gibbonCourse.gibbonCourseID 
                     ORDER BY nameShort, name";
