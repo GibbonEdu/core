@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 require getcwd().'/../config.php';
 require getcwd().'/../functions.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 @session_start();
 
