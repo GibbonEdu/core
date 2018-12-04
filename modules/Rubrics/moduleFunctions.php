@@ -378,6 +378,10 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
 
             //Div to contain visualisation
             $output .= "<div id='visualise' style='display: none'>";
+                $output .= "<p>";
+                    $output .= __("This view offers a visual representation of all rubric data for the current student, this year, in the current context:");
+                $output .= "</p>";
+
                 //Filter out columns to ignore from visualisation
                 $columns = array_filter($columns, function ($item) {
                     return (isset($item['visualise']) && $item['visualise'] == 'Y'); 
