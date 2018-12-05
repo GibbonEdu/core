@@ -134,6 +134,26 @@ function __n(string $singular, string $plural, int $n, array $params = [], array
     return $gibbon->locale->translateN($singular, $plural, $n, $params, $options);
 }
 
+/**
+ * Identical to __() but automatically includes the current module as the text domain.
+ *
+ * @see __()
+ * @param string $text
+ * @param array  $params
+ * @param array  $options
+ * @return string
+ */
+function __m(string $text, array $params = [], array $options = [])
+{
+    global $gibbon;
+
+    if ($gibbon->session->has('module')) {
+        $options['domain'] = $gibbon->session->get('module');
+    }
+
+    return $gibbon->locale->translate($text, $params, $options);
+}
+
 //$valueMode can be "value" or "id" according to what goes into option's value field
 //$selectMode can be "value" or "id" according to what is used to preselect an option
 //$honourDefault can TRUE or FALSE, and determines whether or not the default grade is selected
