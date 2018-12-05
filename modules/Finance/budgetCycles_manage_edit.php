@@ -62,33 +62,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
             $form = Form::create('budgetCycle', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/budgetCycles_manage_editProcess.php?gibbonFinanceBudgetCycleID='.$gibbonFinanceBudgetCycleID);
             $form->setFactory(DatabaseFormFactory::create($pdo));
 
-        	$form->addHiddenValue("address", $_SESSION[$guid]['address']);
+            $form->addHiddenValue("address", $_SESSION[$guid]['address']);
 
-        	$row = $form->addRow();
-        		$row->addHeading(__("Basic Information"));
+            $row = $form->addRow();
+                $row->addHeading(__("Basic Information"));
 
-        	$row = $form->addRow();
-        		$row->addLabel("name", __("Name"))->description(__("Must be unique."));
-        		$row->addTextField("name")->isRequired()->maxLength(7);
+            $row = $form->addRow();
+                $row->addLabel("name", __("Name"))->description(__("Must be unique."));
+                $row->addTextField("name")->isRequired()->maxLength(7);
 
-        	$row = $form->addRow();
-        		$row->addLabel("status", __("Status"));
-        		$row->addSelect("status")->fromArray(array(__("Upcoming"), __("Current"), __("Past")));
+            $statusTypes = array(
+                'Upcoming' => __("Upcoming"),
+                'Current' =>  __("Current"),
+                'Past' => __("Past")
+            );
+            
+            $row = $form->addRow();
+                $row->addLabel("status", __("Status"));
+                $row->addSelect("status")->fromArray($statusTypes);
 
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
                 $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle', $values['sequenceNumber'])->isRequired()->maxLength(3);
 
-        	$row = $form->addRow();
-        		$row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-        		$row->addDate("dateStart")->isRequired();
+            $row = $form->addRow();
+                $row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+                $row->addDate("dateStart")->isRequired();
 
-        	$row = $form->addRow();
-        		$row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-        		$row->addDate("dateEnd")->isRequired();
-
-        	$row = $form->addRow();
-        		$row->addHeading(__("Budget Allocations"));
+            $row = $form->addRow();
+                $row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
+                $row->addDate("dateEnd")->isRequired();
+            
+            $row = $form->addRow();
+                $row->addHeading(__("Budget Allocations"));
 
             try {
                 $dataBudget = array('gibbonFinanceBudgetCycleID' => $gibbonFinanceBudgetCycleID);
@@ -105,15 +111,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                     $row = $form->addRow();
                         $row->addLabel($rowBudget['gibbonFinanceBudgetID'], $rowBudget['name']);
                         $row->addCurrency($rowBudget['gibbonFinanceBudgetID'])->setName('values[]')->isRequired()->maxLength(15)->setValue((is_null($rowBudget['value'])) ? '0.00' : $rowBudget['value']);
-                        $form->addHiddenValue('gibbonFinanceBudgetIDs[]', $rowBudget['gibbonFinanceBudgetID']);
+                    $form->addHiddenValue('gibbonFinanceBudgetIDs[]', $rowBudget['gibbonFinanceBudgetID']);
                 }
             }
 
             $form->loadAllValuesFrom($values);
 
             $row = $form->addRow();
-        		$row->addFooter();
-        		$row->addSubmit();
+                $row->addFooter();
+                $row->addSubmit();
 
             print $form->getOutput();
         }
