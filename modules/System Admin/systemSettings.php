@@ -97,10 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8)->isRequired();
 
+    $installTypes = array(
+        'Production' => __("Production"),
+        'Testing' =>  __("Testing"),
+        'Development' =>  __("Development")
+    );        
     $setting = getSettingByScope($connection2, 'System', 'installType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($installTypes)->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
     $row = $form->addRow();
@@ -212,10 +217,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectCountry($setting['name'])->selected($setting['value']);
 
+    $firstDayOfTheWeekOptions = array(
+        'Monday' => __("Monday"),
+        'Sunday' => __("Sunday")
+    );
+    
     $setting = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Monday, Sunday')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($firstDayOfTheWeekOptions)->selected($setting['value'])->isRequired();
 
     $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
         $group[$item] = __($item);

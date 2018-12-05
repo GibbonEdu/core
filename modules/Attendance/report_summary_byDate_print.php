@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['In'][$i]['scope'].'">';
                         echo '<div class="verticalText">';
-                        echo $attendanceCodes['In'][$i]['name'];
+                        echo __($attendanceCodes['In'][$i]['name']);
                         echo '</div>';
                     echo '</th>';
                 }
@@ -191,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['Out'][$i]['scope'].'">';
                         echo '<div class="verticalText">';
-                        echo $attendanceCodes['Out'][$i]['name'];
+                        echo __($attendanceCodes['Out'][$i]['name']);
                         echo '</div>';
                     echo '</th>';
                 }
