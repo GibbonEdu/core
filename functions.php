@@ -423,13 +423,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                             $type = 'custom';
                         }
                         $return .= "<script>
-                            if ($('div#TB_window').is(':visible')===false) {
-                                var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
-                                $(document).ready(function() {
-                                    tb_show('', url);
-                                    $('div#TB_window').addClass('alarm') ;
-                                }) ;
-                            }
+                            $(document).ready(function() {
+                                $('#notifications').load('index_notification_ajax.php');
+                            }) ;
                         </script>";
                     }
                 }
