@@ -53,9 +53,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
         echo '<th>';
         echo __('Subject');
         echo '</th>';
-        echo '<th>';
-        echo __('Body');
-        echo '</th>';
         echo "<th style='width:110px'>";
         echo __('Action');
         echo '</th>';
@@ -75,9 +72,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/cannedResponse_m
             echo "<tr class=$rowNum>";
             echo '<td>';
             echo $row['subject'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['body'];
             echo '</td>';
             echo '<td>';
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/cannedResponse_manage_edit.php&gibbonMessengerCannedResponseID='.$row['gibbonMessengerCannedResponseID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
