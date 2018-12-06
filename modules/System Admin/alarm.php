@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php') =
         'Custom'   => __('Custom'),
     );
 
-    $form = Form::create('alarm', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alarmProcess.php');
+    $form = Form::create('alarmSettings', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/alarmProcess.php');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 

@@ -22,7 +22,7 @@ include './gibbon.php';
 
 //Load jQuery
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
-echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.jsprint"></script>';
+echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.js"></script>';
 
 $type = '';
 if (isset($_GET['type'])) {
