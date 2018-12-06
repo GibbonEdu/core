@@ -400,15 +400,13 @@ class Format
      * @param bool $informal
      * @return string
      */
-    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
+    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $separator = '<br/>')
     {
-        $output = '';
-        foreach ($list as $person) {
-            $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
-            $output .= '<br/>';
-        }
+        $listFormatted = array_map(function ($person) use ($roleCategory, $reverse, $informal) {
+            return static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+        }, $list);
 
-        return $output;
+        return implode($separator, $listFormatted);
     }
 
     /**
