@@ -39,6 +39,10 @@ $address = $page->getAddress();
 // Register scripts available to the core, but not included by default
 $page->scripts->register('chart', 'lib/Chart.js/2.0/Chart.bundle.min.js', ['context' => 'head']);
 
+$page->addData([
+    'isLoggedIn' => $session->has('username') && $session->has('gibbonRoleIDCurrent'),
+]);
+
 if (empty($address)) {
     $page->addWarning(__('There is no content to display'));
 } elseif ($page->isAddressValid($address) == false) {
