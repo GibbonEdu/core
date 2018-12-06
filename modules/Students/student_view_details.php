@@ -2196,7 +2196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                             $teachers = '<p><b>'.__('Taught by:').'</b> ';
                                             while ($rowTeachers = $resultTeachers->fetch()) {
-                                                $teachers = $teachers.$rowTeachers['title'].' '.$rowTeachers['surname'].', ';
+                                                $teachers = $teachers.formatName($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false).', ';
                                             }
                                             $teachers = substr($teachers, 0, -2);
                                             $teachers = $teachers.'</p>';
