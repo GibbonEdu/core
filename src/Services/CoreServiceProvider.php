@@ -23,10 +23,12 @@ use Gibbon\Core;
 use Gibbon\Locale;
 use Gibbon\Session;
 use Gibbon\View\Page;
+use Gibbon\Comms\Mailer;
 use Gibbon\Services\Format;
 use Gibbon\Services\ErrorHandler;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
+use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
 
@@ -61,6 +63,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'page',
         'module',
         'theme',
+        MailerInterface::class,
     ];
 
     /**
@@ -187,6 +190,10 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             $container->add('errorHandler', new ErrorHandler($session->get('installType'), $page));
 
             return $page;
+        });
+
+        $container->add(MailerInterface::class, function () use ($container) {
+            return new Mailer($container->get('session'));
         });
     }
 }

@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
-use Gibbon\Comms\GibbonMailer;
+use Gibbon\Contracts\Comms\Mailer;
 
 require_once dirname(__FILE__).'/gibbon.php';
 
@@ -4611,7 +4611,7 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
 }
 
 /**
- * This method has been replaced by the GibbonMailer class, and remains here only to handle legacy calls.
+ * This method has been replaced by the Mailer class, and remains here only to handle legacy calls.
  * The Deprecation error will be logged, and if asked for in php.ini stop execution.
  *
  * @deprecated 30th Nov 2018
@@ -4620,14 +4620,14 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
  */
 function getGibbonMailer($guid) {
 
-    global $gibbon;
+    global $container;
     $displayErrors = ini_get('display_errors');
 
     ini_set('display_errors', 'Off');
-    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class', E_USER_DEPRECATED);
+    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\Mailer class', E_USER_DEPRECATED);
     ini_set('display_errors', $displayErrors);
 
-    $mail = new GibbonMailer($gibbon->session);
+    $mail = $container->get(Mailer::class);
 
     return $mail;
 }
