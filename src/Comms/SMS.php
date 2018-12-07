@@ -19,13 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
+use Matthewbdaly\SMS\Client;
 use GuzzleHttp\Psr7\Response;
+use Matthewbdaly\SMS\Drivers\Nexmo;
+use Matthewbdaly\SMS\Drivers\Twilio;
 use GuzzleHttp\Client as GuzzleClient;
 use Gibbon\Comms\Drivers\UnknownDriver;
 use Gibbon\Comms\Drivers\OneWaySMSDriver;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
-use Matthewbdaly\SMS\Client;
-use Matthewbdaly\SMS\Drivers\Twilio;
 use Matthewbdaly\SMS\Contracts\Client as ClientContract;
 use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
 
@@ -63,6 +64,13 @@ class SMS implements SMSInterface
                     $this->driver = new Twilio(new GuzzleClient(), new Response(), [
                         'account_id' => $config['smsUsername'],
                         'api_token' => $config['smsPassword'],
+                    ]);
+                    break;
+
+                case 'Nexmo':
+                    $this->driver = new Nexmo(new GuzzleClient(), new Response(), [
+                        'api_key' => $config['smsUsername'],
+                        'api_secret' => $config['smsPassword'],
                     ]);
                     break;
 
