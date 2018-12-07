@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Comms;
 
 use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 
 /**
  * Mailer class
@@ -27,7 +28,7 @@ use Gibbon\Contracts\Services\Session;
  * @version v14
  * @since   v14
  */
-class GibbonMailer extends \PHPMailer
+class Mailer extends \PHPMailer implements MailerInterface
 {
     protected $session;
 
@@ -45,7 +46,7 @@ class GibbonMailer extends \PHPMailer
         parent::__construct(null);
     }
 
-    public function setupSMTP()
+    protected function setupSMTP()
     {
         $host = $this->session->get('mailerSMTPHost');
         $port = $this->session->get('mailerSMTPPort');

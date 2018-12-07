@@ -19,7 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Gibbon\session;
+use Gibbon\Comms\Mailer;
+use Gibbon\Contracts\Services\Session;
 use Gibbon\Domain\System\NotificationGateway;
 
 /**
@@ -46,7 +47,7 @@ class NotificationSender
      * @param  NotificationGateway  $gateway
      * @param  session              $session
      */
-    public function __construct(NotificationGateway $gateway, session $session)
+    public function __construct(NotificationGateway $gateway, Session $session)
     {
         $this->gateway = $gateway;
         $this->session = $session;
@@ -181,7 +182,7 @@ class NotificationSender
      */
     protected function setupEmail()
     {
-        $mail = new GibbonMailer($this->session);
+        $mail = new Mailer($this->session);
 
         // Format the sender
         $organisationName = $this->session->get('organisationName');
