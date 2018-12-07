@@ -519,10 +519,16 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addTextField($setting['name'])->maxLength(50)->isRequired()->setValue('Gibbon');
 
+                                                $installTypes = array(
+                                                    'Production'  => __('Production'),
+                                                    'Testing'     => __('Testing'),
+                                                    'Development' => __('Development')
+                                                );
+
                                                 $setting = getSettingByScope($connection2, 'System', 'installType', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected('Testing')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->isRequired();
 
                                                 $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                                                 $row = $form->addRow();

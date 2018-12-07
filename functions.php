@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Comms\GibbonMailer;
 
 require_once dirname(__FILE__).'/gibbon.php';
 
@@ -131,6 +132,26 @@ function __n(string $singular, string $plural, int $n, array $params = [], array
 {
     global $gibbon;
     return $gibbon->locale->translateN($singular, $plural, $n, $params, $options);
+}
+
+/**
+ * Identical to __() but automatically includes the current module as the text domain.
+ *
+ * @see __()
+ * @param string $text
+ * @param array  $params
+ * @param array  $options
+ * @return string
+ */
+function __m(string $text, array $params = [], array $options = [])
+{
+    global $gibbon;
+
+    if ($gibbon->session->has('module')) {
+        $options['domain'] = $gibbon->session->get('module');
+    }
+
+    return $gibbon->locale->translate($text, $params, $options);
 }
 
 //$valueMode can be "value" or "id" according to what goes into option's value field
@@ -402,13 +423,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                             $type = 'custom';
                         }
                         $return .= "<script>
-                            if ($('div#TB_window').is(':visible')===false) {
-                                var url = '".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarm.php?type='.$type."&KeepThis=true&TB_iframe=true&width=1000&height=500';
-                                $(document).ready(function() {
-                                    tb_show('', url);
-                                    $('div#TB_window').addClass('alarm') ;
-                                }) ;
-                            }
+                            $(document).ready(function() {
+                                $('#notifications').load('index_notification_ajax.php');
+                            }) ;
                         </script>";
                     }
                 }
@@ -4322,51 +4339,6 @@ function randomPassword($length)
 }
 
 /**
- * @deprecated in v16. Use DataTables & SpreadsheetRenderer. To be removed in v17.
- */
-class ExportToExcel
-{
-    public function setHeader($excel_file_name)//this function used to set the header variable
-    {
-        header('Content-type: application/octet-stream');//A MIME attachment with the content type "application/octet-stream" is a binary file.
-        //Typically, it will be an application or a document that must be opened in an application, such as a spreadsheet or word processor.
-        header("Content-Disposition: attachment; filename=$excel_file_name");//with this extension of file name you tell what kind of file it is.
-        header('Pragma: no-cache');//Prevent Caching
-        header('Expires: 0');//Expires and 0 mean that the browser will not cache the page on your hard drive
-    }
-    public function exportWithQuery($qry, $excel_file_name, $conn)//to export with query
-    {
-        $body = null;
-
-        try {
-            $tmprst = $conn->query($qry);
-            $tmprst->setFetchMode(PDO::FETCH_NUM);
-        } catch (PDOException $e) {
-        }
-
-        $header = "<center><table cellspacing='0' border=1px>";
-        $num_field = $tmprst->columnCount();
-        while ($row = $tmprst->fetch()) {
-            $body .= '<tr>';
-            for ($i = 0;$i < $num_field;++$i) {
-                $body .= '<td>'.$row[$i].'</td>';
-            }
-            $body .= '</tr>';
-        }
-
-        $this->setHeader($excel_file_name);
-        echo $header.$body.'</table>';
-    }
-    //Ross Parker added the ability to specify paramaters to pass into the file, via a session variable.
-    public function exportWithPage($guid, $php_page, $excel_file_name, $params = '')
-    {
-        $this->setHeader($excel_file_name);
-        $_SESSION[$guid]['exportToExcelParams'] = $params;
-        require_once "$php_page";
-    }
-}
-
-/**
  * @deprecated in v16. Use Format::phone()
  */
 function formatPhone($num)
@@ -4635,41 +4607,23 @@ function countLikesByRecipient($connection2, $gibbonPersonIDRecipient, $mode = '
 }
 
 /**
- * getGibbonMailer
- * Wrapper for PHPMailer() object, to allow for SMTP settings (and any future settings)
+ * This method has been replaced by the GibbonMailer class, and remains here only to handle legacy calls.
+ * The Deprecation error will be logged, and if asked for in php.ini stop execution.
  *
+ * @deprecated 30th Nov 2018
  * @version 1st September 2016
  * @since   1st September 2016
- * @author  Sandra Kuipers
  */
 function getGibbonMailer($guid) {
-    $mail = new PHPMailer();
 
-    $smtpEnabled = $_SESSION[$guid]['enableMailerSMTP'];
+    global $gibbon;
+    $displayErrors = ini_get('display_errors');
 
-    if ($smtpEnabled == 'Y') {
+    ini_set('display_errors', 'Off');
+    trigger_error('getGibbonMailer method is deprecated and replaced by Gibbon\Comms\GibbonMailer class', E_USER_DEPRECATED);
+    ini_set('display_errors', $displayErrors);
 
-        $mail->IsSMTP();
-        $mail->CharSet = 'UTF-8';
-
-        $host = $_SESSION[$guid]['mailerSMTPHost'];
-        $port = $_SESSION[$guid]['mailerSMTPPort'];
-
-        if ( !empty($host) && !empty($port) ) {
-
-            $username = $_SESSION[$guid]['mailerSMTPUsername'];
-            $password = $_SESSION[$guid]['mailerSMTPPassword'];
-            $auth = ( !empty($username) && !empty($password) );
-
-            $mail->Host       = $host;      // SMTP server example
-            $mail->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
-            $mail->SMTPAuth   = $auth;      // enable SMTP authentication
-            $mail->Port       = $port;      // set the SMTP port for the GMAIL server
-            $mail->Username   = $username;  // SMTP account username example
-            $mail->Password   = $password;  // SMTP account password example
-            $mail->Helo       = parse_url($_SESSION[$guid]['absoluteURL'], PHP_URL_HOST);
-        }
-    }
+    $mail = new GibbonMailer($gibbon->session);
 
     return $mail;
 }

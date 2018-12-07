@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Gibbon\session;
+use Gibbon\Contracts\Services\Session;
 
 /**
  * Mailer class
@@ -31,7 +31,7 @@ class GibbonMailer extends \PHPMailer
 {
     protected $session;
 
-    public function __construct(session $session)
+    public function __construct(Session $session)
     {
         $this->session = $session;
         $this->CharSet = 'UTF-8';
@@ -39,29 +39,37 @@ class GibbonMailer extends \PHPMailer
         $this->IsHTML(true);
 
         if ($this->session->get('enableMailerSMTP') == 'Y') {
-            $this->setupSMTP($this->session);
+            $this->setupSMTP();
         }
 
         parent::__construct(null);
     }
 
-    public function setupSMTP(session $session)
+    public function setupSMTP()
     {
-        $host = $session->get('mailerSMTPHost');
-        $port = $session->get('mailerSMTPPort');
+        $host = $this->session->get('mailerSMTPHost');
+        $port = $this->session->get('mailerSMTPPort');
 
         if ( !empty($host) && !empty($port) ) {
-            $username = $session->get('mailerSMTPUsername');
-            $password = $session->get('mailerSMTPPassword');
+            $username = $this->session->get('mailerSMTPUsername');
+            $password = $this->session->get('mailerSMTPPassword');
             $auth = ( !empty($username) && !empty($password) );
 
             $this->IsSMTP();
             $this->Host       = $host;      // SMTP server example
             $this->SMTPDebug  = 0;          // enables SMTP debug information (for testing)
             $this->SMTPAuth   = $auth;      // enable SMTP authentication
-            $this->Port       = $port;      // set the SMTP port for the GMAIL server
+            $this->Port       = $port;      // set the SMTP port for the Gmail server
             $this->Username   = $username;  // SMTP account username example
             $this->Password   = $password;  // SMTP account password example
+            $this->Helo       = parse_url($this->session->get('absoluteURL'), PHP_URL_HOST);
+
+            // Automatically applies the required type of SMTP security for Gmail 
+            // based on the port used. https://support.google.com/a/answer/176600?hl=en
+            if ($this->Host === 'smtp.gmail.com' || $this->Host === 'smtp-relay.gmail.com') {
+                if ($port == 465) $this->SMTPSecure = 'ssl';
+                if ($port == 587) $this->SMTPSecure = 'tls';
+            }
         }
     }
 }
