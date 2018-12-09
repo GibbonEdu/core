@@ -87,6 +87,7 @@ v17.0.00
         Planner: supressed autocomplete in Lesson Planner date fields
         Planner: fixed multibyte string issue when dumping unit resources
         Staff: added a Mark as Left bulk action to Manage Staff
+        School Admin: increased School Year name field length to 15 characters
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
         Students: updated how the Privacy section is displayed in application and data updater forms
