@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 
 require getcwd().'/../gibbon.php';
@@ -58,7 +59,7 @@ else {
             echo __('This script cannot be run, as no school email address has been set.');
         } else {
             //Prep for email sending later
-            $mail = getGibbonMailer($guid);
+            $mail = $container->get(Mailer::class);
             $mail->SMTPKeepAlive = true;
 
             //Lock table
