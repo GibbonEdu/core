@@ -256,6 +256,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $values['surname'] = $studentDetails['surname'];
                                 $values['email'] = $studentDetails['email'];
                                 $values['emailAlternate'] = $studentDetails['emailAlternate'];
+                                $values['studentID'] = $studentDetails['studentID'];
                                 $username = $studentDetails['username'];
 
                                 // Generate a random password
@@ -289,6 +290,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $generator->addToken('surname', $values['surname']);
 
                                 $username = $generator->generateByRole('003');
+                                $values['studentID'] = $username;
                             }
 
                             // Generate a random password
