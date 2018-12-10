@@ -265,6 +265,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
+                        // Use the pre-defined student ID, otherwise set it to an empty string (not null).
+                        $values['studentID'] = $values['studentID'] ?? '';
+
                         //Set default email address for student
                         $email = $values['email'];
                         $emailAlternate = '';
