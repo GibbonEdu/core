@@ -17,9 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\UsernameGenerator;
 use Gibbon\Forms\Form;
 use Gibbon\Services\Format;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Data\UsernameGenerator;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -237,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                 $body .= __('Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = getGibbonMailer($guid);
+                                $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -351,7 +352,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                                     }
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = getGibbonMailer($guid);
+                                    $mail = $container->get(Mailer::class);
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';
