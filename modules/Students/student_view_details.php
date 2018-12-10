@@ -2188,7 +2188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                                         $teachers = array();
                                         while ($rowTeachers = $resultTeachers->fetch()) {
-                                            $teachers[] = $rowTeachers['title'].' '.$rowTeachers['surname'];
+                                            $teachers[] = Format::name($rowTeachers['title'], $rowTeachers['preferredName'], $rowTeachers['surname'], 'Staff', false, false);
                                         }
                                         if (!empty($teachers)) {
                                             echo '<p><b>'.__('Taught by:').'</b> '.implode(', ', $teachers).'</p>';

@@ -70,6 +70,7 @@ v17.0.00
         Markbook: removed WordPress Comment Push functionality
         Markbook: fixed shifted table cells in Markbook View class average when cumulative averages are enabled
         Markbook: added a search option to the filters in Markbook View
+        Markbook: fixed inconsistent naming of class teachers
         Messenger: restricted Manage Groups view to display groups from the current school year only
         Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
         Messenger: added row colouring to By Roll Group report, and made it default view
@@ -86,6 +87,7 @@ v17.0.00
         Planner: supressed autocomplete in Lesson Planner date fields
         Planner: fixed multibyte string issue when dumping unit resources
         Staff: added a Mark as Left bulk action to Manage Staff
+        School Admin: increased School Year name field length to 15 characters
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
         Students: removed non-students from New Students report, when Ignore Status in use
         Students: updated how the Privacy section is displayed in application and data updater forms
