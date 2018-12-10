@@ -102,7 +102,7 @@ class TextLocal implements Driver
         try {
             $cleanMessage = [];
             $cleanMessage['apikey'] = urlencode($this->apiKey);
-            $cleanMessage['numbers'] = preg_replace('/[^0-9]/', '', $message['to']);
+            $cleanMessage['numbers'] = preg_replace('/[^0-9,]/', '', $message['to']);
             $cleanMessage['sender'] = urlencode($message['from']);
             $cleanMessage['message'] = rawurlencode($message['content']);
             $response = $this->client->request('POST', $this->getEndpoint().'?'.http_build_query($cleanMessage));

@@ -58,8 +58,8 @@ class SMS implements SMSInterface
         try {
             switch ($config['smsGateway']) {
                 case 'OneWaySMS':
-                    $this->driver = new OneWaySMSDriver($config);
                     $this->batchSize = 10;
+                    $this->driver = new OneWaySMSDriver($config);
                     break;
 
                 case 'Twilio':
@@ -83,6 +83,7 @@ class SMS implements SMSInterface
                     break;
 
                 case 'TextLocal':
+                    $this->batchSize = 10;
                     $this->driver = new TextLocal(new GuzzleClient(), new Response(), [
                         'api_key' => $config['smsUsername'],
                     ]);
@@ -178,9 +179,11 @@ class SMS implements SMSInterface
 
         $recipients += array_merge($this->to, $recipients);
 
-        // Split the messages into batches, if supported by the driver.
+        // Split the messages into comma-separated batches, if supported by the driver.
         if (!empty($this->batchSize)) {
-            $recipients = array_chunk($recipients, $this->batchSize);
+            $recipients = array_map(function ($phoneNumbers) {
+                return implode(',', $phoneNumbers);
+            }, array_chunk($recipients, $this->batchSize));
         }
 
         foreach ($recipients as $recipient) {

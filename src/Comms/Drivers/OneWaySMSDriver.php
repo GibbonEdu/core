@@ -103,11 +103,6 @@ class OneWaySMSDriver implements Driver
     public function sendRequest(array $message) : bool
     {
         try {
-            // Collapse arrays into comma-separated batches
-            if (is_array($message['to'])) {
-                $message['to'] = implode(',', $message['to']);
-            }
-
             // Prep the url parameters by stripping out invalid characters
             $urlParams = $this->urlParams + [
                 'mobileno' => preg_replace('/[^0-9,]/', '', $message['to']),
