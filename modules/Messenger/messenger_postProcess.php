@@ -2054,18 +2054,19 @@ else {
                     }, []));
 
                     $sms = $container->get(SMS::class);
-                    $smsCount = count($recipients);
-                    $smsBatchCount = ceil($smsCount/10);
-
+                    
                     $result = $sms
                         ->content($body)
                         ->send($recipients);
 
+                    $smsCount = count($recipients);
+                    $smsBatchCount = count($result);
+
                     $smsStatus = $result ? 'OK' : 'Not OK';
-                    $partialFail &= $result;
+                    $partialFail &= !empty($result);
 
 					//Set log
-					setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => $result, 'Recipients' => $recipients));
+					setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
 				}
 			}
 

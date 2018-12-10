@@ -171,12 +171,11 @@ class SMS implements SMSInterface
      *
      * @param array $to The recipient array.
      *
-     * @return boolean True on successful delivery.
+     * @return array Array of successful recipients.
      */
-    public function send(array $recipients = []) : bool
+    public function send(array $recipients = []) : array
     {
-        $result = true;
-
+        $sent = [];
         $recipients += array_merge($this->to, $recipients);
 
         // Split the messages into comma-separated batches, if supported by the driver.
@@ -187,13 +186,17 @@ class SMS implements SMSInterface
         }
 
         foreach ($recipients as $recipient) {
-            $result &= $this->client->send([
+            $message = [
                 'to'      => $recipient,
                 'from'    => $this->from,
                 'content' => $this->content,
-            ]);
+            ];
+
+            if ($this->client->send($message)) {
+                $sent[] = $recipient;
+            }
         }
 
-        return $result;
+        return $sent;
     }
 }

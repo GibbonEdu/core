@@ -34,5 +34,5 @@ interface SMS
 
     public function content(string $message);
 
-    public function send(array $recipients) : bool;
+    public function send(array $recipients) : array;
 }
