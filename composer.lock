@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8f1a48a4541891109015990423ac6289",
+    "content-hash": "e784c1cde8342fd71ed4678e54b176e6",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -533,6 +533,54 @@
                 "service"
             ],
             "time": "2017-05-10T09:20:27+00:00"
+        },
+        {
+            "name": "matthewbdaly/sms-client",
+            "version": "1.0.13",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/matthewbdaly/sms-client.git",
+                "reference": "36b22d684cc38a189afcf7b900251931843882d0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/matthewbdaly/sms-client/zipball/36b22d684cc38a189afcf7b900251931843882d0",
+                "reference": "36b22d684cc38a189afcf7b900251931843882d0",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2"
+            },
+            "require-dev": {
+                "aws/aws-sdk-php": "3.*",
+                "phpspec/phpspec": "^3.2",
+                "psy/psysh": "^0.8.0",
+                "squizlabs/php_codesniffer": "^2.7"
+            },
+            "suggest": {
+                "aws/aws-sdk-php": "Allows using the AWS SNS driver"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Matthewbdaly\\SMS\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Matthew Daly",
+                    "email": "matthewbdaly@gmail.com"
+                }
+            ],
+            "description": "A generic SMS client library. Supports multiple swappable drivers.",
+            "keywords": [
+                "sms"
+            ],
+            "time": "2018-06-16T16:42:15+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -1458,7 +1506,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^5.5 || ^7.0",
+        "php": "^7.0",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",

@@ -22,6 +22,7 @@ v17.0.00
         Added data visualisation to Rubrics
         Languages can now be installed and updated through Manage Languages in System Admin
         Added Hebrew an active language and improved the display of right-to-left languages
+        Added ability to select SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
 
     Changes With Important Notices
         System: increased minimum PHP version to 7.0

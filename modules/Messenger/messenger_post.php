@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Contracts\Comms\SMS;
 
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -124,13 +125,12 @@ else {
 				$col->addDate('date3');
 		}
 
-		//Delivery by SMS
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
-			$smsUsername=getSettingByScope( $connection2, "Messenger", "smsUsername" ) ;
-			$smsPassword=getSettingByScope( $connection2, "Messenger", "smsPassword" ) ;
-			$smsURL=getSettingByScope( $connection2, "Messenger", "smsURL" ) ;
-			$smsURLCredit=getSettingByScope( $connection2, "Messenger", "smsURLCredit" ) ;
-			if ($smsUsername == "" OR $smsPassword == "" OR $smsURL == "") {
+        //Delivery by SMS
+        $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS") && !empty($smsGateway)) {
+			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
+
+			if (empty($smsUsername)) {
 				$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'error');
 			}
 			else {
@@ -140,17 +140,14 @@ else {
 
 				$form->toggleVisibilityByClass('sms')->onRadio('sms')->when('Y');
 
-				$smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.').'<br/><br/>';
-				if ($smsURLCredit!="") {
-					$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword ;
-					$result=@implode('', file($smsURLCredit . $query)) ;
-					if (is_numeric($result)==FALSE) {
-						$result=0 ;
-					}
-					if ($result>=0) {
-						$smsAlert .= "<b>" . sprintf(__('Current balance: %1$s credit(s).'), $result) . "</u></b>" ;
-					}
-				}
+				$smsAlert = __('SMS messages are sent to local and overseas numbers, but not all countries are supported. Please see the SMS Gateway provider\'s documentation or error log to see which countries are not supported. The subject does not get sent, and all HTML tags are removed. Each message, to each recipient, will incur a charge (dependent on your SMS gateway provider). Messages over 140 characters will get broken into smaller messages, and will cost more.');
+                
+                $sms = $container->get(SMS::class);
+
+                if ($smsCredits = $sms->getCreditBalance()) {
+                    $smsAlert .= "<br/><br/><b>" . sprintf(__('Current balance: %1$s credit(s).'), $smsCredits) . "</u></b>" ;
+                }
+
 				$form->addRow()->addAlert($smsAlert, 'error')->addClass('sms');
 			}
 		}

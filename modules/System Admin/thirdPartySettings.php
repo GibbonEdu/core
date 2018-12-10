@@ -105,25 +105,61 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     // SMS
-    $form->addRow()->addHeading(__('SMS Settings'))->append(sprintf(__('Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>'));
+    $form->addRow()->addHeading(__('SMS Settings'))->append(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.'));
 
+    // SMS Gateway Options - these are not translated, as they represent company names
+    $smsGateways = ['OneWaySMS', 'Twilio', 'Nexmo', 'Clockwork', 'TextLocal', 'Mail to SMS'];
+    $setting = getSettingByScope($connection2, 'Messenger', 'smsGateway', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])
+            ->fromArray(['' => __('No')])
+            ->fromArray($smsGateways)
+            ->selected($setting['value']);
+
+    $form->toggleVisibilityByClass('smsSettings')->onSelect($setting['name'])->whenNot('');
+    $form->toggleVisibilityByClass('smsSettingsOneWay')->onSelect($setting['name'])->when('OneWaySMS');
+    $form->toggleVisibilityByClass('smsAPIKey')->onSelect($setting['name'])->when(['Twilio', 'Nexmo', 'Clockwork', 'TextLocal']);
+    $form->toggleVisibilityByClass('smsAPIToken')->onSelect($setting['name'])->when(['Twilio', 'Nexmo']);
+    $form->toggleVisibilityByClass('smsDomain')->onSelect($setting['name'])->when('Mail to SMS');
+    
+    $setting = getSettingByScope($connection2, 'Messenger', 'smsSenderID', true);
+    $row = $form->addRow()->addClass('smsSettings');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
+
+    // SMS Username variations - these aim to simplify the setup by using the matching terminology for each gateway.
     $setting = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
 
+    $row = $form->addRow()->addClass('smsAPIKey');
+        $row->addLabel($setting['name'], __('API Key'));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
+
+    $row = $form->addRow()->addClass('smsDomain');
+        $row->addLabel($setting['name'], __('SMS Domain'));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
+
+    // SMS Password variations
     $setting = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
 
+    $row = $form->addRow()->addClass('smsAPIToken');
+        $row->addLabel($setting['name'], __('API Secret/Auth Token'));
+        $row->addTextField($setting['name'])->setValue($setting['value'])->maxLength(50);
+
+    // SMS Endpoint URLs - currently used by OneWaySMS
     $setting = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Messenger', 'smsURLCredit', true);
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('smsSettingsOneWay');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 

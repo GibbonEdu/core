@@ -24,13 +24,16 @@ use Gibbon\Locale;
 use Gibbon\Session;
 use Gibbon\View\Page;
 use Gibbon\Comms\Mailer;
+use Gibbon\Comms\SMS;
 use Gibbon\Services\Format;
-use Gibbon\Services\ErrorHandler;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
+use Gibbon\Services\ErrorHandler;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use League\Container\ServiceProvider\BootableServiceProviderInterface;
+
 
 /**
  * DI Container Services for the Core
@@ -64,6 +67,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'module',
         'theme',
         MailerInterface::class,
+        SMSInterface::class,
     ];
 
     /**
@@ -194,6 +198,21 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add(MailerInterface::class, function () use ($container) {
             return new Mailer($container->get('session'));
+        });
+
+        $container->add(SMSInterface::class, function () use ($session, $container) {
+            $connection2 = $container->get('db')->getConnection();
+            $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+
+            return new SMS([
+                'smsGateway'   => $smsGateway,
+                'smsSenderID'  => getSettingByScope($connection2, 'Messenger', 'smsSenderID'),
+                'smsURL'       => getSettingByScope($connection2, 'Messenger', 'smsURL'),
+                'smsURLCredit' => getSettingByScope($connection2, 'Messenger', 'smsURLCredit'),
+                'smsUsername'  => getSettingByScope($connection2, 'Messenger', 'smsUsername'),
+                'smsPassword'  => getSettingByScope($connection2, 'Messenger', 'smsPassword'),
+                'smsMailer'    => $smsGateway == 'Mail to SMS' ? $container->get(MailerInterface::class) : '',
+            ]);
         });
     }
 }
