@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -329,7 +330,7 @@ if (!isCommandLineInterface()) { echo __('This script cannot be run from a brows
                                     $body .= '<br/><br/><i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = getGibbonMailer($guid);
+                                    $mail = $container->get(Mailer::class);
 
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
