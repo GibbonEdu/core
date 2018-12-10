@@ -787,4 +787,6 @@ ALTER TABLE `gibbonApplicationForm` CHANGE `email` `email` VARCHAR(75) CHARACTER
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent1email` `parent1email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent2email` `parent2email` VARCHAR(75) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
 ALTER TABLE `gibbonYearGroup` CHANGE `name` `name` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) SELECT 'Messenger', 'smsGateway', 'SMS Gateway', '', (CASE WHEN gibbonSetting.value <> '' THEN 'OneWaySMS' ELSE '' END) FROM `gibbonSetting` WHERE scope='Messenger' AND name='smsUsername';end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) SELECT 'Messenger', 'smsSenderID', 'SMS Sender ID', 'The sender name or phone number. Depends on the gateway used.', gibbonSetting.value FROM `gibbonSetting` WHERE scope='System' AND name='organisationNameShort';end
 ";

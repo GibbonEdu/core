@@ -125,12 +125,12 @@ else {
 				$col->addDate('date3');
 		}
 
-		//Delivery by SMS
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
-			$smsUsername=getSettingByScope( $connection2, "Messenger", "smsUsername" ) ;
-			$smsPassword=getSettingByScope( $connection2, "Messenger", "smsPassword" ) ;
-			$smsURL=getSettingByScope( $connection2, "Messenger", "smsURL" ) ;
-			if ($smsUsername == "" OR $smsPassword == "" OR $smsURL == "") {
+        //Delivery by SMS
+        $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
+		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS") && !empty($smsGateway)) {
+			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
+
+			if (empty($smsUsername)) {
 				$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'error');
 			}
 			else {
