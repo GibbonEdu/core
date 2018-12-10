@@ -19,15 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Comms;
 
-use Matthewbdaly\SMS\Client;
-use GuzzleHttp\Psr7\Response;
-use Matthewbdaly\SMS\Drivers\Nexmo;
-use Matthewbdaly\SMS\Drivers\Twilio;
-use GuzzleHttp\Client as GuzzleClient;
-use Gibbon\Comms\Drivers\UnknownDriver;
+use Gibbon\Comms\Drivers\MailDriver;
 use Gibbon\Comms\Drivers\OneWaySMSDriver;
+use Gibbon\Comms\Drivers\UnknownDriver;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
-use Matthewbdaly\SMS\Contracts\Client as ClientContract;
+use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Psr7\Response;
+use Matthewbdaly\SMS\Client;
+use Matthewbdaly\SMS\Drivers\Twilio;
+use Matthewbdaly\SMS\Drivers\Nexmo;
+use Matthewbdaly\SMS\Drivers\Clockwork;
+use Matthewbdaly\SMS\Drivers\TextLocal;
 use Matthewbdaly\SMS\Exceptions\DriverNotConfiguredException;
 
 
@@ -74,6 +76,24 @@ class SMS implements SMSInterface
                     ]);
                     break;
 
+                case 'Clockwork':
+                    $this->driver = new Clockwork(new GuzzleClient(), new Response(), [
+                        'api_key' => $config['smsUsername'],
+                    ]);
+                    break;
+
+                case 'TextLocal':
+                    $this->driver = new TextLocal(new GuzzleClient(), new Response(), [
+                        'api_key' => $config['smsUsername'],
+                    ]);
+                    break;
+
+                case 'Mail to SMS':
+                    $this->driver = new MailDriver($config['smsMailer'], [
+                        'domain' => $config['smsUsername'],
+                    ]);
+                    break;
+
                 default:
                     throw new DriverNotConfiguredException();
             }
@@ -84,7 +104,7 @@ class SMS implements SMSInterface
         $this->client = new Client($this->driver);
 
         $this->to = [];
-        $this->from($config['smsSender']);
+        $this->from($config['smsSenderID']);
     }
 
     /**

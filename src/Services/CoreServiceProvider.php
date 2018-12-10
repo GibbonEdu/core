@@ -202,14 +202,16 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
 
         $container->add(SMSInterface::class, function () use ($session, $container) {
             $connection2 = $container->get('db')->getConnection();
+            $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 
             return new SMS([
-                'smsGateway'   => 'OneWaySMS',
-                'smsSender'    => $session->get('organisationNameShort'),
+                'smsGateway'   => $smsGateway,
+                'smsSenderID'  => getSettingByScope($connection2, 'Messenger', 'smsSenderID'),
                 'smsURL'       => getSettingByScope($connection2, 'Messenger', 'smsURL'),
                 'smsURLCredit' => getSettingByScope($connection2, 'Messenger', 'smsURLCredit'),
                 'smsUsername'  => getSettingByScope($connection2, 'Messenger', 'smsUsername'),
                 'smsPassword'  => getSettingByScope($connection2, 'Messenger', 'smsPassword'),
+                'smsMailer'    => $smsGateway == 'Mail to SMS' ? $container->get(MailerInterface::class) : '',
             ]);
         });
     }
