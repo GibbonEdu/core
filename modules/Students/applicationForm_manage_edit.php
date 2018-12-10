@@ -624,6 +624,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     
     // PARENTS
     for ($i = 1; $i <= 2; ++$i) {
+        // If there's already a family, but no parent attached, it's likely an existing family application
+        if (!empty($application['gibbonFamilyID']) && empty($application["parent{$i}gibbonPersonID"])) continue;
 
         $heading = $form->addRow()->addHeading(__('Parent/Guardian').' '.$i);
         $heading->append('<span style="font-size: 75%">'.($i == 1 ? __('(e.g. mother)') : __('(e.g. father)')).'</span>');
