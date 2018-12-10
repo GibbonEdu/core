@@ -36,27 +36,41 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $staffDashboardDefaultTabTypes = array(
+        '' => '',
+        'Planner' => __('Planner')
+    );     
     $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Planner')
+            ->fromArray($staffDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Staff Dashboard'")
             ->selected($setting['value']);
 
+    $studentDashboardDefaultTabTypes = array(
+        '' => '',
+        'Planner' => __('Planner')
+    );        
     $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Planner')
+            ->fromArray($studentDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Student Dashboard'")
             ->selected($setting['value']);
 
+    $parentDashboardDefaultTabTypes = array(
+        '' => '',
+        'Learning Overview' => __('Learning Overview'),
+        'Timetable' => __('Timetable'),
+        'Activities' => __('Activities')
+    );         
     $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Learning Overview, Timetable, Activities')
+            ->fromArray($parentDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Parental Dashboard'")
             ->selected($setting['value']);
 
