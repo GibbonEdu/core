@@ -1,0 +1,46 @@
+details:
+    type: timetableDays
+    name: Timetable Days
+    desc: Associate columns with named days for existing timetables
+    table: gibbonTTDay
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Timetables
+primaryKey:
+    gibbonTTDayID
+uniqueKeys:
+    - [ gibbonTTID, name ]
+    - [ gibbonTTID, nameShort ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "Must match an existing school year e.g. 2015-2016"
+        args: { filter: schoolyear, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonTTID:
+        name: "Timetable Name"
+        desc: "Must match the Short Name of an existing timetable"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTT, key: gibbonTTID, field: [nameShort, gibbonSchoolYearID]  }
+    gibbonTTColumnID:
+        name: "Timetable Column"
+        desc: "Must match the short name of an existing column."
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
+    name:
+        name: "Name"
+        desc: "Must be unique for this column."
+        args: { filter: string, required: true }
+    nameShort:
+        name: "Short Name"
+        desc: "Must be unique for this column."
+        args: { filter: string, required: true }
+    color:
+        name: "Header Background Colour"
+        desc: "RGB Hex value, without leading #"
+        args: { filter: string }
+    fontColor:
+        name: "Header Font Colour"
+        desc: "RGB Hex value, without leading #"
+        args: { filter: string }

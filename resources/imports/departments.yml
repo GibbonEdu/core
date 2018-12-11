@@ -1,0 +1,38 @@
+details:
+    type: departments
+    name: Departments
+    desc: Departments and Learning Areas
+    table: gibbonDepartment
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Departments
+primaryKey:
+    gibbonDepartmentID
+uniqueKeys:
+    - nameShort
+table:
+    type: 
+        name: "Type"
+        desc: ""
+        args: { filter: string, required: true }
+    name: 
+        name: "Department Name"
+        desc: ""
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: ""
+        args: { filter: string, required: true }
+    subjectListing: 
+        name: "Subject Listing"
+        desc: ""
+        args: { filter: string }
+    blurb: 
+        name: "Description"
+        desc: ""
+        args: { filter: string }
+    logo: 
+        name: "Logo"
+        desc: "125x125px jpg/png/gif"
+        args: { filter: string }

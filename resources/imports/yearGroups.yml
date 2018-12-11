@@ -1,0 +1,27 @@
+details:
+    type: yearGroups
+    name: Year Groups
+    desc: 
+    table: gibbonYearGroup
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Year Groups
+primaryKey:
+    gibbonYearGroupID
+uniqueKeys:
+    - name
+    - nameShort
+table:
+    name: 
+        name: "Year Group Name"
+        desc: "eg. Year 7"
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: "eg. Y07"
+        args: { filter: string, required: true }
+    sequenceNumber: 
+        name: "Order By"
+        desc: "May be used to adjust arrangement of courses in reports. "
+        args: { filter: numeric }

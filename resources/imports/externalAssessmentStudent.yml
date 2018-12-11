@@ -1,0 +1,28 @@
+details:
+    type: externalAssessmentStudent
+    name: External Assessments - Students
+    desc:
+    table: gibbonExternalAssessmentStudent
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Formal Assessment
+    action: External Assessment Data_manage
+primaryKey:
+    gibbonExternalAssessmentStudentID
+uniqueKeys:
+    - [ gibbonExternalAssessmentID, gibbonPersonID, date ]
+table:
+    gibbonExternalAssessmentID:
+        name: "External Assessment"
+        desc: ""
+        args: { filter: string, custom: true, required: true }
+        relationship: { table: gibbonExternalAssessment, key: gibbonExternalAssessmentID, field: nameShort  }
+    gibbonPersonID:
+        name: "Student"
+        desc: "Email"
+        args: { filter: email, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: email  }
+    date:
+        name: "Assessment Date"
+        desc: "yyyy-mm-dd"
+        args: {filter: date, custom: true, required: true }

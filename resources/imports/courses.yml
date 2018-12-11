@@ -1,0 +1,45 @@
+details:
+    type: courses
+    name: Courses
+    desc: Course names and descriptions by School Year
+    table: gibbonCourse
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Courses & Classes
+primaryKey:
+    gibbonCourseID
+uniqueKeys:
+    - [ gibbonSchoolYearID, name ]
+    - [ gibbonSchoolYearID, nameShort ]
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "Must match an existing school year e.g. 2015-2016"
+        args: { filter: schoolyear, required: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonDepartmentID: 
+        name: "Learning Area"
+        desc: "Department (short name only)"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    name: 
+        name: "Course Name"
+        desc: "Must be unique for this school year."
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: "eg. EN07"
+        args: { filter: string, required: true }
+    description: 
+        name: "Description"
+        desc: "May contain HTML tags"
+        args: { filter: html }
+    gibbonYearGroupIDList: 
+        name: "Year Groups"
+        desc: "Comma separated Year Group IDs"
+        args: { filter: yearlist }
+    orderBy: 
+        name: "Order By"
+        desc: "May be used to adjust arrangement of courses in reports. "
+        args: { filter: numeric }

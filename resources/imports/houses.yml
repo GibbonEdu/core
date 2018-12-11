@@ -1,0 +1,27 @@
+details:
+    type: houses
+    name: Houses
+    desc: 
+    table: gibbonHouse
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Houses
+primaryKey:
+    gibbonHouseID
+uniqueKeys:
+    - name
+    - nameShort
+table:
+    name: 
+        name: "Name"
+        desc: ""
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: ""
+        args: { filter: string, required: true }
+    logo: 
+        name: "Logo"
+        desc: ""
+        args: { filter: string }

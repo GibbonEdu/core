@@ -1,0 +1,113 @@
+details:
+    type: markbookColumns
+    name: Markbook Columns
+    desc: Setup markbook columns for student assessment, per class
+    table: gibbonMarkbookColumn
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Markbook
+    action: Edit Markbook_everything
+primaryKey:
+    gibbonMarkbookColumnID
+uniqueKeys:
+    - [ gibbonCourseClassID, name ]
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "Must match an existing school year e.g. 2015-2016"
+        args: { filter: schoolyear, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonCourseID: 
+        name: "Course"
+        desc: "Short Name of a valid Course"
+        args: { filter: string, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    gibbonCourseClassID: 
+        name: "Course Class"
+        desc: "Short Name of a valid Course Class"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
+    name: 
+        name: "Column Name"
+        desc: "Must be unique for this class"
+        args: { filter: string, required: true }
+    description: 
+        name: "Description"
+        desc: ""
+        args: { filter: string, required: true }
+    type: 
+        name: "Type"
+        desc: "Full name of the markbook type, as defined in School Admin"
+        args: { filter: string, required: true, custom: true }
+    date: 
+        name: "Date Created"
+        desc: "yyyy-mm-dd"
+        args: {filter: date, custom: true }
+    attainment: 
+        name: "Assess Attainment?"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    gibbonScaleIDAttainment: 
+        name: "Attainment Scale"
+        desc: "Short Name of the Grade Scale to use, as defined in School Admin"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
+    attainmentRaw: 
+        name: "Assess Total Mark?"
+        desc: "Use raw marks to auto-calulate percent grades?"
+        args: { filter: yesno, custom: true }
+    attainmentRawMax: 
+        name: "Attainment Total Mark"
+        desc: "Total value of raw marks"
+        args: { filter: string, custom: true }
+    attainmentWeighting: 
+        name: "Attainment Weighting"
+        desc: "Optional multiplication factor for weighted marks"
+        args: { filter: string, custom: true }
+    gibbonRubricIDAttainment: 
+        name: "Attainment Rubric"
+        desc: "Name of predefined rubric to use, if desired"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonRubric, key: gibbonRubricID, field: name  }
+    effort: 
+        name: "Assess Effort?"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    gibbonScaleIDEffort: 
+        name: "Effort Scale"
+        desc: "Short Name of the Grade Scale to use, as defined in School Admin"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
+    gibbonRubricIDEffort: 
+        name: "Effort Rubric"
+        desc: "Name of predefined rubric to use, if desired"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonRubric, key: gibbonRubricID, field: name  }
+    comment: 
+        name: "Include Comment?"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    uploadedResponse: 
+        name: "Include Uploaded Response?"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    viewableStudents: 
+        name: "Viewable to Students"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    viewableParents: 
+        name: "Viewable to Parents"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    completeDate: 
+        name: "Go Live Date"
+        desc: "Column is hidden until date is reached. Format: yyyy-mm-dd "
+        args: {filter: date, custom: true }
+    complete: 
+        name: "Completed?"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    sequenceNumber: 
+        name: "Sequence Number"
+        desc: "Controls chronological ordering (optional)"
+        args: { filter: numeric }

@@ -1,0 +1,55 @@
+details:
+    type: rollGroups
+    name: Roll Groups
+    desc: Roll Groups for each year level
+    table: gibbonRollGroup
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Roll Groups
+primaryKey:
+    gibbonRollGroupID
+uniqueKeys:
+    - [ gibbonSchoolYearID, name ]
+    - [ gibbonSchoolYearID, nameShort ]
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "Must match an existing school year e.g. 2015-2016"
+        args: { filter: schoolyear,  required: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    name: 
+        name: "Form Group Name"
+        desc: "Needs to be unique in school year."
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: "Needs to be unique in school year."
+        args: { filter: string, required: true }
+    gibbonPersonIDTutor: 
+        name: "Tutor 1"
+        desc: "Up to 3 per form group. The first-listed will be marked as Main Tutor."
+        args: { filter: string }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonPersonIDTutor2: 
+        name: "Tutor 2"
+        desc: "Up to 3 per form group."
+        args: { filter: string }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonPersonIDTutor3: 
+        name: "Tutor 3"
+        desc: "Up to 3 per form group."
+        args: { filter: string }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonSpaceID: 
+        name: "Location"
+        desc: "Should match an existing Facilities/Spaces name."
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
+    gibbonRollGroupIDNext: 
+        name: "Next Form Group"
+        desc: "Sets student progression on rollover. Must be a Short Name."
+        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: nameShort  }
+    website: 
+        name: "Website"
+        desc: "Include http://"
+        args: { filter: url }

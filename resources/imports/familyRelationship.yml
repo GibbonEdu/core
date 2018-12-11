@@ -1,0 +1,34 @@
+details:
+    type: familyRelationship
+    name: Relationships
+    desc: How each child is related to each adult in the family
+    category: Family
+    table: gibbonFamilyRelationship
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage Families
+primaryKey:
+    gibbonFamilyRelationshipID
+uniqueKeys:
+    - [ gibbonFamilyID, gibbonPersonID1, gibbonPersonID2 ]
+table:
+    gibbonFamilyID: 
+        name: "Family Sync"
+        desc: "Unique ID for family, according to source system."
+        args: { filter: string, required: true }
+        relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
+    gibbonPersonID1: 
+        name: "Family Adult"
+        desc: "Username"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonPersonID2: 
+        name: "Family Child"
+        desc: "Username"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    relationship: 
+        name: "Relationship"
+        desc: ""
+        args: { filter: string, required: true, custom: true }

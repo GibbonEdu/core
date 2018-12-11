@@ -1,0 +1,56 @@
+details:
+    type: schoolYearsSpecialDays
+    name: Special Days
+    desc: School closures and timing changes
+    table: gibbonSchoolYearSpecialDay
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Special Days
+primaryKey:
+    gibbonSchoolYearSpecialDayID
+uniqueKeys:
+    - date
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "Must match an existing school year e.g. 2015-2016"
+        args: { filter: schoolyear, required: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonSchoolYearTermID: 
+        name: "Term"
+        desc: "Short Name of an existing term"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonSchoolYearTerm, key: gibbonSchoolYearTermID, field: [ nameShort, gibbonSchoolYearID ]  }
+    date: 
+        name: "Date"
+        desc: "Must be unique. Format: YYYY-MM-DD"
+        args: { filter: date, required: true }
+    type: 
+        name: "Type"
+        desc: ""
+        args: { filter: string, required: true }
+    name: 
+        name: "Name"
+        desc: ""
+        args: { filter: string, required: true }
+    description: 
+        name: "Description"
+        desc: ""
+        args: { filter: string }
+    schoolOpen: 
+        name: "School Open"
+        desc: "12hr (0:00am) or 24hr (00:00)"
+        args: { filter: time }
+    schoolStart: 
+        name: "School Start"
+        desc: "12hr (0:00am) or 24hr (00:00)"
+        args: { filter: time }
+    schoolEnd: 
+        name: "School End"
+        desc: "12hr (0:00am) or 24hr (00:00)"
+        args: { filter: time }
+    schoolClose: 
+        name: "School Close"
+        desc: "12hr (0:00am) or 24hr (00:00)"
+        args: { filter: time }

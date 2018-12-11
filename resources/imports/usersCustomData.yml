@@ -1,0 +1,108 @@
+details:
+    type: usersCustomData
+    name: Custom Fields - Data
+    desc: School-specific custom fields (Included as an example)
+    category: Custom Fields
+    table: gibbonPerson
+    modes: { update: true, insert: false }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID:
+        name: "Person"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    status:
+        name: "Current Status"
+        desc: ""
+        args: { filter: string, readonly: true, required: true, serialize: fields }
+    statusDate:
+        name: "Status Date"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    statusReason:
+        name: "Status Reason"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    statusBoarding:
+        name: "Boarding Status"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    statusBilling:
+        name: "Billing Status"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    advisor:
+        name: "Academic Advisor"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    nameMiddle:
+        name: "Middle Name"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    nameOther:
+        name: "Other Name"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    homeLanguages:
+        name: "Languages spoken at home"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    DSEJID:
+        name: "DSEJ ID Number"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    DSEJSubsidy:
+        name: "DSEJ Subsidy"
+        desc: ""
+        args: { filter: yesno, readonly: true, serialize: fields }
+    ABEDID:
+        name: "Alberta Ed ID"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    HKID:
+        name: "Hong Kong ID"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    onlineID:
+        name: "Online User ID"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    birthID:
+        name: "Birth Certificate Number"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    yearsInMacao:
+        name: "Years in Macao"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    specEd:
+        name: "SpecEd Code"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    IEP:
+        name: "IEP"
+        desc: ""
+        args: { filter: yesno, readonly: true, serialize: fields }
+    summerSchool:
+        name: "Summer School"
+        desc: ""
+        args: { filter: yesno, readonly: true, serialize: fields }
+    programNotes:
+        name: "Program Notes"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    kindergarten:
+        name: "Kindergarten AM/PM"
+        desc: ""
+        args: { filter: string, readonly: true, serialize: fields }
+    fields:
+        name: "Custom Fields"
+        desc: ""
+        args: { filter: customfield, serialize: fields, custom: true }
