@@ -131,7 +131,9 @@ else {
 			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
 
 			if (empty($smsGateway) || empty($smsUsername)) {
-				$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'message');
+				$row = $form->addRow()->addClass('sms');
+					$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
+					$row->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'message');
 			}
 			else {
 				$row = $form->addRow();
