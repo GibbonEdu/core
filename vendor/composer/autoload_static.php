@@ -29,6 +29,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
+            'Symfony\\Component\\Yaml\\' => 23,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -86,6 +87,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Symfony\\Polyfill\\Ctype\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
+        ),
+        'Symfony\\Component\\Yaml\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
         'Slim\\' => 
         array (
