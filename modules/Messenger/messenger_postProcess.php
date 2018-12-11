@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Comms\SMS;
 
 include '../../gibbon.php';
 
@@ -2054,61 +2055,27 @@ else {
 
 			if ($sms=="Y") {
 				if ($countryCode=="") {
-					$partialFail=TRUE ;
-				}
-				else {
-					$smsUsername=getSettingByScope( $connection2, "Messenger", "smsUsername" ) ;
-					$smsPassword=getSettingByScope( $connection2, "Messenger", "smsPassword" ) ;
-					$smsURL=getSettingByScope( $connection2, "Messenger", "smsURL" ) ;
+					$partialFail = true;
+				} else {
+                    $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
+                        if ($reportEntry[3] == 'SMS') $phoneNumbers[] = '+'.$reportEntry[4];
+                        return $phoneNumbers;
+                    }, []));
 
-					if ($smsUsername!="" AND $smsPassword!="" AND $smsURL!="") {
-						$smsCount = 0;
-						foreach ($report as $reportEntry) {
-							if ($reportEntry[3] == 'SMS') {
-								$smsCount ++;
-							}
-						}
+                    $sms = $container->get(SMS::class);
+                    
+                    $result = $sms
+                        ->content($body)
+                        ->send($recipients);
 
-						$numbersPerSend=10 ;
-						$sendReps=ceil(($smsCount/$numbersPerSend)) ;
-						$smsCount=0 ;
-						$smsBatchCount=0 ;
-						for ($i=0; $i<$sendReps; $i++) {
-							$numCache="" ;
-							for ($n=0; $n<$numbersPerSend; $n++) {
-								if (!(is_null($report[($i*$numbersPerSend)+$n][3]))) {
-									if ($report[($i*$numbersPerSend)+$n][3] == 'SMS') {
-										$numCache.=$report[($i*$numbersPerSend)+$n][4] . "," ;
-										$smsCount++ ;
-									}
-								}
-							}
+                    $smsCount = count($recipients);
+                    $smsBatchCount = count($result);
 
-							$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword . "&senderid=" . rawurlencode($_SESSION[$guid]["organisationNameShort"]) . "&mobileno=" . rawurlencode(substr($numCache,0,-1)) . "&message=" . rawurlencode(stripslashes(strip_tags($body))) . "&languagetype=1" ;
-							$result=@implode('', file($smsURL . $query)) ;
-							$smsStatus = 'OK';
+                    $smsStatus = $result ? 'OK' : 'Not OK';
+                    $partialFail &= !empty($result);
 
-							if ($result) {
-								if ($result<=0) {
-									$partialFail=TRUE ;
-									$smsStatus = 'Not OK';
-								}
-							}
-							else {
-								$partialFail=TRUE ;
-								$smsStatus = 'Not OK';
-								$result = 'N/A';
-							}
-
-							//Set log
-							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => $result, 'Recipients' => substr($numCache,0,-1)));
-
-							$smsBatchCount++ ;
-						}
-					}
-					else {
-						$partialFail=TRUE ;
-					}
+					//Set log
+					setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
 				}
 			}
 

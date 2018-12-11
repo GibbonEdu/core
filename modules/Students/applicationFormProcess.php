@@ -17,8 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Comms\NotificationEvent;
 use Gibbon\Services\Format;
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Comms\NotificationEvent;
 
 include '../../gibbon.php';
 
@@ -717,7 +718,7 @@ if ($proceed == false) {
                     $body = sprintf(__('To whom it may concern,%4$sThis email is being sent in relation to the application of a current or former student of your school: %1$s.%4$sIn assessing their application for our school, we would like to enlist your help in completing the following reference form: %2$s.<br/><br/>Please feel free to contact me, should you have any questions in regard to this matter.%4$sRegards,%4$s%3$s'), $officialName, "<a href='$applicationFormRefereeLink' target='_blank'>$applicationFormRefereeLink</a>", $_SESSION[$guid]['organisationAdmissionsName'], '<br/><br/>');
                     $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
-                    $mail = getGibbonMailer($guid);
+                    $mail = $container->get(Mailer::class);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($referenceEmail);
                     $mail->CharSet = 'UTF-8';
@@ -740,7 +741,7 @@ if ($proceed == false) {
                     $body .= sprintf(__('In the meantime, should you have any questions please contact %1$s at %2$s.'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['organisationAdmissionsEmail']).'<br/><br/>';
                     $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
-                    $mail = getGibbonMailer($guid);
+                    $mail = $container->get(Mailer::class);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($parent1email);
                     $mail->CharSet = 'UTF-8';
@@ -831,7 +832,7 @@ if ($proceed == false) {
             $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
             $bodyPlain = emailBodyConvert($body);
 
-            $mail = getGibbonMailer($guid);
+            $mail = $container->get(Mailer::class);
             $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
             $mail->AddAddress($to);
             $mail->CharSet = 'UTF-8';
@@ -883,7 +884,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = getGibbonMailer($guid);
+                    $mail = $container->get(Mailer::class);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
@@ -926,7 +927,7 @@ if ($proceed == false) {
                     $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                     $bodyPlain = emailBodyConvert($body);
 
-                    $mail = getGibbonMailer($guid);
+                    $mail = $container->get(Mailer::class);
                     $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                     $mail->AddAddress($to);
                     $mail->CharSet = 'UTF-8';
