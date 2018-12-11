@@ -126,12 +126,12 @@ else {
 		}
 
         //Delivery by SMS
-        $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
-		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS") && !empty($smsGateway)) {
+		if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_bySMS")) {
+            $smsGateway = getSettingByScope($connection2, 'Messenger', 'smsGateway');
 			$smsUsername = getSettingByScope($connection2, 'Messenger', 'smsUsername');
 
-			if (empty($smsUsername)) {
-				$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'error');
+			if (empty($smsGateway) || empty($smsUsername)) {
+				$form->addRow()->addAlert(sprintf(__('SMS NOT CONFIGURED. Please contact %1$s for help.'), "<a href='mailto:" . $_SESSION[$guid]["organisationAdministratorEmail"] . "'>" . $_SESSION[$guid]["organisationAdministratorName"] . "</a>"), 'message');
 			}
 			else {
 				$row = $form->addRow();
