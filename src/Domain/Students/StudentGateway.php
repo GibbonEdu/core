@@ -35,7 +35,7 @@ class StudentGateway extends QueryableGateway
 
     private static $tableName = 'gibbonStudentEnrolment';
 
-    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID', 'gibbonPerson.phone1', 'gibbonPerson.vehicleRegistration', 'parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'];
+    private static $searchableColumns = ['gibbonPerson.preferredName', 'gibbonPerson.surname', 'gibbonPerson.username', 'gibbonPerson.email', 'gibbonPerson.emailAlternate', 'gibbonPerson.studentID', 'gibbonPerson.phone1', 'gibbonPerson.vehicleRegistration'];
     
     /**
      * @param QueryCriteria $criteria
