@@ -72,10 +72,10 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 $output .= "<table cellspacing='0' style='width: 100%'>";
                 $output .= "<tr class='head'>";
                 $output .= "<th style='width: 160px'>";
-                $output .= 'Assessment';
+                $output .= __('Assessment');
                 $output .= '</th>';
                 $output .= "<th style='width: 180px'>";
-                $output .= 'Course';
+                $output .= __('Course');
                 $output .= '</th>';
                 $output .= "<th style='width: 75px; text-align: center'>";
                 if ($attainmentAlternativeName != '') {
@@ -92,7 +92,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 }
                 $output .= '</th>';
                 $output .= '<th>';
-                $output .= 'Comment';
+                $output .= __('Comment');
                 $output .= '</th>';
 
                 $output .= '</tr>';
@@ -111,12 +111,12 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['name'].'</u></b></span><br/>';
                     $output .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                     if ($rowInternalAssessment['completeDate'] != '') {
-                        $output .= 'Marked on '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
+                        $output .= __('Marked on').' '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
                     } else {
-                        $output .= 'Unmarked<br/>';
+                        $output .= __('Unmarked').'<br/>';
                     }
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>More info</a>";
+                        $output .= " | <a 'title='".__('Download more information')." href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';
