@@ -231,6 +231,19 @@ if (is_file(sprintf($localePath, $localeCode))) {
     $datepickerLocale = $localeCodeShort;
 }
 
+// Allow the URL to override system default from the i18l param
+if (!empty($_GET['i18n']) && $gibbon->locale->getLocale() != $_GET['i18n']) {
+    $data = ['code' => $_GET['i18n']];
+    $sql = "SELECT * FROM gibboni18n WHERE code=:code LIMIT 1";
+
+    if ($result = $pdo->selectOne($sql, $data)) {
+        setLanguageSession($guid, $result, false);
+        $gibbon->locale->setLocale($_GET['i18n']);
+        $gibbon->locale->setTextDomain($pdo);
+        $cacheLoad = true;
+    }
+}
+
 /**
  * JAVASCRIPT
  *

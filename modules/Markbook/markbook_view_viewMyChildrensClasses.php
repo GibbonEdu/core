@@ -302,9 +302,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                     }
                                 }
                                 if ($rowEntry['completeDate'] != '') {
-                                    echo 'Marked on '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
+                                    echo __('Marked on').' '.dateConvertBack($guid, $rowEntry['completeDate']).'<br/>';
                                 } else {
-                                    echo 'Unmarked<br/>';
+                                    echo __('Unmarked').'<br/>';
                                 }
                                 echo (!empty($rowEntry['typeName']))? ucfirst($rowEntry['typeName']) : ucfirst($rowEntry['type']);
                                 if ($rowEntry['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowEntry['attachment'])) {
