@@ -474,52 +474,40 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
     $guid = $gibbon->guid();
     $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
 
-    $termNames = (intval($gibbonSchoolYearID) >= 12)
-            ? array('Term 1 Mid', 'Term 1 End', 'Term 2 Interim', 'Final')
-            : array('Sem1-Mid', 'Sem1-End', 'Sem2-Mid', 'Sem2-End');
+    $termNames = array('Secondary Term 1', 'Secondary Term 2', 'Secondary Term 3');
 
-    if (intval($gibbonSchoolYearID) < 11) {
-        // LEGACY GRADES
-        $sem1Mid = getLegacyGrade($pdo, 'Sem1-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem1End = getLegacyGrade($pdo, 'Sem1-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2Mid = getLegacyGrade($pdo, 'Sem2-Mid', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2End = getLegacyGrade($pdo, 'Sem2-End', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $finalMark = getLegacyGrade($pdo, 'Final', $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    // Gibbon Reporting Grades
+    $sem1Mid = getReportGrade($pdo, $termNames[0], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $sem1End = getReportGrade($pdo, $termNames[1], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+    $sem2Mid = getReportGrade($pdo, $termNames[2], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+
+    $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+
+    if (!empty($finalMark)) {
 
         $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
+
+        $courseMark = '';
+        $examMark = '';
+        // $examMark = getCriteriaGrade($pdo, 1, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
     } else {
-        // Gibbon Reporting Grades
-        $sem1Mid = getReportGrade($pdo, $termNames[0], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem1End = getReportGrade($pdo, $termNames[1], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2Mid = getReportGrade($pdo, $termNames[2], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        $sem2End = getReportGrade($pdo, $termNames[3], $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
 
-        $finalMark = getCriteriaGrade($pdo, 4, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
+        $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
+        if ($enableColumnWeighting != 'Y') return;
 
-        if (!empty($finalMark)) {
+        require_once './modules/Markbook/src/markbookView.php';
 
-            $message = '<b>Course complete</b>: Final marks listed are from report card grades.';
+        // Build the markbook object for this class & student
+        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+        $markbook->cacheWeightings( $gibbonPersonIDStudent );
 
-            $courseMark = '';
-            $examMark = getCriteriaGrade($pdo, 1, $gibbonSchoolYearID, $gibbonPersonIDStudent, $gibbonCourseClassID);
-        } else {
+        $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
 
-            $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
-            if ($enableColumnWeighting != 'Y') return;
-
-            require_once './modules/Markbook/src/markbookView.php';
-
-            // Build the markbook object for this class & student
-            $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
-            $markbook->cacheWeightings( $gibbonPersonIDStudent );
-
-            $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
-
-            $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
-            $examMark = ''; //round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
-            $finalMark = ''; //round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
-        }
+        $courseMark = round( $markbook->getCumulativeAverage( $gibbonPersonIDStudent ) );
+        $examMark = ''; //round( $markbook->getTermAverage($gibbonPersonIDStudent, 'final') );
+        $finalMark = ''; //round( $markbook->getFinalGradeAverage( $gibbonPersonIDStudent ) );
     }
+    
 
     // Only display if there are marks
     if (!empty($courseMark) || !empty($examMark) || !empty($finalMark) ) {
@@ -532,7 +520,6 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[0].'</td>';
         echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[1].'</td>';
         echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[2].'</td>';
-        echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 64px;font-size: 11px;">'.$termNames[3].'</td>';
 
         echo '<td rowspan="2" style="padding: 10px 30px !important;">';
             echo '<span class="small emphasis">'.$message.'</span>';
@@ -556,8 +543,6 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem1End)? round( $sem1End ).'%' : '' ) .'</td>';
 
         echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem2Mid)? round( $sem2Mid ).'%' : '' ) .'</td>';
-
-        echo '<td style="padding: 10px !important; text-align: center;">'.( !empty($sem2End)? round( $sem2End ).'%' : '' ) .'</td>';
 
         // Display the cumulative average
         if (!empty($courseMark)) {
