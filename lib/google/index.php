@@ -326,7 +326,7 @@ if (isset($authUrl)){
             }
             if ($resultLanguage->rowCount() == 1) {
                 $rowLanguage = $resultLanguage->fetch();
-                setLanguageSession($guid, $rowLanguage);
+                setLanguageSession($guid, $rowLanguage, false);
             }
         }
 
