@@ -1,7 +1,6 @@
 details:
     type: houses
     name: Houses
-    desc: 
     table: gibbonHouse
     modes: { update: true, insert: true, export: true }
 access:
@@ -15,11 +14,11 @@ uniqueKeys:
 table:
     name: 
         name: "Name"
-        desc: ""
+        desc: "Must be unique."
         args: { filter: string, required: true }
     nameShort: 
         name: "Short Name"
-        desc: ""
+        desc: "Must be unique."
         args: { filter: string, required: true }
     logo: 
         name: "Logo"

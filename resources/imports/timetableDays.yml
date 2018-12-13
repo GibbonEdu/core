@@ -1,7 +1,6 @@
 details:
     type: timetableDays
     name: Timetable Days
-    desc: Associate columns with named days for existing timetables
     table: gibbonTTDay
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,22 +18,22 @@ table:
         args: { filter: schoolyear, required: true, custom: true, readonly: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonTTID:
-        name: "Timetable Name"
-        desc: "Must match the Short Name of an existing timetable"
+        name: "Timetable"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTT, key: gibbonTTID, field: [nameShort, gibbonSchoolYearID]  }
     gibbonTTColumnID:
         name: "Timetable Column"
-        desc: "Must match the short name of an existing column."
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
     name:
         name: "Name"
-        desc: "Must be unique for this column."
+        desc: "Must be unique for this school year."
         args: { filter: string, required: true }
     nameShort:
         name: "Short Name"
-        desc: "Must be unique for this column."
+        desc: "Must be unique for this school year."
         args: { filter: string, required: true }
     color:
         name: "Header Background Colour"

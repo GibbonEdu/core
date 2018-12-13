@@ -1,7 +1,6 @@
 details:
     type: departmentStaff
     name: Departments - Staff
-    desc: Staff Members for each Department/Learning Area
     table: gibbonDepartmentStaff
     modes: { update: true, insert: true, export: true }
 access:
@@ -18,7 +17,7 @@ table:
         args: { filter: string, required: true }
         relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
     gibbonPersonID:
-        name: "Staff Member"
+        name: "Staff"
         desc: "Username"
         args: { filter: nospaces, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }

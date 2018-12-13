@@ -1,7 +1,6 @@
 details:
     type: medicalConditions
     name: Medical Conditions
-    desc: Important medical conditions, requires an existing medical form
     table: gibbonPersonMedicalCondition
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,11 +18,11 @@ table:
         relationship: { table: gibbonPersonMedical, key: gibbonPersonMedicalID, join: gibbonPerson, on: [gibbonPersonID,gibbonPersonID], field: username  }
     name: 
         name: "Condition Name"
-        desc: "See available list on Medical Conditions form"
+        desc: ""
         args: {filter: string, required: true}
     gibbonAlertLevelID: 
         name: "Risk"
-        desc: "Must match the name of an alert level set in School Admin (default: Low, Medium, High)"
+        desc: ""
         args: {filter: string, required: true}
         relationship: { table: gibbonAlertLevel, key: gibbonAlertLevelID, field: name  }
     triggers: 

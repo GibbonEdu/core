@@ -14,14 +14,19 @@ uniqueKeys:
     - nameShort
 table:
     name: 
-        name: "Year Group Name"
-        desc: "eg. Year 7"
+        name: "Name"
+        desc: "Must be unique."
         args: { filter: string, required: true }
     nameShort: 
         name: "Short Name"
-        desc: "eg. Y07"
+        desc: "Must be unique."
         args: { filter: string, required: true }
     sequenceNumber: 
-        name: "Order By"
-        desc: "May be used to adjust arrangement of courses in reports. "
+        name: "Sequence Number"
+        desc: "Must be unique. Controls chronological ordering."
         args: { filter: numeric }
+    gibbonPersonIDHOY: 
+        name: "Head of Year"
+        desc: "Username"
+        args: { filter: string }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }

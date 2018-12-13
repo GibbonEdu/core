@@ -17,7 +17,7 @@ table:
         desc: "Gibbon ID"
         args: { filter: string, required: true }
     gibbonSpaceID:
-        name: "Space Name"
-        desc: "Full Name, from school admin Manage Facilities (eg: 101)"
+        name: "Facility"
+        desc: ""
         args: { filter: string, required: false, custom: true }
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }

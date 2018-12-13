@@ -1,7 +1,6 @@
 details:
     type: departments
     name: Departments
-    desc: Departments and Learning Areas
     table: gibbonDepartment
     modes: { update: true, insert: true, export: true }
 access:
@@ -17,7 +16,7 @@ table:
         desc: ""
         args: { filter: string, required: true }
     name: 
-        name: "Department Name"
+        name: "Name"
         desc: ""
         args: { filter: string, required: true }
     nameShort: 
@@ -29,9 +28,9 @@ table:
         desc: ""
         args: { filter: string }
     blurb: 
-        name: "Description"
+        name: "Blurb"
         desc: ""
-        args: { filter: string }
+        args: { filter: html }
     logo: 
         name: "Logo"
         desc: "125x125px jpg/png/gif"

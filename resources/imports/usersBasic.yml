@@ -1,7 +1,6 @@
 details:
     type: usersBasic
     name: User - Data - Basic
-    desc: Basic user names and details
     category: User
     table: gibbonPerson
     modes: { update: true, insert: true, export: true }
@@ -16,7 +15,7 @@ uniqueKeys:
 table:
     title:
         name: "Title"
-        desc: "e.g. Mr, Mrs, Dr"
+        desc: "e.g. Ms., Miss, Mr., Mrs., Dr."
         args: {filter: string}
     surname:
         name: "Surname"
@@ -27,7 +26,7 @@ table:
         desc: "Given name"
         args: {filter: string, required: true}
     preferredName:
-        name: "Preffered Name"
+        name: "Preferred Name"
         desc: "Most common name, alias, nickname, handle, etc"
         args: {filter: string, required: true}
     officialName:
@@ -44,25 +43,25 @@ table:
         args: {filter: gender, required: true}
     dob:
         name: "Date of Birth"
-        desc: "yyyy-mm-dd"
+        desc: ""
         args: {filter: date}
     gibbonRoleIDPrimary:
         name: "Primary Role"
-        desc: "Role Name"
+        desc: "Name"
         args: {filter: string, required: true, custom: true }
         relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
     gibbonRoleIDAll:
-        name: "All Roles (including Primary Role)"
+        name: "All Roles"
         desc: "Role Names, Comma separated"
         args: {filter: csv, required: true, custom: true }
         relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
     username:
         name: "Username"
-        desc: "User account name & login"
+        desc: "Must be unique."
         args: {filter: nospaces, required: true}
     password:
         name: "Password"
-        desc: "At least one lowercase and one number, from 8 to 20 chars"
+        desc: ""
         args: {filter: nospaces, required: true, custom: true, function: generatePassword}
     passwordForceReset:
         name: "Force Password Reset"
@@ -86,7 +85,7 @@ table:
         args: {filter: string}
     image_240:
         name: "Image"
-        desc: "Path from /uploads/ to medium portrait image (240px by 320px)"
+        desc: "path from /uploads/ to medium portrait image (240px by 320px)"
         args: {filter: string}
 
 

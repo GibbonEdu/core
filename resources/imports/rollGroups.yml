@@ -1,7 +1,6 @@
 details:
     type: rollGroups
     name: Roll Groups
-    desc: Roll Groups for each year level
     table: gibbonRollGroup
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,7 +18,7 @@ table:
         args: { filter: schoolyear,  required: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     name: 
-        name: "Form Group Name"
+        name: "Name"
         desc: "Needs to be unique in school year."
         args: { filter: string, required: true }
     nameShort: 
@@ -28,27 +27,31 @@ table:
         args: { filter: string, required: true }
     gibbonPersonIDTutor: 
         name: "Tutor 1"
-        desc: "Up to 3 per form group. The first-listed will be marked as Main Tutor."
+        desc: "Up to 3 per form group. The first-listed will be marked as \"Main Tutor\"."
         args: { filter: string }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     gibbonPersonIDTutor2: 
         name: "Tutor 2"
-        desc: "Up to 3 per form group."
+        desc: ""
         args: { filter: string }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     gibbonPersonIDTutor3: 
         name: "Tutor 3"
-        desc: "Up to 3 per form group."
+        desc: ""
         args: { filter: string }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     gibbonSpaceID: 
         name: "Location"
-        desc: "Should match an existing Facilities/Spaces name."
+        desc: "Name"
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
     gibbonRollGroupIDNext: 
         name: "Next Form Group"
-        desc: "Sets student progression on rollover. Must be a Short Name."
+        desc: "Short Name"
         relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: nameShort  }
+    attendance:
+        name: "Track Attendance?"
+        desc: "Should this class allow attendance to be taken?"
+        args: { filter: yesno, custom: true }
     website: 
         name: "Website"
         desc: "Include http://"

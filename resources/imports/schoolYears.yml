@@ -1,7 +1,6 @@
 details:
     type: schoolYears
     name: School Years
-    desc: 
     table: gibbonSchoolYear
     modes: { update: true, insert: true, export: true }
 access:
@@ -15,7 +14,7 @@ uniqueKeys:
 table:
     name: 
         name: "School Year Name"
-        desc: "eg: 2015-2016"
+        desc: ""
         args: { filter: schoolyear, required: true }
     status: 
         name: "Status"
@@ -27,9 +26,9 @@ table:
         args: { filter: numeric, required: true }
     firstDay: 
         name: "First Day"
-        desc: "YYYY-MM-DD"
+        desc: ""
         args: { filter: date, required: true }
     lastDay: 
         name: "Last Day"
-        desc: "YYYY-MM-DD"
+        desc: ""
         args: { filter: date, required: true }

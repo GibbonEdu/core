@@ -1,7 +1,6 @@
 details:
     type: scaleGrade
     name: Grade Scale
-    desc: 
     table: gibbonScaleGrade
     modes: { update: true, insert: true, export: true }
 access:
@@ -14,7 +13,7 @@ uniqueKeys:
 table:
     gibbonScaleID: 
         name: "Grade Scale"
-        desc: "nameShort"
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     value: 
@@ -28,8 +27,8 @@ table:
     sequenceNumber: 
         name: "Sequence Number"
         desc: "Must be unique for this grade scale."
-        args: { filter: numeric }
+        args: { filter: numeric, required: true }
     isDefault: 
         name: "Is Default?"
         desc: "Preselects this option when using this grade scale in appropriate contexts."
-        args: { filter: yesno }
+        args: { filter: yesno, custom: true }

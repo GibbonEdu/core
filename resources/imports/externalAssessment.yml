@@ -1,7 +1,6 @@
 details:
     type: externalAssessment
     name: External Assessments
-    desc:
     table: gibbonExternalAssessmentStudentEntry
     modes: { update: true, insert: true, export: true }
 access:
@@ -10,12 +9,12 @@ access:
 fields:
     gibbonExternalAssessmentID:
         name: "External Assessment"
-        desc: "Must match value of gibbonExternalAssessment.name in database."
+        desc: "Name Short"
         args: { filter: string, custom: true, required: true, readonly: [gibbonExternalAssessmentStudentEntry] }
         relationship: { table: gibbonExternalAssessment, key: gibbonExternalAssessmentID, field: nameShort  }
     date:
         name: "Assessment Date"
-        desc: "yyyy-mm-dd"
+        desc: ""
         args: {filter: date, custom: true, required: true, readonly: [gibbonExternalAssessmentStudentEntry] }
     gibbonPersonID:
         name: "Student"
@@ -38,7 +37,7 @@ fields:
         relationship: { table: gibbonExternalAssessmentField, key: gibbonExternalAssessmentFieldID, field: [ name, category, gibbonExternalAssessmentID ]  }
     gibbonScaleID:
         name: "Grade Scale"
-        desc: "nameShort"
+        desc: "Short Name"
         args: { filter: string, custom: true, required: true, readonly: true }
         relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     gibbonScaleGradeID:

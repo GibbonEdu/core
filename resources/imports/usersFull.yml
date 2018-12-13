@@ -1,7 +1,6 @@
 details:
     type: usersFull
     name: User - Data - Full
-    desc: All user details and info
     category: User
     table: gibbonPerson
     modes: { update: true, insert: true, export: true }
@@ -17,7 +16,7 @@ uniqueKeys:
 table:
     title:
         name: "Title"
-        desc: "e.g. Mr, Mrs, Dr"
+        desc: "e.g. Ms., Miss, Mr., Mrs., Dr."
         args: {filter: string}
     surname:
         name: "Surname"
@@ -28,7 +27,7 @@ table:
         desc: "Given name"
         args: {filter: string, required: true}
     preferredName:
-        name: "Preffered Name"
+        name: "Preferred Name"
         desc: "Most common name, alias, nickname, handle, etc"
         args: {filter: string, required: true}
     officialName:
@@ -45,15 +44,15 @@ table:
         args: {filter: gender, required: true}
     dob:
         name: "Date of Birth"
-        desc: "yyyy-mm-dd"
+        desc: ""
         args: {filter: date}
     username:
         name: "Username"
-        desc: "User account name & login"
+        desc: "Must be unique."
         args: {filter: nospaces, required: true}
     password:
         name: "Password"
-        desc: "At least one lowercase and one number, from 8 to 20 chars"
+        desc: ""
         args: {filter: nospaces, required: true, custom: true, function: generatePassword}
     passwordForceReset:
         name: "Force Password Reset"
@@ -69,11 +68,11 @@ table:
         args: {filter: yesno, custom: true}
     gibbonRoleIDPrimary:
         name: "Primary Role"
-        desc: "Role Name"
+        desc: "Name"
         args: {filter: string, required: true, custom: true }
         relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
     gibbonRoleIDAll:
-        name: "All Roles (including Primary Role)"
+        name: "All Roles"
         desc: "Role Names, Comma separated"
         args: {filter: csv, required: true, custom: true }
         relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
@@ -82,7 +81,7 @@ table:
         desc: ""
         args: {filter: email}
     emailAlternate:
-        name: "Email (Alternate)"
+        name: "Alternate Email"
         desc: ""
         args: {filter: email}
     studentID:
@@ -90,7 +89,7 @@ table:
         desc: "Must be unique if set."
         args: {filter: string}
     image_240:
-        name: "Image"
+        name: "User Photo"
         desc: "Path from /uploads/ to medium portrait image (240px by 320px)"
         args: {filter: string}
 
@@ -129,11 +128,11 @@ table:
         desc: "Unit, Building, Street"
         args: {filter: string}
     address1District:
-        name: "Address 1 (District)"
+        name: "Address 1 District"
         desc: "County, State, District"
         args: {filter: string}
     address1Country:
-        name: "Address 1 (Country)"
+        name: "Address 1 Country"
         desc: ""
         args: {filter: country }
 
@@ -142,11 +141,11 @@ table:
         desc: "Unit, Building, Street"
         args: {filter: string}
     address2District:
-        name: "Address 2 (District)"
+        name: "Address 2 District"
         desc: "County, State, District"
         args: {filter: string}
     address2Country:
-        name: "Address 2 (Country)"
+        name: "Address 2 Country"
         desc: ""
         args: {filter: country }
 
@@ -286,11 +285,11 @@ table:
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Number1:
-        name: "Emergency 1 Phone Number 1"
+        name: "Emergency 1 Number 1"
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Number2:
-        name: "Emergency 1 Phone Number 2"
+        name: "Emergency 1 Number 2"
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Relationship:
@@ -303,11 +302,11 @@ table:
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Number1:
-        name: "Emergency 2 Phone Number 1"
+        name: "Emergency 2 Number 1"
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Number2:
-        name: "Emergency 2 Phone Number 2"
+        name: "Emergency 2 Number 2"
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Relationship:
@@ -317,7 +316,7 @@ table:
 
     gibbonHouseID:
         name: "House"
-        desc: "Must match an existing house name"
+        desc: "Name"
         args: {filter: string}
         relationship: { table: gibbonHouse, key: gibbonHouseID, field: name  }
     lockerNumber:

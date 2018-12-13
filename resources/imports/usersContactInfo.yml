@@ -1,7 +1,6 @@
 details:
     type: usersContactInfo
     name: Contact Information
-    desc: Addresses, email, phone numbers, and emergency contacts
     category: User
     table: gibbonPerson
     modes: { update: true, insert: false }
@@ -15,15 +14,14 @@ uniqueKeys:
 table:
     username:
         name: "Username"
-        desc: "User account name & login"
+        desc: ""
         args: {filter: nospaces, required: true}
-
     email:
         name: "Email"
         desc: ""
         args: {filter: email}
     emailAlternate:
-        name: "Email (Alternate)"
+        name: "Alternate Email"
         desc: ""
         args: {filter: email}
 
@@ -32,11 +30,11 @@ table:
         desc: "Unit, Building, Street"
         args: {filter: string}
     address1District:
-        name: "Address 1 (District)"
+        name: "Address 1 District"
         desc: "County, State, District"
         args: {filter: string}
     address1Country:
-        name: "Address 1 (Country)"
+        name: "Address 1 Country"
         desc: ""
         args: {filter: country}
 
@@ -45,11 +43,11 @@ table:
         desc: "Unit, Building, Street"
         args: {filter: string}
     address2District:
-        name: "Address 2 (District)"
+        name: "Address 2 District"
         desc: "County, State, District"
         args: {filter: string}
     address2Country:
-        name: "Address 2 (Country)"
+        name: "Address 2 Country"
         desc: ""
         args: {filter: country}
 
@@ -115,11 +113,11 @@ table:
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Number1:
-        name: "Emergency 1 Phone Number 1"
+        name: "Emergency 1 Number 1"
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Number2:
-        name: "Emergency 1 Phone Number 2"
+        name: "Emergency 1 Number 2"
         desc: "For students and staff only"
         args: {filter: string}
     emergency1Relationship:
@@ -133,11 +131,11 @@ table:
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Number1:
-        name: "Emergency 2 Phone Number 1"
+        name: "Emergency 2 Number 1"
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Number2:
-        name: "Emergency 2 Phone Number 2"
+        name: "Emergency 2 Number 2"
         desc: "For students and staff only"
         args: {filter: string}
     emergency2Relationship:

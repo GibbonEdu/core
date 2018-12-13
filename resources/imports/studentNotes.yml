@@ -2,7 +2,6 @@ details:
     type: studentNotes
     category: Students
     name: Student Notes
-    desc: Upload additional information for students
     table: gibbonStudentNote
     modes: { update: false, insert: true }
 access:
@@ -21,7 +20,7 @@ table:
     gibbonStudentNoteCategoryID:
         name: "Category"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonStudentNoteCategory, key: gibbonStudentNoteCategoryID, field: name  }
     title:
         name: "Title"
@@ -30,11 +29,11 @@ table:
     note:
         name: "Note"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: html, required: true }
     gibbonPersonIDCreator:
-        name: "Created By (optional)"
+        name: "Created By"
         desc: "Username"
-        args: { filter: string }
+        args: { filter: string, custom: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     timestamp:
         name: "Timestamp"

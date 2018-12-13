@@ -1,7 +1,6 @@
 details:
     type: usersCustomFields
     name: Custom Fields
-    desc: Manages the fields themselves, not the data
     category: Custom Fields
     table: gibbonPersonField
     modes: { update: true, insert: true, export: true }
@@ -14,7 +13,7 @@ uniqueKeys:
     - name
 table:
     name: 
-        name: "Field Name"
+        name: "Name"
         desc: ""
         args: { filter: string, required: true }
     active: 

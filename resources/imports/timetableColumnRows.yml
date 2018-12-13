@@ -1,7 +1,6 @@
 details:
     type: timetableColumnRows
     name: Timetable - Column Rows
-    desc: Add or update periods with start and end times for existing timetable columns
     table: gibbonTTColumnRow
     modes: { update: true, insert: true, export: true }
 access:
@@ -15,7 +14,7 @@ uniqueKeys:
 table:
     gibbonTTColumnID:
         name: "Timetable Column"
-        desc: "Must match the short name of an existing column."
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
     name:

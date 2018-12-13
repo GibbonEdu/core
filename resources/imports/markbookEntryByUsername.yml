@@ -1,7 +1,6 @@
 details:
     type: markbookEntryByUsername
     name: Markbook - Marks - by Student Username
-    desc: Student assessment, effort and comments (requires existing markbook column)
     table: gibbonMarkbookEntry
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,47 +18,55 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonCourseID: 
         name: "Course"
-        desc: "Short Name of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonCourseClassID: 
-        name: "Course Class"
-        desc: "Short Name of a valid Course Class"
+        name: "Class"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
     gibbonMarkbookColumnID: 
         name: "Markbook Column"
-        desc: "Name of an existing Markbook Column for this Course"
+        desc: "Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonMarkbookColumn, key: gibbonMarkbookColumnID, field: [ name, gibbonCourseClassID ]  }
     gibbonPersonIDStudent: 
         name: "Student"
         desc: "Username"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, join: gibbonCourseClassPerson, on: [gibbonPersonID, gibbonPersonID], field: [username, gibbonCourseClassID] }
     attainmentValue: 
         name: "Attainment Value"
-        desc: "Leave blank if attainment is not assessed."
+        desc: ""
         args: { filter: string, custom: true }
     attainmentValueRaw: 
         name: "Attainment Raw Value"
-        desc: "Value from 0 to Attainment Total Mark. Omit if not using raw marks."
+        desc: ""
         args: { filter: string, custom: true }
     attainmentDescriptor: 
         name: "Attainment Descriptor"
         desc: ""
         args: { filter: string, linked: attainmentValue }
         relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDAttainment, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
+    # attainmentConcern: 
+    #     name: "Attainment Concern?"
+    #     desc: ""
+    #     args: { filter: string, custom: true }
     effortValue: 
         name: "Effort Value"
-        desc: "Leave blank if effort is not assessed."
+        desc: ""
         args: { filter: string, custom: true }
     effortDescriptor: 
         name: "Effort Descriptor"
         desc: ""
         args: { filter: string, linked: effortValue }
         relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDEffort, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
+    # effortConcern: 
+    #     name: "Effort Concern?"
+    #     desc: ""
+    #     args: { filter: string, custom: true }
     comment: 
         name: "Comment"
-        desc: "Leave blank if comments are not included."
+        desc: ""
         args: { filter: string, custom: true }

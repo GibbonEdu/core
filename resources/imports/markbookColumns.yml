@@ -1,7 +1,6 @@
 details:
     type: markbookColumns
     name: Markbook Columns
-    desc: Setup markbook columns for student assessment, per class
     table: gibbonMarkbookColumn
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,17 +18,27 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonCourseID: 
         name: "Course"
-        desc: "Short Name of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonCourseClassID: 
-        name: "Course Class"
-        desc: "Short Name of a valid Course Class"
+        name: "Class"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
+    gibbonUnitID: 
+        name: "Unit"
+        desc: "Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonUnit, key: gibbonUnitID, field: [ name, gibbonCourseID ]  }
+    gibbonPlannerEntryID: 
+        name: "Lesson"
+        desc: "Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPlannerEntry, key: gibbonPlannerEntryID, field: [ name, gibbonCourseClassID ]  }
     name: 
-        name: "Column Name"
-        desc: "Must be unique for this class"
+        name: "Name"
+        desc: ""
         args: { filter: string, required: true }
     description: 
         name: "Description"
@@ -37,11 +46,11 @@ table:
         args: { filter: string, required: true }
     type: 
         name: "Type"
-        desc: "Full name of the markbook type, as defined in School Admin"
+        desc: ""
         args: { filter: string, required: true, custom: true }
     date: 
-        name: "Date Created"
-        desc: "yyyy-mm-dd"
+        name: "Date Added"
+        desc: ""
         args: {filter: date, custom: true }
     attainment: 
         name: "Assess Attainment?"
@@ -49,24 +58,24 @@ table:
         args: { filter: yesno, required: true, custom: true }
     gibbonScaleIDAttainment: 
         name: "Attainment Scale"
-        desc: "Short Name of the Grade Scale to use, as defined in School Admin"
+        desc: "Short Name"
         args: { filter: string, custom: true }
         relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     attainmentRaw: 
-        name: "Assess Total Mark?"
-        desc: "Use raw marks to auto-calulate percent grades?"
+        name: "Total Mark"
+        desc: ""
         args: { filter: yesno, custom: true }
     attainmentRawMax: 
         name: "Attainment Total Mark"
-        desc: "Total value of raw marks"
+        desc: ""
         args: { filter: string, custom: true }
     attainmentWeighting: 
         name: "Attainment Weighting"
-        desc: "Optional multiplication factor for weighted marks"
-        args: { filter: string, custom: true }
+        desc: ""
+        args: { filter: numeric, custom: true }
     gibbonRubricIDAttainment: 
         name: "Attainment Rubric"
-        desc: "Name of predefined rubric to use, if desired"
+        desc: "Name"
         args: { filter: string, custom: true }
         relationship: { table: gibbonRubric, key: gibbonRubricID, field: name  }
     effort: 
@@ -75,12 +84,12 @@ table:
         args: { filter: yesno, required: true, custom: true }
     gibbonScaleIDEffort: 
         name: "Effort Scale"
-        desc: "Short Name of the Grade Scale to use, as defined in School Admin"
+        desc: "Short Name"
         args: { filter: string, custom: true }
         relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     gibbonRubricIDEffort: 
         name: "Effort Rubric"
-        desc: "Name of predefined rubric to use, if desired"
+        desc: "Name"
         args: { filter: string, custom: true }
         relationship: { table: gibbonRubric, key: gibbonRubricID, field: name  }
     comment: 
@@ -101,7 +110,7 @@ table:
         args: { filter: yesno, required: true, custom: true }
     completeDate: 
         name: "Go Live Date"
-        desc: "Column is hidden until date is reached. Format: yyyy-mm-dd "
+        desc: "Column is hidden until date is reached."
         args: {filter: date, custom: true }
     complete: 
         name: "Completed?"
@@ -109,5 +118,5 @@ table:
         args: { filter: yesno, custom: true }
     sequenceNumber: 
         name: "Sequence Number"
-        desc: "Controls chronological ordering (optional)"
+        desc: ""
         args: { filter: numeric }

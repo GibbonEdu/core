@@ -1,7 +1,6 @@
 details:
     type: courseClassEnrolment
-    name: Course Enrolment by Person
-    desc: Class enrolments for each course
+    name: Course Enrolment by Class
     table: gibbonCourseClassPerson
     modes: { update: true, insert: true, export: true }
 access:
@@ -19,16 +18,16 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonCourseID:
         name: "Course"
-        desc: "nameShort of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true, readonly: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonCourseClassID:
-        name: "Course Class"
-        desc: "nameShort of a valid Course Class"
+        name: "Class"
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
     gibbonPersonID:
-        name: "User to Enroll"
+        name: "Participant"
         desc: "Username"
         args: { filter: nospaces, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
@@ -38,5 +37,5 @@ table:
         args: { filter: string, required: true, custom: true }
     reportable:
         name: "Reportable"
-        desc: "Should the class show in reports for this student?"
+        desc: "Should this class show in reports?"
         args: { filter: yesno }

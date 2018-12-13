@@ -1,7 +1,6 @@
 details:
     type: markbookTargets
     name: Targets
-    desc: Student target marks (requires Target Scale set per class)
     table: gibbonMarkbookTarget
     modes: { update: true, insert: true, export: false }
 access:
@@ -15,12 +14,12 @@ fields:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonCourseID: 
         name: "Course"
-        desc: "Short Name of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonCourseClassID: 
-        name: "Course Class"
-        desc: "Short Name of a valid Course Class"
+        name: "Class"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
     gibbonPersonIDStudent: 
@@ -30,12 +29,12 @@ fields:
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     gibbonScaleIDTarget: 
         name: "Grade Scale"
-        desc: "Short Name of the Grade Scale to use for student targets"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     gibbonScaleGradeID: 
         name: "Target Grade"
-        desc: "Value of the target grade (actual value, not the descriptor)"
+        desc: "Value"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, field: value  }
 tables:

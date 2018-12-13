@@ -1,7 +1,6 @@
 details:
     type: familyAdult
     name: Adults
-    desc:
     category: Family
     table: gibbonFamilyAdult
     modes: { update: true, insert: true, export: true }
@@ -15,12 +14,12 @@ uniqueKeys:
     - [ gibbonFamilyID, gibbonPersonID ]
 table:
     gibbonFamilyID:
-        name: "Family Sync"
+        name: "Family Sync Key"
         desc: "Unique ID for family, according to source system."
         args: { filter: string, required: true }
         relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
     gibbonPersonID:
-        name: "Family Member"
+        name: "Adult"
         desc: "Username"
         args: { filter: nospaces, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
@@ -31,11 +30,11 @@ table:
     childDataAccess:
         name: "Child Data Access"
         desc: "Access data on family's children?"
-        args: { filter: yesno, required: true, custom: true }
+        args: { filter: yesno, custom: true }
     contactPriority:
         name: "Contact Priority"
         desc: "The order in which school should contact family members."
-        args: { filter: numeric, custom: true }
+        args: { filter: numeric, custom: true, required: true }
     contactCall:
         name: "Call?"
         desc: "Receive non-emergency phone calls from school?"

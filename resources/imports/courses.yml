@@ -1,7 +1,6 @@
 details:
     type: courses
     name: Courses
-    desc: Course names and descriptions by School Year
     table: gibbonCourse
     modes: { update: true, insert: true, export: true }
 access:
@@ -20,26 +19,30 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonDepartmentID: 
         name: "Learning Area"
-        desc: "Department (short name only)"
+        desc: "Short Name"
         args: { filter: string, custom: true }
         relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
     name: 
-        name: "Course Name"
+        name: "Name"
         desc: "Must be unique for this school year."
         args: { filter: string, required: true }
     nameShort: 
         name: "Short Name"
-        desc: "eg. EN07"
+        desc: "Must be unique for this school year."
         args: { filter: string, required: true }
-    description: 
-        name: "Description"
-        desc: "May contain HTML tags"
-        args: { filter: html }
-    gibbonYearGroupIDList: 
-        name: "Year Groups"
-        desc: "Comma separated Year Group IDs"
-        args: { filter: yearlist }
     orderBy: 
         name: "Order By"
-        desc: "May be used to adjust arrangement of courses in reports. "
+        desc: "May be used to adjust arrangement of courses in reports."
         args: { filter: numeric }
+    description: 
+        name: "Blurb"
+        desc: ""
+        args: { filter: html }
+    map: 
+        name: "Include In Curriculum Map"
+        desc: ""
+        args: { filter: yesno }
+    gibbonYearGroupIDList: 
+        name: "Year Groups"
+        desc: "Enrolable year groups."
+        args: { filter: yearlist }

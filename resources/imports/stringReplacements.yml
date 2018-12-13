@@ -1,7 +1,6 @@
 details:
     type: stringReplacements
     name: String Replacement
-    desc: 
     table: gibbonString
     modes: { update: true, insert: true, export: true }
 access:
@@ -23,12 +22,12 @@ table:
     mode: 
         name: "Mode"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }
     caseSensitive: 
         name: "Case Sensitive"
         desc: ""
-        args: { filter: yesno, required: true }
+        args: { filter: yesno, required: true, custom: true }
     priority: 
         name: "Priority"
         desc: "Higher priorities are substituted first."
-        args: { filter: numeric, required: true }
+        args: { filter: numeric, required: true, custom: true }

@@ -1,7 +1,6 @@
 details:
     type: timetableClasses
     name: Classes in Period
-    desc: Assign classes to timetable days and rows
     table: gibbonTTDayRowClass
     modes: { update: true, insert: true, export: true }
 access:
@@ -18,37 +17,37 @@ table:
         args: { filter: schoolyear, required: true, custom: true, readonly: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonTTID:
-        name: "Timetable Name"
-        desc: "Must match the Short Name of an existing timetable"
+        name: "Timetable"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonTT, key: gibbonTTID, field: [nameShort, gibbonSchoolYearID]  }
     gibbonTTColumnID:
-        name: "Column Name"
-        desc: "Must match the Short Name of an existing column"
+        name: "Timetable Column"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
     gibbonCourseID:
         name: "Course"
-        desc: "Short Name of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true, readonly: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonCourseClassID:
-        name: "Course Class"
-        desc: "Short Name of a valid Course Class"
+        name: "Class"
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
     gibbonTTDayID:
         name: "Timetable Day"
-        desc: "Short Name, as used in the target timetable (eg: Mon)"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTTDay, key: gibbonTTDayID, field: [ nameShort, gibbonTTColumnID, gibbonTTID ]  }
     gibbonTTColumnRowID:
         name: "Column Row"
-        desc: "Short Name, as used in the target timetable (eg: P1)"
+        desc: "Short Name"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTTColumnRow, key: gibbonTTColumnRowID, field: [ nameShort, gibbonTTColumnID ]  }
     gibbonSpaceID:
-        name: "Space"
-        desc: "Full Name, from school admin Manage Facilities (eg: 101)"
+        name: "Facility"
+        desc: "Name"
         args: { filter: string, required: false, custom: true }
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }

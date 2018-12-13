@@ -1,7 +1,6 @@
 details:
     type: courseClasses
     name: Classes
-    desc: Class records for each course
     table: gibbonCourseClass
     modes: { update: true, insert: true, export: true }
 access:
@@ -20,11 +19,11 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonCourseID:
         name: "Course"
-        desc: "nameShort of a valid Course"
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
     name:
-        name: "Class Name"
+        name: "Name"
         desc: "Must be unique for this course."
         args: { filter: string, required: true }
     nameShort:
@@ -32,10 +31,10 @@ table:
         desc: "Must be unique for this course."
         args: { filter: string, required: true }
     reportable:
-        name: "Reportable"
+        name: "Reportable?"
         desc: "Should this class show in reports?"
         args: { filter: yesno, custom: true }
     attendance:
-        name: "Track Attendance"
-        desc: "Should this class take attendance?"
+        name: "Track Attendance?"
+        desc: "Should this class allow attendance to be taken?"
         args: { filter: yesno, custom: true }

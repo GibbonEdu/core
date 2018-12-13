@@ -1,7 +1,6 @@
 details:
     type: studentEnrolment
     name: Student Enrolment
-    desc: Enrol students in form groups and year groups
     table: gibbonStudentEnrolment
     modes: { update: true, insert: true, export: true }
 access:
@@ -20,20 +19,20 @@ table:
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonYearGroupID:
         name: "Year Group"
-        desc: "Year group short name, as set in School Admin. Must already exist."
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort  }
     gibbonRollGroupID:
-        name: "Form Group"
-        desc: "Form group short name, as set in School Admin. Must already exist."
+        name: "Roll Group"
+        desc: "Short Name"
         args: { filter: string, required: true }
         relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [ nameShort, gibbonSchoolYearID ]  }
     gibbonPersonID:
-        name: "Student to Enroll"
+        name: "Student"
         desc: "Username"
         args: { filter: nospaces, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
     rollOrder:
         name: "Roll Order"
-        desc: "Must be unique to roll group if set."
+        desc: ""
         args: { filter: numeric, custom: true }
