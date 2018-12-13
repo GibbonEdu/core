@@ -444,10 +444,21 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
 function getMinorLinks($connection2, $guid, $cacheLoad)
 {
-    $return = false;
+    $return = '';
+
+    // Add a link to go back to the system/personal default language, if we're not using it
+    if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
+        if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
+            $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
+            $languageLink = "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
+        }
+    }
 
     if (isset($_SESSION[$guid]['username']) == false) {
+        $return .= !empty($languageLink) ? $languageLink : '';
+
         if ($_SESSION[$guid]['webLink'] != '') {
+            $return .= !empty($languageLink) ? ' . ' : '';
             $return .= __('Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
     } else {
@@ -471,6 +482,8 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
         if ($_SESSION[$guid]['website'] != '') {
             $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a>';
         }
+
+        $return .= !empty($languageLink) ? ' . '.$languageLink : '';
 
         //Check for house logo (needed to get bubble, below, in right spot)
         if (isset($_SESSION[$guid]['gibbonHouseIDLogo']) and isset($_SESSION[$guid]['gibbonHouseIDName'])) {
@@ -3895,7 +3908,7 @@ function getSystemSettings($guid, $connection2)
 }
 
 //Set language session variables
-function setLanguageSession($guid, $row)
+function setLanguageSession($guid, $row, $defaultLanguage = true)
 {
     $_SESSION[$guid]['i18n']['gibboni18nID'] = $row['gibboni18nID'];
     $_SESSION[$guid]['i18n']['code'] = $row['code'];
@@ -3904,6 +3917,11 @@ function setLanguageSession($guid, $row)
     $_SESSION[$guid]['i18n']['dateFormatRegEx'] = $row['dateFormatRegEx'];
     $_SESSION[$guid]['i18n']['dateFormatPHP'] = $row['dateFormatPHP'];
     $_SESSION[$guid]['i18n']['rtl'] = $row['rtl'];
+
+    if ($defaultLanguage) {
+        $_SESSION[$guid]['i18n']['default']['code'] = $row['code'];
+        $_SESSION[$guid]['i18n']['default']['name'] = $row['name'];
+    }
 }
 
 //Gets the desired setting, specified by name and scope.

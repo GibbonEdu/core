@@ -229,7 +229,7 @@ else {
                         }
                         if ($resultLanguage->rowCount() == 1) {
                             $rowLanguage = $resultLanguage->fetch();
-                            setLanguageSession($guid, $rowLanguage);
+                            setLanguageSession($guid, $rowLanguage, false);
                         }
                     } else {
                         //If no language specified, get user preference if it exists
@@ -243,7 +243,7 @@ else {
                             }
                             if ($resultLanguage->rowCount() == 1) {
                                 $rowLanguage = $resultLanguage->fetch();
-                                setLanguageSession($guid, $rowLanguage);
+                                setLanguageSession($guid, $rowLanguage, false);
                             }
                         }
                     }
