@@ -48,6 +48,7 @@ v17.0.00
         System: added Sri Lankan Rupee as a currency option
         System: fixed incorrect return value in Public Registration when user is below the minimum age
         System: deprecated getGibbonMailer function, replaced with Mailer wrapper
+        System: added the ability to set the current language with an i18n URL parameter
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
