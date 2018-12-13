@@ -3,15 +3,11 @@ details:
     name: Targets
     desc: Student target marks (requires Target Scale set per class)
     table: gibbonMarkbookTarget
-    modes: { update: true, insert: true, export: true }
+    modes: { update: true, insert: true, export: false }
 access:
     module: Markbook
     action: Edit Markbook_everything
-primaryKey:
-    gibbonMarkbookTargetID
-uniqueKeys:
-    - [ gibbonCourseClassID, gibbonPersonIDStudent ]
-table:
+fields:
     gibbonSchoolYearID: 
         name: "School Year"
         desc: "Must match an existing school year e.g. 2015-2016"
@@ -32,8 +28,35 @@ table:
         desc: "Username"
         args: { filter: string, required: true }
         relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonScaleIDTarget: 
+        name: "Grade Scale"
+        desc: "Short Name of the Grade Scale to use for student targets"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     gibbonScaleGradeID: 
         name: "Target Grade"
         desc: "Value of the target grade (actual value, not the descriptor)"
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, field: value  }
+tables:
+    gibbonMarkbookTarget: 
+        primaryKey:
+            gibbonMarkbookTargetID
+        uniqueKeys:
+            - [ gibbonCourseClassID, gibbonPersonIDStudent ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonCourseID
+            - gibbonCourseClassID
+            - gibbonPersonIDStudent
+            - gibbonScaleGradeID
+    gibbonCourseClass:
+        primaryKey:
+            gibbonCourseClassID
+        uniqueKeys:
+            - [ gibbonCourseClassID ]
+        fields:
+            - gibbonSchoolYearID
+            - gibbonCourseID
+            - gibbonCourseClassID
+            - gibbonScaleIDTarget

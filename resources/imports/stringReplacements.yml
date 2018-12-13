@@ -10,7 +10,7 @@ access:
 primaryKey:
     gibbonStringID
 uniqueKeys:
-    - original
+    - [ original, mode ]
 table:
     original: 
         name: "Original String"
