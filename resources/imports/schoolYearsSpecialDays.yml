@@ -38,18 +38,18 @@ table:
         desc: ""
         args: { filter: string }
     schoolOpen: 
-        name: "School Open"
+        name: "School Opens"
         desc: ""
         args: { filter: time }
     schoolStart: 
-        name: "School Start"
+        name: "School Starts"
         desc: ""
         args: { filter: time }
     schoolEnd: 
-        name: "School End"
+        name: "School Ends"
         desc: ""
         args: { filter: time }
     schoolClose: 
-        name: "School Close"
+        name: "School Closes"
         desc: ""
         args: { filter: time }

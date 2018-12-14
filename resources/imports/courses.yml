@@ -41,8 +41,8 @@ table:
     map: 
         name: "Include In Curriculum Map"
         desc: ""
-        args: { filter: yesno }
+        args: { filter: yesno, custom: true }
     gibbonYearGroupIDList: 
         name: "Year Groups"
         desc: "Enrolable year groups."
-        args: { filter: yearlist }
+        args: { filter: yearlist, custom: true }

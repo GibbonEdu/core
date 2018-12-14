@@ -37,9 +37,9 @@ table:
         args: { filter: string, required: true }
     color:
         name: "Header Background Colour"
-        desc: "RGB Hex value, without leading #"
-        args: { filter: string }
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }
     fontColor:
         name: "Header Font Colour"
-        desc: "RGB Hex value, without leading #"
-        args: { filter: string }
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }

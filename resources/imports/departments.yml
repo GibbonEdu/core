@@ -14,7 +14,7 @@ table:
     type: 
         name: "Type"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }
     name: 
         name: "Name"
         desc: ""
@@ -34,4 +34,4 @@ table:
     logo: 
         name: "Logo"
         desc: "125x125px jpg/png/gif"
-        args: { filter: string }
+        args: { filter: string, custom: true }

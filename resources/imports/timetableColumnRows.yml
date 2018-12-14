@@ -36,4 +36,4 @@ table:
     type:
         name: "Type"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }

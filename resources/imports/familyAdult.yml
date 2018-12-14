@@ -28,7 +28,7 @@ table:
         desc: "Data displayed in full Student Profile"
         args: { filter: string }
     childDataAccess:
-        name: "Child Data Access"
+        name: "Data Access?"
         desc: "Access data on family's children?"
         args: { filter: yesno, custom: true }
     contactPriority:
