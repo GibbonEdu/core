@@ -1,0 +1,34 @@
+details:
+    type: schoolYears
+    name: School Years
+    table: gibbonSchoolYear
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage School Years
+primaryKey:
+    gibbonSchoolYearID
+uniqueKeys:
+    - name
+    - sequenceNumber
+table:
+    name: 
+        name: "School Year Name"
+        desc: ""
+        args: { filter: schoolyear, required: true }
+    status: 
+        name: "Status"
+        desc: ""
+        args: { filter: string, required: true }
+    sequenceNumber: 
+        name: "Sequence Number"
+        desc: "Must be unique. Controls chronological ordering."
+        args: { filter: numeric, required: true }
+    firstDay: 
+        name: "First Day"
+        desc: ""
+        args: { filter: date, required: true }
+    lastDay: 
+        name: "Last Day"
+        desc: ""
+        args: { filter: date, required: true }

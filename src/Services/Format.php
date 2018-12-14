@@ -282,16 +282,39 @@ class Format
      * @param string $title
      * @return string
      */
-    public static function link($url, $text = '', $title = '')
+    public static function link($url, $text = '', $attr = [])
     {
         if (empty($url)) return $text;
         if (!$text) $text = $url;
+        if (!is_array($attr)) $attr = ['title' => $attr];
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
-            return '<a href="'.$url.'" title="'.$title.'" target="_blank">'.$text.'</a>';
+            return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
         } else {
-            return '<a href="'.$url.'" title="'.$title.'">'.$text.'</a>';
+            return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
         }
+    }
+
+    /**
+     * Formats a key => value array of HTML attributes into a string of key="value".
+     *
+     * @param array $attributes
+     * @return string
+     */
+    public static function attributes(array $attributes)
+    {
+        return implode(' ', array_map(
+            function ($key) use ($attributes) {
+                if (is_bool($attributes[$key])) {
+                    return $attributes[$key]? $key : '';
+                }
+                if (isset($attributes[$key]) && $attributes[$key] != '') {
+                    return $key.'="'.htmlentities($attributes[$key], ENT_QUOTES, 'UTF-8').'"';
+                }
+                return '';
+            },
+            array_keys($attributes)
+        ));
     }
 
     /**
@@ -450,5 +473,10 @@ class Format
     public static function courseClassName($courseName, $className)
     {
         return $courseName .'.'. $className;
+    }
+
+    public static function alert($message, $level = 'error')
+    {
+        return '<div class="'.$level.'">'.$message.'</div>';
     }
 }
