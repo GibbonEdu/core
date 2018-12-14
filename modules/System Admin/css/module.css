@@ -16,3 +16,102 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 */
+
+.columnText[readonly] {
+	font-style: italic;
+	color: #666666;
+}
+
+table.blank td::first-line {
+	font-size: 115%;
+	font-weight: bold;
+}
+
+tr.error td {
+	border-top: 1px solid #F8E4E2;
+	border-bottom: 1px solid #E7B7B2;
+}
+
+tr.warning td {
+	border-top: 1px solid #FEEAD9;
+	border-bottom: 1px solid #EFB98C;
+}
+
+/* multi-part form: progress indicator classes */
+.multiPartForm {
+	list-style-type: none;
+	margin: 20px 0 30px 0;
+	padding: 0;
+	overflow: hidden;
+	counter-reset: step;
+}
+
+/* step labels */
+.multiPartForm .step {
+	list-style-type: none;
+	color: #222222;
+	text-transform: uppercase;
+	font-size: 12px;
+	width: 25%;
+	float: left;
+	position: relative;
+	z-index: 0;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+/* step counter */
+.multiPartForm .step:before {
+	content: counter(step);
+	counter-increment: step;
+	width: 30px;
+	line-height: 30px;
+	display: block;
+	font-size: 16px;
+	color: #333;
+	background: white;
+	border-radius: 3px;
+	margin: 0 auto 5px auto;
+	z-index: 0;
+}
+
+/* progress connectors */
+.multiPartForm .step:after {
+	content: '';
+	width: 100%;
+	height: 2px;
+	background: white;
+	position: absolute;
+	left: -50%;
+	top: 14px;
+	z-index: -1;
+	margin: 0 15px;
+}
+
+/* connector not needed before the first step */
+.multiPartForm .step:first-child:after {
+	content: none; 
+}
+/* active step */
+.multiPartForm .step.active:before,
+.multiPartForm .step.active:after{
+	background-color: #A88EDB;
+	color: white;
+}
+
+/* database tool classes */
+.sticky {
+	position: sticky;
+	top: -1px;
+}
+
+.checkboxList label {
+	font-size: 12px;
+	line-height: 1.8;
+	padding-right: 5px;
+}
+
+.checkboxList input[type="checkbox"] {
+	margin-right: 5px;
+}
