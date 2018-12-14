@@ -1,0 +1,50 @@
+details:
+    type: family
+    name: Family
+    category: Family
+    table: gibbonFamily
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage Families
+primaryKey:
+    gibbonFamilyID
+uniqueKeys:
+    - familySync
+table:
+    name: 
+        name: "Family Name"
+        desc: ""
+        args: { filter: string, required: true }
+    status: 
+        name: "Marital Status"
+        desc: ""
+        args: { filter: string, custom: true }
+    languageHomePrimary: 
+        name: "Home Language - Primary"
+        desc: ""
+        args: { filter: language }
+    languageHomeSecondary: 
+        name: "Home Language - Secondary"
+        desc: ""
+        args: { filter: language }
+    nameAddress: 
+        name: "Address Name"
+        desc: "Formal name to address parents with."
+        args: { filter: string, required: true }
+    homeAddress: 
+        name: "Home Address"
+        desc: "Unit, Building, Street"
+        args: { filter: string }
+    homeAddressDistrict: 
+        name: "Home Address (District)"
+        desc: "County, State, District"
+        args: { filter: string }
+    homeAddressCountry: 
+        name: "Home Address (Country)"
+        desc: ""
+        args: { filter: country }
+    familySync: 
+        name: "Family Sync Key"
+        desc: "Unique ID for family, according to source system."
+        args: { filter: string, custom: true, required: true }

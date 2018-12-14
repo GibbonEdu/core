@@ -1,0 +1,41 @@
+details:
+    type: studentNotes
+    category: Students
+    name: Student Notes
+    table: gibbonStudentNote
+    modes: { update: false, insert: true }
+access:
+    module: Students
+    action: Student Enrolment
+primaryKey:
+    gibbonStudentNoteID
+uniqueKeys:
+    []
+table:
+    gibbonPersonID:
+        name: "Student"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonStudentNoteCategoryID:
+        name: "Category"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonStudentNoteCategory, key: gibbonStudentNoteCategoryID, field: name  }
+    title:
+        name: "Title"
+        desc: ""
+        args: { filter: string, required: true }
+    note:
+        name: "Note"
+        desc: ""
+        args: { filter: html, required: true }
+    gibbonPersonIDCreator:
+        name: "Created By"
+        desc: "Username"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    timestamp:
+        name: "Timestamp"
+        desc: ""
+        args: { filter: timestamp, hidden: true, function: timestamp }
