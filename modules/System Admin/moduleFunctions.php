@@ -305,3 +305,17 @@ function removeDirectoryContents($dir, $removeSelf = false)
         rmdir($dir);
     }
 }
+
+function num2alpha($n)
+{
+    for ($r = ""; $n >= 0; $n = intval($n / 26) - 1) {
+        $r = chr($n%26 + 0x41) . $r;
+    }
+    return $r;
+}
+
+function readableFileSize($bytes)
+{
+    $unit=array('bytes','KB','MB','GB','TB','PB');
+    return @round($bytes/pow(1024, ($i=floor(log($bytes, 1024)))), 2).' '.$unit[$i];
+}
