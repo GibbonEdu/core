@@ -1,0 +1,28 @@
+details:
+    type: familyChild
+    name: Children
+    category: Family
+    table: gibbonFamilyChild
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage Families
+primaryKey:
+    gibbonFamilyChildID
+uniqueKeys:
+    - [ gibbonFamilyID, gibbonPersonID ]
+table:
+    gibbonFamilyID:
+        name: "Family Sync Key"
+        desc: "Unique ID for family, according to source system."
+        args: { filter: string, required: true }
+        relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
+    gibbonPersonID:
+        name: "Child"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    comment:
+        name: "Comment"
+        desc: ""
+        args: { filter: string }

@@ -1,0 +1,34 @@
+details:
+    type: scaleGrade
+    name: Grade Scale
+    table: gibbonScaleGrade
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Grade Scales
+primaryKey:
+    gibbonScaleGradeID
+uniqueKeys:
+    - [ gibbonScaleID, value ]
+table:
+    gibbonScaleID: 
+        name: "Grade Scale"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
+    value: 
+        name: "Value"
+        desc: "Must be unique for this grade scale."
+        args: { filter: string, required: true }
+    descriptor: 
+        name: "Descriptor"
+        desc: ""
+        args: { filter: string, required: true }
+    sequenceNumber: 
+        name: "Sequence Number"
+        desc: "Must be unique for this grade scale."
+        args: { filter: numeric, required: true }
+    isDefault: 
+        name: "Is Default?"
+        desc: "Preselects this option when using this grade scale in appropriate contexts."
+        args: { filter: yesno, custom: true }
