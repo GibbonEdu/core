@@ -40,8 +40,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_histor
     $logsByType = array_map(function ($log) use (&$importTypeList) {
         $log['data'] = isset($log['serialisedArray'])? unserialize($log['serialisedArray']) : [];
         $log['importType'] = @$importTypeList[$log['data']['type']];
-        return $log;
+        return $log['importType'] ? $log : null;
     }, $logsByType);
+    $logsByType = array_filter($logsByType);
 
     $table = DataTable::create('importHistory');
     $table->setTitle(__('Import History'));

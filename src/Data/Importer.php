@@ -35,21 +35,17 @@ class Importer
     const COLUMN_DATA_HIDDEN = -5;
 
     const ERROR_IMPORT_FILE = 200;
-    const ERROR_INVALID_INPUTS = 201;
     const ERROR_REQUIRED_FIELD_MISSING = 205;
     const ERROR_INVALID_FIELD_VALUE = 206;
     const ERROR_DATABASE_GENERIC = 208;
     const ERROR_DATABASE_FAILED_INSERT = 209;
     const ERROR_DATABASE_FAILED_UPDATE = 210;
-    const ERROR_KEY_MISSING = 211;
     const ERROR_NON_UNIQUE_KEY =212;
     const ERROR_RELATIONAL_FIELD_MISMATCH = 213;
     const ERROR_INVALID_HAS_SPACES = 214;
 
     const WARNING_DUPLICATE_KEY = 101;
     const WARNING_RECORD_NOT_FOUND = 102;
-
-    const MESSAGE_GENERATED_PASSWORD = 10;
 
     public $fieldDelimiter = ',';
     public $stringEnclosure = '"';
@@ -523,8 +519,9 @@ class Importer
         foreach ($this->tableData as $rowNum => $row) {
 
             // Ensure we have valid key(s)
-            if (!empty($importType->getUniqueKeyFields()) && array_diff($importType->getUniqueKeyFields(), array_keys($row)) != false) {
-                $this->log($rowNum, Importer::ERROR_KEY_MISSING);
+            $uniqueKeyDiff = array_diff($importType->getUniqueKeyFields(), array_keys($row));
+            if (!empty($importType->getUniqueKeyFields()) && $uniqueKeyDiff != false) {
+                $this->log($rowNum, Importer::ERROR_REQUIRED_FIELD_MISSING, implode(', ', $uniqueKeyDiff));
                 $partialFail = true;
                 continue;
             }
@@ -851,34 +848,28 @@ class Importer
         switch ($errorID) {
             // ERRORS
             case Importer::ERROR_IMPORT_FILE:
-                return __('There was an error reading the import file type {value}.', $args);
+                return __('There was an error reading the file {value}.', $args);
                 break;
             case Importer::ERROR_REQUIRED_FIELD_MISSING:
-                return __('Missing value for required field.');
+                return __('Missing value for a required field.');
                 break;
             case Importer::ERROR_INVALID_FIELD_VALUE:
                 return __('Invalid value: "{value}". Expected: {expectation}', $args);
                 break;
             case Importer::ERROR_INVALID_HAS_SPACES:
-                return __('Invalid value: "{value}". This field type cannot contain spaces.', $args);
-                break;
-            case Importer::ERROR_INVALID_INPUTS:
-                return __('Your request failed because your inputs were invalid.');
-                break;
-            case Importer::ERROR_KEY_MISSING:
-                return __('Missing value for primary key or unique key set.');
+                return __('Invalid value: "{value}". Contains invalid characters.', $args);
                 break;
             case Importer::ERROR_NON_UNIQUE_KEY:
-                return __('Encountered non-unique values used by {key}: {value}', $args);
+                return __('Non-unique values used by {key}: {value}', $args);
                 break;
             case Importer::ERROR_DATABASE_GENERIC:
-                return __('There was an error accessing the database.');
+                return __('Your request failed due to a database error.');
                 break;
             case Importer::ERROR_DATABASE_FAILED_INSERT:
-                return __('Failed to insert record into database.');
+                return __('Failed to insert or update database record.');
                 break;
             case Importer::ERROR_DATABASE_FAILED_UPDATE:
-                return __('Failed to update database record.');
+                return __('Failed to insert or update database record.');
                 break;
             case Importer::ERROR_RELATIONAL_FIELD_MISMATCH:
                 return __('Each {name} value should match an existing {field} in {table}.', $args);
@@ -892,12 +883,8 @@ class Importer
                 return __('A database entry for this record could not be found. Record skipped.');
                 break;
 
-            // MESSAGES
-            case Importer::MESSAGE_GENERATED_PASSWORD:
-                return __('Password generated for user {username}: {value}');
-                break;
             default:
-                return __('An error occurred, the import was aborted.');
+                return __('An unknown error occured, so the import will be aborted.');
                 break;
         }
     }

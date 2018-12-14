@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         echo Format::alert(__('Your request failed because your inputs were invalid.'));
         return;
     } elseif (!$importType->isValid()) {
-        echo Format::alert(__('Import cannot proceed, there was an error reading the import file type {type}.', ['type' => $type]));
+        echo Format::alert(__('There was an error reading the file {value}.', ['value' => $type]));
         return;
     }
 
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
     echo "</ul>";
 
     echo '<h2>';
-    echo __('Step {number} - {name}', ['number' => $step, 'name' => $steps[$step]]);
+    echo __('Step {number}', ['number' => $step]).' - '.__($steps[$step]);
     echo '</h2>';
 
     //STEP 1, SELECT TERM -----------------------------------------------------------------------------------
@@ -97,13 +97,13 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $availableModes = array();
         $modes = $importType->getDetail('modes');
         if (!empty($modes['update']) && !empty($modes['insert'])) {
-            $availableModes['sync'] = __('UPDATE & INSERT');
+            $availableModes['sync'] = __('Update').' & '.__('Insert');
         }
         if (!empty($modes['update'])) {
-            $availableModes['update'] = __('UPDATE only');
+            $availableModes['update'] = __('Update');
         }
         if (!empty($modes['insert'])) {
-            $availableModes['insert'] = __('INSERT only');
+            $availableModes['insert'] = __('Insert');
         }
 
         $row = $form->addRow();
@@ -112,9 +112,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
         $columnOrders = array(
             'guess'      => __('Best Guess'),
-            'last'       => __('From Last Import'),
-            'linearplus' => __('From Export Data'),
-            'linear'     => __('Same as Below'),
+            'last'       => __('Last Import'),
+            'linearplus' => __('From Exported Data'),
+            'linear'     => __('From Default Order (see notes)'),
         );
         $selectedOrder = (!empty($importLog))? 'last' : 'guess';
         $row = $form->addRow();
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
         //Check file type
         if ($importer->isValidMimeType($_FILES['file']['type']) == false) {
-            echo Format::alert(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a valid file.', ['%1$s' => $_FILES['file']['type']]));
+            echo Format::alert(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.', ['%1$s' => $_FILES['file']['type']]));
         } elseif (empty($_POST["fieldDelimiter"]) or empty($_POST["stringEnclosure"])) {
             echo Format::alert(__('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.'));
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             $firstLine = $importer->getFirstRow();
 
             if (empty($csvData) || empty($headings) || empty($firstLine)) {
-                echo Format::alert(__('Import cannot proceed, there was an error reading the import file type {type}.', ['type' => $_FILES['file']['name']]));
+                echo Format::alert(__('There was an error reading the file {value}.', ['value' => $_FILES['file']['name']]));
                 return;
             }
 
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $table = $form->addRow()->addTable()->setClass('smallIntBorder fullWidth');
 
                 $row = $table->addRow();
-                $row->addLabel('syncField', __('Use database ID field?'))->description(__('Only entries with a matching database ID will be updated.'));
+                $row->addLabel('syncField', __('Sync').'?')->description(__('Only rows with a matching database ID will be imported.'));
                 $row->addYesNoRadio('syncField')->checked($lastFieldValue);
 
                 $form->toggleVisibilityByClass('syncDetails')->onRadio('syncField')->when('Y');
@@ -282,10 +282,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         $columns[Importer::COLUMN_DATA_SKIP] = '[ '.__('Skip this Column').' ]';
                     }
                     if ($importType->getField($fieldName, 'custom')) {
-                        $columns[Importer::COLUMN_DATA_CUSTOM] = '[ '.__('Custom Value').' ]';
+                        $columns[Importer::COLUMN_DATA_CUSTOM] = '[ '.__('Custom').' ]';
                     }
                     if ($importType->getField($fieldName, 'function')) {
-                        $columns[Importer::COLUMN_DATA_FUNCTION] = '[ '.__('Generate Value').' ]';
+                        $columns[Importer::COLUMN_DATA_FUNCTION] = '[ '.__('Generate').' ]';
                         //data-function='". $importType->getField($fieldName, 'function') ."'
                     }
                     return $columns;
@@ -302,10 +302,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         $output .= " <strong class='highlight'>*</strong>";
                     }
                     if ($importType->isFieldUniqueKey($fieldName)) {
-                        $output .= "<img title='" . __('Unique Key') . "' src='./themes/Default/img/target.png' style='float: right; width:14px; height:14px;margin-left:4px;'>";
+                        $output .= "<img title='" . __('Must be unique') . "' src='./themes/Default/img/target.png' style='float: right; width:14px; height:14px;margin-left:4px;'>";
                     }
                     if ($importType->isFieldRelational($fieldName)) {
-                        $output .= "<img title='" . __('Relational') . "' src='./themes/Default/img/refresh.png' style='float: right; width:14px; height:14px;margin-left:4px;'>";
+                        $relationalTable = $importType->getField($fieldName, 'relationship')['table'] ?? '';
+                        $output .= "<img title='" .__('Relationship') .': '.$relationalTable. "' src='./themes/Default/img/refresh.png' style='float: right; width:14px; height:14px;margin-left:4px;'>";
                     }
                     return $output;
                 };
@@ -404,7 +405,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             echo Format::alert('Your request failed because your inputs were invalid.');
             return;
         } elseif ($mode != "sync" and $mode != "insert" and $mode != "update") {
-            echo Format::alert(__('Import cannot proceed, as the "Mode" field has been left blank.'));
+            echo Format::alert(__('Import cannot proceed, as the "Mode" field have been left blank.'));
         } elseif (($mode == 'sync' || $mode == 'update') && (!empty($syncField) && $syncColumn < 0)) {
             echo Format::alert(__("Your request failed because your inputs were invalid."));
             return;
@@ -515,7 +516,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $row->onlyIf($overallSuccess)->addContent('');
                 
                 if (!$overallSuccess && !$ignoreErrors) {
-                    $row->addButton(__('Cannot Continue'))->setID('submitStep3')->isDisabled()->addClass('right');
+                    $row->addButton(__('Failed'))->setID('submitStep3')->isDisabled()->addClass('right');
                 } else {
                     $row->addSubmit()->setID('submitStep3');
                 }
@@ -528,7 +529,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 // Output passwords if generated
                 if (!empty($importer->outputData['passwords'])) {
                     $table = DataTable::create('output');
-                    $table->setTitle(__('Generated Passwords'));
+                    $table->setTitle(__('New Password'));
                     $table->setDescription(__('These passwords have been generated by the import process. They have <b>NOT</b> been recorded anywhere: please copy & save them now if you wish to record them.'));
 
                     $table->addColumn('username', __('Username'));
