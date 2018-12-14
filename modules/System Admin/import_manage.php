@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
             ->format(function ($importType, $actions) {
                 if ($importType['isAccessible']) {
                     $actions->addAction('import', __('Import'))
-                        ->setIcon('run')
+                        ->setIcon('upload')
                         ->setURL('/modules/System Admin/import_run.php');
 
                     $actions->addAction('export', __('Export Columns'))
