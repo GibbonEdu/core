@@ -507,6 +507,90 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
         }
     }
 
+    // Groups
+    if ($staff) {
+        $dataPosts['date60'] = $date;
+        $dataPosts['gibbonPersonID5'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source 
+        FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonGroup ON (gibbonMessengerTarget.id=gibbonGroup.gibbonGroupID) 
+        JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID) 
+        WHERE gibbonGroupPerson.gibbonPersonID=:gibbonPersonID5 
+        AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.staff='Y'
+        AND (messageWall_date1=:date60 OR messageWall_date2=:date60 OR messageWall_date3=:date60) )";
+    }
+    if ($student) {
+        $dataPosts['date61'] = $date;
+        $dataPosts['gibbonPersonID6'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source 
+        FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonGroup ON (gibbonMessengerTarget.id=gibbonGroup.gibbonGroupID) 
+        JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID) 
+        WHERE gibbonGroupPerson.gibbonPersonID=:gibbonPersonID6 
+        AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.students='Y'
+        AND (messageWall_date1=:date61 OR messageWall_date2=:date61 OR messageWall_date3=:date61) )";
+    }
+    if ($parent and $children != false) {
+        $childrenQuery = str_replace('gibbonPersonID', 'gibbonGroupPerson.gibbonPersonID', $children);
+        $dataPosts['date62'] = $date;
+        $dataPosts['gibbonPersonID7'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, title, surname, preferredName, category, image_240, concat(gibbonGroup.name, ' Group') AS source 
+        FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonGroup ON (gibbonMessengerTarget.id=gibbonGroup.gibbonGroupID) 
+        JOIN gibbonGroupPerson ON (gibbonGroup.gibbonGroupID=gibbonGroupPerson.gibbonGroupID) 
+        WHERE (gibbonGroupPerson.gibbonPersonID=:gibbonPersonID7 OR $childrenQuery)
+        AND gibbonMessengerTarget.type='Group' AND gibbonMessengerTarget.parents='Y'
+        AND (messageWall_date1=:date62 OR messageWall_date2=:date62 OR messageWall_date3=:date62) )";
+    }
+
+    // Transport
+    if ($staff) {
+        $dataPosts['date63'] = $date;
+        $dataPosts['gibbonPersonID8'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport) 
+        WHERE transportee.gibbonPersonID=:gibbonPersonID8 
+        AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.staff='Y'
+        AND (messageWall_date1=:date63 OR messageWall_date2=:date63 OR messageWall_date3=:date63) )";
+    }
+    if ($student) {
+        $dataPosts['date64'] = $date;
+        $dataPosts['gibbonPersonID9'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport) 
+        WHERE transportee.gibbonPersonID=:gibbonPersonID9 
+        AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.students='Y'
+        AND (messageWall_date1=:date64 OR messageWall_date2=:date64 OR messageWall_date3=:date64) )";
+    }
+    if ($parent and $children != false) {
+        $childrenQuery = str_replace('gibbonPersonID', 'transportee.gibbonPersonID', $children);
+        $dataPosts['date65'] = $date;
+        $dataPosts['gibbonPersonID10'] = $_SESSION[$guid]['gibbonPersonID'];
+        $sqlPosts = $sqlPosts." UNION (SELECT gibbonMessenger.*, gibbonPerson.title, gibbonPerson.surname, gibbonPerson.preferredName, category, gibbonPerson.image_240, concat('Transport ', transportee.transport) AS source FROM gibbonMessenger 
+        JOIN gibbonMessengerTarget ON (gibbonMessengerTarget.gibbonMessengerID=gibbonMessenger.gibbonMessengerID) 
+        JOIN gibbonPerson ON (gibbonMessenger.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+        JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) 
+        JOIN gibbonPerson as transportee ON (gibbonMessengerTarget.id=transportee.transport) 
+        WHERE (transportee.gibbonPersonID=:gibbonPersonID10 OR $childrenQuery)
+        AND gibbonMessengerTarget.type='Transport' AND gibbonMessengerTarget.parents='Y'
+        AND (messageWall_date1=:date65 OR messageWall_date2=:date65 OR messageWall_date3=:date65) )";
+    }
+
     //SPIT OUT RESULTS
     if ($mode == 'result') {
         $resultReturn = array();

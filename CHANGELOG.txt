@@ -85,6 +85,7 @@ v17.0.00
         Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
         Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
         Messenger: removed Body column from Canned Response table
+        Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
