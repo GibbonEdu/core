@@ -359,7 +359,33 @@ else {
                       }
                     }
                   }
-                }
+				}
+				
+				//Groups
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any") || isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my")) {
+					if ($_POST["group"] == "Y") {
+						$staff = $_POST["groupsStaff"] ;
+						$students = $_POST["groupsStudents"] ;
+						$parents = "N" ;
+						if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
+							$parents=$_POST["groupsParents"] ;
+						}
+						$choices=$_POST["groups"] ;
+						if ($choices!="") {
+							foreach ($choices as $t) {
+								try {
+									$data=array("gibbonMessengerID"=>$gibbonMessengerID, "t"=>$t, "staff"=>$staff, "students"=>$students, "parents"=>$parents);
+									$sql="INSERT INTO gibbonMessengerTarget SET gibbonMessengerID=:gibbonMessengerID, type='Group', id=:t, staff=:staff, students=:students, parents=:parents" ;
+									$result=$connection2->prepare($sql);
+									$result->execute($data);
+								}
+								catch(PDOException $e) {
+									$partialfail=TRUE;
+								}
+							}
+						}
+					}
+				}
 
 				//Individuals
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
