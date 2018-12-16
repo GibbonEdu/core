@@ -445,6 +445,7 @@ class Importer
                     } else {
                         // Otherwise collect values in an array
                         $customField = $importType->getField($fieldName, 'customField');
+                        if (empty($customField)) $customField = $importType->getField($fieldName, 'name');
                         $this->serializeData[$serialize][$customField] = $value;
                     }
                 } else {
