@@ -792,4 +792,12 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Import From File', 0, 'Import & Export', 'Allows a user to view and run available imports.', 'import_manage.php,import_run.php,export_run.php,import_history.php,import_history_view.php', 'import_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Import From File'));end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');end
+DELETE FROM gibbonAction WHERE name='Import Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Library');end
+DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+DELETE FROM gibbonAction WHERE name='Import External Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+DELETE FROM gibbonAction WHERE name='Import Internal Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+DELETE FROM gibbonAction WHERE name='Import Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Staff' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 ";

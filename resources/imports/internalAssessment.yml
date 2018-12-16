@@ -5,7 +5,7 @@ details:
     modes: { update: true, insert: true, export: true }
 access:
     module: Formal Assessment
-    action: Import Internal Assessments
+    action: Manage Internal Assessments
 primaryKey:
     gibbonInternalAssessmentEntryID
 uniqueKeys:
