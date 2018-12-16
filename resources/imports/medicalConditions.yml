@@ -43,7 +43,7 @@ table:
         args: {filter: string}
     lastEpisode: 
         name: "Last Episode"
-        desc: "Date"
+        desc: ""
         args: {filter: date}
     lastEpisodeTreatment: 
         name: "Last Episode Treatment"

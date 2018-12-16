@@ -23,4 +23,4 @@ table:
     logo: 
         name: "Logo"
         desc: ""
-        args: { filter: string }
+        args: { filter: string, custom: true }

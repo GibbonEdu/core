@@ -5,7 +5,7 @@ details:
     modes: { update: true, insert: true, export: true }
 access:
     module: Formal Assessment
-    action: External Assessment Data_manage
+    action: Import External Assessments
 fields:
     gibbonExternalAssessmentID:
         name: "External Assessment"
@@ -35,16 +35,11 @@ fields:
         desc: "Must match value of gibbonExternalAssessmentField.name in database."
         args: { filter: string, custom: true, required: true }
         relationship: { table: gibbonExternalAssessmentField, key: gibbonExternalAssessmentFieldID, field: [ name, category, gibbonExternalAssessmentID ]  }
-    gibbonScaleID:
-        name: "Grade Scale"
-        desc: "Short Name"
-        args: { filter: string, custom: true, required: true, readonly: true }
-        relationship: { table: gibbonScale, key: gibbonScaleID, field: nameShort  }
     gibbonScaleGradeID:
         name: "Result"
         desc: "Must match value of gibbonScaleGrade.value in database."
         args: { filter: string }
-        relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, field: [ value, gibbonScaleID ] }
+        relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, join: gibbonExternalAssessmentField, on: [gibbonScaleID, gibbonScaleID], field: [ value, gibbonExternalAssessmentFieldID ] }
 tables:
     gibbonExternalAssessmentStudent:
         primaryKey:
@@ -66,5 +61,4 @@ tables:
             - gibbonExternalAssessmentStudentID
             - category
             - gibbonExternalAssessmentFieldID
-            - gibbonScaleID
             - gibbonScaleGradeID

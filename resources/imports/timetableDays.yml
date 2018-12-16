@@ -14,7 +14,7 @@ uniqueKeys:
 table:
     gibbonSchoolYearID:
         name: "School Year"
-        desc: "Must match an existing school year e.g. 2015-2016"
+        desc: "School year name, as set in School Admin. Must already exist."
         args: { filter: schoolyear, required: true, custom: true, readonly: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonTTID:
@@ -37,9 +37,9 @@ table:
         args: { filter: string, required: true }
     color:
         name: "Header Background Colour"
-        desc: "RGB Hex value, without leading #"
-        args: { filter: string }
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }
     fontColor:
         name: "Header Font Colour"
-        desc: "RGB Hex value, without leading #"
-        args: { filter: string }
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }

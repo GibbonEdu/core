@@ -24,4 +24,4 @@ table:
     role:
         name: "Role"
         desc: ""
-        args: { filter: string, required: true }
+        args: { filter: string, required: true, custom: true }

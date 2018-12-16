@@ -1,0 +1,53 @@
+details:
+    type: plannerOutcomes
+    name: Outcomes
+    table: gibbonOutcome
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Planner
+    action: Manage Outcomes_viewEditAll
+primaryKey:
+    gibbonOutcomeID
+uniqueKeys:
+    - [ name, gibbonDepartmentID ]
+    - [ nameShort, gibbonDepartmentID ]
+table:
+    scope: 
+        name: "Scope"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+    gibbonDepartmentID: 
+        name: "Learning Area"
+        desc: "Short Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    name: 
+        name: "Name"
+        desc: ""
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: ""
+        args: { filter: string, required: true }
+    active: 
+        name: "Active"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    category: 
+        name: "Category"
+        desc: ""
+        args: { filter: string, custom: true }
+    description: 
+        name: "Description"
+        desc: ""
+        args: { filter: html }
+    gibbonYearGroupIDList: 
+        name: "Year Groups"
+        desc: "Relevant student year groups"
+        args: { filter: csv, custom: true }
+        relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort }
+    gibbonPersonIDCreator: 
+        name: "Created By"
+        desc: "Username"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }

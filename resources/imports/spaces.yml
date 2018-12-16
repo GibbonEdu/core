@@ -22,7 +22,7 @@ table:
     capacity: 
         name: "Capacity"
         desc: ""
-        args: { filter: numeric }
+        args: { filter: numeric, custom: true }
     computer: 
         name: "Teacher's Computer"
         desc: ""
