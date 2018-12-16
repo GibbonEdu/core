@@ -49,9 +49,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
     $importer = new Importer($pdo);
 
-    $checkUserPermissions = getSettingByScope($connection2, 'Data Admin', 'enableUserLevelPermissions');
 
-    if ($checkUserPermissions == 'Y' && $importType->isImportAccessible($guid, $connection2) == false) {
+
+    if ($importType->isImportAccessible($guid, $connection2) == false) {
         echo Format::alert(__('You do not have access to this action.'));
         return;
     } elseif (empty($importType)) {

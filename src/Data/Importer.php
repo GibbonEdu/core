@@ -308,7 +308,7 @@ class Importer
 
             foreach ($importType->getAllFields() as $fieldName) {
                 $columnIndex = $columnOrder[$fieldCount];
-                $value = null;
+                $value = $importType->getField($fieldName, 'value');
 
                 if (!in_array($fieldName, $tableFields)) {
                     // Skip fields not used by this table
@@ -445,6 +445,7 @@ class Importer
                     } else {
                         // Otherwise collect values in an array
                         $customField = $importType->getField($fieldName, 'customField');
+                        if (empty($customField)) $customField = $importType->getField($fieldName, 'name');
                         $this->serializeData[$serialize][$customField] = $value;
                     }
                 } else {

@@ -76,6 +76,8 @@ class ImportType
     protected $useCustomFields = false;
     protected $customFields = [];
 
+    protected $useSerializedFields = false;
+
     /**
      * Constructor
      *
@@ -160,6 +162,10 @@ class ImportType
                     }
                     if ($filter == 'customfield') {
                         $this->useCustomFields = true;
+                    }
+
+                    if (!empty($this->getField($fieldName, 'serialize'))) {
+                        $this->useSerializedFields = true;
                     }
                 }
             }
@@ -1082,7 +1088,7 @@ class ImportType
      */
     public function isUsingCustomFields()
     {
-        return $this->useCustomFields;
+        return $this->useCustomFields || $this->useSerializedFields;
     }
 
     /**
@@ -1189,6 +1195,9 @@ class ImportType
 
             case 'url':
                 return __('URL ({number} chars)', ['number' => $length]);
+
+            case 'numeric':
+                return __('Number');
         }
 
         switch ($kind) {
