@@ -793,4 +793,5 @@ INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, 
 INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Import From File'));end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');end
 DELETE FROM gibbonAction WHERE name='Import Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Library');end
+DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
 ";
