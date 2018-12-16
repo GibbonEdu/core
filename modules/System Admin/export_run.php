@@ -26,12 +26,12 @@ set_time_limit(1200);
 
 $_POST['address'] = '/modules/System Admin/export_run.php';
 
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_POST['address'];
-
 // Gibbon Bootstrap
 include __DIR__ . '/../../gibbon.php';
 
 require __DIR__ . '/moduleFunctions.php';
+
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_POST['address'];
 
 if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.php")==false) {
     // Access denied
@@ -98,6 +98,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.ph
         $info = ($importType->isFieldRequired($fieldName))? "* required\n" : '';
         $info .= $importType->readableFieldType($fieldName)."\n";
         $info .= $importType->getField($fieldName, 'desc', '');
+        $info = strip_tags($info);
 
         if (!empty($info)) {
             $excel->getActiveSheet()->getComment(num2alpha($count).'1')->getText()->createTextRun($info);
