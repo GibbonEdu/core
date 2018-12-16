@@ -271,6 +271,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])->fromQuery($pdo, $sql)->selected($setting['value']);
 
+    $fileTypes = array(
+        'Excel2007'    => __('Excel 2007 and above (.xlsx)'),
+        'Excel5'       => __('Excel 95 and above (.xls)'),
+        'OpenDocument' => __('OpenDocument (.ods)'),
+        'CSV'          => __('Comma Separated (.csv)'),
+    );
+    $setting = getSettingByScope($connection2, 'System Admin', 'exportDefaultFileType', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
+        $row->addSelect($setting['name'])->fromArray($fileTypes)->selected($setting['value']);
+
     $row = $form->addRow();
         $row->addFooter();
         $row->addSubmit();
