@@ -795,4 +795,5 @@ INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`val
 DELETE FROM gibbonAction WHERE name='Import Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Library');end
 DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
 DELETE FROM gibbonAction WHERE name='Import External Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+DELETE FROM gibbonAction WHERE name='Import Internal Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
 ";
