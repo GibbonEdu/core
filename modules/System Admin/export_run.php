@@ -24,7 +24,7 @@ ini_set('max_execution_time', 7200);
 ini_set('memory_limit','1024M');
 set_time_limit(1200);
 
-$_POST['address'] = '/modules/Data Admin/export_run.php';
+$_POST['address'] = '/modules/System Admin/export_run.php';
 
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_POST['address'];
 
@@ -33,7 +33,7 @@ include __DIR__ . '/../../gibbon.php';
 
 require __DIR__ . '/moduleFunctions.php';
 
-if (isActionAccessible($guid, $connection2, "/modules/Data Admin/export_run.php")==false) {
+if (isActionAccessible($guid, $connection2, "/modules/System Admin/export_run.php")==false) {
     // Access denied
     $URL .= '&return=error0';
     header("Location: {$URL}");
@@ -45,9 +45,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Data Admin/export_run.php"
     $type = (isset($_GET['type']))? $_GET['type'] : '';
     $importType = ImportType::loadImportType($type, $pdo);
 
-    $checkUserPermissions = getSettingByScope($connection2, 'Data Admin', 'enableUserLevelPermissions');
-
-    if ($checkUserPermissions == 'Y' && $importType->isImportAccessible($guid, $connection2) == false) {
+    if ($importType->isImportAccessible($guid, $connection2) == false) {
         $URL .= '&return=error0';
         header("Location: {$URL}");
         exit;
@@ -233,7 +231,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Data Admin/export_run.php"
 
     $filename = ($dataExport) ? 'DataExport'.'-'.$type : 'DataStructure'.'-'.$type;
 
-    $exportFileType = getSettingByScope($connection2, 'Data Admin', 'exportDefaultFileType');
+    $exportFileType = getSettingByScope($connection2, 'System Admin', 'exportDefaultFileType');
     if (empty($exportFileType)) {
         $exportFileType = 'Excel2007';
     }
