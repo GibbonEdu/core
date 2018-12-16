@@ -794,4 +794,5 @@ INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001',
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');end
 DELETE FROM gibbonAction WHERE name='Import Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Library');end
 DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+DELETE FROM gibbonAction WHERE name='Import External Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
 ";
