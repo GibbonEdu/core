@@ -797,4 +797,5 @@ DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT
 DELETE FROM gibbonAction WHERE name='Import External Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
 DELETE FROM gibbonAction WHERE name='Import Internal Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
 DELETE FROM gibbonAction WHERE name='Import Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 ";
