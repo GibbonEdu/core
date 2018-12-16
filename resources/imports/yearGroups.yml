@@ -28,5 +28,5 @@ table:
     gibbonPersonIDHOY: 
         name: "Head of Year"
         desc: "Username"
-        args: { filter: string }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }
