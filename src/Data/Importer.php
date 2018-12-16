@@ -308,7 +308,7 @@ class Importer
 
             foreach ($importType->getAllFields() as $fieldName) {
                 $columnIndex = $columnOrder[$fieldCount];
-                $value = null;
+                $value = $importType->getField($fieldName, 'value');
 
                 if (!in_array($fieldName, $tableFields)) {
                     // Skip fields not used by this table
