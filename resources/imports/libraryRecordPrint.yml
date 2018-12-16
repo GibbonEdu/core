@@ -5,7 +5,7 @@ details:
     modes: { update: true, insert: true, export: true }
 access:
     module: Library
-    action: Import Records
+    action: Manage Catalog
 primaryKey:
     gibbonLibraryItemID
 uniqueKeys:

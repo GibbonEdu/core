@@ -15,9 +15,9 @@ uniqueKeys:
 table:
     gibbonPersonID: 
         name: "Parent External ID"
-        desc: "Exported from MTT and matches the user's gibbonPersonID."
+        desc: "Exported from Meet The Teacher and matches the user's gibbonPersonID."
         args: { filter: string, required: true }
     loginCode: 
         name: "Parent Login Code"
-        desc: "Exported from MTT in the format: 1234 5678"
+        desc: "Exported from Meet The Teacher in the format: 1234 5678"
         args: { filter: string, required: true }

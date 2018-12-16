@@ -139,7 +139,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
         echo $form->getOutput();
 
-        $importSpecification = array_reduce($importType->getAllFields(), function ($group, $fieldName) use ($importType) {
+        $usesDates = false;
+        $importSpecification = array_reduce($importType->getAllFields(), function ($group, $fieldName) use ($importType, &$usesDates) {
+            if ($importType->getField($fieldName, 'filter') == 'date') $usesDates = true;
+
             if (!$importType->isFieldHidden($fieldName)) {
                 $group[] = [
                     'count' => count($group) + 1,
@@ -155,6 +158,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
         $notes = '<ol>';
         $notes .= '<li style="color: #c00; font-weight: bold">'.__('Always include a header row in the uploaded file.').'</li>';
         $notes .= '<li>'.__('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).').'</li>';
+        if ($usesDates) {
+            $notes .= '<li>'.__("Dates are converted based on the separator used: American mm/dd/yy or mm/dd/yyyy, European dd.mm.yy, dd.mm.yyyy or dd-mm-yyyy. To avoid potential ambiguity, it's best to use ISO YYYY-MM-DD.");
+            $notes .= ' <a href="http://php.net/manual/en/function.strtotime.php#refsect1-function.strtotime-notes" target="_blank"><i><small>'.__('More info').'</i></small></a></li>';
+        }
         $notes .= '</ol>';
 
         $table = DataTable::create('notes');

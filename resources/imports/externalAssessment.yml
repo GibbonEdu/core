@@ -5,7 +5,7 @@ details:
     modes: { update: true, insert: true, export: true }
 access:
     module: Formal Assessment
-    action: Import External Assessments
+    action: External Assessment Data_manage
 fields:
     gibbonExternalAssessmentID:
         name: "External Assessment"
