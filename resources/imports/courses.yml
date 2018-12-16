@@ -14,7 +14,7 @@ uniqueKeys:
 table:
     gibbonSchoolYearID: 
         name: "School Year"
-        desc: "Must match an existing school year e.g. 2015-2016"
+        desc: "School year name, as set in School Admin. Must already exist."
         args: { filter: schoolyear, required: true, custom: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonDepartmentID: 
