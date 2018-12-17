@@ -531,7 +531,8 @@ class Importer
             $data = [];
             // Add the unique keys
             foreach ($importType->getUniqueKeyFields() as $keyField) {
-                $data[$keyField] = $row[$keyField];
+                $keyParam = $this->escapeParameter($keyField);
+                $data[$keyParam] = $row[$keyField];
             }
             // Add the primary key if database IDs is enabled
             if ($this->syncField == true) {
@@ -556,8 +557,9 @@ class Importer
                 if ($importType->isFieldReadOnly($fieldName) || ($this->mode == 'update' && $fieldName == $primaryKey)) {
                     continue;
                 } else {
-                    $sqlFields[] = $this->escapeIdentifier($fieldName) . "=:" . $fieldName;
-                    $sqlData[$fieldName] = $fieldData;
+                    $fieldNameParam = $this->escapeParameter($fieldName);
+                    $sqlFields[] = $this->escapeIdentifier($fieldName) . "=:" . $fieldNameParam;
+                    $sqlData[$fieldNameParam] = $fieldData;
                 }
 
                 // Handle merging existing custom field data with partial custom field imports
@@ -671,7 +673,8 @@ class Importer
                     }
 
                     $fieldNameField = $this->escapeIdentifier($fieldName);
-                    $sqlKeysFields[] = "({$fieldNameField}=:{$fieldName} AND {$fieldNameField} IS NOT NULL)";
+                    $fieldNameParam = $this->escapeParameter($fieldName);
+                    $sqlKeysFields[] = "({$fieldNameField}=:{$fieldNameParam} AND {$fieldNameField} IS NOT NULL)";
                 }
                 $sqlKeys[] = '('. implode(' AND ', $sqlKeysFields) .')';
             }
@@ -697,7 +700,14 @@ class Importer
 
     protected function escapeIdentifier($text)
     {
-        return "`".str_replace("`", "``", $text)."`";
+        return implode('.', array_map(function ($piece) {
+            return '`' . str_replace('`', '``', $piece) . '`';
+        }, explode('.', $text, 2)));
+    }
+
+    protected function escapeParameter($text)
+    {
+        return preg_replace('/[^a-zA-Z0-9]/', '', $text);
     }
 
     /**
