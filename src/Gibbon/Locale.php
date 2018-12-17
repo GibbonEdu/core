@@ -21,7 +21,7 @@ namespace Gibbon;
 
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
-use Gibbon\Contracts\Services\Session;
+use Gibbon\Contracts\Services\Session as SessionInterface;
 
 /**
  * Localization & Internationalization Class
@@ -47,7 +47,7 @@ class Locale implements LocaleInterface
      * @param Session $session      Global session object for string
      *                              replacement cache.
      */
-    public function __construct(string $absolutePath, Session $session)
+    public function __construct(string $absolutePath, SessionInterface $session)
     {
         $this->absolutePath = $absolutePath;
         $this->session = $session;
