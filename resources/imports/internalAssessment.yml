@@ -1,15 +1,15 @@
 details:
-    type: markbookEntryByUsername
-    name: Markbook - Marks - by Student Username
-    table: gibbonMarkbookEntry
+    type: internalAssessment
+    name: Internal Assessments
+    table: gibbonInternalAssessmentEntry
     modes: { update: true, insert: true, export: true }
 access:
-    module: Markbook
-    action: Edit Markbook_everything
+    module: Formal Assessment
+    action: Manage Internal Assessments
 primaryKey:
-    gibbonMarkbookEntryID
+    gibbonInternalAssessmentEntryID
 uniqueKeys:
-    - [ gibbonMarkbookColumnID, gibbonPersonIDStudent ]
+    - [ gibbonInternalAssessmentColumnID, gibbonPersonIDStudent ]
 table:
     gibbonSchoolYearID: 
         name: "School Year"
@@ -26,33 +26,25 @@ table:
         desc: "Short Name"
         args: { filter: string, required: true, custom: true, readonly: true }
         relationship: { table: gibbonCourseClass, key: gibbonCourseClassID, field: [ nameShort, gibbonCourseID ]  }
-    gibbonMarkbookColumnID: 
-        name: "Markbook Column"
-        desc: "Name"
-        args: { filter: string, required: true }
-        relationship: { table: gibbonMarkbookColumn, key: gibbonMarkbookColumnID, field: [ name, gibbonCourseClassID ]  }
+    gibbonInternalAssessmentColumnID:
+        name: "Internal Assessment"
+        desc: "Assessment Column Name"
+        args: { filter: string, custom: true, required: true }
+        relationship: { table: gibbonInternalAssessmentColumn, key: gibbonInternalAssessmentColumnID, field: [name, gibbonCourseClassID]  }
     gibbonPersonIDStudent: 
         name: "Student"
         desc: "Username"
         args: { filter: string, required: true }
-        relationship: { table: gibbonPerson, key: gibbonPersonID, join: gibbonCourseClassPerson, on: [gibbonPersonID, gibbonPersonID], field: [username, gibbonCourseClassID] }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }
     attainmentValue: 
         name: "Attainment Value"
-        desc: ""
-        args: { filter: string, custom: true }
-    attainmentValueRaw: 
-        name: "Attainment Raw Value"
         desc: ""
         args: { filter: string, custom: true }
     attainmentDescriptor: 
         name: "Attainment Descriptor"
         desc: ""
         args: { filter: string, linked: attainmentValue }
-        relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDAttainment, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
-    # attainmentConcern: 
-    #     name: "Attainment Concern?"
-    #     desc: ""
-    #     args: { filter: string, custom: true }
+        relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonInternalAssessmentColumn, on: [gibbonScaleIDAttainment, gibbonScaleID], field: [ value, gibbonInternalAssessmentColumnID ] }
     effortValue: 
         name: "Effort Value"
         desc: ""
@@ -61,12 +53,13 @@ table:
         name: "Effort Descriptor"
         desc: ""
         args: { filter: string, linked: effortValue }
-        relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonMarkbookColumn, on: [gibbonScaleIDEffort, gibbonScaleID], field: [ value, gibbonMarkbookColumnID ] }
-    # effortConcern: 
-    #     name: "Effort Concern?"
-    #     desc: ""
-    #     args: { filter: string, custom: true }
+        relationship: { table: gibbonScaleGrade, key: descriptor, join: gibbonInternalAssessmentColumn, on: [gibbonScaleIDEffort, gibbonScaleID], field: [ value, gibbonInternalAssessmentColumnID ] }
     comment: 
         name: "Comment"
         desc: ""
         args: { filter: string, custom: true }
+    gibbonPersonIDLastEdit: 
+        name: "Created By"
+        desc: "Username"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }

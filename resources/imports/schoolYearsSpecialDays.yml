@@ -13,7 +13,7 @@ uniqueKeys:
 table:
     gibbonSchoolYearID: 
         name: "School Year"
-        desc: "Must match an existing school year e.g. 2015-2016"
+        desc: "School year name, as set in School Admin. Must already exist."
         args: { filter: schoolyear, required: true, readonly: true }
         relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
     gibbonSchoolYearTermID: 
@@ -38,18 +38,18 @@ table:
         desc: ""
         args: { filter: string }
     schoolOpen: 
-        name: "School Open"
+        name: "School Opens"
         desc: ""
         args: { filter: time }
     schoolStart: 
-        name: "School Start"
+        name: "School Starts"
         desc: ""
         args: { filter: time }
     schoolEnd: 
-        name: "School End"
+        name: "School Ends"
         desc: ""
         args: { filter: time }
     schoolClose: 
-        name: "School Close"
+        name: "School Closes"
         desc: ""
         args: { filter: time }

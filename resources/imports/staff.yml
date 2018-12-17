@@ -36,23 +36,23 @@ table:
     firstAidExpiry:
         name: "First Aid Expiry"
         desc: ""
-        args: {filter: date}
+        args: {filter: date, custom: true }
     countryOfOrigin:
-        name: "Country of Origin"
+        name: "Country Of Origin"
         desc: ""
-        args: {filter: country}
+        args: {filter: country, custom: true }
     qualifications:
         name: "Qualifications"
         desc: ""
-        args: {filter: string}
+        args: {filter: string, custom: true }
     biographicalGrouping:
         name: "Grouping"
         desc: ""
-        args: {filter: string}
+        args: {filter: string, custom: true }
     biographicalGroupingPriority:
-        name: "Grouping Order"
+        name: "Grouping Priority"
         desc: "Higher numbers move teachers up the order within their grouping."
-        args: {filter: string}
+        args: {filter: string, custom: true }
     biography:
         name: "Biography"
         desc: ""

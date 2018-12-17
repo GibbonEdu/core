@@ -34,13 +34,11 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
     $logGateway = $container->get(LogGateway::class);
     $logsByType = $logGateway->selectLogsByModuleAndTitle('System Admin', 'Import - %')->fetchGrouped();
 
-    $checkUserPermissions = getSettingByScope($connection2, 'Data Admin', 'enableUserLevelPermissions');
-
     // Get a list of available import options
     $importTypeList = ImportType::loadImportTypeList($pdo, false);
 
     // Build an array of combined import type info and log data
-    $importTypeGroups = array_reduce($importTypeList, function ($group, $importType) use ($checkUserPermissions, $guid, $connection2, $logsByType) {
+    $importTypeGroups = array_reduce($importTypeList, function ($group, $importType) use ($guid, $connection2, $logsByType) {
         if ($importType->isValid()) {
             $type = $importType->getDetail('type');
             $log = $logsByType['Import - '.$type] ?? [];
@@ -50,9 +48,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_manage
                 'log'          => current($log),
                 'category'     => $importType->getDetail('category'),
                 'name'         => $importType->getDetail('name'),
-                'isAccessible' => $checkUserPermissions == 'Y'
-                    ? $importType->isImportAccessible($guid, $connection2)
-                    : true,
+                'isAccessible' => $importType->isImportAccessible($guid, $connection2),
             ];
         }
         return $group;

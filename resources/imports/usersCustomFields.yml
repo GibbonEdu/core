@@ -27,37 +27,37 @@ table:
     type: 
         name: "Type"
         desc: ""
-        args: { filter: string }
+        args: { filter: string, custom: true }
     options: 
         name: "Options"
-        desc: "Short Text: number of characters, up to 255. Long Text: number of rows for field. Dropdown: comma separated list of options."
-        args: { filter: string }
+        desc: ""
+        args: { filter: string, custom: true }
     required: 
         name: "Required"
         desc: "Is this field compulsory?"
-        args: { filter: yesno }
+        args: { filter: yesno, custom: true }
     activePersonStudent: 
         name: "Active for Students?"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     activePersonStaff: 
         name: "Active for Staff?"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     activePersonParent: 
         name: "Active for Parents?"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     activePersonOther: 
         name: "Active for Other?"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     activeDataUpdater: 
         name: "Include In Data Updater"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     activeApplicationForm: 
         name: "Include In Application Form"
         desc: "0 or 1"
-        args: { filter: boolean }
+        args: { filter: boolean, custom: true }
     

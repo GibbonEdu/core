@@ -623,6 +623,56 @@ else {
 						$row->addYesNo('attendanceParents')->selected($selectedByRole['parents']);
 				}
 
+				// Group
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+					$selectedByRole = array('staff' => 'N', 'students' => 'N', 'parents' => 'N',);
+					$selected = array_reduce($targets, function($group, $item) use (&$selectedByRole) {
+						if ($item['type'] == 'Group') {
+							$group[] = $item['id'];
+							$selectedByRole['staff'] = $item['staff'];
+							$selectedByRole['students'] = $item['students'];
+							$selectedByRole['parents'] = $item['parents'];
+						}
+						return $group;
+					}, array());
+					$checked = !empty($selected)? 'Y' : 'N';
+					$row = $form->addRow();
+						$row->addLabel('group', __('Group'))->description(__('Members of a Messenger module group.'));
+						$row->addYesNoRadio('group')->checked($checked)->isRequired();
+
+					$form->toggleVisibilityByClass('group')->onRadio('group')->when('Y');
+
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+					} else {
+						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+						$sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name)
+							UNION
+							(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2)
+							ORDER BY name
+							";
+					}
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groups[]', __('Select Groups'));
+						$row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired()->selected($selected);;
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groupsStaff', __('Include Staff?'));
+						$row->addYesNo('groupsStaff')->selected($selectedByRole['staff']);
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groupsStudents', __('Include Students?'));
+						$row->addYesNo('groupsStudents')->selected($selectedByRole['students']);
+
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
+						$row = $form->addRow()->addClass('group hiddenReveal');
+							$row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
+							$row->addYesNo('groupsParents')->selected($selectedByRole['parents']);
+					}
+				}
+
 				// Individuals
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 					$selected = array_reduce($targets, function($group, $item) {
