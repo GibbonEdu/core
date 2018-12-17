@@ -1,0 +1,40 @@
+details:
+    type: courseClasses
+    name: Classes
+    table: gibbonCourseClass
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Courses & Classes
+primaryKey:
+    gibbonCourseClassID
+uniqueKeys:
+    - [ gibbonCourseID, name ]
+    - [ gibbonCourseID, nameShort ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, readonly: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonCourseID:
+        name: "Course"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
+    name:
+        name: "Name"
+        desc: "Must be unique for this course."
+        args: { filter: string, required: true }
+    nameShort:
+        name: "Short Name"
+        desc: "Must be unique for this course."
+        args: { filter: string, required: true }
+    reportable:
+        name: "Reportable?"
+        desc: "Should this class show in reports?"
+        args: { filter: yesno, custom: true }
+    attendance:
+        name: "Track Attendance?"
+        desc: "Should this class allow attendance to be taken?"
+        args: { filter: yesno, custom: true }

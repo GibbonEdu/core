@@ -1,0 +1,36 @@
+details:
+    type: usersCustomData
+    name: Custom Fields - Data
+    desc: Data for custom fields (Included as an example)
+    category: Custom Fields
+    table: gibbonPerson
+    modes: { update: true, insert: false }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID:
+        name: "Person"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    example1:
+        name: "Example 1"
+        desc: "An example of a required field."
+        args: { filter: string, readonly: true, required: true, serialize: fields }
+    example2:
+        name: "Example 2"
+        desc: "An example of another custom field."
+        args: { filter: string, readonly: true, serialize: fields }
+    example3:
+        name: "Example 3"
+        desc: "An example of another custom field."
+        args: { filter: string, readonly: true, serialize: fields }
+    fields:
+        name: "Custom Fields"
+        desc: ""
+        args: { filter: customfield, serialize: fields, custom: true }

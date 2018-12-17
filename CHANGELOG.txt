@@ -20,15 +20,17 @@ v17.0.00
 --------
     Headlines
         Added data visualisation to Rubrics
+        Added an improved set of file import and export options to System Admin
         Languages can now be installed and updated through Manage Languages in System Admin
         Added Hebrew an active language and improved the display of right-to-left languages
         Added ability to select SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
 
     Changes With Important Notices
-        System: increased minimum PHP version to 7.0
+        System: increased minimum PHP version to 7.0.
+        System: added the Twig templating engine as part of our ongoing refactoring for the core
+        System: moved PHP elements of /lib to /vendor
 
     Significant Changes
-        System: added the Twig templating engine as part of our ongoing refactoring for the core
         System: refactored many of the tables and reports, which now support pagination, sorting and filtering
         System: removed upgrade path for v11.0.00 and below
 
@@ -48,6 +50,7 @@ v17.0.00
         System: added Sri Lankan Rupee as a currency option
         System: fixed incorrect return value in Public Registration when user is below the minimum age
         System: deprecated getGibbonMailer function, replaced with Mailer wrapper
+        System: added the ability to set the current language with an i18n URL parameter
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
@@ -83,6 +86,7 @@ v17.0.00
         Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
         Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
         Messenger: removed Body column from Canned Response table
+        Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page

@@ -444,7 +444,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
 function getMinorLinks($connection2, $guid, $cacheLoad)
 {
-    $return = false;
+    $return = '';
 
     // Add a link to go back to the system/personal default language, if we're not using it
     if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
@@ -455,8 +455,10 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
     }
 
     if (isset($_SESSION[$guid]['username']) == false) {
+        $return .= !empty($languageLink) ? $languageLink : '';
+
         if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= !empty($languageLink) ? $languageLink.' . ' : '';
+            $return .= !empty($languageLink) ? ' . ' : '';
             $return .= __('Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
     } else {

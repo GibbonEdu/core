@@ -789,4 +789,15 @@ ALTER TABLE `gibbonApplicationForm` CHANGE `parent2email` `parent2email` VARCHAR
 ALTER TABLE `gibbonYearGroup` CHANGE `name` `name` VARCHAR(15) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) SELECT 'Messenger', 'smsGateway', 'SMS Gateway', '', (CASE WHEN gibbonSetting.value <> '' THEN 'OneWaySMS' ELSE '' END) FROM `gibbonSetting` WHERE scope='Messenger' AND name='smsUsername';end
 INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) SELECT 'Messenger', 'smsSenderID', 'SMS Sender ID', 'The sender name or phone number. Depends on the gateway used.', gibbonSetting.value FROM `gibbonSetting` WHERE scope='System' AND name='organisationNameShort';end
+INSERT INTO `gibbonAction` (`gibbonModuleID`, `name`, `precedence`, `category`, `description`, `URLList`, `entryURL`, `defaultPermissionAdmin`, `defaultPermissionTeacher`, `defaultPermissionStudent`, `defaultPermissionParent`, `defaultPermissionSupport`, `categoryPermissionStaff`, `categoryPermissionStudent`, `categoryPermissionParent`, `categoryPermissionOther`) VALUES ((SELECT gibbonModuleID FROM gibbonModule WHERE name='System Admin'), 'Import From File', 0, 'Import & Export', 'Allows a user to view and run available imports.', 'import_manage.php,import_run.php,export_run.php,import_history.php,import_history_view.php', 'import_manage.php', 'Y', 'N', 'N', 'N', 'N', 'Y', 'N', 'N', 'N');end
+INSERT INTO `gibbonPermission` (`gibbonRoleID` ,`gibbonActionID`) VALUES ('001', (SELECT gibbonActionID FROM gibbonAction JOIN gibbonModule ON (gibbonAction.gibbonModuleID=gibbonModule.gibbonModuleID) WHERE gibbonModule.name='System Admin' AND gibbonAction.name='Import From File'));end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`) VALUES ('System Admin', 'exportDefaultFileType', 'Default Export File Type', '', 'Excel2007');end
+DELETE FROM gibbonAction WHERE name='Import Records' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Library');end
+DELETE FROM gibbonAction WHERE name='Import Outcomes' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner');end
+DELETE FROM gibbonAction WHERE name='Import External Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+DELETE FROM gibbonAction WHERE name='Import Internal Assessments' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Formal Assessment');end
+DELETE FROM gibbonAction WHERE name='Import Student Enrolment' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Staff' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+DELETE FROM gibbonAction WHERE name='Import Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 ";

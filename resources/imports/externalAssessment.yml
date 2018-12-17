@@ -1,0 +1,64 @@
+details:
+    type: externalAssessment
+    name: External Assessments
+    table: gibbonExternalAssessmentStudentEntry
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Formal Assessment
+    action: External Assessment Data_manage
+fields:
+    gibbonExternalAssessmentID:
+        name: "External Assessment"
+        desc: "Name Short"
+        args: { filter: string, custom: true, required: true, readonly: [gibbonExternalAssessmentStudentEntry] }
+        relationship: { table: gibbonExternalAssessment, key: gibbonExternalAssessmentID, field: nameShort  }
+    date:
+        name: "Assessment Date"
+        desc: ""
+        args: {filter: date, custom: true, required: true, readonly: [gibbonExternalAssessmentStudentEntry] }
+    gibbonPersonID:
+        name: "Student"
+        desc: "Username"
+        args: { filter: username, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonExternalAssessmentStudentID:
+        name: "Student Assessment ID"
+        desc: ""
+        args: { filter: string, linked: gibbonPersonID }
+        relationship: { table: gibbonExternalAssessmentStudent, key: gibbonExternalAssessmentStudentID, field: [ gibbonPersonID, date, gibbonExternalAssessmentID ]  }
+    category:
+        name: "Field Name Category"
+        desc: "Must match value of gibbonExternalAssessmentField.category in database, less [numeric_] prefix."
+        args: { filter: string, custom: true, required: true, readonly: true }
+    gibbonExternalAssessmentFieldID:
+        name: "Field Name"
+        desc: "Must match value of gibbonExternalAssessmentField.name in database."
+        args: { filter: string, custom: true, required: true }
+        relationship: { table: gibbonExternalAssessmentField, key: gibbonExternalAssessmentFieldID, field: [ name, category, gibbonExternalAssessmentID ]  }
+    gibbonScaleGradeID:
+        name: "Result"
+        desc: "Must match value of gibbonScaleGrade.value in database."
+        args: { filter: string }
+        relationship: { table: gibbonScaleGrade, key: gibbonScaleGradeID, join: gibbonExternalAssessmentField, on: [gibbonScaleID, gibbonScaleID], field: [ value, gibbonExternalAssessmentFieldID ] }
+tables:
+    gibbonExternalAssessmentStudent:
+        primaryKey:
+            gibbonExternalAssessmentStudentID
+        uniqueKeys:
+            - [ gibbonExternalAssessmentID, gibbonPersonID, date ]
+        fields:
+            - gibbonExternalAssessmentID
+            - gibbonPersonID
+            - date
+    gibbonExternalAssessmentStudentEntry:
+        primaryKey:
+            gibbonExternalAssessmentStudentEntryID
+        uniqueKeys:
+            - [ gibbonExternalAssessmentStudentID, gibbonExternalAssessmentFieldID ]
+        fields:
+            - gibbonExternalAssessmentID
+            - date
+            - gibbonExternalAssessmentStudentID
+            - category
+            - gibbonExternalAssessmentFieldID
+            - gibbonScaleGradeID

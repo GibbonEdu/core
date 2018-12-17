@@ -1,0 +1,55 @@
+details:
+    type: schoolYearsSpecialDays
+    name: Special Days
+    table: gibbonSchoolYearSpecialDay
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Special Days
+primaryKey:
+    gibbonSchoolYearSpecialDayID
+uniqueKeys:
+    - date
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonSchoolYearTermID: 
+        name: "Term"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonSchoolYearTerm, key: gibbonSchoolYearTermID, field: [ nameShort, gibbonSchoolYearID ]  }
+    date: 
+        name: "Date"
+        desc: "Must be unique."
+        args: { filter: date, required: true }
+    type: 
+        name: "Type"
+        desc: ""
+        args: { filter: string, required: true }
+    name: 
+        name: "Name"
+        desc: ""
+        args: { filter: string, required: true }
+    description: 
+        name: "Description"
+        desc: ""
+        args: { filter: string }
+    schoolOpen: 
+        name: "School Opens"
+        desc: ""
+        args: { filter: time }
+    schoolStart: 
+        name: "School Starts"
+        desc: ""
+        args: { filter: time }
+    schoolEnd: 
+        name: "School Ends"
+        desc: ""
+        args: { filter: time }
+    schoolClose: 
+        name: "School Closes"
+        desc: ""
+        args: { filter: time }

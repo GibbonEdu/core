@@ -40,3 +40,41 @@ function versionCompare(a, b) {
     }
     return segmentsA.length - segmentsB.length;
 }
+
+
+$(function(){
+
+    $("select.columnOrder").on('change', function(){
+
+        var currentSelection = $(this).val();
+        var textBox = $(this).parent().parent().find('input.columnText');
+
+        textBox.prop("readonly", currentSelection != columnDataCustom );
+        textBox.prop("disabled", currentSelection != columnDataCustom );
+
+        if ( currentSelection == columnDataFunction ) {
+            textBox.val("*generated*");
+        } else if ( currentSelection == columnDataCustom ) {
+            textBox.val("");
+        } else if ( currentSelection == columnDataSkip ) {
+            textBox.val("*skipped*");
+        } else if ( currentSelection >= 0 ) {
+            if ( currentSelection in csvFirstLine ) {
+                textBox.val(csvFirstLine[ currentSelection ] );
+            } else {
+                textBox.val("");
+            }
+        }
+    });
+    $("select.columnOrder").change();
+
+	$("#ignoreErrors").click(function() {
+		if ($(this).is(':checked')) {
+			$(this).val( 1 );
+			$("#submitStep3").prop("disabled", false).prop("type", "submit").prop("value", "Submit");
+		} else {
+			$(this).val( 0 );
+			$("#submitStep3").prop("disabled", true).prop("value", "Cannot Continue");
+		}
+	});
+}); 

@@ -1,0 +1,32 @@
+details:
+    type: yearGroups
+    name: Year Groups
+    desc: 
+    table: gibbonYearGroup
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Year Groups
+primaryKey:
+    gibbonYearGroupID
+uniqueKeys:
+    - name
+    - nameShort
+table:
+    name: 
+        name: "Name"
+        desc: "Must be unique."
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: "Must be unique."
+        args: { filter: string, required: true }
+    sequenceNumber: 
+        name: "Sequence Number"
+        desc: "Must be unique. Controls chronological ordering."
+        args: { filter: numeric }
+    gibbonPersonIDHOY: 
+        name: "Head of Year"
+        desc: "Username"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username }

@@ -1,0 +1,23 @@
+details:
+    type: meetTheTeacher
+    name: Meet The Teacher - Parent Login Codes
+    desc: Allows import of Parent Login Codes from the Meet The Teacher booking system.
+    table: meetTheTeacherLogin
+    category: Additional
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Meet The Teacher
+    action: Manage Settings
+primaryKey:
+    meetTheTeacherLoginID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID: 
+        name: "Parent External ID"
+        desc: "Exported from Meet The Teacher and matches the user's gibbonPersonID."
+        args: { filter: string, required: true }
+    loginCode: 
+        name: "Parent Login Code"
+        desc: "Exported from Meet The Teacher in the format: 1234 5678"
+        args: { filter: string, required: true }
