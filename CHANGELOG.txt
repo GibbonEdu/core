@@ -26,10 +26,11 @@ v17.0.00
         Added ability to select SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
 
     Changes With Important Notices
-        System: increased minimum PHP version to 7.0
+        System: increased minimum PHP version to 7.0.
+        System: added the Twig templating engine as part of our ongoing refactoring for the core
+        System: moved PHP elements of /lib to /vendor
 
     Significant Changes
-        System: added the Twig templating engine as part of our ongoing refactoring for the core
         System: refactored many of the tables and reports, which now support pagination, sorting and filtering
         System: removed upgrade path for v11.0.00 and below
 
