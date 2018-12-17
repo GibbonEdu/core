@@ -80,7 +80,7 @@ fields:
     gibbonSpaceID:
         name: "Space Name"
         desc: ""
-        args: { filter: string, custom: true }
+        args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
 tables:
     gibbonCourse:
@@ -122,7 +122,10 @@ tables:
         uniqueKeys:
             - [ gibbonCourseClassID, gibbonTTDayID, gibbonTTColumnRowID ]
         fields:
+            - gibbonSchoolYearID
+            - gibbonTTID
             - gibbonCourseClassID
             - gibbonTTDayID
+            - gibbonTTColumnID
             - gibbonTTColumnRowID
             - gibbonSpaceID
