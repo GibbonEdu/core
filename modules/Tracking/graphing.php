@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         echo '</div>';
     } else {
         //Get action with highest precendence
-        $page->breadcrumbs->add('Graphing');
+        $page->breadcrumbs->add(__('Graphing'));
 
         echo '<h2>';
         echo __('Filter');

@@ -24,7 +24,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add('Manage Student Enrolment');
+    $page->breadcrumbs->add(__('Manage Student Enrolment'));
 
     echo '<p>';
     echo __('This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.');

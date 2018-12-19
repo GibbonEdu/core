@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('View All Assessments');
+    $page->breadcrumbs->add(__('View All Assessments'));
 
     echo '<h2>';
     echo __('Search');

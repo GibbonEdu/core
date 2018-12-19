@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
         echo '</div>';
     } else {
         if ($highestAction == 'View External Assessments_myChildrens') { //MY CHILDREN
-            $page->breadcrumbs->add('View My Childrens\'s External Assessments');
+            $page->breadcrumbs->add(__('View My Childrens\'s External Assessments'));
 
             //Test data access field for permission
             try {
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 }
             }
         } else { //My External Assessments
-            $page->breadcrumbs->add('View My External Assessments');
+            $page->breadcrumbs->add(__('View My External Assessments'));
 
             echo '<h3>';
             echo __('External Assessments');
