@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_master.php') 
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('View Master Timetable');
+    $page->breadcrumbs->add(__('View Master Timetable'));
 
     echo '<h2>';
     echo __('Choose Timetable');

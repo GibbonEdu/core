@@ -29,7 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('Archive Records');
+    $page->breadcrumbs->add(__('Archive Records'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));

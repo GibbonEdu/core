@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/dataPoints.php') 
     echo '</div>';
 } else {
     //Get action with highest precendence
-    $page->breadcrumbs->add('Data Points');
+    $page->breadcrumbs->add(__('Data Points'));
 
     //Check Settings
     $externalAssessmentDataPoints = unserialize(getSettingByScope($connection2, 'Tracking', 'externalAssessmentDataPoints'));

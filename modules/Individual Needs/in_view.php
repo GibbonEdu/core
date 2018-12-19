@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $page->breadcrumbs->add('View Student Records');
+        $page->breadcrumbs->add(__('View Student Records'));
 
         $studentGateway = $container->get(StudentGateway::class);
 

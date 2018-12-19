@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
         echo '</div>';
     } else {
         if ($highestAction == 'View Internal Assessments_all') { //ALL STUDENTS
-            $page->breadcrumbs->add('View All Internal Assessments');
+            $page->breadcrumbs->add(__('View All Internal Assessments'));
 
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 				}
 			}
 		} elseif ($highestAction == 'View Internal Assessments_myChildrens') { //MY CHILDREN
-			$page->breadcrumbs->add('View My Childrens\'s Internal Assessments');
+			$page->breadcrumbs->add(__('View My Childrens\'s Internal Assessments'));
 
 			//Test data access field for permission
 			try {
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 }
             }
         } else { //My Internal Assessments
-            $page->breadcrumbs->add('View My Internal Assessments');
+            $page->breadcrumbs->add(__('View My Internal Assessments'));
 
             echo '<h3>';
             echo __('Internal Assessments');

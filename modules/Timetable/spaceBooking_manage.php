@@ -35,7 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         echo '</div>';
     } else {
         //Proceed!
-        $page->breadcrumbs->add('Manage Facility Bookings');
+        $page->breadcrumbs->add(__('Manage Facility Bookings'));
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             echo '<p>'.__('This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';
