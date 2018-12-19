@@ -800,4 +800,5 @@ DELETE FROM gibbonAction WHERE name='Import Student Enrolment' AND gibbonModuleI
 DELETE FROM gibbonAction WHERE name='Import Families' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 DELETE FROM gibbonAction WHERE name='Import Staff' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 DELETE FROM gibbonAction WHERE name='Import Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
+INSERT IGNORE INTO `gibbonLanguage` (`name`) VALUES ('Sinhala');end
 ";
