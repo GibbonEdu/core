@@ -685,10 +685,10 @@ function getMessages($guid, $connection2, $mode = '', $date = '')
                     $return .= '</div>';
                 }
 
-                $return .= '<b><u>Posted By</b></u><br/>';
+                $return .= '<b><u>'.__('Posted By').'</b></u><br/>';
                 $return .= $output[$i]['author'].'<br/><br/>';
 
-                $return .= '<b><u>Shared Via</b></u><br/>';
+                $return .= '<b><u>'.__('Shared Via').'</b></u><br/>';
                 $return .= $output[$i]['source'].'<br/><br/>';
                 $return .= '</td>';
                 $return .= "<td style='border-left: none; vertical-align: top; padding-bottom: 10px; padding-top: 10px; border-top: 1px solid #666; width: 640px'>";
