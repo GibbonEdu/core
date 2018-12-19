@@ -277,7 +277,7 @@ class Column
         if ($this->hasFormatter()) {
             return call_user_func($this->formatter, $data);
         } else {
-            return isset($data[$this->getID()])? $data[$this->getID()] : '';
+            return isset($data[$this->getID()])? __($data[$this->getID()]) : '';
         }
     }
 }
