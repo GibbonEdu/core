@@ -101,6 +101,7 @@ v17.0.00
         Students: updated how the Privacy section is displayed in application and data updater forms
         Students: added the option to enter a username and student ID in the For Office Use section of the Application Form
         Students: fixed searching by parent email address in View Student Profile
+        Students: fixed displayed name of First Aider in Edit First Aid Record
         Timetable: added a facility booking button to the timetable in View Timetable by Facility
         Timetable Admin: fixed course sync for courses with multiple year groups
         Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
