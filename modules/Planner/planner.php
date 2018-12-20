@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if (isset($_GET['search'])) {
                 $search = $_GET['search'];
             }
-            $page->breadcrumbs->add('My Children\'s Classes');
+            $page->breadcrumbs->add(__('My Children\'s Classes'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);

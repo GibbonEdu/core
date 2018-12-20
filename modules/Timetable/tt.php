@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        $page->breadcrumbs->add('View Timetable by Person');
+        $page->breadcrumbs->add(__('View Timetable by Person'));
 
         $gibbonPersonID = isset($_GET['gibbonPersonID']) ? $_GET['gibbonPersonID'] : null;
         $search = isset($_GET['search']) ? $_GET['search'] : '';

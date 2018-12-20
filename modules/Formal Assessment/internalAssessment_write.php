@@ -64,8 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
         }
         if ($gibbonCourseClassID == '') {
-            $page->breadcrumbs->add('Write Internal Assessments');
-            echo '</div>';
+            $page->breadcrumbs->add(__('Write Internal Assessments'));
             echo "<div class='warning'>";
             echo 'Use the class listing on the right to choose a Internal Assessment to write.';
             echo '</div>';

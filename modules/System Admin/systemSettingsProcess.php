@@ -64,7 +64,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $currency = $_POST['currency'];
     $gibboneduComOrganisationName = $_POST['gibboneduComOrganisationName'];
     $gibboneduComOrganisationKey = $_POST['gibboneduComOrganisationKey'];
-    $exportDefaultFileType = $_POST['exportDefaultFileType'] ?? '';
 
     //Validate Inputs
     if ($absoluteURL == '' or $systemName == '' or $organisationLogo == '' or $indexText == '' or $organisationName == '' or $organisationNameShort == '' or $organisationEmail == '' or $organisationAdministrator == '' or $organisationDBA == '' or $organisationHR == '' or $organisationAdmissions == '' or $pagination == '' or (!(is_numeric($pagination))) or $timezone == '' or $installType == '' or $statsCollection == '' or $passwordPolicyMinLength == '' or $passwordPolicyAlpha == '' or $passwordPolicyNumeric == '' or $passwordPolicyNonAlphaNumeric == '' or $firstDayOfTheWeek == '' or ($firstDayOfTheWeek != 'Monday' and $firstDayOfTheWeek != 'Sunday') or $currency == '') {
@@ -427,14 +426,6 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         try {
             $data = array('sessionDuration' => $sessionDuration);
             $sql = "UPDATE gibbonSetting SET value=:sessionDuration WHERE scope='System' AND name='sessionDuration'";
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $fail = true;
-        }
-        try {
-            $data = array('exportDefaultFileType' => $exportDefaultFileType);
-            $sql = "UPDATE gibbonSetting SET value=:exportDefaultFileType WHERE scope='System Admin' AND name='exportDefaultFileType'";
             $result = $connection2->prepare($sql);
             $result->execute($data);
         } catch (PDOException $e) {
