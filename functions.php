@@ -2389,7 +2389,7 @@ function getWeekNumber($date, $connection2, $guid)
             $firstDayStamp = strtotime($rowWeek['firstDay']);
             $lastDayStamp = strtotime($rowWeek['lastDay']);
 //            while (date('D', $firstDayStamp) != 'Mon') {   This will not work when i18n is Not English
-            while (date('N') !== 1) {  //   This will work regardless of i18n settings.
+            while (date('N') !== '1') {  //   This will work regardless of i18n settings.
                 $firstDayStamp = $firstDayStamp - 86400;
             }
             $head = $firstDayStamp;
