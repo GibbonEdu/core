@@ -805,7 +805,7 @@ INSERT IGNORE INTO `gibbonLanguage` (`name`) VALUES ('Sinhala');end
 ++$count;
 $sql[$count][0] = '18.0.00';
 $sql[$count][1] = "
--- was INT(8) should be 10 rto match Person
+-- was INT(8) should be INT(10) rto match Person
 ALTER TABLE `gibbonActivityAttendance` CHANGE `gibbonPersonIDTaker` `gibbonPersonIDTaker` INT(10) UNSIGNED ZEROFILL NOT NULL;ALTER TABLE `gibbonactivityattendance` CHANGE `gibbonPersonIDTaker` `gibbonPersonIDTaker` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 -- match Person Table options
 ALTER TABLE `gibbonApplicationForm` CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';end
