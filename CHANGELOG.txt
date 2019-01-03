@@ -16,6 +16,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v18.0.00
+    Tweaks & Bug Fixes
+        System: Changes to key intger length in database tables to ensure referential integrity.
+
 v17.0.00
 --------
     Headlines
