@@ -829,4 +829,6 @@ ALTER TABLE `gibbonStaffApplicationForm` CHANGE `surname` `surname` VARCHAR(60) 
 ALTER TABLE `gibbonTTDayRowClass` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;endALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 -- Match Person primary key size 12 => 10
 ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+-- foreignKey needs to be length of 10 to match gibbonLibraryItemID which this item references.
+ALTER TABLE `gibbonTTSpaceBooking` CHANGE `foreignKey` `foreignKey` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 ";
