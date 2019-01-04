@@ -223,7 +223,7 @@ class PasswordEncoder
      *
      * @return bool true if the password is valid, false otherwise
      */
-    private function isMD5PasswordValid($encoded, $raw, $salt): bool
+    private function isMD5PasswordValid($encoded, $raw): bool
     {
         if ($encoded === md5($raw))
         {
@@ -244,13 +244,17 @@ class PasswordEncoder
      */
     public function isPasswordValid($encoded, $raw, $salt): bool
     {
+        $this->currentEncryption = null;
         if ($this->isArgon2iPasswordValid($encoded, $raw, $salt))
             return true;
+        $this->currentEncryption = null;
         if ($this->isBCryptPasswordValid($encoded, $raw, $salt))
             return true;
+        $this->currentEncryption = null;
         if ($this->isSHA256PasswordValid($encoded, $raw, $salt))
             return true;
-        if ($this->isMD5PasswordValid($encoded, $raw, $salt))
+        $this->currentEncryption = null;
+        if ($this->isMD5PasswordValid($encoded, $raw))
             return true;
         return false;
     }
@@ -267,8 +271,8 @@ class PasswordEncoder
             $useHighestEncryption = $highestAvailableEncryption;
         if (self::ENCRYPTION[$highestAvailableEncryption] > self::ENCRYPTION[$useHighestEncryption])
             $highestAvailableEncryption = $useHighestEncryption;
-        switch($highestAvailableEncryption){
-            case 'Argon2i':
+        switch(strtoupper($highestAvailableEncryption)){
+            case 'ARGON2I':
                 return $this->encodeArgon2iPassword($raw, $salt);
             case 'BCRYPT':
                 return $this->encodeBCryptPassword($raw, $salt);

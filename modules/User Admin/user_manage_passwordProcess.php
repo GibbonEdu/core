@@ -69,7 +69,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_pas
                         header("Location: {$URL}");
                     } else {
                         $salt = getSalt();
-                        $passwordStrong = hash('sha256', $salt.$passwordNew);
+                        $passwordEncoder = new \Gibbon\Data\PasswordEncoder();
+                        $passwordStrong = $passwordEncoder->encodePassword($passwordNew, $salt, 'sha256');
 
                         //Write to database
                         try {

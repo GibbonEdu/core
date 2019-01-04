@@ -186,7 +186,8 @@ else {
                             } else {
                                 //Update password
                                 $salt = getSalt();
-                                $passwordStrong = hash('sha256', $salt.$passwordNew);
+                                $encoder = new \Gibbon\Data\PasswordEncoder();
+                                $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
                                 try {
                                     $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
                                     $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";

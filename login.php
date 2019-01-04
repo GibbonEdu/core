@@ -245,13 +245,13 @@ class LoginManager
      */
     public function verifyPassword()
     {
-        $loginEncoder = new PasswordEncoder();
-        //If strong password exists
+        $encoder = new PasswordEncoder();
+
         $salt = $this->user['passwordStrongSalt'];
         $password = $this->user['passwordStrong'] . $this->user['password'];
-        $passwordTest = $loginEncoder->isPasswordValid($password, $this->getPostValue('password'), $salt);
-        if ($loginEncoder->getCurrentEncryption() === 'MD5') {
-            $passwordTest = $this->migratePassword($loginEncoder);
+        $passwordTest = $encoder->isPasswordValid($password, $this->getPostValue('password'), $salt);
+        if ($encoder->getCurrentEncryption() === 'MD5') {
+            $passwordTest = $this->migratePassword($encoder);
         }
 
         //Test to see if password matches username
@@ -268,18 +268,19 @@ class LoginManager
     }
 
     /**
-     * @param LoginEncoder $loginEncoder
+     * @param PasswordEncoder $encoder
      * @return bool
      */
-    private function migratePassword(PasswordEncoder $loginEncoder): bool
+    private function migratePassword(PasswordEncoder $encoder): bool
     {
         //Migrate to strong password
         $salt = getSalt();
-        $passwordStrong = $loginEncoder->encodePassword($this->getPostValue('password'), $salt, 'SHA256');
+        $passwordStrong = $encoder->encodePassword($this->getPostValue('password'), $salt, 'SHA256');
         $dataSecure = ['passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'username' => $this->user['username']];
         $sqlSecure = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
         if ($this->getConnection()->update($sqlSecure,$dataSecure, false) !== 1)
             return false;
+        setLog($this->getConnection()->getConnection(), $this->getSession()->get('gibbonSchoolYearIDCurrent'), null, $this->user['gibbonPersonID'], 'Password Changed - Success', ['username' => $this->user['username'], 'reason' => 'Password was migrated from an old encryption.'], $_SERVER['REMOTE_ADDR']);
         return true;
     }
 

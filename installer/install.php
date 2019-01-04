@@ -679,7 +679,8 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                             echo '</div>';
                                         } else {
                                             $salt = getSalt();
-                                            $passwordStrong = hash('sha256', $salt.$password);
+                                            $encoder = new \Gibbon\Data\PasswordEncoder();
+                                            $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
 
                                             $userFail = false;
                                             //Write to database

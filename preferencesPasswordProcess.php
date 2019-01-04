@@ -65,7 +65,8 @@ if ($password == '' or $passwordNew == '' or $passwordConfirm == '') {
                 } else {
                     //If answer insert fails...
                     $salt = getSalt();
-                    $passwordStrong = hash('sha256', $salt.$passwordNew);
+                    $encoder = new \Gibbon\Data\PasswordEncoder();
+                    $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
                     try {
                         $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'username' => $_SESSION[$guid]['username']);
                         $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt WHERE (username=:username)";

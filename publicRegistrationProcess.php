@@ -72,7 +72,8 @@ if ($proceed == false) {
     $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'];
     $salt = getSalt();
-    $passwordStrong = hash('sha256', $salt.$password);
+    $encoder = new \Gibbon\Data\PasswordEncoder();
+    $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
     $status = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus');
     $gibbonRoleIDPrimary = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole');
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;

@@ -338,7 +338,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
                     }
 
                     $salt = getSalt();
-                    $passwordStrong = hash('sha256', $salt.$password);
+                    $encoder = new \Gibbon\Data\PasswordEncoder();
+                    $passwordStrong = $encoder->encodePassword($password, $salt, 'sha256');
 
                     //Write to database
                     try {

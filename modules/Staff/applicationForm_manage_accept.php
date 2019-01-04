@@ -197,7 +197,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                             $password = randomPassword(8);
                             $salt = getSalt();
-                            $passwordStrong = hash('sha256', $salt.$password);
+                            $encoder = new \Gibbon\Data\PasswordEncoder();
+                            $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
 
                             $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
 
