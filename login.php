@@ -278,7 +278,7 @@ class LoginManager
         $passwordStrong = $encoder->encodePassword($this->getPostValue('password'), $salt, 'SHA256');
         $dataSecure = ['passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'username' => $this->user['username']];
         $sqlSecure = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
-        if ($this->getConnection()->update($sqlSecure,$dataSecure, false) !== 1)
+        if ($this->getConnection()->update($sqlSecure,$dataSecure, true) !== 1)
             return false;
         setLog($this->getConnection()->getConnection(), $this->getSession()->get('gibbonSchoolYearIDCurrent'), null, $this->user['gibbonPersonID'], 'Password Changed - Success', ['username' => $this->user['username'], 'reason' => 'Password was migrated from an old encryption.'], $_SERVER['REMOTE_ADDR']);
         return true;
