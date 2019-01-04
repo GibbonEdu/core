@@ -73,9 +73,10 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
+     * @param  bool    $ignoreError    Add to allow the error to be completely ignored as per MUCH of the code in this project.
      * @return mixed
      */
-    public function selectOne($query, $bindings = [])
+    public function selectOne($query, $bindings = [], bool $ignoreError = false)
     {
         $result = $this->run($query, $bindings);
         return $result->columnCount() == 1
@@ -88,11 +89,12 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
+     * @param  bool    $ignoreError    Add to allow the error to be completely ignored as per MUCH of the code in this project.
      * @return array
      */
-    public function select($query, $bindings = [])
+    public function select($query, $bindings = [], bool $ignoreError = false)
     {
-        return $this->run($query, $bindings);
+        return $this->run($query, $bindings, $ignoreError);
     }
 
     /**
@@ -117,9 +119,9 @@ class Connection implements ConnectionInterface
      * @param  array   $bindings
      * @return int
      */
-    public function update($query, $bindings = [])
+    public function update($query, $bindings = [], bool $ignoreError = false)
     {
-        return $this->affectingStatement($query, $bindings);
+        return $this->affectingStatement($query, $bindings, $ignoreError);
     }
 
     /**
@@ -154,9 +156,9 @@ class Connection implements ConnectionInterface
      * @param  array   $bindings
      * @return int
      */
-    public function affectingStatement($query, $bindings = [])
+    public function affectingStatement($query, $bindings = [], bool $ignoreError = false)
     {
-        return $this->run($query, $bindings)->rowCount();
+        return $this->run($query, $bindings, $ignoreError)->rowCount();
     }
 
     /**
@@ -164,20 +166,22 @@ class Connection implements ConnectionInterface
      *
      * @param  string  $query
      * @param  array   $bindings
+     * @param  bool    $ignoreError    Add to allow the error to be completely ignored as per MUCH of the code in this project.
      * @return mixed
      *
      * @throws \PDOException
      */
-    protected function run($query, $bindings = [])
+    protected function run($query, $bindings = [], bool $ignoreError = false)
     {
         try {
             $this->result = $this->pdo->prepare($query);
             $this->querySuccess = $this->result->execute($bindings);
         } catch (\PDOException $e) {
-            $this->result = $this->handleQueryException($e);
+            $this->result = new \PDOStatement();
+            if (! $ignoreError)
+                $this->result = $this->handleQueryException($e);
             $this->querySuccess = false;
         }
-
         return $this->result;
     }
 
