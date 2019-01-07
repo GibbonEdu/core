@@ -495,10 +495,10 @@ function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonIDStudent, $gi
         $enableColumnWeighting = getSettingByScope($pdo->getConnection(), 'Markbook', 'enableColumnWeighting');
         if ($enableColumnWeighting != 'Y') return;
 
-        require_once './modules/Markbook/src/markbookView.php';
+        require_once './modules/Markbook/src/MarkbookView.php';
 
         // Build the markbook object for this class & student
-        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID );
+        $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID );
         $markbook->cacheWeightings( $gibbonPersonIDStudent );
 
         $message = '<b>Current course</b>: Overall mark is a cumulative grade from ongoing course work.';
