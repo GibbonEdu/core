@@ -2932,8 +2932,7 @@ function sidebar($gibbon, $pdo)
                             $rand = rand(0, count($_SESSION[$guid]['messageWallOutput']));
                         $total = count($_SESSION[$guid]['messageWallOutput']);
                         $order = '';
-                        for ($i = 0; $i < $total; ++$i) {
-                            $pos = ($rand + $i) % $total;
+                        for ($pos = 0; $pos < $total; ++$pos) {
                             $order .= "$pos, ";
                             $message = $_SESSION[$guid]['messageWallOutput'][$pos];
 
