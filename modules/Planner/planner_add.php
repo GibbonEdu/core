@@ -823,7 +823,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input checked disabled='disabled' type='checkbox' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='even'>";
+								echo "<tr class='odd'>";
 								echo "<td style='text-align: left'>";
 								echo __('Submitter');
 								echo '</td>';
@@ -831,7 +831,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input checked disabled='disabled' type='checkbox' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='odd'>";
+								echo "<tr class='even'>";
 								echo "<td style='text-align: left'>";
 								echo __('Classmates');
 								echo '</td>';
@@ -839,7 +839,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input type='checkbox' name='homeworkCrowdAssessClassmatesRead' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='even'>";
+								echo "<tr class='odd'>";
 								echo "<td style='text-align: left'>";
 								echo __('Other Students');
 								echo '</td>';
@@ -847,7 +847,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input type='checkbox' name='homeworkCrowdAssessOtherStudentsRead' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='odd'>";
+								echo "<tr class='even'>";
 								echo "<td style='text-align: left'>";
 								echo __('Other Teachers');
 								echo '</td>';
@@ -855,7 +855,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input type='checkbox' name='homeworkCrowdAssessOtherTeachersRead' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='even'>";
+								echo "<tr class='odd'>";
 								echo "<td style='text-align: left'>";
 								echo __("Submitter's Parents");
 								echo '</td>';
@@ -863,7 +863,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input type='checkbox' name='homeworkCrowdAssessSubmitterParentsRead' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='odd'>";
+								echo "<tr class='even'>";
 								echo "<td style='text-align: left'>";
 								echo __("Classmates's Parents");
 								echo '</td>';
@@ -871,7 +871,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 								echo "<input type='checkbox' name='homeworkCrowdAssessClassmatesParentsRead' />";
 								echo '</td>';
 								echo '</tr>';
-								echo "<tr class='even'>";
+								echo "<tr class='odd'>";
 								echo "<td style='text-align: left'>";
 								echo __('Other Parents');
 								echo '</td>';

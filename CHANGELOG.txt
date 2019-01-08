@@ -65,14 +65,14 @@ v17.0.00
         Data Updater: implemented cutoff date prefill in Personal Updater History report
         Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
         Data Updater: added school year navigation to Manage Updates
-        Data Updater: added parent email to Family Data Updater History 
+        Data Updater: added parent email to Family Data Updater History
         Departments: fixed bug displaying Left classes under My Classes in sidebar
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
         Finance: added default check to Company email checkbox when editing an invoice
         Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
         Finance: removed Left parents from invoices and receipts
-        Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English 
+        Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
         Markbook: removed WordPress Comment Push functionality
@@ -95,6 +95,7 @@ v17.0.00
         Planner: improved field labelling in Lesson Planner Add and Edit screens
         Planner: supressed autocomplete in Lesson Planner date fields
         Planner: fixed multibyte string issue when dumping unit resources
+        Planner: fixed row stripping in Access Control field in Add and Edit
         Staff: added a Mark as Left bulk action to Manage Staff
         School Admin: increased School Year name field length to 15 characters
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
