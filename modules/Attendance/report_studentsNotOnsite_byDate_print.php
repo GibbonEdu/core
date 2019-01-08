@@ -149,7 +149,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     } else {
                         $rowNum = 'odd';
                     }
-                    ++$count;
 
                     try {
                         $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
@@ -164,6 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
                         continue;
                     }
+                    ++$count;
 
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
