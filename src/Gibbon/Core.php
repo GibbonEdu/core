@@ -191,7 +191,9 @@ class Core
             $this->config = include $configFilePath;
         }
 
-        // Otherwise load the config values from global scope (pre v16)
+        if (!isset($databasePort)) $databasePort = '';
+
+        // Otherwise load the config values from global scope
         if (empty($this->config) || !is_array($this->config)) {
             $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
         }
