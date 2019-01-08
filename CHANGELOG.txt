@@ -55,6 +55,7 @@ v17.0.00
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
+        Attendance: fixed bug which breaks table count in Students Not Onsite and Students Not Present report print view
         Behaviour: added a notification event for Updated Behaviour Record
         Data Updater: added a Family Data Updater History report
         Data Updater: fixed comment bug in Medical Updates
