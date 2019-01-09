@@ -67,6 +67,7 @@ v17.0.00
         Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
         Data Updater: added school year navigation to Manage Updates
         Data Updater: added parent email to Family Data Updater History
+        Data Updater: fixed interface string issue in Data Update request screens
         Departments: fixed bug displaying Left classes under My Classes in sidebar
         Departments: added Student ID field to class participants export
         Finance: adjusted Student filter in Manage Invoices to show Left students
