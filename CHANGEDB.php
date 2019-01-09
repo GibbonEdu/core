@@ -801,4 +801,5 @@ DELETE FROM gibbonAction WHERE name='Import Families' AND gibbonModuleID=(SELECT
 DELETE FROM gibbonAction WHERE name='Import Staff' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 DELETE FROM gibbonAction WHERE name='Import Users' AND gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='User Admin');end
 INSERT IGNORE INTO `gibbonLanguage` (`name`) VALUES ('Sinhala');end
+INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat`, `dateFormatRegEx`, `dateFormatPHP`,`rtl`) VALUES ('tr_TR','Türkçe - Türkiye', 'N', 'N', 'dd.mm.yyyy', '/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\\\d\\\d$/i', 'd.m.Y', 'N');end
 ";
