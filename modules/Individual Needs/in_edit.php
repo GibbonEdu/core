@@ -275,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     }
             }
 
-            if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+            if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
                 $table->addRow()->addSubmit();
             }
 
