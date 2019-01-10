@@ -35,7 +35,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     $page->breadcrumbs
         ->add(__('Manage Medical Forms'), 'medicalForm_manage.php')
-        ->add(__('Manage Medical Forms'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
+        ->add(__('Manage Medical Forms'), 'medicalForm_manage.php')
+        ->add(__('Edit Medical Form'), 'medicalForm_manage_edit.php', ['gibbonPersonMedicalID' => $gibbonPersonMedicalID])
         ->add(__('Edit Condition'));
 
     if (isset($_GET['return'])) {
