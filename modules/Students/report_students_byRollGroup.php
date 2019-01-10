@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         $table->addColumn('transport', __('Transport'));
         $table->addColumn('house', __('House'));
         $table->addColumn('lockerNumber', __('Locker'));
-        $table->addColumn('medical', __('Medical'))->format(function ($values) use ($medicalGateway) {
+        $table->addColumn('longTermMedication', __('Medical'))->format(function ($values) use ($medicalGateway) {
             $output = '';
 
             if (!empty($values['longTermMedication'])) {
