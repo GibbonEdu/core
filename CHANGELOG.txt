@@ -93,6 +93,7 @@ v17.0.00
         Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
         Messenger: removed Body column from Canned Response table
         Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
+        Messenger: fixed a PHP error in Edit Message related to message targets permissions
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
@@ -111,6 +112,7 @@ v17.0.00
         Students: fixed pre-select of Student when adding medical form from Student Profile
         System Admin: fixed bug which turned custom alarm into general alarm
         Timetable: added a facility booking button to the timetable in View Timetable by Facility
+        Timetable: fixed unable to turn Bookings checkbox off in View Timetable by Person
         Timetable Admin: fixed course sync for courses with multiple year groups
         Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
