@@ -151,6 +151,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                     } else {
                         $_SESSION[$guid]['viewCalendarPersonal'] = 'N';
                     }
+
+                    $spaceBookingCalendar = $_POST['spaceBookingCalendar'] ?? '';
+                    if ($spaceBookingCalendar == 'on' or $spaceBookingCalendar == 'Y') {
+                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'Y';
+                    } else {
+                        $_SESSION[$guid]['viewCalendarSpaceBooking'] = 'N';
+                    }
                 }
             }
 
