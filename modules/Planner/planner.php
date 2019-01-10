@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __('The selected record does not exist, or you do not have access to it.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         $rowChild = $resultChild->fetch();
