@@ -133,6 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                     else {
                         $columnGrades = $_POST['gibbonScaleGradeID'];
                         $columnIDs = $_POST['gibbonRubricColumnID'];
+                        $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
                             try {
