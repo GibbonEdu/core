@@ -101,6 +101,7 @@ v17.0.00
         Planner: supressed autocomplete in Lesson Planner date fields
         Planner: fixed multibyte string issue when dumping unit resources
         Planner: fixed row stripping in Access Control field in Add and Edit
+        Planner: corrected no records error message in Parent view of planner
         Staff: added a Mark as Left bulk action to Manage Staff
         School Admin: increased School Year name field length to 15 characters
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
