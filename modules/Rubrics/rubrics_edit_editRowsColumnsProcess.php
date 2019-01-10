@@ -118,8 +118,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
+                            $visualise = $columnVisualises[$count] ?? 'N';
                             try {
-                                $data = array('title' => $columnTitles[$count], 'visualise' => $columnVisualises[$count], 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                                $data = array('title' => $columnTitles[$count], 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
                                 $sql = 'UPDATE gibbonRubricColumn SET title=:title, gibbonScaleGradeID=NULL, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
@@ -136,8 +137,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
                         $columnVisualises = isset($_POST['columnVisualise'])? $_POST['columnVisualise'] : array();
                         $count = 0;
                         foreach ($columnIDs as $gibbonRubricColumnID) {
+                            $visualise = $columnVisualises[$count] ?? 'N';
                             try {
-                                $data = array('gibbonScaleGradeID' => $columnGrades[$count], 'visualise' => $columnVisualises[$count], 'gibbonRubricColumnID' => $gibbonRubricColumnID);
+                                $data = array('gibbonScaleGradeID' => $columnGrades[$count], 'visualise' => $visualise, 'gibbonRubricColumnID' => $gibbonRubricColumnID);
                                 $sql = "UPDATE gibbonRubricColumn SET title='', gibbonScaleGradeID=:gibbonScaleGradeID, visualise=:visualise WHERE gibbonRubricColumnID=:gibbonRubricColumnID";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
