@@ -39,28 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 
     $row = $form->addRow()->addHeading(__('SMS Settings'));
 
-    $row = $form->addRow()->addAlert( sprintf(__('Gibbon is designed to use the %1$sOne Way SMS%2$s gateway to send out SMS messages. This is a paid service, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module. It is possible that completing the fields below with details from other gateways may work.'), "<a href='http://onewaysms.com' target='_blank'>", '</a>') );
-
-    $setting = getSettingByScope($connection2, 'Messenger', 'smsUsername', true);
-	$row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addTextField($setting['name'])->setValue($setting['value']);
-
-	$setting = getSettingByScope($connection2, 'Messenger', 'smsPassword', true);
-	$row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addPassword($setting['name'])->setValue($setting['value']);
-
-	$setting = getSettingByScope($connection2, 'Messenger', 'smsURL', true);
-	$row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addTextField($setting['name'])->setValue($setting['value']);
-
-	$setting = getSettingByScope($connection2, 'Messenger', 'smsURLCredit', true);
-	$row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addTextField($setting['name'])->setValue($setting['value']);
-
+    $row = $form->addRow()->addAlert(__('Gibbon can use a number of different gateways to send out SMS messages. These are paid services, not affiliated with Gibbon, and you must create your own account with them before being able to send out SMSs using the Messenger module.').' '.sprintf(__('%1$sClick here%2$s to configure SMS settings.'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/System Admin/thirdPartySettings.php'>", "</a>"));
 
 	$row = $form->addRow()->addHeading(__('Message Wall Settings'));
 
@@ -83,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
-       
+
     $row = $form->addRow()->addHeading(__('Miscellaneous'));
 
 	$setting = getSettingByScope($connection2, 'Messenger', 'messageBcc', true);
