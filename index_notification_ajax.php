@@ -39,7 +39,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                 if ($alarm == 'Lockdown') {
                     $type = 'lockdown';
                 } elseif ($alarm == 'Custom') {
-                    $type == 'custom';
+                    $type = 'custom';
                 }
                 $output .= "<script>
 					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {

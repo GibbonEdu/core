@@ -45,11 +45,11 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
         }
 
     if ($result->rowCount() == 1) { //Alarm details OK
-            $row = $result->fetch();
+        $row = $result->fetch();
 
         $output .= "<div style='padding-top: 10px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>";
-                //Allow alarm sounder to terminate alarm
-                $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
+        //Allow alarm sounder to terminate alarm
+        $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
         if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
             $output .= "<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__('Turn Alarm Off').'</a></p>';
         }
