@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         if ($rollGroup = $rollGroupGateway->getRollGroupByID($gibbonRollGroupID)) {
             $output .= '<b>'.__('Roll Group').'</b>: '.$rollGroup['name'];
         }
-        if ($tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonRollGroupID)) {
+        if ($tutors = $rollGroupGateway->selectTutorsByRollGroup($gibbonRollGroupID)->fetchAll()) {
             $output .= '<br/><b>'.__('Tutors').'</b>: '.Format::nameList($tutors, 'Staff');
         }
 
