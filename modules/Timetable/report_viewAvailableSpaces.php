@@ -28,7 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
     echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $page->breadcrumbs->add('View Available Facilities');
+    $page->breadcrumbs->add(__('View Available Facilities'));
 
     echo '<h2>';
     echo __('Choose Options');

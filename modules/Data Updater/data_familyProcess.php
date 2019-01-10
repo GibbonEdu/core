@@ -23,7 +23,6 @@ include '../../gibbon.php';
 
 $gibbonFamilyID = $_GET['gibbonFamilyID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_family.php&gibbonFamilyID=$gibbonFamilyID";
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.php') == false) {
     $URL .= '&return=error0';
@@ -43,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
         } else {
             //Check access to person
             if ($highestAction == 'Update Family Data_any') {
+                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_family.php&gibbonFamilyID='.$gibbonFamilyID;
+
                 try {
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID);
                     $sqlCheck = 'SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily WHERE gibbonFamilyID=:gibbonFamilyID';
@@ -51,6 +52,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_family.p
                 } catch (PDOException $e) {
                 }
             } else {
+                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonFamilyID='.$gibbonFamilyID;
+
                 try {
                     $dataCheck = array('gibbonFamilyID' => $gibbonFamilyID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT name, gibbonFamily.gibbonFamilyID FROM gibbonFamily JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' AND gibbonFamily.gibbonFamilyID=:gibbonFamilyID";

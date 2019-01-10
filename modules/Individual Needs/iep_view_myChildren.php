@@ -27,7 +27,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
     echo '</div>';
 } else {
     $entryCount = 0;
-    $page->breadcrumbs->add('View Individual Education Plans');
+    $page->breadcrumbs->add(__('View Individual Education Plans'));
 
     echo '<p>';
     echo __('This section allows you to view individual education plans, where they exist, for children within your family.').'<br/>';
