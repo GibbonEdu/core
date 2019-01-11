@@ -1491,13 +1491,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         $gibbonCourseClassID = $row['gibbonCourseClassID'];
                         $columns = 2;
 
+                        $canAccessProfile = (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_brief') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_full') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_fullNoNotes') ) ;
+
                         // Only show certain options if Class Attendance is Enabled school-wide, and for this particular class
                         $attendanceEnabled = isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") && $row['attendance'] == 'Y';
 
                         // Get attendance pre-fill and default settings
                         $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
                         $defaultAttendanceType = getSettingByScope($connection2, 'Attendance', 'defaultClassAttendanceType');
-
 
                         $attendance = new Gibbon\Module\Attendance\AttendanceView($gibbon, $pdo);
 
@@ -1518,7 +1519,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             $_SESSION[$guid]['sidebarExtra'] .= __('Participants') . "<br/>";
                         }
                             //Show attendance log for the current day
-                            if ( $attendanceEnabled && ( ($row['role'] == 'Teacher' and $teacher == true) )) {
+                            if ($attendanceEnabled && ( ($row['role'] == 'Teacher' and $teacher == true))) {
                                 try {
                                     $dataLog = array( 'date' => $row['date'], 'gibbonCourseClassID' => $gibbonCourseClassID);
                                     $sqlLog = 'SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND date LIKE :date AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY timestampTaken';
@@ -1680,7 +1681,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                 }
                             }
 
-                            if ($rowClassGroup['role'] == 'Student') {
+                            if ($rowClassGroup['role'] == 'Student' && $canAccessProfile) {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowClassGroup['gibbonPersonID']."'>".formatName('', $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Student').'</a></b><br/>';
                             } else {
                                 $_SESSION[$guid]['sidebarExtra'] .= "<div style='padding-top: 5px'><b>".formatName($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';

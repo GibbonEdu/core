@@ -53,6 +53,7 @@ v17.0.00
         System: deprecated getGibbonMailer function, replaced with Mailer wrapper
         System: added the ability to set the current language with an i18n URL parameter
         System: added Sinhala to list of languages
+        System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
@@ -93,6 +94,7 @@ v17.0.00
         Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
         Messenger: removed Body column from Canned Response table
         Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
+        Messenger: fixed a PHP error in Edit Message related to message targets permissions
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
@@ -100,6 +102,9 @@ v17.0.00
         Planner: supressed autocomplete in Lesson Planner date fields
         Planner: fixed multibyte string issue when dumping unit resources
         Planner: fixed row stripping in Access Control field in Add and Edit
+        Planner: corrected no records error message in Parent view of planner
+        Planner: improved link logic in lesson plan participant grid
+        Roll Groups: improved link logic in roll group grid
         Staff: added a Mark as Left bulk action to Manage Staff
         School Admin: increased School Year name field length to 15 characters
         Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
@@ -109,7 +114,11 @@ v17.0.00
         Students: fixed searching by parent email address in View Student Profile
         Students: fixed displayed name of First Aider in Edit First Aid Record
         Students: fixed pre-select of Student when adding medical form from Student Profile
+        System Admin: fixed bug which turned custom alarm into general alarm
         Timetable: added a facility booking button to the timetable in View Timetable by Facility
+        Timetable: fixed unable to turn Bookings checkbox off in View Timetable by Person
+        Timetable: removed All Users filter option for non-Staff in View Timetable by Person
+        Timetable: fixed logic to correctly display Back To Search Results for parents in View Timetable by Person
         Timetable Admin: fixed course sync for courses with multiple year groups
         Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
         User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
