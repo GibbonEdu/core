@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         }
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
-        $gibbonPersonID = '';
+        $gibbonPersonIDArray = [];
 
         //My children's classes
         if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
@@ -114,16 +114,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                    }
+                    } catch (PDOException $e) {}
                     while ($rowChild = $resultChild->fetch()) {
                         $select = '';
                         if ($rowChild['gibbonPersonID'] == $search) {
                             $select = 'selected';
                         }
 
-                        $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student').'</option>';
-                        $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
+                        $options .= "<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student').'</option>';
+                        $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                         ++$count;
                     }
                 }
@@ -133,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     echo __('Access denied.');
                     echo '</div>';
                 } elseif ($count == 1) {
-                    $search = $gibbonPersonID[0];
+                    $search = $gibbonPersonIDArray[0];
                 } else {
                     echo '<h2>';
                     echo __('Choose');
