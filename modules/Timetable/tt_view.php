@@ -96,22 +96,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') ==
                 ->add(__('View Timetable by Person'), 'tt.php', ['allUsers' => $allUsers])
                 ->add(Format::name($row['title'], $row['preferredName'], $row['surname'], $row['type']));
 
-            if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
-                $role = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
-                if ($role == 'Student' or $role == 'Staff' or $allUsers == 'on' or $search != '') {
-                    echo "<div class='linkTop'>";
 
-                    if ($search != '') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__('Back to Search Results').'</a>';
-                    }
-                    if ($role == 'Student' or $role == 'Staff' or $allUsers == 'on') {
-                        if ($search != '') {
-                            echo ' | ';
-                        }
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$role&allUsers=$allUsers'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    }
-                    echo '</div>';
+            $canEdit = isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php');
+            $roleCategory = getRoleCategory($row['gibbonRoleIDPrimary'], $connection2);
+            if ($allUsers == 'on' or $search != '' or $canEdit) {
+                echo "<div class='linkTop'>";
+                if ($search != '') {
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt.php&search='.$search."&allUsers=$allUsers'>".__('Back to Search Results').'</a>';
                 }
+                if ($canEdit && ($roleCategory == 'Student' or $roleCategory == 'Staff')) {
+                    if ($search != '') {
+                        echo ' | ';
+                    }
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=$roleCategory&allUsers=$allUsers'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                }
+                echo '</div>';
             }
 
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
