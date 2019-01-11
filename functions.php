@@ -3493,7 +3493,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 {
     $return = false;
 
-    $link = (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_brief') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_full') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_fullNoNotes') ) ;
+    $canAccessProfile = (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_brief') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_full') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_fullNoNotes') ) ;
 
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
@@ -3563,7 +3563,7 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
         }
 
         $return .= "<div style='padding-top: 5px'><b>";
-        if ($link) {
+        if ($canAccessProfile) {
             $return .= "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup['gibbonPersonID']."'>".formatName('', $rowRollGroup['preferredName'], $rowRollGroup['surname'], 'Student').'</a><br/><br/>';
         }
         else {
