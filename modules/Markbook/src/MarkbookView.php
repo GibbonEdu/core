@@ -55,7 +55,7 @@ class MarkbookView
     /**
      * Markbook Values
      */
-    protected $columnsPerPage = 30;
+    protected $columnsPerPage = 25;
     protected $columnsThisPage = -1;
     protected $columnCountTotal = -1;
     protected $minSequenceNumber = -1;
