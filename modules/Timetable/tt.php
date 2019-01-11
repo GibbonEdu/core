@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
 
         $gibbonPersonID = isset($_GET['gibbonPersonID']) ? $_GET['gibbonPersonID'] : null;
         $search = isset($_GET['search']) ? $_GET['search'] : '';
-        $allUsers = isset($_GET['allUsers']) ? $_GET['allUsers'] : '';
+        $allUsers = (isset($_GET['allUsers']) && $_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') ? $_GET['allUsers'] : '';
 
         $studentGateway = $container->get(StudentGateway::class);
         $staffGateway = $container->get(StaffGateway::class);
@@ -70,9 +70,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 $row->addLabel('search', __('Search For'))->description(__('Preferred, surname, username.'));
                 $row->addTextField('search')->setValue($criteria->getSearchText());
 
-            $row = $form->addRow();
-                $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
-                $row->addCheckbox('allUsers')->checked($allUsers);
+            if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
+                $row = $form->addRow();
+                    $row->addLabel('allUsers', __('All Users'))->description(__('Include non-staff, non-student users.'));
+                    $row->addCheckbox('allUsers')->checked($allUsers);
+            }
 
             $row = $form->addRow();
                 $row->addSearchSubmit($gibbon->session);
@@ -102,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
             $table = DataTable::create('timetables');
 
         } else if ($canViewAllTimetables) {
-            
+
             $users = $studentGateway->queryStudentsAndTeachersBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);
 
             $table = DataTable::createPaginated('timetables', $criteria);
@@ -114,7 +116,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt.php') == fals
                 'role:student'    => __('Role').': '.__('Student'),
                 'role:staff'      => __('Role').': '.__('Staff'),
             ]);
-    
+
             if ($criteria->hasFilter('all')) {
                 $table->addMetaData('filterOptions', [
                     'status:full'     => __('Status').': '.__('Full'),
