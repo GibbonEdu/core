@@ -102,6 +102,7 @@ v17.0.00
         Planner: fixed multibyte string issue when dumping unit resources
         Planner: fixed row stripping in Access Control field in Add and Edit
         Planner: corrected no records error message in Parent view of planner
+        Planner: improved link logic in lesson plan participant grid
         Roll Groups: improved link logic in roll group grid
         Staff: added a Mark as Left bulk action to Manage Staff
         School Admin: increased School Year name field length to 15 characters
