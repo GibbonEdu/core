@@ -60,6 +60,7 @@ v17.0.00
         Attendance: fixed bug which breaks table count in Students Not Onsite and Students Not Present report print view
         Attendance: fixed error message text for attendance taken in the future
         Behaviour: added a notification event for Updated Behaviour Record
+        Crowd Assessment: fixed bug preventing student seeing their own work when Submitter is only student option selected
         Data Updater: added a Family Data Updater History report
         Data Updater: fixed comment bug in Medical Updates
         Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
