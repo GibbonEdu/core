@@ -53,6 +53,7 @@ v17.0.00
         System: deprecated getGibbonMailer function, replaced with Mailer wrapper
         System: added the ability to set the current language with an i18n URL parameter
         System: added Sinhala to list of languages
+        System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
         Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
         Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
