@@ -96,6 +96,7 @@ v17.0.00
         Messenger: removed Body column from Canned Response table
         Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
         Messenger: fixed a PHP error in Edit Message related to message targets permissions
+        Messenger: added cache refresh on success in New Message and New Quick Wall Message
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
         Planner: fixed school year name on Edit Unit page
