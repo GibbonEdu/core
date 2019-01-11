@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     // Type-specific form fields loaded via ajax
     $row = $form->addRow('detailsRow')->addContent('')->addClass('general');
 
-    $row = $form->addRow();
+    $row = $form->addRow()->addClass('general');
         $row->addSubmit();
 
     echo $form->getOutput();
