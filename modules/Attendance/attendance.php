@@ -98,7 +98,7 @@ if (isset($_SESSION[$guid]["username"])) {
             });
         $dailyAttendanceTable->addColumn('recent-history', __('Recent History'))
             ->width('342px')
-            ->format(function ($row) use ($takeAttendanceURL, $rowID) {
+            ->format(function ($row) use ($takeAttendanceURL, $rowID, $session) {
                 $dayTable = "<table class='historyCalendarMini'>";
 
                 $l = sizeof($row['recentHistory']);
@@ -113,7 +113,7 @@ if (isset($_SESSION[$guid]["username"])) {
                         // default link and content
                         if (!empty($day['currentDate']) && !empty($day['currentDayTimestamp'])) {
                             // link and date content of a cell
-                            $link = './index.php?' . http_build_query([
+                            $link = $session->get('absoluteURL') . '/index.php?' . http_build_query([
                                 'q' => $takeAttendanceURL,
                                 $rowID => $row[$rowID],
                                 'currentDate' => $day['currentDate'],
