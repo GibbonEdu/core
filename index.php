@@ -227,7 +227,7 @@ $localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datep
 $datepickerLocale = 'en-GB';
 if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
     $datepickerLocale = $localeCode;
-} elseif ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCodeShort))) {
+} elseif (is_file(sprintf($localePath, $localeCodeShort))) {
     $datepickerLocale = $localeCodeShort;
 }
 
