@@ -136,8 +136,15 @@ use Gibbon\Services\Format;
     $columnFilter = $_GET['markbookFilter'] ?? $_SESSION[$guid]['markbookFilter'] ?? '';
     $studentOrderBy = $_GET['markbookOrderBy'] ?? $_SESSION[$guid]['markbookOrderBy'] ?? 'surname';
 
+    //Get the current page number
+    $pageNum = $_GET['page'] ?? $_SESSION[$guid]['markbookPage'] ?? 0;
+    $_SESSION[$guid]['markbookPage'] = $pageNum;
+
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
+
+    // Build the markbook object for this class
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // QUERY
     $criteria = $markbookGateway->newQueryCriteria()
@@ -145,6 +152,8 @@ use Gibbon\Services\Format;
         ->sortBy(['gibbonMarkbookColumn.sequenceNumber', 'gibbonMarkbookColumn.date', 'gibbonMarkbookColumn.complete', 'gibbonMarkbookColumn.completeDate'])
         ->filterBy('term', $gibbonSchoolYearTermID)
         ->filterBy('show', $columnFilter)
+        ->pageSize($markbook->getColumnsPerPage())
+        ->page($pageNum+1)
         ->fromPOST();
 
     $columns = $markbookGateway->queryMarkbookColumnsByClass($criteria, $gibbonCourseClassID);
@@ -153,9 +162,6 @@ use Gibbon\Services\Format;
             $column['gibbonPlannerEntry'] = $plannerGateway->getPlannerEntryByID($column['gibbonPlannerEntryID']);
         }
     });
-
-    // Build the markbook object for this class
-    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
 
     // Load the columns for the current page
     $markbook->loadColumnsFromDataSet($columns);
@@ -176,13 +182,6 @@ use Gibbon\Services\Format;
         echo __('There are no records to display.');
         echo '</div>';
     } else {
-
-    	//Get the current page number
-        $pageNum = (isset($_SESSION[$guid]['markbookPage']))? $_SESSION[$guid]['markbookPage'] : 0;
-        $pageNum = (isset($_GET['page']))? $_GET['page'] : $pageNum;
-
-        $_SESSION[$guid]['markbookPage'] = $pageNum;
-
         // Cache all personalized target data
         $markbook->cachePersonalizedTargets( $gibbonCourseClassID );
 
@@ -220,7 +219,7 @@ use Gibbon\Services\Format;
 
 	        	echo ( ($_SESSION[$guid]['markbookTerm'] == -1)? __("All Terms") : $_SESSION[$guid]['markbookTermName'] ) ." : ";
 
-                $start = min( max(1, ($pageNum * $markbook->getColumnsPerPage()) ), $markbook->getColumnCountTotal() );
+                $start = min( max(0, $pageNum * $markbook->getColumnsPerPage())+1, $markbook->getColumnCountTotal() );
                 $end = min( max( 1, $markbook->getColumnCountThisPage() + ($pageNum * $markbook->getColumnsPerPage()) ), $markbook->getColumnCountTotal() );
 
 	        	echo __("Records") ." ". $start ."-". $end ." ". __('of') ." ". $markbook->getColumnCountTotal() ;
