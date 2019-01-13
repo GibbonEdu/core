@@ -59,6 +59,7 @@ v17.0.00
         Attendance: fixed an error in the parent view of Student History for PHP 7.1+
         Attendance: fixed bug which breaks table count in Students Not Onsite and Students Not Present report print view
         Attendance: fixed error message text for attendance taken in the future
+        Attendance: fix date links in View Daily Attendance opening a new tab
         Behaviour: added a notification event for Updated Behaviour Record
         Crowd Assessment: fixed bug preventing student seeing their own work when Submitter is only student option selected
         Data Updater: added a Family Data Updater History report
@@ -78,6 +79,8 @@ v17.0.00
         Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
         Finance: removed Left parents from invoices and receipts
         Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English
+        Finance: fixed inability to comment on an expense request for users with Write access
+        Formal Assessment: fix unclickable link in View Internal Assessments
         Individual Needs: removed Submit button when viewing and archived IEP
         Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
         Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
