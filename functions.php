@@ -1064,7 +1064,7 @@ function getStudentDashboardContents($connection2, $guid, $gibbonPersonID)
 				$("#tt").load("'.$_SESSION[$guid]['absoluteURL'].'/index_tt_ajax.php",{"gibbonTTID": "'.@$_GET['gibbonTTID'].'", "ttDate": "'.@$_POST['ttDate'].'", "fromTT": "'.@$_POST['fromTT'].'", "personalCalendar": "'.@$_POST['personalCalendar'].'", "schoolCalendar": "'.@$_POST['schoolCalendar'].'", "spaceBookingCalendar": "'.@$_POST['spaceBookingCalendar'].'"});
 			});
         </script>';
-        
+
         $timetable .= '<h2>'.__('My Timetable').'</h2>';
         $timetable .= "<div id='tt' name='tt' style='width: 100%; min-height: 40px; text-align: center'>";
         $timetable .= "<img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL']."/themes/Default/img/loading.gif' alt='".__('Loading')."' onclick='return false;' /><br/><p style='text-align: center'>".__('Loading').'</p>';
@@ -3493,6 +3493,8 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
 {
     $return = false;
 
+    $canAccessProfile = (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_brief') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_full') || isActionAccessible($guid, $connection2, '/modules/Students/student_view.php', 'View Student Profile_fullNoNotes') ) ;
+
     if ($confidential && (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_full') == false && isActionAccessible($guid, $connection2, '/modules/Students/student_view.php','View Student Profile_fullNoNotes') == false)) {
         $confidential = false;
     }
@@ -3560,7 +3562,14 @@ function getRollGroupTable($guid, $gibbonRollGroupID, $columns, $connection2, $c
             $return .= "' style='z-index: 99; margin: -20px 0 0 74px; width: 25px; height: 25px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/gift.png'/>";
         }
 
-        $return .= "<div style='padding-top: 5px'><b><a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup['gibbonPersonID']."'>".formatName('', $rowRollGroup['preferredName'], $rowRollGroup['surname'], 'Student').'</a><br/><br/></div>';
+        $return .= "<div style='padding-top: 5px'><b>";
+        if ($canAccessProfile) {
+            $return .= "<a href='index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=".$rowRollGroup['gibbonPersonID']."'>".formatName('', $rowRollGroup['preferredName'], $rowRollGroup['surname'], 'Student').'</a><br/><br/>';
+        }
+        else {
+            $return .= formatName('', $rowRollGroup['preferredName'], $rowRollGroup['surname'], 'Student').'<br/><br/>';
+        }
+        $return .= '</div>';
         $return .= '</td>';
 
         if ($count % $columns == ($columns - 1)) {
@@ -3950,7 +3959,7 @@ function getSettingByScope($connection2, $scope, $name, $returnRow = false )
 
 /**
  * Converts date from language-specific format to YYYY-MM-DD. DEPRECATED.
- * 
+ *
  * @deprecated in v16. Use Format::dateConvert
  */
 function dateConvert($guid, $date)
@@ -3959,8 +3968,8 @@ function dateConvert($guid, $date)
 }
 
 /**
- * Converts date from YYYY-MM-DD to language-specific format. DEPRECATED. 
- * 
+ * Converts date from YYYY-MM-DD to language-specific format. DEPRECATED.
+ *
  * @deprecated in v16. Use Format::date
  */
 function dateConvertBack($guid, $date)
@@ -4700,8 +4709,8 @@ function returnProcess($guid, $return, $editLink = null, $customReturns = null)
 {
     $alert = returnProcessGetAlert($return, $editLink, $customReturns);
 
-    echo !empty($alert) 
-        ? "<div class='{$alert['context']}'>{$alert['text']}</div>" 
+    echo !empty($alert)
+        ? "<div class='{$alert['context']}'>{$alert['text']}</div>"
         : '';
 }
 
