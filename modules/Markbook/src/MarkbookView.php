@@ -55,7 +55,7 @@ class MarkbookView
     /**
      * Markbook Values
      */
-    protected $columnsPerPage = 30;
+    protected $columnsPerPage = 25;
     protected $columnsThisPage = -1;
     protected $columnCountTotal = -1;
     protected $minSequenceNumber = -1;
@@ -734,9 +734,9 @@ class MarkbookView
 
             // The overall weight is 100 minus the sum of Final Grade weights
             $overallWeight = min(100.0, max(0.0, 100.0 - $finalTotal));
-            $overallAverage = ($overallTotal > 0) ? ($overallCumulative / $overallTotal) : '';
+            $overallAverage = ($overallTotal > 0) ? ($overallCumulative / $overallTotal) : 0;
 
-            $weightedAverages['cumulative'] = $overallAverage;
+            $weightedAverages['cumulative'] = $overallAverage > 0 ? $overallAverage : '';
 
             $finalTotal += $overallWeight;
             $finalCumulative += ($overallAverage * $overallWeight);
