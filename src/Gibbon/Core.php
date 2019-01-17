@@ -187,9 +187,9 @@ class Core
     protected function loadConfigFromFile($configFilePath)
     {
         // Load the config values (from an array if possible)
-        if ($this->isInstalled()) {
-            $this->config = include $configFilePath;
-        }
+        if (!$this->isInstalled()) return;
+        
+        $this->config = include $configFilePath;
 
         if (!isset($databasePort)) $databasePort = '';
 
