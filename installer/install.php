@@ -290,7 +290,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
                                     //Estabish db connection without database name
 
-                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databasePort');
+                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword');
                                     $mysqlConnector = new MySqlConnector();
 
                                     if ($pdo = $mysqlConnector->connect($config)) {
