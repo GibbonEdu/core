@@ -380,23 +380,23 @@ else {
 								if ($staff=="Y") {
 									try {
 										$dataEmail=array('gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID'=>$t);
-										$sqlEmail="(SELECT DISTINCT email, gibbonPerson.gibbonPersonID 
-                                            FROM gibbonPerson 
-                                            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+										$sqlEmail="(SELECT DISTINCT email, gibbonPerson.gibbonPersonID
+                                            FROM gibbonPerson
+                                            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                             JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                                             JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                                             JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
                                             WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
                                             AND FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)
-                                            AND NOT gibbonPerson.email='' 
+                                            AND NOT gibbonPerson.email=''
                                             AND gibbonPerson.status='Full')
                                         UNION ALL (
-                                            SELECT DISTINCT email, gibbonPerson.gibbonPersonID 
-                                            FROM gibbonPerson 
-                                            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID) 
+                                            SELECT DISTINCT email, gibbonPerson.gibbonPersonID
+                                            FROM gibbonPerson
+                                            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
                                             JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
                                             WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
-                                            AND NOT email='' AND status='Full' 
+                                            AND NOT email='' AND status='Full'
                                             AND gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID
                                             GROUP BY gibbonPerson.gibbonPersonID
                                         )" ;
@@ -1753,7 +1753,7 @@ else {
                       }
                     }
 				  }//END Target Absent students / Attendance Status
-			
+
 
 			//Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
@@ -2044,7 +2044,7 @@ else {
 
                     $sender = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
                     $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
-                    
+
                     $mail->Body = __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body.$bodyFin;
                     $mail->AltBody = emailBodyConvert($mail->Body);
                     $mail->Send();
@@ -2063,7 +2063,7 @@ else {
                     }, []));
 
                     $sms = $container->get(SMS::class);
-                    
+
                     $result = $sms
                         ->content($body)
                         ->send($recipients);
@@ -2101,6 +2101,7 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$_SESSION[$guid]['pageLoads'] = null;
 				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}

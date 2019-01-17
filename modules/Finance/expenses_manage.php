@@ -53,15 +53,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
         //Check if have Full, Write or Read access in any budgets
         $budgetsAccess = false;
+        $budgetsActionAccess = false;
         $budgets = getBudgetsByPerson($connection2, $_SESSION[$guid]['gibbonPersonID']);
         $budgetsAll = null;
         if ($highestAction == 'Manage Expenses_all') {
             $budgetsAll = getBudgets($connection2);
             $budgetsAccess = true;
+            $budgetsActionAccess = true;
         } else {
             if (is_array($budgets) && count($budgets)>0) {
                 foreach ($budgets as $budget) {
-                    if ($budget[2] == 'Full' or $budget[2] == 'Write' or $budget[2] == 'READ') {
+                    if ($budget[2] == 'Full' or $budget[2] == 'Write') {
+                        $budgetsActionAccess = true;
+                        $budgetsAccess = true;
+                    }
+                    if ($budget[2] == 'Read') {
                         $budgetsAccess = true;
                     }
                 }
@@ -274,9 +280,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
                         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-                        $bulkActions = array('export' => __('Export'));
-                        $row = $form->addBulkActionRow($bulkActions);
-                            $row->addSubmit(__('Go'));
+                        if ($budgetsActionAccess) {
+                            $bulkActions = array('export' => __('Export'));
+                            $row = $form->addBulkActionRow($bulkActions);
+                                $row->addSubmit(__('Go'));
+                        }
 
                         $table = $form->addRow()->addTable()->setClass('colorOddEven fullWidth');
 
@@ -286,8 +294,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                             $header->addContent(__('Status'))->append('<br/><small><i>'.__('Reimbursement').'</i></small>');
                             $header->addContent(__('Cost'))->append('<br/><small><i>('.$_SESSION[$guid]['currency'].')</i></small>');
                             $header->addContent(__('Date'));
-                            $header->addContent(__('Actions'));
-                            $header->addCheckAll();
+
+                            if ($budgetsActionAccess) {
+                                $header->addContent(__('Actions'));
+                                $header->addCheckAll();
+                            }
 
                         if ($result->rowCount() == 0) {
                             $table->addRow()->addTableCell(__('There are no records to display.'))->colSpan(7);
@@ -312,35 +323,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
                                 $row->addContent(number_format($expense['cost'], 2, '.', ','));
                                 $row->addContent(dateConvertBack($guid, substr($expense['timestampCreator'], 0, 10)));
 
-                            $col = $row->addColumn()->addClass('inline');
-                                $col->addWebLink('<img title="'.__('View').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/plus.png" />')
-                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php')
-                                    ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
-                                    ->addParams($linkParams);
-                                $col->addWebLink('<img title="'.__('Print').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png"  style="margin-left:4px;"/>')
-                                    ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php')
-                                    ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
-                                    ->addParams($linkParams);
-
-                            if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
-                                if ($expense['status'] == 'Requested' or $expense['status'] == 'Approved' or $expense['status'] == 'Ordered' or ($expense['status'] == 'Paid' && $expense['paymentReimbursementStatus'] == 'Requested')) {
-                                    $col->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"  style="margin-left:4px;"/>')
-                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php')
+                            if ($budgetsActionAccess) {
+                                $col = $row->addColumn()->addClass('inline');
+                                    $col->addWebLink('<img title="'.__('View').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/plus.png" />')
+                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_view.php')
                                         ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
                                         ->addParams($linkParams);
-                                }
-                            }
-
-                            if ($expense['status'] == 'Requested') {
-                                if ($approvalRequired == true) {
-                                    $col->addWebLink('<img title="'.__('Approve/Reject').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"  style="margin-left:4px;"/>')
-                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approve.php')
+                                    $col->addWebLink('<img title="'.__('Print').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/print.png"  style="margin-left:4px;"/>')
+                                        ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_print.php')
                                         ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
                                         ->addParams($linkParams);
-                                }
-                            }
 
-                            $row->addCheckbox('gibbonFinanceExpenseIDs[]')->setValue($expense['gibbonFinanceExpenseID'])->setClass('textCenter');
+                                if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all')) {
+                                    if ($expense['status'] == 'Requested' or $expense['status'] == 'Approved' or $expense['status'] == 'Ordered' or ($expense['status'] == 'Paid' && $expense['paymentReimbursementStatus'] == 'Requested')) {
+                                        $col->addWebLink('<img title="'.__('Edit').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/config.png"  style="margin-left:4px;"/>')
+                                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_edit.php')
+                                            ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                            ->addParams($linkParams);
+                                    }
+                                }
+
+                                if ($expense['status'] == 'Requested') {
+                                    if ($approvalRequired == true) {
+                                        $col->addWebLink('<img title="'.__('Approve/Reject').'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/iconTick.png"  style="margin-left:4px;"/>')
+                                            ->setURL($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/expenses_manage_approve.php')
+                                            ->addParam('gibbonFinanceExpenseID', $expense['gibbonFinanceExpenseID'])
+                                            ->addParams($linkParams);
+                                    }
+                                }
+                            
+                                $row->addCheckbox('gibbonFinanceExpenseIDs[]')->setValue($expense['gibbonFinanceExpenseID'])->setClass('textCenter');
+                            }
                         }
 
                         echo $form->getOutput();

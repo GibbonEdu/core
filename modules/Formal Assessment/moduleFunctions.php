@@ -116,7 +116,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         $output .= __('Unmarked').'<br/>';
                     }
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a 'title='".__('Download more information')." href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
+                        $output .= " | <a title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';

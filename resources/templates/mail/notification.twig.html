@@ -1,0 +1,26 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+{% extends "mail/email.twig.html" %}
+
+{% block greeting %}
+    <h2 style="margin-top: 0px;">{{ greeting }}</h2>
+{% endblock %}
+
+{% block bodyBottom %}
+    <span style="font-size: 12px; line-height: 18px;">
+        {{ __('Login to %1$s and use the notification icon to check your new notification, or %2$sclick here%3$s.')|format(systemName, '<a href="' ~ absoluteURL ~ '/index.php?q=notifications.php" style="' ~ linkStyle ~ '">', '</a>')|raw }}
+    </span>
+{% endblock %}
+
+{% block footer %}
+    {{ __('If you do not wish to receive email notifications from %1$s, please %2$sclick here%3$s to adjust your preferences:')|format(systemName, '<a href="' ~ absoluteURL ~ '/index.php?q=preferences.php" style="' ~ linkStyle ~ '">', '</a>')|raw }}
+
+    <br/><br/>
+
+    {{ __('Email sent via %1$s at %2$s.')|format(systemName, organisationName) }}
+{% endblock %}
