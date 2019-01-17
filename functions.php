@@ -2806,7 +2806,7 @@ function sidebar($gibbon, $pdo)
 
             if (empty($_SESSION[$guid]['gibbonSchoolYearID'])) setCurrentSchoolYear($guid, $connection2);
 
-            $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.(isset($_GET['q'])? 'q='.$_GET['q'] : '') );
+            $form = \Gibbon\Forms\Form::create('loginForm', $_SESSION[$guid]['absoluteURL'].'/login.php?'.http_build_query($_GET) );
 
             $form->setFactory(\Gibbon\Forms\DatabaseFormFactory::create($pdo));
             $form->setAutocomplete(false);
