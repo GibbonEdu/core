@@ -22,8 +22,8 @@ v17.0.00
         Added data visualisation to Rubrics
         Added an improved set of file import and export options to System Admin
         Languages can now be installed and updated through Manage Languages in System Admin
-        Activated Hebrew an available language and improved the display of right-to-left languages
-        Added Turkish as a development language
+        Activated Hebrew and Turkish as available languages
+        Improved the display of right-to-left languages
         Added ability to select SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
 
     Changes With Important Notices
