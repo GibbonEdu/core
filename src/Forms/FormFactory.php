@@ -368,12 +368,13 @@ class FormFactory implements FormFactoryInterface
             'ro_RO' => 'Română',
             'sq_AL' => 'Shqip - Shqipëri',
             'vi_VN' => 'Tiếng Việt - Việt Nam',
+            'tr_TR' => 'Türkçe - Türkiye',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
             'zh_CN' => '汉语 - 中国',
             'zh_HK' => '體字 - 香港',
         );
-        
+
         return $this->createSelect($name)->fromArray($languages);
     }
 
