@@ -22,7 +22,7 @@ include '../../config.php';
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -86,14 +86,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 	$excel->getProperties()->setDescription('Catalog Summary');
 
 
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'School ID'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Name'). ' '. __($guid, 'Producer'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Type'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Location'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Ownership').' '.__($guid, 'User/Owner'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __($guid, 'Status').' '.__($guid, 'Borrowable'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __($guid, 'Purchase Date').' '.__($guid, 'Vendor'));
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, 'Details'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('School ID'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __('Name'). ' '. __('Producer'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __('Type'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Location'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Ownership').' '.__('User/Owner'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Status').' '.__('Borrowable'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __('Purchase Date').' '.__('Vendor'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __('Details'));
 	$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
 
     $count = 0;
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		}
         if ($resultType->rowCount() == 1) {
             $rowType = $resultType->fetch();
-            $x = __($guid, $rowType['name']);
+            $x = __($rowType['name']);
         }
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $x);
 		//Column D
@@ -165,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
  		//Column G
 		$x = '';
         if ($row['purchaseDate'] == '') {
-            $x .= __($guid, 'Unknown');
+            $x .= __('Unknown');
         } else {
             $x .= dateConvertBack($guid, $row['purchaseDate']);
         }
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
         foreach ($typeFieldsInner as $typeField) {
             if (isset($fields[$typeField['name']])) {
                 if ($fields[$typeField['name']] != '') {
-                    $x .= __($guid, $typeField['name']).': ';
+                    $x .= __($typeField['name']).': ';
                     if (isset($fields[$typeField['name']])) {
                         $x .= $fields[$typeField['name']].' ; ';
                     }
@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $x);
     }
     if ($count == 0) {
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __($guid, 'There are no records to display.'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __('There are no records to display.'));
     }
 	$excel->exportWorksheet();
 }

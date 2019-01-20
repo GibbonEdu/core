@@ -133,6 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
                 header("Location: {$URL}");
             } else {
                 //Success 0
+                $_SESSION[$guid]['pageLoads'] = null;
 				$URL .= "&return=success0&editID=$AI";
                 header("Location: {$URL}");
             }

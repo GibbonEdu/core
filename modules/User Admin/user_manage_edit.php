@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edit.php') == false) {
     //Acess denied
@@ -30,9 +30,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage.php'>".__('Manage Users')."</a> > </div><div class='trailEnd'>".__('Edit User').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+         ->add(__('Manage Users'), 'user_manage.php')
+         ->add(__('Edit User'));
 
     $returns = array();
     $returns['warning1'] = __('Your request was completed successfully, but one or more images were the wrong size and so were not saved.');
@@ -105,15 +105,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-				$row->addTextField('surname')->isRequired()->maxLength(30);
+				$row->addTextField('surname')->isRequired()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-				$row->addTextField('firstName')->isRequired()->maxLength(30);
+				$row->addTextField('firstName')->isRequired()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-				$row->addTextField('preferredName')->isRequired()->maxLength(30);
+				$row->addTextField('preferredName')->isRequired()->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-				$row->addTextField('nameInCharacters')->maxLength(20);
+				$row->addTextField('nameInCharacters')->maxLength(60);
 
 			$row = $form->addRow();
 				$row->addLabel('gender', __('Gender'));
@@ -209,9 +209,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$row->addTextField('gibbonRoleIDRestricted')->readOnly()->setValue($restrictedRolesList)->setClass('standardWidth');
 			}
 
-			$row = $form->addRow();
-				$row->addLabel('username', __('Username'));
-				$row->addTextField('username')->readOnly()->maxLength(20);
+            $row = $form->addRow();
+                $row->addLabel('username', __('Username'))->description(__('System login name.'));
+                $row->addUsername('username')
+                    ->isRequired()
+                    ->setValue($values['username']);
 
 			$row = $form->addRow();
 				$row->addLabel('status', __('Status'))->description(__('This determines visibility within the system.'));
@@ -230,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
                 $emailLabel = $row->addLabel('email', __('Email'));
-                $email = $row->addEmail('email')->maxLength(50);
+                $email = $row->addEmail('email');
 
 			$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 			if ($uniqueEmailAddress == 'Y') {
@@ -239,7 +241,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			$row = $form->addRow();
 				$row->addLabel('emailAlternate', __('Alternate Email'));
-				$row->addEmail('emailAlternate')->maxLength(50);
+				$row->addEmail('emailAlternate');
 
 			$row = $form->addRow();
 			$row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
@@ -498,15 +500,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 				$row = $form->addRow();
 					$row->addLabel('profession', __('Profession'));
-					$row->addTextField('profession')->maxLength(30);
+					$row->addTextField('profession')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('employer', __('Employer'));
-					$row->addTextField('employer')->maxLength(30);
+					$row->addTextField('employer')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('jobTitle', __('Job Title'));
-					$row->addTextField('jobTitle')->maxLength(30);
+					$row->addTextField('jobTitle')->maxLength(90);
 			}
 
 			// EMERGENCY CONTACTS
@@ -517,7 +519,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 				$row = $form->addRow();
 					$row->addLabel('emergency1Name', __('Contact 1 Name'));
-					$row->addTextField('emergency1Name')->maxLength(30);
+					$row->addTextField('emergency1Name')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
@@ -533,7 +535,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 				$row = $form->addRow();
 					$row->addLabel('emergency2Name', __('Contact 2 Name'));
-					$row->addTextField('emergency2Name')->maxLength(30);
+					$row->addTextField('emergency2Name')->maxLength(90);
 
 				$row = $form->addRow();
 					$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
@@ -591,24 +593,25 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 
 			if ($student) {
 				$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-					$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-					$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+				$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-				if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
+				if ($privacySetting == 'Y' && !empty($privacyOptions)) {
+                    $options = array_map('trim', explode(',', $privacyOptions));
+                    $values['privacyOptions'] = array_map('trim', explode(',', $values['privacy']));
 
 					$row = $form->addRow();
-						$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
-						$row->addCheckbox('privacyOptions[]')->fromArray($options);
+						$row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
+						$row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($values['privacyOptions']);
 				}
 
 				$studentAgreementOptions = getSettingByScope($connection2, 'School Admin', 'studentAgreementOptions');
 				if (!empty($studentAgreementOptions)) {
-					$options = array_map(function($item) { return trim($item); }, explode(',', $studentAgreementOptions));
+                    $options = array_map('trim', explode(',', $studentAgreementOptions));
+                    $values['studentAgreements'] = array_map('trim', explode(',', $values['studentAgreements']));
 
 					$row = $form->addRow();
 					$row->addLabel('studentAgreements[]', __('Student Agreements'))->description(__('Check to indicate that student has signed the relevant agreement.'));
-					$row->addCheckbox('studentAgreements[]')->fromArray($options);
+					$row->addCheckbox('studentAgreements[]')->fromArray($options)->checked($values['studentAgreements']);
 				}
 			}
 
@@ -623,7 +626,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_edi
 					$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 					$row = $form->addRow();
-						$row->addLabel($name, $rowFields['name']);
+						$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 						$row->addCustomField($name, $rowFields)->setValue($value);
 				}
 			}

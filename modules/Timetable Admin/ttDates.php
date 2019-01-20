@@ -26,9 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Tie Days to Dates').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Tie Days to Dates'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -119,13 +117,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                 //Count back to first Monday before first day
                 $startDayStamp = $firstDayStamp;
                 while (date('D', $startDayStamp) != 'Mon') {
-                    $startDayStamp = $startDayStamp - 86400;
+					$startDayStamp = strtotime('-1 day', $startDayStamp);  
                 }
 
                 //Count forward to first Sunday after last day
                 $endDayStamp = $lastDayStamp;
                 while (date('D', $endDayStamp) != 'Sun') {
-                    $endDayStamp = $endDayStamp + 86400;
+					$endDayStamp = strtotime('+1 day', $endDayStamp);  
                 }
 
                 //Get the special days
@@ -186,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttDates.ph
                     $row->addCheckbox('checkall'.$dowShort.$values['nameShort'])->prepend(__($dowLong).'<br/>')->append($script)->addClass('textCenter');
                 }
 
-                for ($i = $startDayStamp; $i <= $endDayStamp; $i = $i + 86400) {
+                for ($i = $startDayStamp; $i <= $endDayStamp;$i = strtotime('+1 day', $i)) {
                     $date = date('Y-m-d', $i);
                     $dayOfWeek = date('D', $i);
                     $formattedDate = date($_SESSION[$guid]['i18n']['dateFormatPHP'], $i);

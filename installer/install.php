@@ -25,6 +25,11 @@ use Gibbon\Data\Validator;
 include '../version.php';
 include '../gibbon.php';
 
+//Module includes
+require_once '../modules/System Admin/moduleFunctions.php';
+
+$gibbon->session->set('absolutePath', realpath('../'));
+
 // Sanitize the whole $_POST array
 $validator = new Validator();
 $_POST = $validator->sanitize($_POST);
@@ -74,11 +79,11 @@ $_SESSION[$guid]['stringReplacement'] = array();
         <script type="text/javascript" src="../lib/LiveValidation/livevalidation_standalone.compressed.js"></script>
         <link rel='stylesheet' type='text/css' href='../themes/Default/css/main.css' />
         <script type='text/javascript' src='../themes/Default/js/common.js'></script>
-        <script type='text/javascript' src='../assets/js/core.js'></script>
+        <script type='text/javascript' src='../resources/assets/js/core.js'></script>
         <script type="text/javascript" src="../lib/jquery/jquery.js"></script>
         <script type="text/javascript" src="../lib/jquery/jquery-migrate.min.js"></script>
     </head>
-    <body>
+    <body style="background: url('../themes/Default/img/backgroundPage.jpg') repeat fixed center top #A88EDB!important;">
         <div id="wrapOuter">
             <div id="wrap">
                 <div id="header">
@@ -101,11 +106,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
                             $databaseUsername = (isset($_POST['databaseUsername']))? $_POST['databaseUsername'] : '';
                             $databasePassword = (isset($_POST['databasePassword']))? $_POST['databasePassword'] : '';
                             $demoData = (isset($_POST['demoData']))? $_POST['demoData'] : '';
+                            $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
+
+                            // Attempt to download & install the required language files
+                            if ($step >= 1) {
+                                $languageInstalled = !i18nFileExists($gibbon->session->get('absolutePath'), $code) 
+                                    ? i18nFileInstall($gibbon->session->get('absolutePath'), $code) 
+                                    : true;
+                            }
 
                             //Set language pre-install
-                            $code = (isset($_POST['code']))? $_POST['code'] : 'en_GB';
-                            putenv('LC_ALL='.$code);
-                            setlocale(LC_ALL, $code);
+                            $gibbon->locale->setLocale($code);
                             bindtextdomain('gibbon', '../i18n');
                             textdomain('gibbon');
 
@@ -171,11 +182,12 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 $versionMessage = __('%s requires %s version %s or higher');
 
                                 $phpVersion = phpversion();
-
+                                $apacheVersion = function_exists('apache_get_version')? apache_get_version() : false;
                                 $phpRequirement = $gibbon->getSystemRequirement('php');
+                                $apacheRequirement = $gibbon->getSystemRequirement('apache');
                                 $extensions = $gibbon->getSystemRequirement('extensions');
 
-                                $form = Form::create('action', "./install.php?step=1");
+                                $form = Form::create('installer', "./install.php?step=1");
 
                                 $form->addHiddenValue('guid', $guid);
                                 $form->addHiddenValue('nonce', $nonce);
@@ -191,11 +203,23 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                     $row->addTextField('pdoSupport')->setValue((@extension_loaded('pdo_mysql'))? __('Installed') : __('Not Installed'))->readonly();
                                     $row->addContent((@extension_loaded('pdo') && extension_loaded('pdo_mysql'))? $trueIcon : $falseIcon);
 
+                                if ($apacheVersion !== false) {
+                                    $apacheModules = @apache_get_modules();
+                                    
+                                    foreach ($apacheRequirement as $moduleName) {
+                                        $active = @in_array($moduleName, $apacheModules);
+                                        $row = $form->addRow();
+                                            $row->addLabel('moduleLabel', 'Apache '.__('Module').' '.$moduleName);
+                                            $row->addTextField('module')->setValue(($active)? __('Enabled') : __('N/A'))->readonly();
+                                            $row->addContent(($active)? $trueIcon : $falseIcon);
+                                    }
+                                }
+
                                 if (!empty($extensions) && is_array($extensions)) {
                                     foreach ($extensions as $extension) {
                                         $installed = @extension_loaded($extension);
                                         $row = $form->addRow();
-                                            $row->addLabel('extensionLabel', __('Extension').' '. $extension);
+                                            $row->addLabel('extensionLabel', 'PHP ' .__('Extension').' '. $extension);
                                             $row->addTextField('extension')->setValue(($installed)? __('Installed') : __('Not Installed'))->readonly();
                                             $row->addContent(($installed)? $trueIcon : $falseIcon);
                                     }
@@ -203,26 +227,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                 $form->addRow()->addHeading(__('Language Settings'));
 
-                                $languages = array(
-                                    'nl_NL' => 'Dutch - Nederland',
-                                    'en_GB' => 'English - United Kingdom',
-                                    'en_US' => 'English - United States',
-                                    'es_ES' => 'Español',
-                                    'fr_FR' => 'Français - France',
-                                    'it_IT' => 'Italiano - Italia',
-                                    'pl_PL' => 'Język polski - Polska',
-                                    'pt_BR' => 'Português - Brasil',
-                                    'ro_RO' => 'Română',
-                                    'sq_AL' => 'Shqip - Shqipëri',
-                                    'vi_VN' => 'Tiếng Việt - Việt Nam',
-                                    'ar_SA' => 'العربية - المملكة العربية السعودية',
-                                    'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
-                                    'zh_CN' => '汉语 - 中国',
-                                    'zh_HK' => '體字 - 香港');
-
                                 $row = $form->addRow();
                                     $row->addLabel('code', __('System Language'));
-                                    $row->addSelect('code')->fromArray($languages)->selected($code)->isRequired();
+                                    $row->addSelectSystemLanguage('code')->selected($code)->isRequired();
 
                                 $row = $form->addRow();
                                     $row->addFooter();
@@ -231,7 +238,14 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 echo $form->getOutput();
 
                             } else if ($step == 1) { //Set database options
-                                $form = Form::create('action', "./install.php?step=2");
+
+                                if (!$languageInstalled) {
+                                    echo "<div class='error'>";
+                                    echo __('Failed to download and install the required files.').' '.sprintf(__('To install a language manually, upload the language folder to %1$s on your server and then refresh this page. After refreshing, the language should appear in the list below.'), '<b><u>'.$gibbon->session->get('absolutePath').'/i18n/</u></b>');
+                                    echo '</div>';
+                                }
+
+                                $form = Form::create('installer', "./install.php?step=2");
 
                                 $form->addHiddenValue('guid', $guid);
                                 $form->addHiddenValue('nonce', $nonce);
@@ -276,12 +290,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                 if (!empty($databaseServer) && !empty($databaseName) && !empty($databaseUsername) && !empty($demoData)) {
                                     //Estabish db connection without database name
 
-                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databasePort');
+                                    $config = compact('databaseServer', 'databaseUsername', 'databasePassword');
                                     $mysqlConnector = new MySqlConnector();
 
                                     if ($pdo = $mysqlConnector->connect($config)) {
                                         $mysqlConnector->useDatabase($pdo, $databaseName);
                                         $connection2 = $pdo->getConnection();
+                                        $container->share(Gibbon\Contracts\Database\Connection::class, $pdo);
                                     }
                                 }
 
@@ -412,7 +427,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 //Let's gather some more information
 
-                                                $form = Form::create('action', "./install.php?step=3");
+                                                $form = Form::create('installer', "./install.php?step=3");
 
                                                 $form->setFactory(DatabaseFormFactory::create($pdo));
                                                 $form->addHiddenValue('guid', $guid);
@@ -436,7 +451,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('email', __('Email'));
-                                                    $row->addEmail('email')->maxLength(50)->isRequired();
+                                                    $row->addEmail('email')->isRequired();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
@@ -504,12 +519,18 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
                                                     $row->addTextField($setting['name'])->maxLength(50)->isRequired()->setValue('Gibbon');
 
+                                                $installTypes = array(
+                                                    'Production'  => __('Production'),
+                                                    'Testing'     => __('Testing'),
+                                                    'Development' => __('Development')
+                                                );
+
                                                 $setting = getSettingByScope($connection2, 'System', 'installType', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected('Testing')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->isRequired();
 
-                                                $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__($guid, 'Checking for Cutting Edge Code.')."</div></div>";
+                                                $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                                                 $row = $form->addRow();
                                                     $row->addContent($statusInitial);
                                                 $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
@@ -893,6 +914,9 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                         ++$tokenCount;
                                                     }
                                                 }
+
+                                                // Update DB version for existing languages (installed manually?)
+                                                i18nCheckAndUpdateVersion($container, $version);
 
                                                 //Deal with request to receive welcome email by calling gibbonedu.org iframe
                                                 if ($support == true) {

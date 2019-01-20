@@ -20,25 +20,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Manage Resources'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Resources').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
@@ -58,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         }
 
         echo '<h2>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h2>';
 
         $form = Form::create('resourcesManage', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -76,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         echo $form->getOutput();
 
         echo '<h2>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h2>';
 
         try {
@@ -103,12 +101,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_add.php&search='.$search."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_add.php&search='.$search."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -118,24 +116,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Name').'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Contributor').'</span>';
+            echo __('Name').'<br/>';
+            echo "<span style='font-size: 85%; font-style: italic'>".__('Contributor').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Type');
+            echo __('Type');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Category').'<br/>';
-            echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Purpose').'</span>';
+            echo __('Category').'<br/>';
+            echo "<span style='font-size: 85%; font-style: italic'>".__('Purpose').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Tags');
+            echo __('Tags');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Year Groups');
+            echo __('Year Groups');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Actions');
+            echo __('Actions');
             echo '</th>';
             echo '</tr>';
 
@@ -191,7 +189,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                 $years = explode(',', $row['gibbonYearGroupIDList']);
                 if (count($years) > 0 and $years[0] != '') {
                     if (count($years) == $resultYears->rowCount()) {
-                        echo '<i>'.__($guid, 'All Years').'</i>';
+                        echo '<i>'.__('All Years').'</i>';
                     } else {
                         $count3 = 0;
                         $count4 = 0;
@@ -201,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                                     if ($count3 > 0 and $count4 > 0) {
                                         echo ', ';
                                     }
-                                    echo __($guid, $rowYears['nameShort']);
+                                    echo __($rowYears['nameShort']);
                                     ++$count4;
                                 }
                             }
@@ -209,11 +207,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage.p
                         }
                     }
                 } else {
-                    echo '<i>'.__($guid, 'None').'</i>';
+                    echo '<i>'.__('None').'</i>';
                 }
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_edit.php&gibbonResourceID='.$row['gibbonResourceID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/resources_manage_edit.php&gibbonResourceID='.$row['gibbonResourceID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo '</td>';
                 echo '</tr>';
             }

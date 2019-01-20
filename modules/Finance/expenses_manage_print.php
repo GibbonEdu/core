@@ -18,24 +18,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__($guid, 'Manage Expenses')."</a> > </div><div class='trailEnd'>".__($guid, 'Print Expense').'</div>';
-        echo '</div>';
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+        $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+        $page->breadcrumbs
+            ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
+            ->add(__('Print Expense'));        
 
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
@@ -44,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
         $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             $budgetsAccess = false;
@@ -64,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 
             if ($budgetsAccess == false) {
                 echo "<div class='error'>";
-                echo __($guid, 'You do not have Full or Write access to any budgets.');
+                echo __('You do not have Full or Write access to any budgets.');
                 echo '</div>';
             } else {
                 //Get and check settings
@@ -73,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                 $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error has occurred with your expense and budget settings.');
+                    echo __('An error has occurred with your expense and budget settings.');
                     echo '</div>';
                 } else {
                     //Check if there are approvers
@@ -88,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'An error has occurred with your expense and budget settings.');
+                        echo __('An error has occurred with your expense and budget settings.');
                         echo '</div>';
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
@@ -121,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The specified record cannot be found.');
+                            echo __('The specified record cannot be found.');
                             echo '</div>';
                         } else {
                             //Let's go!
@@ -129,21 +133,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 
                             echo "<div class='linkTop'>";
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a> | ';
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a> | ';
                             }
-                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_print_print.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/expenses_manage_print_print.php&gibbonFinanceExpenseID=$gibbonFinanceExpenseID&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                             echo '</div>';
 
                             ?>
 							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr class='break'>
 									<td colspan=2>
-										<h3><?php echo __($guid, 'Basic Information') ?></h3>
+										<h3><?php echo __('Basic Information') ?></h3>
 									</td>
 								</tr>
 								<tr>
 									<td style='width: 275px'>
-										<b><?php echo __($guid, 'Budget Cycle') ?> *</b><br/>
+										<b><?php echo __('Budget Cycle') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<?php
@@ -171,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td style='width: 275px'>
-										<b><?php echo __($guid, 'Budget') ?> *</b><br/>
+										<b><?php echo __('Budget') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
@@ -179,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Title') ?> *</b><br/>
+										<b><?php echo __('Title') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
@@ -187,7 +191,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Status') ?> *</b><br/>
+										<b><?php echo __('Status') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
@@ -195,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td colspan=2>
-										<b><?php echo __($guid, 'Description') ?></b>
+										<b><?php echo __('Description') ?></b>
 										<?php
                                             echo '<p>';
 											echo $row['body'];
@@ -205,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Purchase By') ?> *</b><br/>
+										<b><?php echo __('Purchase By') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
@@ -213,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 								</tr>
 								<tr>
 									<td colspan=2>
-										<b><?php echo __($guid, 'Purchase Details') ?></b>
+										<b><?php echo __('Purchase Details') ?></b>
 										<?php
                                             echo '<p>';
 											echo $row['purchaseDetails'];
@@ -227,19 +231,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                                     ?>
 									<tr class='break'>
 										<td colspan=2>
-											<h3><?php echo __($guid, 'Budget Tracking') ?></h3>
+											<h3><?php echo __('Budget Tracking') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Total Cost') ?> *</b><br/>
+											<b><?php echo __('Total Cost') ?> *</b><br/>
 											<span style="font-size: 90%">
 												<i>
 												<?php
                                                 if ($_SESSION[$guid]['currency'] != '') {
-                                                    echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                    echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                 } else {
-                                                    echo __($guid, 'Numeric value of the fee.');
+                                                    echo __('Numeric value of the fee.');
                                                 }
                                     			?>
 												</i>
@@ -251,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
+											<b><?php echo __('Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
@@ -262,14 +266,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                                         ?>
 										<tr>
 											<td>
-												<b><?php echo __($guid, 'Budget For Cycle') ?> *</b><br/>
+												<b><?php echo __('Budget For Cycle') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
                                                     if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                     } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
+                                                        echo __('Numeric value of the fee.');
                                                     }
                                         			?>
 													</i>
@@ -289,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 													$budgetAllocationFail = true;
 												}
 												if ($resultCheck->rowCount() != 1) {
-													echo '<input readonly name="name" id="name" maxlength=60 value="'.__($guid, 'NA').'" type="text" style="width: 300px">';
+													echo '<input readonly name="name" id="name" maxlength=60 value="'.__('NA').'" type="text" style="width: 300px">';
 													$budgetAllocationFail = true;
 												} else {
 													$rowCheck = $resultCheck->fetch();
@@ -305,14 +309,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 										</tr>
 										<tr>
 											<td>
-												<b><?php echo __($guid, 'Amount already approved or spent') ?> *</b><br/>
+												<b><?php echo __('Amount already approved or spent') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
                                                     if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                     } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
+                                                        echo __('Numeric value of the fee.');
                                                     }
                                         			?>
 													</i>
@@ -353,14 +357,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
                                             ?>
 											<tr>
 											<td>
-												<b><?php echo __($guid, 'Budget Remaining For Cycle') ?> *</b><br/>
+												<b><?php echo __('Budget Remaining For Cycle') ?> *</b><br/>
 												<span style="font-size: 90%">
 													<i>
 													<?php
                                                     if ($_SESSION[$guid]['currency'] != '') {
-                                                        echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                        echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                     } else {
-                                                        echo __($guid, 'Numeric value of the fee.');
+                                                        echo __('Numeric value of the fee.');
                                                     }
                                             		?>
 													</i>
@@ -388,7 +392,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_pr
 
 							<tr class='break'>
 								<td colspan=2>
-									<h3><?php echo __($guid, 'Log') ?></h3>
+									<h3><?php echo __('Log') ?></h3>
 								</td>
 							</tr>
 							<tr>

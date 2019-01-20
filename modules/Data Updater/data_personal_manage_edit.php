@@ -25,19 +25,23 @@ include './modules/User Admin/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Data Updater/data_personal_manage.php'>".__($guid, 'Personal Data Updates')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Request').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = isset($_REQUEST['gibbonSchoolYearID'])? $_REQUEST['gibbonSchoolYearID'] : $_SESSION[$guid]['gibbonSchoolYearID'];
+
+    $urlParams = ['gibbonSchoolYearID' => $gibbonSchoolYearID];
+    
+    $page->breadcrumbs
+        ->add(__('Personal Data Updates'), 'data_personal_manage.php', $urlParams)
+        ->add(__('Edit Request'));    
 
     //Check if school year specified
     $gibbonPersonUpdateID = $_GET['gibbonPersonUpdateID'];
     if ($gibbonPersonUpdateID == 'Y') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -51,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             if (isset($_GET['return'])) {
@@ -134,6 +138,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 'visaExpiryDate'         => __('Visa Expiry Date'),
                 'vehicleRegistration'    => __('Vehicle Registration'),
             );
+
+            //Adjust country in field label
+            if (!empty($_SESSION[$guid]['country'])) {
+                $compare['nationalIDCardNumber'] = $_SESSION[$guid]['country'].' '.__('ID Card Number');
+                $compare['residencyStatus'] = $_SESSION[$guid]['country'].' '.__('Residency/Visa Type');
+                $compare['visaExpiryDate'] = $_SESSION[$guid]['country'].' '.__('Visa Expiry Date');
+            }
 
             if ($student || $staff) {
                 $compare['emergency1Name']         = __('Emergency 1 Name');

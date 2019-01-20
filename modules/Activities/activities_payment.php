@@ -20,28 +20,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_payment.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Create Invoices').'</div>';
-    echo '</div>';
-
+    $page->breadcrumbs->add(__('Generate Invoices'));
+    
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     echo '<h2>';
-    echo __($guid, 'Invoices Not Yet Generated');
+    echo __('Invoices Not Yet Generated');
     echo '</h2>';
     echo '<p>';
-    echo sprintf(__($guid, 'The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/billingSchedule_manage.php'>", '</a>');
+    echo sprintf(__('The list below shows students who have been accepted for an activity in the current year, who have yet to have invoices generated for them. You can generate invoices to a given %1$sBilling Schedule%2$s, or you can simulate generation (e.g. mark them as generated, but not actually produce an invoice).'), "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/billingSchedule_manage.php'>", '</a>');
     echo '</p>';
 
     try {
@@ -55,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $lastPerson = '';
@@ -112,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
     }
 
     echo '<h2>';
-    echo __($guid, 'Invoices Generated');
+    echo __('Invoices Generated');
     echo '</h2>';
 
     try {
@@ -126,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $lastPerson = '';
@@ -134,16 +132,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Activity');
+        echo __('Activity');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Invoice Number').'<br/>';
+        echo __('Invoice Number').'<br/>';
         echo '</th>';
         echo '</tr>';
 
@@ -185,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=4>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

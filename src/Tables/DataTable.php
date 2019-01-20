@@ -19,17 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables;
 
+use Gibbon\Tables\Action;
 use Gibbon\Domain\DataSet;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Action;
 use Gibbon\Tables\Columns\Column;
+use Gibbon\Forms\OutputableInterface;
 use Gibbon\Tables\Columns\ActionColumn;
 use Gibbon\Tables\Columns\CheckboxColumn;
 use Gibbon\Tables\Columns\ExpandableColumn;
+use Gibbon\Tables\Renderer\RendererInterface;
 use Gibbon\Tables\Renderer\SimpleRenderer;
 use Gibbon\Tables\Renderer\PaginatedRenderer;
-use Gibbon\Tables\Renderer\RendererInterface;
-use Gibbon\Forms\OutputableInterface;
 
 /**
  * DataTable
@@ -40,6 +40,8 @@ use Gibbon\Forms\OutputableInterface;
 class DataTable implements OutputableInterface
 {
     protected $id;
+    protected $title;
+    protected $description;
     protected $data;
     protected $renderer;
 
@@ -70,7 +72,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new self($id, $renderer ? $renderer : new SimpleRenderer());
+        return new static($id, $renderer ? $renderer : new SimpleRenderer());
     }
 
     /**
@@ -82,7 +84,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new self($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        return new static($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
     }
 
     /**
@@ -106,6 +108,48 @@ class DataTable implements OutputableInterface
     public function getID()
     {
         return $this->id;
+    }
+
+    /**
+     * Get the table title.
+     * @return  string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the table title.
+     * @param  string  $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
+     * Get the table description.
+     * @return  string
+     */
+    public function getDescription()
+    {
+        return is_callable($this->description)
+            ? call_user_func($this->description)
+            : $this->description;
+    }
+
+    /**
+     * Set the table description. Can be a string or a callable that returns a string.
+     * @param  string|Callable  $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
     }
 
     /**
@@ -199,13 +243,57 @@ class DataTable implements OutputableInterface
      *
      * @return array
      */
-    public function getColumns()
+    public function getColumns($maxDepth = null)
     {
-        return $this->columns;
+        $depth = 0;
+
+        $getNestedColumns = function($columns, &$allColumns = array()) use (&$getNestedColumns, &$depth, &$maxDepth) {
+            foreach ($columns as $column) {
+                if ($column->hasNestedColumns() && (is_null($maxDepth) || $column->getDepth() < $maxDepth) ) {
+                    $getNestedColumns($column->getColumns(), $allColumns);
+                } else {
+                    $allColumns[] = $column;
+                }
+            }
+
+            return $allColumns;
+        };
+
+        return $getNestedColumns($this->columns);
     }
 
     /**
-     * Count all columns in the table.
+     * Calculate how many layers deep the columns are nested.
+     *
+     * @return int
+     */
+    public function getTotalColumnDepth()
+    {
+        $depth = 1;
+        foreach ($this->columns as $column) {
+            $depth = max($depth, $column->getTotalDepth());
+        }
+
+        return $depth;
+    }
+
+    /**
+     * Calculate the total span of the table, including nested columns.
+     *
+     * @return int
+     */
+    public function getTotalColumnSpan()
+    {
+        $count = 0;
+        foreach ($this->getColumns() as $column) {
+            $count += $column->getTotalSpan();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Count the columns in the table. Does not count nested columns.
      *
      * @return int
      */
@@ -236,6 +324,13 @@ class DataTable implements OutputableInterface
     public function getHeader()
     {
         return $this->header;
+    }
+
+    public function setHeader($header)
+    {
+        $this->header = $header;
+
+        return $this;
     }
 
     /**

@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Search & Filters
 $search = null;
@@ -36,25 +36,25 @@ if (isset($_GET['filter2'])) {
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         if ($highestAction != 'Manage Rubrics_viewEditAll' and $highestAction != 'Manage Rubrics_viewAllEditLearningArea') {
             echo "<div class='error'>";
-            echo __($guid, 'You do not have access to this action.');
+            echo __('You do not have access to this action.');
             echo '</div>';
         } else {
             //Proceed!
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/rubrics.php&search=$search&filter2=$filter2'>".__($guid, 'Manage Rubrics')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Rubric').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Rubrics'), 'rubrics.php', ['search' => $search, 'filter2' => $filter2])
+                ->add(__('Edit Rubric'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             $class = 'error';
             if (!($addReturn == '')) {
                 if ($addReturn == 'success0') {
-                    $addReturnMessage = __($guid, 'Your request was completed successfully.');
+                    $addReturnMessage = __('Your request was completed successfully.');
                     $class = 'success';
                 }
                 echo "<div class='$class'>";
@@ -86,15 +86,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             $class = 'error';
             if (!($columnDeleteReturn == '')) {
                 if ($columnDeleteReturn == 'fail0') {
-                    $columnDeleteReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+                    $columnDeleteReturnMessage = __('Your request failed because you do not have access to this action.');
                 } elseif ($columnDeleteReturn == 'fail1') {
-                    $columnDeleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $columnDeleteReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($columnDeleteReturn == 'fail2') {
-                    $columnDeleteReturnMessage = __($guid, 'Your request failed due to a database error.');
+                    $columnDeleteReturnMessage = __('Your request failed due to a database error.');
                 } elseif ($columnDeleteReturn == 'fail3') {
-                    $columnDeleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $columnDeleteReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($columnDeleteReturn == 'success0') {
-                    $columnDeleteReturnMessage = __($guid, 'Your request was completed successfully.');
+                    $columnDeleteReturnMessage = __('Your request was completed successfully.');
                     $class = 'success';
                 }
                 echo "<div class='$class'>";
@@ -111,15 +111,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             $class = 'error';
             if (!($rowDeleteReturn == '')) {
                 if ($rowDeleteReturn == 'fail0') {
-                    $rowDeleteReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+                    $rowDeleteReturnMessage = __('Your request failed because you do not have access to this action.');
                 } elseif ($rowDeleteReturn == 'fail1') {
-                    $rowDeleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $rowDeleteReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($rowDeleteReturn == 'fail2') {
-                    $rowDeleteReturnMessage = __($guid, 'Your request failed due to a database error.');
+                    $rowDeleteReturnMessage = __('Your request failed due to a database error.');
                 } elseif ($rowDeleteReturn == 'fail3') {
-                    $rowDeleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $rowDeleteReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($rowDeleteReturn == 'success0') {
-                    $rowDeleteReturnMessage = __($guid, 'Your request was completed successfully.');
+                    $rowDeleteReturnMessage = __('Your request was completed successfully.');
                     $class = 'success';
                 }
                 echo "<div class='$class'>";
@@ -136,17 +136,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             $class = 'error';
             if (!($cellEditReturn == '')) {
                 if ($cellEditReturn == 'fail0') {
-                    $cellEditReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+                    $cellEditReturnMessage = __('Your request failed because you do not have access to this action.');
                 } elseif ($cellEditReturn == 'fail1') {
-                    $cellEditReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $cellEditReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($cellEditReturn == 'fail2') {
-                    $cellEditReturnMessage = __($guid, 'Your request failed due to a database error.');
+                    $cellEditReturnMessage = __('Your request failed due to a database error.');
                 } elseif ($cellEditReturn == 'fail3') {
-                    $cellEditReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                    $cellEditReturnMessage = __('Your request failed because your inputs were invalid.');
                 } elseif ($cellEditReturn == 'fail5') {
-                    $cellEditReturnMessage = __($guid, 'Your request was successful, but some data was not properly saved.');
+                    $cellEditReturnMessage = __('Your request was successful, but some data was not properly saved.');
                 } elseif ($cellEditReturn == 'success0') {
-                    $cellEditReturnMessage = __($guid, 'Your request was completed successfully.');
+                    $cellEditReturnMessage = __('Your request was completed successfully.');
                     $class = 'success';
                 }
                 echo "<div class='$class'>";
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
             $gibbonRubricID = $_GET['gibbonRubricID'];
             if ($gibbonRubricID == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'You have not specified one or more required parameters.');
+                echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 try {
@@ -172,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record does not exist.');
+                    echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
                     //Let's go!
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 
                     if ($search != '' or $filter2 != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__($guid, 'Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Rubrics/rubrics.php&search=$search&filter2=$filter2'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
@@ -251,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_edit.php')
 					echo '<table class="smallIntBorder" cellspacing="0" style="width:100%">';
 						echo '<tr class="break">';
 							echo '<td colspan=2>';
-								echo '<h3>'. __($guid, 'Rubric Design') .'</h3>';
+								echo '<h3>'. __('Rubric Design') .'</h3>';
 							echo '</td>';
 						echo '</tr>';
 					echo '</table>';

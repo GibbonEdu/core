@@ -42,7 +42,7 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
 
     if ($resultDescriptors->rowCount() < 1 or $resultSeverity->rowCount() < 1) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'Individual needs descriptors or severity levels have not been set.');
+        $output .= __('Individual needs descriptors or severity levels have not been set.');
         $output .= '</div>';
     } else {
         $descriptors = array();
@@ -59,9 +59,9 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
         $count = 0;
         while ($rowSeverity = $resultSeverity->fetch()) {
             $severity[$count][0] = $rowSeverity['gibbonAlertLevelID'];
-            $severity[$count][1] = __($guid, $rowSeverity['name']);
+            $severity[$count][1] = __($rowSeverity['name']);
             $severity[$count][2] = $rowSeverity['nameShort'];
-            $severity[$count][3] = __($guid, $rowSeverity['description']);
+            $severity[$count][3] = __($rowSeverity['description']);
             $severity[$count][4] = $rowSeverity['color'];
             ++$count;
         }
@@ -97,7 +97,7 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
         $output .= "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
         $output .= "<tr class='head'>";
         $output .= '<th>';
-        $output .= __($guid, 'Descriptor');
+        $output .= __('Descriptor');
         $output .= '<th>';
         for ($i = 0; $i < count($severity); ++$i) {
             $output .= '<th>';
@@ -114,7 +114,7 @@ function printINStatusTable($connection2, $guid, $gibbonPersonID, $mode = '', $a
 
             $output .= "<tr class=$rowNum>";
             $output .= '<td>';
-            $output .= "<span title='".__($guid, $descriptors[$n][3])."'>".__($guid, $descriptors[$n][1]).'</span>';
+            $output .= "<span title='".__($descriptors[$n][3])."'>".__($descriptors[$n][1]).'</span>';
             $output .= '<td>';
             for ($i = 0; $i < count($severity); ++$i) {
                 $output .= "<td style='width: 10%'>";

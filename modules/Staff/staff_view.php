@@ -25,20 +25,18 @@ use Gibbon\Domain\Staff\StaffGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Staff Profiles').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Staff Profiles'));
 
         $search = (isset($_GET['search']) ? $_GET['search'] : '');
         $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
@@ -50,10 +48,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
             ->searchBy($staffGateway->getSearchableColumns(), $search)
             ->filterBy('all', $allStaff)
             ->sortBy(['surname', 'preferredName'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h2>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/index.php", 'get');
@@ -80,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
         echo $form->getOutput();
 
         echo '<h2>';
-        echo __($guid, 'Choose A Staff Member');
+        echo __('Choose A Staff Member');
         echo '</h2>';
 
         $staff = $staffGateway->queryAllStaff($criteria);

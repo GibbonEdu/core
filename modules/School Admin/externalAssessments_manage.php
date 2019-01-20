@@ -17,93 +17,61 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\ExternalAssessmentGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAssessments_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage External Assessments').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage External Assessments'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonExternalAssessment ORDER BY name';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $externalAssessmentGateway = $container->get(ExternalAssessmentGateway::class);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessments_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // QUERY
+    $criteria = $externalAssessmentGateway->newQueryCriteria()
+        ->sortBy('name')
+        ->fromPOST();
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Description');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Active');
-        echo '</th>';
-        echo "<th style='min-width: 80px'>";
-        echo __($guid, 'File Upload');
-        echo '</th>';
-        echo "<th style='min-width: 70px'>";
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $externalAssessments = $externalAssessmentGateway->queryExternalAssessments($criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    // DATA TABLE
+    $table = DataTable::createPaginated('externalAssessmentManage', $criteria);
 
-            if ($row['active'] == 'N') {
-                $rowNum = 'error';
-            }
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/School Admin/externalAssessments_manage_add.php')
+        ->displayLabel();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo '<b>'.__($guid, $row['name']).'</b><br/>';
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['description']);
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $row['active']);
-            echo '</td>';
-            echo '<td>';
-            echo ynExpander($guid, $row['allowFileUpload']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_edit.php&gibbonExternalAssessmentID='.$row['gibbonExternalAssessmentID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/externalAssessments_manage_delete.php&gibbonExternalAssessmentID='.$row['gibbonExternalAssessmentID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
+    $table->modifyRows(function($externalAssessment, $row) {
+        if ($externalAssessment['active'] != 'Y') $row->addClass('error');
+        return $row;
+    });
 
-            ++$count;
-        }
-        echo '</table>';
-    }
+    $table->addColumn('name', __('Name'))->format(function ($externalAssessment) {
+        return '<strong>' . $externalAssessment['name'] . '</strong>';
+      });
+    $table->addColumn('description', __('description'));
+    $table->addColumn('active', __('Active'))->format(Format::using('yesNo', ['active']));
+    $table->addColumn('allowFileUpload', __('File Upload'))->format(Format::using('yesNo', ['allowFileUpload']));
+        
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonExternalAssessmentID')
+        ->format(function ($externalAssessment, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/School Admin/externalAssessments_manage_edit.php');
+
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/School Admin/externalAssessments_manage_delete.php');
+        });
+
+    echo $table->render($externalAssessments);
 }

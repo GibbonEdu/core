@@ -22,16 +22,14 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Fees').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Fees'));
 
     echo '<p>';
-    echo __($guid, 'In this area you can create the various fee options which apply to students. Fees are specific to a school year, cannot be deleted and must be linked to a category. When you come to create invoices later on, you will be able to use these fees, as well as ad hoc charges.');
+    echo __('In this area you can create the various fee options which apply to students. Fees are specific to a school year, cannot be deleted and must be linked to a category. When you come to create invoices later on, you will be able to use these fees, as well as ad hoc charges.');
     echo '</p>';
 
     $gibbonSchoolYearID = '';
@@ -54,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -71,20 +69,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
-                echo __($guid, 'Previous Year').' ';
+                echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
-            echo __($guid, 'Next Year').' ';
+            echo __('Next Year').' ';
         }
         echo '</div>';
 
         echo '<h3>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h3>';
 
         $search = isset($_GET['search'])? $_GET['search'] : '';
@@ -105,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
         //Set pagination variable
         $page = 1;
@@ -135,12 +133,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/fees_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/fees_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -150,18 +148,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Name').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Short Name').'</span>';
+            echo __('Name').'<br/>';
+            echo "<span style='font-style: italic; font-size: 85%'>".__('Short Name').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Category');
+            echo __('Category');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Fee').'<br/>';
+            echo __('Fee').'<br/>';
             echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Actions');
+            echo __('Actions');
             echo '</th>';
             echo '</tr>';
 
@@ -201,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
                 echo number_format($row['fee'], 2, '.', ',');
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage_edit.php&gibbonFinanceFeeID='.$row['gibbonFinanceFeeID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fees_manage_edit.php&gibbonFinanceFeeID='.$row['gibbonFinanceFeeID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count-$count\").hide();";
@@ -212,7 +210,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage.php') 
                 echo '});';
                 echo '</script>';
                 if ($row['description'] != '') {
-                    echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                    echo "<a title='".__('View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                 }
                 echo '</td>';
                 echo '</tr>';

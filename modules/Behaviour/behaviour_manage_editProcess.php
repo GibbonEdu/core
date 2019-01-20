@@ -17,6 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Comms\NotificationEvent;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
+use Gibbon\Domain\Students\StudentGateway;
+
 include '../../gibbon.php';
 
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
@@ -60,6 +64,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 $URL .= '&return=error2';
                 header("Location: {$URL}");
             } else {
+                $behaviourRecord = $result->fetch();
+
                 $gibbonPersonID = $_POST['gibbonPersonID'];
                 $date = $_POST['date'];
                 $type = $_POST['type'];
@@ -94,6 +100,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         exit();
                     }
 
+                    // Send a notification to student's tutors and anyone subscribed to the notification event
+                    $studentGateway = $container->get(StudentGateway::class);
+                    $rollGroupGateway = $container->get(RollGroupGateway::class);
+
+                    $student = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $gibbonPersonID)->fetch();
+                    if (!empty($student)) {
+                        $studentName = formatName('', $student['preferredName'], $student['surname'], 'Student', false);
+                        $editorName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false);
+                        $actionLink = "/index.php?q=/modules/Behaviour/behaviour_manage_edit.php&gibbonPersonID=$gibbonPersonID&gibbonRollGroupID=&gibbonYearGroupID=&type=$type&gibbonBehaviourID=$gibbonBehaviourID";
+
+                        // Raise a new notification event
+                        $event = new NotificationEvent('Behaviour', 'Updated Behaviour Record');
+
+                        $event->setNotificationText(sprintf(__('A %1$s behaviour record for %2$s has been updated by %3$s.'), strtolower($type), $studentName, $editorName));
+                        $event->setActionLink($actionLink);
+
+                        $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
+                        $event->addScope('gibbonYearGroupID', $student['gibbonYearGroupID']);
+
+                        // Add the person who created the behaviour record, if edited by someone else
+                        if ($behaviourRecord['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
+                            $event->addRecipient($behaviourRecord['gibbonPersonIDCreator']);
+                        }
+
+                        // Add direct notifications to roll group tutors
+                        $tutors = $rollGroupGateway->selectTutorsByRollGroup($student['gibbonRollGroupID'])->fetchAll();
+                        foreach ($tutors as $tutor) {
+                            $event->addRecipient($tutor['gibbonPersonID']);
+                        }
+
+                        $event->sendNotificationsAsBcc($pdo, $gibbon->session);
+                    }
+                    
                     $URL .= '&return=success0';
                     header("Location: {$URL}");
                 }

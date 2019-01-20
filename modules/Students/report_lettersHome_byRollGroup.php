@@ -17,19 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_new') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Letters Home by Roll Group').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Letters Home by Roll Group'));
 
     try {
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
     }
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $siblings = array();
@@ -72,22 +72,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Total Count');
+                echo __('Total Count');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Form Count');
+                echo __('Form Count');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Student');
+                echo __('Student');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Younger Siblings');
+                echo __('Younger Siblings');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Family');
+                echo __('Family');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Sibling Count');
+                echo __('Sibling Count');
                 echo '</th>';
                 echo '</tr>';
             }
@@ -121,7 +121,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                     $proceed = true;
                 }
                 else { //Store sibling away for later use
-                    $siblings[$rowSibling['gibbonFamilyID']][$row['gibbonPersonID']] = formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                    $siblings[$rowSibling['gibbonFamilyID']][$row['gibbonPersonID']] = Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 }
             }
 
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
                 echo $count + 1;
                 echo '</td>';
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
                 echo '<td>';
                 if (!empty($siblings[$row['gibbonFamilyID']]) && is_array($siblings[$row['gibbonFamilyID']])) {

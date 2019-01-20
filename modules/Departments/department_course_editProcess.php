@@ -32,7 +32,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 } else {
     if ($gibbonDepartmentID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         //Proceed!

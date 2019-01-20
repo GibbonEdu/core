@@ -30,7 +30,7 @@ if (isset($_POST['comment'])) {
 }
 
 if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or ($mode != 'add' and $mode != 'remove')) {
-    echo __($guid, 'Error');
+    echo __('Error');
 } else {
     //Prepare scripts abd buttons to return via AJAX
     $script = '<script type="text/javascript">

@@ -136,7 +136,7 @@ class Trigger implements OutputableInterface
         // Change target visibility if source value equals trigger value
         // Handles LiveValidation by also disabling/enabling inputs
         // The change() call activates any nested triggers
-        $output .= "$(document).on('change', '{$this->sourceSelector}', function(){ \n";
+        $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
                 $output .= "$('{$this->targetSelector} :input').prop('disabled', false).change(); \n";

@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_full.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_ful
     $gibbonResourceID = $_GET['gibbonResourceID'];
     if ($gibbonResourceID == '') {
         echo "<div class='warning'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     }
     //Check existence of and access to this class.
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view_ful
 
         if ($result->rowCount() != 1) {
             echo "<div class='warning'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();

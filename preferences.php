@@ -18,16 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
 
 if (!isset($_SESSION[$guid]["username"])) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>Preferences</div>";
-    echo '</div>';
+    $page->breadcrumbs->add(__('Preferences'));
 
     $return = null;
     if (isset($_GET['return'])) {
@@ -41,19 +40,19 @@ if (!isset($_SESSION[$guid]["username"])) {
         $forceReset = null;
     }
     if ($forceReset == 'Y' AND $return != 'successa') {
-        $forceResetReturnMessage = '<b><u>'.__($guid, 'Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
+        $forceResetReturnMessage = '<b><u>'.__('Your account has been flagged for a password reset. You cannot continue into the system until you change your password.').'</b></u>';
         echo "<div class='error'>";
         echo $forceResetReturnMessage;
         echo '</div>';
     }
 
     $returns = array();
-    $returns['errora'] = sprintf(__($guid, 'Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
-    $returns['successa'] = __($guid, 'Your account has been successfully updated. You can now continue to use the system as per normal.');
-    $returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
-    $returns['error3'] = __($guid, 'Your request failed due to incorrect current password.');
-    $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
-    $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
+    $returns['errora'] = sprintf(__('Your account status could not be updated, and so you cannot continue to use the system. Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationAdministratorEmail']."'>".$_SESSION[$guid]['organisationAdministratorName'].'</a>');
+    $returns['successa'] = __('Your account has been successfully updated. You can now continue to use the system as per normal.');
+    $returns['error4'] = __('Your request failed due to non-matching passwords.');
+    $returns['error3'] = __('Your request failed due to incorrect current password.');
+    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -115,32 +114,29 @@ if (!isset($_SESSION[$guid]["username"])) {
         }
 
         $form = Form::create('preferences', $_SESSION[$guid]['absoluteURL'].'/preferencesProcess.php');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
 
         $form->addRow()->addHeading(__('Settings'));
 
         $row = $form->addRow();
-            $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__($guid, 'Only enables timetable integration when logging in via Google.'));
+            $row->addLabel('calendarFeedPersonal', __('Personal Google Calendar ID'))->description(__('Google Calendar ID for your personal calendar.').'<br/>'.__('Only enables timetable integration when logging in via Google.'));
             $password = $row->addTextField('calendarFeedPersonal');
 
         $personalBackground = getSettingByScope($connection2, 'User Admin', 'personalBackground');
         if ($personalBackground == 'Y') {
             $row = $form->addRow();
-                $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__($guid, 'Please provide URL to image.'));
+                $row->addLabel('personalBackground', __('Personal Background'))->description(__('Set your own custom background image.').'<br/>'.__('Please provide URL to image.'));
                 $password = $row->addURL('personalBackground');
         }
 
-        $data = array();
-        $sql = "SELECT gibbonThemeID as value, (CASE WHEN active='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibbonTheme ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibbonThemeIDPersonal', __('Personal Theme'))->description(__('Override the system theme.'));
-            $row->addSelect('gibbonThemeIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+            $row->addSelectTheme('gibbonThemeIDPersonal');
 
 
-        $data = array();
-        $sql = "SELECT gibboni18nID as value, (CASE WHEN systemDefault='Y' THEN CONCAT(name, ' (', '".__('System Default')."', ')') ELSE name END) AS name FROM gibboni18n WHERE active='Y' ORDER BY name";
         $row = $form->addRow();
             $row->addLabel('gibboni18nIDPersonal', __('Personal Language'))->description(__('Override the system default language.'));
-            $row->addSelect('gibboni18nIDPersonal')->fromQuery($pdo, $sql, $data)->placeholder();
+            $row->addSelectI18n('gibboni18nIDPersonal');
 
         $row = $form->addRow();
             $row->addLabel('receiveNotificationEmails', __('Receive Email Notifications?'))->description(__('Notifications can always be viewed on screen.'));

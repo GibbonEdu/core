@@ -20,16 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Student Enrolment').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Student Enrolment'));
 
     echo '<p>';
-    echo __($guid, 'This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.');
+    echo __('This page allows departmental Coordinators and Assistant Coordinators to manage student enolment within their department.');
     echo '</p>';
 
     try {
@@ -43,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         while ($row = $result->fetch()) {
@@ -62,31 +60,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             if ($resultClass->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Short Name');
+                echo __('Short Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Participants').'<br/>';
-                echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Active').'</span>';
-                echo '</th>';
-                echo '<th>';
-                echo 'Participants<br/>';
-                echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Expected').'</span>';
+                echo __('Participants').'<br/>';
+                echo "<span style='font-size: 85%; font-style: italic'>".__('Active').'</span>';
                 echo '</th>';
                 echo '<th>';
                 echo 'Participants<br/>';
-                echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Total').'</span>';
+                echo "<span style='font-size: 85%; font-style: italic'>".__('Expected').'</span>';
+                echo '</th>';
+                echo '<th>';
+                echo 'Participants<br/>';
+                echo "<span style='font-size: 85%; font-style: italic'>".__('Total').'</span>';
                 echo '</th>';
                 echo "<th style='width: 55px'>";
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -143,7 +141,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
                     echo '<b>'.($active + $expected).'<b/> ';
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage_edit.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID'].'&gibbonCourseID='.$row['gibbonCourseID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage_edit.php&gibbonCourseClassID='.$rowClass['gibbonCourseClassID'].'&gibbonCourseID='.$row['gibbonCourseID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     echo '</td>';
                     echo '</tr>';
 

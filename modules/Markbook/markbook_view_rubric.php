@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Rubric includes
-include './modules/Rubrics/moduleFunctions.php';
+require_once __DIR__ . '/../Rubrics/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $gibbonRubricID = $_GET['gibbonRubricID'];
     if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '' or $gibbonPersonID == '' or $gibbonRubricID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDPrimary'], $connection2);
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             try {
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
             if ($result2->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 try {
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                 if ($result3->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record does not exist.');
+                    echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
                     try {
@@ -106,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
                     if ($result4->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         //Let's go!
@@ -126,6 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
                                 $mark = false;
                             }
                         }
+
                         echo rubricView($guid, $connection2, $gibbonRubricID, $mark, $row4['gibbonPersonID'], 'gibbonMarkbookColumn', 'gibbonMarkbookColumnID', $gibbonMarkbookColumnID,  $contextDBTableGibbonRubricIDField, 'name', 'completeDate');
                     }
                 }

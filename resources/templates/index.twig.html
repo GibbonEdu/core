@@ -1,0 +1,120 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+TODO: add template variable details.
+-->#}
+
+<!DOCTYPE html>
+<html {{ rightToLeft ? 'dir="rtl"' : '' }}>
+    <head>
+        {{ include('head.twig.html') }}
+    </head>
+    <body style="{{ bodyBackground }}">
+        <div id="wrapOuter">
+            <div class="minorLinks{{ not gibbonHouseIDLogo ? ' minorLinksTopGap' : '' }}">
+                {{ minorLinks|raw }}
+            </div>
+
+            <div id="wrap">
+                {% block header %}
+                <div id="header">
+                    <div id="header-logo">
+                        <a href="{{ absoluteURL }}" style="display: block;max-height:121px;">
+                            <img class="logo" alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" height="100px" width="400px"/>
+                        </a>
+                    </div>
+
+                    <div id="header-finder">
+                        {{ fastFinder|raw }}
+                    </div>
+
+                    <div id="header-menu">
+                        {{ include('menu.twig.html') }}
+                    </div>
+                </div>
+                {% endblock %}
+
+                <div id="content-wrap">
+                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}">
+
+                        {% block page %}
+
+                        {% if content and not sidebar %}
+                            {{ include('navigation.twig.html') }}
+                        {% endif %}
+
+                        {% if page.breadcrumbs %}
+                        <div class="trail">
+                            <div class="trailHead">
+                            {% for title, src in page.breadcrumbs %}
+                                {% if loop.last %}
+                                    </div><div class="trailEnd">{{ title }}
+                                {% elseif loop.revindex > 5 and loop.index != 1 %}
+                                    <a href="{{ absoluteURL }}/{{ src }}">...</a> > 
+                                {% else %}
+                                    <a href="{{ absoluteURL }}/{{ src }}">{{ title }}</a> > 
+                                {% endif %}
+                            {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+
+                        {% for type, alerts in page.alerts %}
+                            {% for text in alerts %}
+                                <div class="{{ type }}">{{ text|raw }}</div>
+                            {% endfor %}
+                        {% endfor %}
+
+                        {{ content|join("\n")|raw }}
+
+                        {% endblock %}
+                    </div>
+
+                    {% if sidebar %}
+                        <div id="sidebar">
+                            {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
+                                {{ code|raw }}
+                            {% endfor %}
+
+                            {{ sidebarContents|raw }}
+
+                            {{ include('navigation.twig.html') }}
+
+                            {% for code in page.extraSidebar if sidebarPosition == 'bottom' %}
+                                {{ code|raw }}
+                            {% endfor %}
+
+                        </div>
+                        <br style="clear: both">
+                    {% endif %}
+                </div>
+
+                {% block footer %}
+                <div id="footer">
+                    {{ __('Powered by') }} <a target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }} 
+                    | &#169; <a target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}
+                    <br/>
+
+                    <span style="font-size: 90%;">
+                        {{ __('Created under the') }} <a target='_blank' href='https://www.gnu.org/licenses/gpl.html'>GNU GPL</a> 
+                        at <a target='_blank' href='http://www.ichk.edu.hk'>ICHK</a> | 
+                        <a target='_blank' href='https://gibbonedu.org/about/#ourTeam'>{{ __('Credits') }}</a> | 
+                        <a target='_blank' href='https://gibbonedu.org/about/#translators'>{{ __('Translators') }}</a>
+                        <br/>
+                        {{ footerThemeAuthor }}<br/>
+                    </span>
+
+                    <img id="footer-logo" alt="Logo Small" src="{{ absoluteURL }}/themes/{{ gibbonThemeName|default("Default") }}/img/logoFooter.png"/>
+                </div>
+                {% endblock %}
+            </div>
+        </div>
+
+        {{ include('foot.twig.html') }}
+    </body>
+</html>

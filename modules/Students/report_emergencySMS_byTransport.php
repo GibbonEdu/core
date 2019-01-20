@@ -19,20 +19,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencySMS_byTransport.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Emergency SMS by Transport</div>";
-    echo '</div>';
+    $page->breadcrumbs->add(__('Emergency SMS by Transport'));
+
     echo '<p>';
     echo __('This report prints all parent mobile phone numbers, whether or not they are set to receive messages from the school. It is useful when sending emergency SMS messages to groups of students. If no parent mobile is available it will display the emergency numbers given in the student record, and this will appear in red.');
     echo '</p>';
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
 
     if ($transport != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
             echo "<tr class=$rowNum>";
             if ($hideName == 'N') {
                 echo '<td>';
-                echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+                echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
                 echo '</td>';
             }
             echo '<td>';
@@ -164,11 +164,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_emergencyS
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=2>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }
         echo '</table>';
     }
 }
-?>

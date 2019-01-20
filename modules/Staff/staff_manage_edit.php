@@ -19,27 +19,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php'>".__($guid, 'Manage Staff')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Staff').'</div>';
-        echo '</div>';
+        $search = $_GET['search'] ?? '';
+        $allStaff = $_GET['allStaff'] ?? '';
 
-        $search = (isset($_GET['search']) ? $_GET['search'] : '');
-        $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
+        $page->breadcrumbs
+            ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
+            ->add(__('Edit Staff'), 'staff_manage_edit.php');
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -49,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         $gibbonStaffID = $_GET['gibbonStaffID'];
         if ($gibbonStaffID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -63,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record cannot be found.');
+                echo __('The specified record cannot be found.');
                 echo '</div>';
             } else {
                 //Let's go!
@@ -72,10 +73,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 if ($search != '' or $allStaff != '') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
                     echo '</div>';
                 }
-                echo '<h3>'.__($guid, 'General Information').'</h3>';
+                echo '<h3>'.__('General Information').'</h3>';
 
                 $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/staff_manage_editProcess.php?gibbonStaffID='.$values['gibbonStaffID']."&search=$search&allStaff=$allStaff");
 
@@ -89,14 +90,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonPersonName', __('Person'))->description(__('Must be unique.'));
-                    $row->addTextField('gibbonPersonName')->readOnly()->setValue(formatName($values['title'], $values['preferredName'], $values['surname'], 'Staff', false, true));
+                    $row->addTextField('gibbonPersonName')->readOnly()->setValue(Format::name($values['title'], $values['preferredName'], $values['surname'], 'Staff', false, true));
 
                 $row = $form->addRow();
                     $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
                     $row->addTextField('initials')->maxlength(4);
 
                 $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-                $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
+                $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
                 $result = $pdo->executeQuery(array(), $sql);
                 $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
                 $row = $form->addRow();
@@ -108,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     $row->addTextField('jobTitle')->maxlength(100);
 
                 $row = $form->addRow();
-    				$row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
-    				$row->addDate('dateStart');
+                    $row->addLabel('dateStart', __('Start Date'))->description(__("Users's first day at school."));
+                    $row->addDate('dateStart');
 
-    			$row = $form->addRow();
+                $row = $form->addRow();
                     $row->addLabel('dateEnd', __('End Date'))->description(__("Users's last day at school."));
                     $row->addDate('dateEnd');
 
@@ -157,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
                 echo $form->getOutput();
 
-                echo '<h3>'.__($guid, 'Facilities').'</h3>';
+                echo '<h3>'.__('Facilities').'</h3>';
                 try {
                     $data = array('gibbonPersonID1' => $gibbonPersonID, 'gibbonPersonID2' => $gibbonPersonID, 'gibbonPersonID3' => $gibbonPersonID, 'gibbonPersonID4' => $gibbonPersonID, 'gibbonPersonID5' => $gibbonPersonID, 'gibbonPersonID6' => $gibbonPersonID, 'gibbonSchoolYearID1' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
                     $sql = '(SELECT gibbonSpace.*, gibbonSpacePersonID, usageType, NULL AS \'exception\' FROM gibbonSpacePerson JOIN gibbonSpace ON (gibbonSpacePerson.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonPersonID=:gibbonPersonID1)
@@ -173,24 +174,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 }
 
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_facility_add.php&gibbonPersonID=$gibbonPersonID&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                 echo '</div>';
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Name');
+                    echo __('Name');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Usage').'<br/>';
+                    echo __('Usage').'<br/>';
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Actions');
+                    echo __('Actions');
                     echo '</th>';
                     echo '</tr>';
 
@@ -213,8 +214,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                             echo $row['usageType'];
                             echo '</td>';
                             echo '<td>';
-                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable')
-                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            if ($row['usageType'] != 'Roll Group' and $row['usageType'] != 'Timetable') {
+                                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_facility_delete.php&gibbonSpacePersonID='.$row['gibbonSpacePersonID']."&gibbonStaffID=$gibbonStaffID&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            }
                             echo '</td>';
                             echo '</tr>';
                         }
@@ -224,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
 
 
                 if ($highestAction == 'Manage Staff_confidential') {
-                    echo '<h3>'.__($guid, 'Contracts').'</h3>';
+                    echo '<h3>'.__('Contracts').'</h3>';
                     try {
                         $data = array('gibbonStaffID' => $gibbonStaffID);
                         $sql = 'SELECT * FROM gibbonStaffContract WHERE gibbonStaffID=:gibbonStaffID ORDER BY dateStart DESC';
@@ -235,27 +237,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                     }
 
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/staff_manage_edit_contract_add.php&gibbonStaffID=$gibbonStaffID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo '<th>';
-                        echo __($guid, 'Title');
+                        echo __('Title');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Status').'<br/>';
+                        echo __('Status').'<br/>';
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Dates');
+                        echo __('Dates');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Actions');
+                        echo __('Actions');
                         echo '</th>';
                         echo '</tr>';
 
@@ -284,7 +286,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                             }
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$row['gibbonStaffContractID']."&gibbonStaffID=$gibbonStaffID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/staff_manage_edit_contract_edit.php&gibbonStaffContractID='.$row['gibbonStaffContractID']."&gibbonStaffID=$gibbonStaffID&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo '</td>';
                             echo '</tr>';
                         }
@@ -295,4 +297,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
         }
     }
 }
-?>

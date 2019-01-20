@@ -1,0 +1,59 @@
+details:
+    type: staff
+    category: Staff Management
+    name: Staff
+    table: gibbonStaff
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Staff
+    action: Manage Staff_confidential
+primaryKey:
+    gibbonStaffID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID:
+        name: "Person"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    initials:
+        name: "Initials"
+        desc: "Must be unique if set."
+        args: {filter: string}
+    type:
+        name: "Type"
+        desc: ""
+        args: {filter: string, required: true, custom: true}
+    jobTitle:
+        name: "Job Title"
+        desc: ""
+        args: {filter: string, custom: true}
+    firstAidQualified:
+        name: "First Aid Qualified?"
+        desc: ""
+        args: {filter: yesno, custom: true }
+    firstAidExpiry:
+        name: "First Aid Expiry"
+        desc: ""
+        args: {filter: date, custom: true }
+    countryOfOrigin:
+        name: "Country Of Origin"
+        desc: ""
+        args: {filter: country, custom: true }
+    qualifications:
+        name: "Qualifications"
+        desc: ""
+        args: {filter: string, custom: true }
+    biographicalGrouping:
+        name: "Grouping"
+        desc: ""
+        args: {filter: string, custom: true }
+    biographicalGroupingPriority:
+        name: "Grouping Priority"
+        desc: "Higher numbers move teachers up the order within their grouping."
+        args: {filter: string, custom: true }
+    biography:
+        name: "Biography"
+        desc: ""
+        args: {filter: string}

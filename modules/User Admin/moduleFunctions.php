@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 //$student, $staff, $parent, $other, $applicationForm, $dataUpdater should all be TRUE/FALSE/NULL
 //Returns query result
-function getCustomFields($connection2, $guid, $student = null, $staff = null, $parent = null, $other = null, $applicationForm = null, $dataUpdater = null)
+function getCustomFields($connection2, $guid, $student = null, $staff = null, $parent = null, $other = null, $applicationForm = null, $dataUpdater = null, $publicRegistration = null)
 {
     $return = false;
 
@@ -50,6 +50,10 @@ function getCustomFields($connection2, $guid, $student = null, $staff = null, $p
             $data['dataUpdater'] = $dataUpdater;
             $where .= ' AND activeDataUpdater=:dataUpdater';
         }
+        if ($publicRegistration) {
+            $data['publicRegistration'] = $publicRegistration;
+            $where .= ' AND activePublicRegistration=:publicRegistration';
+        }
 
         if ($whereInner != '') {
             $whereInner = ' AND ('.substr($whereInner, 0, -4).') ';
@@ -75,13 +79,13 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
 
     $return .= "<tr class='$rowClass'>";
     $return .= '<td>';
-    $return .= '<b>'.__($guid, $row['name']).'</b>';
+    $return .= '<b>'.__($row['name']).'</b>';
     if ($row['required'] == 'Y' and $ignoreRequired == false) {
         $return .= ' *';
     }
     if ($row['description'] == 'Y') {
         $return .= '<br/>';
-        $return .= "<span style='font-size: 90%'><i>".__($guid, $row['description']).'<br/>';
+        $return .= "<span style='font-size: 90%'><i>".__($row['description']).'<br/>';
         $return .= '</span>';
     }
     $return .= '</td>';
@@ -143,7 +147,7 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
     } elseif ($row['type'] == 'select') {
         $return .= '<select style="width: 302px" name="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'" id="'.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].'">';
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
-                        $return .= '<option value="Please select...">'.__($guid, 'Please select...').'</option>';
+                        $return .= '<option value="Please select...">'.__('Please select...').'</option>';
         } else {
             $return .= '<option value=""></option>';
         }
@@ -160,7 +164,7 @@ function renderCustomFieldRow($connection2, $guid, $row, $value = null, $fieldNa
         if ($row['required'] == 'Y' and $ignoreRequired == false) { //is required
                     $return .= '<script type="text/javascript">';
             $return .= 'var '.$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."=new LiveValidation('".$fieldNameSuffix.'custom'.$row['gibbonPersonFieldID']."');";
-            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"".__($guid, 'Select something!').'"});';
+            $return .= $fieldNameSuffix.'custom'.$row['gibbonPersonFieldID'].".add(Validate.Exclusion, { within: ['Please select...'], failureMessage: \"".__('Select something!').'"});';
             $return .= '</script>';
         }
     }

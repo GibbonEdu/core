@@ -18,17 +18,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'My Activities').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('My Activities')); 
 
     try {
         $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -41,29 +39,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Activity');
+        echo __('Activity');
         echo '</th>';
         $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
         if ($options != '') {
             echo '<th>';
-            echo __($guid, 'Type');
+            echo __('Type');
             echo '</th>';
         }
         echo '<th>';
-        echo __($guid, 'Role');
+        echo __('Role');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Status');
+        echo __('Status');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -92,25 +90,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_my.p
             if ($row['role'] == '') {
                 echo 'Student';
             } else {
-                echo __($guid, $row['role']);
+                echo __($row['role']);
             }
             echo '</td>';
             echo '<td>';
             if ($row['status'] != '') {
                 echo $row['status'];
             } else {
-                echo '<i>'.__($guid, 'NA').'</i>';
+                echo '<i>'.__('NA').'</i>';
             }
             echo '</td>';
             echo '<td>';
             if ($row['role'] == 'Organiser' && isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_enrolment.php')) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID']."&search=&gibbonSchoolYearTermID='><img title='".__($guid, 'Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_manage_enrolment.php&gibbonActivityID='.$row['gibbonActivityID']."&search=&gibbonSchoolYearTermID='><img title='".__('Enrolment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             }
 
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_my_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_my_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
 
             if ($highestAction == "Enter Activity Attendance" || ($highestAction == "Enter Activity Attendance_leader" && ($row['role'] == 'Organiser' || $row['role'] == 'Assistant' || $row['role'] == 'Coach'))) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_attendance.php&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_attendance.php&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__('Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
             }
             echo '</td>';
             echo '</tr>';

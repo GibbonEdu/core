@@ -17,6 +17,7 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
@@ -334,7 +335,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                 }
                 if (isset($_POST['newvisaExpiryDateOn'])) {
                     if ($_POST['newvisaExpiryDateOn'] == 'on') {
-                        $data['visaExpiryDate'] = $_POST['newvisaExpiryDate'];
+                        $data['visaExpiryDate'] = !empty($_POST['newvisaExpiryDate'])? $_POST['newvisaExpiryDate'] : null;
                         $set .= 'gibbonPerson.visaExpiryDate=:visaExpiryDate, ';
                     }
                 }
@@ -484,11 +485,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                                 // Raise a new notification event
                                 $event = new NotificationEvent('Students', 'Updated Privacy Settings');
 
-                                $staffName = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
-                                $studentName = formatName('', $row2['preferredName'], $row2['surname'], 'Student', false);
+                                $staffName = Format::name('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff', false, true);
+                                $studentName = Format::name('', $row2['preferredName'], $row2['surname'], 'Student', false);
                                 $actionLink = "/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=";
 
-                                $event->setNotificationText(sprintf(__($guid, '%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName));
+                                $privacyText = __('Privacy').' (<i>'.__('New Value').'</i>): ';
+                                $privacyText .= !empty($_POST['newprivacy']) ? $_POST['newprivacy'] : __('None');
+
+                                $notificationText = sprintf(__('%1$s has altered the privacy settings for %2$s.'), $staffName, $studentName).'<br/><br/>';
+                                $notificationText .= $privacyText;
+
+                                $event->setNotificationText($notificationText);
                                 $event->setActionLink($actionLink);
 
                                 $event->addScope('gibbonPersonIDStudent', $gibbonPersonID);
@@ -499,7 +506,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                                 // Add direct notifications to roll group tutors
                                 if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
-                                    $notificationText = sprintf(__($guid, 'Your tutee, %1$s, has had their privacy settings altered.'), $studentName);
+                                    $notificationText = sprintf(__('Your tutee, %1$s, has had their privacy settings altered.'), $studentName).'<br/><br/>';
+                                    $notificationText .= $privacyText;
 
                                     if ($rowDetail['gibbonPersonIDTutor'] != null and $rowDetail['gibbonPersonIDTutor'] != $_SESSION[$guid]['gibbonPersonID']) {
                                         $notificationSender->addNotification($rowDetail['gibbonPersonIDTutor'], $notificationText, 'Students', $actionLink);

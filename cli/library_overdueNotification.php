@@ -22,7 +22,6 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 require getcwd().'/../gibbon.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);
 
@@ -40,7 +39,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 
 //Check for CLI, so this cannot be run through browser
 if (!isCommandLineInterface()) {
-	print __($guid, "This script cannot be run from a browser, only via CLI.") ;
+	print __("This script cannot be run from a browser, only via CLI.") ;
 }
 else {
     //SCAN THROUGH ALL OVERDUE LOANS
@@ -64,13 +63,13 @@ else {
     if ($event->getEventDetails($notificationGateway, 'active') == 'Y') {
         if ($result->rowCount() > 0) {
             while ($row = $result->fetch()) { //For every student
-                $notificationText = sprintf(__($guid, 'You have an overdue loan item that needs to be returned (%1$s).'), $row['name']);
+                $notificationText = sprintf(__('You have an overdue loan item that needs to be returned (%1$s).'), $row['name']);
                 $notificationSender->addNotification($row['gibbonPersonIDStatusResponsible'], $notificationText, 'Library', '/index.php?q=/modules/Library/library_browse.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']);
             }
         }
     }
 
-    $event->setNotificationText(sprintf(__($guid, 'A Library Overdue Items CLI script has run, notifying %1$s users.'), $notificationSender->getNotificationCount()));
+    $event->setNotificationText(sprintf(__('A Library Overdue Items CLI script has run, notifying %1$s users.'), $notificationSender->getNotificationCount()));
     $event->setActionLink('/index.php?q=/modules/Attendance/report_rollGroupsNotRegistered_byDate.php');
 
     // Push the event to the notification sender

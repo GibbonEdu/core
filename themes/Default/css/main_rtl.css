@@ -20,3 +20,133 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 Add any extra code here to make right to left languages (such as Arabic) work.
 */
 
+
+#header-finder {
+    float: left;
+    right: auto;
+    left: 24px;
+}
+
+#content {
+    float: right;
+    border-left: 1px solid rgba(0, 0, 0, 0.15);
+    text-align: right;
+}
+
+.ui-tabs .ui-tabs-nav li {
+    list-style: none;
+    float: right;
+}
+
+div.minorLinks {
+    text-align: left;
+    padding-left: 13px;
+}
+
+div.trail {
+    text-align: right;
+}
+
+div.trailEnd {
+    padding-right: 3px;
+    float: right;
+}
+
+div.trailHead {
+    float: right;
+    white-space: nowrap;
+}
+
+#nav {
+    float: right;
+}
+
+#nav li {
+    position: relative;
+    float: right;
+}
+
+#nav li li {
+    text-align: right;
+}
+
+ul.moduleMenu ul li {
+    text-align: right;
+}
+
+p {
+    margin: 0px 0px 15px 0px;
+    text-align: right;
+}
+ol,
+ul {
+    margin: 0 0 1px;
+    text-align: right;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    margin: 20px 0 10px 0;
+    text-align: right;
+}
+
+li {
+    padding-right: 5px;
+    text-align: right;
+}
+
+table th,
+table td {
+    text-align: right;
+}
+
+table tr:first-child th:first-child {
+    text-align: right;
+    padding-left: 15px;
+}
+table td:first-child {
+    text-align: right;
+}
+
+input[type="file"] {
+    text-align: right;
+}
+
+select {
+    float: left;
+}
+
+input.standardWidth,
+textarea.standardWidth,
+.input-box.standardWidth {
+    float: left;
+}
+
+li.token-input-input-token-facebook {
+    float: right;
+}
+
+div.error {
+    font-size: default;
+}
+
+div.warning {
+    text-align: right;
+}
+
+div.success {
+    text-align: right;
+}
+
+div.notificationTray {
+    float: left;
+}
+
+td.right {
+    text-align: left !important;
+}
+

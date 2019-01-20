@@ -21,21 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('View Overdue Items'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdueItems.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Overdue Items').'</div>';
-    echo '</div>';
-
     echo '<h2>';
-    echo __($guid, 'Filter');
+    echo __('Filter');
     echo '</h2>';
 
     $ignoreStatus = '';
@@ -61,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Report Data');
+    echo __('Report Data');
     echo '</h2>';
 
     $today = date('Y-m-d');
@@ -82,23 +80,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
     echo "<table cellspacing='0' style='width: 100%'>";
     echo "<tr class='head'>";
     echo '<th>';
-    echo __($guid, 'Borrowing User');
+    echo __('Borrowing User');
     echo '</th>';
     echo '<th>';
-    echo __($guid, 'Email');
+    echo __('Email');
     echo '</th>';
     echo '<th>';
-    echo __($guid, 'Item').'<br/>';
-    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Author/Producer').'</span>';
+    echo __('Item').'<br/>';
+    echo "<span style='font-size: 85%; font-style: italic'>".__('Author/Producer').'</span>';
     echo '</th>';
     echo '<th>';
-    echo __($guid, 'Due Date');
+    echo __('Due Date');
     echo '</th>';
     echo '<th>';
-    echo __($guid, 'Days Overdue');
+    echo __('Days Overdue');
     echo '</th>';
     echo "<th style='width: 50px'>";
-    echo __($guid, 'Actions');
+    echo __('Actions');
     echo '</th>';
     echo '</tr>';
 
@@ -131,14 +129,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_viewOverdue
         echo(strtotime($today) - strtotime($row['returnExpected'])) / (60 * 60 * 24);
         echo '</td>';
         echo '<td>';
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=&gibbonLibraryTypeID=&gibbonSpaceID=&status='><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
         echo '</td>';
         echo '</tr>';
     }
     if ($count == 0) {
         echo "<tr class=$rowNum>";
         echo '<td colspan=6>';
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</td>';
         echo '</tr>';
     }

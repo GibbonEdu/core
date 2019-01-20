@@ -9,11 +9,14 @@ os:
 # list any PHP version you want to test against
 php:
   - 7.0
+  - 7.1
+  - 7.2
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
   global:
     - TEST_ENV='codeception'
+    - CI_PLATFORM='travis_ci'
     - ABSOLUTE_URL='http://127.0.0.1:8888'
     - DB_HOST='127.0.0.1'
     - DB_NAME='gibbon_test'
@@ -39,9 +42,11 @@ cache:
     - vendor
     - $HOME/.composer/cache
 
-# Disable x-debug to speed up things
 before_install:
+  # Disable x-debug to speed up things
   - phpenv config-rm xdebug.ini
+  # add composer global bin to PATH to make codeception usable
+  - export PATH=$HOME/.composer/vendor/bin:$PATH
   
 # Install packages those will be required during build
 install:
@@ -53,15 +58,12 @@ install:
 before_script:
   - php -S 127.0.0.1:8888 -t $TRAVIS_BUILD_DIR >/dev/null 2>&1 &
   - sleep 1
-  - cd tests
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
 script:
-  - ~/.composer/vendor/bin/codecept run install --env travis_ci
-  - ~/.composer/vendor/bin/codecept run acceptance --env travis_ci
-  - phpunit --verbose --configuration phpunit.xml
+  - composer test
 
 # configure notifications (email, IRC, campfire etc)
 notifications:
-  email: "tests@gibbonedu.org"
+  email: $GIBBON_NOTIFICATION_EMAIL

@@ -23,13 +23,13 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php'>".__($guid, 'Manage Families')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Family').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Families'), 'family_manage.php')
+        ->add(__('Edit Family'));        
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -43,10 +43,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
     }
     if ($gibbonFamilyID == '') {
         echo '<h1>';
-        echo __($guid, 'Edit Family');
+        echo __('Edit Family');
         echo '</h1>';
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             echo 'Edit Family';
             echo '</h1>';
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             if ($search != '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/family_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -190,13 +190,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             echo '<h3>';
-            echo __($guid, 'Relationships');
+            echo __('Relationships');
             echo '</h3>';
             echo '<p>';
-            echo __($guid, 'Use the table below to show how each child is related to each adult in the family.');
+            echo __('Use the table below to show how each child is related to each adult in the family.');
             echo '</p>';
             if ($resultChildren->rowCount() < 1 or $resultAdults->rowCount() < 1) {
-                echo "<div class='error'>".__($guid, 'There are not enough people in this family to form relationships.').'</div>';
+                echo "<div class='error'>".__('There are not enough people in this family to form relationships.').'</div>';
             } else {
 
                 $form = Form::create('action2', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_relationshipsProcess.php?gibbonFamilyID=$gibbonFamilyID&search=$search");
@@ -234,33 +234,33 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
 
             echo '<h3>';
-            echo __($guid, 'View Children');
+            echo __('View Children');
             echo '</h3>';
 
             if ($resultChildren->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Photo');
+                echo __('Photo');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Status');
+                echo __('Status');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Roll Group');
+                echo __('Roll Group');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Comment');
+                echo __('Comment');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -303,9 +303,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     echo nl2brr($child['comment']);
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$child['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteChild.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$child['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$child['gibbonPersonID']."&search=$search'><img title='".__('Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }
@@ -336,48 +336,48 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             echo $form->getOutput();
 
             echo '<h3>';
-            echo __($guid, 'View Adults');
+            echo __('View Adults');
             echo '</h3>';
             echo "<div class='warning'>";
-            echo __($guid, 'Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.');
+            echo __('Logic exists to try and ensure that there is always one and only one parent with Contact Priority set to 1. This may result in values being set which are not exactly what you chose.');
             echo '</div>';
 
             if ($resultAdults->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Status');
+                echo __('Status');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Comment');
+                echo __('Comment');
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px; height: 100px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Data Access').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Data Access').'</div>';
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Contact Priority').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact Priority').'</div>';
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Contact By Phone').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Phone').'</div>';
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Contact By SMS').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By SMS').'</div>';
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Contact By Email').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Email').'</div>';
                 echo '</th>';
                 echo "<th style='max-width: 50px; padding-left: 1px; padding-right: 1px'>";
-                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__($guid, 'Contact By Mail').'</div>';
+                echo "<div style='-webkit-transform: rotate(-90deg); -moz-transform: rotate(-90deg); -ms-transform: rotate(-90deg); -o-transform: rotate(-90deg); transform: rotate(-90deg);'>".__('Contact By Mail').'</div>';
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -421,9 +421,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
                     echo $adult['contactMail'];
                     echo '</td>';
                     echo '<td>';
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$adult['gibbonPersonID']."&search=$search'><img title='".__($guid, 'Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_editAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/family_manage_edit_deleteAdult.php&gibbonFamilyID=$gibbonFamilyID&gibbonPersonID=".$adult['gibbonPersonID']."&search=$search&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/user_manage_password.php&gibbonPersonID='.$adult['gibbonPersonID']."&search=$search'><img title='".__('Change Password')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/key.png'/></a>";
                     echo '</td>';
                     echo '</tr>';
                 }

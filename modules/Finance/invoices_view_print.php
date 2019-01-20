@@ -18,19 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
 
         if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '' or $gibbonPersonID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             //Confirm access to this student
@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
             }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $rowChild = $resultChild->fetch();
@@ -78,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record cannot be found.');
+                    echo __('The specified record cannot be found.');
                     echo '</div>';
                 } else {
                     //Let's go!
@@ -99,14 +99,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, true);
                         if ($invoiceContents == false) {
                             echo "<div class='error'>";
-                            echo __($guid, 'An error occurred.');
+                            echo __('An error occurred.');
                             echo '</div>';
                         } else {
                             echo $invoiceContents;
                         }
                     } elseif ($type = 'receipt') {
                         echo '<h2>';
-                        echo __($guid, 'Receipt');
+                        echo __('Receipt');
                         echo '</h2>';
                         //Get receipt number
                         $receiptNumber = null;
@@ -125,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view_prin
                         $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
                         if ($receiptContents == false) {
                             echo "<div class='error'>";
-                            echo __($guid, 'An error occurred.');
+                            echo __('An error occurred.');
                             echo '</div>';
                         } else {
                             echo $receiptContents;

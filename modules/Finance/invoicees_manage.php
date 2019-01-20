@@ -22,16 +22,14 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Invoicees').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Invoicees'));
 
     echo '<p>';
-    echo __($guid, 'The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.');
+    echo __('The table below shows all student invoicees within the school. A red row in the table below indicates that an invoicee\'s status is not "Full" or that their start or end dates are greater or less than than the current date.');
     echo '</p>';
 
     //Check for missing students from studentEnrolment and add a gibbonFinanceInvoicee record for them.
@@ -63,18 +61,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
         if ($addCount > 0) {
             if ($addFail == true) {
                 echo "<div class='error'>";
-                echo __($guid, 'It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.');
+                echo __('It was detected that some students did not have invoicee records. The system tried to create these, but some of more creations failed.');
                 echo '</div>';
             } else {
                 echo "<div class='success'>";
-                echo sprintf(__($guid, 'It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount);
+                echo sprintf(__('It was detected that some students did not have invoicee records. The system has successfully created %1$s record(s) for you.'), $addCount);
                 echo '</div>';
             }
         }
     }
 
     echo '<h2>';
-    echo __($guid, 'Filters');
+    echo __('Filters');
     echo '</h2>';
 
     $search = null;
@@ -108,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
 
     //Set pagination variable
@@ -140,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -150,16 +148,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Name');
+        echo __('Name');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Status');
+        echo __('Status');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Invoice To');
+        echo __('Invoice To');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -193,17 +191,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage.p
             echo '</td>';
             echo '<td>';
             if ($row['invoiceTo'] == 'Family') {
-                echo __($guid, 'Family');
+                echo __('Family');
             } elseif ($row['invoiceTo'] == 'Company' and $row['companyAll'] == 'Y') {
-                echo __($guid, 'Company');
+                echo __('Company');
             } elseif ($row['invoiceTo'] == 'Company' and $row['companyAll'] == 'N') {
-                echo __($guid, 'Family + Company');
+                echo __('Family + Company');
             } else {
-                echo '<i>'.__($guid, 'Unknown').'</i>';
+                echo '<i>'.__('Unknown').'</i>';
             }
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoicees_manage_edit.php&gibbonFinanceInvoiceeID='.$row['gibbonFinanceInvoiceeID']."&search=$search&allUsers=$allUsers'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoicees_manage_edit.php&gibbonFinanceInvoiceeID='.$row['gibbonFinanceInvoiceeID']."&search=$search&allUsers=$allUsers'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             echo '</td>';
             echo '</tr>';
 

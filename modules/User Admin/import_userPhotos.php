@@ -22,13 +22,11 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhotos.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Import Users').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Import User Photos'));   
 
     $step = null;
     if (isset($_GET['step'])) {
@@ -66,20 +64,20 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
         ?>
 
         <h4>
-            <?php echo __($guid, 'Notes') ?>
+            <?php echo __('Notes') ?>
         </h4>
         <ol>
-            <li style='color: #c00; font-weight: bold'><?php echo __($guid, 'THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
-            <li><?php echo __($guid, 'You may only submit ZIP files.') ?></li>
-            <li><?php echo __($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
-            <li><?php echo __($guid, 'Please note the following requirements for images in preparing your ZIP file:') ?></li>
+            <li style='color: #c00; font-weight: bold'><?php echo __('THE SYSTEM WILL NOT PROMPT YOU TO PROCEED, IT WILL JUST DO THE IMPORT. BACKUP YOUR DATA.') ?></li>
+            <li><?php echo __('You may only submit ZIP files.') ?></li>
+            <li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
+            <li><?php echo __('Please note the following requirements for images in preparing your ZIP file:') ?></li>
                 <ol>
-                    <li><b><?php echo __($guid, 'File Name') ?></b> - <?php echo __($guid, 'File name of each image must be username plus extension, e.g. astudent.jpg') ?></li>
-                    <li><b><?php echo __($guid, 'Folder') ?> *</b> - <?php echo __($guid, 'The ZIP file must not contain any folders, only files.') ?></li>
-                    <li><b><?php echo __($guid, 'File Type') ?> *</b> - <?php echo __($guid, 'Images must be formatted as JPG or PNG.') ?></li>
-                    <li><b><?php echo __($guid, 'Image Size') ?> *</b> - <?php echo __($guid, 'Displayed at 240px by 320px.') ?></li>
-                    <li><b><?php echo __($guid, 'Size Range') ?> *</b> - <?php echo __($guid, 'Accepts images up to 360px by 480px.') ?></li>
-                    <li><b><?php echo __($guid, 'Aspect Ratio Range') ?> *</b> - <?php echo __($guid, 'Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></li>
+                    <li><b><?php echo __('File Name') ?></b> - <?php echo __('File name of each image must be username plus extension, e.g. astudent.jpg') ?></li>
+                    <li><b><?php echo __('Folder') ?> *</b> - <?php echo __('The ZIP file must not contain any folders, only files.') ?></li>
+                    <li><b><?php echo __('File Type') ?> *</b> - <?php echo __('Images must be formatted as JPG or PNG.') ?></li>
+                    <li><b><?php echo __('Image Size') ?> *</b> - <?php echo __('Displayed at 240px by 320px.') ?></li>
+                    <li><b><?php echo __('Size Range') ?> *</b> - <?php echo __('Accepts images up to 360px by 480px.') ?></li>
+                    <li><b><?php echo __('Aspect Ratio Range') ?> *</b> - <?php echo __('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></li>
                 </ol>
             </li>
         </ol>
@@ -88,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
     } elseif ($step == 2) {
         ?>
         <h2>
-            <?php echo __($guid, 'Step 2 - Data Check & Confirm') ?>
+            <?php echo __('Step 2 - Data Check & Confirm') ?>
         </h2>
         <?php
 
@@ -96,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
         if ($_FILES['file']['type'] != 'application/zip' and $_FILES['file']['type'] != 'application/x-zip-compressed') {
             ?>
             <div class='error'>
-                <?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a ZIP file.'), $_FILES['file']['type']) ?><br/>
+                <?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a ZIP file.'), $_FILES['file']['type']) ?><br/>
             </div>
             <?php
 
@@ -105,7 +103,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 
             //PREPARE TABLES
             echo '<h4>';
-            echo __($guid, 'Prepare Database Tables');
+            echo __('Prepare Database Tables');
             echo '</h4>';
             //Lock tables
             $lockFail = false;
@@ -118,11 +116,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
             }
             if ($lockFail == true) {
                 echo "<div class='error'>";
-                echo __($guid, 'The database could not be locked for use.');
+                echo __('The database could not be locked for use.');
                 echo '</div>';
             } elseif ($lockFail == false) {
                 echo "<div class='success'>";
-                echo __($guid, 'The database was successfully locked.');
+                echo __('The database was successfully locked.');
                 echo '</div>';
             }
 
@@ -151,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                             if (strtolower(substr($filename, -4, 4)) != '.jpg' and strtolower(substr($filename, -4, 4)) != '.png') {
                                 $fileTypeFail = true;
                                 echo "<div class='error'>";
-                                echo sprintf(__($guid, 'Image %1$s does not appear to be, formatted as JPG or PNG.'), $_FILES['file']['type']);
+                                echo sprintf(__('Image %1$s does not appear to be, formatted as JPG or PNG.'), $_FILES['file']['type']);
                                 echo '</div>';
                             }
 
@@ -174,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 
                                 if ($userCheckFail) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There was an error locating user:').' '.$username.'.';
+                                    echo __('There was an error locating user:').' '.$username.'.';
                                     echo '</div>';
                                 } else {
                                     if ($userCheckFail == false) {
@@ -197,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                         if (!(@copy('zip://'.$path.'#'.$filename, $filePath))) {
                                             $fileUploadFail = true;
                                             echo "<div class='error'>";
-                                            echo __($guid, 'There was an error uploading photo for user:').' '.$username.'.';
+                                            echo __('There was an error uploading photo for user:').' '.$username.'.';
                                             echo '</div>';
                                         }
 
@@ -213,7 +211,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                                 $imageFail = true;
                                                 //Report error
                                                 echo "<div class='error'>";
-                                                echo __($guid, 'There was an error in the sizing of the photo for user:').' '.$username.'.';
+                                                echo __('There was an error in the sizing of the photo for user:').' '.$username.'.';
                                                 echo '</div>';
                                             }
 
@@ -227,7 +225,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                                     $result->execute($data);
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>";
-                                                    echo __($guid, 'There was an error updating user:').' '.$username.'.';
+                                                    echo __('There was an error updating user:').' '.$username.'.';
                                                     echo '</div>';
                                                     $updateFail = true;
                                                 }
@@ -235,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                                                 //Spit out results
                                                 if ($updateFail == false) {
                                                     echo "<div class='success'>";
-                                                    echo sprintf(__($guid, 'User %1$s was successfully updated.'), $username);
+                                                    echo sprintf(__('User %1$s was successfully updated.'), $username);
                                                     echo '</div>';
                                                 }
                                             }
@@ -248,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
                     $zip->close();
                 } else {    //Error
                     echo "<div class='error'>";
-                    echo __($guid, 'The import file could not be decompressed.');
+                    echo __('The import file could not be decompressed.');
                     echo '</div>';
                 }
 

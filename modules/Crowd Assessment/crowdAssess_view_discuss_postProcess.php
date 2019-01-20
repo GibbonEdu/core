@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.getModuleName($_GET['address']).'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
 $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
@@ -125,13 +125,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                         //Create notification for homework owner, as long as it is not me.
                         if ($gibbonPersonID != $_SESSION[$guid]['gibbonPersonID'] and $gibbonPersonID != $replyToID) {
-                            $notificationText = sprintf(__($guid, 'Someone has commented on your homework for lesson plan "%1$s".'), $name);
+                            $notificationText = sprintf(__('Someone has commented on your homework for lesson plan "%1$s".'), $name);
                             setNotification($connection2, $guid, $gibbonPersonID, $notificationText, 'Crowd Assessment', "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID");
                         }
 
                         //Create notification to person I am replying to
                         if (is_null($replyToID) == false) {
-                            $notificationText = sprintf(__($guid, 'Someone has replied to a comment on homework for lesson plan "%1$s".'), $name);
+                            $notificationText = sprintf(__('Someone has replied to a comment on homework for lesson plan "%1$s".'), $name);
                             setNotification($connection2, $guid, $replyToID, $notificationText, 'Crowd Assessment', "/index.php?q=/modules/Crowd Assessment/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID&gibbonPersonID=$gibbonPersonID");
                         }
 

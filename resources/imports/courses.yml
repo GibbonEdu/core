@@ -1,0 +1,48 @@
+details:
+    type: courses
+    name: Courses
+    table: gibbonCourse
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Courses & Classes
+primaryKey:
+    gibbonCourseID
+uniqueKeys:
+    - [ gibbonSchoolYearID, name ]
+    - [ gibbonSchoolYearID, nameShort ]
+table:
+    gibbonSchoolYearID: 
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonDepartmentID: 
+        name: "Learning Area"
+        desc: "Short Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    name: 
+        name: "Name"
+        desc: "Must be unique for this school year."
+        args: { filter: string, required: true }
+    nameShort: 
+        name: "Short Name"
+        desc: "Must be unique for this school year."
+        args: { filter: string, required: true }
+    orderBy: 
+        name: "Order By"
+        desc: "May be used to adjust arrangement of courses in reports."
+        args: { filter: numeric }
+    description: 
+        name: "Blurb"
+        desc: ""
+        args: { filter: html }
+    map: 
+        name: "Include In Curriculum Map"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    gibbonYearGroupIDList: 
+        name: "Year Groups"
+        desc: "Enrolable year groups."
+        args: { filter: yearlist, custom: true }

@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Module\Attendance\AttendanceView;
 
 require getcwd().'/../gibbon.php';
 
@@ -27,13 +28,13 @@ setCurrentSchoolYear($guid, $connection2);
 
 //Check for CLI, so this cannot be run through browser
 if (!isCommandLineInterface()) { 
-    echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+    echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     setCurrentSchoolYear($guid, $connection2);
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/moduleFunctions.php';
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/../modules/Attendance/moduleFunctions.php';
+    require_once __DIR__ . '/../modules/Attendance/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
     
     $firstDayOfTheWeek = $gibbon->session->get('firstDayOfTheWeek');
     $dateFormat = $_SESSION[$guid]['i18n']['dateFormat'];
@@ -160,7 +161,7 @@ if (!isCommandLineInterface()) {
             $event = new NotificationEvent('Attendance', 'Weekly Attendance Summary');
 
             $event->addScope('gibbonYearGroupID', $gibbonYearGroupID);
-            $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
+            $event->setNotificationText(__('An Attendance CLI script has run.').'<br/><br/>'.$reportHeading . implode(' ', $reportByRollGroup));
             $event->setActionLink('/index.php?q=/modules/Attendance/report_summary_byDate.php&dateStart='.$dateStart->format($dateFormat).'dateEnd='.$dateEnd->format($dateFormat).'&group=all&sort=rollGroup');
 
             // Push the event to the notification sender

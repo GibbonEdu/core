@@ -17,20 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_medicalSummary_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $choices = $_SESSION[$guid]['report_student_medicalSummary.php_choices'];
 
     if (count($choices) > 0) {
         echo '<h2>';
-        echo __($guid, 'Student Medical Data Summary');
+        echo __('Student Medical Data Summary');
         echo '</h2>';
 
         try {
@@ -50,26 +52,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
         echo '</div>';
 
         echo "<table class='mini' cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Medical Form?');
+        echo __('Medical Form?');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Blood Type');
+        echo __('Blood Type');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Tetanus').'<br/>';
-        echo "<span style='font-size: 80%'><i>".__($guid, '10 Years').'</span>';
+        echo __('Tetanus').'<br/>';
+        echo "<span style='font-size: 80%'><i>".__('10 Years').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Last Update');
+        echo __('Last Update');
         echo '</th>';
         echo '</tr>';
 
@@ -96,10 +98,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                 $rowForm = $resultForm->fetch();
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                 echo '</td>';
                 echo '<td>';
-                echo __($guid, 'Yes');
+                echo __('Yes');
                 echo '</td>';
                 echo '<td>';
                 echo $rowForm['bloodType'];
@@ -127,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
 						echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
 					}
                 } else {
-                    echo "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'NA').'</span>';
+                    echo "<span style='color: #ff0000; font-weight: bold'>".__('NA').'</span>';
                 }
                 echo '</td>';
                 echo '</tr>';
@@ -137,8 +139,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                         echo "<tr class=$rowNum>";
                         echo '<td></td>';
                         echo "<td colspan=4 style='border-top: 1px solid #aaa'>";
-                        echo '<b><i>'.__($guid, 'Long Term Medication').'</i></b>: '.$rowForm['longTermMedication'].'<br/>';
-                        echo '<u><i>'.__($guid, 'Details').'</i></u>: '.$rowForm['longTermMedicationDetails'].'<br/>';
+                        echo '<b><i>'.__('Long Term Medication').'</i></b>: '.$rowForm['longTermMedication'].'<br/>';
+                        echo '<u><i>'.__('Details').'</i></u>: '.$rowForm['longTermMedicationDetails'].'<br/>';
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -161,22 +163,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                         echo "<tr class=$rowNum>";
                         echo '<td></td>';
                         echo "<td colspan=4 $conditionStyle>";
-                        echo '<b><i>'.__($guid, 'Condition')." $condCount</i></b>: ".__($guid, $rowConditions['name']).'<br/>';
-                        echo '<u><i>'.__($guid, 'Risk')."</i></u>: <span style='color: #".$alert['color']."; font-weight: bold'>".__($guid, $alert['name']).'</span><br/>';
+                        echo '<b><i>'.__('Condition')." $condCount</i></b>: ".__($rowConditions['name']).'<br/>';
+                        echo '<u><i>'.__('Risk')."</i></u>: <span style='color: #".$alert['color']."; font-weight: bold'>".__($alert['name']).'</span><br/>';
                         if ($rowConditions['triggers'] != '') {
-                            echo '<u><i>'.__($guid, 'Triggers').'</i></u>: '.$rowConditions['triggers'].'<br/>';
+                            echo '<u><i>'.__('Triggers').'</i></u>: '.$rowConditions['triggers'].'<br/>';
                         }
                         if ($rowConditions['reaction'] != '') {
-                            echo '<u><i>'.__($guid, 'Reaction').'</i></u>: '.$rowConditions['reaction'].'<br/>';
+                            echo '<u><i>'.__('Reaction').'</i></u>: '.$rowConditions['reaction'].'<br/>';
                         }
                         if ($rowConditions['response'] != '') {
-                            echo '<u><i>'.__($guid, 'Response').'</i></u>: '.$rowConditions['response'].'<br/>';
+                            echo '<u><i>'.__('Response').'</i></u>: '.$rowConditions['response'].'<br/>';
                         }
                         if ($rowConditions['medication'] != '') {
-                            echo '<u><i>'.__($guid, 'Medication').'</i></u>: '.$rowConditions['medication'].'<br/>';
+                            echo '<u><i>'.__('Medication').'</i></u>: '.$rowConditions['medication'].'<br/>';
                         }
                         if ($rowConditions['lastEpisode'] != '' or $rowConditions['lastEpisodeTreatment'] != '') {
-                            echo '<u><i>'.__($guid, 'Last Episode').'</i></u>: ';
+                            echo '<u><i>'.__('Last Episode').'</i></u>: ';
                             if ($rowConditions['lastEpisode'] != '') {
                                 echo dateConvertBack($guid, $rowConditions['lastEpisode']);
                             }
@@ -190,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
                         }
 
                         if ($rowConditions['comment'] != '') {
-                            echo '<u><i>'.__($guid, 'Comment').'</i></u>: '.$rowConditions['comment'].'<br/>';
+                            echo '<u><i>'.__('Comment').'</i></u>: '.$rowConditions['comment'].'<br/>';
                         }
                         echo '</td>';
                         echo '</tr>';
@@ -200,10 +202,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
-                echo formatName('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
+                echo Format::name('', htmlPrep($row['preferredName']), htmlPrep($row['surname']), 'Student', true);
                 echo '</td>';
                 echo '<td colspan=4>';
-                echo "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'No').'</span>';
+                echo "<span style='color: #ff0000; font-weight: bold'>".__('No').'</span>';
                 echo '</td>';
                 echo '</tr>';
             }
@@ -211,7 +213,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_me
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=2>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

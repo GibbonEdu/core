@@ -22,13 +22,13 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/role_manage.php'>".__($guid, 'Manage Roles')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Role').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Roles'),'role_manage.php')
+        ->add(__('Edit Role'));     
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
     $gibbonRoleID = $_GET['gibbonRoleID'];
     if ($gibbonRoleID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -101,10 +101,19 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                 $row->addTextField('type')->isRequired()->readonly()->setValue($role['type']);
 
             $row = $form->addRow();
+                $row->addLabel('canLoginRole', __('Can Login?'))->description(__('Are users with this primary role able to login?'));
+                if ($role['name'] == 'Administrator') {
+                    $row->addTextField('canLoginRole')->isRequired()->readonly()->setValue(__('Yes'));
+                } else {
+                    $row->addYesNo('canLoginRole')->isRequired()->selected($role['canLoginRole']);
+                    $form->toggleVisibilityByClass('loginOptions')->onSelect('canLoginRole')->when('Y');
+                }
+
+            $row = $form->addRow()->addClass('loginOptions');
                 $row->addLabel('pastYearsLogin', __('Login To Past Years'));
                 $row->addYesNo('pastYearsLogin')->isRequired()->selected($role['pastYearsLogin']);
 
-            $row = $form->addRow();
+            $row = $form->addRow()->addClass('loginOptions');
                 $row->addLabel('futureYearsLogin', __('Login To Future Years'));
                 $row->addYesNo('futureYearsLogin')->isRequired()->selected($role['futureYearsLogin']);
 

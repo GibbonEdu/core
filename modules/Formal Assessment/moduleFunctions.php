@@ -43,7 +43,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
 
     if ($resultYears->rowCount() < 1) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'There are no records to display.');
+        $output .= __('There are no records to display.');
         $output .= '</div>';
     } else {
         $results = false;
@@ -72,27 +72,27 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                 $output .= "<table cellspacing='0' style='width: 100%'>";
                 $output .= "<tr class='head'>";
                 $output .= "<th style='width: 160px'>";
-                $output .= 'Assessment';
+                $output .= __('Assessment');
                 $output .= '</th>';
                 $output .= "<th style='width: 180px'>";
-                $output .= 'Course';
+                $output .= __('Course');
                 $output .= '</th>';
                 $output .= "<th style='width: 75px; text-align: center'>";
                 if ($attainmentAlternativeName != '') {
                     $output .= $attainmentAlternativeName;
                 } else {
-                    $output .= __($guid, 'Attainment');
+                    $output .= __('Attainment');
                 }
                 $output .= '</th>';
                 $output .= "<th style='width: 75px; text-align: center'>";
                 if ($effortAlternativeName != '') {
                     $output .= $effortAlternativeName;
                 } else {
-                    $output .= __($guid, 'Effort');
+                    $output .= __('Effort');
                 }
                 $output .= '</th>';
                 $output .= '<th>';
-                $output .= 'Comment';
+                $output .= __('Comment');
                 $output .= '</th>';
 
                 $output .= '</tr>';
@@ -111,12 +111,12 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     $output .= "<span title='".htmlPrep($rowInternalAssessment['description'])."'><b><u>".$rowInternalAssessment['name'].'</u></b></span><br/>';
                     $output .= "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
                     if ($rowInternalAssessment['completeDate'] != '') {
-                        $output .= 'Marked on '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
+                        $output .= __('Marked on').' '.dateConvertBack($guid, $rowInternalAssessment['completeDate']).'<br/>';
                     } else {
-                        $output .= 'Unmarked<br/>';
+                        $output .= __('Unmarked').'<br/>';
                     }
                     if ($rowInternalAssessment['attachment'] != '' and file_exists($_SESSION[$guid]['absolutePath'].'/'.$rowInternalAssessment['attachment'])) {
-                        $output .= " | <a 'title='Download more information' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>More info</a>";
+                        $output .= " | <a title='".__('Download more information')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['attachment']."'>".__('More info')."</a>";
                     }
                     $output .= '</span>';
                     $output .= '</td>';
@@ -125,7 +125,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     $output .= '</td>';
                     if ($rowInternalAssessment['attainment'] == 'N' or $rowInternalAssessment['gibbonScaleIDAttainment'] == '') {
                         $output .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                        $output .= __($guid, 'N/A');
+                        $output .= __('N/A');
                         $output .= '</td>';
                     } else {
                         $output .= "<td style='text-align: center'>";
@@ -140,18 +140,18 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         }
                         if ($resultAttainment->rowCount() == 1) {
                             $rowAttainment = $resultAttainment->fetch();
-                            $attainmentExtra = __($guid, $rowAttainment['usage']);
+                            $attainmentExtra = __($rowAttainment['usage']);
                         }
                         $styleAttainment = "style='font-weight: bold'";
                         $output .= "<div $styleAttainment>".$rowInternalAssessment['attainmentValue'].'</div>';
                         if ($rowInternalAssessment['attainmentValue'] != '') {
-                            $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>".__($guid, $attainmentExtra).'</div>';
+                            $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>".__($attainmentExtra).'</div>';
                         }
                         $output .= '</td>';
                     }
                     if ($rowInternalAssessment['effort'] == 'N' or $rowInternalAssessment['gibbonScaleIDEffort'] == '') {
                         $output .= "<td class='dull' style='color: #bbb; text-align: center'>";
-                        $output .= __($guid, 'N/A');
+                        $output .= __('N/A');
                         $output .= '</td>';
                     } else {
                         $output .= "<td style='text-align: center'>";
@@ -166,7 +166,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         }
                         if ($resultEffort->rowCount() == 1) {
                             $rowEffort = $resultEffort->fetch();
-                            $effortExtra = __($guid, $rowEffort['usage']);
+                            $effortExtra = __($rowEffort['usage']);
                         }
                         $styleEffort = "style='font-weight: bold'";
                         $output .= "<div $styleEffort>".$rowInternalAssessment['effortValue'];
@@ -174,7 +174,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                         if ($rowInternalAssessment['effortValue'] != '') {
                             $output .= "<div class='detailItem' style='font-size: 75%; font-style: italic; margin-top: 2px'>";
                             if ($effortExtra != '') {
-                                $output .= __($guid, $effortExtra);
+                                $output .= __($effortExtra);
                             }
                             $output .= '</div>';
                         }
@@ -182,7 +182,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                     }
                     if ($rowInternalAssessment['comment'] == 'N' and $rowInternalAssessment['uploadedResponse'] == 'N') {
                         echo "<td class='dull' style='color: #bbb; text-align: left'>";
-                        echo __($guid, 'N/A');
+                        echo __('N/A');
                         echo '</td>';
                     } else {
                         $output .= '<td>';
@@ -190,7 +190,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
                             $output .= $rowInternalAssessment['comment'].'<br/>';
                         }
                         if ($rowInternalAssessment['response'] != '') {
-                            $output .= "<a title='".__($guid, 'Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['response']."'>".__($guid, 'Uploaded Response').'</a><br/>';
+                            $output .= "<a title='".__('Uploaded Response')."' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowInternalAssessment['response']."'>".__('Uploaded Response').'</a><br/>';
                         }
                         $output .= '</td>';
                     }
@@ -202,7 +202,7 @@ function getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID, $role
         }
         if ($results == false) {
             $output .= "<div class='error'>";
-            $output .= __($guid, 'There are no records to display.');
+            $output .= __('There are no records to display.');
             $output .= '</div>';
         }
     }
@@ -215,7 +215,7 @@ function sidebarExtra($guid, $connection2, $gibbonCourseClassID, $mode = 'manage
     $output = '';
 
     $output .= '<h2>';
-    $output .= __($guid, 'Select Class');
+    $output .= __('Select Class');
     $output .= '</h2>';
 
     $classes = array();
@@ -275,24 +275,24 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 
     if ($resultAssessments->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         while ($rowAssessments = $resultAssessments->fetch()) {
             echo '<h2>';
-            echo __($guid, $rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))), 0, 3).' '.substr($rowAssessments['date'], 0, 4).')</span>';
+            echo __($rowAssessments['name'])." <span style='font-size: 75%; font-style: italic'>(".substr(strftime('%B', mktime(0, 0, 0, substr($rowAssessments['date'], 5, 2))), 0, 3).' '.substr($rowAssessments['date'], 0, 4).')</span>';
             if ($manage == true) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_edit.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img style='margin-left: 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/externalAssessment_manage_details_delete.php&gibbonPersonID=$gibbonPersonID&gibbonExternalAssessmentStudentID=".$rowAssessments['gibbonExternalAssessmentStudentID']."&search=$search&allStudents=$allStudents'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             }
             echo '</h2>';
             echo '<p>';
-            echo __($guid, $rowAssessments['description']);
+            echo __($rowAssessments['description']);
             echo '</p>';
 
             if ($rowAssessments['attachment'] != '') {
                 echo "<div class='linkTop'>";
-                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowAssessments['attachment']."'>".__($guid, 'Uploaded File').'</a>';
+                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowAssessments['attachment']."'>".__('Uploaded File').'</a>';
                 echo '</div>';
             }
 
@@ -319,7 +319,7 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
 
             if ($resultResults->rowCount() < 1) {
                 echo "<div class='warning'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 $lastCategory = '';
@@ -341,10 +341,10 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo "<th style='width:40%'>";
-                        echo __($guid, 'Item');
+                        echo __('Item');
                         echo '</th>';
                         echo "<th style='width:15%'>";
-                        echo __($guid, 'Result');
+                        echo __('Result');
                         echo '</th>';
                         echo '</tr>';
                     }
@@ -358,14 +358,14 @@ function externalAssessmentDetails($guid, $gibbonPersonID, $connection2, $gibbon
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
                     echo '<td>';
-                    echo __($guid, $rowResults['name']);
+                    echo __($rowResults['name']);
                     echo '</td>';
                     echo '<td>';
                     $style = '';
                     if ($rowResults['lowestAcceptable'] != '' and $rowResults['sequenceNumber'] > $rowResults['lowestAcceptable']) {
                         $style = "style='color: #ff0000; font-weight: bold; border: 2px solid #ff0000; padding: 2px 4px'";
                     }
-                    echo "<span $style title='".__($guid, $rowResults['usage'])."'>".__($guid, $rowResults['value']).'</span>';
+                    echo "<span $style title='".__($rowResults['usage'])."'>".__($rowResults['value']).'</span>';
                     echo '</td>';
                     echo '</tr>';
 

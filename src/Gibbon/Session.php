@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Services\Session as SessionInterface;
 use Gibbon\Contracts\Database\Connection;
 use Psr\Container\ContainerInterface;
 
@@ -28,7 +29,7 @@ use Psr\Container\ContainerInterface;
  * @version	v13
  * @since	v12
  */
-class Session
+class Session implements SessionInterface
 {
     /**
      * string
@@ -52,21 +53,32 @@ class Session
             //Prevent breakage of back button on POST pages
             ini_set('session.cache_limiter', 'private');
             session_cache_limiter(false);
+
+            $options = [
+                'cookie_httponly'  => true,
+                'cookie_secure'    => isset($_SERVER['HTTPS']),
+            ];
+
+            if (version_compare(phpversion(), '7.3.0', '>=')) {
+                $options['cookie_samesite'] = 'Strict';
+            }
         
-            session_start();
+            session_start($options);
+
+            header('X-Frame-Options: SAMEORIGIN');
         }
 
-        $config = $container->get('config');
-        $this->guid = (isset($config))? $config->guid() : $guid; // Backwards compatability for external modules
+        // Backwards compatibility for external modules
+        $this->guid = $container->has('config')? $container->get('config')->guid() : $guid;
         
-        // Detect the current module - TODO: replace this logic when switching to routing.
-        $address = isset($_GET['q'])? $_GET['q'] : (isset($_POST['address'])? $_POST['address'] : '');
+        // Detect the current module from the GET 'q' param. Fallback to the POST 'address',
+        // which is currently used in many Process pages.
+        // TODO: replace this logic when switching to routing.
+        $address = $_GET['q'] ?? $_POST['address'] ?? '';
+
         $this->set('address', $address);
-
-        if (!empty($address)) {
-            $this->set('module',  getModuleName($address));
-            $this->set('action', getActionName($address));
-        }
+        $this->set('module', $address ? getModuleName($address) : '');
+        $this->set('action', $address ? getActionName($address) : '');
     }
 
     /**
@@ -90,16 +102,52 @@ class Session
     }
 
     /**
-     * Get Session Value
+     * Checks if one or more keys exist.
      *
-     * @param	string	Session Value Name
-     * @param	mixed	default Define a value to return if the variable is empty
+     * @param  string|array  $keys
+     * @return bool
+     */
+    public function exists($keys)
+    {
+        $keys = is_array($keys)? $keys : [$keys];
+        $exists = !empty($keys);
+
+        foreach ($keys as $key) {
+            $exists &= array_key_exists($key, $_SESSION[$this->guid]);
+        }
+
+        return $exists;
+    }
+
+    /**
+     * Checks if one or more keys are present and not null.
+     *
+     * @param  string|array  $key
+     * @return bool
+     */
+    public function has($keys)
+    {
+        $keys = is_array($keys)? $keys : [$keys];
+        $has = !empty($keys);
+
+        foreach ($keys as $key) {
+            $has &= !empty($_SESSION[$this->guid][$key]);
+        }
+        
+        return $has;
+    }
+
+    /**
+     * Get an item from the session.
+     *
+     * @param	string	$key
+     * @param	mixed	$default Define a value to return if the variable is empty
      *
      * @return	mixed
      */
-    public function get($name, $default = null)
+    public function get($key, $default = null)
     {
-        if (is_array($name)) {
+        if (is_array($key)) {
             // Fetch a value from multi-dimensional array with an array of keys
             $retrieve = function($array, $keys, $default) {
                 foreach($keys as $key) {
@@ -109,41 +157,53 @@ class Session
                 return $array;
             };
 
-            return $retrieve($_SESSION[$this->guid], $name, $default);
+            return $retrieve($_SESSION[$this->guid], $key, $default);
         }
 
-        return (isset($_SESSION[$this->guid][$name]))? $_SESSION[$this->guid][$name] : $default;
+        return (isset($_SESSION[$this->guid][$key]))? $_SESSION[$this->guid][$key] : $default;
     }
 
     /**
-     * Set Session Value
+     * Set a key / value pair or array of key / value pairs in the session.
      *
-     * @param	string	Session Value Name
-     * @param	mixed	Session Value
-     *
-     * @return	object	Gibbon\session
+     * @param	string	$key
+     * @param	mixed	$value
      */
-    public function set($name, $value)
+    public function set($key, $value = null)
     {
-        $_SESSION[$this->guid][$name] = $value ;
+        $keyValuePairs = is_array($key)? $key : [$key => $value];
 
-        return $this;
+        foreach ($keyValuePairs as $key => $value) { 
+            $_SESSION[$this->guid][$key] = $value ;
+        }
     }
 
     /**
-     * Set Multiple Session Values
+     * Remove an item from the session, returning its value.
      *
-     * @param	array	Array of name => value pairs
-     *
-     * @return	object	Gibbon\session
+     * @param  string  $key
+     * @return mixed
      */
-    public function setAll( array $values )
+    public function remove($key)
     {
-        foreach ($values as $name => $value) {
-            $this->set($name, $value);
-        }
+        $value = $this->get($key);
+        unset($_SESSION[$this->guid][$key]);
 
-        return $this;
+        return $value;
+    }
+    
+    /**
+     * Remove one or many items from the session.
+     *
+     * @param  string|array  $keys
+     */
+    public function forget($keys)
+    {
+        $keys = is_array($keys)? $keys : [$keys];
+
+        foreach ($keys as $key) {
+            $this->remove($key);
+        }
     }
 
     public function loadSystemSettings(Connection $pdo)

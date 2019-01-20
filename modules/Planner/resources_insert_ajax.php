@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Setup variables
 $output = '';
@@ -41,7 +41,7 @@ $tags = isset($_POST['tags'.$id])? $_POST['tags'.$id] : (isset($_GET['tags'])? $
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
     //Acess denied
     $output .= "<div class='error'>";
-    $output .= __($guid, 'Your request failed because you do not have access to this action.');
+    $output .= __('Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, '/modules/Planner/resources_manage.php', $connection2);
@@ -70,9 +70,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     $output .= "<table cellspacing='0' style='width: 100%'>";
     $output .= "<tr id='".$id."resourceInsert'>";
     $output .= "<td colspan=2 style='padding-top: 0px'>";
-    $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
+    $output .= "<div style='margin: 0px' class='linkTop'><a href='javascript:void(0)' onclick='formResetSearch(); \$(\".".$id."resourceSlider\").slideUp();'><img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a></div>";
     $output .= "<h3 style='margin-top: 0px; font-size: 140%'>Insert A Resource</h3>";
-    $output .= '<p>'.sprintf(__($guid, 'The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
+    $output .= '<p>'.sprintf(__('The table below shows shared resources drawn from the %1$sPlanner%2$s section of Gibbon. You will see the 50 most recent resources that match the filters you have used.'), "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/resources_view.php'>", '</a>').'</p>';
     
     $form = Form::create($id.'ajaxFormSearch', '');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -150,30 +150,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
 
     if ($result->rowCount() < 1) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'There are no records to display.');
+        $output .= __('There are no records to display.');
         $output .= '</div>';
     } else {
         $output .= "<table cellspacing='0' style='width: 100%'>";
         $output .= "<tr class='head'>";
         $output .= '<th>';
-        $output .= __($guid, 'Name').'<br/>';
-        $output .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Contributor').'</span>';
+        $output .= __('Name').'<br/>';
+        $output .= "<span style='font-size: 85%; font-style: italic'>".__('Contributor').'</span>';
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __($guid, 'Type');
+        $output .= __('Type');
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __($guid, 'Category').'<br/>';
-        $output .= "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Purpose').'</span>';
+        $output .= __('Category').'<br/>';
+        $output .= "<span style='font-size: 85%; font-style: italic'>".__('Purpose').'</span>';
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __($guid, 'Tags');
+        $output .= __('Tags');
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __($guid, 'Year Groups');
+        $output .= __('Year Groups');
         $output .= '</th>';
         $output .= '<th>';
-        $output .= __($guid, 'Insert');
+        $output .= __('Insert');
         $output .= '</th>';
         $output .= '</tr>';
 
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
                     }
                 }
             } else {
-                $output .= '<i>'.__($guid, 'None').'</i>';
+                $output .= '<i>'.__('None').'</i>';
             }
             $output .= '</td>';
             $output .= '<td>';
@@ -270,7 +270,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             } elseif ($row['type'] == 'HTML') {
                 $html = $row['content'];
             }
-            $output .= "<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"".htmlPrep(addslashes($html)).'"); formResetSearch(); $(".'.$id."resourceSlider\").slideUp();'><img title='".__($guid, 'Insert')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
+            $output .= "<a href='javascript:void(0)' onclick='tinymce.execCommand(\"mceFocus\",false,\"$id\"); tinyMCE.execCommand(\"mceInsertContent\", 0, \"".htmlPrep(addslashes($html)).'"); formResetSearch(); $(".'.$id."resourceSlider\").slideUp();'><img title='".__('Insert')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
             $output .= '</td>';
             $output .= '</tr>';
         }

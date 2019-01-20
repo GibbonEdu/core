@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -29,20 +29,20 @@ include './modules/User Admin/moduleFunctions.php';
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php'>".__($guid, 'Manage Applications')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Form').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Applications'), 'applicationForm_manage.php')
+        ->add(__('Edit Form'));
 
     //Check if school year specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -56,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             if (isset($_GET['return'])) {
@@ -69,9 +69,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             echo "<div class='linkTop'>";
             if ($search != '') {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a> | ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a> | ';
             }
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_edit_print.php&gibbonStaffApplicationFormID=$gibbonStaffApplicationFormID'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_editProcess.php?search=$search");
@@ -247,7 +247,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('email', __('Email'));
-                    $email = $row->addEmail('email')->maxLength(50)->isRequired();
+                    $email = $row->addEmail('email')->isRequired();
 
                     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
@@ -281,7 +281,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     $name = 'custom'.$rowFields['gibbonPersonFieldID'];
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -337,11 +337,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('referenceEmail1', __('Referee 1'))->description(__('An email address for a referee at the applicant\'s current school.'));
-                    $row->addEmail('referenceEmail1')->maxLength(50)->isRequired();
+                    $row->addEmail('referenceEmail1')->isRequired();
 
                 $row = $form->addRow();
                     $row->addLabel('referenceEmail2', __('Referee 2'))->description(__('An email address for a second referee.'));
-                    $row->addEmail('referenceEmail2')->maxLength(50)->isRequired();
+                    $row->addEmail('referenceEmail2')->isRequired();
 
             }
 
@@ -356,4 +356,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         }
     }
 }
-?>

@@ -24,21 +24,19 @@ use Gibbon\Services\Format;
 use Gibbon\Domain\Timetable\CourseEnrolmentGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_classEnrolment_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Class Enrolment by Roll Group').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Class Enrolment by Roll Group'));
 
     echo '<h2>';
-    echo __($guid, 'Choose Roll Group');
+    echo __('Choose Roll Group');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : '';
@@ -60,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/report_cla
 
     if ($gibbonRollGroupID != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         $courseGateway = $container->get(CourseEnrolmentGateway::class);

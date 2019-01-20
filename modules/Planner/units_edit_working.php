@@ -18,23 +18,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'), 'units_edit.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+    ])
+    ->add(__('Edit Working Copy'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if (strpos($gibbonUnitID, '-') == false) {
             $hooked = false;
         } else {
@@ -44,24 +62,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         }
 
         //Proceed!
-        echo '<div class=\'trail\'>';
-        echo '<div class=\'trailHead\'>';
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."'>".__($guid, 'Edit Unit')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Working Copy').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
-        $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -80,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -91,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($hooked == false) {
@@ -128,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
@@ -137,25 +145,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'School Year').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('School Year').'</span><br/>';
                         echo '<i>'.$year.'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Class').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
                         echo '<i>'.$course.'.'.$class.'</i>';
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Unit').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Unit').'</span><br/>';
                         echo '<i>'.$row['name'].'</i>';
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
 
                         echo '<h3>';
-                        echo __($guid, 'Lessons & Blocks');
+                        echo __('Lessons & Blocks');
                         echo '</h3>';
                         echo '<p>';
-                        echo __($guid, 'You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
+                        echo __('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
                         echo '</p>';
 
                         //Store UNIT BLOCKS in array
@@ -221,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_workingProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."&gibbonUnitClassID=$gibbonUnitClassID'>";
                             //LESSONS (SORTABLES)
                             echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
                         echo "<div style='width: 100%; height: auto'>";
                         try {
@@ -235,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                         if ($resultLessons->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             $i = 0;
@@ -245,7 +253,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo "<div class='sortable' id='sortable$i' style='height: auto!important; min-height: 60px; font-size: 120%; font-style: italic'>";
                                 echo "<div id='head$i' class='head' style='height: 54px; font-size: 85%; padding: 3px'>";
 
-                                echo "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowLessons['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'>".($i + 1).'. '.$rowLessons['name']."</a> <a onclick='return confirm(\"".__($guid, 'Are you sure you want to delete this record? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=".$_GET['q'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>";
+                                echo "<a onclick='return confirm(\"Are you sure you want to jump to this lesson? Any unsaved changes will be lost.\")' style='font-weight: bold; font-style: normal; color: #333' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID='.$rowLessons['gibbonCourseClassID'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'>".($i + 1).'. '.$rowLessons['name']."</a> <a onclick='return confirm(\"".__('Are you sure you want to delete this record? Any unsaved changes will be lost.')."\")' href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_working_lessonDelete.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID&address=".$_GET['q'].'&gibbonPlannerEntryID='.$rowLessons['gibbonPlannerEntryID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/ style='position: absolute; margin: -1px 0px 2px 10px'></a><br/>";
 
                                 try {
                                     $dataTT = array('date' => $rowLessons['date'], 'timeStart' => $rowLessons['timeStart'], 'timeEnd' => $rowLessons['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
@@ -276,7 +284,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo "<input type='hidden' name='timeEnd$i' value='".$rowLessons['timeEnd']."' >";
                                 echo "<input type='hidden' name='gibbonPlannerEntryID$i' value='".$rowLessons['gibbonPlannerEntryID']."' >";
                                 echo "<div style='text-align: right; float: right; margin-top: -33px; margin-right: 3px'>";
-                                echo "<span style='font-size: 80%'><i>".__($guid, 'Add Block:').'</i></span><br/>';
+                                echo "<span style='font-size: 80%'><i>".__('Add Block:').'</i></span><br/>';
                                 echo "<script type='text/javascript'>";
                                 echo '$(document).ready(function(){';
                                 echo "$(\"#blockAdd$i\").change(function(){";
@@ -290,14 +298,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo '</script>';
                                 echo "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>";
                                 echo "<option value=''></option>";
-                                echo "<optgroup label='--".__($guid, 'Unit Blocks')."--'>";
+                                echo "<optgroup label='--".__('Unit Blocks')."--'>";
                                 $blockSelectCount = 0;
                                 foreach ($blocks as $block) {
                                     echo "<option value='".$block[0]."'>".($blockSelectCount + 1).') '.htmlPrep($block[1]).'</option>';
                                     ++$blockSelectCount;
                                 }
                                 echo '</optgroup>';
-                                echo "<optgroup label='--".__($guid, 'Star Blocks')."--'>";
+                                echo "<optgroup label='--".__('Star Blocks')."--'>";
                                 foreach ($blocks2 as $block2) {
                                     echo "<option value='".$block2[0]."'>".htmlPrep($block2[1]).'</option>';
                                 }
@@ -446,4 +454,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
     //Print sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
 }
-?>

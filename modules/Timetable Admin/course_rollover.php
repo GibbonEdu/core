@@ -20,17 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rollover.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Course Enrolment Rollover').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Course Enrolment Rollover'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -47,13 +45,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
     //Step 1
     if ($step == 1) {
         echo '<h3>';
-        echo __($guid, 'Step 1');
+        echo __('Step 1');
         echo '</h3>';
 
         $nextYear = getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2);
         if ($nextYear == false) {
             echo "<div class='error'>";
-            echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+            echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
             try {
@@ -70,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             $nameNext = $rowNext['name'];
             if ($nameNext == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+                echo __('The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
             } else {
 
@@ -79,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                 $form->addHiddenValue('nextYear', $nextYear);
 
                 $row = $form->addRow();
-                    $row->addContent(sprintf(__($guid, 'By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
+                    $row->addContent(sprintf(__('By clicking the "Proceed" button below you will initiate the course enrolment rollover from %1$s to %2$s. In a big school this operation may take some time to complete. %3$sYou are really, very strongly advised to backup all data before you proceed%4$s.'), '<b>'.$_SESSION[$guid]['gibbonSchoolYearName'].'</b>', '<b>'.$nameNext.'</b>', '<span style="color: #cc0000"><i>', '</span>'));
 
                 $row = $form->addRow();
                     $row->addSubmit(__('Proceed'));
@@ -89,13 +87,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         }
     } elseif ($step == 2) {
         echo '<h3>';
-        echo __($guid, 'Step 2');
+        echo __('Step 2');
         echo '</h3>';
 
         $nextYear = $_POST['nextYear'];
         if ($nextYear == '' or $nextYear != getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2)) {
             echo "<div class='error'>";
-            echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+            echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
             try {
@@ -113,11 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             $sequenceNext = $rowNext['sequenceNumber'];
             if ($nameNext == '' or $sequenceNext == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+                echo __('The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
             } else {
                 echo '<p>';
-                echo sprintf(__($guid, 'In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
+                echo sprintf(__('In rolling over to %1$s, the following actions will take place. You may need to adjust some fields below to get the result you desire.'), $nameNext);
                 echo '</p>';
 
                 // Get the current courses/classes
@@ -172,11 +170,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     $header->addContent(__('New Class'));
 
                 foreach ($currentCourses as $gibbonCourseClassID => $course) {
+                    $gibbonCourseClassIDNext = isset($course['gibbonCourseClassIDNext'])? $course['gibbonCourseClassIDNext'] : '';
+
                     $row = $table->addRow();
                         $row->addContent($course['course'].'.'.$course['class']);
                         $row->addSelect('gibbonCourseClassIDNext['.$gibbonCourseClassID.']')
                             ->fromArray($nextCourses)
-                            ->selected($course['gibbonCourseClassIDNext'])
+                            ->selected($gibbonCourseClassIDNext)
                             ->placeholder()
                             ->setClass('mediumWidth');
                 }
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
         $nextYear = $_POST['nextYear'];
         if ($nextYear == '' or $nextYear != getNextSchoolYearID($_SESSION[$guid]['gibbonSchoolYearID'], $connection2)) {
             echo "<div class='error'>";
-            echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+            echo __('The next school year cannot be determined, so this action cannot be performed.');
             echo '</div>';
         } else {
             try {
@@ -211,11 +211,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
             $sequenceNext = $rowNext['sequenceNumber'];
             if ($nameNext == '' or $sequenceNext == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'The next school year cannot be determined, so this action cannot be performed.');
+                echo __('The next school year cannot be determined, so this action cannot be performed.');
                 echo '</div>';
             } else {
                 echo '<h3>';
-                echo __($guid, 'Step 3');
+                echo __('Step 3');
                 echo '</h3>';
 
                 $partialFail = false;
@@ -226,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
 
                 if ($rollStudents != 'on' and $rollTeachers != 'on') {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your request failed because your inputs were invalid.');
+                    echo __('Your request failed because your inputs were invalid.');
                     echo '</div>';
                 } else {
                     $classes = isset($_POST['gibbonCourseClassIDNext'])? $_POST['gibbonCourseClassIDNext'] : array();
@@ -274,11 +274,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_rol
                     //Feedback result!
                     if ($partialFail == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Your request was successful, but some data was not properly saved.');
+                        echo __('Your request was successful, but some data was not properly saved.');
                         echo '</div>';
                     } else {
                         echo "<div class='success'>";
-                        echo __($guid, 'Your request was completed successfully.');
+                        echo __('Your request was completed successfully.');
                         echo '</div>';
                     }
                 }

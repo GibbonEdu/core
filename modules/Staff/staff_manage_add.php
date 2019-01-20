@@ -23,16 +23,16 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $search = (isset($_GET['search']) ? $_GET['search'] : '');
-    $allStaff = (isset($_GET['allStaff']) ? $_GET['allStaff'] : '');
-
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__($guid, 'Manage Staff')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Staff').'</div>';
-    echo '</div>';
+    $search = $_GET['search'] ?? '';
+    $allStaff = $_GET['allStaff'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Staff'), 'staff_manage.php', ['search' => $search, 'allStaff' => $allStaff])
+        ->add(__('Add Staff'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -44,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     if ($search != '' or $allStaff != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/staff_manage.php&search=$search&allStaff=$allStaff'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
         $row->addTextField('initials')->maxlength(4);
 
     $types = array(__('Basic') => array ('Teaching' => __('Teaching'), 'Support' => __('Support')));
-    $sql = "SELECT gibbonRoleID as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
+    $sql = "SELECT name as value, name FROM gibbonRole WHERE category='Staff' ORDER BY name";
     $result = $pdo->executeQuery(array(), $sql);
     $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
     $row = $form->addRow();
@@ -117,4 +117,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     echo $form->getOutput();
 }
-?>

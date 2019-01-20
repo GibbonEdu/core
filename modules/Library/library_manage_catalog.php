@@ -20,23 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
+$page->breadcrumbs->add(__('Manage Catalog'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Catalog').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
     }
 
     echo '<h3>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h3>';
 
     //Get current filter values
@@ -95,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         }
     }
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
@@ -194,21 +192,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     }
 
     echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_add.php&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/library_manage_catalog_add.php&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
     if ($result->rowCount() < 1) {
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
 
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         echo '<h3>';
-        echo __($guid, 'View');
-        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s record(s) in current view'), $result->rowCount()).'</span>';
+        echo __('View');
+        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s record(s) in current view'), $result->rowCount()).'</span>';
         echo '</h3>';
 
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -218,26 +216,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo "<th style='width: 80px'>";
-        echo __($guid, 'School ID').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Type').'</span>';
+        echo __('School ID').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Type').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Producer').'</span>';
+        echo __('Name').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Location');
+        echo __('Location');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Ownership').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'User/Owner').'</span>';
+        echo __('Ownership').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('User/Owner').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Status').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Borrowable').'</span>';
+        echo __('Status').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Borrowable').'</span>';
         echo '</th>';
         echo "<th style='width: 125px'>";
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -270,7 +268,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             }
             if ($resultType->rowCount() == 1) {
                 $rowType = $resultType->fetch();
-                echo "<span style='font-size: 85%; font-style: italic'>".__($guid, $rowType['name']).'</span>';
+                echo "<span style='font-size: 85%; font-style: italic'>".__($rowType['name']).'</span>';
             }
             echo '</td>';
             echo '<td>';
@@ -322,10 +320,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
             echo "<span style='font-size: 85%; font-style: italic'>".$row['borrowable'].'</span>';
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_edit.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Lending')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."&width=650&height=135'><img style='margin-right: 2px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_edit.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__('Lending')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_delete.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."&width=650&height=135'><img style='margin-right: 2px' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_manage_catalog_duplicate.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status&gibbonPersonIDOwnership=$gibbonPersonIDOwnership&typeSpecificFields=".urlencode($typeSpecificFields)."'><img title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
             echo '</td>';
             echo '</tr>';
 

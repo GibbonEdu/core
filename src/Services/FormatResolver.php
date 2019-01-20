@@ -50,12 +50,12 @@ trait FormatResolver
      */
     public static function getFormatter($method)
     {
-        if (method_exists(static::class, $method)) {
-            return [static::class, $method];
-        }
-
         if (isset(static::$formatters[$method])) {
             return static::$formatters[$method];
+        }
+
+        if (method_exists(static::class, $method)) {
+            return [static::class, $method];
         }
         
         throw new \InvalidArgumentException(sprintf('Unknown formatter "%s"', $method));
@@ -78,7 +78,7 @@ trait FormatResolver
         return function ($data) use ($callable, $params) {
             if ($params) {
                 $args = array_map(function($key) use (&$data) {
-                    return isset($data[$key])? $data[$key] : $key;
+                    return array_key_exists(strval($key), $data)? $data[$key] : $key;
                 }, $params);
                 return call_user_func_array($callable, $args);
             } else {

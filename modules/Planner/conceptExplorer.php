@@ -21,19 +21,17 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Concept Explorer'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Concept Explorer').'</div>';
-    echo '</div>';
-
     //Get all concepts in current year and convert to ordered array
     $tagsAll = getTagList($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
 
@@ -50,14 +48,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
     //Display concept cloud
     if (count($tags) == 0) {
         echo '<h2>';
-        echo __($guid, 'Concept Cloud');
+        echo __('Concept Cloud');
         echo '</h2>';
         echo getTagCloud($guid, $connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
     }
 
     //Allow tag selection
     echo '<h2>';
-    echo __($guid, 'Choose Concept');
+    echo __('Choose Concept');
     echo '</h2>';
 
     $form = Form::create('conceptExplorer', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -131,28 +129,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         }
         else {
             echo '<h2 class=\'bigTop\'>';
-            echo __($guid, 'Results');
+            echo __('Results');
             echo '</h2>';
 
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th style=\'width: 23%\'>';
-            echo __($guid, 'Unit');
-            echo "<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Course').'</span>';
+            echo __('Unit');
+            echo "<br/><span style='font-style: italic; font-size: 85%'>".__('Course').'</span>';
             echo '</th>';
             echo '<th style=\'width: 37%\'>';
-            echo __($guid, 'Description');
+            echo __('Description');
             echo '</th>';
             echo "<th style=\'width: 30%\'>";
-            echo __($guid, 'Concepts & Keywords');
+            echo __('Concepts & Keywords');
             echo '</th>';
             echo "<th style='width: 10%'>";
-            echo __($guid, 'Actions');
+            echo __('Actions');
             echo '</th>';
             echo '</tr>';
 
@@ -189,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 echo '<td>';
                 echo $row['description'].'<br/>';
                 if ($row['attachment'] != '') {
-                    echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>".__($guid, 'Download Unit Outline').'</a></li>';
+                    echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$row['attachment']."'>".__('Download Unit Outline').'</a></li>';
                 }
                 echo '</td>';
                 echo '<td>';
@@ -210,8 +208,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
                 echo '</td>';
                 echo '<td>';
                     if ($canEdit) {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__($guid, 'Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                     }
                 echo '</td>';
                 echo '</tr>';
@@ -220,4 +218,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
         }
     }
 }
-?>

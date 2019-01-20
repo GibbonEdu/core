@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
@@ -40,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
     if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '' or $type == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -74,14 +74,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 echo '</h2>';
                 if ($preview) {
                     echo "<p style='font-weight: bold; color: #c00; font-size: 100%; letter-spacing: -0.5px'>";
-                    echo __($guid, 'THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!');
+                    echo __('THIS INVOICE IS A PREVIEW: IT HAS NOT YET BEEN ISSUED AND IS FOR TESTING PURPOSES ONLY!');
                     echo '</p>';
                 }
 
                 $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $preview);
                 if ($invoiceContents == false) {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error occurred.');
+                    echo __('An error occurred.');
                     echo '</div>';
                 } else {
                     echo $invoiceContents;
@@ -123,24 +123,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_pr
                 }
 
                 echo '<h2>';
-                echo __($guid, 'Invoice');
+                echo __('Invoice');
                 echo '</h2>';
                 $invoiceContents = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency']);
                 if ($invoiceContents == false) {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error occurred.');
+                    echo __('An error occurred.');
                     echo '</div>';
                 } else {
                     echo $invoiceContents;
                 }
             } elseif ($type = 'Receipt') {
                 echo '<h2>';
-                echo __($guid, 'Receipt');
+                echo __('Receipt');
                 echo '</h2>';
                 $receiptContents = receiptContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], false, $receiptNumber);
                 if ($receiptContents == false) {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error occurred.');
+                    echo __('An error occurred.');
                     echo '</div>';
                 } else {
                     echo $receiptContents;

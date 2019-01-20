@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Comms\NotificationEvent;
 use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 require getcwd().'/../gibbon.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);
 
@@ -39,7 +39,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $emailSendCount = 0;
     $emailFailCount = 0;
@@ -205,7 +205,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                             $body = str_replace('[rollGroup]', $rollGroup, $body);
                             $body = str_replace('[behaviourCount]', $behaviourCount, $body);
                             $body = str_replace('[behaviourRecord]', $behaviourRecord, $body);
-                            $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>', $body);
+                            $body = str_replace('[systemEmailSignature]', '<i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>', $body);
                         }
 
                         if ($issueExistingLetter) { //Issue existing letter
@@ -225,7 +225,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                 $email = true;
 
                                 //Notify tutor(s)
-                                $notificationText = sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
+                                $notificationText = sprintf(__('A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
                                 if ($row['gibbonPersonIDTutor'] != '') {
                                     $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                 }
@@ -252,7 +252,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                     $gibbonBehaviourLetterID = $connection2->lastInsertID();
 
                                     //Notify tutor(s)
-                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in your form group, pending a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
                                         $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
@@ -264,7 +264,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                     }
 
                                     //Notify teachers
-                                    $notificationText = sprintf(__($guid, 'A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__('A warning has been issued for a student (%1$s) in one of your classes, pending a behaviour letter.'), $studentName);
                                     try {
                                         $dataTeachers = array('gibbonPersonID' => $row['gibbonPersonID']);
                                         $sqlTeachers = "SELECT DISTINCT teacher.gibbonPersonID FROM gibbonPerson AS teacher JOIN gibbonCourseClassPerson AS teacherClass ON (teacherClass.gibbonPersonID=teacher.gibbonPersonID)  JOIN gibbonCourseClassPerson AS studentClass ON (studentClass.gibbonCourseClassID=teacherClass.gibbonCourseClassID) JOIN gibbonPerson AS student ON (studentClass.gibbonPersonID=student.gibbonPersonID) JOIN gibbonCourseClass ON (studentClass.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE teacher.status='Full' AND teacherClass.role='Teacher' AND studentClass.role='Student' AND student.gibbonPersonID=:gibbonPersonID AND gibbonCourse.gibbonSchoolYearID=(SELECT gibbonSchoolYearID FROM gibbonSchoolYear WHERE status='Current') ORDER BY teacher.preferredName, teacher.surname, teacher.email ;";
@@ -294,7 +294,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                     $gibbonBehaviourLetterID = $connection2->lastInsertID();
 
                                     //Notify tutor(s)
-                                    $notificationText = sprintf(__($guid, 'A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
+                                    $notificationText = sprintf(__('A student (%1$s) in your form group has received a behaviour letter.'), $studentName);
                                     if ($row['gibbonPersonIDTutor'] != '') {
                                         $notificationSender->addNotification($row['gibbonPersonIDTutor'], $notificationText, 'Behaviour', '/index.php?q=/modules/Behaviour/behaviour_letters.php&gibbonPersonID='.$row['gibbonPersonID']);
                                     }
@@ -327,10 +327,10 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                     $recipientList .= $rowMember['email'].', ';
 
                                     //Prep message
-                                    $body .= '<br/><br/><i>'.sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
+                                    $body .= '<br/><br/><i>'.sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</i>';
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = getGibbonMailer($guid);
+                                    $mail = $container->get(Mailer::class);
 
                                     $mail->AddAddress($rowMember['email'], $rowMember['surname'].', '.$rowMember['preferredName']);
                                     if ($_SESSION[$guid]['organisationEmail'] != '') {
@@ -341,7 +341,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                                     $mail->CharSet = 'UTF-8';
                                     $mail->Encoding = 'base64';
                                     $mail->IsHTML(true);
-                                    $mail->Subject = sprintf(__($guid, 'Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['rollGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
+                                    $mail->Subject = sprintf(__('Behaviour Letter for %1$s via %2$s at %3$s'), $row['surname'].', '.$row['preferredName'].' ('.$row['rollGroup'].')', $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']);
                                     $mail->Body = $body;
                                     $mail->AltBody = $bodyPlain;
 
@@ -375,9 +375,9 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
 
     //Notify admin
     if ($email == false) {
-        $event->setNotificationText(__($guid, 'The Behaviour Letter CLI script has run: no emails were sent.'));
+        $event->setNotificationText(__('The Behaviour Letter CLI script has run: no emails were sent.'));
     } else {
-        $event->setNotificationText(sprintf(__($guid, 'The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
+        $event->setNotificationText(sprintf(__('The Behaviour Letter CLI script has run: %1$s emails were sent, of which %2$s failed.'), $emailSendCount, $emailFailCount));
     }
 
     $event->setActionLink('/index.php?q=/modules/Behaviour/behaviour_letters.php');

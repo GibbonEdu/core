@@ -18,25 +18,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Unit Planner'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Unit Planner').'</div>';
-        echo '</div>';
-
         //Get Smart Workflow help message
         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
         if ($category == 'Staff') {
@@ -71,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -157,22 +155,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
             echo "<div class='linkTop'>";
                 //Print year picker
                 if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__($guid, 'Previous Year').'</a> ';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDPrevious'>".__('Previous Year').'</a> ';
                 } else {
-                    echo __($guid, 'Previous Year').' ';
+                    echo __('Previous Year').' ';
                 }
 				echo ' | ';
 				if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__($guid, 'Next Year').'</a> ';
+					echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."&gibbonCourseID=$gibbonCourseIDNext'>".__('Next Year').'</a> ';
 				} else {
-					echo __($guid, 'Next Year').' ';
+					echo __('Next Year').' ';
 				}
             echo '</div>';
 
 
             if ($gibbonCourseID == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             }
             else {
@@ -192,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
@@ -212,18 +210,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                     }
 
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                     echo '</div>';
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
-                        echo "<form onsubmit='return confirm(\"".__($guid, 'Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
+                        echo "<form onsubmit='return confirm(\"".__('Are you sure you wish to process this action? It cannot be undone.')."\")' method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/unitsProcessBulk.php'>";
                         echo "<fieldset style='border: none'>";
                         echo "<div class='linkTop' style='height: 27px'>"; ?>
-        						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __($guid, 'Go') ?>'>
+        						<input style='margin-top: 0px; float: right' type='submit' value='<?php echo __('Go') ?>'>
 
                                 <div id="courseClassRow" style="display: none;">
                                     <select style="width: 182px" name="gibbonCourseIDCopyTo" id="gibbonCourseIDCopyTo">
@@ -264,17 +262,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                     </select>
                                     <script type="text/javascript">
                                         var gibbonCourseIDCopyTo=new LiveValidation('gibbonCourseIDCopyTo');
-                                        gibbonCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Please select...') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+                                        gibbonCourseIDCopyTo.add(Validate.Exclusion, { within: ['<?php echo __('Please select...') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
                                     </script>
                                 </div>
 
         						<select name="action" id="action" style='width:120px; float: right; margin-right: 1px;'>
-        							<option value="Select action"><?php echo __($guid, 'Select action') ?></option>
-                                    <option value="Duplicate"><?php echo __($guid, 'Duplicate') ?></option>
+        							<option value="Select action"><?php echo __('Select action') ?></option>
+                                    <option value="Duplicate"><?php echo __('Duplicate') ?></option>
         						</select>
         						<script type="text/javascript">
         							var action=new LiveValidation('action');
-        							action.add(Validate.Exclusion, { within: ['<?php echo __($guid, 'Select action') ?>'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+        							action.add(Validate.Exclusion, { within: ['<?php echo __('Select action') ?>'], failureMessage: "<?php echo __('Select something!') ?>"});
 
                                     $(document).ready(function(){
                                         $('#action').change(function () {
@@ -293,16 +291,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo "<th style='width: 150px'>";
-                        echo __($guid, 'Name');
+                        echo __('Name');
                         echo '</th>';
                         echo "<th style='width: 400px'>";
-                        echo __($guid, 'Description');
+                        echo __('Description');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Active');
+                        echo __('Active');
                         echo '</th>';
                         echo "<th style='width: 140px'>";
-                        echo __($guid, 'Actions');
+                        echo __('Actions');
                         echo '</th>';
                         echo '<th style=\'text-align: center\'>'; ?>
         				<script type="text/javascript">
@@ -342,10 +340,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                             echo ynExpander($guid, $row['active']);
                             echo '</td>';
                             echo '<td>';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__($guid, 'Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_delete.php&gibbonUnitID='.$row['gibbonUnitID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_dump.php&gibbonCourseID=$gibbonCourseID&gibbonUnitID=".$row['gibbonUnitID']."&gibbonSchoolYearID=$gibbonSchoolYearID&sidebar=false'><img title='".__('Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                             echo '</td>';
                             echo '<td>';
                             echo "<input name='gibbonUnitID-$count' value='".$row['gibbonUnitID']."' type='hidden'>";
@@ -388,13 +386,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
                                 echo "<th style='width: 150px'>";
-                                echo __($guid, 'Name');
+                                echo __('Name');
                                 echo '</th>';
                                 echo "<th style='width: 450px'>";
                                 echo 'Description';
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Actions');
+                                echo __('Actions');
                                 echo '</th>';
                                 echo '</tr>';
 
@@ -416,7 +414,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units.php') == fal
                                     echo strip_tags($rowHookUnits[$hookOptions['unitDescriptionField']]);
                                     echo '</td>';
                                     echo '<td>';
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/units_edit.php&gibbonUnitID='.$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."&gibbonCourseID=$gibbonCourseID&gibbonSchoolYearID=$gibbonSchoolYearID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                     echo '</td>';
                                     echo '</tr>';
 

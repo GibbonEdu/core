@@ -22,7 +22,6 @@ use Gibbon\Comms\NotificationSender;
 use Gibbon\Domain\System\NotificationGateway;
 
 require getcwd().'/../gibbon.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);
 
@@ -39,7 +38,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $currentDate = date('Y-m-d');
 
@@ -128,10 +127,10 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                 if ( isset($adminReport['rollGroup']) && count($adminReport['rollGroup']) > 0) {
                     $reportInner = implode('<br>', $adminReport['rollGroup']);
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__($guid, '%1$s form groups have not been registered today  (%2$s).'), count($adminReport['rollGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s form groups have not been registered today  (%2$s).'), count($adminReport['rollGroup']), dateConvertBack($guid, $currentDate) ).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__($guid, 'All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+                    $report .= sprintf(__('All form groups have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
                 }
             }
         }
@@ -220,10 +219,10 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                     }
 
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__($guid, '%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
+                    $report .= sprintf(__('%1$s classes have not been registered today (%2$s).'), count($adminReport['classes']), dateConvertBack($guid, $currentDate)).'<br/><br/>'.$reportInner;
                 } else {
                     $report .= '<br/><br/>';
-                    $report .= sprintf(__($guid, 'All classes have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
+                    $report .= sprintf(__('All classes have been registered today (%1$s).'), dateConvertBack($guid, $currentDate));
                 }
             }
         }
@@ -239,13 +238,13 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
             //Notify non-completing tutors
             foreach ($userReport as $gibbonPersonID => $items ) {
 
-                $notificationText = __($guid, 'You have not taken attendance yet today. Please do so as soon as possible.');
+                $notificationText = __('You have not taken attendance yet today. Please do so as soon as possible.');
 
                 if ($enabledByRollGroup == 'Y') {
                     // Output the roll groups the particular user is a part of
                     if ( isset($items['rollGroup']) && count($items['rollGroup']) > 0) {
                         $notificationText .= '<br/><br/>';
-                        $notificationText .= '<b>'.__($guid, 'Roll Group').':</b><br/>';
+                        $notificationText .= '<b>'.__('Roll Group').':</b><br/>';
                         foreach ($items['rollGroup'] as $rollGroup) {
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $rollGroup['name'] .'<br/>';
                         }
@@ -257,7 +256,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
                     // Output the classes the particular user is a part of
                     if ( isset($items['classes']) && count($items['classes']) > 0) {
                         $notificationText .= '<br/><br/>';
-                        $notificationText .= '<b>'.__($guid, 'Classes').':</b><br/>';
+                        $notificationText .= '<b>'.__('Classes').':</b><br/>';
                         foreach ($items['classes'] as $class) {
                             $notificationText .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $class['name'] .'<br/>';
                         }
@@ -291,10 +290,10 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
 
         } else if ($partialFail) {
             // Notify admin if there was an error in the report
-            $report = __($guid, 'Your request failed due to a database error.') . '<br/><br/>' . $report;
+            $report = __('Your request failed due to a database error.') . '<br/><br/>' . $report;
         }
 
-        $event->setNotificationText(__($guid, 'An Attendance CLI script has run.').' '.$report);
+        $event->setNotificationText(__('An Attendance CLI script has run.').' '.$report);
         if ($enabledByRollGroup == 'N' && $enabledByClass == 'Y') {
             $event->setActionLink('/index.php?q=/modules/Attendance/report_courseClassesNotRegistered_byDate.php');
         }

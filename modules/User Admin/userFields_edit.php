@@ -22,13 +22,13 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/userFields.php'>".__($guid, 'Manage Custom Fields')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Custom Field').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Custom Fields'), 'userFields.php')
+        ->add(__('Edit Custom Field'));  
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -38,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
     $gibbonPersonFieldID = $_GET['gibbonPersonFieldID'];
     if ($gibbonPersonFieldID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -52,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -120,6 +120,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userFields_edit
             $row = $form->addRow();
                 $row->addLabel('activeApplicationForm', __('Include In Application Form?'));
                 $row->addSelect('activeApplicationForm')->fromArray(array('1' => __('Yes'), '0' => __('No')))->isRequired();
+
+            $enablePublicRegistration = getSettingByScope($connection2, 'User Admin', 'enablePublicRegistration');
+            if ($enablePublicRegistration == 'Y') {
+                $row = $form->addRow();
+                    $row->addLabel('activePublicRegistration', __('Include In Public Registration Form?'));
+                    $row->addSelect('activePublicRegistration')->fromArray(array('1' => __('Yes'), '0' => __('No')))->selected('0')->isRequired();
+            }
 
             $row = $form->addRow();
                 $row->addFooter();

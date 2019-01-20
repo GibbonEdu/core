@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byRollGroup_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonRollGroupID = (isset($_GET['gibbonRollGroupID']) ? $_GET['gibbonRollGroupID'] : null);
@@ -31,7 +33,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
     //Proceed!
     echo '<h2>';
-    echo __($guid, 'Students by Roll Group');
+    echo __('Students by Roll Group');
     echo '</h2>';
 
     if ($gibbonRollGroupID != '') {
@@ -47,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 
             if ($result->rowCount() == 1) {
                 $row = $result->fetch();
-                echo "<p style='margin-bottom: 0px'><b>".__($guid, 'Roll Group').'</b>: '.$row['name'].'</p>';
+                echo "<p style='margin-bottom: 0px'><b>".__('Roll Group').'</b>: '.$row['name'].'</p>';
 
                 //Show Tutors
                 try {
@@ -60,9 +62,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                 }
                 if ($resultDetail->rowCount() > 0) {
                     $tutorCount = 0;
-                    echo "<p style=''><b>".__($guid, 'Tutors').'</b>: ';
+                    echo "<p style=''><b>".__('Tutors').'</b>: ';
                     while ($rowDetail = $resultDetail->fetch()) {
-                        echo formatName($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
+                        echo Format::name($rowDetail['title'], $rowDetail['preferredName'], $rowDetail['surname'], 'Staff');
                         ++$tutorCount;
                         if ($tutorCount < $resultDetail->rowCount()) {
                             echo ', ';
@@ -88,39 +90,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
         echo '</div>';
 
         echo "<table class='mini' cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Roll Group');
+        echo __('Roll Group');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         if ($view == 'Extended') {
             echo '<th>';
-            echo __($guid, 'Gender');
+            echo __('Gender');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Age').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'DOB').'</span>';
+            echo __('Age').'<br/>';
+            echo "<span style='font-style: italic; font-size: 85%'>".__('DOB').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Nationality');
+            echo __('Nationality');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Transport');
+            echo __('Transport');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'House');
+            echo __('House');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Locker');
+            echo __('Locker');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Medical');
+            echo __('Medical');
             echo '</th>';
         }
         echo '</tr>';
@@ -141,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
             echo $row['name'];
             echo '</td>';
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             if ($view == 'Extended') {
                 echo '<td>';
@@ -149,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                 echo '</td>';
                 echo '<td>';
                 if (is_null($row['dob']) == false and $row['dob'] != '0000-00-00') {
-                    echo getAge($guid, dateConvertToTimestamp($row['dob']), true).'<br/>';
+                    echo Format::age($row['dob'], true).'<br/>';
                     echo "<span style='font-style: italic; font-size: 85%'>".dateConvertBack($guid, $row['dob']).'</span>';
                 }
                 echo '</td>';
@@ -196,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                 if ($resultForm->rowCount() == 1) {
                     $rowForm = $resultForm->fetch();
                     if ($rowForm['longTermMedication'] == 'Y') {
-                        echo '<b><i>'.__($guid, 'Long Term Medication').'</i></b>: '.$rowForm['longTermMedicationDetails'].'<br/>';
+                        echo '<b><i>'.__('Long Term Medication').'</i></b>: '.$rowForm['longTermMedicationDetails'].'<br/>';
                     }
                     $condCount = 1;
                     try {
@@ -209,12 +211,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
                     }
 
                     while ($rowConditions = $resultConditions->fetch()) {
-                        echo '<b><i>'.__($guid, 'Condition')." $condCount</i></b> ";
-                        echo ': '.__($guid, $rowConditions['name']);
+                        echo '<b><i>'.__('Condition')." $condCount</i></b> ";
+                        echo ': '.__($rowConditions['name']);
 
                         $alert = getAlert($guid, $connection2, $rowConditions['gibbonAlertLevelID']);
                         if ($alert != false) {
-                            echo " <span style='color: #".$alert['color']."; font-weight: bold'>(".__($guid, $alert['name']).' '.__($guid, 'Risk').')</span>';
+                            echo " <span style='color: #".$alert['color']."; font-weight: bold'>(".__($alert['name']).' '.__('Risk').')</span>';
                             echo '<br/>';
                             ++$condCount;
                         }
@@ -230,7 +232,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=2>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

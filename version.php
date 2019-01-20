@@ -20,19 +20,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 /**
  * Sets version information.
  */
-$version = '16.0.01';
+$version = '17.0.00';
 
 /**
  * System Requirements
  */
 $systemRequirements = array(
-	'php' 			=> '5.5.0',
-	'mysql' 		=> '5',
-	'extensions' 	=> array('gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'),
-	'settings' 		=> array(
-						array('max_input_vars', '>=', 5000),
-						array('max_file_uploads', '>=', 20),
-						array('allow_url_fopen', '==', 1),
-						array('register_globals', '==', 0),
-					),
+    'php'        => '7.0.0',
+    'mysql'      => '5.6',
+    'apache'     => array('mod_rewrite'),
+    'extensions' => array('gettext', 'mbstring', 'curl', 'zip', 'xml', 'gd'),
+    'settings'   => array(
+                        array('max_input_vars', '>=', 5000),
+                        array('max_file_uploads', '>=', 20),
+                        array('allow_url_fopen', '==', 1),
+                        array('register_globals', '==', 0),
+                    ),
 );

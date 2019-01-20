@@ -17,17 +17,19 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     echo '<h2>';
-    echo __($guid, 'Student Application Form Printout');
+    echo __('Student Application Form Printout');
     echo '</h2>';
 
     $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'];
@@ -38,7 +40,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     if ($gibbonApplicationFormID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         //Proceed!
@@ -53,33 +55,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There is no data to display, or an error has occurred.');
+            echo __('There is no data to display, or an error has occurred.');
             echo '</div>';
         } else {
             $row = $result->fetch();
-            echo '<h4>'.__($guid, 'For Office Use').'</h4>';
+            echo '<h4>'.__('For Office Use').'</h4>';
             echo "<table cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 25%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Application ID').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Application ID').'</span><br/>';
             echo '<i>'.htmlPrep($row['gibbonApplicationFormID']).'</i>';
             echo '</td>';
             echo "<td style='width: 25%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Priority').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Priority').'</span><br/>';
             echo '<i>'.htmlPrep($row['priority']).'</i>';
             echo '</td>';
             echo "<td style='width: 50%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
             echo '<i>'.htmlPrep($row['status']).'</i>';
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Start Date').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Start Date').'</span><br/>';
             echo '<i>'.dateConvertBack($guid, $row['dateStart']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year of Entry').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year of Entry').'</span><br/>';
             try {
                 $dataSelect = array('gibbonSchoolYearIDEntry' => $row['gibbonSchoolYearIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearIDEntry';
@@ -94,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year Group at Entry').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group at Entry').'</span><br/>';
             try {
                 $dataSelect = array('gibbonYearGroupIDEntry' => $row['gibbonYearGroupIDEntry']);
                 $sqlSelect = 'SELECT name FROM gibbonYearGroup WHERE gibbonYearGroupID=:gibbonYearGroupIDEntry';
@@ -105,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             if ($resultSelect->rowCount() == 1) {
                 $rowSelect = $resultSelect->fetch();
-                echo '<i>'.__($guid, $rowSelect['name']);
+                echo '<i>'.__($rowSelect['name']);
                 $dayTypeOptions = getSettingByScope($connection2, 'User Admin', 'dayTypeOptions');
                 if ($dayTypeOptions != '') {
                     echo ' ('.$row['dayType'].')';
@@ -116,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Roll Group at Entry').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group at Entry').'</span><br/>';
             try {
                 $dataSelect = array('gibbonRollGroupID' => $row['gibbonRollGroupID']);
                 $sqlSelect = 'SELECT name FROM gibbonRollGroup WHERE gibbonRollGroupID=:gibbonRollGroupID';
@@ -131,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Milestones').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Milestones').'</span><br/>';
             echo '<i>'.htmlPrep($row['milestones']).'</i>';
             echo '</td>';
             echo "<td style='padding-top: 15px; vertical-align: top'>";
@@ -142,16 +144,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '<i>'.htmlPrep($row['paymentMade']).'</i><br/>';
                 if ($row['paymentToken'] != '' or $row['paymentPayerID'] != '' or $row['paymentTransactionID'] != '' or $row['paymentReceiptID'] != '') {
                     if ($row['paymentToken'] != '') {
-                        echo __($guid, 'Payment Token:').' '.$row['paymentToken'].'<br/>';
+                        echo __('Payment Token:').' '.$row['paymentToken'].'<br/>';
                     }
                     if ($row['paymentPayerID'] != '') {
-                        echo __($guid, 'Payment Payer ID:').' '.$row['paymentPayerID'].'<br/>';
+                        echo __('Payment Payer ID:').' '.$row['paymentPayerID'].'<br/>';
                     }
                     if ($row['paymentTransactionID'] != '') {
-                        echo __($guid, 'Payment Transaction ID:').' '.$row['paymentTransactionID'].'<br/>';
+                        echo __('Payment Transaction ID:').' '.$row['paymentTransactionID'].'<br/>';
                     }
                     if ($row['paymentReceiptID'] != '') {
-                        echo __($guid, 'Payment Receipt ID:').' '.$row['paymentReceiptID'].'<br/>';
+                        echo __('Payment Receipt ID:').' '.$row['paymentReceiptID'].'<br/>';
                     }
                 }
             }
@@ -160,40 +162,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($row['notes'] != '') {
                 echo '<tr>';
                 echo "<td style='padding-top: 15px; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Notes').'</span><br/>';
+                echo "<span style='font-size: 115%; font-weight: bold'>".__('Notes').'</span><br/>';
                 echo '<i>'.$row['notes'].'</i>';
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</table>';
 
-            echo '<h4>'.__($guid, 'Student Details').'</h4>';
+            echo '<h4>'.__('Student Details').'</h4>';
             echo "<table cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Surname').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Surname').'</span><br/>';
             echo '<i>'.htmlPrep($row['surname']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Preferred Name').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Preferred Name').'</span><br/>';
             echo '<i>'.htmlPrep($row['preferredName']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Official Name').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Official Name').'</span><br/>';
             echo '<i>'.htmlPrep($row['officialName']).'</i>';
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Gender').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Gender').'</span><br/>';
             echo '<i>'.htmlPrep($row['gender']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Date of Birth').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Date of Birth').'</span><br/>';
             echo '<i>'.dateConvertBack($guid, $row['dob']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Current/Last School').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Current/Last School').'</span><br/>';
             $school = '';
             if ($row['schoolDate1'] > $row['schoolDate2'] and $row['schoolName1'] != '') {
                 $school = $row['schoolName1'];
@@ -209,13 +211,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo "<i><span title='".$school."'>".substr($school, 0, 15).'...</span></i>';
                 }
             } else {
-                echo '<i>'.__($guid, 'Unspecified').'</i>';
+                echo '<i>'.__('Unspecified').'</i>';
             }
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Languages').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Languages').'</span><br/>';
             if ($row['languageHomePrimary'] != '') {
                 echo '<i>'.htmlPrep($row['languageHomePrimary']).'</i><br/>';
             }
@@ -224,25 +226,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             }
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'First Language').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('First Language').'</span><br/>';
             echo '<i>'.htmlPrep($row['languageFirst']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Second Language').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Second Language').'</span><br/>';
             echo '<i>'.htmlPrep($row['languageSecond']).'</i>';
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Country of Birth').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Country of Birth').'</span><br/>';
             echo '<i>'.htmlPrep($row['countryOfBirth']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Citizenship').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Citizenship').'</span><br/>';
             echo '<i>'.htmlPrep($row['citizenship1']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Passport Number').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Passport Number').'</span><br/>';
             echo '<i>'.htmlPrep($row['citizenship1Passport']).'</i>';
             echo '</td>';
             echo '</tr>';
@@ -250,9 +252,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>";
             if ($_SESSION[$guid]['country'] == '') {
-                echo '<b>'.__($guid, 'National ID Card Number').'</b>';
+                echo '<b>'.__('National ID Card Number').'</b>';
             } else {
-                echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'ID Card Number').'</b>';
+                echo '<b>'.$_SESSION[$guid]['country'].' '.__('ID Card Number').'</b>';
             }
             echo '</span><br/>';
             echo '<i>'.htmlPrep($row['nationalIDCardNumber']).'</i>';
@@ -260,9 +262,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>";
             if ($_SESSION[$guid]['country'] == '') {
-                echo '<b>'.__($guid, 'Residency/Visa Type').'</b>';
+                echo '<b>'.__('Residency/Visa Type').'</b>';
             } else {
-                echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Residency/Visa Type').'</b>';
+                echo '<b>'.$_SESSION[$guid]['country'].' '.__('Residency/Visa Type').'</b>';
             }
             echo '</span><br/>';
             echo '<i>'.htmlPrep($row['residencyStatus']).'</i>';
@@ -270,9 +272,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
             echo "<span style='font-size: 115%; font-weight: bold'>";
             if ($_SESSION[$guid]['country'] == '') {
-                echo '<b>'.__($guid, 'Visa Expiry Date').'</b>';
+                echo '<b>'.__('Visa Expiry Date').'</b>';
             } else {
-                echo '<b>'.$_SESSION[$guid]['country'].' '.__($guid, 'Visa Expiry Date').'</b>';
+                echo '<b>'.$_SESSION[$guid]['country'].' '.__('Visa Expiry Date').'</b>';
             }
             echo '</span><br/>';
             echo '<i>'.dateConvertBack($guid, $row['visaExpiryDate']).'</i>';
@@ -280,11 +282,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             echo '</tr>';
             echo '<tr>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Email').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
             echo '<i>'.htmlPrep($row['email']).'</i>';
             echo '</td>';
             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Phone').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Phone').'</span><br/>';
             echo '<i>';
             if ($row['phone1Type'] != '') {
                 echo htmlPrep($row['phone1Type']).': ';
@@ -302,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($row['sen'] == 'Y') {
                 echo '<tr>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Special Educational Needs').'</span><br/>';
+                echo "<span style='font-size: 115%; font-weight: bold'>".__('Special Educational Needs').'</span><br/>';
                 echo '<i>'.$row['senDetails'].'</i>';
                 echo '</td>';
                 echo '</tr>';
@@ -310,20 +312,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             if ($row['medicalInformation'] != '') {
                 echo '<tr>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Medical Information').'</span><br/>';
+                echo "<span style='font-size: 115%; font-weight: bold'>".__('Medical Information').'</span><br/>';
                 echo '<i>'.$row['medicalInformation'].'</i>';
                 echo '</td>';
                 echo '</tr>';
             }
             echo '</table>';
 
-            echo '<h4>'.__($guid, 'Parents/Guardians').'</h4>';
+            echo '<h4>'.__('Parents/Guardians').'</h4>';
             //No family in Gibbon
             if ($row['gibbonFamilyID'] == '') {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo '<tr>';
                 echo "<td style='padding-top: 15px; vertical-align: top' colspan=3>";
-                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Address').'</span><br/>';
+                echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Address').'</span><br/>';
                 if ($row['homeAddress'] != '') {
                     echo $row['homeAddress'].'<br/>';
                 }
@@ -355,25 +357,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Name').'</span><br/>';
-                        echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Name').'</span><br/>';
+                        echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Relationship').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Relationship').'</span><br/>';
                         echo $row['parent1relationship'];
                         echo '</td>';
                         echo "<td style='padding-top: 15px; width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Contact Priority').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Contact Priority').'</span><br/>';
                         echo '1';
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 First Language').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 First Language').'</span><br/>';
                         echo $rowMember['languageFirst'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Phone').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Phone').'</span><br/>';
                         if ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '') {
                             for ($i = 1; $i < 5; ++$i) {
                                 if ($rowMember['phone'.$i] != '') {
@@ -389,7 +391,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Email').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Email').'</span><br/>';
                         if ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '') {
                             if ($rowMember['email'] != '') {
                                 echo "Email: <a href='mailto:".$rowMember['email']."'>".$rowMember['email'].'</a><br/>';
@@ -403,15 +405,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Second Langage').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Second Langage').'</span><br/>';
                         echo $rowMember['languageSecond'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Profession').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Profession').'</span><br/>';
                         echo $rowMember['profession'];
                         echo '</td>';
                         echo "<td style='padding-top: 15px; width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Parent 1 Employer').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Parent 1 Employer').'</span><br/>';
                         echo $rowMember['employer'];
                         echo '</td>';
                         echo '</tr>';
@@ -427,25 +429,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Name'), $i).'</span><br/>';
-                    echo formatName($row['parent'.$i.'title'], $row['parent'.$i.'preferredName'], $row['parent'.$i.'surname'], 'Parent');
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Name'), $i).'</span><br/>';
+                    echo Format::name($row['parent'.$i.'title'], $row['parent'.$i.'preferredName'], $row['parent'.$i.'surname'], 'Parent');
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Relationship'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Relationship'), $i).'</span><br/>';
                     echo $row['parent'.$i.'relationship'];
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Contact Priority'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Contact Priority'), $i).'</span><br/>';
                     echo $i;
                     echo '</td>';
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s First Language'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s First Language'), $i).'</span><br/>';
                     echo $row['parent'.$i.'languageFirst'];
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Phone'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Phone'), $i).'</span><br/>';
                     if ($row['parent'.$i.'phone1'] != '' or $row['parent'.$i.'phone2'] != '') {
                         for ($n = 1; $n < 3; ++$n) {
                             if ($row['parent'.$i.'phone'.$n] != '') {
@@ -461,7 +463,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     }
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Email'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Email'), $i).'</span><br/>';
                     if ($row['parent'.$i.'email'] != '') {
                         if ($row['parent'.$i.'email'] != '') {
                             echo "Email: <a href='mailto:".$row['parent'.$i.'email']."'>".$row['parent'.$i.'email'].'</a><br/>';
@@ -472,15 +474,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Second Langage'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Langage'), $i).'</span><br/>';
                     echo $row['parent'.$i.'languageSecond'];
                     echo '</td>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Profession'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Profession'), $i).'</span><br/>';
                     echo $row['parent'.$i.'profession'];
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 34%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Employer'), $i).'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Employer'), $i).'</span><br/>';
                     echo $row['parent'.$i.'employer'];
                     echo '</td>';
                     echo '</tr>';
@@ -501,7 +503,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 if ($resultFamily->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There is no family information available for the current student.');
+                    echo __('There is no family information available for the current student.');
                     echo '</div>';
                 } else {
                     while ($rowFamily = $resultFamily->fetch()) {
@@ -510,22 +512,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Family Name').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Family Name').'</span><br/>';
                         echo $rowFamily['name'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Family Status').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Family Status').'</span><br/>';
                         echo $rowFamily['status'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Language').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Language').'</span><br/>';
                         echo $rowFamily['languageHomePrimary'].'<br/>';
                         echo $rowFamily['languageHomeSecondary'];
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='padding-top: 15px; vertical-align: top' colspan=3>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Home Address').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Home Address').'</span><br/>';
                         if ($rowFamily['homeAddress'] != '') {
                             echo $rowFamily['homeAddress'].'<br/>';
                         }
@@ -553,28 +555,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Name'), $count).'</span><br/>';
-                            echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Name'), $count).'</span><br/>';
+                            echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Relationship'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Relationship'), $count).'</span><br/>';
                                             //This will not work and needs to be fixed. The relationship shown on edit page is a guestimate...whole form needs improving to allow specification of relationships in existing family...
                                             echo $row['parent1relationship'];
                             echo '</td>';
                             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=2>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Contact Priority'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Contact Priority'), $count).'</span><br/>';
                             echo $rowMember['contactPriority'];
                             echo '</td>';
                             echo '</tr>';
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s First Language'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s First Language'), $count).'</span><br/>';
                             echo $rowMember['languageFirst'];
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Phone'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Phone'), $count).'</span><br/>';
                             if ($rowMember['contactCall'] == 'N') {
-                                echo __($guid, 'Do not contact by phone.');
+                                echo __('Do not contact by phone.');
                             } elseif ($rowMember['contactCall'] == 'Y' and ($rowMember['phone1'] != '' or $rowMember['phone2'] != '' or $rowMember['phone3'] != '' or $rowMember['phone4'] != '')) {
                                 for ($i = 1; $i < 5; ++$i) {
                                     if ($rowMember['phone'.$i] != '') {
@@ -590,9 +592,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             }
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s By Email'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s By Email'), $count).'</span><br/>';
                             if ($rowMember['contactEmail'] == 'N') {
-                                echo __($guid, 'Do not contact by email.');
+                                echo __('Do not contact by email.');
                             } elseif ($rowMember['contactEmail'] == 'Y' and ($rowMember['email'] != '' or $rowMember['emailAlternate'] != '')) {
                                 if ($rowMember['email'] != '') {
                                     echo "Email: <a href='mailto:".$rowMember['email']."'>".$rowMember['email'].'</a><br/>';
@@ -606,15 +608,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             echo '</tr>';
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Second Langage'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Second Langage'), $count).'</span><br/>';
                             echo $rowMember['languageSecond'];
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Profession'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Profession'), $count).'</span><br/>';
                             echo $rowMember['profession'];
                             echo '</td>';
                             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Parent %1$s Employer'), $count).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Parent %1$s Employer'), $count).'</span><br/>';
                             echo $rowMember['employer'];
                             echo '</td>';
                             echo '</tr>';
@@ -634,15 +636,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         ++$siblingCount;
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s Name'), $siblingCount).'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Name'), $siblingCount).'</span><br/>';
                         echo '<i>'.htmlPrep($row["siblingName$i"]).'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
                         echo '<i>'.dateConvertBack($guid, $row["siblingDOB$i"]).'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s School'), $siblingCount).'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s School'), $siblingCount).'</span><br/>';
                         echo '<i>'.htmlPrep($row["siblingSchool$i"]).'</i>';
                         echo '</td>';
                         echo '</tr>';
@@ -664,15 +666,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                             ++$siblingCount;
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s Name'), $siblingCount).'</span><br/>';
-                            echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], $rowMember['category']);
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Name'), $siblingCount).'</span><br/>';
+                            echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], $rowMember['category']);
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s Date of Birth'), $siblingCount).'</span><br/>';
                             echo '<i>'.dateConvertBack($guid, $rowMember['dob']).'</i>';
                             echo '</td>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Sibling %1$s School'), $siblingCount).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Sibling %1$s School'), $siblingCount).'</span><br/>';
                             echo '<i>'.$_SESSION[$guid]['organisationName'].'</i>';
                             echo '</td>';
                             echo '</tr>';
@@ -684,7 +686,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                 echo '<tr>';
                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
                 echo "<div class='warning' style='margin-top: 0px'>";
-                echo __($guid, 'No known siblings');
+                echo __('No known siblings');
                 echo '</div>';
                 echo '</td>';
                 echo '</tr>';

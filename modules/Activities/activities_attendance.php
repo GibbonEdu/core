@@ -20,25 +20,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendance.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Enter Activity Attendance').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Enter Activity Attendance'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     echo '<h2>';
-    echo __($guid, 'Choose Activity');
+    echo __('Choose Activity');
     echo '</h2>';
 
     $highestAction = getHighestGroupedAction($guid, '/modules/Activities/activities_attendance.php', $connection2);
@@ -96,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     if ($studentResult->rowCount() < 1 || $activityResult->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
 
         return;
@@ -119,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     while ($attendance = $attendanceResult->fetch()) {
         $sessionAttendanceData[ $attendance['date'] ] = array(
             'data' => (!empty($attendance['attendance'])) ? unserialize($attendance['attendance']) : array(),
-            'info' => sprintf(__($guid, 'Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), formatName('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
+            'info' => sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($attendance['timestampTaken'], 11), dateConvertBack($guid, substr($attendance['timestampTaken'], 0, 10)), formatName('', $attendance['preferredName'], $attendance['surname'], 'Staff', false, true)),
         );
     }
 
@@ -136,64 +134,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     $activitySessions = getActivitySessions($activityWeekDays, $activityTimespan, $sessionAttendanceData);
 
     echo '<h2>';
-    echo __($guid, 'Activity');
+    echo __('Activity');
     echo '</h2>';
 
     echo "<table class='smallIntBorder' style='width: 100%' cellspacing='0'><tbody>";
     echo '<tr>';
     echo "<td style='width: 33%; vertical-align: top'>";
-    echo "<span class='infoTitle'>".__($guid, 'Start Date').'</span><br>';
+    echo "<span class='infoTitle'>".__('Start Date').'</span><br>';
     if (!empty($activityTimespan['start'])) {
         echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], $activityTimespan['start']);
     }
     echo '</td>';
 
     echo "<td style='width: 33%; vertical-align: top'>";
-    echo "<span class='infoTitle'>".__($guid, 'End Date').'</span><br>';
+    echo "<span class='infoTitle'>".__('End Date').'</span><br>';
     if (!empty($activityTimespan['end'])) {
         echo date($_SESSION[$guid]['i18n']['dateFormatPHP'], $activityTimespan['end']);
     }
     echo '</td>';
 
     echo "<td style='width: 33%; vertical-align: top'>";
-    printf("<span class='infoTitle' title=''>%s</span><br>%s", __($guid, 'Number of Sessions'), count($activitySessions));
+    printf("<span class='infoTitle' title=''>%s</span><br>%s", __('Number of Sessions'), count($activitySessions));
     echo '</td>';
     echo '</tr>';
 
     echo '<tr>';
     echo "<td style='width: 33%; vertical-align: top'>";
-    printf("<span class='infoTitle'>%s</span><br>%s", __($guid, 'Participants'), $activity['participants']);
+    printf("<span class='infoTitle'>%s</span><br>%s", __('Participants'), $activity['participants']);
     echo '</td>';
 
     echo "<td style='width: 33%; vertical-align: top'>";
-    printf("<span class='infoTitle'>%s</span><br>%s", __($guid, 'Maximum Participants'), $activity['maxParticipants']);
+    printf("<span class='infoTitle'>%s</span><br>%s", __('Maximum Participants'), $activity['maxParticipants']);
     echo '</td>';
 
     echo "<td style='width: 33%; vertical-align: top'>";
-    printf("<span class='infoTitle' title=''>%s</span><br>%s", __($guid, 'Waiting'), $activity['waiting']);
+    printf("<span class='infoTitle' title=''>%s</span><br>%s", __('Waiting'), $activity['waiting']);
     echo '</td>';
     echo '</tr>';
     echo '</tbody></table>';
 
     echo '<h2>';
-    echo __($guid, 'Attendance');
+    echo __('Attendance');
     echo '</h2>';
 
     // Handle activities with no time slots or start/end, but don't return because there can still be previous records
     if (empty($activityWeekDays) || empty($activityTimespan)) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.');
+        echo __('There are no time slots assigned to this activity, or the start and end dates are invalid. New attendance values cannot be entered until the time slots and dates are added.');
         echo '</div>';
     }
 
     if (count($activitySessions) <= 0) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendanceExport.php')) {
             echo "<div class='linkTop'>";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__($guid, 'Export to Excel')."<img style='margin-left: 5px' title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_attendanceExport.php?gibbonActivityID='.$gibbonActivityID."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
             echo '</div>';
         }
 

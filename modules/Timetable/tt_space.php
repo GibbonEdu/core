@@ -22,24 +22,22 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Domain\School\FacilityGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Timetable by Facility').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Timetable by Facility'));
 
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
         $search = isset($_GET['search'])? $_GET['search'] : '';
@@ -50,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
         $criteria = $facilityGateway->newQueryCriteria()
             ->searchBy($facilityGateway->getSearchableColumns(), $search)
             ->sortBy('name')
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');
@@ -84,6 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_space.php') =
 
         $table->addActionColumn()
             ->addParam('gibbonSpaceID')
+            ->addParam('search', $criteria->getSearchText(true))
             ->format(function ($row, $actions) {
                 $actions->addAction('view', __('View'))
                         ->setURL('/modules/Timetable/tt_space_view.php');

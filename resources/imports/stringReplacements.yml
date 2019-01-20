@@ -1,0 +1,33 @@
+details:
+    type: stringReplacements
+    name: String Replacement
+    table: gibbonString
+    modes: { update: true, insert: true, export: true }
+access:
+    module: System Admin
+    action: String Replacement
+primaryKey:
+    gibbonStringID
+uniqueKeys:
+    - [ original, mode ]
+table:
+    original: 
+        name: "Original String"
+        desc: ""
+        args: { filter: string, required: true }
+    replacement: 
+        name: "Replacement String"
+        desc: ""
+        args: { filter: string, required: true }
+    mode: 
+        name: "Mode"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+    caseSensitive: 
+        name: "Case Sensitive"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    priority: 
+        name: "Priority"
+        desc: "Higher priorities are substituted first."
+        args: { filter: numeric, required: true, custom: true }

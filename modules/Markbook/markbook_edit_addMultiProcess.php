@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
         $gibbonSchoolYearTermID = (!empty($_POST['gibbonSchoolYearTermID']))? $_POST['gibbonSchoolYearTermID'] : null;
         //Sort out attainment
         $attainment = $_POST['attainment'];
-        $attainmentWeighting = null;
+        $attainmentWeighting = 1;
         $attainmentRaw = 'N';
         $attainmentRawMax = null;
         if ($attainment == 'N') {

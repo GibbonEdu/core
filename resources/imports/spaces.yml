@@ -1,0 +1,69 @@
+details:
+    type: spaces
+    name: Facilities
+    table: gibbonSpace
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Facilities
+primaryKey:
+    gibbonSpaceID
+uniqueKeys:
+    - name
+table:
+    name: 
+        name: "Name"
+        desc: "Must be unique."
+        args: { filter: string, required: true }
+    type: 
+        name: "Type"
+        desc: ""
+        args: { filter: string, required: true, custom: true }
+    capacity: 
+        name: "Capacity"
+        desc: ""
+        args: { filter: numeric, custom: true }
+    computer: 
+        name: "Teacher's Computer"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    computerStudent: 
+        name: "Student Computers"
+        desc: "How many are there"
+        args: { filter: numeric, required: true, custom: true }
+    projector: 
+        name: "Projector"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    tv: 
+        name: "TV"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    dvd: 
+        name: "DVD Player"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    hifi: 
+        name: "Hifi"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    speakers: 
+        name: "Speakers"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    iwb: 
+        name: "Interactive White Board"
+        desc: ""
+        args: { filter: yesno, required: true, custom: true }
+    phoneInternal: 
+        name: "Extension"
+        desc: "Room's internal phone number."
+        args: { filter: string }
+    phoneExternal: 
+        name: "Phone Number"
+        desc: "Room's external phone number."
+        args: { filter: string }
+    comment: 
+        name: "Comment"
+        desc: ""
+        args: { filter: string }

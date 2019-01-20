@@ -19,43 +19,43 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Domain\Students\MedicalGateway;
+use Gibbon\Domain\DataUpdater\MedicalUpdateGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Update Medical Data').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Update Medical Data'));
 
         if ($highestAction == 'Update Medical Data_any') {
             echo '<p>';
-            echo __($guid, 'This page allows a user to request selected medical data updates for any student.');
+            echo __('This page allows a user to request selected medical data updates for any student.');
             echo '</p>';
         } else {
             echo '<p>';
-            echo __($guid, 'This page allows any adult with data access permission to request medical data updates for any member of their family.');
+            echo __('This page allows any adult with data access permission to request medical data updates for any member of their family.');
             echo '</p>';
         }
 
         $customResponces = array();
 
-        $success0 = __($guid, 'Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
+        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $success0 .= ' '.sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
         $customResponces['success0'] = $success0;
 
@@ -119,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
-            echo __($guid, 'Update Data');
+            echo __('Update Data');
             echo '</h2>';
 
             //Check access to person
@@ -158,7 +158,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             }
             if ($checkCount < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 //Get user's data
@@ -173,7 +173,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record cannot be found.');
+                    echo __('The specified record cannot be found.');
                     echo '</div>';
                 } else {
                     //Check if there is already a pending form for this user
@@ -189,12 +189,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                     }
                     if ($resultForm->rowCount() > 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Your request failed due to a database error.');
+                        echo __('Your request failed due to a database error.');
                         echo '</div>';
                     } elseif ($resultForm->rowCount() == 1) {
                         $existing = true;
                         echo "<div class='warning'>";
-                        echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
+                        echo __('You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been approved.');
                         echo '</div>';
                         $proceed = true;
                     } else {
@@ -248,27 +248,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						// EXISTING CONDITIONS
 						$count = 0;
 						if ($values['gibbonPersonMedicalID'] != '' or $existing == true) {
-                            try {
-                                if ($existing == true) {
-                                    $dataCond = array('gibbonPersonMedicalUpdateID' => $values['gibbonPersonMedicalUpdateID']);
-                                    $sqlCond = 'SELECT * FROM gibbonPersonMedicalConditionUpdate WHERE gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID ORDER BY name';
-                                } else {
-                                    $dataCond = array('gibbonPersonMedicalID' => $values['gibbonPersonMedicalID']);
-                                    $sqlCond = 'SELECT * FROM gibbonPersonMedicalCondition WHERE gibbonPersonMedicalID=:gibbonPersonMedicalID ORDER BY name';
-                                }
-                                $resultCond = $connection2->prepare($sqlCond);
-                                $resultCond->execute($dataCond);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
+
+                            if ($existing == true) {
+                                $medicalUpdateGateway = $container->get(MedicalUpdateGateway::class);
+                                $conditions = $medicalUpdateGateway->selectMedicalConditionUpdatesByID($values['gibbonPersonMedicalUpdateID'])->fetchAll();
+                            } else {
+                                $medicalGateway = $container->get(MedicalGateway::class);
+                                $conditions = $medicalGateway->selectMedicalConditionsByID($values['gibbonPersonMedicalID'])->fetchAll();
                             }
 
-                            while ($rowCond = $resultCond->fetch()) {
+                            foreach ($conditions as $rowCond) {
 								$form->addHiddenValue('gibbonPersonMedicalConditionID'.$count, $rowCond['gibbonPersonMedicalConditionID']);
 								$form->addHiddenValue('gibbonPersonMedicalConditionUpdateID'.$count, $existing ? $rowCond['gibbonPersonMedicalConditionUpdateID'] : 0);
 
 								$form->addRow()->addHeading(__('Medical Condition').' '.($count+1) );
 
-								$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+								$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 								$row = $form->addRow();
 									$row->addLabel('name'.$count, __('Condition Name'));
 									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($rowCond['name']);
@@ -302,8 +297,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 									$row->addTextField('lastEpisodeTreatment'.$count)->maxLength(255)->setValue($rowCond['lastEpisodeTreatment']);
 
 								$row = $form->addRow();
-									$row->addLabel('comment'.$count, __('Comment'));
-									$row->addTextArea('comment'.$count)->setValue($rowCond['comment']);
+									$row->addLabel('commentCond'.$count, __('Comment'));
+									$row->addTextArea('commentCond'.$count)->setValue($rowCond['comment']);
 
 								$count++;
 							}
@@ -319,7 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$row = $form->addRow();
 							$row->addCheckbox('addCondition')->setValue('Yes')->description(__('Check the box to add a new medical condition'));
 
-						$sql = "SELECT gibbonMedicalConditionID AS value, name FROM gibbonMedicalCondition ORDER BY name";
+						$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('name', __('Condition Name'));
 							$row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
@@ -353,8 +348,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 							$row->addTextField('lastEpisodeTreatment')->maxLength(255);
 
 						$row = $form->addRow()->addClass('addConditionRow');
-							$row->addLabel('comment', __('Comment'));
-							$row->addTextArea('comment');
+							$row->addLabel('commentCond', __('Comment'));
+							$row->addTextArea('commentCond');
 
 						$row = $form->addRow();
 							$row->addFooter();

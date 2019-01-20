@@ -25,13 +25,11 @@ use Gibbon\Domain\System\StringGateway;
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplacement_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage String Replacements').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage String Replacements'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,13 +43,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
     $criteria = $stringGateway->newQueryCriteria()
         ->searchBy($stringGateway->getSearchableColumns(), $search)
         ->sortBy('priority', 'DESC')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h2>';
     echo __('Search');
     echo '</h2>';
     
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
     
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/stringReplacement_manage.php');

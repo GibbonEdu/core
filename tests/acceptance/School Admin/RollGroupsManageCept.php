@@ -49,7 +49,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'rollGroup_manage_delete.php', array('gibbonRollGroupID' => $gibbonRollGroupID, 'gibbonSchoolYearID' => $gibbonSchoolYearID));
-$I->seeBreadcrumb('Delete');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

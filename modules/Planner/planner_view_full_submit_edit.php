@@ -18,29 +18,32 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_submit_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $viewBy = $_GET['viewBy'];
-        $subView = $_GET['subView'];
+		$subView = $_GET['subView'];
+		$class = null;
+		$date = null;
+		$gibbonCourseClassID = null;
         if ($viewBy != 'date' and $viewBy != 'class') {
             $viewBy = 'date';
         }
         if ($viewBy == 'date') {
             $date = $_GET['date'];
-            if ($_GET['dateHuman'] != '') {
+            if (!empty($_GET['dateHuman'])) {
                 $date = dateConvert($guid, $_GET['dateHuman']);
             }
             if ($date == '') {
@@ -49,7 +52,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
         } elseif ($viewBy == 'class') {
-            $class = null;
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
@@ -61,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         }
         //Check existence of and access to this class.
@@ -82,33 +84,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
             if ($result->rowCount() != 1) {
                 echo "<div class='warning'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
 
-                $extra = '';
-                if ($viewBy == 'class') {
-                    $extra = $row['course'].'.'.$row['class'];
-                } else {
-                    $extra = dateConvertBack($guid, $date);
-                }
+                // target of the planner
+                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                $params = '';
-                if ($_GET['date'] != '') {
-                    $params = $params.'&date='.$_GET['date'];
+                // planner's parameters
+                $params = [];
+                if ($date != '') {
+                    $params['date'] = $_GET['date'];
                 }
-                if ($_GET['viewBy'] != '') {
-                    $params = $params.'&viewBy='.$_GET['viewBy'];
+                if ($viewBy != '') {
+                    $params['viewBy'] = $_GET['viewBy'] ?? '';
                 }
-                if ($_GET['gibbonCourseClassID'] != '') {
-                    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+                if ($gibbonCourseClassID != '') {
+                    $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                 }
-                $params = $params."&subView=$subView";
+                $params['subView'] = $subView;
+                $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID'>".__($guid, 'View Lesson Plan')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Comment').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('Planner for {classDesc}', [
+                        'classDesc' => $target,
+                    ]), 'planner.php', $params)
+                    ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID])
+                    ->add(__('Add Comment'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -116,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                 if ($_GET['submission'] != 'true' and $_GET['submission'] != 'false') {
                     echo "<div class='warning'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($_GET['submission'] == 'true') {
@@ -129,12 +132,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                     if (($submission == true and $gibbonPlannerEntryHomeworkID == '') or ($submission == false and $gibbonPersonID == '')) {
                         echo "<div class='warning'>";
-                        echo __($guid, 'You have not specified one or more required parameters.');
+                        echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
                         if ($submission == true) {
                             echo '<h2>';
-                            echo __($guid, 'Update Submission');
+                            echo __('Update Submission');
                             echo '</h2>';
 
                             try {
@@ -148,7 +151,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 
                             if ($resultSubmission->rowCount() != 1) {
                                 echo "<div class='warning'>";
-                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo __('The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             } else {
                                 $rowSubmission = $resultSubmission->fetch()
@@ -157,8 +160,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php echo __($guid, 'Student') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('Student') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo formatName('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student') ?>" type="text" class="standardWidth">
@@ -166,12 +169,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Status') ?> *</b><br/>
+												<b><?php echo __('Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select class="standardWidth" name="status">
-													<option <?php if ($rowSubmission['status'] == 'On Time') { echo 'selected '; } ?>value="On Time"><?php echo __($guid, 'On Time') ?></option>
-													<option <?php if ($rowSubmission['status'] == 'Late') { echo 'selected '; } ?>value="Late"><?php echo __($guid, 'Late') ?></option>
+													<option <?php if ($rowSubmission['status'] == 'On Time') { echo 'selected '; } ?>value="On Time"><?php echo __('On Time') ?></option>
+													<option <?php if ($rowSubmission['status'] == 'Late') { echo 'selected '; } ?>value="Late"><?php echo __('Late') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -179,14 +182,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 											<td class="right" colspan=2>
 												<?php
                                                 echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='params' value='$paramsVar'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 												echo "<input type='hidden' name='submission' value='true'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryHomeworkID' value='$gibbonPlannerEntryHomeworkID'>";
 												echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
 												?>
 												
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+												<input type="submit" value="<?php echo __('Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -196,7 +199,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
                             }
                         } else {
                             echo '<h2>';
-                            echo __($guid, 'Add Submission');
+                            echo __('Add Submission');
                             echo '</h2>';
 
                             try {
@@ -220,8 +223,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php echo __($guid, 'Student') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('Student') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<input readonly name="courseName" id="courseName" maxlength=20 value="<?php echo formatName('', htmlPrep($rowSubmission['preferredName']), htmlPrep($rowSubmission['surname']), 'Student') ?>" type="text" class="standardWidth">
@@ -229,27 +232,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Type') ?> *</b><br/>
+												<b><?php echo __('Type') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
                                                 if ($row['homeworkSubmissionType'] == 'Link') {
                                                     ?>
-													<input checked type="radio" id="type" name="type" class="type" value="Link" /> <?php echo __($guid, 'Link') ?>
-													<input type="radio" id="type" name="type" class="type" value="None" /> <?php echo __($guid, 'None') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="Link" /> <?php echo __('Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php echo __('None') ?>
 													<?php
 
                                                 } elseif ($row['homeworkSubmissionType'] == 'File') {
                                                     ?>
-													<input checked type="radio" id="type" name="type" class="type" value="File" /> <?php echo __($guid, 'File') ?>
-													<input type="radio" id="type" name="type" class="type" value="None" /> <?php echo __($guid, 'None') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="File" /> <?php echo __('File') ?>
+													<input type="radio" id="type" name="type" class="type" value="None" /> <?php echo __('None') ?>
 													<?php
 
                                                 } else {
                                                     ?>
-													<input type="radio" id="type" name="type" class="type" value="Link" /> <?php echo __($guid, 'Link') ?>
-													<input type="radio" id="type" name="type" class="type" value="File" /> <?php echo __($guid, 'File') ?>
-													<input checked type="radio" id="type" name="type" class="type" value="None" /> <?php echo __($guid, 'None') ?>
+													<input type="radio" id="type" name="type" class="type" value="Link" /> <?php echo __('Link') ?>
+													<input type="radio" id="type" name="type" class="type" value="File" /> <?php echo __('File') ?>
+													<input checked type="radio" id="type" name="type" class="type" value="None" /> <?php echo __('None') ?>
 													<?php
 
                                                 }
@@ -258,15 +261,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Version') ?> *</b><br/>
+												<b><?php echo __('Version') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<?php
                                                 echo "<select style='float: none; width: 302px' name='version'>";
 												if ($row['homeworkSubmissionDrafts'] > 0 and $status != 'Late' and $resultVersion->rowCount() < $row['homeworkSubmissionDrafts']) {
-													echo "<option value='Draft'>".__($guid, 'Draft').'</option>';
+													echo "<option value='Draft'>".__('Draft').'</option>';
 												}
-												echo "<option value='Final'>".__($guid, 'Final').'</option>';
+												echo "<option value='Final'>".__('Final').'</option>';
 												echo '</select>';
 												?>
 											</td>
@@ -312,7 +315,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 									
 										<tr id="fileRow">
 											<td> 
-												<b><?php echo __($guid, 'Submit File') ?> *</b><br/>
+												<b><?php echo __('Submit File') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input type="file" name="file" id="file"><br/><br/>
@@ -341,7 +344,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 										</tr>
 										<tr id="linkRow">
 											<td> 
-												<b><?php echo __($guid, 'Submit Link') ?> *</b><br/>
+												<b><?php echo __('Submit Link') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<input name="link" id="link" maxlength=255 value="" type="text" class="standardWidth">
@@ -355,31 +358,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Status') ?> *</b><br/>
+												<b><?php echo __('Status') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select class="standardWidth" name="status">
-													<option value="On Time"><?php echo __($guid, 'On Time') ?></option>
-													<option value="Late"><?php echo __($guid, 'Late') ?></option>
-													<option value="Exemption"><?php echo __($guid, 'Exemption') ?></option>
+													<option value="On Time"><?php echo __('On Time') ?></option>
+													<option value="Late"><?php echo __('Late') ?></option>
+													<option value="Exemption"><?php echo __('Exemption') ?></option>
 												</select>
 											</td>
 										</tr>
 									
 										<tr>
 											<td class="right" colspan=2>
-												<?php
-                                                $params = '';
-												if ($_GET['date'] != '') {
-													$params = $params.'&date='.$_GET['date'];
-												}
-												if ($_GET['viewBy'] != '') {
-													$params = $params.'&viewBy='.$_GET['viewBy'];
-												}
-												if ($_GET['gibbonCourseClassID'] != '') {
-													$params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
-												}
-												$params = $params."&subView=$subView";
+                                                <?php
 
 												$count = 0;
 												try {
@@ -398,14 +390,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
 												echo "<input type='hidden' name='count' value='$count'>";
 												echo "<input type='hidden' name='lesson' value='".$row['name']."'>";
 												echo "<input type='hidden' name='search' value='".$_GET['search']."'>";
-												echo "<input type='hidden' name='params' value='$params'>";
+												echo "<input type='hidden' name='params' value='$paramsVar'>";
 												echo "<input type='hidden' name='gibbonPlannerEntryID' value='$gibbonPlannerEntryID'>";
 												echo "<input type='hidden' name='submission' value='false'>";
 												echo "<input type='hidden' name='gibbonPersonID' value='$gibbonPersonID'>";
 												echo "<input type='hidden' name='address' value='".$_SESSION[$guid]['address']."'>";
 												?>
 											
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+												<input type="submit" value="<?php echo __('Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -420,4 +412,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full_
         }
     }
 }
-?>

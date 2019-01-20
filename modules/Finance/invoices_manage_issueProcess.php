@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
+
 include '../../gibbon.php';
 
 //Module includes
@@ -195,14 +197,12 @@ if ($gibbonFinanceInvoiceID == '' or $gibbonSchoolYearID == '') { echo 'Fatal er
                         }
 
                         if (count($emails) > 0) {
-                            require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
-
                             //Prep message
                             $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                             $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
-                            $mail = getGibbonMailer($guid);
-                            $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                            $mail = $container->get(Mailer::class);
+                            $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                             foreach ($emails as $address) {
                                 $mail->AddBCC($address);
                             }
