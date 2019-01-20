@@ -28,8 +28,10 @@ v18.0.00
 
     Tweaks & Additions
 
-    Bux Fixes
-    
+    Bug Fixes
+        System: fixed non-rendering HTML issue in Welcome text on logged-out index
+        System: fixed missing globals in custom index scripts
+
 
 v17.0.00
 --------
@@ -96,7 +98,7 @@ v17.0.00
         User Admin: added missing custom field description into OOified forms
         User Admin: added the ability to change usernames which will check to ensure it's still unique
 
-    Bux Fixes
+    Bug Fixes
         System: fixed an issue with hidden fields in bulk action forms after pagination
         System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
         System: fixed IE incompatibility with javascript and select inputs

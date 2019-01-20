@@ -805,7 +805,7 @@ INSERT INTO `gibboni18n` (`code`, `name`, `active`, `systemDefault`, `dateFormat
 UPDATE gibboni18n SET active='Y' WHERE code='tr_TR';end
 ";
 
-//v18.0.01
+//v18.0.00
 ++$count;
 $sql[$count][0] = '18.0.00';
 $sql[$count][1] = "";
