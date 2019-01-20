@@ -553,7 +553,9 @@ if (!$session->has('address')) {
             ];
 
             $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
-        } elseif ($session->has('index_custom.php')) {
+        }
+        
+        if ($session->exists('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 
