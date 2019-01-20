@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -53,13 +54,7 @@ if ($proceed == false) {
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    if (isset($_SESSION[$guid]['username'])) {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Application Form').'</div>';
-    } else {
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > </div><div class='trailEnd'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Application Form').'</div>';
-    }
-    echo '</div>';
+    $page->breadcrumbs->add(__('Application Form'));
 
     if (isset($_SESSION[$guid]['username']) == false) {
         echo "<div class='warning' style='font-weight: bold'>".sprintf(__('If you already have an account for %1$s %2$s, please log in now to prevent creation of duplicate data about you! Once logged in, you can find the form under People > Students in the main menu.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).' '.sprintf(__('If you do not have an account for %1$s %2$s, please use the form below.'), $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['systemName']).'</div>';
@@ -185,7 +180,7 @@ if ($proceed == false) {
             $linkedApplications = $resultLinked->fetchAll();
 
             foreach ($linkedApplications as $rowLinked) {
-                $linkedApplicationText .= '<li>'. formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
+                $linkedApplicationText .= '<li>'. Format::name('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true);
                 $linkedApplicationText .= ' ('.str_pad( intval($rowLinked['gibbonApplicationFormID']), 7, '0', STR_PAD_LEFT).')</li>';
             }
             $linkedApplicationText .= '</ul>';
@@ -202,15 +197,15 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->isRequired()->maxLength(30);
+        $row->addTextField('preferredName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -218,7 +213,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(20);
+        $row->addTextField('nameInCharacters')->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -291,7 +286,7 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email');
         if ($uniqueEmailAddress == 'Y') {
             $email->isUnique('./publicRegistrationCheck.php');
         }
@@ -410,7 +405,7 @@ if ($proceed == false) {
         while ($rowFields = $resultFields->fetch()) {
             $name = 'custom'.$rowFields['gibbonPersonFieldID'];
             $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name']);
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields);
         }
     }
@@ -511,7 +506,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -616,7 +611,7 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50)->loadFrom($application);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->loadFrom($application);
                 if ($uniqueEmailAddress == 'Y') {
                     $email->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'email'));
                 }
@@ -633,11 +628,11 @@ if ($proceed == false) {
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(90)->loadFrom($application);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(30)->loadFrom($application);
+                $row->addTextField("parent{$i}employer")->maxLength(90)->loadFrom($application);
 
             // CUSTOM FIELDS FOR PARENTS
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
@@ -651,7 +646,7 @@ if ($proceed == false) {
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -698,7 +693,7 @@ if ($proceed == false) {
                 $selected = ($rowRelationships['gender'] == 'F')? 'Mother' : (($rowRelationships['gender'] == 'M')? 'Father' : '');
 
                 $subTableRow = $subTable->addRow()->addClass('right');
-                $subTableRow->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent'))->setClass('mediumWidth');
+                $subTableRow->addContent(Format::name($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent'))->setClass('mediumWidth');
                 $subTableRow->addSelectRelationship($rowSelect['gibbonFamilyID'].'-relationships[]')->selected($selected)->setClass('mediumWidth');
                 $form->addHiddenValue($rowSelect['gibbonFamilyID'].'-relationshipsGibbonPersonID[]', $rowRelationships['gibbonPersonID']);
             }
@@ -735,7 +730,7 @@ if ($proceed == false) {
         }
 
         while ($rowSibling = $resultSibling->fetch()) {
-            $name = formatName('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
+            $name = Format::name('', $rowSibling['preferredName'], $rowSibling['surname'], 'Student');
 
             $row = $table->addRow();
             $row->addTextField('siblingName'.$rowCount)->maxLength(50)->setSize(26)->setValue($name);
@@ -945,10 +940,13 @@ if ($proceed == false) {
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy Options'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
     }
 

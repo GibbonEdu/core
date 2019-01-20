@@ -18,20 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_myChildren.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $entryCount = 0;
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Individual Education Plans').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View Individual Education Plans'));
 
     echo '<p>';
-    echo __($guid, 'This section allows you to view individual education plans, where they exist, for children within your family.').'<br/>';
+    echo __('This section allows you to view individual education plans, where they exist, for children within your family.').'<br/>';
     echo '</p>';
 
     //Test data access field for permission
@@ -46,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'Access denied.');
+        echo __('Access denied.');
         echo '</div>';
     } else {
         //Get child list
@@ -63,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
                 echo "<div class='error'>".$e->getMessage().'</div>';
             }
             while ($rowChild = $resultChild->fetch()) {
-                $options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+                $options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
             }
         }
 
@@ -71,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
 
         if (count($options) == 0) {
             echo "<div class='error'>";
-            echo __($guid, 'Access denied.');
+            echo __('Access denied.');
             echo '</div>';
         } elseif (count($options) == 1) {
             $gibbonPersonID = key($options);
@@ -80,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             echo 'Choose Student';
             echo '</h2>';
 
-            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/iep_view_myChildren.php');
@@ -108,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
             }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $rowChild = $resultChild->fetch();
@@ -124,36 +123,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/iep_view_
 
                 if ($result->rowCount() != 1) {
                     echo '<h3>';
-                    echo __($guid, 'View');
+                    echo __('View');
                     echo '</h3>';
 
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     echo '<h3>';
-                    echo __($guid, 'View');
+                    echo __('View');
                     echo '</h3>';
 
                     $row = $result->fetch(); ?>	
 					<table class='smallIntBorder fullWidth' cellspacing='0'>	
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Targets') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php echo __('Targets') ?></span><br/>
 								<?php
                                 echo '<p>'.$row['targets'].'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2> 
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Teaching Strategies') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php echo __('Teaching Strategies') ?></span><br/>
 								<?php
                                 echo '<p>'.$row['strategies'].'</p>'; ?>
 							</td>
 						</tr>
 						<tr>
 							<td colspan=2 style='padding-top: 25px'> 
-								<span style='font-weight: bold; font-size: 135%'><?php echo __($guid, 'Notes & Review') ?></span><br/>
+								<span style='font-weight: bold; font-size: 135%'><?php echo __('Notes & Review') ?></span><br/>
 								<?php
                                 echo '<p>'.$row['notes'].'</p>'; ?>
 							</td>

@@ -21,47 +21,45 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 include './modules/User Admin/moduleFunctions.php'; //for User Admin (for custom fields)
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Update Personal Data').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Update Personal Data'));
 
         if ($highestAction == 'Update Personal Data_any') {
             echo '<p>';
-            echo __($guid, 'This page allows a user to request selected personal data updates for any user.');
+            echo __('This page allows a user to request selected personal data updates for any user.');
             echo '</p>';
         } else {
             echo '<p>';
-            echo __($guid, 'This page allows any adult with data access permission to request selected personal data updates for any member of their family.');
+            echo __('This page allows any adult with data access permission to request selected personal data updates for any member of their family.');
             echo '</p>';
         }
 
         $customResponces = array();
-        $error3 = __($guid, 'Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>');
+        $error3 = __('Your request was successful, but some data was not properly saved. An administrator will process your request as soon as possible. <u>You will not see the updated data in the system until it has been processed and approved.</u>');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $error3 .= ' '.sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $error3 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
         $customResponces['error3'] = $error3;
 
-        $success0 = __($guid, 'Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
+        $success0 = __('Your request was completed successfully. An administrator will process your request as soon as possible. You will not see the updated data in the system until it has been processed and approved.');
         if ($_SESSION[$guid]['organisationDBAEmail'] != '' and $_SESSION[$guid]['organisationDBAName'] != '') {
-            $success0 .= ' '.sprintf(__($guid, 'Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
+            $success0 .= ' '.sprintf(__('Please contact %1$s if you have any questions.'), "<a href='mailto:".$_SESSION[$guid]['organisationDBAEmail']."'>".$_SESSION[$guid]['organisationDBAName'].'</a>');
         }
         $customResponces['success0'] = $success0;
 
@@ -70,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         }
 
         echo '<h2>';
-        echo __($guid, 'Choose User');
+        echo __('Choose User');
         echo '</h2>';
 		
 		$gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : null;
@@ -131,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
         if ($gibbonPersonID != '') {
             echo '<h2>';
-            echo __($guid, 'Update Data');
+            echo __('Update Data');
             echo '</h2>';
 
             //Check access to person
@@ -181,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
             if ($checkCount < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 //Get categories
@@ -225,12 +223,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
                 if ($result->rowCount() > 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Your request failed due to a database error.');
+                    echo __('Your request failed due to a database error.');
                     echo '</div>';
                 } elseif ($result->rowCount() == 1) {
                     $existing = true;
                     echo "<div class='warning'>";
-                    echo __($guid, 'You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edited the data below, but remember your data will not appear in the system until it has been approved.');
+                    echo __('You have already submitted a form, which is pending approval by an administrator. If you wish to make changes, please edit the data below, but remember your data will not appear in the system until it has been approved.');
                     echo '</div>';
                     $proceed = true;
                     if ($highestAction != 'Update Personal Data_any') {
@@ -253,7 +251,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
                     }
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         if ($highestAction != 'Update Personal Data_any') {
@@ -286,15 +284,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-						$row->addTextField('surname')->maxLength(30);
+						$row->addTextField('surname')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-						$row->addTextField('firstName')->maxLength(30);
+						$row->addTextField('firstName')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-						$row->addTextField('preferredName')->maxLength(30);
+						$row->addTextField('preferredName')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -302,7 +300,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-						$row->addTextField('nameInCharacters')->maxLength(20);
+						$row->addTextField('nameInCharacters')->maxLength(60);
 
 					$row = $form->addRow();
 						$row->addLabel('dob', __('Date of Birth'));
@@ -316,7 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 						$row->addLabel('emergency1Name', __('Contact 1 Name'));
-						$row->addTextField('emergency1Name')->maxLength(30);
+						$row->addTextField('emergency1Name')->maxLength(90);
 
 						$row = $form->addRow();
 						$row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
@@ -332,7 +330,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 						$row->addLabel('emergency2Name', __('Contact 2 Name'));
-						$row->addTextField('emergency2Name')->maxLength(30);
+						$row->addTextField('emergency2Name')->maxLength(90);
 
 						$row = $form->addRow();
 						$row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
@@ -352,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'));
-						$email = $row->addEmail('email')->maxLength(50);
+						$email = $row->addEmail('email');
 
 					$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 					if ($uniqueEmailAddress == 'Y') {
@@ -361,7 +359,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$row = $form->addRow();
 						$row->addLabel('emailAlternate', __('Alternate Email'));
-						$row->addEmail('emailAlternate')->maxLength(50);
+						$row->addEmail('emailAlternate');
 
 					$row = $form->addRow();
 					$row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
@@ -545,15 +543,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 						$row = $form->addRow();
 							$row->addLabel('profession', __('Profession'));
-							$row->addTextField('profession')->maxLength(30);
+							$row->addTextField('profession')->maxLength(90);
 
 						$row = $form->addRow();
 							$row->addLabel('employer', __('Employer'));
-							$row->addTextField('employer')->maxLength(30);
+							$row->addTextField('employer')->maxLength(90);
 
 						$row = $form->addRow();
 							$row->addLabel('jobTitle', __('Job Title'));
-							$row->addTextField('jobTitle')->maxLength(30);
+							$row->addTextField('jobTitle')->maxLength(90);
 					}
 
 					// MISCELLANEOUS
@@ -565,15 +563,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					if ($student) {
 						$privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-							$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-							$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+						$privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
+						$privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
 						if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+                            $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
 							$options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 							$values['privacyOptions'] = $values['privacy'];
 
 							$row = $form->addRow();
-								$row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+								$row->addLabel('privacyOptions[]', __('Privacy Options'));
 								$row->addCheckbox('privacyOptions[]')->fromArray($options)->loadFromCSV($values);
 						}
 					}
@@ -589,7 +590,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 							$value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
 							$row = $form->addRow();
-							$row->addLabel($name, $rowFields['name']);
+							$row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
 							$row->addCustomField($name, $rowFields)->setValue($value);
 						}
 					}
@@ -611,4 +612,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
         }
     }
 }
-?>

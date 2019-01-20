@@ -1,0 +1,65 @@
+# Chinese translations for gibbon package
+# traditional Chinese translation for gibbon.
+# Copyright (C) 2018 THE gibbon's COPYRIGHT HOLDER
+# This file is distributed under the same license as the gibbon package.
+# Automatically generated, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gibbon v17.0.00\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-11-21 12:14+0800\n"
+"PO-Revision-Date: 2018-11-17 10:35+0800\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. L10N: Untranslated plural string with string placeholder
+#: TranslateNTest.php:76 TranslateNTest.php:85 TranslateNTest.php:115
+#: TranslateNTest.php:124
+msgid "I have an orange"
+msgid_plural "I have {num} oranges"
+msgstr[0] ""
+msgstr[1] ""
+
+#. L10N: Translated plural string with string placeholder
+#: TranslateNTest.php:94 TranslateNTest.php:103 TranslateNTest.php:133
+#: TranslateNTest.php:142
+msgid "I have an apple"
+msgid_plural "I have {num} apples"
+msgstr[0] ""
+msgstr[1] ""
+
+#. L10N: Untranslated plain text.
+#: TranslateTest.php:76 TranslateTest.php:134
+msgid "Not translated"
+msgstr ""
+
+#. L10N: Untranslated string for string replacement.
+#: TranslateTest.php:83 TranslateTest.php:141
+msgid "Untranslated {action} {name}"
+msgstr ""
+
+#. L10N: Translated plain text.
+#: TranslateTest.php:93 TranslateTest.php:151
+msgid "Hello world"
+msgstr "你好世界"
+
+#. L10N: Translated string for string replacement.
+#: TranslateTest.php:100 TranslateTest.php:158
+msgid "Hello {name} from {planet}"
+msgstr "你好，來自 {planet} 的 {name}"
+
+#. L10N: Translated string for numerical replacement.
+#. L10N: Translated string for numerical placeholder replacement.
+#: TranslateTest.php:110 TranslateTest.php:168
+msgid "Hello {0} from {1}"
+msgstr "你好，來自 {1} 的 {0}"
+
+#. L10N: Translated string with mixed numerical and string placeholder.
+#: TranslateTest.php:120 TranslateTest.php:178
+msgid "Hello {0} from {1}. Today is {dayOfWeek}."
+msgstr "你好，來自 {1} 的 {0}。今天是 {dayOfWeek}。"

@@ -18,78 +18,45 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Rubrics\RubricGateway;
+use Gibbon\Domain\Students\StudentGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Rubrics').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View Rubrics'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $search = isset($_REQUEST['search'])? $_REQUEST['search'] : '';
+    $department = isset($_POST['filter2'])? $_POST['filter2'] : '';
+    $yearGroups = getYearGroups($connection2);
 
-    //Filter variables
-    $and = '';
-    $data = array();
-    $filter2 = null;
-    if (isset($_POST['filter2'])) {
-        $filter2 = $_POST['filter2'];
-    }
-    if ($filter2 != '') {
-        $data['gibbonDepartmentID'] = $filter2;
-        $and .= ' AND gibbonDepartmentID=:gibbonDepartmentID';
-    }
+    $rubricGateway = $container->get(RubricGateway::class);
 
-    try {
-        $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
-        if ($role == 'Student') {
-            //Get enrolment
-            try {
-                $dataEnrolment = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                $sqlEnrolment = 'SELECT * FROM gibbonStudentEnrolment WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID';
-                $resultEnrolment = $connection2->prepare($sqlEnrolment);
-                $resultEnrolment->execute($dataEnrolment);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            if ($resultEnrolment->rowCount() == 1) {
-                $rowEnrolment = $resultEnrolment->fetch();
-                $data['gibbonSchoolYearID'] = '%'.$rowEnrolment['gibbonYearGroupID'].'%';
-                $sql = "SELECT * FROM gibbonRubric WHERE active='Y' AND gibbonYearGroupIDList LIKE :gibbonSchoolYearID $and ORDER BY scope, category, name";
-            } else {
-                $sql = "SELECT * FROM gibbonRubric WHERE active='Y' $and ORDER BY scope, category, name";
-            }
-        } else {
-            $sql = "SELECT * FROM gibbonRubric WHERE active='Y' $and ORDER BY scope, category, name";
-        }
-        $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // QUERY
+    $criteria = $rubricGateway->newQueryCriteria()
+        ->searchBy($rubricGateway->getSearchableColumns(), $search)
+        ->sortBy(['scope', 'category', 'name'])
+        ->filterBy('department', $department)
+        ->fromPOST();
 
-    echo '<h3>';
-    echo __($guid, 'Filter');
-    echo '</h3>';
-
-    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_view.php');
+    // SEARCH
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_view.php');
+    $form->setTitle(__('Filter'));
     $form->setClass('noIntBorder fullWidth');
+
+    $row = $form->addRow();
+        $row->addLabel('search', __('Search For'))->description(__('Rubric name.'));
+        $row->addTextField('search')->setValue($criteria->getSearchText());
 
     $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
     $row = $form->addRow();
@@ -97,117 +64,57 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         $row->addSelect('filter2')
             ->fromArray(array('' => __('All Learning Areas')))
             ->fromQuery($pdo, $sql)
-            ->selected($filter2);
+            ->selected($department);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));
 
     echo $form->getOutput();
 
-    echo '<h3>';
-    echo __($guid, 'Rubrics');
-    echo '</h3>';
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top');
-        }
+    // If the current user is a student, limit the results to their year group
+    $gibbonYearGroupID = null;
+    $roleCategory = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
+    if ($roleCategory == 'Student') {
+        $studentGateway = $container->get(StudentGateway::class);
+        $enrolment = $studentGateway->selectActiveStudentByPerson($_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'])->fetch();
 
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Scope');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Category');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Year Groups');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        try {
-            $resultPage = $connection2->prepare($sqlPage);
-            $resultPage->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        while ($row = $resultPage->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo '<b>'.$row['scope'].'</b><br/>';
-            if ($row['scope'] == 'Learning Area' and $row['gibbonDepartmentID'] != '') {
-                try {
-                    $dataLearningArea = array('gibbonDepartmentID' => $row['gibbonDepartmentID']);
-                    $sqlLearningArea = 'SELECT * FROM gibbonDepartment WHERE gibbonDepartmentID=:gibbonDepartmentID';
-                    $resultLearningArea = $connection2->prepare($sqlLearningArea);
-                    $resultLearningArea->execute($dataLearningArea);
-                } catch (PDOException $e) {
-                    echo "<div class='error'>".$e->getMessage().'</div>';
-                }
-                if ($resultLearningArea->rowCount() == 1) {
-                    $rowLearningAreas = $resultLearningArea->fetch();
-                    echo "<span style='font-size: 75%; font-style: italic'>".$rowLearningAreas['name'].'</span>';
-                }
-            }
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['category'].'</b><br/>';
-            echo '</td>';
-            echo '<td>';
-            echo '<b>'.$row['name'].'</b><br/>';
-            echo '</td>';
-            echo '<td>';
-            echo getYearGroupsFromIDList($guid, $connection2, $row['gibbonYearGroupIDList']);
-            echo '</td>';
-            echo '<td>';
-            echo "<script type='text/javascript'>";
-            echo '$(document).ready(function(){';
-            echo "\$(\".description-$count\").hide();";
-            echo "\$(\".show_hide-$count\").fadeIn(1000);";
-            echo "\$(\".show_hide-$count\").click(function(){";
-            echo "\$(\".description-$count\").fadeToggle(1000);";
-            echo '});';
-            echo '});';
-            echo '</script>';
-
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/rubrics_view_full.php&gibbonRubricID='.$row['gibbonRubricID']."&width=1100&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
-            if ($row['description'] != '') {
-                echo "<tr class='description-$count' id='description-$count'>";
-                echo '<td colspan=6>';
-                echo $row['description'];
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-
-        if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-            printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom');
+        if (!empty($enrolment)) {
+            $gibbonYearGroupID = $enrolment['gibbonYearGroupID'];
         }
     }
+
+    $rubrics = $rubricGateway->queryRubrics($criteria, 'Y', $gibbonYearGroupID);
+
+    // DATA TABLE
+    $table = DataTable::createPaginated('rubrics', $criteria);
+    $table->setTitle(__('Rubrics'));
+
+    // COLUMNS
+    $table->addExpandableColumn('description');
+    $table->addColumn('scope', __('Scope'))
+        ->width('15%')
+        ->format(function($rubric) {
+            if ($rubric['scope'] == 'School') {
+                return '<strong>'.__('School').'</strong>';
+            } else {
+                return '<strong>'.__('Learning Area').'</strong><br/>'.Format::small($rubric['learningArea']);
+            }
+        });
+    $table->addColumn('category', __('Category'))->width('15%');
+    $table->addColumn('name', __('Name'))->width('35%');
+    $table->addColumn('yearGroups', __('Year Groups'))
+        ->format(function($activity) use ($yearGroups) {
+            return ($activity['yearGroupCount'] >= count($yearGroups)/2)? '<i>'.__('All').'</i>' : $activity['yearGroups'];
+        });
+
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonRubricID')
+        ->format(function ($rubric, $actions) {
+            $actions->addAction('view', __('View'))
+                ->setURL('/modules/Rubrics/rubrics_view_full.php')
+                ->isModal(1100, 550);
+        });
+
+    echo $table->render($rubrics);
 }
-?>

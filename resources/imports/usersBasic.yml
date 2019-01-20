@@ -1,0 +1,91 @@
+details:
+    type: usersBasic
+    name: User - Data - Basic
+    category: User
+    table: gibbonPerson
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonID
+uniqueKeys:
+    - username
+#    - studentID
+table:
+    title:
+        name: "Title"
+        desc: "e.g. Ms., Miss, Mr., Mrs., Dr."
+        args: {filter: string}
+    surname:
+        name: "Surname"
+        desc: "Family Name"
+        args: {filter: string, required: true}
+    firstName:
+        name: "First Name"
+        desc: "Given name"
+        args: {filter: string, required: true}
+    preferredName:
+        name: "Preferred Name"
+        desc: "Most common name, alias, nickname, handle, etc"
+        args: {filter: string, required: true}
+    officialName:
+        name: "Official Name"
+        desc: "Full name as shown in ID documents."
+        args: {filter: string, required: true}
+    nameInCharacters:
+        name: "Name In Characters"
+        desc: "Chinese or other character-based name."
+        args: {filter: string}
+    gender:
+        name: "Gender"
+        desc: ""
+        args: {filter: gender, required: true}
+    dob:
+        name: "Date of Birth"
+        desc: ""
+        args: {filter: date}
+    gibbonRoleIDPrimary:
+        name: "Primary Role"
+        desc: "Name"
+        args: {filter: string, required: true, custom: true }
+        relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
+    gibbonRoleIDAll:
+        name: "All Roles"
+        desc: "Role Names, Comma separated"
+        args: {filter: csv, required: true, custom: true }
+        relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
+    username:
+        name: "Username"
+        desc: "Must be unique."
+        args: {filter: nospaces, required: true}
+    password:
+        name: "Password"
+        desc: ""
+        args: {filter: nospaces, required: true, custom: true, function: generatePassword}
+    passwordForceReset:
+        name: "Force Reset Password?"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    status:
+        name: "Status"
+        desc: ""
+        args: {filter: status, custom: true}
+    canLogin:
+        name: "Can Login?"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    email:
+        name: "Email"
+        desc: ""
+        args: {filter: email}
+    studentID:
+        name: "Student ID"
+        desc: "Must be unique if set."
+        args: {filter: string}
+    image_240:
+        name: "User Photo"
+        desc: "path from /uploads/ to medium portrait image (240px by 320px)"
+        args: {filter: string}
+
+

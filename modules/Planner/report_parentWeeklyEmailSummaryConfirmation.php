@@ -21,30 +21,29 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Parent Weekly Email Summary'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeeklyEmailSummaryConfirmation.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Parent Weekly Email Summary').'</div>';
-    echo '</div>';
     echo '<p>';
-    echo __($guid, 'This report shows responses to the weekly summary email, organised by calendar week and role group.');
+    echo __('This report shows responses to the weekly summary email, organised by calendar week and role group.');
     echo '</p>';
 
     echo '<h2>';
-    echo __($guid, 'Choose Roll Group & Week');
+    echo __('Choose Roll Group & Week');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
     $weekOfYear = isset($_GET['weekOfYear'])? $_GET['weekOfYear'] : null;
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_parentWeeklyEmailSummaryConfirmation.php');
@@ -74,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
 
     if ($gibbonRollGroupID != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -89,16 +88,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Parent');
+        echo __('Parent');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Sent');
+        echo __('Sent');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Confirmed');
+        echo __('Confirmed');
         echo '</th>';
         echo '</tr>';
 
@@ -132,20 +131,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
 
             if ($resultData->rowCount() == 1) {
                 $rowData = $resultData->fetch();
-                echo "<img title='".__($guid, 'Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                echo "<img title='".__('Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
             } else {
                 $rowData = null;
-                echo "<img title='".__($guid, 'Not Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                echo "<img title='".__('Not Sent')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
             }
             echo '</td>';
             echo "<td style='width:15%'>";
             if (is_null($rowData)) {
-                echo __($guid, 'NA');
+                echo __('NA');
             } else {
                 if ($rowData['confirmed'] == 'Y') {
-                    echo "<img title='".__($guid, 'Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
+                    echo "<img title='".__('Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
                 } else {
-                    echo "<img title='".__($guid, 'Not Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
+                    echo "<img title='".__('Not Confirmed')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/> ";
                 }
             }
             echo '</td>';
@@ -154,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_parentWeekl
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=4>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

@@ -17,95 +17,63 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\SchoolYearGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYear_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage School Year').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage School Years'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonSchoolYear ORDER BY sequenceNumber';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    $schoolYearGateway = $container->get(SchoolYearGateway::class);
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/schoolYear_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    // QUERY
+    $criteria = $schoolYearGateway->newQueryCriteria()
+        ->sortBy(['sequenceNumber'])
+        ->fromPOST();
 
-    if ($result->rowcount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Sequence');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Dates');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Status');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    $schoolYears = $schoolYearGateway->querySchoolYears($criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
+    // DATA TABLE
+    $table = DataTable::createPaginated('schoolYearManage', $criteria);
+
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/School Admin/schoolYear_manage_add.php')
+        ->displayLabel();
+
+    $table->modifyRows(function($schoolYear, $row) {
+        if ($schoolYear['status'] == 'Current') $row->addClass('current');
+        return $row;
+    });
+
+    $table->addColumn('sequenceNumber', __('Sequence'))->width('10%');
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('dates', __('Dates'))
+          ->format(Format::using('dateRange', ['firstDay', 'lastDay']))
+          ->sortable(['firstDay', 'lastDay']);
+    $table->addColumn('status', __('Status'));
+        
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonSchoolYearID')
+        ->format(function ($schoolYear, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/School Admin/schoolYear_manage_edit.php');
+
+            if ($schoolYear['status'] != 'Current') {
+                $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/School Admin/schoolYear_manage_delete.php');
             }
+        });
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['sequenceNumber'];
-            echo '</td>';
-            echo '<td>';
-            echo $row['name'];
-            echo '</td>';
-            echo '<td>';
-            if ($row['firstDay'] != null and $row['lastDay'] != null) {
-                echo dateConvertBack($guid, $row['firstDay']).' - '.dateConvertBack($guid, $row['lastDay']);
-            }
-            echo '</td>';
-            echo '<td>';
-            echo $row['status'];
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_edit.php&gibbonSchoolYearID='.$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-
-            // Only non-current School Years are delete-able
-            if ($row['status'] != 'Current') {
-                echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYear_manage_delete.php&gibbonSchoolYearID='.$row['gibbonSchoolYearID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            }
-            echo '</td>';
-            echo '</tr>';
-
-            ++$count;
-        }
-        echo '</table>';
-    }
+    echo $table->render($schoolYears);
 }

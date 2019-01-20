@@ -1,0 +1,38 @@
+details:
+    type: medicalForms
+    name: Medical Forms
+    table: gibbonPersonMedical
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Students
+    action: Manage Medical Forms
+primaryKey:
+    gibbonPersonMedicalID
+uniqueKeys:
+    - gibbonPersonID
+table:
+    gibbonPersonID:
+        name: "Student"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    bloodType:
+        name: "Blood Type"
+        desc: ""
+        args: {filter: string}
+    longTermMedication:
+        name: "Long Term Medication"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    longTermMedicationDetails:
+        name: "Medication Details"
+        desc: ""
+        args: {filter: string}
+    tetanusWithin10Years:
+        name: "Tetanus Within Last 10 Years?"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    comment:
+        name: "Comment"
+        desc: ""
+        args: {filter: string}

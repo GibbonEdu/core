@@ -24,7 +24,7 @@ use Gibbon\Forms\DatabaseFormFactory;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Setup variables
 $output = '';
@@ -58,13 +58,13 @@ if (isset($_GET['alpha'])) {
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_add.php') == false) {
     //Acess denied
     $output .= "<div class='error'>";
-    $output .= __($guid, 'Your request failed because you do not have access to this action.');
+    $output .= __('Your request failed because you do not have access to this action.');
     $output .= '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, '/modules/Planner/resources_manage.php', $connection2);
     if ($highestAction == false) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'The highest grouped action cannot be determined.');
+        $output .= __('The highest grouped action cannot be determined.');
         $output .= '</div>';
     } else {
         $output .= "<script type='text/javascript'>";
@@ -83,7 +83,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
 
         $output .= "$('#".$id."ajaxForm').submit(function() {";
         $output .= '$(this).ajaxSubmit(options);';
-        $output .= '$(".'.$id."resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__($guid, 'Uploading')."' onclick='return false;' /><br/>".__($guid, 'Loading').'</div>");';
+        $output .= '$(".'.$id."resourceAddSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
         $output .= 'return false;';
         $output .= '});';
         $output .= '});';
@@ -100,7 +100,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $form->addHiddenValue($id.'address', $_SESSION[$guid]['address']);
 
         $col = $form->addRow()->addColumn();
-            $col->addWebLink("<img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
+            $col->addWebLink("<img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
                 ->onClick("formReset(); \$(\".".$id."resourceAddSlider\").slideUp();")->addClass('right');
             $col->addContent(__('Add & Insert A New Resource'))->wrap('<h3 style="margin-top: 0;">', '</h3>');
             $col->addContent(__('Use the form below to add a new resource to Gibbon. If the addition is successful, then it will be automatically inserted into your work above. Note that you  cannot create HTML resources here (you have to go to the Planner module for that).'))->wrap('<p>', '</p>');

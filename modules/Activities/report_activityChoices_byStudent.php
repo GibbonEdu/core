@@ -21,21 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activityChoices_byStudent.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Activity Choices By Student').'</div>';
-    echo '</div>';
-
+    $page->breadcrumbs->add(__('Activity Choices By Student'));
+    
     echo '<h2>';
-    echo __($guid, 'Choose Student');
+    echo __('Choose Student');
     echo '</h2>';
 
     $gibbonPersonID = null;
@@ -63,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
     if ($gibbonPersonID != '') {
         $output = '';
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -77,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
         if ($resultYears->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             $yearCount = 0;
@@ -103,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record does not exist.');
+                    echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
                     $dateType = getSettingByScope($connection2, 'Activities', 'dateType');
@@ -122,32 +120,32 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo '<th>';
-                        echo __($guid, 'Activity');
+                        echo __('Activity');
                         echo '</th>';
                         $options = getSettingByScope($connection2, 'Activities', 'activityTypes');
                         if ($options != '') {
                             echo '<th>';
-                            echo __($guid, 'Type');
+                            echo __('Type');
                             echo '</th>';
                         }
                         echo '<th>';
                         if ($dateType != 'Date') {
-                            echo  __($guid, 'Term');
+                            echo  __('Term');
                         } else {
-                            echo  __($guid, 'Dates');
+                            echo  __('Dates');
                         }
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Status');
+                        echo __('Status');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Actions');
+                        echo __('Actions');
                         echo '</th>';
                         echo '</tr>';
 
@@ -198,11 +196,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
                             if ($row['status'] != '') {
                                 echo $row['status'];
                             } else {
-                                echo '<i>'.__($guid, 'NA').'</i>';
+                                echo '<i>'.__('NA').'</i>';
                             }
                             echo '</td>';
                             echo '<td>';
-                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                             echo '</td>';
                             echo '</tr>';
                         }

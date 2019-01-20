@@ -21,24 +21,28 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_add.php', 'Manage Expenses_all') == false) {
         echo "<div class='error'>";
-        echo __($guid, 'You do not have access to this action.');
+        echo __('You do not have access to this action.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__($guid, 'Manage Expenses')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Expense').'</div>';
-        echo '</div>';
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+        $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+        $page->breadcrumbs
+            ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
+            ->add(__('Edit Expense'));        
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
@@ -46,13 +50,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-        $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
         $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
         $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
         $gibbonFinanceBudgetID = '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             $budgetsAccess = false;
@@ -72,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
             if ($budgetsAccess == false) {
                 echo "<div class='error'>";
-                echo __($guid, 'You do not have Full or Write access to any budgets.');
+                echo __('You do not have Full or Write access to any budgets.');
                 echo '</div>';
             } else {
                 //Get and check settings
@@ -81,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
                 $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error has occurred with your expense and budget settings.');
+                    echo __('An error has occurred with your expense and budget settings.');
                     echo '</div>';
                 } else {
                     //Check if there are approvers
@@ -96,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'An error has occurred with your expense and budget settings.');
+                        echo __('An error has occurred with your expense and budget settings.');
                         echo '</div>';
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
@@ -116,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The specified record cannot be found.');
+                            echo __('The specified record cannot be found.');
                             echo '</div>';
                         } else {
                             //Let's go!
@@ -124,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ed
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a>';
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                                 echo '</div>';
                             }
                             

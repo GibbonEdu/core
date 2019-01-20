@@ -25,7 +25,7 @@ use Gibbon\Domain\Students\StudentGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
@@ -35,9 +35,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
         echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View Student Profiles').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Student Profiles'));
 
         $studentGateway = $container->get(StudentGateway::class);
 
@@ -95,11 +93,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view.php'
             
             $studentGateway = $container->get(StudentGateway::class);
 
+            $searchColumns = $canViewFullProfile
+                ? array_merge($studentGateway->getSearchableColumns(), ['parent1.email', 'parent1.emailAlternate', 'parent2.email', 'parent2.emailAlternate'])
+                : $studentGateway->getSearchableColumns();
+
             $criteria = $studentGateway->newQueryCriteria()
-                ->searchBy($studentGateway->getSearchableColumns(), $search)
+                ->searchBy($searchColumns, $search)
                 ->sortBy(array_filter(explode(',', $sort)))
                 ->filterBy('all', $canViewFullProfile ? $allStudents : '')
-                ->fromArray($_POST);
+                ->fromPOST();
 
             echo '<h2>';
             echo __('Filter');

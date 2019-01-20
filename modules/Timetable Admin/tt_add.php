@@ -21,18 +21,20 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\Timetable\TimetableGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Timetable').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Add Timetable'));
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -42,11 +44,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         returnProcess($guid, $_GET['return'], $editLink, null);
     }
 
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-
     if ($gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $values = $result->fetch();
@@ -96,7 +96,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
             $row = $form->addRow();
                 $row->addLabel('active', __('Year Groups'))->description(__('Groups not in an active TT this year.'));
                 if (empty($yearGroupsOptions)) {
-                    $row->addContent('<i>'.__($guid, 'No year groups available.').'</i>')->addClass('right');
+                    $row->addContent('<i>'.__('No year groups available.').'</i>')->addClass('right');
                 } else {
                     $row->addCheckbox('gibbonYearGroupID')->fromArray($yearGroupsOptions);
                 }
@@ -110,4 +110,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_add.php
         }
     }
 }
-?>

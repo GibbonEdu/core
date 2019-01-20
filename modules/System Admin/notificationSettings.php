@@ -29,9 +29,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Notification Settings').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Notification Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -57,6 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     };
 
     $table = DataTable::create('notificationEvents');
+
+    $table->modifyRows(function($notification, $row) {
+        if ($notification['active'] == 'N') $row->addClass('error');
+        return $row;
+    });
 
     $table->addColumn('moduleName', __('Module'));
     $table->addColumn('event', __('Name'))->format($nameFormat);

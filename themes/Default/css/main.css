@@ -33,7 +33,6 @@ html {
 
 body {
 	padding: 0 0 20px;
-	background: url("../img/backgroundPage.jpg") repeat fixed center top #A88EDB;
 	color:#222222;
 	font-family: Helvetica, Arial, sans-serif!important;
 }
@@ -290,13 +289,13 @@ div.minorLinks a:hover {
 	padding: 2px;
 	position: absolute;
 	font-weight:normal;
-	left: -999em;
 	text-shadow: none;
-	width: 180px ;
+    width: 180px ;
+    display: none;
 }
 #nav li:hover ul, #nav li.sfhover ul {
-	left: 0;
-	z-index:99999;
+    z-index:99999;
+    display: block;
 }
 
 #nav li li {
@@ -562,7 +561,7 @@ table td {
 	background: -webkit-gradient(linear, left top, left bottom, from(#fbfbfb), to(#fafafa));
 	background: -moz-linear-gradient(top,  #fbfbfb,  #fafafa);
 }
-table tr.even td {
+table tr.even > td {
 	background: #f0f0f0;
 	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
 	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
@@ -834,6 +833,15 @@ div.success {
 	border-left: 6px solid #390;
 	color: #390;
 	background-color: #D4F6DC;
+	font-size: 12px;
+	padding: 10px;
+	margin: 10px 0px 15px 0px;
+	box-shadow: 2px 2px 2px rgba(50,50,50,0.15);
+}
+div.exception {
+	border-left: 6px solid #444;
+	color: #444;
+	background-color: #f9f9f9;
 	font-size: 12px;
 	padding: 10px;
 	margin: 10px 0px 15px 0px;
@@ -1299,7 +1307,6 @@ table.standardForm td.standardWidth:last-child:nth-child(2) {
 
 select[multiple] {
 	height: auto;
-	max-height: 130px;
 }
 
 .shortWidth {
@@ -1639,6 +1646,10 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 /* Gibbon Data Table CSS - Will be moved to core.css */
+.dataTable {
+    overflow-x: auto;
+}
+
 .dataTable .sortable {
 	cursor: pointer;
     position: relative;
@@ -1743,19 +1754,29 @@ tr.selected, tr.selected td, div.selected, td.selected {
     -webkit-transform: rotate(45deg);
 }
 
-.dataTable .bulkActionPanel {
+.bulkActionForm {
+    position: relative;
+}
+
+.bulkActionForm .bulkActionPanel {
     position:absolute;
     z-index:1;
-    bottom: -8px;
+    top: 44px;
     right: 0;
-    width: 100%;background: #9d7cc6;
+    width: 100%;
+    background: #9d7cc6;
     padding: 5px;
     box-sizing: border-box;
     border-top-right-radius: 3px;
     border-top-left-radius: 3px;
 }
 
-.dataTable .bulkActionCount {
+.bulkActionForm .bulkActionPanel .LV_validation_message {
+    position: absolute;
+    bottom: -14px;
+}
+
+.bulkActionForm .bulkActionCount {
     position: relative; 
     right: 10px;
     font-size:13px;
@@ -1763,12 +1784,12 @@ tr.selected, tr.selected td, div.selected, td.selected {
     color:#fff
 }
 
-.dataTable .bulkCheckbox {
+.bulkActionForm .bulkCheckbox {
     position: relative;
     text-align: center;
 }
 
-.dataTable .bulkCheckbox label {
+.bulkActionForm .bulkCheckbox label {
     position: absolute;
     top: 0;
     left: 0;
@@ -1824,4 +1845,15 @@ button[disabled], input[disabled], textarea[disabled] {
     height: 14px;
     width: 14px;
     opacity: 0.65;
+}
+
+/* PRINT STYLES */
+body.print div.trail {
+    display: none;
+}
+
+@media print {
+    table tr {
+        page-break-inside: avoid;
+    }
 }

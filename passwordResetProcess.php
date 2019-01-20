@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
+
 include './gibbon.php';
 
 //Create password
@@ -42,7 +44,7 @@ if ($input == '' or ($step != 1 and $step != 2)) {
 else {
     try {
         $data = array('email' => $input, 'username' => $input);
-        $sql = "SELECT gibbonPersonID, email, username FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
+        $sql = "SELECT gibbonPersonID, email, username, canLogin, gibbonRoleIDPrimary FROM gibbonPerson WHERE (email=:email OR username=:username) AND gibbonPerson.status='Full' AND NOT email=''";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -56,6 +58,26 @@ else {
         header("Location: {$URL}");
     } else {
         $row = $result->fetch();
+
+        // Insufficient privileges to login
+        if ($row['canLogin'] != 'Y') {
+            $URL .= '&return=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
+
+        // Login not allowed for this role
+        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
+            $URL .= '&return=fail9';
+            header("Location: {$URL}");
+            exit;
+        }
+
         $gibbonPersonID = $row['gibbonPersonID'];
         $email = $row['email'];
         $username = $row['username'];
@@ -85,13 +107,11 @@ else {
             }
             $gibbonPersonResetID = str_pad($connection2->lastInsertID(), 12, '0', STR_PAD_LEFT);
 
-            require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
-
             //Send email
-            $subject = $_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'Gibbon Password Reset');
-            $body = sprintf(__($guid, 'A password reset request has been initiated for account %1$s, which is registered to this email address.%2$sIf you did not initiate this request, please ignore this email.%2$sIf you do wish to reset your password, please use the link below to access the reset form:%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
+            $subject = $_SESSION[$guid]['organisationNameShort'].' '.__('Gibbon Password Reset');
+            $body = sprintf(__('A password reset request has been initiated for account %1$s, which is registered to this email address.%2$sIf you did not initiate this request, please ignore this email.%2$sIf you do wish to reset your password, please use the link below to access the reset form:%2$s%3$s%2$s%4$s'), $username, "\n\n", $_SESSION[$guid]['absoluteURL']."/index.php?q=/passwordReset.php&input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key", $_SESSION[$guid]['systemName']." Administrator");
 
-            $mail = getGibbonMailer($guid);
+            $mail = $container->get(Mailer::class);
             $mail->AddAddress($email);
 
             if (isset($_SESSION[$guid]['organisationEmail']) && $_SESSION[$guid]['organisationEmail'] != '') {
@@ -161,7 +181,7 @@ else {
                         } else {
                             //Check new passwords match
                             if ($passwordNew != $passwordConfirm) {
-                                $URL .= '&return=error4';
+                                $URL .= '&return=error5';
                                 header("Location: {$URL}");
                             } else {
                                 //Update password

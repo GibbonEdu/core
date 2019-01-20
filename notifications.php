@@ -19,19 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 if (!isset($_SESSION[$guid]['username'])) {
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Notifications').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Notifications'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
     echo "<div class='linkTop'>";
-    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$_SESSION[$guid]['absoluteURL']."/notificationsDeleteAllProcess.php'>".__($guid, 'Delete All Notifications')." <img style='vertical-align: -25%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'></a>";
+    echo "<a onclick='return confirm(\"Are you sure you want to delete these records.\")' href='".$_SESSION[$guid]['absoluteURL']."/notificationsDeleteAllProcess.php'>".__('Delete All Notifications')." <img style='vertical-align: -25%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'></a>";
     echo '</div>';
 
     //Get and show newnotifications
@@ -48,25 +46,25 @@ if (!isset($_SESSION[$guid]['username'])) {
     }
 
     echo '<h2>';
-    echo __($guid, 'New Notifications')." <span style='font-size: 65%; font-style: italic; font-weight: normal'> x".$resultNotifications->rowCount().'</span>';
+    echo __('New Notifications')." <span style='font-size: 65%; font-style: italic; font-weight: normal'> x".$resultNotifications->rowCount().'</span>';
     echo '</h2>';
 
     echo "<table cellspacing='0' style='width: 100%'>";
     echo "<tr class='head'>";
     echo "<th style='width: 18%'>";
-    echo __($guid, 'Source');
+    echo __('Source');
     echo '</th>';
     echo "<th style='width: 12%'>";
-    echo __($guid, 'Date');
+    echo __('Date');
     echo '</th>';
     echo "<th style='width: 51%'>";
-    echo __($guid, 'Message');
+    echo __('Message');
     echo '</th>';
     echo "<th style='width: 7%'>";
-    echo __($guid, 'Count');
+    echo __('Count');
     echo '</th>';
     echo "<th style='width: 12%'>";
-    echo __($guid, 'Actions');
+    echo __('Actions');
     echo '</th>';
     echo '</tr>';
 
@@ -75,7 +73,7 @@ if (!isset($_SESSION[$guid]['username'])) {
     if ($resultNotifications->rowCount() < 1) {
         echo "<tr class=$rowNum>";
         echo '<td colspan=5>';
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</td>';
         echo '</tr>';
     } else {
@@ -102,8 +100,8 @@ if (!isset($_SESSION[$guid]['username'])) {
             echo $row['count'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__($guid, 'Action & Archive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action & Archive')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }
@@ -124,24 +122,24 @@ if (!isset($_SESSION[$guid]['username'])) {
     }
 
     echo '<h2>';
-    echo __($guid, 'Archived Notifications');
+    echo __('Archived Notifications');
     echo '</h2>';
     echo "<table cellspacing='0' style='width: 100%'>";
     echo "<tr class='head'>";
     echo "<th style='width: 18%'>";
-    echo __($guid, 'Source');
+    echo __('Source');
     echo '</th>';
     echo "<th style='width: 12%'>";
-    echo __($guid, 'Date');
+    echo __('Date');
     echo '</th>';
     echo "<th style='width: 51%'>";
-    echo __($guid, 'Message');
+    echo __('Message');
     echo '</th>';
     echo "<th style='width: 7%'>";
-    echo __($guid, 'Count');
+    echo __('Count');
     echo '</th>';
     echo "<th style='width: 12%'>";
-    echo __($guid, 'Actions');
+    echo __('Actions');
     echo '</th>';
     echo '</tr>';
 
@@ -150,7 +148,7 @@ if (!isset($_SESSION[$guid]['username'])) {
     if ($resultNotifications->rowCount() < 1) {
         echo "<tr class=$rowNum>";
         echo '<td colspan=5>';
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</td>';
         echo '</tr>';
     } else {
@@ -177,8 +175,8 @@ if (!isset($_SESSION[$guid]['username'])) {
             echo $row['count'];
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__($guid, 'Action')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsActionProcess.php?action='.urlencode($row['actionLink']).'&gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Action')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/notificationsDeleteProcess.php?gibbonNotificationID='.$row['gibbonNotificationID']."'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
             echo '</td>';
             echo '</tr>';
         }

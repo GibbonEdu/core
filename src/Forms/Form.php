@@ -32,6 +32,7 @@ class Form implements OutputableInterface
 {
     use BasicAttributesTrait;
 
+    protected $title;
     protected $factory;
     protected $renderer;
 
@@ -78,6 +79,26 @@ class Form implements OutputableInterface
     }
 
     /**
+     * Get the form title.
+     * @return  string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set the form title.
+     * @param  string  $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+
+        return $this;
+    }
+
+    /**
      * Get the current factory.
      * @return  object FormFactoryInterface
      */
@@ -93,6 +114,8 @@ class Form implements OutputableInterface
     public function setFactory(FormFactoryInterface $factory)
     {
         $this->factory = $factory;
+
+        return $this;
     }
 
     /**
@@ -111,6 +134,8 @@ class Form implements OutputableInterface
     public function setRenderer(FormRendererInterface $renderer)
     {
         $this->renderer = $renderer;
+
+        return $this;
     }
 
     /**
@@ -197,6 +222,10 @@ class Form implements OutputableInterface
      */
     public function setAutocomplete($value)
     {
+        if (is_bool($value)) {
+            $value = $value? 'on' : 'off';
+        }
+        
         $this->setAttribute('autocomplete', $value);
 
         return $this;

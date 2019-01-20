@@ -21,29 +21,28 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Work Summary by Roll Group'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary_byRollGroup.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Work Summary by Roll Group').'</div>';
-    echo '</div>';
     echo '<p>';
-    echo __($guid, 'This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to compulsory.');
+    echo __('This report draws data from the Markbook, Planner and Behaviour modules to give an overview of student performance and work completion. It only counts Online Submission data when submission is set to compulsory.');
     echo '</p>';
 
     echo '<h2>';
-    echo __($guid, 'Choose Roll Group');
+    echo __('Choose Roll Group');
     echo '</h2>';
 
     $gibbonRollGroupID = isset($_GET['gibbonRollGroupID'])? $_GET['gibbonRollGroupID'] : null;
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/report_workSummary_byRollGroup.php');
@@ -59,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 
     if ($gibbonRollGroupID != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -74,22 +73,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Satisfactory');
+        echo __('Satisfactory');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Unsatisfactory');
+        echo __('Unsatisfactory');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'On Time');
+        echo __('On Time');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Late');
+        echo __('Late');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Incomplete');
+        echo __('Incomplete');
         echo '</th>';
         echo '</tr>';
 
@@ -387,7 +386,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=2>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

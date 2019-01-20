@@ -18,9 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// set page breadcrumb
+$page->breadcrumbs->add(__('Attendance Trends'));
 
 function getDateRange($guid, $connection2, $first, $last, $step = '+1 day', $output_format = 'Y-m-d' ) {
 
@@ -42,16 +46,12 @@ function getDateRange($guid, $connection2, $first, $last, $step = '+1 day', $out
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_byType.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance Trends').'</div>';
-    echo '</div>';
-
     echo '<h2>';
-    echo __($guid, 'Choose Date');
+    echo __('Choose Date');
     echo '</h2>';
 
     $dateEnd = (isset($_POST['dateEnd']))? dateConvert($guid, $_POST['dateEnd']) : date('Y-m-d');
@@ -80,8 +80,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
     $rollGroups = !empty($_POST['gibbonRollGroupID'])? $_POST['gibbonRollGroupID'] : array('all');
     if (in_array('all', $rollGroups)) $rollGroups = array('all');
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     if (isset($_POST['types']) && isset($_POST['dateStart'])) {
         $types = $_POST['types'];
@@ -136,10 +136,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
     if ($dateStart != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
-        echo '<p><span class="small emphasis">'.__($guid, 'Click a legend item to toggle visibility.').'</span></p>';
+        echo '<p><span class="small emphasis">'.__('Click a legend item to toggle visibility.').'</span></p>';
 
         //Produce array of attendance data
         try {
@@ -171,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
 

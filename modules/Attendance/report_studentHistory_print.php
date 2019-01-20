@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentHistory_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonPersonID = $_GET['gibbonPersonID'];
@@ -42,7 +42,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentH
     if ($gibbonPersonID != '') {
         $output = '';
         echo '<h2>';
-        echo __($guid, 'Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
+        echo __('Attendance History for').' '.formatName('', $row['preferredName'], $row['surname'], 'Student');
         echo '</h2>';
 
         report_studentHistory($guid, $gibbonPersonID, false, $_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/report_studentHistory_print.php&gibbonPersonID=$gibbonPersonID", $connection2, $row['dateStart'], $row['dateEnd']);

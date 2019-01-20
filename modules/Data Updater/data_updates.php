@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.php') == false) {
     //Acess denied
@@ -30,9 +30,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('My Data Updates').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('My Data Updates'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return']);
@@ -118,7 +116,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
             echo '</td>';
 
             $dataUpdatesByType = $gateway->selectDataUpdatesByPerson($person['gibbonPersonID'], $gibbonPersonID)->fetchGrouped();
-            $recentlyStarted = !empty($person['dateStart']) && $person['dateStart'] >= $cutoffDate;
 
             foreach ($updatableDataTypes as $type) {
                 $updateRequired = false;
@@ -130,7 +127,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_updates.
 
                         $lastUpdate = !empty($dataUpdate['lastUpdated'])? __('Last Updated').': '.date('F j, Y', strtotime($dataUpdate['lastUpdated'])) : '';
                         
-                        if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate) || $recentlyStarted) {
+                        if (!in_array($type, $requiredUpdatesByType) || empty($cutoffDate)) {
                             // Display an edit link if updates aren't required or no cutoff date is set
                             $output .= "<img title='".__('Edit').'<br/>'.$lastUpdate."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/><br/>";
                             $output .= $dataUpdate['name'];

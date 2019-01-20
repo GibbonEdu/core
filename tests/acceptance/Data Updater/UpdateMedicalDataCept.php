@@ -48,7 +48,6 @@ $gibbonPersonMedicalUpdateID = $I->grabValueFromURL('gibbonPersonMedicalUpdateID
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('Data Updater', 'data_medical_manage_delete.php', array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID));
-$I->seeBreadcrumb('Delete Request');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

@@ -18,26 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view_discuss.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__($guid, 'View All Assessments')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/crowdAssess_view.php&gibbonPlannerEntryID='.$_GET['gibbonPlannerEntryID']."'>".__($guid, 'View Assessment')."</a> > </div><div class='trailEnd'>".__($guid, 'Discuss').'</div>';
-    echo '</div>';
+    //Get class variable
+    $gibbonPersonID = $_GET['gibbonPersonID'];
+    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
+    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
+
+    $urlParams = ['gibbonPlannerEntryID' => $gibbonPlannerEntryID];
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'crowdAssess.php')
+        ->add(__('View Assessment'), 'crowdAssess_view.php', $urlParams)
+        ->add(__('Discuss'));    
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Get class variable
-    $gibbonPersonID = $_GET['gibbonPersonID'];
-    $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
-    $gibbonPlannerEntryHomeworkID = $_GET['gibbonPlannerEntryHomeworkID'];
     if ($gibbonPersonID == '' or $gibbonPlannerEntryID == '' or $gibbonPlannerEntryHomeworkID == '') {
         echo "<div class='warning'>";
         echo 'Student, lesson or homework has not been specified .';
@@ -56,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                 if ($resultList->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There is currently no work to assess.');
+                    echo __('There is currently no work to assess.');
                     echo '</div>';
                 } else {
                     $rowList = $resultList->fetch();
@@ -92,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                     if ($resultWork->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There is currently no work to assess.');
+                        echo __('There is currently no work to assess.');
                         echo '</div>';
                     } else {
                         $rowWork = $resultWork->fetch();
@@ -106,9 +109,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo "<td style='width: 34%; vertical-align: top'>";
                         echo "<span style='font-size: 115%; font-weight: bold'>Version</span><br/>";
                         if ($rowWork['version'] == 'Final') {
-                            $linkText = __($guid, 'Final');
+                            $linkText = __('Final');
                         } else {
-                            $linkText = __($guid, 'Draft').$rowWork['count'];
+                            $linkText = __('Draft').$rowWork['count'];
                         }
 
                         if ($rowWork['type'] == 'File') {
@@ -126,7 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo '</table>';
 
                         echo "<div style='margin: 0px' class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss_post.php&gibbonPersonID=$gibbonPersonID&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=$gibbonPlannerEntryHomeworkID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
 
                         //Get discussion

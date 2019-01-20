@@ -1,0 +1,53 @@
+details:
+    type: familyAdult
+    name: Adults
+    category: Family
+    table: gibbonFamilyAdult
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage Families
+primaryKey:
+    gibbonFamilyAdultID
+uniqueKeys:
+    - [ gibbonFamilyID, contactPriority ]
+    - [ gibbonFamilyID, gibbonPersonID ]
+table:
+    gibbonFamilyID:
+        name: "Family Sync Key"
+        desc: "Unique ID for family, according to source system."
+        args: { filter: string, required: true }
+        relationship: { table: gibbonFamily, key: gibbonFamilyID, field: familySync  }
+    gibbonPersonID:
+        name: "Adult"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    comment:
+        name: "Comment"
+        desc: "Data displayed in full Student Profile"
+        args: { filter: string }
+    childDataAccess:
+        name: "Data Access?"
+        desc: "Access data on family's children?"
+        args: { filter: yesno, custom: true }
+    contactPriority:
+        name: "Contact Priority"
+        desc: "The order in which school should contact family members."
+        args: { filter: numeric, custom: true, required: true }
+    contactCall:
+        name: "Call?"
+        desc: "Receive non-emergency phone calls from school?"
+        args: { filter: yesno, custom: true }
+    contactSMS:
+        name: "SMS?"
+        desc: "Receive non-emergency SMS messages from school?"
+        args: { filter: yesno, custom: true }
+    contactEmail:
+        name: "Email?"
+        desc: "Receive non-emergency emails from school?"
+        args: { filter: yesno, custom: true }
+    contactMail:
+        name: "Mail?"
+        desc: "Receive postage mail from school?"
+        args: { filter: yesno, custom: true }

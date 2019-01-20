@@ -18,29 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_details_notes_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $allStudents = '';
-    if (isset($_GET['allStudents'])) {
-        $allStudents = $_GET['allStudents'];
-    }
+    $allStudents = $_GET['allStudents'] ?? '';
+    $search = $_GET['search'] ?? '';
+    $sort = $_GET['sort'] ?? '';
 
     $enableStudentNotes = getSettingByScope($connection2, 'Students', 'enableStudentNotes');
     if ($enableStudentNotes != 'Y') {
         echo "<div class='error'>";
-        echo __($guid, 'You do not have access to this action.');
+        echo __('You do not have access to this action.');
         echo '</div>';
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
         $subpage = $_GET['subpage'];
         if ($gibbonPersonID == '' or $subpage == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -53,15 +53,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
             }
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $student = $result->fetch();
 
                 //Proceed!
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view.php'>".__($guid, 'View Student Profiles')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/student_view_details.php&gibbonPersonID=$gibbonPersonID&subpage=$subpage&allStudents=$allStudents'>".formatName('', $student['preferredName'], $student['surname'], 'Student')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Student Note').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('View Student Profiles'), 'student_view.php')
+                    ->add(Format::name('', $student['preferredName'], $student['surname'], 'Student'), 'student_view_details.php', ['gibbonPersonID' => $gibbonPersonID, 'subpage' => $subpage, 'allStudents' => $allStudents])
+                    ->add(__('Add Student Note'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -69,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
 
                 if ($_GET['search'] != '') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."&subpage=$subpage&category=".$_GET['category']."&allStudents=$allStudents'>".__('Back to Search Results').'</a>';
                     echo '</div>';
 				}
 				
@@ -122,4 +123,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/student_view_deta
         }
     }
 }
-?>

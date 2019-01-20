@@ -37,6 +37,7 @@ class Action extends WebLink
 
     protected $modal = false;
     protected $direct = false;
+    protected $external = false;
     protected $displayLabel = false;
 
     public function __construct($name, $label = '')
@@ -48,11 +49,19 @@ class Action extends WebLink
         switch ($this->name) {
             case 'add':     $this->setIcon('page_new');
                             break;
+            case 'addMultiple':
+                            $this->setIcon('page_new_multi');
+                            break;
             case 'edit':    $this->setIcon('config');
                             break;
             case 'delete':  $this->setIcon('garbage')->isModal(650, 135);
                             break;
-            default:
+            case 'print':   $this->setIcon('print');
+                            break;
+            case 'export':  $this->setIcon('download');
+                            break;
+            case 'import':  $this->setIcon('upload');
+                            break;
             case 'view':    $this->setIcon('zoom');
                             break;
         }
@@ -67,6 +76,21 @@ class Action extends WebLink
     public function setURL($url)
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * Sets the external url for this action.
+     * 
+     * @param string $url
+     * @return self
+     */
+    public function setExternalURL($url)
+    {
+        $this->url = $url;
+        $this->external = true;
+        $this->target = '_blank';
 
         return $this;
     }
@@ -170,11 +194,15 @@ class Action extends WebLink
     {
         global $guid; // :(
 
-        $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" style="margin-left: 5px">', 
-            ($this->displayLabel? $this->getLabel() : ''),
-            $this->getLabel(), 
-            $this->getIcon()
-        ));
+        if ($icon = $this->getIcon()) {
+            $this->setContent(sprintf('%1$s<img title="%2$s" src="'.$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/%3$s.png" style="margin-left: 5px">', 
+                ($this->displayLabel? $this->getLabel() : ''),
+                $this->getLabel(), 
+                $this->getIcon()
+            ));
+        } else {
+            $this->setContent($this->getLabel());
+        }
 
         $queryParams = !$this->direct ? array('q' => $this->url) : array();
 
@@ -182,7 +210,9 @@ class Action extends WebLink
             $queryParams[$key] = (empty($value) && !empty($data[$key]))? $data[$key] : $value;
         }
 
-        if ($this->direct) {
+        if ($this->external) {
+            $this->setAttribute('href', $this->url);
+        } else if ($this->direct) {
             $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].$this->url.'?'.http_build_query($queryParams));
         } else if ($this->modal) {
             $this->setAttribute('href', $_SESSION[$guid]['absoluteURL'].'/fullscreen.php?'.http_build_query($queryParams));

@@ -1,10 +1,30 @@
-uploads/*
-!uploads/.htaccess
+# Core Files
 /config.php
 /index_custom.php
 /index_customSidebar.php
+
+# Uploads Folder
+uploads/*
+!uploads/.htaccess
+
+# Tests Folder
+tests/log/*
+tests/config/support/_generated/*
+
+# Template Cache
+/resources/templates/cache/*
+
+# Misc System Temp Files
 Thumb.db
 .DS_Store
-tests/log/*
+*~
 nbproject/
-/i18n/*.po
+
+# Dev Dependencies
+/vendor/twbs
+
+# examples and tests in the vendor folder
+/vendor/**/tests
+/vendor/**/unitTests
+/vendor/**/Examples
+/vendor/**/examples

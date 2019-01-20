@@ -1,0 +1,55 @@
+details:
+    type: medicalConditions
+    name: Medical Conditions
+    table: gibbonPersonMedicalCondition
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Students
+    action: Manage Medical Forms
+primaryKey:
+    gibbonPersonMedicalConditionID
+uniqueKeys:
+    - [ gibbonPersonMedicalID, name, gibbonAlertLevelID, triggers ]
+table:
+    gibbonPersonMedicalID: 
+        name: "Student"
+        desc: "Username"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonPersonMedical, key: gibbonPersonMedicalID, join: gibbonPerson, on: [gibbonPersonID,gibbonPersonID], field: username  }
+    name: 
+        name: "Condition Name"
+        desc: ""
+        args: {filter: string, required: true}
+    gibbonAlertLevelID: 
+        name: "Risk"
+        desc: ""
+        args: {filter: string, required: true}
+        relationship: { table: gibbonAlertLevel, key: gibbonAlertLevelID, field: name  }
+    triggers: 
+        name: "Triggers"
+        desc: ""
+        args: {filter: string}
+    reaction: 
+        name: "Reaction"
+        desc: ""
+        args: {filter: string}
+    response: 
+        name: "Response"
+        desc: ""
+        args: {filter: string}
+    medication: 
+        name: "Medication"
+        desc: ""
+        args: {filter: string}
+    lastEpisode: 
+        name: "Last Episode"
+        desc: ""
+        args: {filter: date}
+    lastEpisodeTreatment: 
+        name: "Last Episode Treatment"
+        desc: ""
+        args: {filter: string}
+    comment: 
+        name: "Comment"
+        desc: ""
+        args: {filter: string}

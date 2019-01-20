@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\System\NotificationGateway;
+use Gibbon\Services\Format;
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationSettings_manage_edit.php') == false) {
     //Acess denied
@@ -28,9 +29,9 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/notificationSettings.php'>".__($guid, 'Notification Settings')."</a> > </div><div class='trailEnd'>".__('Edit Notification Event').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Notification Settings'), 'notificationSettings.php')
+        ->add(__('Edit Notification Event'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -48,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $event = $result->fetch();
@@ -119,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 while ($listener = $result->fetch()) {
                     echo '<tr class="'.(($listener['receiveNotificationEmails'] == 'N')? 'warning' : '').'">';
                     echo '<td>';
-                    echo formatName($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
+                    echo Format::name($listener['title'], $listener['preferredName'], $listener['surname'], 'Staff', false, true);
                     echo '</td>';
                     echo '<td>';
                     echo ynExpander($guid, $listener['receiveNotificationEmails']);
@@ -180,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
                 $form->addHiddenValue('gibbonNotificationEventID', $gibbonNotificationEventID);
 
                 while ($rowSelect = $resultSelect->fetch()) {
-                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = formatName("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
+                    $staffMembers[$rowSelect['roleName']][$rowSelect['gibbonPersonID']] = Format::name("", $rowSelect["preferredName"], $rowSelect["surname"], "Staff", true, true);
                 }
 
                 $row = $form->addRow();

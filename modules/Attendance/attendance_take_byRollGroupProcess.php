@@ -17,11 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Attendance\AttendanceView;
+
 //Gibbon system-wide includes
-include '../../gibbon.php';
+require __DIR__ . '/../../gibbon.php';
 
 //Module includes
-include './moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $gibbonRollGroupID = $_POST['gibbonRollGroupID'];
 $currentDate = $_POST['currentDate'];
@@ -35,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
     $highestAction = getHighestGroupedAction($guid, '/modules/Attendance/attendance_take_byRollGroup.php', $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
@@ -76,8 +78,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         header("Location: {$URL}");
                     } else {
                         //Write to database
-                        require_once $_SESSION[$guid]["absolutePath"] . '/modules/Attendance/src/attendanceView.php';
-                        $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+                        require_once __DIR__ . '/src/AttendanceView.php';
+                        $attendance = new AttendanceView($gibbon, $pdo);
 
                         try {
                             $data = array('gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonRollGroupID' => $gibbonRollGroupID, 'date' => $currentDate, 'timestampTaken' => date('Y-m-d H:i:s'));

@@ -249,6 +249,32 @@ class Format
     }
 
     /**
+     * Formats a long string by truncating after $length characters 
+     * and displaying the full string on hover.
+     *
+     * @param string $value
+     * @param int $length
+     * @return string
+     */
+    public static function truncate($value, $length = 40)
+    {
+        return strlen($value) > $length
+            ? "<span title='".$value."'>".substr($value, 0, $length).'...</span>'
+            : $value;
+    }
+
+    /**
+     * Formats a string of additional details in a smaller font.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function small($value)
+    {
+        return '<span class="small emphasis">'.$value.'</span>';
+    }
+
+    /**
      * Formats a link from a url. Automatically adds target _blank to external links.
      * 
      * @param string $url
@@ -256,16 +282,39 @@ class Format
      * @param string $title
      * @return string
      */
-    public static function link($url, $text = '', $title = '')
+    public static function link($url, $text = '', $attr = [])
     {
         if (empty($url)) return $text;
         if (!$text) $text = $url;
+        if (!is_array($attr)) $attr = ['title' => $attr];
 
         if (stripos($url, static::$settings['absoluteURL']) === false) {
-            return '<a href="'.$url.'" title="'.$title.'" target="_blank">'.$text.'</a>';
+            return '<a href="'.$url.'" '.self::attributes($attr).' target="_blank">'.$text.'</a>';
         } else {
-            return '<a href="'.$url.'" title="'.$title.'">'.$text.'</a>';
+            return '<a href="'.$url.'" '.self::attributes($attr).'>'.$text.'</a>';
         }
+    }
+
+    /**
+     * Formats a key => value array of HTML attributes into a string of key="value".
+     *
+     * @param array $attributes
+     * @return string
+     */
+    public static function attributes(array $attributes)
+    {
+        return implode(' ', array_map(
+            function ($key) use ($attributes) {
+                if (is_bool($attributes[$key])) {
+                    return $attributes[$key]? $key : '';
+                }
+                if (isset($attributes[$key]) && $attributes[$key] != '') {
+                    return $key.'="'.htmlentities($attributes[$key], ENT_QUOTES, 'UTF-8').'"';
+                }
+                return '';
+            },
+            array_keys($attributes)
+        ));
     }
 
     /**
@@ -374,15 +423,13 @@ class Format
      * @param bool $informal
      * @return string
      */
-    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false)
+    public static function nameList($list, $roleCategory = 'Staff', $reverse = false, $informal = false, $separator = '<br/>')
     {
-        $output = '';
-        foreach ($list as $person) {
-            $output .= static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
-            $output .= '<br/>';
-        }
+        $listFormatted = array_map(function ($person) use ($roleCategory, $reverse, $informal) {
+            return static::name($person['title'], $person['preferredName'], $person['surname'], $roleCategory, $reverse, $informal);
+        }, $list);
 
-        return $output;
+        return implode($separator, $listFormatted);
     }
 
     /**
@@ -426,5 +473,10 @@ class Format
     public static function courseClassName($courseName, $className)
     {
         return $courseName .'.'. $className;
+    }
+
+    public static function alert($message, $level = 'error')
+    {
+        return '<div class="'.$level.'">'.$message.'</div>';
     }
 }

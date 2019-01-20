@@ -17,10 +17,10 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
+
 include '../../gibbon.php';
 
-//PHPMailer include
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
 $from = getSettingByScope($connection2, 'Finance', 'email');
 
 //Module includes
@@ -308,8 +308,8 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                                 $body = invoiceContents($guid, $connection2, $gibbonFinanceInvoiceID, $gibbonSchoolYearID, $_SESSION[$guid]['currency'], true)."<p style='font-style: italic;'>Email sent via ".$_SESSION[$guid]['systemName'].' at '.$_SESSION[$guid]['organisationName'].'.</p>';
                                 $bodyPlain = 'This email is not viewable in plain text: enable rich text/HTML in your email client to view the invoice. Please reply to this email if you have any questions.';
 
-                                $mail = getGibbonMailer($guid);
-                                $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                                $mail = $container->get(Mailer::class);
+                                $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                                 foreach ($emails as $address) {
                                     $mail->AddBCC($address);
                                 }
@@ -460,8 +460,8 @@ if ($gibbonSchoolYearID == '' or $action == '') { echo 'Fatal error loading this
                             }
                         }
 
-                        $mail = getGibbonMailer($guid);
-                        $mail->SetFrom($from, sprintf(__($guid, '%1$s Finance'), $_SESSION[$guid]['organisationName']));
+                        $mail = $container->get(Mailer::class);
+                        $mail->SetFrom($from, sprintf(__('%1$s Finance'), $_SESSION[$guid]['organisationName']));
                         foreach ($emails as $address) {
                             $mail->AddBCC($address);
                         }

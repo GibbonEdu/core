@@ -21,7 +21,7 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $enableDescriptors = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors');
 $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
@@ -29,19 +29,19 @@ $enableLevels = getSettingByScope($connection2, 'Behaviour', 'enableLevels');
 if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Behaviour/behaviour_manage.php'>".__($guid, 'Manage Behaviour Records')."</a> > </div><div class='trailEnd'>".__($guid, 'Add').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('Manage Behaviour Records'), 'behaviour_manage.php')
+            ->add(__('Add'));
 
         $gibbonBehaviourID = isset($_GET['gibbonBehaviourID'])? $_GET['gibbonBehaviourID'] : null;
         $gibbonPersonID = isset($_GET['gibbonPersonID'])? $_GET['gibbonPersonID'] : '';
@@ -72,13 +72,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             echo "<div class='linkTop'>";
             $policyLink = getSettingByScope($connection2, 'Behaviour', 'policyLink');
             if ($policyLink != '') {
-                echo "<a target='_blank' href='$policyLink'>".__($guid, 'View Behaviour Policy').'</a>';
+                echo "<a target='_blank' href='$policyLink'>".__('View Behaviour Policy').'</a>';
             }
             if ($gibbonPersonID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '' or $type != '') {
                 if ($policyLink != '') {
                     echo ' | ';
                 }
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Behaviour/behaviour_manage.php&gibbonPersonID='.$gibbonPersonID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID.'&type='.$type."'>".__('Back to Search Results').'</a>';
             }
             echo '</div>';
 
@@ -156,7 +156,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
         } elseif ($step == 2 and $gibbonBehaviourID != null) {
             if ($gibbonBehaviourID == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'You have not specified one or more required parameters.');
+                echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 //Check for existence of behaviour record
@@ -170,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 }
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record cannot be found.');
+                    echo __('The specified record cannot be found.');
                     echo '</div>';
                 } else {
                     $values = $result->fetch();
@@ -180,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $form->setFactory(DatabaseFormFactory::create($pdo));
                         $form->addHiddenValue('address', "/modules/Behaviour/behaviour_manage_add.php");
                         $form->addHiddenValue('gibbonBehaviourID', $gibbonBehaviourID);
-                        $form->addRow()->addHeading(__($guid, 'Step 2 (Optional)'));
+                        $form->addRow()->addHeading(__('Step 2 (Optional)'));
 
                     //Student
                     $row = $form->addRow();

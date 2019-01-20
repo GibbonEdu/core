@@ -74,7 +74,8 @@ class InvoiceGateway extends QueryableGateway
             ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
             ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
             ->where('gibbonFinanceInvoice.gibbonSchoolYearID = :gibbonSchoolYearID')
-            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID);
+            ->bindValue('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->groupBy(['gibbonFinanceInvoice.gibbonFinanceInvoiceID']);
 
         $criteria->addFilterRules([
             'status' => function ($query, $status) {
@@ -125,7 +126,12 @@ class InvoiceGateway extends QueryableGateway
 
             'feeCategory' => function ($query, $gibbonFinanceFeeCategoryID) {
                 return $query
-                    ->where('FIND_IN_SET(:gibbonFinanceFeeCategoryID, gibbonFinanceInvoice.gibbonFinanceFeeCategoryIDList)')
+                    ->leftJoin('gibbonFinanceInvoiceFee', 'gibbonFinanceInvoiceFee.gibbonFinanceInvoiceID=gibbonFinanceInvoice.gibbonFinanceInvoiceID')
+                    ->leftJoin('gibbonFinanceFee', 'gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID')
+                    ->where(function($query) {
+                        $query->where('gibbonFinanceInvoiceFee.gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID')
+                              ->orWhere("(gibbonFinanceInvoiceFee.separated='N' AND gibbonFinanceFee.gibbonFinanceFeeCategoryID=:gibbonFinanceFeeCategoryID)");
+                    })
                     ->bindValue('gibbonFinanceFeeCategoryID', $gibbonFinanceFeeCategoryID);
             },
         ]);

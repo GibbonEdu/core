@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Module\Markbook\MarkbookView;
 
 function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $basePage = '')
 {
@@ -28,10 +29,10 @@ function sidebarExtra($guid, $pdo, $gibbonPersonID, $gibbonCourseClassID = '', $
 
     //Show class picker in sidebar
     $output .= '<h2>';
-    $output .= __($guid, 'Choose A Class');
+    $output .= __('Choose A Class');
     $output .= '</h2>';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->addHiddenValue('q', '/modules/Markbook/'.$basePage);
     
@@ -56,16 +57,24 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
     $output = '';
 
     $output .= "<h3 style='margin-top: 0px'>";
-    $output .= __($guid, 'Choose Class');
+    $output .= __('Choose Class');
     $output .= '</h3>';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/markbook_view.php');
 
     $col = $form->addRow()->addColumn()->addClass('inline right');
+
+    // SEARCH
+    $search = $_GET['search'] ?? '';
+
+    $col->addContent(__('Search').':');
+    $col->addTextField('search')
+        ->setClass('shortWidth')
+        ->setValue($search);
 
     // TERM
     if ($enableGroupByTerm == 'Y' ) {
@@ -77,7 +86,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $result = $pdo->executeQuery($data, $sql);
         $terms = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
 
-        $col->addContent(__('Term').':');
+        $col->addContent(__('Term').':')->prepend('&nbsp;&nbsp;');
         $col->addSelect('gibbonSchoolYearTermID')
             ->fromArray(array('-1' => __('All Terms')))
             ->fromArray($terms)
@@ -88,7 +97,7 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         $_SESSION[$guid]['markbookTerm'] = $selectTerm;
     } else {
         $_SESSION[$guid]['markbookTerm'] = 0;
-        $_SESSION[$guid]['markbookTermName'] = __($guid, 'All Columns');
+        $_SESSION[$guid]['markbookTermName'] = __('All Columns');
     }
 
     // SORT BY
@@ -136,6 +145,14 @@ function classChooser($guid, $pdo, $gibbonCourseClassID)
         ->selected($gibbonCourseClassID);
 
     $col->addSubmit(__('Go'));
+
+    if (!empty($search)) {
+        $clearURL = $_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_SESSION[$guid]['address'];
+        $clearLink = sprintf('<a href="%s" class="small" style="">%s</a> &nbsp;', $clearURL, __('Clear Search'));
+
+        $form->addRow()->addContent($clearLink)->addClass('right');
+    }
+
 
     $output .= $form->getOutput();
 
@@ -228,7 +245,7 @@ function getTeacherList( $pdo, $gibbonCourseClassID ) {
     $teacherList = array();
     if ($result->rowCount() > 0) {
         foreach ($result->fetchAll() as $teacher) {
-            $teacherList[ $teacher['gibbonPersonID'] ] = formatName($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, true);
+            $teacherList[ $teacher['gibbonPersonID'] ] = formatName($teacher['title'], $teacher['preferredName'], $teacher['surname'], 'Staff', false, false);
         }
     }
 
@@ -248,10 +265,10 @@ function getAlertStyle( $alert, $concern ) {
 
 function renderStudentCumulativeMarks($gibbon, $pdo, $gibbonPersonID, $gibbonCourseClassID) {
 
-    require_once $gibbon->session->get('absolutePath').'/modules/Markbook/src/markbookView.php';
+    require_once __DIR__ . '/src/MarkbookView.php';
 
     // Build the markbook object for this class & student
-    $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $gibbonCourseClassID);
+    $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
     $assessmentScale = $markbook->getDefaultAssessmentScale();
 
     // Cancel our now if this isnt a percent-based mark
@@ -311,7 +328,6 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/'.$submission['location']."'>$linkText</a></span>";
         } elseif ($submission['type'] == 'Link') {
             $output .= "<span title='".$submission['version'].". $status. ".__('Submitted at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style><a target='_blank' href='".$submission['location']."'>$linkText</a></span>";
-            
         } else {
             $output .= "<span title='$status. ".__('Recorded at').' '.substr($submission['timestamp'], 11, 5).' '.__('on').' '.dateConvertBack($guid, substr($submission['timestamp'], 0, 10))."' $style>$linkText</span>";
         }
@@ -319,7 +335,7 @@ function renderStudentSubmission($student, $submission, $markbookColumn)
         if (date('Y-m-d H:i:s') < $markbookColumn['homeworkDueDateTime']) {
             $output .= "<span title='".__('Pending')."'>".__('Pen').'</span>';
         } else {
-            if ($student['dateStart'] > $markbookColumn['lessonDate']) {
+            if (!empty($student['dateStart']) && $student['dateStart'] > $markbookColumn['lessonDate']) {
                 $output .= "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>NA</span>";
             } else {
                 if ($markbookColumn['homeworkSubmissionRequired'] == 'Compulsory') {

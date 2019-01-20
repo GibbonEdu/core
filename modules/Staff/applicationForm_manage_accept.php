@@ -18,29 +18,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_manage_accept.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php'>".__($guid, 'Manage Applications')."</a> > </div><div class='trailEnd'>".__($guid, 'Accept Application').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Applications'), 'applicationForm_manage.php')
+        ->add(__('Accept Application'));
 
     //Check if school year specified
     $gibbonStaffApplicationFormID = $_GET['gibbonStaffApplicationFormID'];
     $search = $_GET['search'];
     if ($gibbonStaffApplicationFormID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected application does not exist or has already been processed.');
+            echo __('The selected application does not exist or has already been processed.');
             echo '</div>';
         } else {
             if (isset($_GET['return'])) {
@@ -74,12 +75,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
             //Step 1
             if ($step == 1) {
                 echo '<h3>';
-                echo __($guid, 'Step')." $step";
+                echo __('Step')." $step";
                 echo '</h3>';
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>'; 
 
@@ -90,7 +91,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
                 
-                $applicantName = formatName('', $values['preferredName'], $values['surname'], 'Staff', false, true);
+                $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Staff', false, true);
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
                 $informApplicant = (getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault') == 'Y');
@@ -126,12 +127,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 
             } elseif ($step == 2) {
                 echo '<h3>';
-                echo __($guid, 'Step')." $step";
+                echo __('Step')." $step";
                 echo '</h3>';
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Staff/applicationForm_manage.php&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>';
 
@@ -219,25 +220,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                             //Email website and email address to admin for creation
                             if ($applicantDefaultEmail != '' or $applicantDefaultWebsite != '') {
                                 echo '<h4>';
-                                echo __($guid, 'New Staff Member Email & Website');
+                                echo __('New Staff Member Email & Website');
                                 echo '</h4>';
                                 $to = $_SESSION[$guid]['organisationAdministratorEmail'];
-                                $subject = sprintf(__($guid, 'Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                                $body = sprintf(__($guid, 'Please create the following for new staff member %1$s.'), formatName('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
+                                $subject = sprintf(__('Create applicant Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                                $body = sprintf(__('Please create the following for new staff member %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
                                 if ($applicantDefaultEmail != '') {
-                                    $body .= __($guid, 'Email').': '.$email."<br/>";
+                                    $body .= __('Email').': '.$email."<br/>";
                                 }
                                 if ($applicantDefaultWebsite != '') {
-                                    $body .= __($guid, 'Website').': '.$website."<br/>";
+                                    $body .= __('Website').': '.$website."<br/>";
                                 }
                                 if ($values['dateStart'] != '') {
-                                    $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                                    $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
                                 }
-                                $body .= __($guid, 'Job Type').': '.dateConvertBack($guid, $values['type'])."<br/>";
-                                $body .= __($guid, 'Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
+                                $body .= __('Job Type').': '.dateConvertBack($guid, $values['type'])."<br/>";
+                                $body .= __('Job Title').': '.dateConvertBack($guid, $values['jobTitle'])."<br/>";
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = getGibbonMailer($guid);
+                                $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -249,11 +250,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
-                                    echo sprintf(__($guid, 'A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
+                                    echo sprintf(__('A request to create a applicant email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
                                     echo '</div>';
                                 } else {
                                     echo "<div class='error'>";
-                                    echo sprintf(__($guid, 'A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
+                                    echo sprintf(__('A request to create a applicant email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
                                     echo '</div>';
                                 }
                             }
@@ -293,19 +294,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                     if ($failapplicant == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Applicant could not be created!');
+                        echo __('Applicant could not be created!');
                         echo '</div>';
                     } else {
                         echo '<h4>';
-                        echo __($guid, 'Applicant Details');
+                        echo __('Applicant Details');
                         echo '</h4>';
                         echo '<ul>';
                         echo "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>";
-                        echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['preferredName'], $values['surname'], 'Student').'</li>';
-                        echo '<li><b>'.__($guid, 'Email').'</b>: '.$email.'</li>';
-                        echo '<li><b>'.__($guid, 'Email Alternate').'</b>: '.$emailAlternate.'</li>';
-                        echo '<li><b>'.__($guid, 'Username')."</b>: $username</li>";
-                        echo '<li><b>'.__($guid, 'Password')."</b>: $password</li>";
+                        echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['preferredName'], $values['surname'], 'Student').'</li>';
+                        echo '<li><b>'.__('Email').'</b>: '.$email.'</li>';
+                        echo '<li><b>'.__('Email Alternate').'</b>: '.$emailAlternate.'</li>';
+                        echo '<li><b>'.__('Username')."</b>: $username</li>";
+                        echo '<li><b>'.__('Password')."</b>: $password</li>";
                         echo '</ul>';
 
                         //Enrol applicant
@@ -323,35 +324,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         //Report back
                         if ($enrolmentOK == false) {
                             echo "<div class='warning'>";
-                            echo __($guid, 'Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                            echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
                             echo '</div>';
                         } else {
                             echo '<h4>';
                             echo 'Applicant Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__($guid, 'The applicant has successfully been added to staff listing.').'</li>';
+                            echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
                             echo '</ul>';
                         }
 
                         //SEND APPLICANT EMAIL
                         if ($informApplicant == 'Y') {
                             echo '<h4>';
-                            echo __($guid, 'New Staff Member Welcome Email');
+                            echo __('New Staff Member Welcome Email');
                             echo '</h4>';
                             $notificationApplicantMessage = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationMessage');
                             foreach ($informApplicantArray as $informApplicantEntry) {
                                 if ($informApplicantEntry['email'] != '' and $informApplicantEntry['surname'] != '' and $informApplicantEntry['preferredName'] != '' and $informApplicantEntry['username'] != '' and $informApplicantEntry['password']) {
                                     $to = $informApplicantEntry['email'];
-                                    $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                                    $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                     if ($notificationApplicantMessage != '') {
-                                        $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
+                                        $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informApplicantEntry['username'], $informApplicantEntry['password']).$notificationApplicantMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Administrator'), $_SESSION[$guid]['organisationAdministratorName'], $_SESSION[$guid]['systemName']);
                                     } else {
-                                        $body = 'Dear '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdministratorName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
+                                        $body = 'Dear '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informApplicantEntry['username'].') and password ('.$informApplicantEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdministratorName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Administrator';
                                     }
                                     $bodyPlain = emailBodyConvert($body);
 
-                                    $mail = getGibbonMailer($guid);
+                                    $mail = $container->get(Mailer::class);
                                     $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                                     $mail->AddAddress($to);
                                     $mail->CharSet = 'UTF-8';
@@ -363,11 +364,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                                     if ($mail->Send()) {
                                         echo "<div class='success'>";
-                                        echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
+                                        echo __('A welcome email was successfully sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
                                         echo '</div>';
                                     } else {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'A welcome email could not be sent to').' '.formatName('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
+                                        echo __('A welcome email could not be sent to').' '.Format::name('', $informApplicantEntry['preferredName'], $informApplicantEntry['surname'], 'Student').'.';
                                         echo '</div>';
                                     }
                                 }
@@ -395,11 +396,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                     }
                     if ($enrolmentCheckFail) { //Enrolment check did not work, so report error
                         echo "<div class='warning'>";
-                        echo __($guid, 'Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                        echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
                         echo '</div>';
                     } elseif ($alreadyEnroled) { //User is already enroled, so display message
                         echo "<div class='warning'>";
-                        echo __($guid, 'Applicant already exists in staff listing.');
+                        echo __('Applicant already exists in staff listing.');
                         echo '</div>';
                     } else { //User is not yet enroled, so try and enrol them.
                         $enrolmentOK = true;
@@ -417,11 +418,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                         //Report back
                         if ($enrolmentOK == false) {
                             echo "<div class='warning'>";
-                            echo __($guid, 'Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
+                            echo __('Applicant could not be added to staff listing, so this will have to be done manually at a later date.');
                             echo '</div>';
                         } else {
                             echo '<ul>';
-                            echo '<li>'.__($guid, 'The applicant has successfully been added to staff listing.').'</li>';
+                            echo '<li>'.__('The applicant has successfully been added to staff listing.').'</li>';
                             echo '</ul>';
                         }
                     }
@@ -441,21 +442,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 if ($failStatus == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Applicant status could not be updated: applicant is in the system, but acceptance has failed.');
+                    echo __('Applicant status could not be updated: applicant is in the system, but acceptance has failed.');
                     echo '</div>';
                 } else {
                     echo '<h4>';
-                    echo __($guid, 'Application Status');
+                    echo __('Application Status');
                     echo '</h4>';
                     echo '<ul>';
-                    echo '<li><b>'.__($guid, 'Status').'</b>: '.__($guid, 'Accepted').'</li>';
+                    echo '<li><b>'.__('Status').'</b>: '.__('Accepted').'</li>';
                     echo '</ul>';
 
                     echo "<div class='success' style='margin-bottom: 20px'>";
-                    echo sprintf(__('Applicant has been successfully accepted into %1$s.'), $_SESSION[$guid]['organisationName']).' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
+                    echo sprintf(__('Applicant has been successfully accepted into %1$s.'), $_SESSION[$guid]['organisationName']).' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
                     echo '<ol>';
-                    echo '<li>'.__($guid, 'Adjust the user\'s roles within the system.').'</li>';
-                    echo '<li>'.__($guid, 'Create a timetable for the applicant.').'</li>';
+                    echo '<li>'.__('Adjust the user\'s roles within the system.').'</li>';
+                    echo '<li>'.__('Create a timetable for the applicant.').'</li>';
                     echo '</ol>';
                     echo '</div>';
                 }
@@ -463,4 +464,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
         }
     }
 }
-?>

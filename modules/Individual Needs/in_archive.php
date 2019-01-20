@@ -18,56 +18,60 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archive.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Archive Records').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Archive Records'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
-	}
-	
-	$form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php');
+    }
+    
+    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+    $sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort as rollGroup
+            FROM gibbonPerson 
+            JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
+            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
+            WHERE status='Full' ORDER BY surname, preferredName";
+    $result = $pdo->executeQuery($data, $sql);
+
+    $students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+    $students = array_map(function($item) {
+        return Format::name('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
+    }, $students);
+    
+    if (empty($students)) {
+        $page->addError(__('There are no records to display.'));
+        return;
+    }
+    
+    $form = Form::create('courseEdit', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/in_archiveProcess.php');
                 
-	$form->addHiddenValue('address', $_SESSION[$guid]['address']);
+    $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-	$row = $form->addRow();
-		$row->addLabel('deleteCurrentPlans', __('Delete Current Plans?'))->description(__('Deletes Individual Education Plan fields only, not Individual Needs Status fields.'));
-		$row->addYesNo('deleteCurrentPlans')->isRequired()->selected('N');
+    $row = $form->addRow();
+        $row->addLabel('deleteCurrentPlans', __('Delete Current Plans?'))->description(__('Deletes Individual Education Plan fields only, not Individual Needs Status fields.'));
+        $row->addYesNo('deleteCurrentPlans')->isRequired()->selected('N');
 
-	$row = $form->addRow();
-		$row->addLabel('title', __('Archive Title'));
-		$row->addTextField('title')->isRequired()->maxLength(50);
+    $row = $form->addRow();
+        $row->addLabel('title', __('Archive Title'));
+        $row->addTextField('title')->isRequired()->maxLength(50);
+                        
+    $row = $form->addRow();
+        $row->addLabel('gibbonPersonID', __('Students'));
+        $row->addCheckbox('gibbonPersonID')->fromArray($students)->addCheckAllNone();
 
-	$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-	$sql = "SELECT gibbonPerson.gibbonPersonID, surname, preferredName, gibbonRollGroup.nameShort as rollGroup
-			FROM gibbonPerson 
-			JOIN gibbonIN ON (gibbonIN.gibbonPersonID=gibbonPerson.gibbonPersonID) 
-			JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
-			JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonRollGroupID=gibbonStudentEnrolment.gibbonRollGroupID)
-			WHERE status='Full' ORDER BY surname, preferredName";
-	$result = $pdo->executeQuery($data, $sql);
+    $row = $form->addRow();
+        $row->addSubmit();
 
-	$students = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
-	$students = array_map(function($item) {
-		return formatName('', $item['preferredName'], $item['surname'], 'Student', true).' ('.$item['rollGroup'].')';
-	}, $students);
-						
-	$row = $form->addRow();
-		$row->addLabel('gibbonPersonID', __('Students'));
-		$row->addCheckbox('gibbonPersonID')->fromArray($students)->addCheckAllNone();
-
-	$row = $form->addRow();
-		$row->addSubmit();
-
-	echo $form->getOutput();
+    echo $form->getOutput();
 }

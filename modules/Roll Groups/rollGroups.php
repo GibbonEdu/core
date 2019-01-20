@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
-use Gibbon\Domain\School\RollGroupGateway;
+use Gibbon\Domain\RollGroups\RollGroupGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php') == false) {
     //Acess denied
@@ -28,9 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups.php
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('View Roll Groups').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View Roll Groups'));
 
     echo '<p>';
     echo __('This page shows all roll groups in the current school year.');

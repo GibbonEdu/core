@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include '../../gibbon.php';
 
+//Module includes
+require_once __DIR__ . '/moduleFunctions.php';
+
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address']).'/update.php';
 $partialFail = false;
 $_SESSION[$guid]['systemUpdateError'] = '';
@@ -75,6 +78,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                     exit();
                 }
 
+                // Update DB version for existing languages
+                i18nCheckAndUpdateVersion($container, $versionDB);
+
+                // Clear the templates cache folder
+                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
             }
@@ -109,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                         $sqlTokens = explode(';end', $version[1]);
                         if ($version[0] == $versionDB) { //Finish current version
                             foreach ($sqlTokens as $sqlToken) {
-                                if (version_compare($tokenCount[0], $cuttingEdgeCodeLine, '>=')) {
+                                if (version_compare($tokenCount, $cuttingEdgeCodeLine, '>=')) {
                                     if (trim($sqlToken) != '') { //Decide whether this has been run or not
                                         try {
                                             $result = $connection2->query($sqlToken);
@@ -185,6 +194,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                     header("Location: {$URL}");
                     exit();
                 }
+
+                // Update DB version for existing languages
+                i18nCheckAndUpdateVersion($container, $versionDB);
+
+                // Clear the templates cache folder
+                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
 
                 //Reset cache to force top-menu reload
                 $_SESSION[$guid]['pageLoads'] = null;

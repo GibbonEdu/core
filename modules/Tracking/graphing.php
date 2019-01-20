@@ -21,28 +21,26 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Get action with highest precendence
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Graphing').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Graphing'));
 
         echo '<h2>';
-        echo __($guid, 'Filter');
+        echo __('Filter');
         echo '</h2>';
 
         $gibbonPersonIDs = (isset($_POST['gibbonPersonIDs']))? $_POST['gibbonPersonIDs'] : null;
@@ -91,15 +89,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         if (count($_POST) > 0) {
             if ($gibbonPersonIDs == null or $gibbonDepartmentIDs == null or ($dataType != 'attainment' and $dataType != 'effort')) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 $output = '';
                 echo '<h2>';
-                echo __($guid, 'Report Data');
+                echo __('Report Data');
                 echo '</h2>';
                 echo '<p>';
-                echo __($guid, 'The chart below shows Years and Terms along the X axis, and mean Markbook grades, converted to a 0-1 scale, on the Y axis.');
+                echo __('The chart below shows Years and Terms along the X axis, and mean Markbook grades, converted to a 0-1 scale, on the Y axis.');
                 echo '</p>';
 
                 //GET DEPARTMENTS
@@ -231,7 +229,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
                 if ($resultGrades->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     //Prep grades & terms
@@ -303,11 +301,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
                     if (count($grades) < 5) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The are less than 4 data points, so no graph can be produced.');
+                        echo __('The are less than 4 data points, so no graph can be produced.');
                         echo '</div>';
                     } else {
                         //CREATE LEGEND
-                        echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__($guid, 'Legend').'</b></p>';
+                        echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__('Legend').'</b></p>';
                         echo "<table class='noIntBorder' style='width: 100%;  border-spacing: 0; border-collapse: collapse;'>";
                         $columns = 8;
                         $columnCount = 0;
@@ -343,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
                         //PLOT DATA
                         echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/Chart.js/Chart.min.js"></script>';
 
-                        echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__($guid, 'Data').'</b></p>';
+                        echo "<p style='margin-top: 20px; margin-bottom: 5px'><b>".__('Data').'</b></p>';
                         echo '<div style="width:100%">';
                         echo '<div>';
                         echo '<canvas id="canvas"></canvas>';
@@ -409,4 +407,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
         }
     }
 }
-?>

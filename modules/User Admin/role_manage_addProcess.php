@@ -31,8 +31,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
     $name = $_POST['name'];
     $nameShort = $_POST['nameShort'];
     $description = $_POST['description'];
-    $futureYearsLogin = $_POST['futureYearsLogin'];
-    $pastYearsLogin = $_POST['pastYearsLogin'];
+    $canLoginRole = isset($_POST['canLoginRole'])? $_POST['canLoginRole'] : 'Y';
+    $futureYearsLogin = isset($_POST['futureYearsLogin'])? $_POST['futureYearsLogin'] : 'N';
+    $pastYearsLogin = isset($_POST['pastYearsLogin'])? $_POST['pastYearsLogin'] : 'N';
     $restriction = $_POST['restriction'];
 
     if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
@@ -57,8 +58,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_add
         } else {
             //Write to database
             try {
-                $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin, 'restriction' => $restriction);
-                $sql = "INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction";
+                $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'canLoginRole' => $canLoginRole, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin, 'restriction' => $restriction);
+                $sql = "INSERT INTO gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, type='Additional', canLoginRole=:canLoginRole, futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction";
                 $result = $connection2->prepare($sql);
                 $result->execute($data);
             } catch (PDOException $e) {

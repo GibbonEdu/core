@@ -1,0 +1,38 @@
+details:
+    type: studentEnrolment
+    name: Student Enrolment
+    table: gibbonStudentEnrolment
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Students
+    action: Student Enrolment
+primaryKey:
+    gibbonStudentEnrolmentID
+uniqueKeys:
+    - [ gibbonSchoolYearID, gibbonYearGroupID, gibbonPersonID ]
+    - [ gibbonSchoolYearID, gibbonRollGroupID, gibbonPersonID ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonYearGroupID:
+        name: "Year Group"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonYearGroup, key: gibbonYearGroupID, field: nameShort  }
+    gibbonRollGroupID:
+        name: "Roll Group"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonRollGroup, key: gibbonRollGroupID, field: [ nameShort, gibbonSchoolYearID ]  }
+    gibbonPersonID:
+        name: "Student"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    rollOrder:
+        name: "Roll Order"
+        desc: ""
+        args: { filter: numeric, custom: true }

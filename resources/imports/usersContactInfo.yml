@@ -1,0 +1,146 @@
+details:
+    type: usersContactInfo
+    name: Contact Information
+    category: User
+    table: gibbonPerson
+    modes: { update: true, insert: false }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonID
+uniqueKeys:
+    - username
+table:
+    username:
+        name: "Username"
+        desc: ""
+        args: {filter: nospaces, required: true}
+    email:
+        name: "Email"
+        desc: ""
+        args: {filter: email}
+    emailAlternate:
+        name: "Alternate Email"
+        desc: ""
+        args: {filter: email}
+
+    address1:
+        name: "Address 1"
+        desc: "Unit, Building, Street"
+        args: {filter: string}
+    address1District:
+        name: "Address 1 District"
+        desc: "County, State, District"
+        args: {filter: string}
+    address1Country:
+        name: "Address 1 Country"
+        desc: ""
+        args: {filter: country}
+
+    address2:
+        name: "Address 2"
+        desc: "Unit, Building, Street"
+        args: {filter: string}
+    address2District:
+        name: "Address 2 District"
+        desc: "County, State, District"
+        args: {filter: string}
+    address2Country:
+        name: "Address 2 Country"
+        desc: ""
+        args: {filter: country}
+
+
+    phone1Type:
+        name: "Phone 1 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone1CountryCode:
+        name: "Phone 1 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode }
+    phone1:
+        name: "Phone 1"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone}
+
+
+    phone2Type:
+        name: "Phone 2 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone2CountryCode:
+        name: "Phone 2 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode }
+    phone2:
+        name: "Phone 2"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone}
+
+
+    phone3Type:
+        name: "Phone 3 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone3CountryCode:
+        name: "Phone 3 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode }
+    phone3:
+        name: "Phone 3"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone}
+
+
+    phone4Type:
+        name: "Phone 4 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone4CountryCode:
+        name: "Phone 4 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode }
+    phone4:
+        name: "Phone 4"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone}
+
+
+    emergency1Name:
+        name: "Emergency 1 Name"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Number1:
+        name: "Emergency 1 Number 1"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Number2:
+        name: "Emergency 1 Number 2"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Relationship:
+        name: "Emergency 1 Relationship"
+        desc: "For students and staff only"
+        args: {filter: relation}
+
+
+    emergency2Name:
+        name: "Emergency 2 Name"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Number1:
+        name: "Emergency 2 Number 1"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Number2:
+        name: "Emergency 2 Number 2"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Relationship:
+        name: "Emergency 2 Relationship"
+        desc: "For students and staff only"
+        args: {filter: relation}
+
+

@@ -17,6 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Contracts\Comms\Mailer;
+use Gibbon\Contracts\Comms\SMS;
+
 include '../../gibbon.php';
 
 //Increase max execution time, as this stuff gets big
@@ -376,8 +379,27 @@ else {
 							if ($email=="Y") {
 								if ($staff=="Y") {
 									try {
-										$dataEmail=array();
-										$sqlEmail="SELECT DISTINCT email, gibbonPerson.gibbonPersonID FROM gibbonPerson JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE NOT email='' AND status='Full'" ;
+										$dataEmail=array('gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonYearGroupID'=>$t);
+										$sqlEmail="(SELECT DISTINCT email, gibbonPerson.gibbonPersonID
+                                            FROM gibbonPerson
+                                            JOIN gibbonStaff ON (gibbonStaff.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
+                                            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
+                                            JOIN gibbonCourse ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID)
+                                            WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID
+                                            AND FIND_IN_SET(:gibbonYearGroupID, gibbonCourse.gibbonYearGroupIDList)
+                                            AND NOT gibbonPerson.email=''
+                                            AND gibbonPerson.status='Full')
+                                        UNION ALL (
+                                            SELECT DISTINCT email, gibbonPerson.gibbonPersonID
+                                            FROM gibbonPerson
+                                            JOIN gibbonRollGroup ON (gibbonRollGroup.gibbonPersonIDTutor=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor2=gibbonPerson.gibbonPersonID OR gibbonRollGroup.gibbonPersonIDTutor3=gibbonPerson.gibbonPersonID)
+                                            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                                            AND NOT email='' AND status='Full'
+                                            AND gibbonStudentEnrolment.gibbonYearGroupID=:gibbonYearGroupID
+                                            GROUP BY gibbonPerson.gibbonPersonID
+                                        )" ;
 										$resultEmail=$connection2->prepare($sqlEmail);
 										$resultEmail->execute($dataEmail);
 									}
@@ -1731,7 +1753,7 @@ else {
                       }
                     }
 				  }//END Target Absent students / Attendance Status
-			
+
 
 			//Groups
 			if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
@@ -1913,14 +1935,12 @@ else {
 			}
 
 			if ($email=="Y") {
-				require $_SESSION[$guid]["absolutePath"] . '/lib/PHPMailer/PHPMailerAutoload.php';
-
 				//Prep message
-				$bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+				$bodyFin = "<p style='font-style: italic'>" . sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
 
 				//Set up email
 				$emailCount=0 ;
-				$mail=getGibbonMailer($guid);
+				$mail= $container->get(Mailer::class);
 				$mail->SMTPKeepAlive = true;
 				if ($emailReplyTo!="")
 					$mail->AddReplyTo($emailReplyTo, '');
@@ -1998,67 +2018,55 @@ else {
 							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
 						}
 					}
-				}
-				$mail->smtpClose();
+                }
+
+                // Optionally send bcc copies of this message, excluding recipients already sent to.
+                $recipientList = array_column($report, 4);
+                $messageBccList = explode(',', getSettingByScope($connection2, 'Messenger', 'messageBcc'));
+                $messageBccList = array_filter($messageBccList, function($recipient) use ($recipientList, $from) {
+                    return $recipient != $from && !in_array($recipient, $recipientList);
+                });
+
+                if (!empty($messageBccList) && !empty($report)) {
+                    $mail->ClearAddresses();
+                    foreach ($messageBccList as $recipient) {
+                        $mail->AddBCC($recipient, '');
+                    }
+
+                    $sender = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
+                    $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
+
+                    $mail->Body = __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body.$bodyFin;
+                    $mail->AltBody = emailBodyConvert($mail->Body);
+                    $mail->Send();
+                }
+
+                $mail->smtpClose();
 			}
 
 			if ($sms=="Y") {
 				if ($countryCode=="") {
-					$partialFail=TRUE ;
-				}
-				else {
-					$smsUsername=getSettingByScope( $connection2, "Messenger", "smsUsername" ) ;
-					$smsPassword=getSettingByScope( $connection2, "Messenger", "smsPassword" ) ;
-					$smsURL=getSettingByScope( $connection2, "Messenger", "smsURL" ) ;
+					$partialFail = true;
+				} else {
+                    $recipients = array_filter(array_reduce($report, function ($phoneNumbers, $reportEntry) {
+                        if ($reportEntry[3] == 'SMS') $phoneNumbers[] = '+'.$reportEntry[4];
+                        return $phoneNumbers;
+                    }, []));
 
-					if ($smsUsername!="" AND $smsPassword!="" AND $smsURL!="") {
-						$smsCount = 0;
-						foreach ($report as $reportEntry) {
-							if ($reportEntry[3] == 'SMS') {
-								$smsCount ++;
-							}
-						}
+                    $sms = $container->get(SMS::class);
 
-						$numbersPerSend=10 ;
-						$sendReps=ceil(($smsCount/$numbersPerSend)) ;
-						$smsCount=0 ;
-						$smsBatchCount=0 ;
-						for ($i=0; $i<$sendReps; $i++) {
-							$numCache="" ;
-							for ($n=0; $n<$numbersPerSend; $n++) {
-								if (!(is_null($report[($i*$numbersPerSend)+$n][3]))) {
-									if ($report[($i*$numbersPerSend)+$n][3] == 'SMS') {
-										$numCache.=$report[($i*$numbersPerSend)+$n][4] . "," ;
-										$smsCount++ ;
-									}
-								}
-							}
+                    $result = $sms
+                        ->content($body)
+                        ->send($recipients);
 
-							$query="?apiusername=" . $smsUsername . "&apipassword=" . $smsPassword . "&senderid=" . rawurlencode($_SESSION[$guid]["organisationNameShort"]) . "&mobileno=" . rawurlencode(substr($numCache,0,-1)) . "&message=" . rawurlencode(stripslashes(strip_tags($body))) . "&languagetype=1" ;
-							$result=@implode('', file($smsURL . $query)) ;
-							$smsStatus = 'OK';
+                    $smsCount = count($recipients);
+                    $smsBatchCount = count($result);
 
-							if ($result) {
-								if ($result<=0) {
-									$partialFail=TRUE ;
-									$smsStatus = 'Not OK';
-								}
-							}
-							else {
-								$partialFail=TRUE ;
-								$smsStatus = 'Not OK';
-								$result = 'N/A';
-							}
+                    $smsStatus = $result ? 'OK' : 'Not OK';
+                    $partialFail &= !empty($result);
 
-							//Set log
-							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => $result, 'Recipients' => substr($numCache,0,-1)));
-
-							$smsBatchCount++ ;
-						}
-					}
-					else {
-						$partialFail=TRUE ;
-					}
+					//Set log
+					setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'SMS Send Status', array('Status' => $smsStatus, 'Result' => count($result), 'Recipients' => $recipients));
 				}
 			}
 
@@ -2084,6 +2092,7 @@ else {
 				header("Location: {$URL}");
 			}
 			else {
+				$_SESSION[$guid]['pageLoads'] = null;
 				$URL.="&addReturn=success0&emailCount=" . $emailCount . "&smsCount=" . $smsCount . "&smsBatchCount=" . $smsBatchCount ;
 				header("Location: {$URL}") ;
 			}

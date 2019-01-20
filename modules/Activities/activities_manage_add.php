@@ -21,17 +21,18 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_manage.php'>".__($guid, 'Manage Activities')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Activity').'</div>';
-    echo '</div>';
+    //Proceed!
+    $page->breadcrumbs
+        ->add(__('Manage Activities'), 'activities_manage.php')
+        ->add(__('Add Activity'));    
 
     $editLink = '';
     if (isset($_GET['editID'])) {
@@ -43,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     if ($_GET['search'] != '' || $_GET['gibbonSchoolYearTermID'] != '') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Activities/activities_manage.php&search='.$_GET['search']."&gibbonSchoolYearTermID=".$_GET['gibbonSchoolYearTermID']."'>".__('Back to Search Results').'</a>';
         echo '</div>';
 	}
 
@@ -174,19 +175,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 		$form->addRow()->addSubheading(__('Slot').' '.$i)->addClass("slotRow{$i}");
 
 		$row = $form->addRow()->addClass("slotRow{$i}");
-        	$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__($guid, 'Slot %1$s Day'), $i));
+        	$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__('Slot %1$s Day'), $i));
 			$row->addSelect("gibbonDaysOfWeekID{$i}")->fromQuery($pdo, $sqlWeekdays)->placeholder();
 
 		$row = $form->addRow()->addClass("slotRow{$i}");
-            $row->addLabel('timeStart'.$i, sprintf(__($guid, 'Slot %1$s Start Time'), $i));
+            $row->addLabel('timeStart'.$i, sprintf(__('Slot %1$s Start Time'), $i));
             $row->addTime('timeStart'.$i);
 
 		$row = $form->addRow()->addClass("slotRow{$i}");
-			$row->addLabel("timeEnd{$i}", sprintf(__($guid, 'Slot %1$s End Time'), $i));
+			$row->addLabel("timeEnd{$i}", sprintf(__('Slot %1$s End Time'), $i));
 			$row->addTime("timeEnd{$i}")->chainedTo('timeStart'.$i);
 
 		$row = $form->addRow()->addClass("slotRow{$i}");
-            $row->addLabel("slot{$i}Location", sprintf(__($guid, 'Slot %1$s Location'), $i));
+            $row->addLabel("slot{$i}Location", sprintf(__('Slot %1$s Location'), $i));
 			$row->addRadio("slot{$i}Location")->fromArray($locations)->inline();
 
 		$form->toggleVisibilityByClass("slotRow{$i}Internal")->onRadio("slot{$i}Location")->when('Internal');
@@ -210,8 +211,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 	$form->addRow()->addHeading(__('Staff'));
 
 	$row = $form->addRow();
-		$row->addLabel('staff', 'Staff');
-		$row->addSelectStaff('staff')->selectMultiple();
+		$row->addLabel('staff', __('Staff'));
+		$row->addSelectUsers('staff', $_SESSION[$guid]['gibbonSchoolYearID'], array('includeStaff' => true))->selectMultiple();
 
 	$staffRoles = array(
 		'Organiser' => __('Organiser'),

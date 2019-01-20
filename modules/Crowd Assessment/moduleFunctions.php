@@ -271,6 +271,9 @@ function getStudents($guid, $connection2, $role, $gibbonCourseClassID, $homework
     } elseif (($role == 'Student' and $homeworkCrowdAssessOtherStudentsRead == 'Y') or ($role == 'Student - In Class' and $homeworkCrowdAssessClassmatesRead == 'Y')) {
         $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
         $sqlList = "SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND role='Student' AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') $and ORDER BY surname, preferredName";
+    } elseif ($role == 'Student - In Class') {
+        $data = array('gibbonCourseClassID' => $gibbonCourseClassID,'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+        $sqlList = "SELECT * FROM gibbonCourseClassPerson JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID AND role='Student' AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') $and ORDER BY surname, preferredName";
     }
 
     return array($data, $sqlList);
@@ -296,7 +299,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
 
     if ($level == 0 and $resultDiscuss->rowCount() == 0) {
         $output .= "<div class='error'>";
-        $output .= __($guid, 'This conversation has not yet begun!');
+        $output .= __('This conversation has not yet begun!');
         $output .= '</div>';
     } else {
         while ($rowDiscuss = $resultDiscuss->fetch()) {

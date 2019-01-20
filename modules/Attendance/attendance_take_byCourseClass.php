@@ -17,35 +17,34 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Module\Attendance\AttendanceView;
 
 //Module includes
-include "./modules/" . $_SESSION[$guid]["module"] . "/moduleFunctions.php";
+require_once __DIR__ . '/moduleFunctions.php';
+require_once __DIR__ . '/src/AttendanceView.php';
 
-require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
+// set page breadcrumb
+$page->breadcrumbs->add(__('Take Attendance by Class'));
 
 if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php") == false) {
     //Acess denied
     echo "<div class='error'>";
-        echo __("You do not have access to this action.");
+    echo __("You do not have access to this action.");
     echo "</div>";
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __("Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __(getModuleName($_GET["q"])) . "</a> > </div><div class='trailEnd'>" . __('Take Attendance by Class') . "</div>";
-    echo "</div>";
-
     if (isset($_GET['return'])) {
-        returnProcess($guid, $_GET['return'], null, array( 'error3' => __($guid, 'Your request failed because the specified date is not in the future, or is not a school day.')));
+        returnProcess($guid, $_GET['return'], null, array('error3' => __('Your request failed because the specified date is in the future, or is not a school day.')));
     }
 
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    $attendance = new AttendanceView($gibbon, $pdo);
 
-    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
+    $gibbonCourseClassID = isset($_GET['gibbonCourseClassID']) ? $_GET['gibbonCourseClassID'] : '';
     if (empty($gibbonCourseClassID)) {
         try {
-            $data=array('gibbonPersonID'=>$_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID'=>$_SESSION[$guid]['gibbonSchoolYearID']);
+            $data = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
             $sql = "SELECT gibbonCourseClass.gibbonCourseClassID, gibbonSchoolYear.firstDay, gibbonSchoolYear.lastDay
                     FROM gibbonCourse
                     JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
@@ -54,9 +53,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                     WHERE gibbonPersonID=:gibbonPersonID
                     AND gibbonCourseClass.attendance='Y'
                     AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
-            $result=$connection2->prepare($sql);
+            $result = $connection2->prepare($sql);
             $result->execute($data);
-        } catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo "<div class='error'>" . $e->getMessage() . "</div>";
         }
 
@@ -65,10 +64,10 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
         }
     }
 
-    echo '<h2>'.__('Choose Class')."</h2>";
+    echo '<h2>' . __('Choose Class') . "</h2>";
 
     $today = date('Y-m-d');
-    $currentDate = isset($_GET['currentDate'])? dateConvert($guid, $_GET['currentDate']) : $today;
+    $currentDate = isset($_GET['currentDate']) ? dateConvert($guid, $_GET['currentDate']) : $today;
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'] . '/index.php', 'get');
     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -77,30 +76,30 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     $form->addHiddenValue('q', '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byCourseClass.php');
 
     $row = $form->addRow();
-        $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], array('attendance' => 'Y'))
-            ->isRequired()
-            ->selected($gibbonCourseClassID)
-            ->placeholder();
+    $row->addLabel('gibbonCourseClassID', __('Class'));
+    $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], array('attendance' => 'Y'))
+        ->isRequired()
+        ->selected($gibbonCourseClassID)
+        ->placeholder();
 
     $row = $form->addRow();
-        $row->addLabel('currentDate', __('Date'));
-        $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
+    $row->addLabel('currentDate', __('Date'));
+    $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
 
     $row = $form->addRow();
-        $row->addSearchSubmit($gibbon->session);
+    $row->addSearchSubmit($gibbon->session);
 
     echo $form->getOutput();
 
     if (!empty($gibbonCourseClassID)) {
         if ($currentDate > $today) {
             echo "<div class='error'>";
-                echo __("The specified date is in the future: it must be today or earlier.");
+            echo __("The specified date is in the future: it must be today or earlier.");
             echo "</div>";
         } else {
             if (isSchoolOpen($guid, $currentDate, $connection2) == false) {
                 echo "<div class='error'>";
-                    echo __("School is closed on the specified date, and so attendance information cannot be recorded.");
+                echo __("School is closed on the specified date, and so attendance information cannot be recorded.");
                 echo "</div>";
             } else {
                 $prefillAttendanceType = getSettingByScope($connection2, 'Attendance', 'prefillClass');
@@ -108,16 +107,16 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                 // Check class
                 try {
-                    $data = array("gibbonCourseClassID"=>$gibbonCourseClassID, "gibbonSchoolYearID"=>$_SESSION[$guid]["gibbonSchoolYearID"]);
+                    $data = array("gibbonCourseClassID" => $gibbonCourseClassID, "gibbonSchoolYearID" => $_SESSION[$guid]["gibbonSchoolYearID"]);
                     $sql = "SELECT gibbonCourseClass.*, gibbonCourse.gibbonSchoolYearID,firstDay, lastDay,
                     gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourse
                     JOIN gibbonSchoolYear ON (gibbonCourse.gibbonSchoolYearID=gibbonSchoolYear.gibbonSchoolYearID)
                     JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID)
                     WHERE gibbonCourseClass.gibbonCourseClassID=:gibbonCourseClassID AND gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID";
 
-                    $result=$connection2->prepare($sql);
+                    $result = $connection2->prepare($sql);
                     $result->execute($data);
-                } catch(PDOException $e) {
+                } catch (PDOException $e) {
                     echo "<div class='error'>" . $e->getMessage() . "</div>";
                 }
 
@@ -143,9 +142,9 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         LEFT JOIN gibbonTTDayDate ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDayDate.gibbonTTDayID AND gibbonTTDayDate.date=:date)
                         WHERE gibbonTTDayRowClass.gibbonCourseClassID=:gibbonCourseClassID
                         GROUP BY gibbonTTDayRowClass.gibbonCourseClassID";
-                        $resultTT=$connection2->prepare($sqlTT);
+                        $resultTT = $connection2->prepare($sqlTT);
                         $resultTT->execute($dataTT);
-                    } catch(PDOException $e) {
+                    } catch (PDOException $e) {
                         echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
 
@@ -153,41 +152,39 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $ttCheck = $resultTT->fetch();
                         if ($ttCheck['totalTimetableCount'] > 0 && empty($ttCheck['currentlyTimetabled'])) {
                             echo "<div class='warning'>";
-                                echo __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.');
+                            echo __('This class is not timetabled to run on the specified date. Attendance may still be taken for this group however it currently falls outside the regular schedule for this class.');
                             echo "</div>";
                         }
                     }
 
                     //Show attendance log for the current day
                     try {
-                        $dataLog=array("gibbonCourseClassID"=>$gibbonCourseClassID, "date"=>$currentDate . "%");
-                        $sqlLog="SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY timestampTaken";
-                        $resultLog=$connection2->prepare($sqlLog);
+                        $dataLog = array("gibbonCourseClassID" => $gibbonCourseClassID, "date" => $currentDate . "%");
+                        $sqlLog = "SELECT * FROM gibbonAttendanceLogCourseClass, gibbonPerson WHERE gibbonAttendanceLogCourseClass.gibbonPersonIDTaker=gibbonPerson.gibbonPersonID AND gibbonCourseClassID=:gibbonCourseClassID AND date LIKE :date ORDER BY timestampTaken";
+                        $resultLog = $connection2->prepare($sqlLog);
                         $resultLog->execute($dataLog);
-                    }
-                    catch(PDOException $e) {
+                    } catch (PDOException $e) {
                         echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
-                    if ($resultLog->rowCount()<1) {
+                    if ($resultLog->rowCount() < 1) {
                         echo "<div class='error'>";
-                            echo __("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.");
+                        echo __("Attendance has not been taken for this group yet for the specified date. The entries below are a best-guess based on defaults and information put into the system in advance, not actual data.");
                         echo "</div>";
-                    }
-                    else {
+                    } else {
                         echo "<div class='success'>";
-                            echo __("Attendance has been taken at the following times for the specified date for this group:");
-                            echo "<ul>";
-                            while ($rowLog=$resultLog->fetch()) {
-                                echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"],11), dateConvertBack($guid, substr($rowLog["timestampTaken"],0,10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) ."</li>";
-                            }
-                            echo "</ul>";
+                        echo __("Attendance has been taken at the following times for the specified date for this group:");
+                        echo "<ul>";
+                        while ($rowLog = $resultLog->fetch()) {
+                            echo "<li>" . sprintf(__('Recorded at %1$s on %2$s by %3$s.'), substr($rowLog["timestampTaken"], 11), dateConvertBack($guid, substr($rowLog["timestampTaken"], 0, 10)), formatName("", $rowLog["preferredName"], $rowLog["surname"], "Staff", false, true)) . "</li>";
+                        }
+                        echo "</ul>";
                         echo "</div>";
                     }
 
                     //Show roll group grid
                     try {
-                        $dataCourseClass=array("gibbonCourseClassID"=>$gibbonCourseClassID, 'date' => $currentDate);
-                        $sqlCourseClass="SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240 FROM gibbonCourseClassPerson
+                        $dataCourseClass = array("gibbonCourseClassID" => $gibbonCourseClassID, 'date' => $currentDate);
+                        $sqlCourseClass = "SELECT gibbonPerson.surname, gibbonPerson.preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.image_240 FROM gibbonCourseClassPerson
                             INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID
                             LEFT JOIN (SELECT gibbonTTDayRowClass.gibbonCourseClassID, gibbonTTDayRowClass.gibbonTTDayRowClassID FROM gibbonTTDayDate JOIN gibbonTTDayRowClass ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDayRowClass.gibbonTTDayID) WHERE gibbonTTDayDate.date=:date) AS gibbonTTDayRowClassSubset ON (gibbonTTDayRowClassSubset.gibbonCourseClassID=gibbonCourseClassPerson.gibbonCourseClassID)
                             LEFT JOIN gibbonTTDayRowClassException ON (gibbonTTDayRowClassException.gibbonTTDayRowClassID=gibbonTTDayRowClassSubset.gibbonTTDayRowClassID AND gibbonTTDayRowClassException.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
@@ -197,16 +194,15 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             GROUP BY gibbonCourseClassPerson.gibbonPersonID
                             HAVING COUNT(gibbonTTDayRowClassExceptionID) = 0
                             ORDER BY surname, preferredName";
-                        $resultCourseClass=$connection2->prepare($sqlCourseClass);
+                        $resultCourseClass = $connection2->prepare($sqlCourseClass);
                         $resultCourseClass->execute($dataCourseClass);
-                    }
-                    catch(PDOException $e) {
+                    } catch (PDOException $e) {
                         echo "<div class='error'>" . $e->getMessage() . "</div>";
                     }
 
-                    if ($resultCourseClass->rowCount()<1) {
+                    if ($resultCourseClass->rowCount() < 1) {
                         echo "<div class='error'>";
-                            echo __("There are no records to display.");
+                        echo __("There are no records to display.");
                         echo "</div>";
                     } else {
                         $count = 0;
@@ -218,7 +214,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
 
                         // Build the attendance log data per student
                         foreach ($students as $key => $student) {
-                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate.'%');
+                            $data = array('gibbonPersonID' => $student['gibbonPersonID'], 'date' => $currentDate . '%');
                             $sql = "SELECT type, reason, comment, context, timestampTaken FROM gibbonAttendanceLogPerson
                                     JOIN gibbonPerson ON (gibbonAttendanceLogPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
                                     WHERE gibbonAttendanceLogPerson.gibbonPersonID=:gibbonPersonID
@@ -231,19 +227,19 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $sql .= " ORDER BY timestampTaken DESC";
                             $result = $pdo->executeQuery($data, $sql);
 
-                            $log = ($result->rowCount() > 0)? $result->fetch() : $defaults;
+                            $log = ($result->rowCount() > 0) ? $result->fetch() : $defaults;
 
                             $students[$key]['cellHighlight'] = '';
                             if ($attendance->isTypeAbsent($log['type'])) {
                                 $students[$key]['cellHighlight'] = 'dayAbsent';
-                            } else if ($attendance->isTypeOffsite($log['type'])) {
+                            } elseif ($attendance->isTypeOffsite($log['type'])) {
                                 $students[$key]['cellHighlight'] = 'dayMessage';
                             }
 
                             $students[$key]['absenceCount'] = '';
                             $absenceCount = getAbsenceCount($guid, $student['gibbonPersonID'], $connection2, $class['firstDay'], $class['lastDay'], $gibbonCourseClassID);
                             if ($absenceCount !== false) {
-                                $absenceText = ($absenceCount == 1)? __('%1$s Class Absent') : __('%1$s Classes Absent');
+                                $absenceText = ($absenceCount == 1) ? __('%1$s Class Absent') : __('%1$s Classes Absent');
                                 $students[$key]['absenceCount'] = sprintf($absenceText, $absenceCount);
                             }
 
@@ -254,7 +250,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $students[$key]['log'] = $log;
                         }
 
-                        $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']. '/attendance_take_byCourseClassProcess.php');
+                        $form = Form::create('attendanceByClass', $_SESSION[$guid]['absoluteURL'] . '/modules/' . $_SESSION[$guid]['module'] . '/attendance_take_byCourseClassProcess.php');
                         $form->setAutocomplete('off');
                         $form->addClass('attendanceGrid');
 
@@ -263,7 +259,7 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                         $form->addHiddenValue('currentDate', $currentDate);
                         $form->addHiddenValue('count', count($students));
 
-                        $form->addRow()->addHeading(__('Take Attendance') . ': '. htmlPrep($class['course']) . '.' . htmlPrep($class['class']));
+                        $form->addRow()->addHeading(__('Take Attendance') . ': ' . htmlPrep($class['course']) . '.' . htmlPrep($class['class']));
 
                         $grid = $form->addRow()->addGrid('attendance')->setColumns(4);
 
@@ -271,43 +267,43 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
                             $form->addHiddenValue($count . '-gibbonPersonID', $student['gibbonPersonID']);
 
                             $cell = $grid->addCell()->addClass('textCenter stacked')->addClass($student['cellHighlight']);
-                                $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
-                                $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
-                                     ->setURL('index.php?q=/modules/Students/student_view_details.php')
-                                     ->addParam('gibbonPersonID', $student['gibbonPersonID'])
-                                     ->addParam('subpage', 'Attendance')
-                                     ->wrap('<b>', '</b>');
-                                $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
-                                $cell->addSelect($count.'-type')
-                                     ->fromArray(array_keys($attendance->getAttendanceTypes()))
-                                     ->selected($student['log']['type'])
-                                     ->setClass('attendanceField floatNone shortWidth');
-                                $cell->addSelect($count.'-reason')
-                                     ->fromArray($attendance->getAttendanceReasons())
-                                     ->selected($student['log']['reason'])
-                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
-                                $cell->addTextField($count.'-comment')
-                                     ->maxLength(255)
-                                     ->setValue($student['log']['comment'])
-                                     ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
-                                $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
+                            $cell->addContent(getUserPhoto($guid, $student['image_240'], 75));
+                            $cell->addWebLink(formatName('', htmlPrep($student['preferredName']), htmlPrep($student['surname']), 'Student', false))
+                                ->setURL('index.php?q=/modules/Students/student_view_details.php')
+                                ->addParam('gibbonPersonID', $student['gibbonPersonID'])
+                                ->addParam('subpage', 'Attendance')
+                                ->wrap('<b>', '</b>');
+                            $cell->addContent($student['absenceCount'])->wrap('<span class="small emphasis">', '<span>');
+                            $cell->addSelect($count . '-type')
+                                ->fromArray(array_keys($attendance->getAttendanceTypes()))
+                                ->selected($student['log']['type'])
+                                ->setClass('attendanceField floatNone shortWidth');
+                            $cell->addSelect($count . '-reason')
+                                ->fromArray($attendance->getAttendanceReasons())
+                                ->selected($student['log']['reason'])
+                                ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
+                            $cell->addTextField($count . '-comment')
+                                ->maxLength(255)
+                                ->setValue($student['log']['comment'])
+                                ->setClass('attendanceField attendanceFieldStacked floatNone shortWidth');
+                            $cell->addContent($attendance->renderMiniHistory($student['gibbonPersonID']));
 
                             $count++;
                         }
 
-                        $form->addRow()->addAlert(__('Total students:').' '. $count, 'success')->setClass('right')
-                            ->append('<br/><span title="'.__('e.g. Present or Present - Late').'">'.__('Total students present in room:').' '. $countPresent.'</span>')
-                            ->append('<br/><span title="'.__('e.g. not Present and not Present - Late').'">'.__('Total students absent from room:').' '. ($count-$countPresent).'</span>')
+                        $form->addRow()->addAlert(__('Total students:') . ' ' . $count, 'success')->setClass('right')
+                            ->append('<br/><span title="' . __('e.g. Present or Present - Late') . '">' . __('Total students present in room:') . ' ' . $countPresent . '</span>')
+                            ->append('<br/><span title="' . __('e.g. not Present and not Present - Late') . '">' . __('Total students absent from room:') . ' ' . ($count - $countPresent) . '</span>')
                             ->wrap('<b>', '</b>');
 
                         $row = $form->addRow();
-                            // Drop-downs to change the whole group at once
-                            $col = $row->addColumn()->addClass('inline');
-                                $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->setClass('attendanceField');
-                                $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->setClass('attendanceField');
-                                $col->addTextField('set-all-comment')->maxLength(255)->setClass('attendanceField');
-                                $col->addButton(__('Change All'))->setID('set-all');
-                            $row->addSubmit();
+                        // Drop-downs to change the whole group at once
+                        $col = $row->addColumn()->addClass('inline');
+                        $col->addSelect('set-all-type')->fromArray(array_keys($attendance->getAttendanceTypes()))->setClass('attendanceField');
+                        $col->addSelect('set-all-reason')->fromArray($attendance->getAttendanceReasons())->setClass('attendanceField');
+                        $col->addTextField('set-all-comment')->maxLength(255)->setClass('attendanceField');
+                        $col->addButton(__('Change All'))->setID('set-all');
+                        $row->addSubmit();
 
                         echo $form->getOutput();
                     }

@@ -1,0 +1,272 @@
+details:
+    type: usersStaff
+    name: User - Data - Staff
+    desc: Faculty & staff member users
+    category: User
+    table: gibbonPerson
+    modes: { update: true, insert: true, export: false }
+access:
+    module: User Admin
+    action: Manage Users
+primaryKey:
+    gibbonPersonID
+uniqueKeys:
+    - username
+table:
+    title:
+        name: "Title"
+        desc: "e.g. Ms., Miss, Mr., Mrs., Dr."
+        args: {filter: string}
+    surname:
+        name: "Surname"
+        desc: "Family Name"
+        args: {filter: string, required: true}
+    firstName:
+        name: "First Name"
+        desc: "Given name"
+        args: {filter: string, required: true}
+    preferredName:
+        name: "Preferred Name"
+        desc: "Most common name, alias, nickname, handle, etc"
+        args: {filter: string, required: true}
+    officialName:
+        name: "Official Name"
+        desc: "Full name as shown in ID documents."
+        args: {filter: string, required: true}
+    nameInCharacters:
+        name: "Name In Characters"
+        desc: "Chinese or other character-based name."
+        args: {filter: string}
+    gender:
+        name: "Gender"
+        desc: ""
+        args: {filter: gender, required: true}
+    dob:
+        name: "Date of Birth"
+        desc: ""
+        args: {filter: date}
+    username:
+        name: "Username"
+        desc: "Must be unique."
+        args: {filter: nospaces, required: true}
+    password:
+        name: "Password"
+        desc: ""
+        args: {filter: nospaces, required: true, custom: true, function: generatePassword}
+    passwordForceReset:
+        name: "Force Reset Password?"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    status:
+        name: "Status"
+        desc: ""
+        args: {filter: status}
+    canLogin:
+        name: "Can Login?"
+        desc: ""
+        args: {filter: yesno, custom: true}
+    gibbonRoleIDPrimary:
+        name: "Primary Role"
+        desc: "Name"
+        args: {filter: string, required: true, custom: true }
+        relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
+    gibbonRoleIDAll:
+        name: "All Roles"
+        desc: "Role Names, Comma separated"
+        args: {filter: csv, required: true, custom: true }
+        relationship: { table: gibbonRole, key: gibbonRoleID, field: name  }
+    email:
+        name: "Email"
+        desc: ""
+        args: {filter: email}
+    emailAlternate:
+        name: "Alternate Email"
+        desc: ""
+        args: {filter: email}
+    image_240:
+        name: "User Photo"
+        desc: "path from /uploads/ to medium portrait image (240px by 320px)"
+        args: {filter: string}
+
+    address1:
+        name: "Address 1"
+        desc: "Unit, Building, Street"
+        args: {filter: string}
+    address1District:
+        name: "Address 1 District"
+        desc: "County, State, District"
+        args: {filter: string}
+    address1Country:
+        name: "Address 1 Country"
+        desc: ""
+        args: {filter: country}
+
+    address2:
+        name: "Address 2"
+        desc: "Unit, Building, Street"
+        args: {filter: string}
+    address2District:
+        name: "Address 2 District"
+        desc: "County, State, District"
+        args: {filter: string}
+    address2Country:
+        name: "Address 2 Country"
+        desc: ""
+        args: {filter: country}
+
+    phone1Type:
+        name: "Phone 1 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone1CountryCode:
+        name: "Phone 1 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode, custom: true}
+    phone1:
+        name: "Phone 1"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone}
+
+    phone2Type:
+        name: "Phone 2 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone2CountryCode:
+        name: "Phone 2 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode, custom: true}
+    phone2:
+        name: "Phone 2"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone }
+
+    phone3Type:
+        name: "Phone 3 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone3CountryCode:
+        name: "Phone 3 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode, custom: true}
+    phone3:
+        name: "Phone 3"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone }
+
+    phone4Type:
+        name: "Phone 4 (Type)"
+        desc: "Mobile, Home, Work, Fax, Pager, Other"
+        args: {filter: phonetype, custom: true}
+    phone4CountryCode:
+        name: "Phone 4 (Country Code)"
+        desc: "IDD code, without 00 or +"
+        args: {filter: phonecode, custom: true}
+    phone4:
+        name: "Phone 4"
+        desc: "No spaces or punctuation, just numbers"
+        args: {filter: phone }
+
+    website:
+        name: "Website"
+        desc: "Must start with http:// or https://"
+        args: {filter: string}
+
+    languageFirst:
+        name: "First Language"
+        desc: ""
+        args: {filter: language}
+    languageSecond:
+        name: "Second Language"
+        desc: ""
+        args: {filter: language}
+    languageThird:
+        name: "Third Language"
+        desc: ""
+        args: {filter: language}
+    countryOfBirth:
+        name: "Country of Birth"
+        desc: ""
+        args: {filter: country}
+    ethnicity:
+        name: "Ethnicity"
+        desc: ""
+        args: {filter: ethnicity}
+    religion:
+        name: "Religion"
+        desc: ""
+        args: {filter: string}
+    citizenship1:
+        name: "Citizenship 1"
+        desc: ""
+        args: {filter: country}
+    citizenship1Passport:
+        name: "Citizenship 1 Passport"
+        desc: ""
+        args: {filter: string}
+    citizenship1PassportScan:
+        name: "Citizenship 1 Passport Scan"
+        desc: "Less than 1440px by 900px"
+        args: {filter: string}
+    citizenship2:
+        name: "Citizenship 2"
+        desc: ""
+        args: {filter: country}
+    citizenship2Passport:
+        name: "Citizenship 2 Passport"
+        desc: ""
+        args: {filter: string}
+    nationalIDCardNumber:
+        name: "National ID Card Number"
+        desc: ""
+        args: {filter: string}
+    nationalIDCardScan:
+        name: "National ID Card Scan"
+        desc: "Less than 1440px by 900px"
+        args: {filter: string}
+    residencyStatus:
+        name: "Residency Status"
+        desc: ""
+        args: {filter: string}
+    visaExpiryDate:
+        name: "Visa Expiry Date"
+        desc: ""
+        args: {filter: date}
+
+    emergency1Name:
+        name: "Emergency 1 Name"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Number1:
+        name: "Emergency 1 Number 1"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Number2:
+        name: "Emergency 1 Number 2"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency1Relationship:
+        name: "Emergency 1 Relationship"
+        desc: "For students and staff only"
+        args: {filter: relation}
+
+    emergency2Name:
+        name: "Emergency 2 Name"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Number1:
+        name: "Emergency 2 Number 1"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Number2:
+        name: "Emergency 2 Number 2"
+        desc: "For students and staff only"
+        args: {filter: string}
+    emergency2Relationship:
+        name: "Emergency 2 Relationship"
+        desc: "For students and staff only"
+        args: {filter: relation}
+
+    receiveNotificationEmails:
+        name: "Receive Email Notifications?"
+        desc: ""
+        args: {filter: yesno, custom: true}

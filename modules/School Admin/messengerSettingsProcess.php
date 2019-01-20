@@ -26,53 +26,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     header("Location: {$URL}");
 } else {
     //Proceed!
-    $smsUsername = $_POST['smsUsername'];
-    $smsPassword = $_POST['smsPassword'];
-    $smsURL = $_POST['smsURL'];
-    $smsURLCredit = $_POST['smsURLCredit'];
     $messageBubbleWidthType = $_POST['messageBubbleWidthType'];
     $messageBubbleBGColor = $_POST['messageBubbleBGColor'];
     $messageBubbleAutoHide = $_POST['messageBubbleAutoHide'];
     $enableHomeScreenWidget = $_POST['enableHomeScreenWidget'];
+    $messageBcc = $_POST['messageBcc'];
 
     //Write to database
     $fail = false;
-
-    try {
-        $data = array('value' => $smsUsername);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='smsUsername'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $smsPassword);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='smsPassword'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $smsURL);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='smsURL'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
-
-    try {
-        $data = array('value' => $smsURLCredit);
-        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='smsURLCredit'";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        $fail = true;
-    }
 
     try {
         $data = array('value' => $messageBubbleWidthType);
@@ -109,6 +70,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
     } catch (PDOException $e) {
         $fail = true;
     }
+
+    try {
+        $data = array('value' => $messageBcc);
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope='Messenger' AND name='messageBcc'";
+        $result = $connection2->prepare($sql);
+        $result->execute($data);
+    } catch (PDOException $e) {
+        $fail = true;
+    }
+
     if ($fail == true) {
         $URL .= '&return=error2';
         header("Location: {$URL}");

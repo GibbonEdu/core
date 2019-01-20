@@ -1,0 +1,31 @@
+{
+    "name": "matthewbdaly/sms-client",
+    "description": "A generic SMS client library. Supports multiple swappable drivers.",
+    "type": "library",
+    "keywords": ["sms"],
+    "require": {
+        "guzzlehttp/guzzle": "^6.2"
+    },
+    "require-dev": {
+        "psy/psysh": "^0.8.0",
+        "phpspec/phpspec": "^3.2",
+        "squizlabs/php_codesniffer": "^2.7",
+        "aws/aws-sdk-php": "3.*"
+    },
+    "suggest": {
+        "aws/aws-sdk-php": "Allows using the AWS SNS driver"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Daly",
+            "email": "matthewbdaly@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Matthewbdaly\\SMS\\": "src/"
+        }
+    }
+
+}

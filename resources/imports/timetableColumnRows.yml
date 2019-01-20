@@ -1,0 +1,39 @@
+details:
+    type: timetableColumnRows
+    name: Timetable - Column Rows
+    table: gibbonTTColumnRow
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Timetables
+primaryKey:
+    gibbonTTColumnRowID
+uniqueKeys:
+    - [ gibbonTTColumnID, name ]
+    - [ gibbonTTColumnID, nameShort ]
+table:
+    gibbonTTColumnID:
+        name: "Timetable Column"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
+    name:
+        name: "Name"
+        desc: "Must be unique for this column."
+        args: { filter: string, required: true }
+    nameShort:
+        name: "Short Name"
+        desc: "Must be unique for this column."
+        args: { filter: string, required: true }
+    timeStart:
+        name: "Start Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true }
+    timeEnd:
+        name: "End Time"
+        desc: "Format: hh:mm (24hr)"
+        args: { filter: time, required: true }
+    type:
+        name: "Type"
+        desc: ""
+        args: { filter: string, required: true, custom: true }

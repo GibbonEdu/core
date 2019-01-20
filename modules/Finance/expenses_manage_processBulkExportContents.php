@@ -22,7 +22,7 @@ include '../../config.php';
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -31,7 +31,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
 
     if ($financeExpenseExportIDs == '' or $gibbonFinanceBudgetCycleID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'List of invoices or budget cycle have not been specified, and so this export cannot be completed.');
+        echo __('List of invoices or budget cycle have not been specified, and so this export cannot be completed.');
         echo '</div>';
     } else {
         try {
@@ -77,28 +77,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         for($col = 'A'; $col !== 'I'; $col++)
             $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Expense Number'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('Expense Number'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Budget'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __('Budget'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Budget Cycle'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __('Budget Cycle'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Title'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Title'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Status'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Status'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __($guid, 'Cost')." (".$_SESSION[$guid]['currency'].')');
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __('Cost')." (".$_SESSION[$guid]['currency'].')');
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __($guid, 'Staff'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __('Staff'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __($guid, 'Timestamp'));
+		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __('Timestamp'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
         $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
 		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
@@ -134,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage.ph
         }
         if ($count == 0) {
  			//Column A
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $count, __($guid, 'There are no records to display.'));
+			$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $count, __('There are no records to display.'));
         }
 	    $_SESSION[$guid]['financeExpenseExportIDs'] = null;
 		$excel->exportWorksheet();

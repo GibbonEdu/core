@@ -1,0 +1,59 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Module Menu: Displays a list of module actions available for the 
+current user. Outputs the sidebar in 'full' view-mode and as a 
+collapsed drop-down list in 'mini' view-mode.
+-->#}
+
+<div class='linkTop'>
+
+{% if sidebar %}
+
+    <ul class='moduleMenu'>
+    {% for categoryName, items in menuModule %}
+        <li>
+            <h4>{{ __(categoryName, (items|first).textDomain) }}</h4>
+            <ul>
+            {% for item in items %}
+                <li>
+                    <a href="{{ item.url }}" class="{{ item.active ? 'active' : '' }}">
+                        {{ __(item.name, item.textDomain) }}
+                    </a>
+                </li>
+            {% endfor %}
+            </ul>
+        </li>
+    {% endfor %}
+    </ul>
+
+{% else %}
+
+    {% if menuModule %}
+        <select style='width: 200px' onchange="window.location.href=this.value">
+            {% for categoryName, items in menuModule %}
+            <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
+
+                {% for item in items %}
+                <option value="{{ item.url }}" {{ item.active ? 'selected' : '' }}>
+                    {{ __(item.name, item.textDomain) }}
+                </option>
+                {% endfor %}
+                
+            </optgroup>
+            {% endfor %}
+        </select>
+        
+        <div style='float: right; padding-top: 10px; margin-left: 10px;'>
+            {{ __('Module Menu') }}
+        </div>
+    {% endif %}
+
+{% endif %}
+
+</div>
+

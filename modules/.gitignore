@@ -1,1 +1,57 @@
-Query Builder
+# ignore all modules
+*
+
+# whitelist .gitignore file
+!.gitignore
+
+# whitelist all core modules
+!/Activities
+!/Activities/**
+!/Attendance
+!/Attendance/**
+!/Behaviour
+!/Behaviour/**
+!/Crowd Assessment
+!/Crowd Assessment/**
+!/Data Updater
+!/Data Updater/**
+!/Departments
+!/Departments/**
+!/Finance
+!/Finance/**
+!/Formal Assessment
+!/Formal Assessment/**
+!/Individual Needs
+!/Individual Needs/**
+!/Library
+!/Library/**
+!/Markbook
+!/Markbook/**
+!/Messenger
+!/Messenger/**
+!/Planner
+!/Planner/**
+!/Roll Groups
+!/Roll Groups/**
+!/Rubrics
+!/Rubrics/**
+!/School Admin
+!/School Admin/**
+!/Staff
+!/Staff/**
+!/Students
+!/Students/**
+!/System Admin
+!/System Admin/**
+!/Timetable
+!/Timetable/**
+!/Timetable Admin
+!/Timetable Admin/**
+!/Tracking
+!/Tracking/**
+!/User Admin
+!/User Admin/**
+
+# black list some files and folders
+# in the module folders
+**/.DS_Store

@@ -17,92 +17,53 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\School\FileExtensionGateway;
+
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtensions_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage File Extensions').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage File Extensions'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
 
-    //Set pagination variable
-    $page = 1;
-    if (isset($_GET['page'])) {
-        $page = $_GET['page'];
-    }
-    if ((!is_numeric($page)) or $page < 1) {
-        $page = 1;
-    }
+    $fileExtensionGateway = $container->get(FileExtensionGateway::class);
 
-    try {
-        $data = array();
-        $sql = 'SELECT * FROM gibbonFileExtension ORDER BY extension';
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
-    }
+    // QUERY
+    $criteria = $fileExtensionGateway->newQueryCriteria()
+        ->sortBy('extension')
+        ->fromPOST();
 
-    echo "<div class='linkTop'>";
-    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/fileExtensions_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-    echo '</div>';
+    $fileExtensions = $fileExtensionGateway->queryFileExtensions($criteria);
 
-    if ($result->rowCount() < 1) {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th>';
-        echo __($guid, 'Extension');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Name');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Type');
-        echo '</th>';
-        echo '<th>';
-        echo __($guid, 'Actions');
-        echo '</th>';
-        echo '</tr>';
+    // DATA TABLE
+    $table = DataTable::createPaginated('fileExtensionManage', $criteria);
 
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
+    $table->addHeaderAction('add', __('Add'))
+        ->setURL('/modules/School Admin/fileExtensions_manage_add.php')
+        ->displayLabel();
 
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $row['extension'];
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['name']);
-            echo '</td>';
-            echo '<td>';
-            echo __($guid, $row['type']);
-            echo '</td>';
-            echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/fileExtensions_manage_edit.php&gibbonFileExtensionID='.$row['gibbonFileExtensionID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/fileExtensions_manage_delete.php&gibbonFileExtensionID='.$row['gibbonFileExtensionID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-            echo '</td>';
-            echo '</tr>';
+    $table->addColumn('extension', __('Extension'));
+    $table->addColumn('name', __('Name'));
+    $table->addColumn('type', __('Type'));
+        
+    // ACTIONS
+    $table->addActionColumn()
+        ->addParam('gibbonFileExtensionID')
+        ->format(function ($fileExtension, $actions) {
+            $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/School Admin/fileExtensions_manage_edit.php');
 
-            ++$count;
-        }
-        echo '</table>';
-    }
+            $actions->addAction('delete', __('Delete'))
+                    ->setURL('/modules/School Admin/fileExtensions_manage_delete.php');
+        });
+
+    echo $table->render($fileExtensions);
 }

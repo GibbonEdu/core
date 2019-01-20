@@ -23,38 +23,36 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 use Gibbon\Domain\System\ModuleGateway;
 
-include './modules/System Admin/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Modules').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Modules'));
 
     $returns = array();
-    $returns['warning0'] = __($guid, "Uninstall was successful. You will still need to remove the module's files yourself.");
-    $returns['error5'] = __($guid, 'Install failed because either the module name was not given or the manifest file was invalid.');
-    $returns['error6'] = __($guid, 'Install failed because a module with the same name is already installed.');
-    $returns['warning1'] = __($guid, 'Install failed, but module was added to the system and set non-active.');
-    $returns['warning2'] = __($guid, 'Install was successful, but module could not be activated.');
+    $returns['warning0'] = __("Uninstall was successful. You will still need to remove the module's files yourself.");
+    $returns['error5'] = __('Install failed because either the module name was not given or the manifest file was invalid.');
+    $returns['error6'] = __('Install failed because a module with the same name is already installed.');
+    $returns['warning1'] = __('Install failed, but module was added to the system and set non-active.');
+    $returns['warning2'] = __('Install was successful, but module could not be activated.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
 
     if (!empty($_SESSION[$guid]['moduleInstallError'])) {
         echo "<div class='error'>";
-        echo __($guid, 'The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleInstallError'];
+        echo __('The following SQL statements caused errors:').' '.$_SESSION[$guid]['moduleInstallError'];
         echo '</div>';
         $_SESSION[$guid]['moduleInstallError'] = null;
     }
 
     echo "<div class='message'>";
-    echo sprintf(__($guid, 'To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
+    echo sprintf(__('To install a module, upload the module folder to %1$s on your server and then refresh this page. After refresh, the module should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/modules/</u></b>');
     echo '</div>';
 
     echo '<h2>';
@@ -68,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $moduleGateway = $container->get(ModuleGateway::class);
     $criteria = $moduleGateway->newQueryCriteria()
         ->sortBy('name')
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $modules = $moduleGateway->queryModules($criteria);
     $moduleNames = $moduleGateway->getAllModuleNames();

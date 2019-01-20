@@ -21,21 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Scope And Sequence'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Scope And Sequence').'</div>';
-    echo '</div>';
-
     echo '<h2>';
-    echo __($guid, 'Choose Course');
+    echo __('Choose Course');
     echo '</h2>';
 
     $gibbonCourseIDs = array();
@@ -155,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
 
                 if ($resultUnit->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                     $countCoursesNoUnits ++;
                     $coursesNoUnits .= $row['nameShort'].', ';
@@ -164,16 +162,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th style=\'width: 15%\'>';
-                    echo __($guid, 'Unit');
+                    echo __('Unit');
                     echo '</th>';
                     echo '<th style=\'width: 45%\'>';
-                    echo __($guid, 'Description');
+                    echo __('Description');
                     echo '</th>';
                     echo "<th style=\'width: 30%\'>";
-                    echo __($guid, 'Concepts & Keywords');
+                    echo __('Concepts & Keywords');
                     echo '</th>';
                     echo "<th style='width: 10%'>";
-                    echo __($guid, 'Actions');
+                    echo __('Actions');
                     echo '</th>';
                     echo '</tr>';
 
@@ -196,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         echo '<td>';
                         echo $rowUnit['description'].'<br/>';
                         if ($rowUnit['attachment'] != '') {
-                            echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowUnit['attachment']."'>".__($guid, 'Download Unit Outline').'</a></li>';
+                            echo "<br/><br/><a href='".$_SESSION[$guid]['absoluteURL'].'/'.$rowUnit['attachment']."'>".__('Download Unit Outline').'</a></li>';
                         }
                         echo '</td>';
                         echo '<td>';
@@ -217,9 +215,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
                         echo '</td>';
                         echo '<td>';
                             if ($canEdit) {
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_edit.php&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__($guid, 'Export')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_edit.php&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonCourseID=".$row['gibbonCourseID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             }
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/units_dump.php&gibbonCourseID=".$row['gibbonCourseID']."&gibbonUnitID=".$rowUnit['gibbonUnitID']."&gibbonSchoolYearID=".$row['gibbonSchoolYearID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a>";
                         echo '</td>';
                         echo '</tr>';
                     }
@@ -229,18 +227,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/scopeAndSequence.p
         }
 
         echo "<div class='success'>";
-            echo '<b>'.__($guid, 'Total Courses').'</b>: '.$countCourses.'<br/>';
-            echo '<b>'.__($guid, 'Courses Without Units').'</b>: '.$countCoursesNoUnits.'<br/>';
+            echo '<b>'.__('Total Courses').'</b>: '.$countCourses.'<br/>';
+            echo '<b>'.__('Courses Without Units').'</b>: '.$countCoursesNoUnits.'<br/>';
             if ($coursesNoUnits != '') {
                 print '<i>'.substr($coursesNoUnits, 0, -2).'</i><br/>';
             }
-            echo '<b>'.__($guid, 'Total Units').'</b>: '.$countUnits.'<br/>';
-            echo '<b>'.__($guid, 'Units Without Concepts & Keywords').'</b>: '.$countUnitsNoKeywords.'<br/>';
+            echo '<b>'.__('Total Units').'</b>: '.$countUnits.'<br/>';
+            echo '<b>'.__('Units Without Concepts & Keywords').'</b>: '.$countUnitsNoKeywords.'<br/>';
             if ($unitsNoKeywords != '') {
                 print '<i>'.substr($unitsNoKeywords, 0, -2).'</i><br/>';
             }
         echo "</div>";
-
     }
 }
-?>

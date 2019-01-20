@@ -22,7 +22,7 @@ include './gibbon.php';
 
 //Load jQuery
 echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery.js"></script>';
-echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.jsprint"></script>';
+echo '<script type="text/javascript" src="'.$_SESSION[$guid]['absoluteURL'].'/lib/jquery/jquery-migrate.min.js"></script>';
 
 $type = '';
 if (isset($_GET['type'])) {
@@ -45,28 +45,28 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
         }
 
     if ($result->rowCount() == 1) { //Alarm details OK
-            $row = $result->fetch();
+        $row = $result->fetch();
 
         $output .= "<div style='padding-top: 10px; font-size: 120px; font-weight: bold; font-family: arial, sans; text-align: center'>";
-                //Allow alarm sounder to terminate alarm
-                $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
+        //Allow alarm sounder to terminate alarm
+        $output .= "<div style='height: 20px; margin-bottom: 120px; width: 100%; text-align: right; font-size: 14px'>";
         if ($row['gibbonPersonID'] == $_SESSION[$guid]['gibbonPersonID']) {
-            $output .= "<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__($guid, 'Turn Alarm Off').'</a></p>';
+            $output .= "<p style='padding-right: 20px'><a style='color: #fff' target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/modules/System Admin/alarm_cancelProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__('Turn Alarm Off').'</a></p>';
         }
         $output .= '</div>';
 
         if ($type == 'general') {
-            $output .= __($guid, 'General Alarm!');
+            $output .= __('General Alarm!');
             $output .= '<audio loop autoplay volume=3>
-						<source src="'.$_SESSION[$guid]['absoluteURL'].'/assets/audio/alarm_general.mp3" type="audio/mpeg">
+						<source src="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/audio/alarm_general.mp3" type="audio/mpeg">
 					</audio>';
         } elseif ($type == 'lockdown') {
-            $output .= __($guid, 'Lockdown!');
+            $output .= __('Lockdown!');
             $output .= '<audio loop autoplay volume=3>
-						<source src="'.$_SESSION[$guid]['absoluteURL'].'/assets/audio/alarm_lockdown.mp3" type="audio/mpeg">
+						<source src="'.$_SESSION[$guid]['absoluteURL'].'/resources/assets/audio/alarm_lockdown.mp3" type="audio/mpeg">
 					</audio>';
         } elseif ($type == 'custom') {
-            $output .= __($guid, 'Alarm!');
+            $output .= __('Alarm!');
 
             try {
                 $dataCustom = array();
@@ -100,10 +100,10 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                         }
 
                     if ($resultConfirm->rowCount() == 0) {
-                        $output .= "<a target='_parent' style='font-size: 300%; font-weight: bold; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__($guid, 'Click here to confirm that you have received this alarm.').'</a><br/>';
-                        $output .= '<i>'.__($guid, 'After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
+                        $output .= "<a target='_parent' style='font-size: 300%; font-weight: bold; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmProcess.php?gibbonAlarmID='.$row['gibbonAlarmID']."'>".__('Click here to confirm that you have received this alarm.').'</a><br/>';
+                        $output .= '<i>'.__('After confirming receipt, the alarm will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
                     } else {
-                        $output .= '<i>'.__($guid, 'You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
+                        $output .= '<i>'.__('You have successfully confirmed receipt of this alarm, which will continue to be displayed until an administrator has cancelled the alarm.').'</i>';
                     }
                     $output .= '</p>';
                 }
@@ -111,7 +111,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                 //Show report to those with permission to sound alarm
                 if (isActionAccessible($guid, $connection2, '/modules/System Admin/alarm.php')) {
                     $output .= '<h3>';
-                    $output .= __($guid, 'Receipt Confirmation Report');
+                    $output .= __('Receipt Confirmation Report');
                     $output .= '</h3>';
 
                     try {
@@ -125,19 +125,19 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
 
                     if ($resultConfirm->rowcount() < 1) {
                         $output .= "<div class='error'>";
-                        $output .= __($guid, 'There are no records to display.');
+                        $output .= __('There are no records to display.');
                         $output .= '</div>';
                     } else {
                         $output .= "<table cellspacing='0' style='width: 400px; margin: 0 auto'>";
                         $output .= "<tr class='head'>";
                         $output .= "<th style='color: #fff; text-align: left'>";
-                        $output .= __($guid, 'Name').'<br/>';
+                        $output .= __('Name').'<br/>';
                         $output .= '</th>';
                         $output .= "<th style='color: #fff; text-align: left'>";
-                        $output .= __($guid, 'Confirmed');
+                        $output .= __('Confirmed');
                         $output .= '</th>';
                         $output .= "<th style='color: #fff; text-align: left'>";
-                        $output .= __($guid, 'Actions');
+                        $output .= __('Actions');
                         $output .= '</th>';
                         $output .= '</tr>';
 
@@ -157,7 +157,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                             $output .= '</td>';
                             $output .= "<td style='color: #fff'>";
                             if ($row['gibbonPersonID'] == $rowConfirm['gibbonPersonID']) {
-                                $output .= __($guid, 'NA');
+                                $output .= __('NA');
                             } else {
                                 if ($rowConfirm['gibbonAlarmConfirmID'] != '') {
                                     $output .= "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ";
@@ -167,7 +167,7 @@ if ($type == 'general' or $type == 'lockdown' or $type == 'custom') {
                             $output .= "<td style='color: #fff'>";
                             if ($row['gibbonPersonID'] != $rowConfirm['gibbonPersonID']) {
                                 if ($rowConfirm['gibbonAlarmConfirmID'] == '') {
-                                    $output .= "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$row['gibbonAlarmID']."'><img title='".__($guid, 'Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
+                                    $output .= "<a target='_parent' href='".$_SESSION[$guid]['absoluteURL'].'/index_notification_ajax_alarmConfirmProcess.php?gibbonPersonID='.$rowConfirm['gibbonPersonID'].'&gibbonAlarmID='.$row['gibbonAlarmID']."'><img title='".__('Confirm')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick_light.png'/></a> ";
                                 }
                             }
                             $output .= '</td>';

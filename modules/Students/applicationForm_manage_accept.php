@@ -18,32 +18,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
-use Gibbon\Comms\NotificationEvent;
+use Gibbon\Services\Format;
+use Gibbon\Contracts\Comms\Mailer;
 use Gibbon\Data\UsernameGenerator;
+use Gibbon\Comms\NotificationEvent;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
-
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_accept.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Applications')."</a> > </div><div class='trailEnd'>".__($guid, 'Accept Application').'</div>';
-    echo '</div>';
+    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Accept Application'));
 
     //Check if school year specified
-    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $search = $_GET['search'];
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -57,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected application does not exist or has already been processed.');
+            echo __('The selected application does not exist or has already been processed.');
             echo '</div>';
         } else {
             if (isset($_GET['return'])) {
@@ -92,12 +93,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             //Step 1
             if ($step == 1) {
                 echo '<h3>';
-                echo __($guid, 'Step')." $step";
+                echo __('Step')." $step";
                 echo '</h3>';
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>';
 
@@ -109,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 $col = $form->addRow()->addColumn()->addClass('stacked');
 
-                $applicantName = formatName('', $values['preferredName'], $values['surname'], 'Student');
+                $applicantName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
                 $col->addContent(sprintf(__('Are you sure you want to accept the application for %1$s?'), $applicantName))->wrap('<b>', '</b>');
 
                 $informStudent = (getSettingByScope($connection2, 'Application Form', 'notificationStudentDefault') == 'Y');
@@ -190,12 +191,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             } elseif ($step == 2) {
                 echo '<h3>';
-                echo __($guid, 'Step')." $step";
+                echo __('Step')." $step";
                 echo '</h3>';
 
                 echo "<div class='linkTop'>";
                 if ($search != '') {
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Back to Search Results').'</a>';
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Back to Search Results').'</a>';
                 }
                 echo '</div>';
 
@@ -239,13 +240,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         $rowAI = $resultAI->fetch();
                         $gibbonPersonID = str_pad($rowAI['Auto_increment'], 10, '0', STR_PAD_LEFT);
 
-                        // Generate a unique username for the new student
-                        $generator = new UsernameGenerator($pdo);
-                        $generator->addToken('preferredName', $values['preferredName']);
-                        $generator->addToken('firstName', $values['firstName']);
-                        $generator->addToken('surname', $values['surname']);
+                        // Generate a unique username for the new student, or use the pre-defined one.
+                        if (!empty($values['username'])) {
+                            $username = $values['username'];
+                        } else {
+                            $generator = new UsernameGenerator($pdo);
+                            $generator->addToken('preferredName', $values['preferredName']);
+                            $generator->addToken('firstName', $values['firstName']);
+                            $generator->addToken('surname', $values['surname']);
 
-                        $username = $generator->generateByRole('003');
+                            $username = $generator->generateByRole('003');
+                        }
 
                         // Generate a random password
                         $password = randomPassword(8);
@@ -260,6 +265,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
 
                         $continueLoop = !(!empty($username) && $username != 'usernamefailed' && !empty($password));
+
+                        // Use the pre-defined student ID, otherwise set it to an empty string (not null).
+                        $values['studentID'] = $values['studentID'] ?? '';
 
                         //Set default email address for student
                         $email = $values['email'];
@@ -310,34 +318,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         //Email website and email address to admin for creation
                         if ($studentDefaultEmail != '' or $studentDefaultWebsite != '') {
                             echo '<h4>';
-                            echo __($guid, 'Student Email & Website');
+                            echo __('Student Email & Website');
                             echo '</h4>';
                             $to = $_SESSION[$guid]['organisationAdministratorEmail'];
-                            $subject = sprintf(__($guid, 'Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
-                            $body = sprintf(__($guid, 'Please create the following for new student %1$s.'), formatName('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
+                            $subject = sprintf(__('Create Student Email/Websites for %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                            $body = sprintf(__('Please create the following for new student %1$s.'), Format::name('', $values['preferredName'], $values['surname'], 'Student'))."<br/><br/>";
                             if ($studentDefaultEmail != '') {
-                                $body .= __($guid, 'Email').': '.$email."<br/>";
+                                $body .= __('Email').': '.$email."<br/>";
                             }
                             if ($studentDefaultWebsite != '') {
-                                $body .= __($guid, 'Website').': '.$website."<br/>";
+                                $body .= __('Website').': '.$website."<br/>";
                             }
                             if ($values['gibbonSchoolYearIDEntry'] != '' && !empty($schoolYearName)) {
-                                $body .= __($guid, 'School Year').': '.$schoolYearName."<br/>";
+                                $body .= __('School Year').': '.$schoolYearName."<br/>";
                             }
                             if ($values['gibbonYearGroupIDEntry'] != '' && !empty($yearGroupName)) {
-                                $body .= __($guid, 'Year Group').': '.$yearGroupName."<br/>";
+                                $body .= __('Year Group').': '.$yearGroupName."<br/>";
                             }
                             if ($values['gibbonRollGroupID'] != '' && !empty($rollGroupName)) {
-                                $body .= __($guid, 'Roll Group').': '.$rollGroupName."<br/>";
+                                $body .= __('Roll Group').': '.$rollGroupName."<br/>";
                             }
                             if ($values['dateStart'] != '') {
-                                $body .= __($guid, 'Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
+                                $body .= __('Start Date').': '.dateConvertBack($guid, $values['dateStart'])."<br/>";
                             }
 
-                            $body .= "<p style='font-style: italic;'>".sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
+                            $body .= "<p style='font-style: italic;'>".sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationName']).'</p>';
                             $bodyPlain = emailBodyConvert($body);
 
-                            $mail = getGibbonMailer($guid);
+                            $mail = $container->get(Mailer::class);
                             $mail->SetFrom($_SESSION[$guid]['organisationAdministratorEmail'], $_SESSION[$guid]['organisationAdministratorName']);
                             $mail->AddAddress($to);
                             $mail->CharSet = 'UTF-8';
@@ -349,11 +357,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                             if ($mail->Send()) {
                                 echo "<div class='success'>";
-                                echo sprintf(__($guid, 'A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
+                                echo sprintf(__('A request to create a student email address and/or website address was successfully sent to %1$s.'), $_SESSION[$guid]['organisationAdministratorName']);
                                 echo '</div>';
                             } else {
                                 echo "<div class='error'>";
-                                echo sprintf(__($guid, 'A request to create a student email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
+                                echo sprintf(__('A request to create a student email address and/or website address failed. Please contact %1$s to request these manually.'), $_SESSION[$guid]['organisationAdministratorName']);
                                 echo '</div>';
                             }
                         }
@@ -394,11 +402,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                             if ($houseFail == true) {
                                 echo "<div class='warning'>";
-                                echo __($guid, 'The student could not automatically be added to a house, you may wish to manually add them to a house.');
+                                echo __('The student could not automatically be added to a house, you may wish to manually add them to a house.');
                                 echo '</div>';
                             } else {
                                 echo "<div class='success'>";
-                                echo sprintf(__($guid, 'The student has automatically been assigned to %1$s house.'), $house);
+                                echo sprintf(__('The student has automatically been assigned to %1$s house.'), $house);
                                 echo '</div>';
                             }
                         }
@@ -406,8 +414,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         if ($continueLoop == false) {
                             $insertOK = true;
                             try {
-                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'fields' => $values['fields']);
-                                $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, fields=:fields";
+                                $data = array('username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'surname' => $values['surname'], 'firstName' => $values['firstName'], 'preferredName' => $values['preferredName'], 'officialName' => $values['officialName'], 'nameInCharacters' => $values['nameInCharacters'], 'gender' => $values['gender'], 'dob' => $values['dob'], 'languageFirst' => $values['languageFirst'], 'languageSecond' => $values['languageSecond'], 'languageThird' => $values['languageThird'], 'countryOfBirth' => $values['countryOfBirth'], 'citizenship1' => $values['citizenship1'], 'citizenship1Passport' => $values['citizenship1Passport'], 'nationalIDCardNumber' => $values['nationalIDCardNumber'], 'residencyStatus' => $values['residencyStatus'], 'visaExpiryDate' => $values['visaExpiryDate'], 'email' => $email, 'emailAlternate' => $emailAlternate, 'website' => $website, 'phone1Type' => $values['phone1Type'], 'phone1CountryCode' => $values['phone1CountryCode'], 'phone1' => $values['phone1'], 'phone2Type' => $values['phone2Type'], 'phone2CountryCode' => $values['phone2CountryCode'], 'phone2' => $values['phone2'], 'lastSchool' => $lastSchool, 'dateStart' => $values['dateStart'], 'privacy' => $values['privacy'], 'dayType' => $values['dayType'], 'gibbonHouseID' => $gibbonHouseID, 'studentID' => $values['studentID'], 'fields' => $values['fields']);
+                                $sql = "INSERT INTO gibbonPerson SET username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, gibbonRoleIDPrimary='003', gibbonRoleIDAll='003', status='Full', surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, nameInCharacters=:nameInCharacters, gender=:gender, dob=:dob, languageFirst=:languageFirst, languageSecond=:languageSecond, languageThird=:languageThird, countryOfBirth=:countryOfBirth, citizenship1=:citizenship1, citizenship1Passport=:citizenship1Passport, nationalIDCardNumber=:nationalIDCardNumber, residencyStatus=:residencyStatus, visaExpiryDate=:visaExpiryDate, email=:email, emailAlternate=:emailAlternate, website=:website, phone1Type=:phone1Type, phone1CountryCode=:phone1CountryCode, phone1=:phone1, phone2Type=:phone2Type, phone2CountryCode=:phone2CountryCode, phone2=:phone2, lastSchool=:lastSchool, dateStart=:dateStart, privacy=:privacy, dayType=:dayType, gibbonHouseID=:gibbonHouseID, studentID=:studentID, fields=:fields";
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {
@@ -438,19 +446,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                 if ($failStudent == true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Student could not be created!');
+                    echo __('Student could not be created!');
                     echo '</div>';
                 } else {
                     echo '<h4>';
-                    echo __($guid, 'Student Details');
+                    echo __('Student Details');
                     echo '</h4>';
                     echo '<ul>';
                     echo "<li><b>gibbonPersonID</b>: $gibbonPersonID</li>";
-                    echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['preferredName'], $values['surname'], 'Student').'</li>';
-                    echo '<li><b>'.__($guid, 'Email').'</b>: '.$email.'</li>';
-                    echo '<li><b>'.__($guid, 'Email Alternate').'</b>: '.$emailAlternate.'</li>';
-                    echo '<li><b>'.__($guid, 'Username')."</b>: $username</li>";
-                    echo '<li><b>'.__($guid, 'Password')."</b>: $password</li>";
+                    echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['preferredName'], $values['surname'], 'Student').'</li>';
+                    echo '<li><b>'.__('Email').'</b>: '.$email.'</li>';
+                    echo '<li><b>'.__('Email Alternate').'</b>: '.$emailAlternate.'</li>';
+                    echo '<li><b>'.__('Username')."</b>: $username</li>";
+                    echo '<li><b>'.__('Password')."</b>: $password</li>";
                     echo '</ul>';
 
                     //Move documents to student notes
@@ -469,7 +477,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         }
                         $note .= '</p>';
                         try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'title' => __($guid, 'Application Documents'), 'note' => $note, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
+                            $data = array('gibbonPersonID' => $gibbonPersonID, 'title' => __('Application Documents'), 'note' => $note, 'gibbonPersonIDCreator' => $_SESSION[$guid]['gibbonPersonID'], 'timestamp' => date('Y-m-d H:i:s'));
                             $sql = 'INSERT INTO gibbonStudentNote SET gibbonPersonID=:gibbonPersonID, gibbonStudentNoteCategoryID=NULL, title=:title, note=:note, gibbonPersonIDCreator=:gibbonPersonIDCreator, timestamp=:timestamp';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -508,14 +516,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         //Report back
                         if ($enrolmentOK == false) {
                             echo "<div class='warning'>";
-                            echo __($guid, 'Student could not be enroled, so this will have to be done manually at a later date.');
+                            echo __('Student could not be enroled, so this will have to be done manually at a later date.');
                             echo '</div>';
                         } else {
                             echo '<h4>';
                             echo 'Student Enrolment';
                             echo '</h4>';
                             echo '<ul>';
-                            echo '<li>'.__($guid, 'The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
+                            echo '<li>'.__('The student has successfully been enroled in the specified school year, year group and roll group.').'</li>';
 
                             // Handle automatic course enrolment if enabled
                             $autoEnrolStudent = (isset($_POST['autoEnrolStudent']))? $_POST['autoEnrolStudent'] : 'N';
@@ -532,9 +540,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 $pdo->executeQuery($data, $sql);
 
                                 if (!$pdo->getQuerySuccess()) {
-                                    echo '<li class="warning">'.__($guid, 'Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
+                                    echo '<li class="warning">'.__('Student could not be automatically enroled in courses, so this will have to be done manually at a later date.').'</li>';
                                 } else {
-                                    echo '<li>'.__($guid, 'The student has automatically been enroled in courses for their Roll Group.').'</li>';
+                                    echo '<li>'.__('The student has automatically been enroled in courses for their Roll Group.').'</li>';
                                 }
                             }
 
@@ -585,7 +593,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     if ($paymentOK == false) {
                         echo "<div class='warning'>";
-                        echo __($guid, 'Student payment details could not be saved, but we will continue, as this is a minor issue.');
+                        echo __('Student payment details could not be saved, but we will continue, as this is a minor issue.');
                         echo '</div>';
                     }
 
@@ -728,16 +736,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         if ($failFamily == true) {
                             echo "<div class='warning'>";
-                            echo __($guid, 'Student could not be linked to family!');
+                            echo __('Student could not be linked to family!');
                             echo '</div>';
                         } else {
                             echo '<h4>';
-                            echo __($guid, 'Family');
+                            echo __('Family');
                             echo '</h4>';
                             echo '<ul>';
                             echo '<li><b>gibbonFamilyID</b>: '.$values['gibbonFamilyID'].'</li>';
-                            echo '<li><b>'.__($guid, 'Family Name')."</b>: $familyName </li>";
-                            echo '<li><b>'.__($guid, 'Roles').'</b>: '.__($guid, 'System has tried to assign parents "Parent" role access if they did not already have it.').'</li>';
+                            echo '<li><b>'.__('Family Name')."</b>: $familyName </li>";
+                            echo '<li><b>'.__('Roles').'</b>: '.__('System has tried to assign parents "Parent" role access if they did not already have it.').'</li>';
                             echo '</ul>';
                         }
                     } else {
@@ -809,16 +817,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                         if ($failFamily == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Family could not be created!');
+                            echo __('Family could not be created!');
                             echo '</div>';
                         } else {
                             echo '<h4>';
-                            echo __($guid, 'Family Details');
+                            echo __('Family Details');
                             echo '</h4>';
                             echo '<ul>';
                             echo "<li><b>gibbonFamilyID</b>: $gibbonFamilyID</li>";
-                            echo '<li><b>'.__($guid, 'Family Name')."</b>: $familyName</li>";
-                            echo '<li><b>'.__($guid, 'Address Name')."</b>: $nameAddress</li>";
+                            echo '<li><b>'.__('Family Name')."</b>: $familyName</li>";
+                            echo '<li><b>'.__('Address Name')."</b>: $nameAddress</li>";
                             echo '</ul>';
 
                             //LINK STUDENT INTO FAMILY
@@ -855,7 +863,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if ($failFamily == true) {
                                     echo "<div class='warning'>";
-                                    echo __($guid, 'Student could not be linked to family!');
+                                    echo __('Student could not be linked to family!');
                                     echo '</div>';
                                 } else {
                                     // Update the application information with the newly created family ID, for Sibling Applications to use
@@ -873,9 +881,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                                 echo 'Parent 1';
                                 echo '</h4>';
                                 echo '<ul>';
-                                echo '<li>'.__($guid, 'Parent 1 already exists in Gibbon, and so does not need a new account.').'</li>';
+                                echo '<li>'.__('Parent 1 already exists in Gibbon, and so does not need a new account.').'</li>';
                                 echo "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent1</li>";
-                                echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['parent1preferredName'], $values['parent1surname'], 'Parent').'</li>';
+                                echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['parent1preferredName'], $values['parent1surname'], 'Parent').'</li>';
                                 echo '</ul>';
 
                                 //LINK PARENT 1 INTO FAMILY
@@ -911,7 +919,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                     if ($failFamily == true) {
                                         echo "<div class='warning'>";
-                                        echo __($guid, 'Parent 1 could not be linked to family!');
+                                        echo __('Parent 1 could not be linked to family!');
                                         echo '</div>';
                                     }
                                 }
@@ -998,18 +1006,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if ($failParent1 == true) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'Parent 1 could not be created!');
+                                    echo __('Parent 1 could not be created!');
                                     echo '</div>';
                                 } else {
                                     echo '<h4>';
-                                    echo __($guid, 'Parent 1');
+                                    echo __('Parent 1');
                                     echo '</h4>';
                                     echo '<ul>';
                                     echo "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent1</li>";
-                                    echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['parent1preferredName'], $values['parent1surname'], 'Parent').'</li>';
-                                    echo '<li><b>'.__($guid, 'Email').'</b>: '.$values['parent1email'].'</li>';
-                                    echo '<li><b>'.__($guid, 'Username')."</b>: $username</li>";
-                                    echo '<li><b>'.__($guid, 'Password')."</b>: $password</li>";
+                                    echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['parent1preferredName'], $values['parent1surname'], 'Parent').'</li>';
+                                    echo '<li><b>'.__('Email').'</b>: '.$values['parent1email'].'</li>';
+                                    echo '<li><b>'.__('Username')."</b>: $username</li>";
+                                    echo '<li><b>'.__('Password')."</b>: $password</li>";
                                     echo '</ul>';
 
                                     //LINK PARENT 1 INTO FAMILY
@@ -1045,7 +1053,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                         if ($failFamily == true) {
                                             echo "<div class='warning'>";
-                                            echo __($guid, 'Parent 1 could not be linked to family!');
+                                            echo __('Parent 1 could not be linked to family!');
                                             echo '</div>';
                                         }
 
@@ -1137,18 +1145,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if ($failParent2 == true) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'Parent 2 could not be created!');
+                                    echo __('Parent 2 could not be created!');
                                     echo '</div>';
                                 } else {
                                     echo '<h4>';
-                                    echo __($guid, 'Parent 2');
+                                    echo __('Parent 2');
                                     echo '</h4>';
                                     echo '<ul>';
                                     echo "<li><b>gibbonPersonID</b>: $gibbonPersonIDParent2</li>";
-                                    echo '<li><b>'.__($guid, 'Name').'</b>: '.formatName('', $values['parent2preferredName'], $values['parent2surname'], 'Parent').'</li>';
-                                    echo '<li><b>'.__($guid, 'Email').'</b>: '.$values['parent2email'].'</li>';
-                                    echo '<li><b>'.__($guid, 'Username')."</b>: $username</li>";
-                                    echo '<li><b>'.__($guid, 'Password')."</b>: $password</li>";
+                                    echo '<li><b>'.__('Name').'</b>: '.Format::name('', $values['parent2preferredName'], $values['parent2surname'], 'Parent').'</li>';
+                                    echo '<li><b>'.__('Email').'</b>: '.$values['parent2email'].'</li>';
+                                    echo '<li><b>'.__('Username')."</b>: $username</li>";
+                                    echo '<li><b>'.__('Password')."</b>: $password</li>";
                                     echo '</ul>';
 
                                     //LINK PARENT 2 INTO FAMILY
@@ -1184,7 +1192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                         if ($failFamily == true) {
                                             echo "<div class='warning'>";
-                                            echo __($guid, 'Parent 2 could not be linked to family!');
+                                            echo __('Parent 2 could not be linked to family!');
                                             echo '</div>';
                                         }
 
@@ -1206,22 +1214,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     //SEND STUDENT EMAIL
                     if ($informStudent == 'Y') {
                         echo '<h4>';
-                        echo __($guid, 'Student Welcome Email');
+                        echo __('Student Welcome Email');
                         echo '</h4>';
                         $emailCount = 0 ;
                         $notificationStudentMessage = getSettingByScope($connection2, 'Application Form', 'notificationStudentMessage');
                         foreach ($informStudentArray as $informStudentEntry) {
                             if ($informStudentEntry['email'] != '' and $informStudentEntry['surname'] != '' and $informStudentEntry['preferredName'] != '' and $informStudentEntry['username'] != '' and $informStudentEntry['password']) {
                                 $to = $informStudentEntry['email'];
-                                $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                                $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationStudentMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informStudentEntry['username'], $informStudentEntry['password']).$notificationStudentMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = 'Dear '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdmissionsName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Admissions Administrator';
+                                    $body = 'Dear '.Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').",<br/><br/>Welcome to ".$_SESSION[$guid]['systemName'].', '.$_SESSION[$guid]['organisationNameShort']."'s system for managing school information. You can access the system by going to ".$_SESSION[$guid]['absoluteURL'].' and logging in with your new username ('.$informStudentEntry['username'].') and password ('.$informStudentEntry['password'].").<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>Please feel free to reply to this email should you have any questions.<br/><br/>".$_SESSION[$guid]['organisationAdmissionsName'].",<br/><br/>".$_SESSION[$guid]['systemName'].' Admissions Administrator';
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = getGibbonMailer($guid);
+                                $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -1233,11 +1241,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
-                                    echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
+                                    echo __('A welcome email was successfully sent to').' '.Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 } else {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'A welcome email could not be sent to').' '.formatName('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
+                                    echo __('A welcome email could not be sent to').' '.Format::name('', $informStudentEntry['preferredName'], $informStudentEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 }
                                 $emailCount++ ;
@@ -1260,15 +1268,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                         foreach ($informParentsArray as $informParentsEntry) {
                             if ($informParentsEntry['email'] != '' and $informParentsEntry['surname'] != '' and $informParentsEntry['preferredName'] != '' and $informParentsEntry['username'] != '' and $informParentsEntry['password']) {
                                 $to = $informParentsEntry['email'];
-                                $subject = sprintf(__($guid, 'Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
+                                $subject = sprintf(__('Welcome to %1$s at %2$s'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort']);
                                 if ($notificationParentsMessage != '') {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).$notificationParentsMessage.sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 } else {
-                                    $body = sprintf(__($guid, 'Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__($guid, 'Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
+                                    $body = sprintf(__('Dear %1$s,<br/><br/>Welcome to %2$s, %3$s\'s system for managing school information. You can access the system by going to %4$s and logging in with your new username (%5$s) and password (%6$s). You can learn more about using %7$s on the official support website (https://gibbonedu.org/support/parents).<br/><br/>In order to maintain the security of your data, we highly recommend you change your password to something easy to remember but hard to guess. This can be done by using the Preferences page after logging in (top-right of the screen).<br/><br/>'), Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student'), $_SESSION[$guid]['systemName'], $_SESSION[$guid]['organisationNameShort'], $_SESSION[$guid]['absoluteURL'], $informParentsEntry['username'], $informParentsEntry['password'], $_SESSION[$guid]['systemName']).sprintf(__('Please feel free to reply to this email should you have any questions.<br/><br/>%1$s,<br/><br/>%2$s Admissions Administrator'), $_SESSION[$guid]['organisationAdmissionsName'], $_SESSION[$guid]['systemName']);
                                 }
                                 $bodyPlain = emailBodyConvert($body);
 
-                                $mail = getGibbonMailer($guid);
+                                $mail = $container->get(Mailer::class);
                                 $mail->SetFrom($_SESSION[$guid]['organisationAdmissionsEmail'], $_SESSION[$guid]['organisationAdmissionsName']);
                                 $mail->AddAddress($to);
                                 $mail->CharSet = 'UTF-8';
@@ -1280,11 +1288,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                                 if ($mail->Send()) {
                                     echo "<div class='success'>";
-                                    echo __($guid, 'A welcome email was successfully sent to').' '.formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
+                                    echo __('A welcome email was successfully sent to').' '.Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 } else {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'A welcome email could not be sent to').' '.formatName('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
+                                    echo __('A welcome email could not be sent to').' '.Format::name('', $informParentsEntry['preferredName'], $informParentsEntry['surname'], 'Student').'.';
                                     echo '</div>';
                                 }
                                 $emailCount++ ;
@@ -1300,7 +1308,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     // Raise a new notification event
                     $event = new NotificationEvent('Students', 'Application Form Accepted');
 
-                    $studentName = formatName('', $values['preferredName'], $values['surname'], 'Student');
+                    $studentName = Format::name('', $values['preferredName'], $values['surname'], 'Student');
                     $studentGroup = (!empty($rollGroupName))? $rollGroupName : $yearGroupName;
 
                     $notificationText = sprintf(__('An application form for %1$s (%2$s) has been accepted for the %3$s school year.'), $studentName, $studentGroup, $schoolYearName );
@@ -1331,26 +1339,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
                     if ($failStatus == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Student status could not be updated: student is in the system, but acceptance has failed.');
+                        echo __('Student status could not be updated: student is in the system, but acceptance has failed.');
                         echo '</div>';
                     } else {
                         echo '<h4>';
-                        echo __($guid, 'Application Status');
+                        echo __('Application Status');
                         echo '</h4>';
                         echo '<ul>';
-                        echo '<li><b>'.__($guid, 'Status').'</b>: '.__($guid, 'Accepted').'</li>';
+                        echo '<li><b>'.__('Status').'</b>: '.__('Accepted').'</li>';
                         echo '</ul>';
 
                         echo "<div class='success' style='margin-bottom: 20px'>";
-                        echo str_replace('ICHK', $_SESSION[$guid]['organisationNameShort'], __($guid, 'Applicant has been successfully accepted into ICHK.') );
-                        echo ' <i><u>'.__($guid, 'You may wish to now do the following:').'</u></i><br/>';
+                        echo str_replace('ICHK', $_SESSION[$guid]['organisationNameShort'], __('Applicant has been successfully accepted into ICHK.') );
+                        echo ' <i><u>'.__('You may wish to now do the following:').'</u></i><br/>';
                         echo '<ol>';
-                        echo '<li>'.__($guid, 'Enrol the student in the relevant academic year.').'</li>';
-                        echo '<li>'.__($guid, 'Create a medical record for the student.').'</li>';
-                        echo '<li>'.__($guid, 'Create an individual needs record for the student.').'</li>';
-                        echo '<li>'.__($guid, 'Create a note of the student\'s scholarship information outside of Gibbon.').'</li>';
-                        echo '<li>'.__($guid, 'Create a timetable for the student.').'</li>';
-                        echo '<li>'.__($guid, 'Inform the student and their parents of their Gibbon login details (if this was not done automatically).').'</li>';
+                        echo '<li>'.__('Enrol the student in the relevant academic year.').'</li>';
+                        echo '<li>'.__('Create a medical record for the student.').'</li>';
+                        echo '<li>'.__('Create an individual needs record for the student.').'</li>';
+                        echo '<li>'.__('Create a note of the student\'s scholarship information outside of Gibbon.').'</li>';
+                        echo '<li>'.__('Create a timetable for the student.').'</li>';
+                        echo '<li>'.__('Inform the student and their parents of their Gibbon login details (if this was not done automatically).').'</li>';
                         echo '</ol>';
                         echo '</div>';
                     }
@@ -1359,4 +1367,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 }
-?>

@@ -18,28 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Prefab\DeleteForm;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -58,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 try {
@@ -72,20 +73,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
 
                 if ($result2->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     //Let's go!
                     $row = $result->fetch();
                     $row2 = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Delete Column').'</div>';
-                    echo '</div>';
-
                     if ($row2['groupingID'] != '' and $row2['gibbonPersonIDCreator'] != $_SESSION[$guid]['gibbonPersonID']) {
                         echo "<div class='error'>";
-                        echo __($guid, 'This column is part of a set of columns, and so cannot be individually deleted.');
+                        echo __('This column is part of a set of columns, and so cannot be individually deleted.');
                         echo '</div>';
                     } else {
                         if (isset($_GET['return'])) {
@@ -100,4 +97,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_del
         }
     }
 }
-?>

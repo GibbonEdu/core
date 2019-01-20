@@ -22,13 +22,11 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Dashboard Settings').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Dashboard Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -38,27 +36,41 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
+    $staffDashboardDefaultTabTypes = array(
+        '' => '',
+        'Planner' => __('Planner')
+    );     
     $setting = getSettingByScope($connection2, 'School Admin', 'staffDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Planner')
+            ->fromArray($staffDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Staff Dashboard'")
             ->selected($setting['value']);
 
+    $studentDashboardDefaultTabTypes = array(
+        '' => '',
+        'Planner' => __('Planner')
+    );        
     $setting = getSettingByScope($connection2, 'School Admin', 'studentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Planner')
+            ->fromArray($studentDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Student Dashboard'")
             ->selected($setting['value']);
 
+    $parentDashboardDefaultTabTypes = array(
+        '' => '',
+        'Learning Overview' => __('Learning Overview'),
+        'Timetable' => __('Timetable'),
+        'Activities' => __('Activities')
+    );         
     $setting = getSettingByScope($connection2, 'School Admin', 'parentDashboardDefaultTab', true);
     $row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelect($setting['name'])
-            ->fromString(', Learning Overview, Timetable, Activities')
+            ->fromArray($parentDashboardDefaultTabTypes)
             ->fromQuery($pdo, "SELECT name, name AS value FROM gibbonHook WHERE type='Parental Dashboard'")
             ->selected($setting['value']);
 
@@ -68,4 +80,3 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/dashboardSett
 
 	echo $form->getOutput();
 }
-?>

@@ -34,7 +34,7 @@ if (isset($_GET['gibbonMessengerID'])) {
 //Check variables
 if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
     echo "<div class='error'>";
-    echo __($guid, 'You have not specified one or more required parameters.');
+    echo __('You have not specified one or more required parameters.');
     echo '</div>';
 } else {
     //Check for record
@@ -46,20 +46,20 @@ if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
         $resultKeyRead->execute($dataKeyRead);
     } catch (PDOException $e) {
         echo "<div class='error'>";
-        echo __($guid, 'Your request failed due to a database error.');
+        echo __('Your request failed due to a database error.');
         echo '</div>';
     }
 
     if ($resultKeyRead->rowCount() != 1) { //If not exists, report error
         echo "<div class='error'>";
-        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+        echo __('The selected record does not exist, or you do not have access to it.');
         echo '</div>';
     } else {    //If exists check confirmed
         $rowKeyRead = $resultKeyRead->fetch();
 
         if ($rowKeyRead['confirmed'] == 'Y') { //If already confirmed, report success
             echo "<div class='success'>";
-            echo __($guid, 'Thank you for confirming receipt and reading of this email.');
+            echo __('Thank you for confirming receipt and reading of this email.');
             echo '</div>';
         } else { //If not confirmed, confirm
             $keyWriteFail = false;
@@ -75,11 +75,11 @@ if ($key == '' or $gibbonPersonID == '' or $gibbonMessengerID == '') {
 
             if ($keyWriteFail == true) { //Report error
                 echo "<div class='error'>";
-                echo __($guid, 'Your request failed due to a database error.');
+                echo __('Your request failed due to a database error.');
                 echo '</div>';
             } else { //Report success
                 echo "<div class='success'>";
-                echo __($guid, 'Thank you for confirming receipt and reading of this email.');
+                echo __('Thank you for confirming receipt and reading of this email.');
                 echo '</div>';
             }
         }

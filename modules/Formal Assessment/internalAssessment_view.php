@@ -17,29 +17,28 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         if ($highestAction == 'View Internal Assessments_all') { //ALL STUDENTS
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View All Internal Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('View All Internal Assessments'));
 
             $gibbonPersonID = null;
             if (isset($_GET['gibbonPersonID'])) {
@@ -47,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             }
 
             echo '<h3>';
-            echo __($guid, 'Choose A Student');
+            echo __('Choose A Student');
             echo '</h3>';
 
             $form = Form::create("filter", $_SESSION[$guid]['absoluteURL']."/index.php", "get", "noIntBorder fullWidth standardForm");
@@ -67,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 			
 			if ($gibbonPersonID) {
 				echo '<h3>';
-				echo __($guid, 'Internal Assessments');
+				echo __('Internal Assessments');
 				echo '</h3>';
 
 				//Check for access
@@ -82,16 +81,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 				if ($resultCheck->rowCount() != 1) {
 					echo "<div class='error'>";
-					echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+					echo __('The selected record does not exist, or you do not have access to it.');
 					echo '</div>';
 				} else {
 					echo getInternalAssessmentRecord($guid, $connection2, $gibbonPersonID);
 				}
 			}
 		} elseif ($highestAction == 'View Internal Assessments_myChildrens') { //MY CHILDREN
-			echo "<div class='trail'>";
-			echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View My Childrens\'s Internal Assessments').'</div>';
-			echo '</div>';
+			$page->breadcrumbs->add(__('View My Childrens\'s Internal Assessments'));
 
 			//Test data access field for permission
 			try {
@@ -105,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 			if ($result->rowCount() < 1) {
 				echo "<div class='error'>";
-				echo __($guid, 'Access denied.');
+				echo __('Access denied.');
 				echo '</div>';
 			} else {
 				//Get child list
@@ -120,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 						echo "<div class='error'>".$e->getMessage().'</div>';
 					}
 					while ($rowChild = $resultChild->fetch()) {
-						$options[$rowChild['gibbonPersonID']]=formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
+						$options[$rowChild['gibbonPersonID']]=Format::name('', $rowChild['preferredName'], $rowChild['surname'], 'Student', true);
 					}
 				}
 
@@ -128,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
 
 				if (count($options) == 0) {
 					echo "<div class='error'>";
-					echo __($guid, 'Access denied.');
+					echo __('Access denied.');
 					echo '</div>';
 				} elseif (count($options) == 1) {
 					$gibbonPersonID = key($options);
@@ -168,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                     }
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $rowChild = $resultChild->fetch();
@@ -177,12 +174,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 }
             }
         } else { //My Internal Assessments
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View My Internal Assessments').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('View My Internal Assessments'));
 
             echo '<h3>';
-            echo __($guid, 'Internal Assessments');
+            echo __('Internal Assessments');
             echo '</h3>';
 
             echo getInternalAssessmentRecord($guid, $connection2, $_SESSION[$guid]['gibbonPersonID'], 'student');

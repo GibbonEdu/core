@@ -20,18 +20,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Prefab\DeleteForm;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Set variables
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
 
         //Proceed!
         //Get viewBy, date and class variables
-        $params = '';
+        $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -67,15 +67,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
             }
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-            $params = "&viewBy=date&date=$date";
+            $params += [
+                'viewBy' => 'date',
+                'date' => $date,
+            ];
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
             $gibbonCourseClassID = isset($_GET['gibbonCourseClassID'])? $_GET['gibbonCourseClassID'] : '';
-            $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
+            $params += [
+                'viewBy' => 'class',
+                'date' => $class,
+                'gibbonCourseClassID' => $gibbonCourseClassID,
+                'subView' => $subView,
+            ];
         }
+        $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
@@ -85,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         $gibbonPlannerEntryID = isset($_GET['gibbonPlannerEntryID'])? $_GET['gibbonPlannerEntryID'] : '';
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             $proceed = true;
@@ -115,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 //Let's go!
@@ -125,10 +134,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
                 } else {
                     $extra = $row['course'].'.'.$row['class'];
                 }
-
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > </div><div class='trailEnd'>".__($guid, 'Delete Lesson Plan').'</div>';
-                echo '</div>';
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -140,4 +145,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_delete.php
         }
     }
 }
-?>

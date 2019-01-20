@@ -20,18 +20,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_manage_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__($guid, 'My Expense Requests')."</a> > </div><div class='trailEnd'>".__($guid, 'View Expense Request').'</div>';
-    echo '</div>';
+    $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+    $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+    $page->breadcrumbs
+        ->add(__('My Expense Requests'), 'expenseRequest_manage.php',  $urlParams)
+        ->add(__('View Expense Request'));       
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null);
@@ -39,13 +43,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
     //Check if params are specified
     $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-    $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
     $status = '';
     $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
     $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
     if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         //Check if have Full or Write in any budgets
@@ -60,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
         }
         if ($budgetsAccess == false) {
             echo "<div class='error'>";
-            echo __($guid, 'You do not have Full or Write access to any budgets.');
+            echo __('You do not have Full or Write access to any budgets.');
             echo '</div>';
         } else {
             //Get and check settings
@@ -69,7 +72,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
             $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
             if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'An error has occurred with your expense and budget settings.');
+                echo __('An error has occurred with your expense and budget settings.');
                 echo '</div>';
             } else {
                 //Check if there are approvers
@@ -84,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error has occurred with your expense and budget settings.');
+                    echo __('An error has occurred with your expense and budget settings.');
                     echo '</div>';
                 } else {
                     //Ready to go! Just check record exists and we have access, and load it ready to use...
@@ -99,14 +102,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
                         $values = $result->fetch();
                         if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a>';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenseRequest_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                             echo '</div>';
                         }
 

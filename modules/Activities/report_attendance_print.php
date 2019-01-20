@@ -18,12 +18,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendance.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonActivityID = $_GET['gibbonActivityID'];
@@ -53,16 +53,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
         }
 
         echo '<h2>';
-        echo __($guid, 'Participants for').' '.$row['name'].$date;
+        echo __('Participants for').' '.$row['name'].$date;
         echo '</h2>';
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             echo "<div class='linkTop'>";
-            echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             $lastPerson = '';
@@ -70,10 +70,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             echo "<table class='mini' cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Student');
+            echo __('Student');
             echo '</th>';
             echo '<th colspan=15>';
-            echo __($guid, 'Attendance');
+            echo __('Attendance');
             echo '</th>';
             echo '</tr>';
             echo "<tr style='height: 75px' class='odd'>";
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_attendan
             if ($count == 0) {
                 echo "<tr class=$rowNum>";
                 echo '<td colspan=16>';
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</td>';
                 echo '</tr>';
             }

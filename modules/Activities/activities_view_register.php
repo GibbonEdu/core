@@ -20,29 +20,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php'>View Activities</a> > </div><div class='trailEnd'>".__($guid, 'Activity Registration').'</div>';
-        echo '</div>';
+        $page->breadcrumbs
+            ->add(__('View Activities'), 'activities_view.php')
+            ->add(__('Activity Registration'));
 
         if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_register') == false) {
             //Acess denied
             echo "<div class='error'>";
-            echo __($guid, 'You do not have access to this action.');
+            echo __('You do not have access to this action.');
             echo '</div>';
         } else {
             //Get current role category
@@ -56,21 +56,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
             if ($access != 'Register') {
                 echo "<div class='error'>";
-                echo __($guid, 'Registration is closed, or you do not have permission to register.');
+                echo __('Registration is closed, or you do not have permission to register.');
                 echo '</div>';
             } else {
                 //Check if school year specified
                 $gibbonActivityID = $_GET['gibbonActivityID'];
                 if ($gibbonActivityID == 'Y') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     $mode = $_GET['mode'];
 
                     if ($_GET['search'] != '' or $gibbonPersonID != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."'>".__($guid, 'Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Activities/activities_view.php&gibbonPersonID=$gibbonPersonID&search=".$_GET['search']."'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                         if ($result->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Access denied.');
+                            echo __('Access denied.');
                             echo '</div>';
                         } else {
                             $countChild = 0;
@@ -139,7 +139,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($mode == 'register') {
                         if ($continue == false) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Your request failed due to a database error.');
+                            echo __('Your request failed due to a database error.');
                             echo '</div>';
                         } else {
                             $today = date('Y-m-d');
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                             if ($result->rowCount() != 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo __('The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             } else {
                                 $values = $result->fetch();
@@ -183,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                 if ($resultReg->rowCount() > 0) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'You are already registered for this activity and so cannot register again.');
+                                    echo __('You are already registered for this activity and so cannot register again.');
                                     echo '</div>';
                                 } else {
                                     if (isset($_GET['return'])) {
@@ -211,15 +211,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                     if ($proceed == false) {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'You have subscribed for the maximum number of activities in a term, and so cannot register for this activity.');
+                                        echo __('You have subscribed for the maximum number of activities in a term, and so cannot register for this activity.');
                                         echo '</div>';
                                     } else {
 
                                         echo '<p>';
                                         if (getSettingByScope($connection2, 'Activities', 'enrolmentType') == 'Selection') {
-                                            echo __($guid, 'After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
+                                            echo __('After you press the Register button below, your application will be considered by a member of staff who will decide whether or not there is space for you in this program.');
                                         } else {
-                                            echo __($guid, 'If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
+                                            echo __('If there is space on this program you will be accepted immediately upon pressing the Register button below. If there is not, then you will be placed on a waiting list.');
                                         }
                                         echo '</p>';
 
@@ -293,7 +293,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     } elseif ($mode = 'unregister') {
                         if ($continue == false) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Your request failed due to a database error.');
+                            echo __('Your request failed due to a database error.');
                             echo '</div>';
                         } else {
                             $today = date('Y-m-d');
@@ -317,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                             if ($result->rowCount() != 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo __('The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             } else {
                                 $values = $result->fetch();
@@ -334,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                                 if ($resultReg->rowCount() < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'You are not currently registered for this activity and so cannot unregister.');
+                                    echo __('You are not currently registered for this activity and so cannot unregister.');
                                     echo '</div>';
                                 } else {
                                     if (isset($_GET['return'])) {
@@ -349,7 +349,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                                     $form->addHiddenValue('gibbonPersonID', $gibbonPersonID);
                                     $form->addHiddenValue('gibbonActivityID', $gibbonActivityID);
 
-                                    $form->addRow()->addContent(sprintf(__($guid, 'Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $values['name']))->wrap('<strong>', '</strong>');
+                                    $form->addRow()->addContent(sprintf(__('Are you sure you want to unregister from activity "%1$s"? If you try to reregister later you may lose a space already assigned to you.'), $values['name']))->wrap('<strong>', '</strong>');
 
                                     $row = $form->addRow();
                                         $row->addSubmit(__('Unregister'));

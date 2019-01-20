@@ -23,13 +23,13 @@ use Gibbon\Forms\DatabaseFormFactory;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/yearGroup_manage.php'>Manage Year Groups</a> > </div><div class='trailEnd'>Edit Year Group</div>";
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Year Groups'), 'yearGroup_manage.php')
+        ->add(__('Edit Year Group'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
     $gibbonYearGroupID = $_GET['gibbonYearGroupID'];
     if ($gibbonYearGroupID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -53,7 +53,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->isRequired()->maxLength(10)->setValue($values['name']);
+                $row->addTextField('name')->isRequired()->maxLength(15)->setValue($values['name']);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));

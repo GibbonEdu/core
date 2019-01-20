@@ -21,21 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_attendance_sheet.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Printable Attendance Sheet').'</div>';
-    echo '</div>';
-
+    $page->breadcrumbs->add(__('Printable Attendance Sheet'));
+    
     echo '<h2>';
-    echo __($guid, 'Choose Activity');
+    echo __('Choose Activity');
     echo '</h2>';
 
     $gibbonActivityID = null;
@@ -71,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
     if ($gibbonActivityID != '') {
         $output = '';
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -85,11 +83,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_attendance_sheetPrint.php&gibbonActivityID=$gibbonActivityID&columns=$numberOfColumns'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_attendance_sheetPrint.php&gibbonActivityID=$gibbonActivityID&columns=$numberOfColumns'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             $lastPerson = '';
@@ -97,10 +95,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo "<table class='mini' cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Student');
+            echo __('Student');
             echo '</th>';
             echo "<th colspan=$numberOfColumns>";
-            echo __($guid, 'Attendance');
+            echo __('Attendance');
             echo '</th>';
             echo '</tr>';
             echo "<tr style='height: 75px' class='odd'>";
@@ -135,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             if ($count == 0) {
                 echo "<tr class=$rowNum>";
                 echo '<td colspan=16>';
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</td>';
                 echo '</tr>';
             }

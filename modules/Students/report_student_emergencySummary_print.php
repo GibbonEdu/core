@@ -17,23 +17,25 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_emergencySummary_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $choices = $_SESSION[$guid]['report_student_emergencySummary.php_choices'];
 
     if (count($choices) > 0) {
         echo '<h2>';
-        echo __($guid, 'Student Emergency Data Summary');
+        echo __('Student Emergency Data Summary');
         echo '</h2>';
         echo '<p>';
-        echo __($guid, 'This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.');
+        echo __('This report prints a summary of emergency data for the selected students. In case of emergency, please try to contact parents first, and if they cannot be reached then contact the listed emergency contacts.');
         echo '</p>';
 
         try {
@@ -53,16 +55,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+        echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
         echo '</div>';
 
         echo "<table class='mini' cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Student');
+        echo __('Student');
         echo '</th>';
         echo '<th colspan=3>';
-        echo __($guid, 'Last Update');
+        echo __('Last Update');
         echo '</th>';
         echo '</tr>';
 
@@ -78,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
 
             echo "<tr class=$rowNum>";
             echo '<td>';
-            echo formatName('', $row['preferredName'], $row['surname'], 'Student', true);
+            echo Format::name('', $row['preferredName'], $row['surname'], 'Student', true);
             echo '</td>';
             echo '<td colspan=3>';
 			//Get details of last personal data form update
@@ -99,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
 					echo "<span style='color: #ff0000; font-weight: bold'>".dateConvertBack($guid, substr($rowMedical['timestamp'], 0, 10)).'</span>';
 				}
             } else {
-                echo "<span style='color: #ff0000; font-weight: bold'>".__($guid, 'NA').'</span>';
+                echo "<span style='color: #ff0000; font-weight: bold'>".__('NA').'</span>';
             }
             echo '</td>';
             echo '</tr>';
@@ -107,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
             echo "<tr class=$rowNum>";
             echo '<td></td>';
             echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__($guid, 'Parents').'</i></b><br/>';
+            echo '<b><i>'.__('Parents').'</i></b><br/>';
             try {
                 $dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
                 $sqlFamily = 'SELECT gibbonFamilyID FROM gibbonFamilyChild WHERE gibbonPersonID=:gibbonPersonID';
@@ -126,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
                     echo "<div class='error'>".$e->getMessage().'</div>';
                 }
                 while ($rowFamily2 = $resultFamily2->fetch()) {
-                    echo '<u>'.formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
+                    echo '<u>'.Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').'</u><br/>';
                     $numbers = 0;
                     for ($i = 1; $i < 5; ++$i) {
                         if ($rowFamily2['phone'.$i] != '') {
@@ -141,31 +143,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
                         }
                     }
                     if ($numbers == 0) {
-                        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'No number available.').'</span><br/>';
+                        echo "<span style='font-size: 85%; font-style: italic'>".__('No number available.').'</span><br/>';
                     }
                 }
             }
             echo '</td>';
             echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__($guid, 'Emergency Contact 1').'</i></b><br/>';
-            echo '<u><i>'.__($guid, 'Name').'</i></u>: '.$row['emergency1Name'].'<br/>';
-            echo '<u><i>'.__($guid, 'Number').'</i></u>: '.$row['emergency1Number1'].'<br/>';
+            echo '<b><i>'.__('Emergency Contact 1').'</i></b><br/>';
+            echo '<u><i>'.__('Name').'</i></u>: '.$row['emergency1Name'].'<br/>';
+            echo '<u><i>'.__('Number').'</i></u>: '.$row['emergency1Number1'].'<br/>';
             if ($row['emergency1Number2'] !== '') {
-                echo '<u><i>'.__($guid, 'Number 2').'</i></u>: '.$row['emergency1Number2'].'<br/>';
+                echo '<u><i>'.__('Number 2').'</i></u>: '.$row['emergency1Number2'].'<br/>';
             }
             if ($row['emergency1Relationship'] !== '') {
-                echo '<u><i>'.__($guid, 'Relationship').'</i></u>: '.$row['emergency1Relationship'].'<br/>';
+                echo '<u><i>'.__('Relationship').'</i></u>: '.$row['emergency1Relationship'].'<br/>';
             }
             echo '</td>';
             echo "<td style='border-top: 1px solid #aaa; vertical-align: top'>";
-            echo '<b><i>'.__($guid, 'Emergency Contact 2').'</i></b><br/>';
-            echo '<u><i>'.__($guid, 'Name').'</i></u>: '.$row['emergency2Name'].'<br/>';
-            echo '<u><i>'.__($guid, 'Number').'</i></u>: '.$row['emergency2Number1'].'<br/>';
+            echo '<b><i>'.__('Emergency Contact 2').'</i></b><br/>';
+            echo '<u><i>'.__('Name').'</i></u>: '.$row['emergency2Name'].'<br/>';
+            echo '<u><i>'.__('Number').'</i></u>: '.$row['emergency2Number1'].'<br/>';
             if ($row['emergency2Number2'] !== '') {
-                echo '<u><i>'.__($guid, 'Number 2').'</i></u>: '.$row['emergency2Number2'].'<br/>';
+                echo '<u><i>'.__('Number 2').'</i></u>: '.$row['emergency2Number2'].'<br/>';
             }
             if ($row['emergency2Relationship'] !== '') {
-                echo '<u><i>'.__($guid, 'Relationship').'</i></u>: '.$row['emergency2Relationship'].'<br/>';
+                echo '<u><i>'.__('Relationship').'</i></u>: '.$row['emergency2Relationship'].'<br/>';
             }
             echo '</td>';
             echo '</tr>';
@@ -173,7 +175,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_student_em
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=2>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }

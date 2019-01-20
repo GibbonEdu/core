@@ -22,7 +22,7 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_manage_edit.php")==FALSE) {
 	//Acess denied
 	print "<div class='error'>" ;
-		print __($guid, "You do not have access to this action.") ;
+		print __("You do not have access to this action.") ;
 	print "</div>" ;
 }
 else {
@@ -30,40 +30,37 @@ else {
 	$highestAction=getHighestGroupedAction($guid, $_GET["q"], $connection2) ;
 	if ($highestAction==FALSE) {
 		print "<div class='error'>" ;
-		print __($guid, "The highest grouped action cannot be determined.") ;
+		print __("The highest grouped action cannot be determined.") ;
 		print "</div>" ;
 	}
 	else {
-		$search=NULL ;
-		if (isset($_GET["search"])) {
-			$search=$_GET["search"] ;
-		}
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $updateReturn = isset($_GET["updateReturn"]) ? $_GET["updateReturn"] : '';
 
-		print "<div class='trail'>" ;
-		print "<div class='trailHead'><a href='" . $_SESSION[$guid]["absoluteURL"] . "'>" . __($guid, "Home") . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/" . getModuleEntry($_GET["q"], $connection2, $guid) . "'>" . __($guid, getModuleName($_GET["q"])) . "</a> > <a href='" . $_SESSION[$guid]["absoluteURL"] . "/index.php?q=/modules/" . getModuleName($_GET["q"]) . "/messenger_manage.php&search=$search'>" . __($guid, 'Manage Messages') . "</a> > </div><div class='trailEnd'>" . __($guid, 'Edit Message') . "</div>" ;
-		print "</div>" ;
+        $page->breadcrumbs
+            ->add(__('Manage Messages'), 'messenger_manage.php', ['search' => $search])
+            ->add(__('Edit Message'));
 
-		if (isset($_GET["updateReturn"])) { $updateReturn=$_GET["updateReturn"] ; } else { $updateReturn="" ; }
 		$updateReturnMessage="" ;
 		$class="error" ;
 		if (!($updateReturn=="")) {
 			if ($updateReturn=="fail0") {
-				$updateReturnMessage=__($guid, "Your request failed because you do not have access to this action.") ;
+				$updateReturnMessage=__("Your request failed because you do not have access to this action.") ;
 			}
 			else if ($updateReturn=="fail1") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="fail2") {
-				$updateReturnMessage=__($guid, "Your request failed due to a database error.") ;
+				$updateReturnMessage=__("Your request failed due to a database error.") ;
 			}
 			else if ($updateReturn=="fail3") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="fail4") {
-				$updateReturnMessage=__($guid, "Your request failed because your inputs were invalid.") ;
+				$updateReturnMessage=__("Your request failed because your inputs were invalid.") ;
 			}
 			else if ($updateReturn=="success0") {
-				$updateReturnMessage=__($guid, "Your request was completed successfully.") ;
+				$updateReturnMessage=__("Your request was completed successfully.") ;
 				$class="success" ;
 			}
 			print "<div class='$class'>" ;
@@ -75,7 +72,7 @@ else {
 		$gibbonMessengerID=$_GET["gibbonMessengerID"] ;
 		if ($gibbonMessengerID=="") {
 			print "<div class='error'>" ;
-				print __($guid, "You have not specified one or more required parameters.") ;
+				print __("You have not specified one or more required parameters.") ;
 			print "</div>" ;
 		}
 		else {
@@ -98,14 +95,14 @@ else {
 
 			if ($result->rowCount()!=1) {
 				print "<div class='error'>" ;
-					print __($guid, "The specified record cannot be found.") ;
+					print __("The specified record cannot be found.") ;
 				print "</div>" ;
 			}
 			else {
 				//Let's go!
 				$values=$result->fetch() ;
 				echo '<div class="warning">';
-					echo '<b><u>'.__($guid, 'Note').'</u></b>: '.__($guid, 'Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
+					echo '<b><u>'.__('Note').'</u></b>: '.__('Changes made here do not apply to emails and SMS messages (which have already been sent), but only to message wall messages.');
 				echo '</div>';
 
 				$form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/messenger_manage_editProcess.php');
@@ -119,10 +116,10 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('email', __('Email'))->description(__('Deliver this message to user\'s primary email account?'));
 						if ($values["email"]=="Y") {
-							$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 				}
 
@@ -155,10 +152,10 @@ else {
 						$row = $form->addRow();
 							$row->addLabel('sms', __('SMS'))->description(__('Deliver this message to user\'s mobile phone?'));
 							if ($values["sms"]=="Y") {
-								$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+								$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 							}
 							else {
-								$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+								$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 							}
 					}
 				}
@@ -185,15 +182,15 @@ else {
 					$row = $form->addRow();
 						$row->addLabel('emailReceipt', __('Enable Read Receipts'))->description(__('Each email recipient will receive a personalised confirmation link.'));
 						if ($values["emailReceipt"]=="Y") {
-							$row->addContent("<img title='" . __($guid, 'Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
+							$row->addContent("<img title='" . __('Sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconTick.png'/>")->addClass('right');
 						}
 						else {
-							$row->addContent("<img title='" . __($guid, 'Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
+							$row->addContent("<img title='" . __('Not sent by email.') . "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/iconCross.png'/>")->addClass('right') ;
 						}
 
 					$row = $form->addRow()->addClass('emailReceipt');
 						$row->addLabel('emailReceiptText', __('Link Text'))->description(__('Confirmation link text to display to recipient.'));
-						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I agree that I have read, and agree to, the text contained within this email.'))->readonly();
+						$row->addTextArea('emailReceiptText')->setRows(3)->isRequired()->setValue(__('By clicking on this link I confirm that I have read, and agree to, the text contained within this email, and give consent for my child to participate.'))->readonly();
 				}
 
 				//TARGETS
@@ -249,7 +246,20 @@ else {
 					$row = $form->addRow()->addClass('roleCategory hiddenReveal');
 						$row->addLabel('roleCategories[]', __('Select Role Categories'));
 						$row->addSelect('roleCategories[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(4)->isRequired()->placeholder()->selected($selected);
-				}
+				} else if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_postQuickWall.php")) {
+                    // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
+                    $row = $form->addRow();
+						$row->addLabel('roleCategoryLabel', __('Role Category'))->description(__('Users of a certain type.'));
+                        $row->addYesNoRadio('roleCategoryLabel')->checked('Y')->readonly()->isDisabled();
+
+                    $form->addHiddenValue('role', 'N');
+                    $form->addHiddenValue('roleCategory', 'Y');
+                    foreach ($targets as $target) {
+                        if ($target['type'] == 'Role Category') {
+                            $form->addHiddenValue('roleCategories[]', $target['id']);
+                        }
+                    }
+                }
 
 				//Year group
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_yearGroups_any")) {
@@ -265,7 +275,7 @@ else {
 					}, array());
 					$checked = !empty($selected)? 'Y' : 'N';
 					$row = $form->addRow();
-						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; all staff.'));
+						$row->addLabel('yearGroup', __('Year Group'))->description(__('Students in year; staff by tutors and courses taught.'));
 						$row->addYesNoRadio('yearGroup')->checked($checked)->isRequired();
 
 					$form->toggleVisibilityByClass('yearGroup')->onRadio('yearGroup')->when('Y');
@@ -367,7 +377,11 @@ else {
 						$sql = "SELECT gibbonCourseID as value, nameShort as name FROM gibbonCourse WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-						$sql = "SELECT gibbonCourseID as value, nameShort as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' GROUP BY gibbonCourse.gibbonCourseID ORDER BY name";
+						$sql = "SELECT gibbonCourse.gibbonCourseID as value, gibbonCourse.nameShort as name 
+                                FROM gibbonCourse 
+                                JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+                                JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                                WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' GROUP BY gibbonCourse.gibbonCourseID ORDER BY name";
 					}
 
 					$row = $form->addRow()->addClass('course hiddenReveal');
@@ -413,7 +427,11 @@ else {
 						$sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
 					} else {
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-						$sql = "SELECT gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY name";
+						$sql = "SELECT gibbonCourseClass.gibbonCourseClassID as value, CONCAT(gibbonCourse.nameShort, '.', gibbonCourseClass.nameShort) as name 
+                            FROM gibbonCourse 
+                            JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+                            JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+                            WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND NOT role LIKE '%- Left' ORDER BY gibbonCourseClass.name";
 					}
 
 					$row = $form->addRow()->addClass('class hiddenReveal');
@@ -460,9 +478,9 @@ else {
 					} else {
 						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
 						if ($roleCategory == "Staff") {
-							$sql = "SELECT gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
+							$sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStaff ON (gibbonActivityStaff.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND active='Y' ORDER BY name";
 						} else if ($roleCategory == "Student") {
-							$sql = "SELECT gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status='Accepted' AND active='Y' ORDER BY name";
+							$sql = "SELECT gibbonActivity.gibbonActivityID as value, name FROM gibbonActivity JOIN gibbonActivityStudent ON (gibbonActivityStudent.gibbonActivityID=gibbonActivity.gibbonActivityID) WHERE gibbonPersonID=:gibbonPersonID AND gibbonSchoolYearID=:gibbonSchoolYearID AND status='Accepted' AND active='Y' ORDER BY name";
 						}
 					}
 					$row = $form->addRow()->addClass('activity hiddenReveal');
@@ -613,6 +631,56 @@ else {
 						$row->addYesNo('attendanceParents')->selected($selectedByRole['parents']);
 				}
 
+				// Group
+				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_my") OR isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+					$selectedByRole = array('staff' => 'N', 'students' => 'N', 'parents' => 'N',);
+					$selected = array_reduce($targets, function($group, $item) use (&$selectedByRole) {
+						if ($item['type'] == 'Group') {
+							$group[] = $item['id'];
+							$selectedByRole['staff'] = $item['staff'];
+							$selectedByRole['students'] = $item['students'];
+							$selectedByRole['parents'] = $item['parents'];
+						}
+						return $group;
+					}, array());
+					$checked = !empty($selected)? 'Y' : 'N';
+					$row = $form->addRow();
+						$row->addLabel('group', __('Group'))->description(__('Members of a Messenger module group.'));
+						$row->addYesNoRadio('group')->checked($checked)->isRequired();
+
+					$form->toggleVisibilityByClass('group')->onRadio('group')->when('Y');
+
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_any")) {
+						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+						$sql = "SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name";
+					} else {
+						$data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonSchoolYearID2' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID2' => $_SESSION[$guid]['gibbonPersonID']);
+						$sql = "(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonIDOwner=:gibbonPersonID ORDER BY name)
+							UNION
+							(SELECT gibbonGroup.gibbonGroupID as value, gibbonGroup.name FROM gibbonGroup JOIN gibbonGroupPerson ON (gibbonGroupPerson.gibbonGroupID=gibbonGroup.gibbonGroupID) WHERE gibbonSchoolYearID=:gibbonSchoolYearID2 AND gibbonPersonID=:gibbonPersonID2)
+							ORDER BY name
+							";
+					}
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groups[]', __('Select Groups'));
+						$row->addSelect('groups[]')->fromQuery($pdo, $sql, $data)->selectMultiple()->setSize(6)->isRequired()->selected($selected);;
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groupsStaff', __('Include Staff?'));
+						$row->addYesNo('groupsStaff')->selected($selectedByRole['staff']);
+
+					$row = $form->addRow()->addClass('group hiddenReveal');
+						$row->addLabel('groupsStudents', __('Include Students?'));
+						$row->addYesNo('groupsStudents')->selected($selectedByRole['students']);
+
+					if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_groups_parents")) {
+						$row = $form->addRow()->addClass('group hiddenReveal');
+							$row->addLabel('groupsParents', __('Include Parents?'))->description('Parents who are members, and parents of student members.');
+							$row->addYesNo('groupsParents')->selected($selectedByRole['parents']);
+					}
+				}
+
 				// Individuals
 				if (isActionAccessible($guid, $connection2, "/modules/Messenger/messenger_post.php", "New Message_individuals")) {
 					$selected = array_reduce($targets, function($group, $item) {
@@ -651,4 +719,3 @@ else {
 		}
 	}
 }
-?>

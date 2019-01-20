@@ -18,17 +18,20 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Tables\DataTable;
+use Gibbon\Services\Format;
+use Gibbon\Domain\Students\ApplicationFormGateway;
+use Gibbon\Domain\User\FamilyGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Applications').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Applications'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -54,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -71,38 +74,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
-                echo __($guid, 'Previous Year').' ';
+                echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
-            echo __($guid, 'Next Year').' ';
+            echo __('Next Year').' ';
         }
         echo '</div>';
 
-        //Set pagination variable
-        $page = 1;
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-        }
-        if ((!is_numeric($page)) or $page < 1) {
-            $page = 1;
-        }
+        $search = isset($_GET['search']) ? $_GET['search']  : '';
+        $gibbonYearGroupID = isset($_GET['gibbonYearGroupID']) ? $_GET['gibbonYearGroupID']  : '';
 
-        $search = '';
-        if (isset($_GET['search'])) {
-            $search = $_GET['search'];
-        }
+        $familyGateway = $container->get(FamilyGateway::class);
+        $applicationGateway = $container->get(ApplicationFormGateway::class);
+
+        $criteria = $applicationGateway->newQueryCriteria()
+            ->searchBy($applicationGateway->getSearchableColumns(), $search)
+            ->sortBy('gibbonApplicationForm.status')
+            ->sortBy('gibbonApplicationForm.priority', 'DESC')
+            ->sortBy('gibbonApplicationForm.timestamp', 'DESC')
+            ->filterBy('yearGroup', $gibbonYearGroupID)
+            ->fromPOST();
 
         echo '<h4>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h2>';
 
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
-
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form->setFactory(DatabaseFormFactory::create($pdo));
         $form->setClass('noIntBorder fullWidth');
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage.php');
         $form->addHiddenValue('gibbonSchoolYearID', $gibbonSchoolYearID);
@@ -112,209 +115,162 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $row->addTextField('search')->setValue($search);
 
         $row = $form->addRow();
+            $row->addLabel('gibbonYearGroupID', __('Year Group'));
+            $row->addSelectYearGroup('gibbonYearGroupID')->selected($gibbonYearGroupID)->placeholder();
+
+        $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session, __('Clear Search'), array('gibbonSchoolYearID'));
 
         echo $form->getOutput();
 
         echo '<h4>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h2>';
 
-        echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/applicationForm_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
-        echo '</div>';
+        $applications = $applicationGateway->queryApplicationFormsBySchoolYear($criteria, $gibbonSchoolYearID);
 
-        try {
-            $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-            $sql = 'SELECT * FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID ORDER BY status, priority DESC, timestamp DESC';
-            if ($search != '') {
-                $data = array('gibbonSchoolYearID' => $gibbonSchoolYearID, 'search1' => "%$search%", 'search2' => "%$search%", 'search3' => "%$search%", 'search4' => "%$search%");
-                $sql = "SELECT gibbonApplicationForm.*, gibbonYearGroup.*  FROM gibbonApplicationForm LEFT JOIN gibbonYearGroup ON (gibbonApplicationForm.gibbonYearGroupIDEntry=gibbonYearGroup.gibbonYearGroupID) LEFT JOIN gibbonPayment ON (gibbonApplicationForm.gibbonPaymentID=gibbonPayment.gibbonPaymentID AND foreignTable='gibbonApplicationForm') WHERE gibbonSchoolYearIDEntry=:gibbonSchoolYearID AND (preferredName LIKE :search1 OR surname LIKE :search2 OR gibbonApplicationFormID LIKE :search3 OR paymentTransactionID LIKE :search4) ORDER BY gibbonApplicationForm.status, priority DESC, gibbonApplicationForm.timestamp DESC";
-            }
-            $sqlPage = $sql.' LIMIT '.$_SESSION[$guid]['pagination'].' OFFSET '.(($page - 1) * $_SESSION[$guid]['pagination']);
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
+        $familyIDs = $applications->getColumn('gibbonFamilyID');
+        $adults = $familyGateway->selectAdultsByFamily($familyIDs)->fetchGrouped();
+        $applications->joinColumn('gibbonFamilyID', 'adults', $adults);
+
+        // DATA TABLE
+        $table = DataTable::createPaginated('applications', $criteria);
+
+        $table->addHeaderAction('add', __('Add'))
+            ->setURL('/modules/Students/applicationForm_manage_add.php')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $criteria->getSearchText(true))
+            ->displayLabel();
+
+        $table->modifyRows(function ($application, $row) {
+            if ($application['status'] == 'Accepted') $row->addClass('current');
+            if ($application['status'] == 'Rejected') $row->addClass('error');
+            if ($application['status'] == 'Withdrawn') $row->addClass('error');
+            return $row;
+        });
+
+        $table->addMetaData('filterOptions', [
+            'status:pending'      => __('Status').': '.__('Pending'),
+            'status:accepted'     => __('Status').': '.__('Accepted'),
+            'status:rejected'     => __('Status').': '.__('Rejected'),
+            'status:waiting list' => __('Status').': '.__('Waiting List'),
+
+            'paid:y'         => __('Paid').': '.__('Yes'),
+            'paid:n'         => __('Paid').': '.__('No'),
+            'paid:exemption' => __('Paid').': '.__('Exemption'),
+
+            'rollGroup:y'         => __('Form Group').': '.__('Yes'),
+            'rollGroup:n'         => __('Form Group').': '.__('No'),
+        ]);
+
+        $table->addColumn('gibbonApplicationFormID', __('ID'))
+              ->format(Format::using('number', ['gibbonApplicationFormID']));
+
+        $table->addColumn('student', __('Student'))
+            ->description(__('Application Date'))
+            ->sortable(['surname', 'preferredName'])
+            ->format(function ($application) use ($applicationGateway, $guid) {
+                $output = '';
+
+                // Add a list of linked sibling appplications as an icon with hover-over text
+                $linkedApplications = $applicationGateway->selectLinkedApplicationsByID($application['gibbonApplicationFormID']);
+                if ($linkedApplications->rowCount() > 0) {
+                    $siblings = array_map(function($sibling) {
+                        return '- ' . Format::name('', $sibling['preferredName'], $sibling['surname'], 'Student', true).' ('.$sibling['status'].')';
+                    }, $linkedApplications->fetchAll());
+                    $output .= "<img title='" . __('Sibling Applications') .'<br/>' . implode('<br/>', $siblings). "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/ style='float: right;   width:20px; height:20px;margin-left:4px;'>";
+                }
+                
+                $output .= '<strong>'.Format::name('', $application['preferredName'], $application['surname'], 'Student', true, true) . '</strong><br/>';
+                $output .= '<small><i>'.Format::date($application['timestamp']).'</i></small>';
+
+                return $output;
+            });
+            
+        $table->addColumn('dob', __('Birth Year'))
+            ->description(__('Entry Year'))
+            ->format(function($application) {
+                return substr($application['dob'], 0, 4).'<br/><span style="font-style: italic; font-size: 85%">'.$application['yearGroup'].'</span>';
+            });
+
+        $table->addColumn('parents', __('Parents'))
+            ->sortable(false)
+            ->format(function($application) {
+                $parentsText = '';
+                if (empty($application['gibbonFamilyID'])) {
+                    $application['adults'] = array();
+                    if (!empty($application['parent1surname']) && !empty($application['parent1preferredName'])) {
+                        $application['adults'][] = array('title' => $application['parent1title'], 'preferredName' => $application['parent1preferredName'], 'surname' => $application['parent1surname'], 'email' => $application['parent1email']);
+                    }
+                    if (!empty($application['parent2surname']) && !empty($application['parent2preferredName'])) {
+                        $application['adults'][] = array('title' => $application['parent2title'],'preferredName' => $application['parent2preferredName'],'surname' => $application['parent2surname'],'email' => $application['parent2email']);
+                    }
+                }
+
+                foreach ($application['adults'] as $parent) {
+                    $name = Format::name($parent['title'], $parent['preferredName'], $parent['surname'], 'Parent');
+                    $link = !empty($parent['email'])? 'mailto:'.$parent['email'] : '';
+                    $parentsText .= Format::link($link, $name).'<br/>';
+                }
+
+                return $parentsText;
+            });
+
+        $table->addColumn('schoolName1', __('Last School'))
+            ->format(function($application) {
+                $school = $application['schoolName1'];
+                if ($application['schoolDate2'] > $application['schoolDate1'] && !empty($application['schoolName2'])) {
+                    $school = $application['schoolName2'];
+                }
+                return Format::truncate($school, 20);
+            });
+
+        $table->addColumn('status', __('Status'))
+            ->description(__('Milestones'))
+            ->format(function($application) {
+                $statusText = '<strong>'.$application['status'].'</strong>';
+                if ($application['status'] == 'Pending') {
+                    $statusText .= '<br/><span style="font-style: italic; font-size: 85%">'.str_replace(',', '<br/>', $application['milestones']).'</span>';
+                }
+                return $statusText;
+            });
+
+        $table->addColumn('priority', __('Priority'));
+
+        if ($criteria->hasFilter('paid')) {
+            $table->addColumn('paymentMade', __('Payment Made'))->format(function($application) {
+                return $application['paymentMade'] == 'Exemption'
+                    ? __('Exemption')
+                    : Format::yesNo($application['paymentMade']);
+            });
         }
 
-        if ($result->rowCount() < 1) {
-            echo "<div class='error'>";
-            echo 'There are no records display.';
-            echo '</div>';
-        } else {
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'top', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
+        $table->addActionColumn()
+            ->width('72px')
+            ->addParam('gibbonApplicationFormID')
+            ->addParam('gibbonSchoolYearID', $gibbonSchoolYearID)
+            ->addParam('search', $criteria->getSearchText(true))
+            ->format(function ($application, $actions) use ($guid, $connection2) {
+                if ($application['status'] == 'Pending' or $application['status'] == 'Waiting List') {
+                    $actions->addAction('accept', __('Accept'))
+                        ->setIcon('iconTick')
+                        ->setURL('/modules/Students/applicationForm_manage_accept.php');
 
-            echo "<table cellspacing='0' style='width: 100%'>";
-            echo "<tr class='head'>";
-            echo '<th>';
-            echo __($guid, 'ID');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Student')."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Application Date').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Birth Year')."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Entry Year').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Parents');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Last School');
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Status')."<br/><span style='font-style: italic; font-size: 85%'>".__($guid, 'Milestones').'</span>';
-            echo '</th>';
-            echo '<th>';
-            echo __($guid, 'Priority');
-            echo '</th>';
-            echo "<th style='width: 80px'>";
-            echo __($guid, 'Actions');
-            echo '</th>';
-            echo '</tr>';
-
-            $count = 0;
-            $rowNum = 'odd';
-            try {
-                $resultPage = $connection2->prepare($sqlPage);
-                $resultPage->execute($data);
-            } catch (PDOException $e) {
-                echo "<div class='error'>".$e->getMessage().'</div>';
-            }
-            while ($row = $resultPage->fetch()) {
-                if ($count % 2 == 0) {
-                    $rowNum = 'even';
-                } else {
-                    $rowNum = 'odd';
+                    $actions->addAction('reject', __('Reject'))
+                        ->setIcon('iconCross')
+                        ->setURL('/modules/Students/applicationForm_manage_reject.php')
+                        ->append('<br/><div style="height:8px;"></div>');
                 }
 
-                if ($row['status'] == 'Accepted') {
-                    $rowNum = 'current';
-                } elseif ($row['status'] == 'Rejected' or $row['status'] == 'Withdrawn') {
-                    $rowNum = 'error';
+                $actions->addAction('edit', __('Edit'))
+                    ->setURL('/modules/Students/applicationForm_manage_edit.php');
+
+                if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_delete.php')) {
+                    $actions->addAction('delete', __('Delete'))
+                        ->setURL('/modules/Students/applicationForm_manage_delete.php');
                 }
+            });
 
-                ++$count;
-
-                //COLOR ROW BY STATUS!
-                echo "<tr class=$rowNum>";
-                echo '<td>';
-                echo ltrim($row['gibbonApplicationFormID'], '0');
-                echo '</td>';
-                echo '<td>';
-
-                $data = array( 'gibbonApplicationFormID' => $row['gibbonApplicationFormID'] );
-                $sql = "SELECT DISTINCT gibbonApplicationFormID, preferredName, surname, status FROM gibbonApplicationForm
-                                JOIN gibbonApplicationFormLink ON (gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID1 OR gibbonApplicationForm.gibbonApplicationFormID=gibbonApplicationFormLink.gibbonApplicationFormID2)
-                                WHERE gibbonApplicationFormID1=:gibbonApplicationFormID
-                                OR gibbonApplicationFormID2=:gibbonApplicationFormID ORDER BY gibbonApplicationFormID";
-
-                $resultLinked = $pdo->executeQuery($data, $sql);
-                if ($resultLinked->rowCount() > 0) {
-                    $names = '<br/>';
-                    while ($rowLinked = $resultLinked->fetch()) {
-                        $names .= '- '.formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true).' ('.$rowLinked['status'].')<br/>';
-                    }
-                    echo "<img title='" . __($guid, 'Sibling Applications') .$names. "' src='./themes/" . $_SESSION[$guid]["gibbonThemeName"] . "/img/attendance.png'/ style='float: right;   width:20px; height:20px;margin-left:4px;'>";
-                }
-
-                echo '<b>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</b><br/>';
-                echo "<span style='font-style: italic; font-size: 85%'>".dateConvertBack($guid, substr($row['timestamp'], 0, 10)).'</span>';
-
-
-
-                echo '</td>';
-                echo '<td>';
-                echo substr($row['dob'], 0, 4).'<br/>';
-                echo "<span style='font-style: italic; font-size: 85%'>".__($guid, $row['name']).'</span>';
-                echo '</td>';
-                echo '<td>';
-                if ($row['gibbonFamilyID'] != '') {
-                    try {
-                        $dataFamily2 = array('gibbonFamilyID' => $row['gibbonFamilyID']);
-                        $sqlFamily2 = 'SELECT title, surname, preferredName, email FROM gibbonPerson JOIN gibbonFamilyAdult ON (gibbonPerson.gibbonPersonID=gibbonFamilyAdult.gibbonPersonID) WHERE gibbonFamilyID=:gibbonFamilyID ORDER BY contactPriority, surname, preferredName';
-                        $resultFamily2 = $connection2->prepare($sqlFamily2);
-                        $resultFamily2->execute($dataFamily2);
-                    } catch (PDOException $e) {
-                        echo "<div class='error'>".$e->getMessage().'</div>';
-                    }
-                    while ($rowFamily2 = $resultFamily2->fetch()) {
-                        $name = formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent', true);
-                        if ($rowFamily2['email'] != '') {
-                            echo "<a href='mailto:".$rowFamily2['email']."'>".$name.'</a><br/>';
-                        } else {
-                            echo $name.'<br/>';
-                        }
-                    }
-                } else {
-                    $name = formatName($row['parent1title'], $row['parent1preferredName'], $row['parent1surname'], 'Parent', true);
-                    if ($row['parent1email'] != '') {
-                        echo "<a href='mailto:".$row['parent1email']."'>".$name.'</a><br/>';
-                    } else {
-                        echo $name.'<br/>';
-                    }
-
-                    if ($row['parent2surname'] != '' and $row['parent2preferredName'] != '') {
-                        $name = formatName($row['parent2title'], $row['parent2preferredName'], $row['parent2surname'], 'Parent', true);
-                        if ($row['parent2email'] != '') {
-                            echo "<a href='mailto:".$row['parent2email']."'>".$name.'</a><br/>';
-                        } else {
-                            echo $name.'<br/>';
-                        }
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                $school = '';
-                if ($row['schoolDate1'] > $row['schoolDate2'] and $row['schoolName1'] != '') {
-                    $school = $row['schoolName1'];
-                } elseif ($row['schoolDate2'] > $row['schoolDate1'] and $row['schoolName2'] != '') {
-                    $school = $row['schoolName2'];
-                } elseif ($row['schoolName1'] != '') {
-                    $school = $row['schoolName1'];
-                }
-
-                if ($school != '') {
-                    if (strlen($school) <= 15) {
-                        echo $school;
-                    } else {
-                        echo "<span title='".$school."'>".substr($school, 0, 15).'...</span>';
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                echo '<b>'.$row['status'].'</b>';
-                if ($row['status'] == 'Pending') {
-                    $milestones = explode(',', $row['milestones']);
-                    foreach ($milestones as $milestone) {
-                        echo "<br/><span style='font-style: italic; font-size: 85%'>".trim($milestone).'</span>';
-                    }
-                }
-                echo '</td>';
-                echo '<td>';
-                echo $row['priority'];
-                echo '</td>';
-                echo '<td>';
-                if ($row['status'] == 'Pending' or $row['status'] == 'Waiting List') {
-                    echo "<a style='margin-left: 1px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_accept.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Accept')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/></a>";
-                    echo "<a style='margin-left: 5px' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_reject.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Reject')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/></a>";
-                    echo '<br/>';
-                }
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_edit.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_manage_delete.php'))
-                    echo " <a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/applicationForm_manage_delete.php&gibbonApplicationFormID='.$row['gibbonApplicationFormID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search&width=650&height=135'><img style='margin-left: 4px' title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-
-                echo '</td>';
-                echo '</tr>';
-            }
-            echo '</table>';
-
-            if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
-                printPagination($guid, $result->rowCount(), $page, $_SESSION[$guid]['pagination'], 'bottom', "gibbonSchoolYearID=$gibbonSchoolYearID&search=$search");
-            }
-        }
+        echo $table->render($applications);
     }
 }
-?>

@@ -18,15 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 $makeDepartmentsPublic = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic');
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
@@ -40,7 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
     }
     if ($gibbonCourseClassID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         $proceed = false;
@@ -56,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -74,7 +75,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The specified record does not exist.');
+                echo __('The specified record does not exist.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -93,17 +94,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             if (($role == 'Coordinator' or $role == 'Assistant Coordinator' or $role == 'Teacher (Curriculum)' or $role == 'Teacher') and $row['gibbonSchoolYearID'] != $_SESSION[$guid]['gibbonSchoolYearID']) {
                 $extra = ' '.$row['year'];
             }
-            echo "<div class='trail'>";
             if ($gibbonDepartmentID != '') {
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__($guid, 'View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$row['department']."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department_course.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".$row['courseLong']."$extra</a> ></div><div class='trailEnd'>".$row['course'].'.'.$row['class'].'</div>';
+                
+                $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID, 'gibbonCourseID' => $gibbonCourseID];
+                $page->breadcrumbs
+                    ->add(__('View All'), 'departments.php')
+                    ->add($row['department'], 'department.php', $urlParams)
+                    ->add($row['courseLong'].$extra, 'department_course.php', $urlParams)
+                    ->add(Format::courseClassName($row['course'], $row['class']));
             } else {
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Departments/departments.php'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__($guid, 'View All')."</a> > Class ></div><div class='trailEnd'>".$row['course'].'.'.$row['class'].'</div>';
-            }
-            echo '</div>';
-
+                $page->breadcrumbs
+                    ->add(__('View All'), 'departments.php')
+                    ->add(Format::courseClassName($row['course'], $row['class']));
+            }            
+            
             echo '<h2>';
-            echo $row['course'].'.'.$row['class'];
-            echo '<br/><small><em>'.__($guid, 'Course').': '.$row['courseLong'].'</em></small>';
+            echo Format::courseClassName($row['course'], $row['class']);
+            echo '<br/><small><em>'.__('Course').': '.$row['courseLong'].'</em></small>';
             echo '</h2>';
 
             //CHECK & STORE WHAT TO DISPLAY
@@ -119,31 +126,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             //Planner
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php')) {
                 $menu[$menuCount][0] = 'Planner';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner_large.png'/><br/><b>".__($guid, 'Planner').'</b></a>';
+                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&gibbonCourseClassID=$gibbonCourseClassID&viewBy=class'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Planner')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner_large.png'/><br/><b>".__('Planner').'</b></a>';
                 ++$menuCount;
             }
             //Markbook
             if (getHighestGroupedAction($guid, '/modules/Markbook/markbook_view.php', $connection2) == 'View Markbook_allClassesAllData') {
                 $menu[$menuCount][0] = 'Markbook';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook_large.png'/><br/><b>".__($guid, 'Markbook').'</b></a>';
+                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Markbook/markbook_view.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook_large.png'/><br/><b>".__('Markbook').'</b></a>';
                 ++$menuCount;
             }
             //Homework
             if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.php')) {
                 $menu[$menuCount][0] = 'Homework';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework_large.png'/><br/><b>".__($guid, 'Homework').'</b></a>';
+                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_deadlines.php&gibbonCourseClassIDFilter=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Markbook')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/homework_large.png'/><br/><b>".__('Homework').'</b></a>';
                 ++$menuCount;
             }
             //Internal Assessment
             if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internalAssessment_write.php')) {
                 $menu[$menuCount][0] = 'Internal Assessment';
-                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__($guid, 'Internal Assessment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/internalAssessment_large.png'/><br/><b>".__($guid, 'Internal Assessment').'</b></a>';
+                $menu[$menuCount][1] = "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Formal Assessment/internalAssessment_write.php&gibbonCourseClassID=$gibbonCourseClassID'><img style='margin-bottom: 10px'  style='margin-left: 5px' title='".__('Internal Assessment')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/internalAssessment_large.png'/><br/><b>".__('Internal Assessment').'</b></a>';
                 ++$menuCount;
             }
 
             if ($menuCount < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo "<table class='smallIntBorder' cellspacing='0' style='width:100%'>";
@@ -176,11 +183,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 //PARTICIPANTS
                 echo '<a name=\'participants\'></a>';
                 echo '<h3 class=\'bigTop\'>';
-                    echo __($guid, 'Participants');
+                    echo __('Participants');
                 echo '</h3>';
                 if (getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) == 'View Student Profile_full') {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."'>".__($guid, 'Export')." <img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/department_course_classExport.php?gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."'>".__('Export')." <img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                     echo '</div>';
                 }
 
@@ -194,7 +201,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
                 }
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The specified record does not exist.');
+                    echo __('The specified record does not exist.');
                     echo '</div>';
                 } else {
                     printClassGroupTable($guid, $gibbonCourseClassID, 4, $connection2);
@@ -217,7 +224,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
 
                 if ($resultCourse->rowCount() > 0) {
                     $_SESSION[$guid]['sidebarExtra'] .= '<h2>';
-                    $_SESSION[$guid]['sidebarExtra'] .= __($guid, 'Related Classes');
+                    $_SESSION[$guid]['sidebarExtra'] .= __('Related Classes');
                     $_SESSION[$guid]['sidebarExtra'] .= '</h2>';
 
                     $_SESSION[$guid]['sidebarExtra'] .= '<ul>';

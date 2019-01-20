@@ -23,6 +23,8 @@ $newFormValues = array(
     'paypalAPIUsername'  => 'paypalUsernameTest',
     'paypalAPIPassword'  => 'paypalPasswordTest',
     'paypalAPISignature' => 'signatureTest',
+    'smsGateway'         => 'OneWaySMS',
+    'smsSenderID'        => 'smsSenderIDTest',
     'smsUsername'        => 'smsUsernameTest',
     'smsPassword'        => 'smsPasswordTest',
     'smsURL'             => 'http://sms.test',
@@ -47,6 +49,7 @@ $resetFormValues = $originalFormValues;
 $resetFormValues['googleOAuth'] = 'Y';
 $resetFormValues['enablePayments'] = 'Y';
 $resetFormValues['enableMailerSMTP'] = 'Y';
+$resetFormValues['smsGateway'] = 'OneWaySMS';
 $I->submitForm('#content form', $resetFormValues, 'Submit');
 
 // Restore Original Settings -----------------------------------

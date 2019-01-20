@@ -26,6 +26,8 @@ use Closure;
  */
 class QueryCriteria
 {
+    protected $identifier = '';
+
     protected $criteria = array(
         'page' => 1,
         'pageSize' => 25,
@@ -35,6 +37,21 @@ class QueryCriteria
     );
 
     protected $rules = array();
+
+    /**
+     * Loads a set of criteria from POST data, using an identifier (if available) to separate unique table instances.
+     *
+     * @param string $key
+     * @return self
+     */
+    public function fromPOST($identifier = '')
+    {
+        $this->setIdentifier($identifier);
+
+        return !empty($identifier) && isset($_POST[$identifier]) 
+            ? $this->fromArray($_POST[$identifier]) 
+            : $this->fromArray($_POST);
+    }
 
     /**
      * Loads and sanitizes a set of criteria from array.
@@ -104,6 +121,29 @@ class QueryCriteria
     public function toJson()
     {
         return json_encode($this->criteria);
+    }
+
+    /**
+     * Sets a unique identifier for this criteria, used for multiple table instances.
+     *
+     * @param string $identifier
+     * @return self
+     */
+    public function setIdentifier($identifier)
+    {
+        $this->identifier = $identifier;
+
+        return $this;
+    }
+
+    /**
+     * Gets the unique identifier for this criteria.
+     *
+     * @return string
+     */
+    public function getIdentifier()
+    {
+        return $this->identifier;
     }
 
     /**

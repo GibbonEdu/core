@@ -19,24 +19,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddress_byStudent.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>Family Address by Student</div>";
-    echo '</div>';
+    $page->breadcrumbs->add(__('Family Address by Student'));
+
     echo '<p>';
-    echo __($guid, 'This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
+    echo __('This report attempts to print the family address(es) based on parents who are labelled as Contract Priority 1.');
     echo '</p>';
 
     $choices = null;
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
     }
 
     echo '<h2>';
-    echo __($guid, 'Choose Students');
+    echo __('Choose Students');
     echo '</h2>';
 
     $form = Form::create('action',  $_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Students/report_familyAddress_byStudent.php");
@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = $choices;
 
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -102,13 +102,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Family');
+        echo __('Family');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Selected Students');
+        echo __('Selected Students');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Home Address');
+        echo __('Home Address');
         echo '</th>';
         echo '</tr>';
 
@@ -128,7 +128,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 $next = $array[($i + 1)]['gibbonFamilyID'];
             }
             if ($current == $next) {
-                $students .= formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                $students .= Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
             } else {
                 echo "<tr class=$rowNum>";
                 echo '<td>';
@@ -136,7 +136,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
                 echo '</td>';
                 echo '<td>';
                 echo $students;
-                echo formatName('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
+                echo Format::name('', $array[$i]['preferredName'], $array[$i]['surname'], 'Student').'<br/>';
                 echo '</td>';
                 echo '<td>';
 				//Print Name
@@ -181,11 +181,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_familyAddr
         if ($count == 0) {
             echo "<tr class=$rowNum>";
             echo '<td colspan=3>';
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</td>';
             echo '</tr>';
         }
         echo '</table>';
     }
 }
-?>

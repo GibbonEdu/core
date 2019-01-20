@@ -1,0 +1,45 @@
+details:
+    type: timetableDays
+    name: Timetable Days
+    table: gibbonTTDay
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Timetable Admin
+    action: Manage Timetables
+primaryKey:
+    gibbonTTDayID
+uniqueKeys:
+    - [ gibbonTTID, name ]
+    - [ gibbonTTID, nameShort ]
+table:
+    gibbonSchoolYearID:
+        name: "School Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, required: true, custom: true, readonly: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    gibbonTTID:
+        name: "Timetable"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTT, key: gibbonTTID, field: [nameShort, gibbonSchoolYearID]  }
+    gibbonTTColumnID:
+        name: "Timetable Column"
+        desc: "Short Name"
+        args: { filter: string, required: true, custom: true }
+        relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, field: nameShort  }
+    name:
+        name: "Name"
+        desc: "Must be unique for this school year."
+        args: { filter: string, required: true }
+    nameShort:
+        name: "Short Name"
+        desc: "Must be unique for this school year."
+        args: { filter: string, required: true }
+    color:
+        name: "Header Background Colour"
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }
+    fontColor:
+        name: "Header Font Colour"
+        desc: "RGB Hex value, without leading #."
+        args: { filter: string, custom: true }

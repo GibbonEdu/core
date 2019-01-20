@@ -18,22 +18,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvailableTeachers.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Available Teachers').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('View Available Teachers'));
 
     echo '<h2>';
-    echo __($guid, 'Choose Options');
+    echo __('Choose Options');
     echo '</h2>';
 
     $gibbonTTID = null;
@@ -77,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
     if ($gibbonTTID != '') {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -91,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -177,9 +176,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
             //Calculate week number
             $week = getWeekNumber($startDayStamp, $connection2, $guid);
             if ($week != false) {
-                echo __($guid, 'Week').' '.$week.'<br/>';
+                echo __('Week').' '.$week.'<br/>';
             }
-            echo "<span style='font-weight: normal; font-style: italic;'>".__($guid, 'Time').'<span>';
+            echo "<span style='font-weight: normal; font-style: italic;'>".__('Time').'<span>';
             echo '</th>';
             $count = 0;
             foreach ($days as $day) {
@@ -189,7 +188,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                 $dateCorrection = ($day['sequenceNumber'] - 1)-($firstSequence-1);
 
                 echo "<th style='vertical-align: top; text-align: center; width: ".(550 / $daysInWeek)."px'>";
-                echo __($guid, $day['nameShort']).'<br/>';
+                echo __($day['nameShort']).'<br/>';
                 echo "<span style='font-size: 80%; font-style: italic'>".date($_SESSION[$guid]['i18n']['dateFormatPHP'], ($startDayStamp + (86400 * $dateCorrection))).'</span><br/>';
                 echo '</th>';
                 $count++ ;
@@ -405,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                                                 if ($resultUnique->rowCount() < 1) {
 
                                                     if ($viewBy == 'name') {
-                                                        $vacancies .= formatName('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
+                                                        $vacancies .= Format::name('', $rowSelect['preferredName'], $rowSelect['surname'], 'Staff').', ';
                                                     }
                                                     else if ($viewBy == 'username') {
                                                         $vacancies .= $rowSelect['username'].', ';
@@ -439,7 +438,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
                         $dayOut .= "<div style='position: relative'>";
                         $dayOut .= "<div style='position: absolute; top: 0; width: $width ; border: 1px solid rgba(136,136,136,$ttAlpha); height: ".ceil($diffTime / 60)."px; margin: 0px; padding: 0px; background-color: rgba(255,196,202,$ttAlpha)'>";
                         $dayOut .= "<div style='position: relative; top: 50%'>";
-                        $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__($guid, 'School Closed').'</span>';
+                        $dayOut .= "<span style='color: rgba(255,0,0,$ttAlpha);'>".__('School Closed').'</span>';
                         $dayOut .= '</div>';
                         $dayOut .= '</div>';
                         $dayOut .= '</div>';
@@ -467,4 +466,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/report_viewAvail
         }
     }
 }
-?>

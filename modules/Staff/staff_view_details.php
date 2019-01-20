@@ -17,26 +17,28 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 //Module includes for User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
         if ($gibbonPersonID == false) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             $search = null;
@@ -61,46 +63,46 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/staff_view.php'>".__($guid, 'View Staff Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Staff Profiles'), 'staff_view.php')
+                        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     if ($search != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
                     echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-                    echo '<i>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+                    echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
                     echo '</td>';
                     echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Staff Type').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
                     echo '<i>'.$row['type'].'</i>';
                     echo '</td>';
                     echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Title').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
                     echo '<i>'.$row['jobTitle'].'</i>';
                     echo '</td>';
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Email').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                     if ($row['email'] != '') {
                         echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
                     }
                     echo '</td>';
                     echo "<td style='width: 67%; padding-top: 15px; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Website').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
                     if ($row['website'] != '') {
                         echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
                     }
@@ -109,22 +111,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     echo '</table>';
 
                     echo '<h4>';
-                    echo __($guid, 'Biography');
+                    echo __('Biography');
                     echo '</h4>';
                     echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                     echo '<tr>';
                     echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Country Of Origin').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
                     echo '<i>'.$row['countryOfOrigin'].'</i>';
                     echo '</td>';
                     echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Qualifications').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
                     echo '<i>'.$row['qualifications'].'</i>';
                     echo '</td>';
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Biography').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
                     echo '<i>'.$row['biography'].'</i>';
                     echo '</td>';
                     echo '</tr>';
@@ -149,14 +151,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/staff_view.php&search=$search&allStaff=$allStaff'>".__($guid, 'View Staff Profiles')."</a> > </div><div class='trailEnd'>".formatName('', $row['preferredName'], $row['surname'], 'Student').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('View Staff Profiles'), 'staff_view.php', ['search' => $search, 'allStaff' => $allStaff])
+                        ->add(Format::name('', $row['preferredName'], $row['surname'], 'Student'));
 
                     $subpage = null;
                     if (isset($_GET['subpage'])) {
@@ -168,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                     if ($search != '') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Staff/staff_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
                         echo '</div>';
                     }
 
@@ -181,42 +183,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if ($subpage == 'Overview') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo '</div>';
                         }
 
                         //General Information
                         echo '<h4>';
-                        echo __($guid, 'General Information');
+                        echo __('General Information');
                         echo '</h4>';
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-                        echo '<i>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+                        echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Staff Type').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
                         echo '<i>'.$row['type'].'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Title').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
                         echo '<i>'.$row['jobTitle'].'</i>';
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Username').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Username').'</span><br/>';
                         echo '<i>'.$row['username'].'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Website').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
                         if ($row['website'] != '') {
                             echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Email').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                         if ($row['email'] != '') {
                             echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
                         }
@@ -225,22 +227,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</table>';
 
                         echo '<h4>';
-                        echo __($guid, 'Biography');
+                        echo __('Biography');
                         echo '</h4>';
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Country Of Origin').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Country Of Origin').'</span><br/>';
                         echo '<i>'.$row['countryOfOrigin'].'</i>';
                         echo '</td>';
                         echo "<td style='width: 67%; vertical-align: top' colspan=2>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Qualifications').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Qualifications').'</span><br/>';
                         echo '<i>'.$row['qualifications'].'</i>';
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 100%; vertical-align: top' colspan=3>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Biography').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Biography').'</span><br/>';
                         echo '<i>'.$row['biography'].'</i>';
                         echo '</td>';
                         echo '</tr>';
@@ -249,12 +251,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         //Show timetable
                         echo "<a name='timetable'></a>";
                         echo '<h4>';
-                        echo __($guid, 'Timetable');
+                        echo __('Timetable');
                         echo '</h4>';
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == true) {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=Staff&allUsers='>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                 echo '</div>';
                             }
 
@@ -272,39 +274,39 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 echo $tt;
                             } else {
                                 echo "<div class='error'>";
-                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo __('The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             }
                         }
                     } elseif ($subpage == 'Personal') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo '</div>';
                         }
 
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-                        echo '<i>'.formatName($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+                        echo '<i>'.Format::name($row['title'], $row['preferredName'], $row['surname'], 'Parent').'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Staff Type').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff Type').'</span><br/>';
                         echo '<i>'.$row['type'].'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Job Title').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Job Title').'</span><br/>';
                         echo '<i>'.$row['jobTitle'].'</i>';
                         echo '</td>';
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Initials').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Initials').'</span><br/>';
                         echo $row['initials'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Gender').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Gender').'</span><br/>';
                         echo $row['gender'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
@@ -325,7 +327,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 if ($row['phone'.$i] != '') {
                                     ++$numberCount;
                                     echo "<td width: 33%; style='vertical-align: top'>";
-                                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Phone')." $numberCount</span><br/>";
+                                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Phone')." $numberCount</span><br/>";
                                     if ($row['phone'.$i.'Type'] != '') {
                                         echo '<i>'.$row['phone'.$i.'Type'].':</i> ';
                                     }
@@ -343,19 +345,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Email').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Email').'</span><br/>';
                         if ($row['email'] != '') {
                             echo "<i><a href='mailto:".$row['email']."'>".$row['email'].'</a></i>';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Alternate Email').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Alternate Email').'</span><br/>';
                         if ($row['emailAlternate'] != '') {
                             echo "<i><a href='mailto:".$row['emailAlternate']."'>".$row['emailAlternate'].'</a></i>';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Website').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Website').'</span><br/>';
                         if ($row['website'] != '') {
                             echo "<i><a href='".$row['website']."'>".$row['website'].'</a></i>';
                         }
@@ -367,7 +369,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         if ($row['address1'] != '') {
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Address 1').'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 1').'</span><br/>';
                             $address1 = addressFormat($row['address1'], $row['address1District'], $row['address1Country']);
                             if ($address1 != false) {
                                 echo $address1;
@@ -378,7 +380,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         if ($row['address2'] != '') {
                             echo '<tr>';
                             echo "<td style='width: 33%; padding-top: 15px; vertical-align: top' colspan=3>";
-                            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Address 2').'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".__('Address 2').'</span><br/>';
                             $address2 = addressFormat($row['address2'], $row['address2District'], $row['address2Country']);
                             if ($address2 != false) {
                                 echo $address2;
@@ -389,21 +391,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</table>';
 
                         echo '<h4>';
-                        echo __($guid, 'Miscellaneous');
+                        echo __('Miscellaneous');
                         echo '</h4>';
 
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Transport').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Transport').'</span><br/>';
                         echo $row['transport'];
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Vehicle Registration').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Vehicle Registration').'</span><br/>';
                         echo $row['vehicleRegistration'];
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Locker Number').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Locker Number').'</span><br/>';
                         echo $row['lockerNumber'];
                         echo '</td>';
                         echo '</tr>';
@@ -414,7 +416,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         $resultFields = getCustomFields($connection2, $guid, false, true);
                         if ($resultFields->rowCount() > 0) {
                             echo '<h4>';
-                            echo __($guid, 'Custom Fields');
+                            echo __('Custom Fields');
                             echo '</h4>';
 
                             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
@@ -426,7 +428,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                     echo '<tr>';
                                 }
                                 echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, $rowFields['name']).'</span><br/>';
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__($rowFields['name']).'</span><br/>';
                                 if (isset($fields[$rowFields['gibbonPersonFieldID']])) {
                                     if ($rowFields['type'] == 'date') {
                                         echo dateConvertBack($guid, $fields[$rowFields['gibbonPersonFieldID']]);
@@ -470,16 +472,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         if ($result->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo "<tr class='head'>";
                             echo '<th>';
-                            echo __($guid, 'Name');
+                            echo __('Name');
                             echo '</th>';
                             echo '<th>';
-                            echo __($guid, 'Usage').'<br/>';
+                            echo __('Usage').'<br/>';
                             echo '</th>';
                             echo '</tr>';
 
@@ -509,16 +511,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Emergency Contacts') {
                         if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php') == true) {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage_edit.php&gibbonPersonID=$gibbonPersonID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                             echo '</div>';
                         }
 
                         echo '<p>';
-                        echo __($guid, 'In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
+                        echo __('In an emergency, please try and contact the adult family members listed below first. If these cannot be reached, then try the emergency contacts below.');
                         echo '</p>';
 
                         echo '<h4>';
-                        echo __($guid, 'Adult Family Members');
+                        echo __('Adult Family Members');
                         echo '</h4>';
 
                         try {
@@ -532,7 +534,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
 
                         if ($resultFamily->rowCount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There is no family information available for the current staff member.');
+                            echo __('There is no family information available for the current staff member.');
                             echo '</div>';
                         } else {
                             $rowFamily = $resultFamily->fetch();
@@ -551,16 +553,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                                 echo '<tr>';
                                 echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-                                echo formatName($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+                                echo Format::name($rowMember['title'], $rowMember['preferredName'], $rowMember['surname'], 'Parent');
                                 echo '</td>';
                                 echo "<td style='width: 33%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Relationship').'</span><br/>';
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Relationship').'</span><br/>';
                                 if ($rowMember['role'] == 'Parent') {
                                     if ($rowMember['gender'] == 'M') {
-                                        echo __($guid, 'Father');
+                                        echo __('Father');
                                     } elseif ($rowMember['gender'] == 'F') {
-                                        echo __($guid, 'Mother');
+                                        echo __('Mother');
                                     } else {
                                         echo $rowMember['role'];
                                     }
@@ -569,7 +571,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 }
                                 echo '</td>';
                                 echo "<td style='width: 34%; vertical-align: top'>";
-                                echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact By Phone').'</span><br/>';
+                                echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact By Phone').'</span><br/>';
                                 for ($i = 1; $i < 5; ++$i) {
                                     if ($rowMember['phone'.$i] != '') {
                                         if ($rowMember['phone'.$i.'Type'] != '') {
@@ -589,23 +591,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         }
 
                         echo '<h4>';
-                        echo __($guid, 'Emergency Contacts');
+                        echo __('Emergency Contacts');
                         echo '</h4>';
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact 1').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 1').'</span><br/>';
                         echo '<i>'.$row['emergency1Name'].'</i>';
                         if ($row['emergency1Relationship'] != '') {
                             echo ' ('.$row['emergency1Relationship'].')';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Number 1').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
                         echo $row['emergency1Number1'];
                         echo '</td>';
                         echo "<td style=width: 34%; 'vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Number 2').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
                         if ($row['emergency1Number2'] != '') {
                             echo $row['emergency1Number2'];
                         }
@@ -613,18 +615,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                         echo '</tr>';
                         echo '<tr>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Contact 2').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Contact 2').'</span><br/>';
                         echo '<i>'.$row['emergency2Name'].'</i>';
                         if ($row['emergency2Relationship'] != '') {
                             echo ' ('.$row['emergency2Relationship'].')';
                         }
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Number 1').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 1').'</span><br/>';
                         echo $row['emergency2Number1'];
                         echo '</td>';
                         echo "<td style='width: 33%; padding-top: 15px; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Number 2').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Number 2').'</span><br/>';
                         if ($row['emergency2Number2'] != '') {
                             echo $row['emergency2Number2'];
                         }
@@ -634,12 +636,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     } elseif ($subpage == 'Timetable') {
                         if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php') == false) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                            echo __('The selected record does not exist, or you do not have access to it.');
                             echo '</div>';
                         } else {
                             if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php') == true) {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=Staff&allUsers='>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Timetable Admin/courseEnrolment_manage_byPerson_edit.php&gibbonPersonID=$gibbonPersonID&gibbonSchoolYearID=".$_SESSION[$guid]['gibbonSchoolYearID']."&type=Staff&allUsers='>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                                 echo '</div>';
                             }
 
@@ -657,7 +659,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                                 echo $tt;
                             } else {
                                 echo "<div class='error'>";
-                                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                echo __('The selected record does not exist, or you do not have access to it.');
                                 echo '</div>';
                             }
                         }
@@ -676,28 +678,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view_details.p
                     if ($subpage == 'Overview') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Overview'>".__($guid, 'Overview').'</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Overview'>".__('Overview').'</a></li>';
                     $style = '';
                     if ($subpage == 'Personal') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Personal'>".__($guid, 'Personal').'</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Personal'>".__('Personal').'</a></li>';
                     $style = '';
                     if ($subpage == 'Facilities') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Facilities'>".__($guid, 'Facilities').'</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Facilities'>".__('Facilities').'</a></li>';
                     $style = '';
                     if ($subpage == 'Emergency Contacts') {
                         $style = "style='font-weight: bold'";
                     }
-                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Emergency Contacts'>".__($guid, 'Emergency Contacts').'</a></li>';
+                    $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Emergency Contacts'>".__('Emergency Contacts').'</a></li>';
                     if (isActionAccessible($guid, $connection2, '/modules/Timetable/tt_view.php')) {
                         $style = '';
                         if ($subpage == 'Timetable') {
                             $style = "style='font-weight: bold'";
                         }
-                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Timetable'>".__($guid, 'Timetable').'</a></li>';
+                        $_SESSION[$guid]['sidebarExtra'] .= "<li><a $style href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q='.$_GET['q']."&gibbonPersonID=$gibbonPersonID&search=".$search."&allStaff=$allStaff&subpage=Timetable'>".__('Timetable').'</a></li>';
                     }
                     $_SESSION[$guid]['sidebarExtra'] .= '</ul>';
                 }

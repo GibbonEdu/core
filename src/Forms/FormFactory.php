@@ -115,6 +115,11 @@ class FormFactory implements FormFactoryInterface
         return new Input\TextField($name);
     }
 
+    public function createRange($name, $min, $max, $step = null)
+    {
+        return new Input\Range($name, $min, $max, $step);
+    }
+
     public function createFinder($name)
     {
         return new Input\Finder($name);
@@ -127,7 +132,7 @@ class FormFactory implements FormFactoryInterface
 
     public function createEmail($name)
     {
-        return (new Input\TextField($name))->addValidation('Validate.Email');
+        return (new Input\TextField($name))->addValidation('Validate.Email')->maxLength(75);
     }
 
     //A URL web link
@@ -204,6 +209,11 @@ class FormFactory implements FormFactoryInterface
     public function createCustomBlocks($name, \Gibbon\Session $session)
     {
         return new Input\CustomBlocks($this, $name, $session);
+    }
+
+    public function createUsername($name)
+    {
+        return new Input\Username($name);
     }
 
     /* PRE-DEFINED LAYOUT --------------------------- */
@@ -343,6 +353,31 @@ class FormFactory implements FormFactoryInterface
         ))->placeholder();
     }
 
+    public function createSelectSystemLanguage($name)
+    {
+        $languages = array(
+            'nl_NL' => 'Dutch - Nederland',
+            'en_GB' => 'English - United Kingdom',
+            'en_US' => 'English - United States',
+            'es_ES' => 'Español',
+            'fr_FR' => 'Français - France',
+            'he_IL' => 'עברית - ישראל',
+            'it_IT' => 'Italiano - Italia',
+            'pl_PL' => 'Język polski - Polska',
+            'pt_BR' => 'Português - Brasil',
+            'ro_RO' => 'Română',
+            'sq_AL' => 'Shqip - Shqipëri',
+            'vi_VN' => 'Tiếng Việt - Việt Nam',
+            'tr_TR' => 'Türkçe - Türkiye',
+            'ar_SA' => 'العربية - المملكة العربية السعودية',
+            'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'zh_CN' => '汉语 - 中国',
+            'zh_HK' => '體字 - 香港',
+        );
+
+        return $this->createSelect($name)->fromArray($languages);
+    }
+
     public function createSelectCurrency($name)
     {
         // I hate doing this ... was there a YAML file at one point?
@@ -382,10 +417,12 @@ class FormFactory implements FormFactoryInterface
                 'EGP £' => 'Egyptian Pound (£)',
                 'FJD $' => 'Fijian Dollar ($)',
                 'GHS GH₵' => 'Ghanaian Cedi (GH₵)',
+                'GTQ Q' => 'Guatemalan Quetzal (Q)',
                 'INR ₹' => 'Indian Rupee₹ (₹)',
                 'IDR Rp' => 'Indonesian Rupiah (Rp)',
                 'JMD $' => 'Jamaican Dollar ($)',
                 'KES KSh' => 'Kenyan Shilling (KSh)',
+                'LKR Rs' => 'Sri Lankan Rupee (Rs)',
                 'MOP' => 'Macanese Pataca (MOP)',
                 'MMK K' => 'Myanmar Kyat (K)',
                 'MAD' => 'Moroccan Dirham (MAD)',
@@ -401,6 +438,7 @@ class FormFactory implements FormFactoryInterface
                 'TRY ₺' => 'Turkish Lira (₺)',
                 'AED د.إ' => 'United Arab Emirates Dirham (د.إ)',
                 'VND ₫‎' => 'Vietnamese Dong (₫‎)',
+                'XCD $' => 'Eastern Caribbean Dollars ($)',
                 'XOF FCFA' => 'West African Francs (FCFA)'
             ),
         );

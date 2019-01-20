@@ -25,19 +25,17 @@ use Gibbon\Domain\Students\StudentGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Student Records').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Student Records'));
 
         $studentGateway = $container->get(StudentGateway::class);
 
@@ -50,13 +48,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_view.p
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
             ->filterBy('all', $allStudents)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h2>';
         echo __('Search');
         echo '</h2>';
 
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/in_view.php');

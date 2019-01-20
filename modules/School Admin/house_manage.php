@@ -28,9 +28,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Manage Houses').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Houses'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -41,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/house_manage.
     // QUERY
     $criteria = $houseGateway->newQueryCriteria()
         ->sortBy(['name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $houses = $houseGateway->queryHouses($criteria);
 

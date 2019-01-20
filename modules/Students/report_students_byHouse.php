@@ -18,6 +18,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Domain\DataSet;
+use Gibbon\Services\Format;
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\School\HouseGateway;
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_byHouse.php') == false) {
 	//Acess denied
@@ -26,117 +30,76 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
 	echo "</div>" ;
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__('Students by House').'</div>';
-    echo '</div>';
+    $viewMode = $_REQUEST['format'] ?? '';
+    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
+    $gibbonYearGroupIDList = explode(',', $_GET['gibbonYearGroupIDList'] ?? '');
 
-    $gibbonYearGroupIDList = (isset($_GET['gibbonYearGroupIDList']))? $_GET['gibbonYearGroupIDList'] : '';
-    $gibbonYearGroupIDList = explode(',', $gibbonYearGroupIDList);
-
-    try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d'));
-        $sql = "SELECT gibbonYearGroup.gibbonYearGroupID, gibbonHouse.name AS house, gibbonHouse.gibbonHouseID, gibbonYearGroup.name as yearGroupName, count(gibbonStudentEnrolment.gibbonPersonID) AS total, count(CASE WHEN gibbonPerson.gender='M' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalMale, count(CASE WHEN gibbonPerson.gender='F' THEN gibbonStudentEnrolment.gibbonPersonID END) as totalFemale
-                FROM gibbonHouse
-                    LEFT JOIN gibbonPerson ON (gibbonPerson.gibbonHouseID=gibbonHouse.gibbonHouseID
-                        AND gibbonPerson.status='Full'
-                        AND (gibbonPerson.dateStart IS NULL OR gibbonPerson.dateStart<=:today)
-                        AND (gibbonPerson.dateEnd IS NULL OR gibbonPerson.dateEnd>=:today) )
-                    LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-                        AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID)
-                    LEFT JOIN gibbonYearGroup ON (gibbonYearGroup.gibbonYearGroupID=gibbonStudentEnrolment.gibbonYearGroupID)
-                GROUP BY gibbonYearGroup.gibbonYearGroupID, gibbonHouse.gibbonHouseID
-                HAVING total > 0
-                ORDER BY gibbonYearGroup.sequenceNumber, gibbonHouse.name";
-
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Students by House'));
     }
 
-    if ($result->rowCount() == 0) {
-        echo '<div class="error">';
-        echo __('There are no records to display.');
-        echo '</div>';
-    } else {
-        if (isset($_GET['count'])) {
-            echo '<p>';
-            echo sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $_GET['count']);
-            echo '</p>';
-        }
+    $houseGateway = $container->get(HouseGateway::class);
+    $criteria = $houseGateway->newQueryCriteria()
+        ->sortBy(['gibbonYearGroup.sequenceNumber'])
+        ->sortBy(['gibbonHouse.name'])
+        ->pageSize(0)
+        ->fromPOST();
 
-        $yearGroups = $result->fetchAll(\PDO::FETCH_GROUP);
+    $houseCounts = $houseGateway->queryStudentHouseCountByYearGroup($criteria, $gibbonSchoolYearID);
+    $houses = [];
 
-        // Group each year group result by house
-        foreach ($yearGroups as $gibbonYearGroupID => &$yearGroup) {
-            $yearGroup = array_reduce(array_keys($yearGroup), function ($carry, $key) use ($yearGroup) {
-                $carry[$yearGroup[$key]['house']] = $yearGroup[$key];
-                return $carry;
-            }, array());
-        }
-        // Grab unique headings across the results
-        $headings = array_reduce($yearGroups, function($carry, $value) {
-            $carry = array_merge($carry, array_column($value, 'house'));
-            return array_unique($carry);
-        }, array());
+    // Group each year group result by house, and total up houses as we go
+    $yearGroupCounts = array_reduce($houseCounts->toArray(), function ($group, $item) use (&$houses) {
+        $yearGroup = $item['gibbonYearGroupID'];
+        $house = $item['gibbonHouseID'];
+        
+        $group[$yearGroup]['yearGroupName'] = $item['yearGroupName'];
+        $group[$yearGroup][$house] = [
+            'totalFemale' => $item['totalFemale'],
+            'totalMale'   => $item['totalMale'],
+            'total'       => $item['total'],
+        ];
+        $houses[$house] = [
+            'houseName' => $item['house'],
+            'totalFemale' => ($houses[$house]['totalFemale'] ?? 0) + $item['totalFemale'],
+            'totalMale'   => ($houses[$house]['totalMale'] ?? 0) + $item['totalMale'],
+            'total'       => ($houses[$house]['total'] ?? 0) + $item['total'],
+        ];
+        return $group;
+    }, []);
 
-        $totals = array_fill_keys($headings, array());
+    // Add the bottom row with a total count
+    $yearGroupCounts[] = $houses + ['yearGroupName' => __('Total')];
 
-        echo '<table cellspacing="0" style="width: 100%">';
-        echo '<tr class="head">';
-        echo '<th style="width: 20%">';
-        echo __('Year Group');
-        echo '</th>';
+    // DATA TABLE
+    $table = ReportTable::createPaginated('studentsByHouse', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Students by House'));
+    $table->modifyRows(function ($house, $row) {
+        if ($house['yearGroupName'] == __('Total')) $row->addClass('dull');
+        return $row;
+    });
 
-        foreach ($headings as $house) {
-            echo '<th style="width: '.(80 / count($headings)).'%">';
-            echo __($house);
-            echo '</th>';
-        }
-        echo '</tr>';
-
-        foreach ($yearGroups as $gibbonYearGroupID => $rowData) {
-
-            $row = current($rowData);
-            $rowClass = (in_array($gibbonYearGroupID, $gibbonYearGroupIDList))? 'current' : '';
-
-            echo '<tr class="'.$rowClass.'">';
-            echo '<td>';
-            echo $row['yearGroupName'];
-            echo '</td>';
-
-            foreach ($headings as $heading) {
-                $data = (isset($rowData[$heading]))? $rowData[$heading] : null;
-
-                echo '<td>';
-                if (!empty($data)) {
-                    echo '<span title="'.$data['totalFemale'].' '.__('Female').'<br/>'.$data['totalMale'].' '.__('Male').'">';
-                    echo $data['total'];
-                    echo '</span>';
-
-                    // Append the current totals to the running totals for each house
-                    $totals[$data['house']] = array_reduce(array_keys($data), function ($carry, $key) use ($data) {
-                        if (stripos($key, 'total') === false) return $carry;
-                        $carry[$key] = (isset($carry[$key]))? $carry[$key] + $data[$key] : $data[$key];
-                        return $carry;
-                    }, $totals[$data['house']]);
-                }
-                echo '</td>';
-            }
-            echo '</tr>';
-        }
-
-        // Display the runnung totals for each house
-        echo '<tr class="dull">';
-        echo '<td>'.__('Total').'</td>';
-        foreach ($totals as $houseName => $data) {
-            echo '<td>';
-            echo '<span title="'.$data['totalFemale'].' '.__('Female').'<br/>'.$data['totalMale'].' '.__('Male').'">';
-            echo $data['total'];
-            echo '</span>';
-            echo '</td>';
-        }
-        echo '</tr>';
-
-        echo '</table>';
+    if (isset($_GET['count'])) {
+        $table->setDescription(sprintf(__('%1$s students have been assigned to houses. These results include all student counts by house, updated year groups are highlighted in green. Hover over a number to see the balance by gender.'), $_GET['count']));
     }
+
+    $table->addColumn('yearGroupName', __('Year Group'))
+        ->sortable(['gibbonYearGroup.sequenceNumber'])
+        ->width('20%');
+
+    foreach ($houses as $gibbonHouseID => $house) {
+        $table->addColumn($gibbonHouseID, $house['houseName'])
+            ->notSortable()
+            ->format(function ($houses) use ($gibbonHouseID) {
+                $house = $houses[$gibbonHouseID] ?? null;
+                if (is_null($house)) return '0';
+
+                $output = '<span title="'.$house['totalFemale'].' '.__('Female').'<br/>'.$house['totalMale'].' '.__('Male').'">';
+                $output .= $house['total'];
+                $output .= '</span>';
+                return $output;
+            });
+    }
+
+    echo $table->render(new DataSet($yearGroupCounts));
 }

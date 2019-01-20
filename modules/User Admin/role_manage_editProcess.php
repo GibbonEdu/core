@@ -47,13 +47,16 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
+            $values = $result->fetch();
+
             //Validate Inputs
             $category = $_POST['category'];
             $name = $_POST['name'];
             $nameShort = $_POST['nameShort'];
             $description = $_POST['description'];
-            $futureYearsLogin = $_POST['futureYearsLogin'];
-            $pastYearsLogin = $_POST['pastYearsLogin'];
+            $canLoginRole = isset($_POST['canLoginRole'])? $_POST['canLoginRole'] : 'Y';
+            $futureYearsLogin = isset($_POST['futureYearsLogin'])? $_POST['futureYearsLogin'] : $values['futureYearsLogin'];
+            $pastYearsLogin = isset($_POST['pastYearsLogin'])? $_POST['pastYearsLogin'] : $values['pastYearsLogin'];
             $restriction = $_POST['restriction'];
 
             if (empty($category) or empty($name) or empty($nameShort) or empty($description) or empty($futureYearsLogin) or empty($pastYearsLogin) or empty($restriction) ) {
@@ -78,8 +81,8 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage_edi
                 } else {
                     //Write to database
                     try {
-                        $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin, 'restriction' => $restriction, 'gibbonRoleID' => $gibbonRoleID);
-                        $sql = 'UPDATE gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction WHERE gibbonRoleID=:gibbonRoleID';
+                        $data = array('category' => $category, 'name' => $name, 'nameShort' => $nameShort, 'description' => $description, 'canLoginRole' => $canLoginRole, 'futureYearsLogin' => $futureYearsLogin, 'pastYearsLogin' => $pastYearsLogin, 'restriction' => $restriction, 'gibbonRoleID' => $gibbonRoleID);
+                        $sql = 'UPDATE gibbonRole SET category=:category, name=:name, nameShort=:nameShort, description=:description, canLoginRole=:canLoginRole, futureYearsLogin=:futureYearsLogin, pastYearsLogin=:pastYearsLogin, restriction=:restriction WHERE gibbonRoleID=:gibbonRoleID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {

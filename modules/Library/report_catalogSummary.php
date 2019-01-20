@@ -23,21 +23,19 @@ use Gibbon\Forms\DatabaseFormFactory;
 $_SESSION[$guid]['report_student_emergencySummary.php_choices'] = '';
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Catalog Summary'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSummary.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Catalog Summary').'</div>';
-    echo '</div>';
-
     echo '<h3>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h3>';
 
     //Get current filter values
@@ -111,11 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
     echo $form->getOutput();
 
 	echo '<h3>';
-	echo __($guid, 'Report Data');
+	echo __('Report Data');
 	echo '</h3>';
 
 	echo "<div class='linkTop'>";
-	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_catalogSummaryExport.php?address='.$_GET['q']."&ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+	echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/report_catalogSummaryExport.php?address='.$_GET['q']."&ownershipType=$ownershipType&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
 	echo '</div>';
 
 	//Search with filters applied
@@ -152,33 +150,33 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 
 	if ($result->rowCount() < 1) {
 		echo "<div class='error'>";
-		echo __($guid, 'There are no records to display.');
+		echo __('There are no records to display.');
 		echo '</div>';
 	} else {
 		echo "<table cellspacing='0' style='width: 100%'>";
 		echo "<tr class='head'>";
 		echo '<th>';
-		echo __($guid, 'School ID').'<br/>';
-		echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Type').'</span>';
+		echo __('School ID').'<br/>';
+		echo "<span style='font-style: italic; font-size: 85%'>".__('Type').'</span>';
 		echo '</th>';
 		echo '<th>';
-		echo __($guid, 'Name').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Producer').'</span>';
+		echo __('Name').'<br/>';
+		echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
 		echo '</th>';
 		echo '<th>';
-		echo __($guid, 'Location');
+		echo __('Location');
 		echo '</th>';
 		echo '<th>';
-		echo __($guid, 'Ownership').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'User/Owner').'</span>';
+		echo __('Ownership').'<br/>';
+		echo "<span style='font-size: 85%; font-style: italic'>".__('User/Owner').'</span>';
 		echo '</th>';
 		echo '<th>';
-		echo __($guid, 'Status').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Borrowable').'</span>';
+		echo __('Status').'<br/>';
+		echo "<span style='font-size: 85%; font-style: italic'>".__('Borrowable').'</span>';
 		echo '</th>';
 		echo '<th>';
-		echo __($guid, 'Purchase Date').'<br/>';
-		echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Vendor').'</span>';
+		echo __('Purchase Date').'<br/>';
+		echo "<span style='font-size: 85%; font-style: italic'>".__('Vendor').'</span>';
 		echo '</th>';
 		echo '</tr>';
 
@@ -206,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 			}
 			if ($resultType->rowCount() == 1) {
 				$rowType = $resultType->fetch();
-				echo __($guid, $rowType['name']).'<br/>';
+				echo __($rowType['name']).'<br/>';
 			}
 			echo '</span>';
 			echo '</td>';
@@ -260,7 +258,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/report_catalogSumm
 			echo '</td>';
 			echo '<td>';
 			if ($row['purchaseDate'] == '') {
-				echo '<i>'.__($guid, 'Unknown').'</i><br/>';
+				echo '<i>'.__('Unknown').'</i><br/>';
 			} else {
 				echo dateConvertBack($guid, $row['purchaseDate']).'<br/>';
 			}

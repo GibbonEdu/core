@@ -29,13 +29,13 @@ if (isset($_GET['orphaned'])) {
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_uninstall.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/theme_manage.php'>".__($guid, 'Manage Themes')."</a> > </div><div class='trailEnd'>".__($guid, 'Uninstall Theme').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Themes'), 'theme_manage.php')
+        ->add(__('Uninstall Theme'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
     $gibbonThemeID = $_GET['gibbonThemeID'];
     if ($gibbonThemeID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -67,4 +67,3 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage_
         }
     }
 }
-?>

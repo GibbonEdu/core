@@ -18,23 +18,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'), 'units_edit.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+    ])
+    ->add(__('Deploy Working Copy'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if (strpos($gibbonUnitID, '-') == false) {
             $hooked = false;
         } else {
@@ -44,18 +62,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         }
 
         //Proceed!
-        echo '<div class=\'trail\'>';
-        echo '<div class=\'trailHead\'>';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'\'>'.__($guid, 'Home').'</a> > ';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid).'\'>'.__($guid, getModuleName($_GET['q'])).'</a> > ';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'\'>'.__($guid, 'Unit Planner').'</a> > ';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID'].'\'>'.__($guid, 'Edit Unit').'</a> > ';
-        echo '</div>';
-        echo '<div class=\'trailEnd\'>';
-            echo __($guid, 'Deploy Working Copy');
-        echo '</div>';
-        echo '</div>';
-
         if (isset($_GET['updateReturn'])) {
             $updateReturn = $_GET['updateReturn'];
         } else {
@@ -65,19 +71,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         $class = 'error';
         if (!($updateReturn == '')) {
             if ($updateReturn == 'fail0') {
-                $updateReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+                $updateReturnMessage = __('Your request failed because you do not have access to this action.');
             } elseif ($updateReturn == 'fail1') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                $updateReturnMessage = __('Your request failed because your inputs were invalid.');
             } elseif ($updateReturn == 'fail2') {
-                $updateReturnMessage = __($guid, 'Your request failed due to a database error.');
+                $updateReturnMessage = __('Your request failed due to a database error.');
             } elseif ($updateReturn == 'fail3') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                $updateReturnMessage = __('Your request failed because your inputs were invalid.');
             } elseif ($updateReturn == 'fail4') {
-                $updateReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+                $updateReturnMessage = __('Your request failed because your inputs were invalid.');
             } elseif ($updateReturn == 'fail5') {
-                $updateReturnMessage = __($guid, 'Your request failed due to an attachment error.');
+                $updateReturnMessage = __('Your request failed due to an attachment error.');
             } elseif ($updateReturn == 'success0') {
-                $updateReturnMessage = __($guid, 'Your request was completed successfully.');
+                $updateReturnMessage = __('Your request was completed successfully.');
                 $class = 'success';
             }
             echo "<div class='$class'>";
@@ -86,13 +92,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -111,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -122,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($hooked == false) {
@@ -159,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
@@ -176,15 +178,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'School Year').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('School Year').'</span><br/>';
                         echo '<i>'.$year.'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Class').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
                         echo '<i>'.$course.'.'.$class.'</i>';
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Unit').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Unit').'</span><br/>';
                         echo '<i>'.$row['name'].'</i>';
                         echo '</td>';
                         echo '</tr>';
@@ -193,10 +195,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         //Step 1
                         if ($step == 1) {
                             echo '<h3>';
-                            echo __($guid, 'Step 1 - Select Lessons');
+                            echo __('Step 1 - Select Lessons');
                             echo '</h3>';
                             echo '<p>';
-                            echo __($guid, 'Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.');
+                            echo __('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.');
                             echo '</p>';
 
                             //Find all unplanned slots for this class.
@@ -265,7 +267,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 
                             if (count($lessons) < 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There are no records to display.');
+                                echo __('There are no records to display.');
                                 echo '</div>';
                             } else {
                                 //Get term dates
@@ -333,25 +335,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
                                 echo '<th>';
-                                echo sprintf(__($guid, 'Lesson%1$sNumber'), '<br/>');
+                                echo sprintf(__('Lesson%1$sNumber'), '<br/>');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Date');
+                                echo __('Date');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Day');
+                                echo __('Day');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Month');
+                                echo __('Month');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'TT Period').'/<br/>'.__($guid, 'Time');
+                                echo __('TT Period').'/<br/>'.__('Time');
                                 echo '</th>';
                                 echo '<th>';
-                                echo sprintf(__($guid, 'Planned%1$sLesson'), '<br/>');
+                                echo sprintf(__('Planned%1$sLesson'), '<br/>');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Include?');
+                                echo __('Include?');
                                 echo '</th>';
                                 echo '</tr>';
 
@@ -489,10 +491,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                         //Step 2
                         if ($step == 2) {
                             echo '<h3>';
-                            echo __($guid, 'Step 2 - Distribute Blocks');
+                            echo __('Step 2 - Distribute Blocks');
                             echo '</h3>';
                             echo '<p>';
-                            echo __($guid, 'You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
+                            echo __('You can now add your unit blocks using the dropdown menu in each lesson. Blocks can be dragged from one lesson to another.');
                             echo '</p>';
 
                             //Store UNIT BLOCKS in array
@@ -563,7 +565,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             $lessonCount = $_POST['count'];
                             if ($lessonCount < 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There are no records to display.');
+                                echo __('There are no records to display.');
                                 echo '</div>';
                             } else {
                                 $lessons = array();
@@ -583,7 +585,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $cells = count($lessons);
                                 if ($cells < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There are no records to display.');
+                                    echo __('There are no records to display.');
                                     echo '</div>';
                                 } else {
                                     $deployCount = 0;
@@ -600,7 +602,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                         echo "<input type='hidden' name='timeStart$i' value='".$lessons[$i][1]."' >";
                                         echo "<input type='hidden' name='timeEnd$i' value='".$lessons[$i][2]."' >";
                                         echo "<div style='text-align: right; float: right; margin-top: -17px; margin-right: 3px'>";
-                                        echo "<span style='font-size: 80%'><i>".__($guid, 'Add Block:').'</span><br/>';
+                                        echo "<span style='font-size: 80%'><i>".__('Add Block:').'</span><br/>';
                                         echo "<script type='text/javascript'>";
                                         echo '$(document).ready(function(){';
                                         echo "$(\"#blockAdd$i\").change(function(){";
@@ -614,14 +616,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                         echo '</script>';
                                         echo "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>";
                                         echo "<option value=''></option>";
-                                        echo "<optgroup label='--".__($guid, 'Unit Blocks')."--'>";
+                                        echo "<optgroup label='--".__('Unit Blocks')."--'>";
                                         $blockSelectCount = 0;
                                         foreach ($blocks as $block) {
                                             echo "<option value='".$block[0]."'>".($blockSelectCount + 1).') '.htmlPrep($block[1]).'</option>';
                                             ++$blockSelectCount;
                                         }
                                         echo '</optgroup>';
-                                        echo "<optgroup label='--".__($guid, 'Star Blocks')."--'>";
+                                        echo "<optgroup label='--".__('Star Blocks')."--'>";
                                         foreach ($blocks2 as $block2) {
                                             echo "<option value='".$block2[0]."'>".htmlPrep($block2[1]).'</option>';
                                         }
@@ -669,11 +671,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             }
 
                             ?>
-							<b><?php echo __($guid, 'Access') ?></b><br/>
+							<b><?php echo __('Access') ?></b><br/>
 							<table class='smallIntBorder' cellspacing='0' style="width: 100%">
 								<tr id="accessRowStudents">
 									<td>
-										<b><?php echo __($guid, 'Viewable to Students') ?> *</b><br/>
+										<b><?php echo __('Viewable to Students') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
@@ -681,14 +683,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 										$sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
                             			?>
 										<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-											<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __('Yes') ?></option>
+											<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected'; } ?> value="N"><?php echo __('No') ?></option>
 										</select>
 									</td>
 								</tr>
 								<tr id="accessRowParents">
 									<td>
-										<b><?php echo __($guid, 'Viewable to Parents') ?> *</b><br/>
+										<b><?php echo __('Viewable to Parents') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
 									<td class="right">
@@ -696,8 +698,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
 										$sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
                             			?>
 										<select name="viewableParents" id="viewableParents" class="standardWidth">
-											<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __($guid, 'Yes') ?></option>
-											<option <?php if ($sharingDefaultParents == 'N') { echo 'selected'; } ?> value="N"><?php echo __($guid, 'No') ?></option>
+											<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __('Yes') ?></option>
+											<option <?php if ($sharingDefaultParents == 'N') { echo 'selected'; } ?> value="N"><?php echo __('No') ?></option>
 										</select>
 									</td>
 								</tr>
@@ -779,4 +781,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
     //Print sidebar
     $_SESSION[$guid]['sidebarExtra'] = sidebarExtraUnits($guid, $connection2, $gibbonCourseID, $gibbonSchoolYearID);
 }
-?>

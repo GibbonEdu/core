@@ -100,6 +100,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                 $URL .= '&return=warning1';
                 header("Location: {$URL}");
             } else {
+                // Redirect back to View Timetable by Facility if we started there
+                if (isset($_POST['source']) && $_POST['source'] == 'tt') {
+                    $ttDate = dateConvertBack($guid, $dates[0]);
+                    $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.$foreignKeyID.'&ttDate='.$ttDate;
+                }
+
                 $URL .= '&return=success0';
                 header("Location: {$URL}");
             }

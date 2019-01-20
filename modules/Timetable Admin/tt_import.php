@@ -22,30 +22,28 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/tt.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Timetables')."</a> > </div><div class='trailEnd'>".__($guid, 'Import Timetable Data').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $importReturn = $_GET['importReturn'] ?? '';
 
-    if (isset($_GET['importReturn'])) {
-        $importReturn = $_GET['importReturn'];
-    } else {
-        $importReturn = '';
-    }
+    $page->breadcrumbs
+        ->add(__('Manage Timetables'), 'tt.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Import Timetable Data'));
+
     $importReturnMessage = '';
     $class = 'error';
     if (!($importReturn == '')) {
         if ($importReturn == 'fail0') {
-            $importReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+            $importReturnMessage = __('Your request failed because you do not have access to this action.');
         } elseif ($importReturn == 'fail1') {
-            $importReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+            $importReturnMessage = __('Your request failed because your inputs were invalid.');
         } elseif ($importReturn == 'fail2') {
-            $importReturnMessage = __($guid, 'Your request failed due to a database error.');
+            $importReturnMessage = __('Your request failed due to a database error.');
         } elseif ($importReturn == 'fail3') {
-            $importReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+            $importReturnMessage = __('Your request failed because your inputs were invalid.');
         }
         echo "<div class='$class'>";
         echo $importReturnMessage;
@@ -57,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
     $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
     if ($gibbonTTID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -71,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -89,10 +87,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
             //STEP 1, SELECT TERM
             if ($step == 1) {
                 echo '<h2>';
-					echo __($guid, 'Step 1 - Select CSV Files');
+					echo __('Step 1 - Select CSV Files');
 				echo '</h2>';
 				echo '<p>';
-					echo __($guid, 'This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
+					echo __('This page allows you to import timetable data from a CSV file. The import includes all classes and their teachers. There is no support for importing students: these need to be entered manually into the relavent classes. The system will do its best to keep existing data in tact, whilst updating what is necessary (note: you will lose student exceptions from timetabled classes). Select the CSV files you wish to use for the synchronise operation.')."<br/>";
 				echo '</p>';
 
                 $form = Form::create('importTimetable', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=2");
@@ -118,42 +116,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                 echo $form->getOutput();
 
                 echo '<h4>';
-				echo __($guid, 'Notes');
+				echo __('Notes');
 				echo '</h4>';
 				echo '<ol>';
-					echo '<li>'.__($guid, 'You may only submit CSV files.').'</li>';
-					echo '<li>'.__($guid, 'Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).').'</li>';
-					echo '<li>'.__($guid, 'The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.').'</li>';
-					echo '<li>'.__($guid, 'The import does not include student lists.').'</li>';
-					echo '<li>'.__($guid, 'The submitted file must have the following fields in the following order:').'</li>';
+					echo '<li>'.__('You may only submit CSV files.').'</li>';
+					echo '<li>'.__('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).').'</li>';
+					echo '<li>'.__('The import includes course, class, period, teacher and room information: the structure of the target timetable must already be in place.').'</li>';
+					echo '<li>'.__('The import does not include student lists.').'</li>';
+					echo '<li>'.__('The submitted file must have the following fields in the following order:').'</li>';
 						echo '<ol>';
-							echo '<li><b>'.__($guid, 'Course Short Name</b> - e.g. DR10 for Year 10 Drama').'</li>';
-							echo '<li><b>'.__($guid, 'Class Short Name</b> - e.g 1 for DR10.1').'</li>';
-							echo '<li><b>'.__($guid, 'Day Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__($guid, 'Row Long Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__($guid, 'Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
-							echo '<li><b>'.__($guid, 'Space Name</b> - the Gibbon name for the room the lesson takes place in.').'</li>';
+							echo '<li><b>'.__('Course Short Name</b> - e.g. DR10 for Year 10 Drama').'</li>';
+							echo '<li><b>'.__('Class Short Name</b> - e.g 1 for DR10.1').'</li>';
+							echo '<li><b>'.__('Day Name</b> - as used in the target timetable').'</li>';
+							echo '<li><b>'.__('Row Long Name</b> - as used in the target timetable').'</li>';
+							echo '<li><b>'.__('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
+							echo '<li><b>'.__('Space Name</b> - the Gibbon name for the room the lesson takes place in.').'</li>';
 						echo '</ol>';
 					echo '</li>';
-					echo '<li>'.__($guid, 'Do not include a header row in the CSV files.').'</li>';
+					echo '<li>'.__('Do not include a header row in the CSV files.').'</li>';
 				echo '</ol>';
             } elseif ($step == 2) {
                 echo '<h2>';
-					echo __($guid, 'Step 2 - Data Check & Confirm');
+					echo __('Step 2 - Data Check & Confirm');
 				echo '</h2>';
 
                 //Check file type
                 if (($_FILES['file']['type'] != 'text/csv') and ($_FILES['file']['type'] != 'text/comma-separated-values') and ($_FILES['file']['type'] != 'text/x-comma-separated-values') and ($_FILES['file']['type'] != 'application/vnd.ms-excel') and ($_FILES['file']['type'] != 'application/csv')) {
                     ?>
 					<div class='error'>
-						<?php echo sprintf(__($guid, 'Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
+						<?php echo sprintf(__('Import cannot proceed, as the submitted file has a MIME-TYPE of %1$s, and as such does not appear to be a CSV file.'), $_FILES['file']['type']) ?><br/>
 					</div>
 					<?php
 
                 } elseif (($_POST['fieldDelimiter'] == '') or ($_POST['stringEnclosure'] == '')) {
                     ?>
 					<div class='error'>
-						<?php echo __($guid, 'Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
+						<?php echo __('Import cannot proceed, as the "Field Delimiter" and/or "String Enclosure" fields have been left blank.') ?><br/>
 					</div>
 					<?php
 
@@ -162,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                     //PREPARE TABLES
                     echo '<h4>';
-                    echo __($guid, 'Prepare Database Tables');
+                    echo __('Prepare Database Tables');
                     echo '</h4>';
                     //Lock tables
                     $lockFail = false;
@@ -186,11 +184,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                     }
                     if ($lockFail == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The database could not be locked for use.');
+                        echo __('The database could not be locked for use.');
                         echo '</div>';
                     } elseif ($lockFail == false) {
                         echo "<div class='success'>";
-                        echo __($guid, 'The database was successfully locked.');
+                        echo __('The database was successfully locked.');
                         echo '</div>';
                     }
                     //Empty table gibbonTTImport
@@ -204,18 +202,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                     }
                     if ($emptyFail == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The database tables could not be emptied.');
+                        echo __('The database tables could not be emptied.');
                         echo '</div>';
                     } elseif ($emptyFail == false) {
                         echo "<div class='success'>";
-                        echo __($guid, 'The database tables were successfully emptied.');
+                        echo __('The database tables were successfully emptied.');
                         echo '</div>';
                     }
 
                     //TURN IMPORT FILE INTO gibbonTTImport
                     if ($proceed == true) {
                         echo '<h4>';
-                        echo __($guid, 'File Import');
+                        echo __('File Import');
                         echo '</h4>';
                         $importFail = false;
                         $csvFile = $_FILES['file']['tmp_name'];
@@ -235,11 +233,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         fclose($handle);
                         if ($importFail == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The import file could not be temporarily stored in the database for analysis.');
+                            echo __('The import file could not be temporarily stored in the database for analysis.');
                             echo '</div>';
                         } elseif ($importFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The import file was successfully stored in the database for analysis.');
+                            echo __('The import file was successfully stored in the database for analysis.');
                             echo '</div>';
                         }
                     }
@@ -293,11 +291,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($staffCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Staff check failed. The following staff were in the import file but could not be found in Gibbon: %1$s. Add the staff into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Staff check failed. The following staff were in the import file but could not be found in Gibbon: %1$s. Add the staff into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($staffCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The staff check was successfully completed: all staff in the import file were found in Gibbon.');
+                            echo __('The staff check was successfully completed: all staff in the import file were found in Gibbon.');
                             echo '</div>';
                         }
                     }
@@ -339,11 +337,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($spaceCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Space check failed. The following spaces were in the import file but could not be found in Gibbon: %1$s. Add the spaces into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Space check failed. The following spaces were in the import file but could not be found in Gibbon: %1$s. Add the spaces into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($spaceCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The space check was successfully completed: all spaces in the import file were found in Gibbon.');
+                            echo __('The space check was successfully completed: all spaces in the import file were found in Gibbon.');
                             echo '</div>';
                         }
                     }
@@ -385,11 +383,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($dayCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Day check failed. The following days were in the import file but could not be found in Gibbon: %1$s. Add the days into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Day check failed. The following days were in the import file but could not be found in Gibbon: %1$s. Add the days into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($dayCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The day check was successfully completed: all days in the import file were found in Gibbon in the specified timetable.');
+                            echo __('The day check was successfully completed: all days in the import file were found in Gibbon in the specified timetable.');
                             echo '</div>';
                         }
                     }
@@ -431,11 +429,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($rowCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Row check failed. The following rows were in the import file but could not be found in Gibbon: %1$s. Add the rows into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($rowCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The row check was successfully completed: all rows in the import file were found in Gibbon in the specified timetable on the specified days.');
+                            echo __('The row check was successfully completed: all rows in the import file were found in Gibbon in the specified timetable on the specified days.');
                             echo '</div>';
                         }
                     }
@@ -491,13 +489,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($courseCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Course check failed. The following courses were in the import file but could not be found or made in Gibbon: %1$s. Add the courses into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Course check failed. The following courses were in the import file but could not be found or made in Gibbon: %1$s. Add the courses into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($courseCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The course check was successfully completed: all courses in the import file were found in or added to Gibbon.');
+                            echo __('The course check was successfully completed: all courses in the import file were found in or added to Gibbon.');
                             if ($makeList != '') {
-                                echo ' '.sprintf(__($guid, 'The following courses were added to Gibbon: %1$s.'), substr($makeList, 0, -2));
+                                echo ' '.sprintf(__('The following courses were added to Gibbon: %1$s.'), substr($makeList, 0, -2));
                             }
                             echo '</div>';
                         }
@@ -554,13 +552,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($classCheckFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Class check failed. The following classes were in the import file but could not be found or made in Gibbon: %1$s. Add the classes into Gibbon and then try the import again.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Class check failed. The following classes were in the import file but could not be found or made in Gibbon: %1$s. Add the classes into Gibbon and then try the import again.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($classCheckFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The class check was successfully completed: all classes in the import file were found in or added to Gibbon.');
+                            echo __('The class check was successfully completed: all classes in the import file were found in or added to Gibbon.');
                             if ($makeList != '') {
-                                echo ' '.sprintf(__($guid, 'The following classes were added to Gibbon: %1$s.'), substr($makeList, 0, -2));
+                                echo ' '.sprintf(__('The following classes were added to Gibbon: %1$s.'), substr($makeList, 0, -2));
                             }
                             echo '</div>';
                         }
@@ -569,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                     //TEACHER SYNC
                     if ($proceed == true) {
                         echo '<h4>';
-                        echo __($guid, 'Teacher Sync');
+                        echo __('Teacher Sync');
                         echo '</h4>';
                         $teacherSyncFail = false;
                         //Get list of classes from import
@@ -685,11 +683,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                         }
                         if ($teacherSyncFail == true) {
                             echo "<div class='error'>";
-                            echo sprintf(__($guid, 'Teacher sync failed. The following classes/teachers (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2));
+                            echo sprintf(__('Teacher sync failed. The following classes/teachers (and possibly some others) had problems: %1$s.'), substr($errorList, 0, -2));
                             echo '</div>';
                         } elseif ($teacherSyncFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'The teacher sync was successfully completed: all teachers in the import file were added to the relevant classes in Gibbon.');
+                            echo __('The teacher sync was successfully completed: all teachers in the import file were added to the relevant classes in Gibbon.');
                             echo '</div>';
                         }
                     }
@@ -703,22 +701,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                     //SPIT OUT RESULT
                     echo '<h4>';
-                    echo __($guid, 'Final Decision');
+                    echo __('Final Decision');
                     echo '</h4>';
                     if ($proceed == false) {
                         echo "<div class='error'>";
-                        echo '<b><u>'.__($guid, 'You cannot proceed. Fix the issues listed above and try again.').'</u></b>';
+                        echo '<b><u>'.__('You cannot proceed. Fix the issues listed above and try again.').'</u></b>';
                         echo '</div>';
                     } elseif ($proceed == true) {
                         echo "<div class='success'>";
-                        echo '<b><u>'.sprintf(__($guid, 'You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=3'>", '</a>').'</u></b>';
+                        echo '<b><u>'.sprintf(__('You are ready to go. %1$sClick here to import the timetable. Your old timetable will be obliterated%2$s.'), "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/tt_import.php&gibbonTTID=$gibbonTTID&gibbonSchoolYearID=$gibbonSchoolYearID&step=3'>", '</a>').'</u></b>';
                         echo '</div>';
                     }
                 }
             } elseif ($step == 3) {
                 ?>
 				<h2>
-					<?php echo __($guid, 'Step 3 - Import') ?>
+					<?php echo __('Step 3 - Import') ?>
 				</h2>
 				<?php
 
@@ -728,7 +726,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                 $ttSyncRemoveFail = false;
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'Remove Old Periods');
+                    echo __('Remove Old Periods');
                     echo '</h4>';
                     try {
                         $dataDays = array('gibbonTTID' => $gibbonTTID);
@@ -781,11 +779,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                     if ($ttSyncRemoveFail == true) {
                         echo "<div class='error'>";
-                        echo __($guid, 'Removal of old periods failed.');
+                        echo __('Removal of old periods failed.');
                         echo '</div>';
                     } elseif ($ttSyncRemoveFail == false) {
                         echo "<div class='success'>";
-                        echo __($guid, 'Removal of old periods was successful.');
+                        echo __('Removal of old periods was successful.');
                         echo '</div>';
                     }
                 }
@@ -793,7 +791,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
                 //ADD PERIODS
                 if ($proceed == true) {
                     echo '<h4>';
-                    echo __($guid, 'Add Periods');
+                    echo __('Add Periods');
                     echo '</h4>';
                     if ($ttSyncRemoveFail == false) {
                         $ttSyncFail = false;
@@ -926,11 +924,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                         if ($ttSyncFail == true) {
                             echo "<div class='error'>";
-                            echo __($guid, 'Add/update of periods from import failed. Parts of your timetable may display correctly, but others may be missing, incomplete or incorrect.');
+                            echo __('Add/update of periods from import failed. Parts of your timetable may display correctly, but others may be missing, incomplete or incorrect.');
                             echo '</div>';
                         } elseif ($ttSyncFail == false) {
                             echo "<div class='success'>";
-                            echo __($guid, 'Add/update of periods from import was successful. You may now wish to set long name, learning area and year groups for any new courses created in Step 2.');
+                            echo __('Add/update of periods from import was successful. You may now wish to set long name, learning area and year groups for any new courses created in Step 2.');
                             echo '</div>';
                         }
                     }
@@ -938,19 +936,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 
                 //SPIT OUT RESULT
                 echo '<h4>';
-                echo __($guid, 'Final Result');
+                echo __('Final Result');
                 echo '</h4>';
                 if ($proceed == false) {
                     echo "<div class='error'>";
-                    echo '<b><u>'.__($guid, 'Your input was partially or entirely unsuccessful.').'</u></b>';
+                    echo '<b><u>'.__('Your input was partially or entirely unsuccessful.').'</u></b>';
                     echo '</div>';
                 } elseif ($proceed == true) {
                     echo "<div class='success'>";
-                    echo '<b><u>'.__($guid, 'Success! Your new timetable is in place.').'</u></b>';
+                    echo '<b><u>'.__('Success! Your new timetable is in place.').'</u></b>';
                     echo '</div>';
                 }
             }
         }
     }
 }
-?>

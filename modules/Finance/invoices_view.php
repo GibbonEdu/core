@@ -22,20 +22,19 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $entryCount = 0;
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Invoices').'</div>';
-        echo '</div>';
+
+        $page->breadcrumbs->add(__('View Invoices'));
 
         if ($highestAction=="View Invoices_myChildren") {
             //Test data access field for permission
@@ -50,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Access denied.');
+                echo __('Access denied.');
                 echo '</div>';
             } else {
                 //Get child list
@@ -72,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                 if (count($options) == 0) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
+                    echo __('Access denied.');
                     echo '</div>';
                 } elseif (count($options) == 1) {
                     $_GET['search'] = key($options);
@@ -126,7 +125,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
             }
             if ($resultChild->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $rowChild = $resultChild->fetch();
@@ -151,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     }
                     if ($result->rowcount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record does not exist.');
+                        echo __('The specified record does not exist.');
                         echo '</div>';
                     } else {
                         $row = $result->fetch();
@@ -168,15 +167,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                     echo "<div class='linkTop'>";
                         //Print year picker
                         if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
                         } else {
-                            echo __($guid, 'Previous Year').' ';
+                            echo __('Previous Year').' ';
                         }
                     echo ' | ';
                     if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/invoices_view.php&search=$gibbonPersonID&gibbonSchoolYearID=".getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
                     } else {
-                        echo __($guid, 'Next Year').' ';
+                        echo __('Next Year').' ';
                     }
                     echo '</div>';
 
@@ -193,43 +192,43 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
 
                     if ($result->rowCount() < 1) {
                         echo '<h3>';
-                        echo __($guid, 'View');
+                        echo __('View');
                         echo '</h3>';
 
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         echo '<h3>';
-                        echo __($guid, 'View');
-                        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__($guid, '%1$s invoice(s) in current view'), $result->rowCount()).'</span>';
+                        echo __('View');
+                        echo "<span style='font-weight: normal; font-style: italic; font-size: 55%'> ".sprintf(__('%1$s invoice(s) in current view'), $result->rowCount()).'</span>';
                         echo '</h3>';
 
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo "<th style='width: 110px'>";
-                        echo __($guid, 'Student').'<br/>';
-                        echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Invoice To').'</span>';
+                        echo __('Student').'<br/>';
+                        echo "<span style='font-style: italic; font-size: 85%'>".__('Invoice To').'</span>';
                         echo '</th>';
                         echo "<th style='width: 110px'>";
-                        echo __($guid, 'Roll Group');
+                        echo __('Roll Group');
                         echo '</th>';
                         echo "<th style='width: 100px'>";
-                        echo __($guid, 'Status');
+                        echo __('Status');
                         echo '</th>';
                         echo "<th style='width: 90px'>";
-                        echo __($guid, 'Schedule');
+                        echo __('Schedule');
                         echo '</th>';
                         echo "<th style='width: 120px'>";
-                        echo __($guid, 'Total')." <span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
-                        echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Paid').' ('.$_SESSION[$guid]['currency'].')</span>';
+                        echo __('Total')." <span style='font-style: italic; font-size: 75%'>(".$_SESSION[$guid]['currency'].')</span><br/>';
+                        echo "<span style='font-style: italic; font-size: 75%'>".__('Paid').' ('.$_SESSION[$guid]['currency'].')</span>';
                         echo '</th>';
                         echo "<th style='width: 80px'>";
-                        echo __($guid, 'Issue Date').'<br/>';
-                        echo "<span style='font-style: italic; font-size: 75%'>".__($guid, 'Due Date').'</span>';
+                        echo __('Issue Date').'<br/>';
+                        echo "<span style='font-style: italic; font-size: 75%'>".__('Due Date').'</span>';
                         echo '</th>';
                         echo "<th style='width: 140px'>";
-                        echo __($guid, 'Actions');
+                        echo __('Actions');
                         echo '</th>';
                         echo '</tr>';
 
@@ -334,9 +333,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '</td>';
                             echo '<td>';
                             if ($row['status'] == 'Issued') {
-                                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_view_print.php&type=invoice&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                             } elseif ($row['status'] == 'Paid' or $row['status'] == 'Paid - Partial') {
-                                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+                                echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/invoices_view_print.php&type=receipt&gibbonFinanceInvoiceID='.$row['gibbonFinanceInvoiceID']."&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonPersonID=$gibbonPersonID'><img title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
                             }
                             echo "<script type='text/javascript'>";
                             echo '$(document).ready(function(){';
@@ -348,7 +347,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_view.php'
                             echo '});';
                             echo '</script>';
                             if ($row['notes'] != '') {
-                                echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                                echo "<a title='View Notes' class='show_hide-$count' onclick='false' href='#'><img style='margin-left: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                             }
                             echo '</td>';
                             echo '</tr>';

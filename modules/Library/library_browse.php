@@ -20,19 +20,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Browse The Library'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Browse The Library').'</div>';
-    echo '</div>';
-
     //Get display settings
     $browseBGColorStyle = null;
     $browseBGColor = getSettingByScope($connection2, 'Library', 'browseBGColor');
@@ -61,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     echo '<tr>';
     echo "<td style='width: 10px'></td>";
     echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>".__($guid, 'Monthly Top 5').'</div>';
+    echo "<div style='color: #CC0000; margin-bottom: -2px; font-weight: bold; font-size: 135%'>".__('Monthly Top 5').'</div>';
     try {
         $dataTop = array('timestampOut' => date('Y-m-d H:i:s', (time() - (60 * 60 * 24 * 30))));
         $sqlTop = "SELECT gibbonLibraryItem.name, producer, COUNT( * ) AS count FROM gibbonLibraryItem JOIN gibbonLibraryItemEvent ON (gibbonLibraryItemEvent.gibbonLibraryItemID=gibbonLibraryItem.gibbonLibraryItemID) JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE timestampOut>=:timestampOut AND gibbonLibraryItem.borrowable='Y' AND gibbonLibraryItemEvent.type='Loan' AND gibbonLibraryType.name='Print Publication' GROUP BY producer, name ORDER BY count DESC LIMIT 0, 5";
@@ -72,7 +70,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }
     if ($resultTop->rowCount() < 1) {
         echo "<div class='warning'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $count = 0;
@@ -96,7 +94,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }
     echo '</td>';
     echo "<td style='width: 50%; padding-top: 5px; text-align: center; vertical-align: top'>";
-    echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>".__($guid, 'New Titles').'</div>';
+    echo "<div style='color: #CC0000; margin-bottom: -5px; font-weight: bold; font-size: 135%'>".__('New Titles').'</div>';
     try {
         $dataTop = array();
         $sqlTop = "SELECT gibbonLibraryItem.name, producer FROM gibbonLibraryItem JOIN gibbonLibraryType ON (gibbonLibraryItem.gibbonLibraryTypeID=gibbonLibraryType.gibbonLibraryTypeID) WHERE gibbonLibraryItem.borrowable='Y' AND gibbonLibraryType.name='Print Publication'  ORDER BY timestampCreator DESC LIMIT 0, 5";
@@ -107,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }
     if ($resultTop->rowCount() < 1) {
         echo "<div class='warning'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $count = 0;
@@ -164,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
     }, array());
 
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth borderGrey');
 
     $form->addHiddenValue('q', '/modules/Library/library_browse.php');
@@ -319,7 +317,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -332,18 +330,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
 
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Author/Producer').'</span>';
+        echo __('Name').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Author/Producer').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'ID').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Status').'</span>';
+        echo __('ID').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Status').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Location');
+        echo __('Location');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -405,7 +403,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_browse.php
             echo '});';
             echo '</script>';
             if ($row['fields'] != '') {
-                echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='Show Details' onclick='return false;' /></a>";
+                echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='Show Details' onclick='return false;' /></a>";
             }
             echo '</td>';
             echo '</tr>';

@@ -18,18 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/crowdAssess.php'>".__($guid, 'View All Assessments')."</a> > </div><div class='trailEnd'>".__($guid, 'View Assessment').'</div>';
-    echo '</div>';
-
+    //Proceed
+    $page->breadcrumbs
+        ->add(__('View All Assessments'), 'crowdAssess.php')
+        ->add(__('View Assessment'));
+        
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -38,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
     $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
     if ($gibbonPlannerEntryID == '') {
         echo "<div class='warning'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     }
     //Check existence of and access to this class.
@@ -54,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -62,21 +63,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Class').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
             echo $row['course'].'.'.$row['class'];
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
             echo $row['name'];
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Date').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Date').'</span><br/>';
             echo dateConvertBack($guid, $row['date']);
             echo '</td>';
             echo '</tr>';
             echo '<tr>';
             echo "<td style='padding-top: 15px; width: 34%; vertical-align: top' colspan=3>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Homework Details').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Homework Details').'</span><br/>';
             echo $row['homeworkDetails'];
             echo '</td>';
             echo '</tr>';
@@ -103,19 +104,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Student');
+                    echo __('Student');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Read');
+                    echo __('Read');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Likes');
+                    echo __('Likes');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Comments');
+                    echo __('Comments');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Discuss');
+                    echo __('Discuss');
                     echo '</th>';
                     echo '</tr>';
 
@@ -189,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
                         echo '</td>';
                         echo '<td>';
                         if ($rowWork['gibbonPlannerEntryHomeworkID'] != '' and $rowWork['status'] != 'Exemption') {
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/crowdAssess_view_discuss.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&gibbonPlannerEntryHomeworkID=".$rowWork['gibbonPlannerEntryHomeworkID'].'&gibbonPersonID='.$rowList['gibbonPersonID']."'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         }
                         echo '</td>';
                         echo '</tr>';

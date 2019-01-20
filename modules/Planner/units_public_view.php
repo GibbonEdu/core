@@ -18,25 +18,29 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
+// common variables
 $makeUnitsPublic = getSettingByScope($connection2, 'Planner', 'makeUnitsPublic');
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Learn With Us'), 'units_public.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+    ])
+    ->add(__('View Unit'));
+
 if ($makeUnitsPublic != 'Y') {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_public.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Learn With Us')."</a> > </div><div class='trailEnd'>".__($guid, 'View Unit').'</div>';
-    echo '</div>';
-
     //Check if courseschool year specified
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $gibbonUnitID = $_GET['gibbonUnitID'];
     if ($gibbonUnitID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -50,7 +54,7 @@ if ($makeUnitsPublic != 'Y') {
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -86,20 +90,20 @@ if ($makeUnitsPublic != 'Y') {
 
                 //Tab links
                 echo '<ul>';
-            echo "<li><a href='#tabs1'>".__($guid, 'Overview').'</a></li>';
-            echo "<li><a href='#tabs2'>".__($guid, 'Content').'</a></li>';
-            echo "<li><a href='#tabs3'>".__($guid, 'Resources').'</a></li>';
-            echo "<li><a href='#tabs4'>".__($guid, 'Outcomes').'</a></li>';
+            echo "<li><a href='#tabs1'>".__('Overview').'</a></li>';
+            echo "<li><a href='#tabs2'>".__('Content').'</a></li>';
+            echo "<li><a href='#tabs3'>".__('Resources').'</a></li>';
+            echo "<li><a href='#tabs4'>".__('Outcomes').'</a></li>';
             echo '</ul>';
 
                 //Tabs
                 echo "<div id='tabs1'>";
             echo '<h4>';
-            echo __($guid, 'Description');
+            echo __('Description');
             echo '</h4>';
             if ($row['description'] == '') {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 echo '<p>';
@@ -109,10 +113,10 @@ if ($makeUnitsPublic != 'Y') {
 
             if ($row['license'] != '') {
                 echo '<h4>';
-                echo __($guid, 'License');
+                echo __('License');
                 echo '</h4>';
                 echo '<p>';
-                echo __($guid, 'This work is shared under the following license:').' '.$row['license'];
+                echo __('This work is shared under the following license:').' '.$row['license'];
                 echo '</p>';
             }
             echo '</div>';
@@ -168,97 +172,101 @@ if ($makeUnitsPublic != 'Y') {
             echo "<div id='tabs3'>";
 			//Resources
 			$noReosurces = true;
+            
+            if (!empty($resourceContents)) {
+                $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
 
-			//Links
-			$links = '';
-            $linksArray = array();
-            $linksCount = 0;
-            $dom = new DOMDocument();
-            $dom->loadHTML($resourceContents);
-            foreach ($dom->getElementsByTagName('a') as $node) {
-                if ($node->nodeValue != '') {
-                    $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
-                    ++$linksCount;
+                //Links
+                $links = '';
+                $linksArray = array();
+                $linksCount = 0;
+                $dom = new DOMDocument();
+                $dom->loadHTML($resourceContents);
+                foreach ($dom->getElementsByTagName('a') as $node) {
+                    if ($node->nodeValue != '') {
+                        $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
+                        ++$linksCount;
+                    }
+                }
+
+                $linksArray = array_unique($linksArray);
+                natcasesort($linksArray);
+
+                foreach ($linksArray as $link) {
+                    $links .= $link;
+                }
+
+                if ($links != '') {
+                    echo '<h2>';
+                    echo 'Links';
+                    echo '</h2>';
+                    echo '<ul>';
+                    echo $links;
+                    echo '</ul>';
+                    $noReosurces = false;
+                }
+
+                //Images
+                $images = '';
+                $imagesArray = array();
+                $imagesCount = 0;
+                $dom2 = new DOMDocument();
+                $dom2->loadHTML($resourceContents);
+                foreach ($dom2->getElementsByTagName('img') as $node) {
+                    if ($node->getAttribute('src') != '') {
+                        $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
+                        ++$imagesCount;
+                    }
+                }
+
+                $imagesArray = array_unique($imagesArray);
+                natcasesort($imagesArray);
+
+                foreach ($imagesArray as $image) {
+                    $images .= $image;
+                }
+
+                if ($images != '') {
+                    echo '<h2>';
+                    echo 'Images';
+                    echo '</h2>';
+                    echo $images;
+                    $noReosurces = false;
+                }
+
+                //Embeds
+                $embeds = '';
+                $embedsArray = array();
+                $embedsCount = 0;
+                $dom2 = new DOMDocument();
+                $dom2->loadHTML($resourceContents);
+                foreach ($dom2->getElementsByTagName('iframe') as $node) {
+                    if ($node->getAttribute('src') != '') {
+                        $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
+                        ++$embedsCount;
+                    }
+                }
+
+                $embedsArray = array_unique($embedsArray);
+                natcasesort($embedsArray);
+
+                foreach ($embedsArray as $embed) {
+                    $embeds .= $embed.'<br/><br/>';
+                }
+
+                if ($embeds != '') {
+                    echo '<h2>';
+                    echo 'Embeds';
+                    echo '</h2>';
+                    echo $embeds;
+                    $noReosurces = false;
                 }
             }
-
-            $linksArray = array_unique($linksArray);
-            natcasesort($linksArray);
-
-            foreach ($linksArray as $link) {
-                $links .= $link;
-            }
-
-            if ($links != '') {
-                echo '<h2>';
-                echo 'Links';
-                echo '</h2>';
-                echo '<ul>';
-                echo $links;
-                echo '</ul>';
-                $noReosurces = false;
-            }
-
-			//Images
-			$images = '';
-            $imagesArray = array();
-            $imagesCount = 0;
-            $dom2 = new DOMDocument();
-            $dom2->loadHTML($resourceContents);
-            foreach ($dom2->getElementsByTagName('img') as $node) {
-                if ($node->getAttribute('src') != '') {
-                    $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
-                    ++$imagesCount;
-                }
-            }
-
-            $imagesArray = array_unique($imagesArray);
-            natcasesort($imagesArray);
-
-            foreach ($imagesArray as $image) {
-                $images .= $image;
-            }
-
-            if ($images != '') {
-                echo '<h2>';
-                echo 'Images';
-                echo '</h2>';
-                echo $images;
-                $noReosurces = false;
-            }
-
-			//Embeds
-			$embeds = '';
-            $embedsArray = array();
-            $embedsCount = 0;
-            $dom2 = new DOMDocument();
-            $dom2->loadHTML($resourceContents);
-            foreach ($dom2->getElementsByTagName('iframe') as $node) {
-                if ($node->getAttribute('src') != '') {
-                    $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
-                    ++$embedsCount;
-                }
-            }
-
-            $embedsArray = array_unique($embedsArray);
-            natcasesort($embedsArray);
-
-            foreach ($embedsArray as $embed) {
-                $embeds .= $embed.'<br/><br/>';
-            }
-
-            if ($embeds != '') {
-                echo '<h2>';
-                echo 'Embeds';
-                echo '</h2>';
-                echo $embeds;
-                $noReosurces = false;
-            }
-
+            
 			//No resources!
 			if ($noReosurces) {
 				echo "<div class='error'>";
-				echo __($guid, 'There are no records to display.');
+				echo __('There are no records to display.');
 				echo '</div>';
 			}
             echo '</div>';
@@ -276,19 +284,19 @@ if ($makeUnitsPublic != 'Y') {
                 echo "<table cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Scope');
+                echo __('Scope');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Category');
+                echo __('Category');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Name');
+                echo __('Name');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Year Groups');
+                echo __('Year Groups');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Actions');
+                echo __('Actions');
                 echo '</th>';
                 echo '</tr>';
 
@@ -327,7 +335,7 @@ if ($makeUnitsPublic != 'Y') {
                     echo '});';
                     echo '</script>';
                     if ($rowBlocks['content'] != '') {
-                        echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                     }
                     echo '</td>';
                     echo '</tr>';
@@ -350,4 +358,3 @@ if ($makeUnitsPublic != 'Y') {
         }
     }
 }
-?>

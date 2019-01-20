@@ -25,13 +25,11 @@ use Gibbon\Domain\Students\StudentGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Student Enrolment').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student Enrolment'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -57,7 +55,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -74,15 +72,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
-                echo __($guid, 'Previous Year').' ';
+                echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
-            echo __($guid, 'Next Year').' ';
+            echo __('Next Year').' ';
         }
         echo '</div>';
 
@@ -93,13 +91,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/studentEnrolment_
         $criteria = $studentGateway->newQueryCriteria()
             ->searchBy($studentGateway->getSearchableColumns(), $search)
             ->sortBy(['surname', 'preferredName'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Search');
         echo '</h3>';
 
-        $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+        $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
         $form->setClass('noIntBorder fullWidth');
 
         $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/studentEnrolment_manage.php');

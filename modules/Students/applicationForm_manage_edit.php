@@ -19,9 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Module includes from User Admin (for custom fields)
 include './modules/User Admin/moduleFunctions.php';
@@ -33,15 +34,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/applicationForm_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__('Manage Applications')."</a> > </div><div class='trailEnd'>".__('Edit Form').'</div>';
-    echo '</div>';
+    $gibbonApplicationFormID = $_GET['gibbonApplicationFormID'] ?? '';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $search = $_GET['search'] ?? '';
+
+    $page->breadcrumbs
+        ->add(__('Manage Applications'), 'applicationForm_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Edit Form'));
 
     //Check if school year specified
-    $gibbonApplicationFormID = (isset($_GET['gibbonApplicationFormID']))? $_GET['gibbonApplicationFormID'] : '';
-    $gibbonSchoolYearID = (isset($_GET['gibbonSchoolYearID']))? $_GET['gibbonSchoolYearID'] : '';
-    $search = (isset($_GET['search']))? $_GET['search'] : '';
-
     if ($gibbonApplicationFormID == '' or $gibbonSchoolYearID == '') {
         echo "<div class='error'>";
         echo __('You have not specified one or more required parameters.');
@@ -205,6 +206,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         }
     }
 
+    // USERNAME & STUDENT ID
+    $row = $form->addRow();
+        $row->addLabel('username', __('Username'))->description(__('System login name.'));
+        $row->addUsername('username')
+            ->readonly($application['applicationStatus'] == 'Accepted')
+            ->addGenerateUsernameButton($form);
+
+    $row = $form->addRow();
+        $row->addLabel('studentID', __('Student ID'))->description(__('Must be unique if set.'));
+        $row->addTextField('studentID')
+            ->maxLength(10)
+            ->readonly($application['applicationStatus'] == 'Accepted');
+
     // NOTES
     $row = $form->addRow();
         $column = $row->addColumn();
@@ -241,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         foreach ($linkedApplications as $linkedApplicationFormID => $rowLinked) {
             $row = $table->addRow();
             $row->addContent(str_pad(intval($linkedApplicationFormID), 7, '0', STR_PAD_LEFT));
-            $row->addContent(formatName('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
+            $row->addContent(Format::name('', $rowLinked['preferredName'], $rowLinked['surname'], 'Student', true));
             $row->addContent($rowLinked['status']);
 
         }
@@ -262,7 +276,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $linkedApplications = array_reduce($resultApplications->fetchAll(), function($applications, $item) {
                 $group = $item['schoolYearName'];
                 $value = $item['gibbonApplicationFormID'];
-                $applications[$group][$value] = formatName('', $item['preferredName'], $item['surname'], 'Student', true);
+                $applications[$group][$value] = Format::name('', $item['preferredName'], $item['surname'], 'Student', true);
 
                 return $applications;
             }, array());
@@ -284,15 +298,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->isRequired()->maxLength(30);
+        $row->addTextField('preferredName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -300,7 +314,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(20);
+        $row->addTextField('nameInCharacters')->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -373,7 +387,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email');
         if ($uniqueEmailAddress == 'Y') {
             $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
         }
@@ -461,7 +475,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
             $row = $form->addRow();
-                $row->addLabel($name, $rowFields['name']);
+                $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                 $row->addCustomField($name, $rowFields)->setValue($value);
         }
     }
@@ -519,7 +533,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow();
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -624,7 +638,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->maxLength(50);
+                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1);
 
                 if ($uniqueEmailAddress == 'Y') {
                     $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
@@ -642,11 +656,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(30);
+                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(90);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
-                $row->addTextField("parent{$i}employer")->maxLength(30);
+                $row->addTextField("parent{$i}employer")->maxLength(90);
 
             // CUSTOM FIELDS FOR PARENTS
             $existingFields = (isset($application["parent{$i}fields"]))? unserialize($application["parent{$i}fields"]) : null;
@@ -660,7 +674,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
                     $value = (isset($existingFields[$rowFields['gibbonPersonFieldID']]))? $existingFields[$rowFields['gibbonPersonFieldID']] : '';
 
                     $row = $form->addRow()->setClass("parentSection{$i}");
-                        $row->addLabel($name, $rowFields['name']);
+                        $row->addLabel($name, $rowFields['name'])->description($rowFields['description']);
                         $row->addCustomField($name, $rowFields)->setValue($value);
                 }
             }
@@ -704,7 +718,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
             $column = $row->addColumn()->setClass('blank');
 
             while ($rowRelationships = $resultRelationships->fetch()) {
-                $column->addContent(formatName($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
+                $column->addContent(Format::name($rowRelationships['title'], $rowRelationships['preferredName'], $rowRelationships['surname'], 'Parent').' ('.$rowRelationships['relationship'].')');
             }
         }
     }
@@ -924,11 +938,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
     if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+
+        $form->addRow()->addSubheading(__('Privacy'))->append($privacyBlurb);
+
         $options = array_map('trim', explode(',', $privacyOptions));
         $checked = array_map('trim', explode(',', $application['privacy']));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options)->checked($checked);
     }
 
@@ -962,4 +979,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     </script>
     <?php
 }
-?>

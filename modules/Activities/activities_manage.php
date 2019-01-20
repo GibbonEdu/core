@@ -24,18 +24,16 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Set returnTo point for upcoming pages
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Activities').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Activities'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -54,10 +52,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     $criteria = $activityGateway->newQueryCriteria()
         ->searchBy($activityGateway->getSearchableColumns(), $search)
         ->filterBy('term', $gibbonSchoolYearTermID)
-        ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', 'DESC')
+        ->sortBy($dateType != 'Date' ? 'gibbonSchoolYearTermIDList' : 'programStart', $dateType != 'Date' ? 'ASC' : 'DESC')
         ->sortBy('name');
 
-    $criteria->fromArray($_POST);
+    $criteria->fromPOST();
 
     echo '<h2>';
     echo __('Search & Filter');
@@ -65,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
     $paymentOn = getSettingByScope($connection2, 'Activities', 'payment') != 'None' and getSettingByScope($connection2, 'Activities', 'payment') != 'Single';
 
-    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
     $form->setClass('noIntBorder fullWidth');
 
     $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_manage.php");
@@ -88,7 +86,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'Activities');
+    echo __('Activities');
     echo '</h2>';
 
     $activities = $activityGateway->queryActivitiesBySchoolYear($criteria, $_SESSION[$guid]['gibbonSchoolYearID']);

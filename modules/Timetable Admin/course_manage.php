@@ -26,13 +26,11 @@ use Gibbon\Domain\Timetable\CourseGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Courses & Classes').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Courses & Classes'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -59,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -78,15 +76,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             $previousYear = getPreviousSchoolYearID($gibbonSchoolYearID, $connection2);
 			$nextYear = getNextSchoolYearID($gibbonSchoolYearID, $connection2);
 			if ($previousYear != false) {
-				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
 			} else {
-				echo __($guid, 'Previous Year').' ';
+				echo __('Previous Year').' ';
 			}
 			echo ' | ';
 			if ($nextYear != false) {
-				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+				echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/course_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
 			} else {
-				echo __($guid, 'Next Year').' ';
+				echo __('Next Year').' ';
 			}
         echo '</div>';
 
@@ -100,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
             ->searchBy($courseGateway->getSearchableColumns(), $search)
             ->sortBy(['gibbonCourse.nameShort', 'gibbonCourse.name'])
             ->filterBy('yearGroup', $gibbonYearGroupID)
-            ->fromArray($_POST);
+            ->fromPOST();
 
         echo '<h3>';
         echo __('Filters');

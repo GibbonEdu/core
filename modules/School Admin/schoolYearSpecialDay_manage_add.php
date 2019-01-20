@@ -22,23 +22,23 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpecialDay_manage_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/schoolYearSpecialDay_manage.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID']."'>".__($guid, 'Manage Special Days')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Special Day').'</div>';
-    echo '</div>';
+    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+    $dateStamp = $_GET['dateStamp'] ?? '';
+    $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'] ?? '';
+    $firstDay = $_GET['firstDay'] ?? '';
+    $lastDay = $_GET['lastDay'] ?? '';
 
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-    $dateStamp = $_GET['dateStamp'];
-    $gibbonSchoolYearTermID = $_GET['gibbonSchoolYearTermID'];
-    $firstDay = $_GET['firstDay'];
-    $lastDay = $_GET['lastDay'];
+    $page->breadcrumbs
+        ->add(__('Manage Special Days'), 'schoolYearSpecialDay_manage.php', ['gibbonSchoolYearID' => $gibbonSchoolYearID])
+        ->add(__('Add Special Day'));
 
     if ($gibbonSchoolYearID == '' or $dateStamp == '' or $gibbonSchoolYearTermID == '' or $firstDay == '' or $lastDay == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -52,11 +52,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } elseif ($dateStamp < $firstDay or $dateStamp > $lastDay) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified date is outside of the allowed range.');
+            echo __('The specified date is outside of the allowed range.');
             echo '</div>';
         } else {
 

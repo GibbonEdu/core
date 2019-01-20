@@ -25,14 +25,12 @@ use Gibbon\Domain\User\FamilyGateway;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Set returnTo point for upcoming pages
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Families').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Families'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -46,10 +44,10 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     $criteria = $familyGateway->newQueryCriteria()
         ->searchBy($familyGateway->getSearchableColumns(), $search)
         ->sortBy(['name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     echo '<h2>';
-    echo __($guid, 'Search');
+    echo __('Search');
     echo '</h2>';
 
     $form = Form::create('filter', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
@@ -67,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage.p
     echo $form->getOutput();
 
     echo '<h2>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h2>';
 
     // QUERY

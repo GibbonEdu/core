@@ -40,6 +40,10 @@ trait MultipleOptionsTrait
      */
     public function fromString($value)
     {
+        if (empty($values)) {
+            $values = '';
+        }
+
         if (!is_string($value)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromString expects value to be a string, %s given.', $this->getName(), gettype($value)));
         }
@@ -63,6 +67,10 @@ trait MultipleOptionsTrait
      */
     public function fromArray($values)
     {
+        if (empty($values)) {
+            $values = [];
+        }
+
         if (!is_array($values)) {
             throw new \InvalidArgumentException(sprintf('Element %s: fromArray expects value to be an Array, %s given.', $this->getName(), gettype($values)));
         }

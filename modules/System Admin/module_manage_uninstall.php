@@ -29,13 +29,13 @@ if (isset($_GET['orphaned'])) {
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage_uninstall.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/module_manage.php'>".__($guid, 'Manage Modules')."</a> > </div><div class='trailEnd'>".__($guid, 'Uninstall Module').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Modules'), 'module_manage.php')
+        ->add(__('Uninstall Module'));
 
     if (isset($_GET['deleteReturn'])) {
         $deleteReturn = $_GET['deleteReturn'];
@@ -46,13 +46,13 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $class = 'error';
     if (!($deleteReturn == '')) {
         if ($deleteReturn == 'fail0') {
-            $deleteReturnMessage = __($guid, 'Your request failed because you do not have access to this action.');
+            $deleteReturnMessage = __('Your request failed because you do not have access to this action.');
         } elseif ($deleteReturn == 'fail1') {
-            $deleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+            $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
         } elseif ($deleteReturn == 'fail2') {
-            $deleteReturnMessage = __($guid, 'Your request failed because your inputs were invalid.');
+            $deleteReturnMessage = __('Your request failed because your inputs were invalid.');
         } elseif ($deleteReturn == 'fail3') {
-            $deleteReturnMessage = __($guid, 'Uninstall encountered a partial fail: the module may or may not still work.');
+            $deleteReturnMessage = __('Uninstall encountered a partial fail: the module may or may not still work.');
         }
         echo "<div class='$class'>";
         echo $deleteReturnMessage;
@@ -63,7 +63,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $gibbonModuleID = $_GET['gibbonModuleID'];
     if ($gibbonModuleID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             //Let's go!

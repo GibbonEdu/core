@@ -19,13 +19,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
-
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
@@ -33,9 +32,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
     $highestAction2 = getHighestGroupedAction($guid, '/modules/Markbook/markbook_edit.php', $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
+        $enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
         $alert = getAlert($guid, $connection2, 002);
 
         // Define a randomized lock for this script
@@ -43,15 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_view.php
 
         //VIEW ACCESS TO ALL MARKBOOK DATA
         if ($highestAction == 'View Markbook_allClassesAllData' || $highestAction == 'View Markbook_myClasses') {
-            require_once './modules/'.$_SESSION[$guid]['module'].'/markbook_view_allClassesAllData.php';
+            require __DIR__ . '/markbook_view_allClassesAllData.php';
         }
         //VIEW ACCESS TO MY OWN MARKBOOK DATA
         elseif ($highestAction == 'View Markbook_myMarks') {
-            require_once './modules/'.$_SESSION[$guid]['module'].'/markbook_view_myMarks.php';
+            require __DIR__ . '/markbook_view_myMarks.php';
         }
         //VIEW ACCESS TO MY CHILDREN'S MARKBOOK DATA
         elseif ($highestAction == 'View Markbook_viewMyChildrensClasses') {
-            require_once './modules/'.$_SESSION[$guid]['module'].'/markbook_view_viewMyChildrensClasses.php';
+            require __DIR__ . '/markbook_view_viewMyChildrensClasses.php';
         }
     }
 }

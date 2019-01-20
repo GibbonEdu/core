@@ -23,7 +23,7 @@ use Gibbon\Forms\Form;
 include '../../gibbon.php';
 
 //Module includes
-include $_SESSION[$guid]['absolutePath'].'/modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Setup variables
 $output = '';
@@ -42,7 +42,7 @@ $output .= "<script type='text/javascript'>";
 
         $output .= "$('#".$id."ajaxForm').submit(function() {";
             $output .= '$(this).ajaxSubmit(options);';
-            $output .= '$(".'.$id."resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__($guid, 'Uploading')."' onclick='return false;' /><br/>".__($guid, 'Loading').'</div>");';
+            $output .= '$(".'.$id."resourceQuickSlider\").html(\"<div class='resourceAddSlider'><img style='margin: 10px 0 5px 0' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif' alt='".__('Uploading')."' onclick='return false;' /><br/>".__('Loading').'</div>");';
             $output .= 'return false;';
         $output .= '});';
     $output .= '});';
@@ -58,7 +58,7 @@ $form->addHiddenValue('id', $id);
 $form->addHiddenValue($id.'address', $_SESSION[$guid]['address']);
 
 $row = $form->addRow();
-    $row->addWebLink("<img title='".__($guid, 'Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
+    $row->addWebLink("<img title='".__('Close')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconCross.png'/>")
         ->onClick("formReset(); \$(\".".$id."resourceQuickSlider\").slideUp();")->addClass('right');
 
 for ($i = 1; $i < 5; ++$i) {

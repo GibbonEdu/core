@@ -22,14 +22,14 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_edit_row_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    $gibbonTTColumnID = $_GET['gibbonTTColumnID'];
+    $gibbonTTColumnID = $_GET['gibbonTTColumnID'] ?? '';
 
     if ($gibbonTTColumnID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -43,14 +43,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn.php'>".__($guid, 'Manage Columns')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/ttColumn_edit.php&gibbonTTColumnID=$gibbonTTColumnID'>".__($guid, 'Edit Column')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Column Row').'</div>';
-            echo '</div>';
+            $page->breadcrumbs
+                ->add(__('Manage Columns'), 'ttColumn.php')
+                ->add(__('Edit Column'), 'ttColumn_edit.php', ['gibbonTTColumnID' => $gibbonTTColumnID])
+                ->add(__('Add Column Row'));
 
             $editLink = '';
             if (isset($_GET['editID'])) {
@@ -104,4 +105,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
         }
     }
 }
-?>

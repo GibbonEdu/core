@@ -17,102 +17,80 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+use Gibbon\Tables\Prefab\ReportTable;
+use Gibbon\Domain\Students\StudentReportGateway;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_privacy_student.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Privacy Choices by Student').'</div>';
-    echo '</div>';
+    $viewMode = $_REQUEST['format'] ?? '';
+    $gibbonSchoolYearID = $gibbon->session->get('gibbonSchoolYearID');
 
-    try {
-        $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-        $sql = "SELECT gibbonPerson.gibbonPersonID, privacy, surname, preferredName, nameShort, image_240 FROM gibbonPerson JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND status='Full' AND NOT privacy='' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY nameShort, surname, preferredName";
-        $result = $connection2->prepare($sql);
-        $result->execute($data);
-    } catch (PDOException $e) {
-        echo "<div class='error'>".$e->getMessage().'</div>';
+    if (empty($viewMode)) {
+        $page->breadcrumbs->add(__('Privacy Choices by Student'));
     }
 
+    
     $privacy = getSettingByScope($connection2, 'User Admin', 'privacy');
-    $privacyOptions = explode(',', getSettingByScope($connection2, 'User Admin', 'privacyOptions'));
+    $privacyOptions = array_map('trim', explode(',', getSettingByScope($connection2, 'User Admin', 'privacyOptions')));
 
     if (count($privacyOptions) < 1 or $privacy == 'N') {
-        echo "<div class='error'>";
-        echo __($guid, 'There are no privacy options in place.');
-        echo '</div>';
-    } else {
-        echo "<table cellspacing='0' style='width: 100%'>";
-        echo "<tr class='head'>";
-        echo '<th rowspan=2>';
-        echo __($guid, 'Count');
-        echo '</th>';
-        echo '<th rowspan=2>';
-        echo __($guid, 'Roll Group');
-        echo '</th>';
-        echo '<th rowspan=2 style=\'text-align: center\'>';
-        echo __($guid, 'Student');
-        echo '</th>';
-        echo '<th colspan='.count($privacyOptions).'>';
-        echo __($guid, 'Privacy');
-        echo '</th>';
-        echo '</tr>';
-
-        echo "<tr class='head'>";
-        foreach ($privacyOptions as $option) {
-            echo '<th>';
-            echo $option;
-            echo '</th>';
-        }
-        echo '</tr>';
-
-        $count = 0;
-        $rowNum = 'odd';
-        while ($row = $result->fetch()) {
-            if ($count % 2 == 0) {
-                $rowNum = 'even';
-            } else {
-                $rowNum = 'odd';
-            }
-            ++$count;
-
-            //COLOR ROW BY STATUS!
-            echo "<tr class=$rowNum>";
-            echo '<td>';
-            echo $count;
-            echo '</td>';
-            echo '<td>';
-            echo $row['nameShort'];
-            echo '</td>';
-            echo '<td style=\'text-align: center\'>';
-            echo getUserPhoto($guid, $row['image_240'], 75).'<br/>';
-            echo '<a href=\''.$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$row['gibbonPersonID'].'\'>'.formatName('', $row['preferredName'], $row['surname'], 'Student', true).'</a>';
-            echo '</td>';
-            $studentPrivacyOptions = explode(',', $row['privacy']);
-            foreach ($privacyOptions as $option) {
-                echo '<td>';
-                foreach ($studentPrivacyOptions as $studentOption) {
-                    if (trim($studentOption) == trim($option)) {
-                        echo "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> " . __($guid, 'Required');
-                    }
-                }
-                echo '</td>';
-            }
-            echo '</tr>';
-        }
-        if ($count == 0) {
-            echo "<tr class=$rowNum>";
-            echo '<td colspan=3>';
-            echo __($guid, 'There are no records to display.');
-            echo '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';
+        $page->addMessage(__('There are no privacy options in place.'));
+        return;
     }
+
+    $reportGateway = $container->get(StudentReportGateway::class);
+
+    // CRITERIA
+    $criteria = $reportGateway->newQueryCriteria()
+        ->sortBy(['gibbonYearGroup.sequenceNumber', 'gibbonRollGroup.nameShort'])
+        ->pageSize(0)
+        ->fromPOST();
+
+    $privacyChoices = $reportGateway->queryStudentPrivacyChoices($criteria, $gibbonSchoolYearID);
+
+    // DATA TABLE
+    $table = ReportTable::createPaginated('privacyByStudent', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table->setTitle(__('Privacy Choices by Student'));
+
+    $count = 1;
+    $table->addColumn('count', __('Count'))
+        ->notSortable()
+        ->format(function ($student) use (&$count) {
+            return $count++;
+        });
+    $table->addColumn('rollGroup', __('Roll Group'))
+        ->sortable(['gibbonYearGroup.sequenceNumber', 'rollGroup']);
+
+    $table->addColumn('image_240', __('Student'))
+        ->width('10%')
+        ->sortable(['surname', 'preferredName'])
+        ->format(function ($student) use ($guid) {
+            $name = Format::name('', $student['preferredName'], $student['surname'], 'Student', true);
+            $url = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$student['gibbonPersonID'];
+
+            return Format::userPhoto($student['image_240']).'<br/>'.Format::link($url, $name);
+        });
+
+    $privacyColumn = $table->addColumn('privacy', __('Privacy'));
+    foreach ($privacyOptions as $index => $privacyOption) {
+        $privacyColumn->addColumn('privacy'.$index, $privacyOption)
+            ->notSortable()
+            ->format(function ($student) use ($privacyOption, $guid) {
+                $studentPrivacy = array_map('trim', explode(',', $student['privacy']));
+                return in_array($privacyOption, $studentPrivacy) 
+                    ? "<img src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/iconTick.png'/> ".__('Required')
+                    : '';
+            });
+    }
+
+    echo $table->render($privacyChoices);
 }

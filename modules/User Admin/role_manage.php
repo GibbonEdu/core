@@ -23,13 +23,11 @@ use Gibbon\Domain\User\RoleGateway;
 if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Roles').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Roles'));  
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -40,7 +38,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     // QUERY
     $criteria = $roleGateway->newQueryCriteria()
         ->sortBy(['type', 'name'])
-        ->fromArray($_POST);
+        ->fromPOST();
 
     $roles = $roleGateway->queryRoles($criteria);
 
@@ -59,7 +57,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/role_manage.php
     $table->addColumn('loginYear', __('Login Years'))
         ->notSortable()
         ->format(function ($row) {
-            if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
+            if ($row['canLoginRole'] == 'N') {
+                return __('None');
+            } else if ($row['futureYearsLogin'] == 'Y' and $row['pastYearsLogin'] == 'Y') {
                 return __('All years');
             } elseif ($row['futureYearsLogin'] == 'N' and $row['pastYearsLogin'] == 'N') {
                 return __('Current year only');

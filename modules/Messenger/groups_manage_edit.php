@@ -23,17 +23,17 @@ use Gibbon\Tables\DataTable;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Domain\Messenger\GroupGateway;
 
+$page->breadcrumbs
+    ->add(__('Manage Groups'), 'groups_manage.php')
+    ->add(__('Edit Group'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/groups_manage.php'>Manage Groups</a> > </div><div class='trailEnd'>Edit Group</div>";
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
     }
@@ -43,7 +43,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
     //Check if school year specified
     if ($gibbonGroupID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         $groupGateway = $container->get(GroupGateway::class);
@@ -57,7 +57,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
 
         if ($result->isEmpty()) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record cannot be found.');
+            echo __('The specified record cannot be found.');
             echo '</div>';
         } else {
             //Let's go!
@@ -86,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/groups_manage_ed
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Current Members');
+            echo __('Current Members');
             echo '</h2>';
 
             $criteria = $groupGateway->newQueryCriteria()
                 ->sortBy(['surname', 'preferredName'])
-                ->fromArray($_POST);
+                ->fromPOST();
 
             $members = $groupGateway->queryGroupMembers($criteria, $gibbonGroupID);
 

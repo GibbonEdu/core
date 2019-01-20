@@ -19,9 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 
-echo "<div class='trail'>";
-echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > </div><div class='trailEnd'>".__($guid, 'Password Reset').'</div>';
-echo '</div>';
+$page->breadcrumbs->add(__('Password Reset'));
 
 $step = 1;
 if (isset($_GET['step'])) {
@@ -33,17 +31,19 @@ if (isset($_GET['step'])) {
 if ($step == 1) {
     ?>
     <p>
-        <?php echo sprintf(__($guid, 'Enter your %1$s username, or the email address you have listed in the system, and press submit: a unique password reset link will be emailed to you.'), $_SESSION[$guid]['systemName']); ?>
+        <?php echo sprintf(__('Enter your %1$s username, or the email address you have listed in the system, and press submit: a unique password reset link will be emailed to you.'), $_SESSION[$guid]['systemName']); ?>
     </p>
     <?php
     $returns = array();
-    $returns['error0'] = __($guid, 'Email address not set.');
-    $returns['error4'] = __($guid, 'Your request failed due to incorrect or non-existent or non-unique email address.');
-    $returns['error3'] = __($guid, 'Failed to send update email.');
-    $returns['error4'] = __($guid, 'Your request failed due to non-matching passwords.');
-    $returns['error6'] = __($guid, 'Your request failed because your password to not meet the minimum requirements for strength.');
-    $returns['error7'] = __($guid, 'Your request failed because your new password is the same as your current password.');
-    $returns['success0'] = __($guid, 'Password reset request successfully initiated, please check your email.');
+    $returns['error0'] = __('Email address not set.');
+    $returns['error4'] = __('Your request failed due to incorrect, non-existent or non-unique email address or username.');
+    $returns['error3'] = __('Failed to send update email.');
+    $returns['error5'] = __('Your request failed due to non-matching passwords.');
+    $returns['error6'] = __('Your request failed because your password to not meet the minimum requirements for strength.');
+    $returns['error7'] = __('Your request failed because your new password is the same as your current password.');
+    $returns['fail2'] = __('You do not have sufficient privileges to login.');
+    $returns['fail9'] = __('Your primary role does not support the ability to log into the specified year.');
+    $returns['success0'] = __('Password reset request successfully initiated, please check your email.');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -85,11 +85,11 @@ else {
 
     if ($result->rowCount() != 1) {
         echo "<div class='error'>";
-        echo __($guid, 'Your reset request is invalid: you may not proceed.');
+        echo __('Your reset request is invalid: you may not proceed.');
         echo '</div>';
     } else {
         echo "<div class='success'>";
-        echo __($guid, 'Your reset request is valid: you may proceed.');
+        echo __('Your reset request is valid: you may proceed.');
         echo '</div>';
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL']."/passwordResetProcess.php?input=$input&step=2&gibbonPersonResetID=$gibbonPersonResetID&key=$key");

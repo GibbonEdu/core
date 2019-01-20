@@ -24,13 +24,11 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Themes').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Themes'));
 
     $returns = array(
         'warning0' => __("Uninstall was successful. You will still need to remove the theme's files yourself."),
@@ -81,12 +79,12 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
     }, $themesFS);
 
     echo "<div class='message'>";
-    echo sprintf(__($guid, 'To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
+    echo sprintf(__('To install a theme, upload the theme folder to %1$s on your server and then refresh this page. After refresh, the theme should appear in the list below: use the install button in the Actions column to set it up.'), '<b><u>'.$_SESSION[$guid]['absolutePath'].'/themes/</u></b>');
     echo '</div>';
 
     if (count($themes) == 0) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $form = Form::create('themeManage', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/theme_manageProcess.php');
@@ -151,19 +149,19 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
 
     if (count($themesOrphaned) > 0) {
         echo "<h2 style='margin-top: 40px'>";
-        echo __($guid, 'Orphaned Themes');
+        echo __('Orphaned Themes');
         echo '</h2>';
         echo '<p>';
-        echo __($guid, 'These themes are installed in the database, but are missing from within the file system.');
+        echo __('These themes are installed in the database, but are missing from within the file system.');
         echo '</p>';
 
         echo "<table cellspacing='0' class='colorOddEven fullWidth'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Name');
+        echo __('Name');
         echo '</th>';
         echo "<th style='width: 50px'>";
-        echo __($guid, 'Action');
+        echo __('Action');
         echo '</th>';
         echo '</tr>';
 
@@ -173,7 +171,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/theme_manage.
             echo $theme['name'];
             echo '</td>';
             echo '<td>';
-            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&gibbonThemeID='.$theme['gibbonThemeID']."&orphaned=true&width=650&height=135'><img title='".__($guid, 'Remove Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/theme_manage_uninstall.php&gibbonThemeID='.$theme['gibbonThemeID']."&orphaned=true&width=650&height=135'><img title='".__('Remove Record')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
             echo '</td>';
             echo '</tr>';
         }

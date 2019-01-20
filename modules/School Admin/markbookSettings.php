@@ -22,13 +22,11 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Markbook Settings').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Markbook Settings'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -57,6 +55,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
 
     $form->toggleVisibilityByClass('columnWeighting')->onSelect('enableColumnWeighting')->when('Y');
 
+    $defaultAssessmentScale = getSettingByScope($connection2, 'System', 'defaultAssessmentScale');
+    if (intval($defaultAssessmentScale) != 4) {
+        $row = $form->addRow()->addClass('columnWeighting');
+            $row->addAlert(__('Calculation of cumulative marks and weightings is currently only available when using Percentage as the Default Assessment Scale. This value can be changed in System Settings.'));
+    }
+    
     $setting = getSettingByScope($connection2, 'Markbook', 'enableDisplayCumulativeMarks', true);
     $row = $form->addRow()->addClass('columnWeighting');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
@@ -65,7 +69,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     $setting = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+    
+    $setting = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment', true);
+    $row = $form->addRow();
+    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+    	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $row = $form->addRow()->addHeading(__('Interface'));
 
@@ -126,17 +135,9 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/markbookSetti
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
     	$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
-    $row = $form->addRow()->addHeading(__('Miscellaneous'));
-
-    $setting = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush', true);
-    $row = $form->addRow();
-    	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('On, Off')->selected($setting['value'])->isRequired();
-
 	$row = $form->addRow();
 		$row->addFooter();
 		$row->addSubmit();
 
 	echo $form->getOutput();
 }
-?>

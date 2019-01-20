@@ -21,12 +21,12 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSettings.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Prepare and submit stats if that is what the system calls for
@@ -60,9 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     }
 
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'System Settings').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('System Settings'));
 
     //Check for new version of Gibbon
     echo getCurrentVersion($guid, $connection2, $version);
@@ -99,10 +97,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value'])->setRows(8)->isRequired();
 
+    $installTypes = array(
+        'Production' => __("Production"),
+        'Testing' =>  __("Testing"),
+        'Development' =>  __("Development")
+    );        
     $setting = getSettingByScope($connection2, 'System', 'installType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Production, Testing, Development')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($installTypes)->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'System', 'cuttingEdgeCode', true);
     $row = $form->addRow();
@@ -136,6 +139,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value'])->isRequired();
+
+    $setting = getSettingByScope($connection2, 'System', 'organisationBackground', true);
+    $row = $form->addRow();
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addTextField($setting['name'])->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'System', 'organisationAdministrator', true);
     $row = $form->addRow();
@@ -209,10 +217,15 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addSelectCountry($setting['name'])->selected($setting['value']);
 
+    $firstDayOfTheWeekOptions = array(
+        'Monday' => __("Monday"),
+        'Sunday' => __("Sunday")
+    );
+    
     $setting = getSettingByScope($connection2, 'System', 'firstDayOfTheWeek', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Monday, Sunday')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($firstDayOfTheWeekOptions)->selected($setting['value'])->isRequired();
 
     $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
         $group[$item] = __($item);

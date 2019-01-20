@@ -22,16 +22,14 @@ use Gibbon\Forms\Form;
 if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Billing Schedule').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Manage Billing Schedule'));
 
     echo '<p>';
-    echo __($guid, 'The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specify due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.');
+    echo __('The billing schedule allows you to layout your overall timing for issueing invoices, making it easier to specify due dates in bulk. Invoices can be issued outside of the billing schedule, should ad hoc invoices be required.');
     echo '</p>';
 
     $gibbonSchoolYearID = '';
@@ -54,7 +52,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         }
         if ($result->rowcount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -71,20 +69,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo "<div class='linkTop'>";
             //Print year picker
             if (getPreviousSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Previous Year').'</a> ';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getPreviousSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Previous Year').'</a> ';
             } else {
-                echo __($guid, 'Previous Year').' ';
+                echo __('Previous Year').' ';
             }
         echo ' | ';
         if (getNextSchoolYearID($gibbonSchoolYearID, $connection2) != false) {
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__($guid, 'Next Year').'</a> ';
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage.php&gibbonSchoolYearID='.getNextSchoolYearID($gibbonSchoolYearID, $connection2)."'>".__('Next Year').'</a> ';
         } else {
-            echo __($guid, 'Next Year').' ';
+            echo __('Next Year').' ';
         }
         echo '</div>';
 
         echo '<h3>';
-        echo __($guid, 'Search');
+        echo __('Search');
         echo '</h3>'; 
 
         $form = Form::create("searchBox", $_SESSION[$guid]['absoluteURL'] . "/index.php", "get", "noIntBorder fullWidth standardForm");
@@ -101,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         echo $form->getOutput();
 
         echo '<h3>';
-        echo __($guid, 'View');
+        echo __('View');
         echo '</h3>';
         //Set pagination variable
         $page = 1;
@@ -131,12 +129,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
         }
 
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/billingSchedule_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
         echo '</div>';
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -146,18 +144,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
             echo "<table cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Name');
+            echo __('Name');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Invoice Issue Date').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Intended Date').'</span>';
+            echo __('Invoice Issue Date').'<br/>';
+            echo "<span style='font-style: italic; font-size: 85%'>".__('Intended Date').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Invoice Due Date').'<br/>';
-            echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Final Payment Date').'</span>';
+            echo __('Invoice Due Date').'<br/>';
+            echo "<span style='font-style: italic; font-size: 85%'>".__('Final Payment Date').'</span>';
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Actions');
+            echo __('Actions');
             echo '</th>';
             echo '</tr>';
 
@@ -200,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 echo dateConvertBack($guid, $row['invoiceDueDate']);
                 echo '</td>';
                 echo '<td>';
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/billingSchedule_manage_edit.php&gibbonFinanceBillingScheduleID='.$row['gibbonFinanceBillingScheduleID']."&gibbonSchoolYearID=$gibbonSchoolYearID&search=$search'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                 echo "<script type='text/javascript'>";
                 echo '$(document).ready(function(){';
                 echo "\$(\".comment-$count-$count\").hide();";
@@ -211,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
                 echo '});';
                 echo '</script>';
                 if ($row['description'] != '') {
-                    echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                    echo "<a title='".__('View Description')."' class='show_hide-$count-$count' onclick='false' href='#'><img style='padding-right: 5px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                 }
                 echo '</td>';
                 echo '</tr>';

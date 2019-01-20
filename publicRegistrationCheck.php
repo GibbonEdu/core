@@ -22,8 +22,11 @@ use Gibbon\Data\UsernameGenerator;
 include './gibbon.php';
 
 $username = (isset($_POST['username']))? $_POST['username'] : '';
+$currentUsername = (isset($_POST['currentUsername']))? $_POST['currentUsername'] : '';
 
-if (!empty($username)) {
+if (!empty($currentUsername) && $currentUsername == $username) {
+    echo '0';
+} else if (!empty($username)) {
     $generator = new UsernameGenerator($pdo);
     echo $generator->isUsernameUnique($username)? '0' : '1';
 }
