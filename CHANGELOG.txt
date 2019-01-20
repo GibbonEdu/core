@@ -16,6 +16,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v18.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+
+    Bux Fixes
+    
+
 v17.0.00
 --------
     Headlines
