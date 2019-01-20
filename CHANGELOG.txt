@@ -31,6 +31,7 @@ v18.0.00
     Bug Fixes
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
         System: fixed missing globals in custom index scripts
+        System: fixed index_custom.php content not loading on first login
 
 
 v17.0.00
