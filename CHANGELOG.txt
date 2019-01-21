@@ -16,123 +16,144 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v18.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+
+    Bug Fixes
+        System: fixed non-rendering HTML issue in Welcome text on logged-out index
+        System: fixed missing globals in custom index scripts
+        System: fixed index_custom.php content not loading on first login
+
+
 v17.0.00
 --------
     Headlines
-        Added data visualisation to Rubrics
-        Added an improved set of file import and export options to System Admin
+        Added data visualisation to Rubrics through the Markbook View
+        Added an improved set of file import options to System Admin
         Languages can now be installed and updated through Manage Languages in System Admin
-        Activated Hebrew an available language and improved the display of right-to-left languages
-        Added Turkish as a development language
-        Added ability to select SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
+        Activated Hebrew and Turkish as available languages
+        Improved the display of right-to-left languages
+        Added ability to select an SMS gateway: OneWaySMS, Twilio, Nexmo, Clockwork, TextLocal, and Mail to SMS
 
     Changes With Important Notices
-        System: increased minimum PHP version to 7.0.
+        System: increased minimum PHP version to 7.0
         System: added the Twig templating engine as part of our ongoing refactoring for the core
         System: moved PHP elements of /lib to /vendor
+        System: moved files in /assets to /resources/assets
 
     Significant Changes
         System: refactored many of the tables and reports, which now support pagination, sorting and filtering
         System: removed upgrade path for v11.0.00 and below
 
-    Security
-
-    Tweaks & Bug Fixes
-        System: fixed IE incompatibility with javascript and select inputs
-        System: added the option to display all records in a paginated table
-        System: fixed an issue with hidden fields in bulk action forms after pagination
-        System: fixed term date issue in gibbon.sql
-        System: added Eastern Caribbean Dollars and Guatemalan Quetzal as currencies
-        System: added country code and correct spelling of Vietnam and Russia
-        System: updated vis.js library to v4.21.0
-        System: updated robots.txt to disallow all indexing
+    Tweaks & Additions
         System: added ability to set background image
-        System: increased the max email length to 75 chars for all forms
-        System: added Sri Lankan Rupee as a currency option
-        System: fixed incorrect return value in Public Registration when user is below the minimum age
-        System: deprecated getGibbonMailer function, replaced with Mailer wrapper
-        System: added the ability to set the current language with an i18n URL parameter
+        System: added country code and correct spelling of Vietnam and Russia
+        System: added Eastern Caribbean Dollars and Guatemalan Quetzal as currencies
         System: added Sinhala to list of languages
-        System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
-        Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
-        Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
-        Attendance: fixed an error in the parent view of Student History for PHP 7.1+
-        Attendance: fixed bug which breaks table count in Students Not Onsite and Students Not Present report print view
-        Attendance: fixed error message text for attendance taken in the future
-        Attendance: fix date links in View Daily Attendance opening a new tab
+        System: added Sri Lankan Rupee as a currency option
+        System: added the ability to set the current language with an i18n URL parameter
+        System: added the option to display all records in a paginated table
+        System: increased the max email length to 75 chars for all forms
+        System: updated robots.txt to disallow all indexing
+        System: updated vis.js library to v4.21.0
         Behaviour: added a notification event for Updated Behaviour Record
-        Crowd Assessment: fixed bug preventing student seeing their own work when Submitter is only student option selected
         Data Updater: added a Family Data Updater History report
-        Data Updater: fixed comment bug in Medical Updates
-        Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
-        Data Updater: fixed country-specific field label bug in Manage Personal Data Updates
-        Data Updater: fixed non-compliance indicator bug in Updater History reports
-        Data Updater: implemented cutoff date prefill in Personal Updater History report
-        Date Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
-        Data Updater: added school year navigation to Manage Updates
         Data Updater: added parent email to Family Data Updater History
-        Data Updater: fixed interface string issue in Data Update request screens
-        Departments: fixed bug displaying Left classes under My Classes in sidebar
+        Data Updater: added school year navigation to Manage Updates
+        Data Updater: implemented cutoff date prefill in Personal Updater History report
         Departments: added Student ID field to class participants export
-        Finance: adjusted Student filter in Manage Invoices to show Left students
         Finance: added default check to Company email checkbox when editing an invoice
         Finance: adjusted email checkbox list in Edit Invoice to only show parents with status of Full
-        Finance: removed Left parents from invoices and receipts
-        Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English
-        Finance: fixed inability to comment on an expense request for users with Write access
-        Formal Assessment: fix unclickable link in View Internal Assessments
-        Individual Needs: removed Submit button when viewing and archived IEP
-        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
-        Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
-        Markbook: removed WordPress Comment Push functionality
-        Markbook: fixed shifted table cells in Markbook View class average when cumulative averages are enabled
+        Finance: adjusted Student filter in Manage Invoices to show Left students
         Markbook: added a search option to the filters in Markbook View
-        Markbook: fixed inconsistent naming of class teachers
-        Messenger: restricted Manage Groups view to display groups from the current school year only
-        Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
+        Markbook: added school wide-option allowing teachers to specify "Modified Assessment" for student with individual needs
+        Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
+        Messenger: added cache refresh on success in New Message and New Quick Wall Message
+        Messenger: added missing Group target information into Manage Messages view
         Messenger: added row colouring to By Roll Group report, and made it default view
         Messenger: amended default confirmLink text in New Message
-        Messenger: added missing Group target information into Manage Messages view
         Messenger: updated the Year Group target for Staff to only include tutors and teachers of courses in the same year group
-        Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
-        Messenger: added an option in Messenger Settings to bcc all messenger emails to a set of recipients
-        Messenger: removed Body column from Canned Response table
-        Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
-        Messenger: fixed a PHP error in Edit Message related to message targets permissions
-        Messenger: added cache refresh on success in New Message and New Quick Wall Message
         Planner: added SMTP persistence to weekly summary CLI script
         Planner: improved accessibility of link from Scope & Sequence to Dump Unit
-        Planner: fixed school year name on Edit Unit page
         Planner: improved field labelling in Lesson Planner Add and Edit screens
-        Planner: supressed autocomplete in Lesson Planner date fields
-        Planner: fixed multibyte string issue when dumping unit resources
-        Planner: fixed row stripping in Access Control field in Add and Edit
-        Planner: corrected no records error message in Parent view of planner
         Planner: improved link logic in lesson plan participant grid
         Roll Groups: improved link logic in roll group grid
         Staff: added a Mark as Left bulk action to Manage Staff
-        School Admin: increased School Year name field length to 15 characters
-        Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
-        Students: removed non-students from New Students report, when Ignore Status in use
-        Students: updated how the Privacy section is displayed in application and data updater forms
         Students: added the option to enter a username and student ID in the For Office Use section of the Application Form
-        Students: fixed searching by parent email address in View Student Profile
+        Students: adjusted Student Enrolment/course enrolment sync logic to mark students as left instead of deleting them
+        Students: updated how the Privacy section is displayed in application and data updater forms
+        Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
+        Timetable: added a facility booking button to the timetable in View Timetable by Facility
+        User Admin: added a separate permission for Manage Users without the ability to delete user data
+        User Admin: added ability to include custom fields in public registration form
+        User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
+        User Admin: added missing custom field description into OOified forms
+        User Admin: added the ability to change usernames which will check to ensure it's still unique
+
+    Bug Fixes
+        System: fixed an issue with hidden fields in bulk action forms after pagination
+        System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
+        System: fixed IE incompatibility with javascript and select inputs
+        System: fixed incorrect return value in Public Registration when user is below the minimum age
+        System: fixed term date issue in gibbon.sql
+        Activities: fixed incorrect count in Registered column in Activity Enrolment Summary
+        Activities: post-OOification fix to include All Users in Staff selection for in Manage Activities
+        Attendance: fixed an error in the parent view of Student History for PHP 7.1+
+        Attendance: fixed bug which breaks table count in Students Not Onsite and Students Not Present report print view
+        Attendance: fixed date links in View Daily Attendance opening a new tab
+        Attendance: fixed error message text for attendance taken in the future
+        Crowd Assessment: fixed bug preventing student seeing their own work when Submitter is only student option selected
+        Data Updater: fixed comment bug in Medical Updates
+        Data Updater: fixed country-specific field label bug in Manage Personal Data Updates
+        Data Updater: fixed dashboard issue on servers with sql_mode=only_full_group_by
+        Data Updater: fixed gibbonMedicalConditionID as name bug in medical conditions and updates
+        Data Updater: fixed interface string issue in Data Update request screens
+        Data Updater: fixed non-compliance indicator bug in Updater History reports
+        Departments: fixed bug displaying Left classes under My Classes in sidebar
+        Finance: fixed inability to comment on an expense request for users with Write access
+        Finance: fixed Left parents displaying in invoices and receipts
+        Finance: fixed the bug that prevented saving the value of the field "status" in the table "gibbonFinanceBudgetCycle" when the current Gibbon language is other than English
+        Formal Assessment: fixed unclickable link in View Internal Assessments
+        Individual Needs: removed Submit button when viewing and archived IEP
+        Markbook: fixed bug in handling personalised attainment targets when using scales other than class scale
+        Markbook: fixed inconsistent naming of class teachers
+        Markbook: fixed shifted table cells in Markbook View class average when cumulative averages are enabled
+        Messenger: fixed a PHP error in Edit Message related to message targets permissions
+        Messenger: fixed empty target type in gibbonMessengerReceipt when Group target is used
+        Messenger: fixed messages not displaying on Message Wall for Transport and Group targets
+        Messenger: fixed minor post-OOification bug causing unnecssary display of Parent 2 resent checkbox in send report
+        Messenger: removed Body column from Canned Response table
+        Messenger: restricted Manage Groups view to display groups from the current school year only
+        Planner: fixed multibyte string issue when dumping unit resources
+        Planner: fixed no records error message in Parent view of planner
+        Planner: fixed row stripping in Access Control field in Add and Edit
+        Planner: fixed school year name on Edit Unit page
+        Planner: supressed autocomplete in Lesson Planner date fields
+        School Admin: increased School Year name field length to 15 characters
         Students: fixed displayed name of First Aider in Edit First Aid Record
         Students: fixed pre-select of Student when adding medical form from Student Profile
+        Students: fixed searching by parent email address in View Student Profile
+        Students: removed non-students from New Students report, when Ignore Status in use
         System Admin: fixed bug which turned custom alarm into general alarm
-        Timetable: added a facility booking button to the timetable in View Timetable by Facility
+        Timetable Admin: fixed course sync for courses with multiple year groups
+        Timetable: fixed logic to correctly display Back To Search Results for parents in View Timetable by Person
         Timetable: fixed unable to turn Bookings checkbox off in View Timetable by Person
         Timetable: removed All Users filter option for non-Staff in View Timetable by Person
-        Timetable: fixed logic to correctly display Back To Search Results for parents in View Timetable by Person
-        Timetable Admin: fixed course sync for courses with multiple year groups
-        Timetable Admin: increase length of Course Short Name and Class Name and Short Name fields
-        User Admin: added an option in Manage Roles to toggle login access for all users of a particular role
-        User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
         User Admin: fixed bug preventing correct display of existing Privacy and Student Agreement options in user edit
-        User Admin: added ability to include custom fields in public registration form
-        User Admin: added missing custom field description into OOified forms
-        User Admin: added a separate permission for Manage Users without the ability to delete user data
-        User Admin: added the ability to change usernames which will check to ensure it's still unique
+        User Admin: fixed name display bug in Enrol New Students (Status Full) section of Rollover
+
+    Deprecations
+        System: deprecated getGibbonMailer function, replaced with Mailer wrapper
+        Markbook: removed WordPress Comment Push functionality
 
 v16.0.01
 --------
