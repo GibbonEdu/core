@@ -633,8 +633,6 @@ if ($proceed == false) {
                     $result = $connection2->prepare($sql);
                     $result->execute($data);
                 } catch (PDOException $e) {
-                    file_put_contents('f:/websites/craigStuff.txt', json_encode((array) $e));
-                    die();
                     $URL .= '&return=error2';
                     header("Location: {$URL}");
                     exit();
