@@ -225,7 +225,7 @@ $localeCodeShort = substr($session->get('i18n')['code'], 0, 2);
 $localePath = $session->get('absolutePath').'/lib/jquery-ui/i18n/jquery.ui.datepicker-%1$s.js';
 
 $datepickerLocale = 'en-GB';
-if (is_file(sprintf($localePath, $localeCode))) {
+if ($localeCode === 'en-US' || is_file(sprintf($localePath, $localeCode))) {
     $datepickerLocale = $localeCode;
 } elseif (is_file(sprintf($localePath, $localeCodeShort))) {
     $datepickerLocale = $localeCodeShort;
@@ -290,7 +290,8 @@ $page->scripts->addMultiple([
 $page->scripts->addMultiple([
     'jquery-latex'    => 'lib/jquery-jslatex/jquery.jslatex.js',
     'jquery-form'     => 'lib/jquery-form/jquery.form.js',
-    'jquery-date'     => 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
+    //This sets the default for en-US, or changes for none en-US
+    'jquery-date'     => $datepickerLocale === 'en-US' ? '' : 'lib/jquery-ui/i18n/jquery.ui.datepicker-'.$datepickerLocale.'.js',
     'jquery-autosize' => 'lib/jquery-autosize/jquery.autosize.min.js',
     'jquery-timeout'  => 'lib/jquery-sessionTimeout/jquery.sessionTimeout.min.js',
     'jquery-token'    => 'lib/jquery-tokeninput/src/jquery.tokeninput.js',
@@ -546,8 +547,15 @@ if (!$session->has('address')) {
     } else {
         // Custom content loader
         if (!$session->exists('index_custom.php')) {
-            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php'));
-        } elseif ($session->has('index_custom.php')) {
+            $globals = [
+                'guid'        => $guid,
+                'connection2' => $connection2,
+            ];
+
+            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
+        }
+        
+        if ($session->exists('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 
