@@ -54,12 +54,20 @@ class SimpleRenderer implements RendererInterface
     {
         $output = '';
 
+        if ($title = $table->getTitle()) {
+            $output .= '<h2>'.$title.'</h2>';
+        }
+
+        if ($description = $table->getDescription()) {
+            $output .= '<p>'.$description.'</p>';
+        }
+
         $output .= '<header style="position:relative">';
         $output .= $this->renderHeader($table, $dataSet);
         $output .= '</header>';
 
         if ($dataSet->count() == 0) {
-            if ($dataSet->isSubset()) {
+            if ($dataSet->isSubset() && $dataSet->getPageSize() > 0) {
                 $output .= '<div class="warning">';
                 $output .= __('No results matched your search.');
                 $output .= '</div>';
@@ -75,15 +83,31 @@ class SimpleRenderer implements RendererInterface
 
             // HEADER
             $output .= '<thead>';
-            $output .= '<tr class="head">';
-            foreach ($table->getColumns() as $columnName => $column) {
-                $th = $this->createTableHeader($column);
+            
+            $totalColumnDepth = $table->getTotalColumnDepth();
 
-                $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'">';
-                $output .= $th->getOutput();
-                $output .= '</th>';
+            for ($i = 0; $i < $totalColumnDepth; $i++) {
+                $output .= '<tr class="head">';
+
+                foreach ($table->getColumns($i) as $columnName => $column) {
+                    $th = $this->createTableHeader($column);
+
+                    if (!$th) continue; // Can be removed by tableHeader logic
+
+                    // Calculate colspan and rowspan to handle nested column headers
+                    $colspan = $column->getTotalSpan();
+                    $rowspan = ($column->getTotalDepth() > 1) ? 1 : ($totalColumnDepth - $column->getDepth()) ;
+
+                    if ($column->getDepth() < $i) continue;
+
+                    $output .= '<th '.$th->getAttributeString().' style="width:'.$column->getWidth().'" colspan="'.$colspan.'" rowspan="'.$rowspan.'">';
+                    $output .= $th->getOutput();
+                    $output .= '</th>';
+                }
+
+                $output .= '</tr>';
             }
-            $output .= '</tr>';
+            
             $output .= '</thead>';
 
             // ROWS

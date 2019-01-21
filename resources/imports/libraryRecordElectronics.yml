@@ -1,0 +1,130 @@
+details:
+    type: libraryRecordElectronics
+    name: Records - Electronics
+    table: gibbonLibraryItem
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+primaryKey:
+    gibbonLibraryItemID
+uniqueKeys:
+    - id
+table:
+    gibbonLibraryTypeID: 
+        name: "Type"
+        desc: ""
+        value: "Electronics"
+        args: { filter: string, required: true, custom: true, hidden: true }
+        relationship: { table: gibbonLibraryType, key: gibbonLibraryTypeID, field: name  }
+    name: 
+        name: "Name"
+        desc: "Volume or product name."
+        args: { filter: string, required: true }
+    id: 
+        name: "ID"
+        desc: "Must be unique, or will lead to update not insert."
+        args: { filter: string, required: true }
+    producer: 
+        name: "Author/Brand"
+        desc: "Who created the item?"
+        args: { filter: string, required: true, custom: true }
+    vendor: 
+        name: "Vendor"
+        desc: "Who supplied the item?"
+        args: { filter: string, custom: true }
+    purchaseDate: 
+        name: "Purchase Date"
+        desc: ""
+        args: { filter: date, custom: true }
+    invoiceNumber: 
+        name: "Invoice Number"
+        desc: ""
+        args: { filter: string, custom: true }
+    gibbonSpaceID: 
+        name: "Location"
+        desc: "Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
+    locationDetail: 
+        name: "Location Detail"
+        desc: "Shelf, cabinet, sector, etc"
+        args: { filter: string, custom: true }
+    ownershipType: 
+        name: "Ownership Type"
+        desc: ""
+        args: { filter: string, custom: true }
+    gibbonPersonIDOwnership: 
+        name: "Main User"
+        desc: "Username of person the device is assigned to."
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonDepartmentID:
+        name: "Department"
+        desc: "Short Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    borrowable: 
+        name: "Borrowable?"
+        desc: "Is item available for loan?"
+        args: { filter: yesno, custom: true }
+    status: 
+        name: "Status?"
+        desc: ""
+        args: { filter: string, custom: true }
+    replacement: 
+        name: "Replacement?"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    replacementCost: 
+        name: "Replacement Cost"
+        desc: ""
+        args: { filter: numeric, custom: true }
+    gibbonSchoolYearIDReplacement : 
+        name: "Replacement Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    comment: 
+        name: "Comments/Notes"
+        desc: ""
+        args: { filter: string, custom: true  }
+
+    # Type-Specific Serializable Fields
+
+    fieldType: 
+        name: "Type"
+        desc: "What kind of product is this?"
+        args: { filter: string, required: true, custom: true, readonly: true, serialize: fields  }
+    fieldSerialNumber: 
+        name: "Serial Number"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldModelName: 
+        name: "Model Name"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldModelID: 
+        name: "Model ID"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldAccessories: 
+        name: "Accessories"
+        desc: "Any chargers, remotes controls, etc?"
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldWarrantyNumber: 
+        name: "Warranty Number"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldWarrantyExpiry: 
+        name: "Warranty Expiry"
+        desc: ""
+        args: { filter: date, custom: true, readonly: true, serialize: fields  }
+    fieldRepairLog: 
+        name: "Repair Log/Notes"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fields:
+        name: "Type-Specific Details"
+        desc: ""
+        args: { filter: string, serialize: fields, hidden: true, custom: true }

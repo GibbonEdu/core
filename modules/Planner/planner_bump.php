@@ -18,18 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Set variables
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 
         //Proceed!
         //Get viewBy, date and class variables
-        $params = '';
+        $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -58,12 +58,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
                 $class = $_GET['class'];
             }
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-            $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
+            $params += [
+                'viewBy' => 'class',
+                'date' => $class,
+                'gibbonCourseClassID' => $gibbonCourseClassID,
+                'subView' => $subView,
+            ];
         }
 
         if ($viewBy == 'date') {
             echo "<div class='error'>";
-            echo __($guid, 'You do not have access to this action.');
+            echo __('You do not have access to this action.');
             echo '</div>';
         } else {
             list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
@@ -74,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
             $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
             if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
                 echo "<div class='error'>";
-                echo __($guid, 'You have not specified one or more required parameters.');
+                echo __('You have not specified one or more required parameters.');
                 echo '</div>';
             } else {
                 $proceed = true;
@@ -94,16 +99,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     //Let's go!
                     $row = $result->fetch();
-                    $extra = $row['course'].'.'.$row['class'];
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > </div><div class='trailEnd'>".__($guid, 'Bump Forward Lesson Plan').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(__('Planner for {classDesc}', [
+                            'classDesc' => $row['course'].'.'.$row['class'],
+                        ]), 'planner.php', $params)
+                        ->add(__('Bump Lesson Plan'));
 
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, null);
@@ -114,24 +120,24 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 						<table class='smallIntBorder fullWidth' cellspacing='0'>	
 							<tr>
 								<td> 
-									<b><?php echo __($guid, 'Bump Direction') ?> *</b><br/>
+									<b><?php echo __('Bump Direction') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
 								<td class="right">
 									<select name="direction" id="direction" class="standardWidth">
-										<option value="forward"><?php echo __($guid, 'Forward') ?></option>
-										<option value="backward"><?php echo __($guid, 'Backward') ?></option>
+										<option value="forward"><?php echo __('Forward') ?></option>
+										<option value="backward"><?php echo __('Backward') ?></option>
 									</select>
 								</td>
 							</tr>
 							<tr>
 								<td colspan=2> 
-									<?php echo sprintf(__($guid, 'Pressing "Yes" below will move this lesson, and all preceeding or succeeding lessons in this class, to the previous or next available time slot. <b>Are you sure you want to bump %1$s?'), $row['name']) ?></b><br/>
+									<?php echo sprintf(__('Pressing "Yes" below will move this lesson, and all preceeding or succeeding lessons in this class, to the previous or next available time slot. <b>Are you sure you want to bump %1$s?'), $row['name']) ?></b><br/>
 								</td>
 							</tr>
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+									<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
@@ -139,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 									<input name="date" id="date" value="<?php echo $date ?>" type="hidden">
 									<input name="gibbonCourseClassID" id="gibbonCourseClassID" value="<?php echo $gibbonCourseClassID ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+									<input type="submit" value="<?php echo __('Submit'); ?>">
 								</td>
 							</tr>
 						</table>
@@ -153,4 +159,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
         }
     }
 }
-?>

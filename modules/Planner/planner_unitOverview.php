@@ -18,18 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOverview.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $viewBy = null;
@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
         }
         if ($gibbonPlannerEntryID == '') {
             echo "<div class='warning'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         }
         //Check existence of and access to this class.
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
             if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
                 if ($_GET['search'] == '') {
                     echo "<div class='warning'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     try {
@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                     }
                     if ($resultChild->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $data = array('date' => $date);
@@ -126,36 +126,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
 
-                $extra = '';
-                if ($viewBy == 'class') {
-                    $extra = $row['course'].'.'.$row['class'];
-                } else {
-                    $extra = dateConvertBack($guid, $date);
-                }
+                // target of the planner
+                $target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                $params = '';
-                if ($_GET['date'] != '') {
-                    $params = $params.'&date='.$_GET['date'];
+                // planner parameters
+                $params = [];
+                if ($date != '') {
+                    $params['date'] = $_GET['date'];
                 }
-                if ($_GET['viewBy'] != '') {
-                    $params = $params.'&viewBy='.$_GET['viewBy'];
+                if ($viewBy != '') {
+                    $params['viewBy'] = $_GET['viewBy'] ?? '';
                 }
-                if ($_GET['gibbonCourseClassID'] != '') {
-                    $params = $params.'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'];
+                if ($gibbonCourseClassID != '') {
+                    $params['gibbonCourseClassID'] = $gibbonCourseClassID;
                 }
-                $params .= "&subView=$subView";
+                $params['subView'] = $subView;
+                $paramsVar = '&' . http_build_query($params); // for backward compatibile uses below (should be get rid of)
 
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params&search=$gibbonPersonID'>".__($guid, 'Planner')." $extra</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner_view_full.php$params&gibbonPlannerEntryID=$gibbonPlannerEntryID&search=$gibbonPersonID'>".__($guid, 'View Lesson Plan')."</a> > </div><div class='trailEnd'>".__($guid, 'Unit Overview').'</div>';
-                echo '</div>';
+                $page->breadcrumbs
+                    ->add(__('Planner for {classDesc}', [
+                        'classDesc' => $target,
+                    ]), 'planner.php', $params)
+                    ->add(__('View Lesson Plan'), 'planner_view_full.php', $params + ['gibbonPlannerEntryID' => $gibbonPlannerEntryID, 'search' => $gibbonPersonID])
+                    ->add(__('Unit Overview'));
 
                 if ($row['gibbonUnitID'] == '') {
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                 } else {
                     //Get unit contents
                     try {
@@ -169,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
                     if ($resultUnit->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $rowUnit = $resultUnit->fetch();
@@ -178,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                         echo $rowUnit['name'];
                         echo '</h2>';
                         echo '<p>';
-                        echo __($guid, 'This page shows an overview of the unit that the current lesson belongs to, including all the outcomes, resources, lessons and chats for the classes you have access to.');
+                        echo __('This page shows an overview of the unit that the current lesson belongs to, including all the outcomes, resources, lessons and chats for the classes you have access to.');
                         echo '</p>';
 
                         //Set up where and data array for getting items from accessible planners
@@ -203,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
                         if ($resultPlanners->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             $dataMulti = array();
@@ -233,11 +234,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             echo "<div id='tabs' style='margin: 20px 0'>";
 							//Tab links
 							echo '<ul>';
-                            echo "<li><a href='#tabs1'>".__($guid, 'Unit Overview').'</a></li>';
-                            echo "<li><a href='#tabs2'>".__($guid, 'Smart Blocks').'</a></li>';
-                            echo "<li><a href='#tabs3'>".__($guid, 'Outcomes').'</a></li>';
-                            echo "<li><a href='#tabs4'>".__($guid, 'Lessons').'</a></li>';
-                            echo "<li><a href='#tabs5'>".__($guid, 'Resources').'</a></li>';
+                            echo "<li><a href='#tabs1'>".__('Unit Overview').'</a></li>';
+                            echo "<li><a href='#tabs2'>".__('Smart Blocks').'</a></li>';
+                            echo "<li><a href='#tabs3'>".__('Outcomes').'</a></li>';
+                            echo "<li><a href='#tabs4'>".__('Lessons').'</a></li>';
+                            echo "<li><a href='#tabs5'>".__('Resources').'</a></li>';
                             echo '</ul>';
 
 							//Tab content
@@ -245,7 +246,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 							echo "<div id='tabs1'>";
                             $shareUnitOutline = getSettingByScope($connection2, 'Planner', 'shareUnitOutline');
                             echo '<h2>';
-                            echo __($guid, 'Description');
+                            echo __('Description');
                             echo '</h2>';
                             echo '<p>';
                             echo $rowUnit['description'];
@@ -253,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
                             if ($rowUnit['tags'] != '') {
                                 echo '<h2>';
-                                echo __($guid, 'Concepts & Keywords');
+                                echo __('Concepts & Keywords');
                                 echo '</h2>';
                                 echo '<p>';
                                 echo $rowUnit['tags'];
@@ -262,7 +263,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $shareUnitOutline == 'Y') {
                                 if ($rowUnit['details'] != '') {
                                     echo '<h2>';
-                                    echo __($guid, 'Unit Outline');
+                                    echo __('Unit Outline');
                                     echo '</h2>';
                                     echo '<p>';
                                     echo $rowUnit['details'];
@@ -332,25 +333,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             }
                             if ($resultOutcomes->rowCount() < 1) {
                                 echo "<div class='error'>";
-                                echo __($guid, 'There are no records to display.');
+                                echo __('There are no records to display.');
                                 echo '</div>';
                             } else {
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
                                 echo '<th>';
-                                echo __($guid, 'Scope');
+                                echo __('Scope');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Category');
+                                echo __('Category');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Name');
+                                echo __('Name');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Year Groups');
+                                echo __('Year Groups');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Actions');
+                                echo __('Actions');
                                 echo '</th>';
                                 echo '</tr>';
 
@@ -403,7 +404,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     echo '});';
                                     echo '</script>';
                                     if ($rowOutcomes['content'] != '') {
-                                        echo "<a title='".__($guid, 'View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__($guid, 'Show Comment')."' onclick='return false;' /></a>";
+                                        echo "<a title='".__('View Description')."' class='show_hide-$count' onclick='false' href='#'><img style='padding-left: 0px' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/page_down.png' alt='".__('Show Comment')."' onclick='return false;' /></a>";
                                     }
                                     echo '</td>';
                                     echo '</tr>';
@@ -435,7 +436,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
 
                             if ($resultLessons->rowCount() < 1) {
                                 echo "<div class='warning'>";
-                                echo __($guid, 'There are no records to display.');
+                                echo __('There are no records to display.');
                                 echo '</div>';
                             } else {
                                 while ($rowLessons = $resultLessons->fetch()) {
@@ -443,7 +444,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     echo $rowLessons['description'];
                                     $resourceContents .= $rowLessons['description'];
                                     if ($rowLessons['teachersNotes'] != '' and ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-                                        echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
+                                        echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowLessons['teachersNotes'].'</div>';
                                         $resourceContents .= $rowLessons['teachersNotes'];
                                     }
 
@@ -459,12 +460,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     while ($rowBlock = $resultBlock->fetch()) {
                                         echo "<h5 style='font-size: 85%'>".$rowBlock['title'].'</h5>';
                                         echo '<p>';
-                                        echo '<b>'.__($guid, 'Type').'</b>: '.$rowBlock['type'].'<br/>';
-                                        echo '<b>'.__($guid, 'Length').'</b>: '.$rowBlock['length'].'<br/>';
-                                        echo '<b>'.__($guid, 'Contents').'</b>: '.$rowBlock['contents'].'<br/>';
+                                        echo '<b>'.__('Type').'</b>: '.$rowBlock['type'].'<br/>';
+                                        echo '<b>'.__('Length').'</b>: '.$rowBlock['length'].'<br/>';
+                                        echo '<b>'.__('Contents').'</b>: '.$rowBlock['contents'].'<br/>';
                                         $resourceContents .= $rowBlock['contents'];
                                         if ($rowBlock['teachersNotes'] != '' and ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-                                            echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__($guid, "Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
+                                            echo "<div style='background-color: #F6CECB; padding: 0px 3px 10px 3px; width: 98%; text-align: justify; border-bottom: 1px solid #ddd'><p style='margin-bottom: 0px'><b>".__("Teacher's Notes").':</b></p> '.$rowBlock['teachersNotes'].'</div>';
                                             $resourceContents .= $rowBlock['teachersNotes'];
                                         }
                                         echo '</p>';
@@ -479,7 +480,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                                     } catch (PDOException $e) { print $e->getMessage();}
 
                                     if ($resultDiscuss->rowCount() > 0) {
-                                        echo "<h5 style='font-size: 85%'>".__($guid, 'Chat').'</h5>';
+                                        echo "<h5 style='font-size: 85%'>".__('Chat').'</h5>';
                                         echo '<style type="text/css">';
                                         echo 'table.chatbox { width: 90%!important }';
                                         echo '</style>';
@@ -492,96 +493,100 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
                             echo "<div id='tabs5'>";
                             $noReosurces = true;
 
-							//Links
-							$links = '';
-                            $linksArray = array();
-                            $linksCount = 0;
-                            $dom = new DOMDocument();
-                            $dom->loadHTML($resourceContents);
-                            foreach ($dom->getElementsByTagName('a') as $node) {
-                                if ($node->nodeValue != '') {
-                                    $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
-                                    ++$linksCount;
+                            if (!empty($resourceContents)) {
+                                $resourceContents = '<?xml version="1.0" encoding="UTF-8"?>'.$resourceContents;
+
+                                //Links
+                                $links = '';
+                                $linksArray = array();
+                                $linksCount = 0;
+                                $dom = new DOMDocument();
+                                $dom->loadHTML($resourceContents);
+                                foreach ($dom->getElementsByTagName('a') as $node) {
+                                    if ($node->nodeValue != '') {
+                                        $linksArray[$linksCount] = "<li><a href='".$node->getAttribute('href')."'>".$node->nodeValue.'</a></li>';
+                                        ++$linksCount;
+                                    }
                                 }
-                            }
 
-                            $linksArray = array_unique($linksArray);
-                            natcasesort($linksArray);
+                                $linksArray = array_unique($linksArray);
+                                natcasesort($linksArray);
 
-                            foreach ($linksArray as $link) {
-                                $links .= $link;
-                            }
-
-                            if ($links != '') {
-                                echo '<h2>';
-                                echo 'Links';
-                                echo '</h2>';
-                                echo '<ul>';
-                                echo $links;
-                                echo '</ul>';
-                                $noReosurces = false;
-                            }
-
-							//Images
-							$images = '';
-                            $imagesArray = array();
-                            $imagesCount = 0;
-                            $dom2 = new DOMDocument();
-                            $dom2->loadHTML($resourceContents);
-                            foreach ($dom2->getElementsByTagName('img') as $node) {
-                                if ($node->getAttribute('src') != '') {
-                                    $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
-                                    ++$imagesCount;
+                                foreach ($linksArray as $link) {
+                                    $links .= $link;
                                 }
-                            }
 
-                            $imagesArray = array_unique($imagesArray);
-                            natcasesort($imagesArray);
-
-                            foreach ($imagesArray as $image) {
-                                $images .= $image;
-                            }
-
-                            if ($images != '') {
-                                echo '<h2>';
-                                echo 'Images';
-                                echo '</h2>';
-                                echo $images;
-                                $noReosurces = false;
-                            }
-
-							//Embeds
-							$embeds = '';
-                            $embedsArray = array();
-                            $embedsCount = 0;
-                            $dom2 = new DOMDocument();
-                            $dom2->loadHTML($resourceContents);
-                            foreach ($dom2->getElementsByTagName('iframe') as $node) {
-                                if ($node->getAttribute('src') != '') {
-                                    $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
-                                    ++$embedsCount;
+                                if ($links != '') {
+                                    echo '<h2>';
+                                    echo 'Links';
+                                    echo '</h2>';
+                                    echo '<ul>';
+                                    echo $links;
+                                    echo '</ul>';
+                                    $noReosurces = false;
                                 }
-                            }
 
-                            $embedsArray = array_unique($embedsArray);
-                            natcasesort($embedsArray);
+                                //Images
+                                $images = '';
+                                $imagesArray = array();
+                                $imagesCount = 0;
+                                $dom2 = new DOMDocument();
+                                $dom2->loadHTML($resourceContents);
+                                foreach ($dom2->getElementsByTagName('img') as $node) {
+                                    if ($node->getAttribute('src') != '') {
+                                        $imagesArray[$imagesCount] = "<img class='resource' style='margin: 10px 0; max-width: 560px' src='".$node->getAttribute('src')."'/><br/>";
+                                        ++$imagesCount;
+                                    }
+                                }
 
-                            foreach ($embedsArray as $embed) {
-                                $embeds .= $embed.'<br/><br/>';
-                            }
+                                $imagesArray = array_unique($imagesArray);
+                                natcasesort($imagesArray);
 
-                            if ($embeds != '') {
-                                echo '<h2>';
-                                echo 'Embeds';
-                                echo '</h2>';
-                                echo $embeds;
-                                $noReosurces = false;
+                                foreach ($imagesArray as $image) {
+                                    $images .= $image;
+                                }
+
+                                if ($images != '') {
+                                    echo '<h2>';
+                                    echo 'Images';
+                                    echo '</h2>';
+                                    echo $images;
+                                    $noReosurces = false;
+                                }
+
+                                //Embeds
+                                $embeds = '';
+                                $embedsArray = array();
+                                $embedsCount = 0;
+                                $dom2 = new DOMDocument();
+                                $dom2->loadHTML($resourceContents);
+                                foreach ($dom2->getElementsByTagName('iframe') as $node) {
+                                    if ($node->getAttribute('src') != '') {
+                                        $embedsArray[$embedsCount] = "<iframe style='max-width: 560px' width='".$node->getAttribute('width')."' height='".$node->getAttribute('height')."' src='".$node->getAttribute('src')."' frameborder='".$node->getAttribute('frameborder')."'></iframe>";
+                                        ++$embedsCount;
+                                    }
+                                }
+
+                                $embedsArray = array_unique($embedsArray);
+                                natcasesort($embedsArray);
+
+                                foreach ($embedsArray as $embed) {
+                                    $embeds .= $embed.'<br/><br/>';
+                                }
+
+                                if ($embeds != '') {
+                                    echo '<h2>';
+                                    echo 'Embeds';
+                                    echo '</h2>';
+                                    echo $embeds;
+                                    $noReosurces = false;
+                                }
                             }
 
 							//No resources!
 							if ($noReosurces) {
 								echo "<div class='error'>";
-								echo __($guid, 'There are no records to display.');
+								echo __('There are no records to display.');
 								echo '</div>';
 							}
                             echo '</div>';
@@ -593,4 +598,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_unitOvervi
         }
     }
 }
-?>

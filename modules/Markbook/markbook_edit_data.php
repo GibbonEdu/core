@@ -17,16 +17,18 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 //Get settings
 $enableEffort = getSettingByScope($connection2, 'Markbook', 'enableEffort');
 $enableRubrics = getSettingByScope($connection2, 'Markbook', 'enableRubrics');
 $enableRawAttainment = getSettingByScope($connection2, 'Markbook', 'enableRawAttainment');
+$enableModifiedAssessment = getSettingByScope($connection2, 'Markbook', 'enableModifiedAssessment');
 
 //Get alternative header names
 $attainmentAlternativeName = getSettingByScope($connection2, 'Markbook', 'attainmentAlternativeName');
@@ -105,21 +107,21 @@ echo '</script>';
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_data.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+        $gibbonMarkbookColumnID = $_GET['gibbonMarkbookColumnID'] ?? '';
         if ($gibbonCourseClassID == '' or $gibbonMarkbookColumnID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -150,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 try {
@@ -176,34 +178,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                     $course = $result->fetch();
                     $values = $result2->fetch();
 
-                    echo "<div class='trail'>";
-                    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_view.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'View').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Enter Marks').'</div>';
-                    echo '</div>';
+                    $page->breadcrumbs
+                        ->add(
+                            __('View {courseClass} Markbook', [
+                                'courseClass' => Format::courseClassName($course['course'], $course['class']),
+                            ]),
+                            'markbook_view.php',
+                            [
+                                'gibbonCourseClassID' => $gibbonCourseClassID,
+                            ]
+                        )
+                        ->add(__('Enter Marks'));
 
                     if (isset($_GET['return'])) {
                         returnProcess($guid, $_GET['return'], null, null);
                     }
 
-                    //Setup for WP Comment Push
-                    $wordpressCommentPush = getSettingByScope($connection2, 'Markbook', 'wordpressCommentPush');
-                    if ($wordpressCommentPush == 'On') {
-                        echo "<div class='warning'>";
-                        echo __($guid, 'WordPress Comment Push is enabled: this feature allows you to push comments to student work submitted using a WordPress site. If you wish to push a comment, just select the checkbox next to the submitted work.');
-                        echo '</div>';
-                    }
-
                     // Added an info message to let uers know about enter / automatic calculations
                     if ($values['attainment'] == 'Y' && $values['attainmentRaw'] == 'Y' && !empty($values['attainmentRawMax']) && $enableRawAttainment == 'Y') {
                         echo '<p>';
-                        echo __($guid, 'Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically. You can override the automatic value by selecting a different grade.');
+                        echo __('Press enter when recording marks to jump to the next student. Attainment values with a percentage grade scale will be calculated automatically. You can override the automatic value by selecting a different grade.');
                         echo '</p>';
                     }
 
                     echo "<div class='linkTop'>";
                     if ($values['gibbonPlannerEntryID'] != '') {
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$values['gibbonPlannerEntryID']."'>".__($guid, 'View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'View Linked Lesson')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> | ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&gibbonPlannerEntryID=".$values['gibbonPlannerEntryID']."'>".__('View Linked Lesson')."<img style='margin: 0 0 -4px 5px' title='".__('View Linked Lesson')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/planner.png'/></a> | ";
                     }
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__($guid, 'Edit')."<img style='margin: 0 0 -4px 5px' title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=$gibbonMarkbookColumnID'>".__('Edit')."<img style='margin: 0 0 -4px 5px' title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
                     echo '</div>';
 
                     $columns = 1;
@@ -224,7 +226,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                         'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
                         'today' => date('Y-m-d'),
                     );
-                    $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
+                    $sql = "SELECT gibbonPerson.gibbonPersonID as groupBy, title, surname, preferredName, gibbonPerson.gibbonPersonID, gibbonPerson.dateStart, gibbonStudentEnrolment.rollOrder, gibbonScaleGrade.value as targetScaleGrade, modifiedAssessment, gibbonMarkbookEntry.attainmentValue, gibbonMarkbookEntry.attainmentValueRaw, gibbonMarkbookEntry.effortValue, gibbonMarkbookEntry.comment, gibbonMarkbookEntry.response
                             FROM gibbonCourseClassPerson
                             JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
                             JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
@@ -277,16 +279,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
                             $submission = ($result->rowCount() > 0)? $result->fetch() : '';
 
                             $students[$gibbonPersonID]['submission'] = renderStudentSubmission($gibbonPersonID, $submission, $values);
-
-                            // Hook into WordpressCommentPush
-                            if ($wordpressCommentPush == 'On' && $submission['type'] == 'Link') {
-                                $students[$gibbonPersonID]['submission'] .= "<div id='wordpressCommentPush$count' style='float: right'></div>";
-                                $students[$gibbonPersonID]['submission'] .= '<script type="text/javascript">';
-                                $students[$gibbonPersonID]['submission'] .= "$(\"#wordpressCommentPush$count\").load(\"".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_edit_dataAjax.php", { location: "'.$submission['location'].'", count: "'.$count.'" } );';
-                                $students[$gibbonPersonID]['submission'] .= '</script>';
-                            }
                         }
                     }
+
+                    //Grab student individual needs flag
+                    $data = array(
+                        'gibbonCourseClassID' => $gibbonCourseClassID,
+                        'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'],
+                        'today' => date('Y-m-d')
+                    );
+                    $sql = "SELECT DISTINCT gibbonPerson.gibbonPersonID
+                            FROM gibbonCourseClassPerson
+                            JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID)
+                            JOIN gibbonPerson ON (gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                            JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+                            JOIN gibbonINPersonDescriptor ON (gibbonPerson.gibbonPersonID=gibbonINPersonDescriptor.gibbonPersonID)
+                            WHERE gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonCourseClassPerson.gibbonCourseClassID=:gibbonCourseClassID
+                            AND gibbonPerson.status='Full' AND gibbonCourseClassPerson.role='Student'
+                            AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL OR dateEnd>=:today)";
+                    $result = $pdo->executeQuery($data, $sql);
+                    $individualNeeds = ($result->rowCount() > 0)? $result->fetchAll() : array();
 
                     $form = Form::create('markbookEditData', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/markbook_edit_dataProcess.php?gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonMarkbookColumnID='.$gibbonMarkbookColumnID.'&address='.$_SESSION[$guid]['address']);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
@@ -358,6 +370,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $header = $table->addHeaderRow();
 
+                        $header->onlyIf($enableModifiedAssessment == 'Y')
+                            ->addContent(__('Mod'))
+                            ->setTitle(__('Modified Assessment'))
+                            ->setClass('textCenter');
+
                         $header->onlyIf($hasSubmission)
                             ->addContent(__('Sub'))
                             ->setTitle(__('Submitted Work'))
@@ -406,6 +423,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_dat
 
                         $row->onlyIf($hasTarget)
                             ->addContent($student['targetScaleGrade']);
+
+
+                        //Is modified assessment on?
+                        if ($enableModifiedAssessment == 'Y') {
+                            if(array_search($student['gibbonPersonID'], array_column($individualNeeds, 'gibbonPersonID')) !== false || !is_null($student['modifiedAssessment'])) { //Student has individual needs record now, or used to in the past (inferred by modifiedAssessment set to Y)
+                                $form->addHiddenValue($count.'-modifiedAssessmentEligible', 'Y');
+                                $row->addCheckbox($count.'-modifiedAssessment')
+                                    ->setClass('textCenter')
+                                    ->setValue('on')->checked($student['modifiedAssessment'] == 'Y');
+                            }
+                            else {
+                                $row->addContent('');
+                            }
+                        }
 
                         $row->onlyIf($hasSubmission)
                             ->addContent($student['submission']);

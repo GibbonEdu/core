@@ -36,7 +36,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'yearGroup_manage_delete.php', array('gibbonYearGroupID' => $gibbonYearGroupID));
-$I->seeBreadcrumb('Delete Year Group');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

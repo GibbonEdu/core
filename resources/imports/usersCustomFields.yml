@@ -1,0 +1,63 @@
+details:
+    type: usersCustomFields
+    name: Custom Fields
+    category: Custom Fields
+    table: gibbonPersonField
+    modes: { update: true, insert: true, export: true }
+access:
+    module: User Admin
+    action: Manage User Custom Fields
+primaryKey:
+    gibbonPersonFieldID
+uniqueKeys:
+    - name
+table:
+    name: 
+        name: "Name"
+        desc: ""
+        args: { filter: string, required: true }
+    active: 
+        name: "Active"
+        desc: ""
+        args: { filter: yesno, required: true }
+    description: 
+        name: "Description"
+        desc: ""
+        args: { filter: string }
+    type: 
+        name: "Type"
+        desc: ""
+        args: { filter: string, custom: true }
+    options: 
+        name: "Options"
+        desc: ""
+        args: { filter: string, custom: true }
+    required: 
+        name: "Required"
+        desc: "Is this field compulsory?"
+        args: { filter: yesno, custom: true }
+    activePersonStudent: 
+        name: "Active for Students?"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activePersonStaff: 
+        name: "Active for Staff?"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activePersonParent: 
+        name: "Active for Parents?"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activePersonOther: 
+        name: "Active for Other?"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activeDataUpdater: 
+        name: "Include In Data Updater"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    activeApplicationForm: 
+        name: "Include In Application Form"
+        desc: "0 or 1"
+        args: { filter: boolean, custom: true }
+    

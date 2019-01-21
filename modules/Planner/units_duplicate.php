@@ -18,36 +18,41 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Duplicate Unit'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > </div><div class='trailEnd'>".__($guid, 'Duplicate Unit').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -66,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -75,12 +80,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($gibbonUnitID == '') {
                         echo "<div class='error'>";
-                        echo __($guid, 'You have not specified one or more required parameters.');
+                        echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
                         try {
@@ -94,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The specified record cannot be found.');
+                            echo __('The specified record cannot be found.');
                             echo '</div>';
                         } else {
                             //Let's go!
@@ -111,20 +116,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                             //Step 1
                             if ($step == 1) {
                                 echo '<h2>';
-                                echo __($guid, 'Step 1');
+                                echo __('Step 1');
                                 echo '</h2>';
                                 ?>
 								<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_duplicate.php&step=2&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID" ?>">
 									<table class='smallIntBorder fullWidth' cellspacing='0'>	
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php echo __($guid, 'Source') ?></h3>
+												<h3><?php echo __('Source') ?></h3>
 											</td>
 										</tr>
 										<tr>
 											<td style='width: 275px'> 
-												<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('School Year') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php
@@ -138,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                 }
 
 												if ($resultYear->rowCount() != 1) {
-													echo '<i>'.__($guid, 'Unknown').'</i>';
+													echo '<i>'.__('Unknown').'</i>';
 												} else {
 													$rowYear = $resultYear->fetch();
 													echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
@@ -148,8 +153,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Course') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('Course') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
@@ -157,8 +162,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Unit') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('Unit') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
@@ -167,18 +172,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 										
 										<tr class='break'>
 											<td colspan=2> 
-												<h3><?php echo __($guid, 'Target') ?></h3>
+												<h3><?php echo __('Target') ?></h3>
 											</td>
 										</tr>
 												
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Year') ?> *</b><br/>
+												<b><?php echo __('Year') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select name="gibbonSchoolYearIDCopyTo" id="gibbonSchoolYearIDCopyTo" class="standardWidth">
 													<?php
-                                                    echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                                    echo "<option value='Please select...'>".__('Please select...').'</option>';
 													try {
 														$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 														$sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID';
@@ -203,13 +208,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 												</select>
 												<script type="text/javascript">
 													var gibbonSchoolYearIDCopyTo=new LiveValidation('gibbonSchoolYearIDCopyTo');
-													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+													gibbonSchoolYearIDCopyTo.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __('Select something!') ?>"});
 												</script>
 											</td>
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Course') ?> *</b><br/>
+												<b><?php echo __('Course') ?> *</b><br/>
 											</td>
 											<td class="right">
 												<select name="gibbonCourseIDTarget" id="gibbonCourseIDTarget" class="standardWidth">
@@ -239,8 +244,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 										</tr>
 										<tr>
 											<td> 
-												<b><?php echo __($guid, 'Unit') ?> *</b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+												<b><?php echo __('Unit') ?> *</b><br/>
+												<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 											</td>
 											<td class="right">
 												<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
@@ -249,11 +254,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 										
 										<tr>
 											<td>
-												<span class="emphasis small">* <?php echo __($guid, 'denotes a required field');?></span>
+												<span class="emphasis small">* <?php echo __('denotes a required field');?></span>
 											</td>
 											<td class="right">
 												<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-												<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+												<input type="submit" value="<?php echo __('Submit'); ?>">
 											</td>
 										</tr>
 									</table>
@@ -262,13 +267,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 
                             } elseif ($step == 2) {
                                 echo '<h2>';
-                                echo __($guid, 'Step 2');
+                                echo __('Step 2');
                                 echo '</h2>';
 
                                 $gibbonCourseIDTarget = $_POST['gibbonCourseIDTarget'];
                                 if ($gibbonCourseIDTarget == '') {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'You have not specified one or more required parameters.');
+                                    echo __('You have not specified one or more required parameters.');
                                     echo '</div>';
                                 } else {
                                     ?>
@@ -290,7 +295,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</script>
 											<tr>
 												<td style='width: 275px'> 
-													<b><?php echo __($guid, 'Copy Lessons?') ?> *</b>
+													<b><?php echo __('Copy Lessons?') ?> *</b>
 												</td>
 												<td class="right">
 													<input checked type="radio" name="copyLessons" value="Yes" class="copyLessons" /> Yes
@@ -299,13 +304,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr class='break'>
 												<td colspan=2> 
-													<h3><?php echo __($guid, 'Source') ?></h3>
+													<h3><?php echo __('Source') ?></h3>
 												</td>
 											</tr>
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'School Year') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('School Year') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php
@@ -318,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
                                                         echo "<div class='error'>".$e->getMessage().'</div>';
                                                     }
 													if ($resultYear->rowCount() != 1) {
-														echo '<i>'.__($guid, 'Unknown').'</i>';
+														echo '<i>'.__('Unknown').'</i>';
 													} else {
 														$rowYear = $resultYear->fetch();
 														echo "<input readonly value='".$rowYear['name']."' type='text' style='width: 300px'>";
@@ -328,8 +333,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'Course') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('Course') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php echo "<input readonly value='".$row['courseName']."' type='text' style='width: 300px'>"; ?>
@@ -337,8 +342,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'Unit') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('Unit') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
@@ -346,12 +351,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr id="sourceClass">
 												<td> 
-													<b><?php echo __($guid, 'Source Class') ?> *</b><br/>
+													<b><?php echo __('Source Class') ?> *</b><br/>
 												</td>
 												<td class="right">
 													<select name="gibbonCourseClassIDSource" id="gibbonCourseClassIDSource" class="standardWidth">
 														<?php
-                                                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                                        echo "<option value='Please select...'>".__('Please select...').'</option>';
 														try {
 															$dataSelect = array('gibbonCourseID' => $gibbonCourseID);
 															$sqlSelect = 'SELECT gibbonCourseClassID, gibbonCourseClass.nameShort AS class, gibbonCourse.nameShort AS course FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClass.gibbonCourseID=:gibbonCourseID';
@@ -385,14 +390,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											
 											<tr class='break'>
 												<td colspan=2> 
-													<h3><?php echo __($guid, 'Target') ?></h3>
+													<h3><?php echo __('Target') ?></h3>
 												</td>
 											</tr>
 											
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'School Year') ?>*</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('School Year') ?>*</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php echo "<input readonly value='$year' type='text' style='width: 300px'>"; ?>
@@ -400,8 +405,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'Course') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('Course') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php echo "<input readonly value='$course' type='text' style='width: 300px'>"; ?>
@@ -409,8 +414,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr>
 												<td> 
-													<b><?php echo __($guid, 'Unit') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+													<b><?php echo __('Unit') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 												</td>
 												<td class="right">
 													<?php echo "<input readonly value='".$row['name']."' type='text' style='width: 300px'>"; ?>
@@ -418,8 +423,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr id="targetClass">
 												<td> 
-													<b><?php echo __($guid, 'Classes') ?> *</b><br/>
-													<span class="emphasis small"><?php echo __($guid, 'Use Control, Command and/or Shift to select multiple.') ?></span>
+													<b><?php echo __('Classes') ?> *</b><br/>
+													<span class="emphasis small"><?php echo __('Use Control, Command and/or Shift to select multiple.') ?></span>
 												</td>
 												<td class="right">
 													<select name="gibbonCourseClassIDTarget[]" id="gibbonCourseClassIDTarget[]" multiple style="width: 302px; height: 100px">
@@ -440,12 +445,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_duplicate.ph
 											</tr>
 											<tr>
 												<td>
-													<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+													<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 												</td>
 												<td class="right">
 													<input type="hidden" name="gibbonCourseIDTarget" value="<?php echo $gibbonCourseIDTarget ?>">
 													<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-													<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+													<input type="submit" value="<?php echo __('Submit'); ?>">
 												</td>
 											</tr>
 										</table>

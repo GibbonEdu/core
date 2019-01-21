@@ -20,29 +20,28 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('Outcomes By Course'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_outcomesByCourse.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Outcomes By Course').'</div>';
-    echo '</div>';
     echo '<p>';
-    echo __($guid, 'This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.');
+    echo __('This view gives an overview of which whole school and learning area outcomes are covered by classes in a given course, allowing for curriculum mapping by outcome and course.');
     echo '</p>';
 
     echo '<h2>';
-    echo __($guid, 'Choose Course');
+    echo __('Choose Course');
     echo '</h2>';
 
     $gibbonCourseID = isset($_GET['gibbonCourseID'])? $_GET['gibbonCourseID'] : null;
 
-	$form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
+	$form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
 	$form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/curriculumMapping_outcomesByCourse.php');
 
@@ -68,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
     if ($gibbonCourseID != '') {
         echo '<h2>';
-        echo __($guid, 'Outcomes');
+        echo __('Outcomes');
         echo '</h2>';
 
         //Check course exists
@@ -83,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $row = $result->fetch();
@@ -99,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 
             if ($resultClasses->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $classCount = $resultClasses->rowCount();
@@ -123,14 +122,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                 echo "<tr class='head'>";
                 echo '<th>';
-                echo __($guid, 'Category');
+                echo __('Category');
                 echo '</th>';
                 echo '<th>';
-                echo __($guid, 'Outcome');
+                echo __('Outcome');
                 echo '</th>';
                 foreach ($classes as $class) {
                     echo '<th colspan=2>';
-                    echo $row['nameShort'].'.'.__($guid, $class['nameShort']);
+                    echo $row['nameShort'].'.'.__($class['nameShort']);
                     echo '</th>';
                 }
                 echo '</tr>';
@@ -143,10 +142,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 echo '</th>';
                 foreach ($classes as $class) {
                     echo '<th>';
-                    echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Unit').'</span>';
+                    echo "<span style='font-style: italic; font-size: 85%'>".__('Unit').'</span>';
                     echo '</th>';
                     echo '<th>';
-                    echo "<span style='font-style: italic; font-size: 85%'>".__($guid, 'Lesson').'</span>';
+                    echo "<span style='font-style: italic; font-size: 85%'>".__('Lesson').'</span>';
                     echo '</th>';
                 }
                 echo '</tr>';
@@ -161,7 +160,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 				//SCHOOL OUTCOMES
 				echo "<tr class='break'>";
                 echo '<td colspan='.(($classCount * 2) + 2).'>';
-                echo '<h4>'.__($guid, 'School Outcomes').'</h4>';
+                echo '<h4>'.__('School Outcomes').'</h4>';
                 echo '</td>';
                 echo '</tr>';
                 try {
@@ -180,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                 if ($resultOutcomes->rowCount() < 1) {
                     echo '<tr>';
                     echo '<td colspan='.(($classCount * 2) + 2).'>';
-                    echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
+                    echo "<div class='error'>".__('There are no records to display.').'</div>';
                     echo '</td>';
                     echo '</tr>';
                 } else {
@@ -239,7 +238,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
                     //LEARNING AREA OUTCOMES
                     echo "<tr class='break'>";
 					echo '<td colspan='.(($classCount * 2) + 2).'>';
-					echo '<h4>'.sprintf(__($guid, '%1$s Outcomes'), $row['department']).'</h4>';
+					echo '<h4>'.sprintf(__('%1$s Outcomes'), $row['department']).'</h4>';
 					echo '</td>';
 					echo '</tr>';
 					try {
@@ -258,7 +257,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
 					if ($resultOutcomes->rowCount() < 1) {
 						echo '<tr>';
 						echo '<td colspan='.(($classCount * 2) + 2).'>';
-						echo "<div class='error'>".__($guid, 'There are no records to display.').'</div>';
+						echo "<div class='error'>".__('There are no records to display.').'</div>';
 						echo '</td>';
 						echo '</tr>';
 					} else {
@@ -319,4 +318,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/curriculumMapping_
         }
     }
 }
-?>

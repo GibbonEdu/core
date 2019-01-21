@@ -20,23 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
+$page->breadcrumbs->add(__('Lending & Activity Log'));
+
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Lending & Activity Log').'</div>';
-    echo '</div>';
-
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
     }
 
     echo '<h3>';
-    echo __($guid, 'Search & Filter');
+    echo __('Search & Filter');
     echo '</h3>';
 
     //Get current filter values
@@ -125,7 +123,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
     }
 
     echo '<h3>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h3>';
 
     //Search with filters applied
@@ -184,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -194,27 +192,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Number');
+        echo __('Number');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'ID');
+        echo __('ID');
         echo '</th>';
         echo "<th style='width: 250px'>";
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Producer').'</span>';
+        echo __('Name').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Producer').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Type');
+        echo __('Type');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Location');
+        echo __('Location');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Status').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Return Date').'<br/>'.__($guid, 'Borrower').'</span>';
+        echo __('Status').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Return Date').'<br/>'.__('Borrower').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Actions');
+        echo __('Actions');
         echo '</th>';
         echo '</tr>';
 
@@ -263,7 +261,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
             }
             if ($resultType->rowCount() == 1) {
                 $rowType = $resultType->fetch();
-                echo __($guid, $rowType['name']).'<br/>';
+                echo __($rowType['name']).'<br/>';
             }
             echo '</td>';
             echo '<td>';
@@ -299,7 +297,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
             }
             echo '</td>';
             echo '<td>';
-            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module'].'/library_lending_item.php&gibbonLibraryItemID='.$row['gibbonLibraryItemID']."&name=$name&gibbonLibraryTypeID=$gibbonLibraryTypeID&gibbonSpaceID=$gibbonSpaceID&status=$status'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
             echo '</td>';
             echo '</tr>';
 
@@ -312,4 +310,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending.ph
         }
     }
 }
-?>

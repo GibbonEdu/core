@@ -18,29 +18,30 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_copy.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check if school year specified
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         $gibbonMarkbookCopyClassID = (isset($_POST['gibbonMarkbookCopyClassID']))? $_POST['gibbonMarkbookCopyClassID'] : null;
 
         if ( empty($gibbonCourseClassID) or empty($gibbonMarkbookCopyClassID) ) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
 
@@ -62,30 +63,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
-                echo __($guid, 'Copy Columns');
+                echo __('Copy Columns');
                 echo '</h1>';
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $course = $result->fetch();
 
-	        	//Get teacher list
-	            $teacherList = getTeacherList( $pdo, $gibbonCourseClassID );
-	            $teaching = (isset($teacherList[ $_SESSION[$guid]['gibbonPersonID'] ]) );
-	            $isCoordinator = isDepartmentCoordinator( $pdo, $_SESSION[$guid]['gibbonPersonID'] );
+                //Get teacher list
+                $teacherList = getTeacherList($pdo, $gibbonCourseClassID);
+                $teaching = isset($teacherList[$_SESSION[$guid]['gibbonPersonID']]);
+                $isCoordinator = isDepartmentCoordinator($pdo, $_SESSION[$guid]['gibbonPersonID']);
 
-	            $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
+                $canEditThisClass = ($teaching == true || $isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything');
 
-	            if ($canEditThisClass == false) {
-	            	//Acess denied
-				    echo "<div class='error'>";
-				    echo __($guid, 'You do not have access to this action.');
-				    echo '</div>';
-	            } else {
-	            	echo "<div class='trail'>";
-	            	echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/markbook_edit.php&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Edit').' '.$course['course'].'.'.$course['class'].' '.__($guid, 'Markbook')."</a> > </div><div class='trailEnd'>".__($guid, 'Copy Columns').'</div>';
+                if ($canEditThisClass == false) {
+                    //Acess denied
+                    echo "<div class='error'>";
+                    echo __('You do not have access to this action.');
                     echo '</div>';
+                } else {
+                    $page->breadcrumbs
+                        ->add(
+                            __('Edit {courseClass} Markbook', [
+                                'courseClass' => Format::courseClassName($course['course'], $course['class']),
+                            ]),
+                            'markbook_edit.php',
+                            [
+                                'gibbonCourseClassID' => $gibbonCourseClassID,
+                            ]
+                        )
+                        ->add(__('Copy Columns'));
 
 		            try {
 			            $data = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
@@ -98,10 +107,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 
 			        if ($result->rowCount() < 1) {
 	                    echo "<div class='error'>";
-	                    echo __($guid, 'There are no records to display.');
+	                    echo __('There are no records to display.');
 	                    echo '</div>';
 	                } else {
-
 	                	try {
 		                    $data2 = array('gibbonCourseClassID' => $gibbonMarkbookCopyClassID);
 		                    $sql2 = 'SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID';
@@ -114,7 +122,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_cop
 		                $courseFrom = $result2->fetch();
 
 	                	echo '<p>';
-	                	printf( __($guid, 'This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
+	                	printf( __('This action will copy the following columns from %s.%s to the current class %s.%s '), $courseFrom['course'], $courseFrom['class'], $course['course'], $course['class'] );
                         echo '</p>';
                         
                         echo '<fieldset>';

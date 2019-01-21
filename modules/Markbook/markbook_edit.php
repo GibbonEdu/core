@@ -17,31 +17,27 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
-
+use Gibbon\Forms\Form;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Get class variable
-        $gibbonCourseClassID = null;
-        if (isset($_GET['gibbonCourseClassID'])) {
-            $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        }
-
+        $gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
         if ($gibbonCourseClassID == '') {
             $gibbonCourseClassID = (isset($_SESSION[$guid]['markbookClass']))? $_SESSION[$guid]['markbookClass'] : '';
         }
@@ -53,10 +49,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
         if ($gibbonCourseClassID == '') {
             echo '<h1>';
-            echo __($guid, 'Edit Markbook');
+            echo __('Edit Markbook');
             echo '</h1>';
             echo "<div class='warning'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
 
             //Get class chooser
@@ -84,16 +80,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
             if ($result->rowCount() != 1) {
                 echo '<h1>';
-                echo __($guid, 'Edit Markbook');
+                echo __('Edit Markbook');
                 echo '</h1>';
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Edit').' '.$row['course'].'.'.$row['class'].' '.__($guid, 'Markbook').'</div>';
-                echo '</div>';
+
+                $page->breadcrumbs->add(__('Edit {courseClass} Markbook', [
+                    'courseClass' => Format::courseClassName($row['course'], $row['class']),
+                ]));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -108,7 +105,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         $isCoordinator = isDepartmentCoordinator( $pdo, $_SESSION[$guid]['gibbonPersonID'] );
                         if ($isCoordinator == true or $highestAction2 == 'Edit Markbook_multipleClassesAcrossSchool' or $highestAction2 == 'Edit Markbook_everything') {
                             echo "<div class='linkTop'>";
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add Multiple Columns')."<img style='margin-left: 5px' title='".__($guid, 'Add Multiple Columns')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_addMulti.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add Multiple Columns')."<img style='margin-left: 5px' title='".__('Add Multiple Columns')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new_multi.png'/></a>";
                             echo '</div>';
                         }
                     }
@@ -122,7 +119,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 if (!empty($teacherList)) {
                     echo '<h3>';
-                    echo __($guid, 'Teachers');
+                    echo __('Teachers');
                     echo '</h3>';
                     echo '<ul>';
                     foreach ($teacherList as $teacher) {
@@ -133,7 +130,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 //Print mark
                 echo '<h3>';
-                echo __($guid, 'Markbook Columns');
+                echo __('Markbook Columns');
                 echo '</h3>';
 
                 //Set pagination variable
@@ -156,11 +153,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 if ($canEditThisClass) {
                     echo "<div class='linkTop'>";
-                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
 
                     if (getSettingByScope($connection2, 'Markbook', 'enableColumnWeighting') == 'Y') {
                         if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
-                            echo " | <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Manage Weightings')."<img title='".__($guid, 'Manage Weightings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a>";
+                            echo " | <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/weighting_manage.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Manage Weightings')."<img title='".__('Manage Weightings')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/></a>";
                         }
                     }
 
@@ -169,31 +166,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Name/Unit');
+                    echo __('Name/Unit');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Type');
+                    echo __('Type');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Date<br/>Added');
+                    echo __('Date<br/>Added');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Date<br/>Complete');
+                    echo __('Date<br/>Complete');
                     echo '</th>';
                     echo '<th style="width:80px">';
-                    echo __($guid, 'Viewable <br/>to Students');
+                    echo __('Viewable <br/>to Students');
                     echo '</th>';
                     echo '<th style="width:80px">';
-                    echo __($guid, 'Viewable <br/>to Parents');
+                    echo __('Viewable <br/>to Parents');
                     echo '</th>';
                     echo '<th style="width:125px">';
-                    echo __($guid, 'Actions');
+                    echo __('Actions');
                     echo '</th>';
                     echo '</tr>';
 
@@ -215,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                             echo $unit[0];
                         }
                         if (isset($unit[1])) {
-                            echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                            echo '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                         }
                         echo '</td>';
                         echo '<td>';
@@ -238,10 +235,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         echo $row['viewableParents'];
                         echo '</td>';
                         echo '<td>';
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__($guid, 'Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$row['gibbonMarkbookColumnID']."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_edit.php'><img title='".__($guid, 'Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_edit.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_delete.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_data.php&gibbonCourseClassID=$gibbonCourseClassID&gibbonMarkbookColumnID=".$row['gibbonMarkbookColumnID']."'><img title='".__('Enter Data')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/markbook.png'/></a> ";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Markbook/markbook_viewExport.php?gibbonMarkbookColumnID='.$row['gibbonMarkbookColumnID']."&gibbonCourseClassID=$gibbonCourseClassID&return=markbook_edit.php'><img title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
                         echo '</td>';
                         echo '</tr>';
 
@@ -254,10 +251,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
 
                 if ($canEditThisClass) {
                     echo '<h3>';
-                    echo __($guid, 'Copy Markbook Columns');
+                    echo __('Copy Markbook Columns');
                     echo '</h1>';
 
-                    $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
+                    $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Markbook/markbook_edit_copy.php&gibbonCourseClassID='.$gibbonCourseClassID);
                     $form->setFactory(DatabaseFormFactory::create($pdo));
                     $form->setClass('noIntBorder fullWidth');
 

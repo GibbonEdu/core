@@ -18,23 +18,48 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// common variables
+$gibbonSchoolYearID = $_GET['gibbonSchoolYearID'] ?? '';
+$gibbonCourseID = $_GET['gibbonCourseID'] ?? '';
+$gibbonCourseClassID = $_GET['gibbonCourseClassID'] ?? '';
+$gibbonUnitID = $_GET['gibbonUnitID'] ?? '';
+$gibbonUnitClassID = $_GET['gibbonUnitClassID'] ?? '';
+
+$page->breadcrumbs
+    ->add(__('Unit Planner'), 'units.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+    ])
+    ->add(__('Edit Unit'), 'units_edit.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+    ])
+    ->add(__('Edit Working Copy'), 'units_edit_working.php', [
+        'gibbonSchoolYearID' => $gibbonSchoolYearID,
+        'gibbonCourseID' => $gibbonCourseID,
+        'gibbonUnitID' => $gibbonUnitID,
+        'gibbonCourseClassID' => $gibbonCourseClassID,
+        'gibbonUnitClassID' => $gibbonUnitClassID,
+    ])
+    ->add(__('Add Lessons'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-        $gibbonUnitID = $_GET['gibbonUnitID'];
         if (strpos($gibbonUnitID, '-') == false) {
             $hooked = false;
         } else {
@@ -44,23 +69,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
         }
 
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID']."'>".__($guid, 'Unit Planner')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."'>".__($guid, 'Edit Unit')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/units_edit_working.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonUnitID='.$_GET['gibbonUnitID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID']."'>".__($guid, 'Edit Working Copy')."</a> > </div><div class='trailEnd'>".__($guid, 'Add Lessons').'</div>';
-        echo '</div>';
-
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, null);
         }
 
         //Check if courseschool year specified
-        $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
-        $gibbonCourseID = $_GET['gibbonCourseID'];
-        $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-        $gibbonUnitID = $_GET['gibbonUnitID'];
-        $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
         if ($gibbonCourseID == '' or $gibbonSchoolYearID == '' or $gibbonCourseClassID == '' or $gibbonUnitClassID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -79,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
             if ($result->rowCount() != 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                echo __('The selected record does not exist, or you do not have access to it.');
                 echo '</div>';
             } else {
                 $row = $result->fetch();
@@ -90,7 +106,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                 //Check if unit specified
                 if ($gibbonUnitID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($hooked == false) {
@@ -127,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The specified record cannot be found.');
+                        echo __('The specified record cannot be found.');
                         echo '</div>';
                     } else {
                         //Let's go!
@@ -136,25 +152,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
                         echo '<tr>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'School Year').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('School Year').'</span><br/>';
                         echo '<i>'.$year.'</i>';
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Class').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Class').'</span><br/>';
                         echo '<i>'.$course.'.'.$class.'</i>';
                         echo '</td>';
                         echo "<td style='width: 34%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Unit').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Unit').'</span><br/>';
                         echo '<i>'.$row['name'].'</i>';
                         echo '</td>';
                         echo '</tr>';
                         echo '</table>';
 
                         echo '<h3>';
-                        echo __($guid, 'Choose Lessons');
+                        echo __('Choose Lessons');
                         echo '</h3>';
                         echo '<p>';
-                        echo __($guid, 'Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.');
+                        echo __('Use the table below to select the lessons you wish to deploy this unit to. Only lessons without existing plans can be included in the deployment.');
                         echo '</p>';
 
                         //Find all unplanned slots for this class.
@@ -224,7 +240,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                         if (count($lessons) < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             //Get term dates
@@ -240,10 +256,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             }
                             while ($rowTerms = $resultTerms->fetch()) {
                                 $terms[$termCount][0] = $rowTerms['firstDay'];
-                                $terms[$termCount][1] = __($guid, 'Start of').' '.$rowTerms['nameShort'];
+                                $terms[$termCount][1] = __('Start of').' '.$rowTerms['nameShort'];
                                 ++$termCount;
                                 $terms[$termCount][0] = $rowTerms['lastDay'];
-                                $terms[$termCount][1] = __($guid, 'End of').' '.$rowTerms['nameShort'];
+                                $terms[$termCount][1] = __('End of').' '.$rowTerms['nameShort'];
                                 ++$termCount;
                             }
                             //Get school closure special days
@@ -290,25 +306,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo "<tr class='head'>";
                             echo '<th>';
-                            echo sprintf(__($guid, 'Lesson%1$sNumber'), '<br/>');
+                            echo sprintf(__('Lesson%1$sNumber'), '<br/>');
                             echo '</th>';
                             echo '<th>';
-                            echo __($guid, 'Date');
+                            echo __('Date');
                             echo '</th>';
                             echo '<th>';
-                            echo __($guid, 'Day');
+                            echo __('Day');
                             echo '</th>';
                             echo '<th>';
-                            echo __($guid, 'Month');
+                            echo __('Month');
                             echo '</th>';
                             echo '<th>';
-                            echo sprintf(__($guid, 'TT Period%1$sTime'), '<br/>');
+                            echo sprintf(__('TT Period%1$sTime'), '<br/>');
                             echo '</th>';
                             echo '<th>';
-                            echo sprintf(__($guid, 'Planned%1$sLesson'), '<br/>');
+                            echo sprintf(__('Planned%1$sLesson'), '<br/>');
                             echo '</th>';
                             echo '<th>';
-                            echo __($guid, 'Include?');
+                            echo __('Include?');
                             echo '</th>';
                             echo '</tr>';
 

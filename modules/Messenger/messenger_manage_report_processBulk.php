@@ -17,10 +17,9 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include '../../gibbon.php';
+use Gibbon\Contracts\Comms\Mailer;
 
-//PHPMailer include
-require $_SESSION[$guid]['absolutePath'].'/lib/PHPMailer/PHPMailerAutoload.php';
+include '../../gibbon.php';
 
 //Module includes
 include './moduleFunctions.php';
@@ -80,14 +79,14 @@ if ($gibbonMessengerID == '' or $action != 'resend') { echo 'Fatal error loading
                 else {
                     //Prep message
                     $emailCount = 0;
-                    $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __($guid, 'This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
-                    $bodyFin = "<p style='font-style: italic'>" . sprintf(__($guid, 'Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-                    $mail=getGibbonMailer($guid);
+                    $bodyReminder = "<p style='font-style: italic; font-weight: bold'>" . __('This is a reminder for an email that requires your action. Please look for the link in the email, and click it to confirm receipt and reading of this email.') ."</p>" ;
+                    $bodyFin = "<p style='font-style: italic'>" . sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
+                    $mail = $container->get(Mailer::class);
     				$mail->SetFrom($_SESSION[$guid]["email"], $_SESSION[$guid]["preferredName"] . " " . $_SESSION[$guid]["surname"]);
     				$mail->CharSet="UTF-8";
     				$mail->Encoding="base64" ;
     				$mail->IsHTML(true);
-    				$mail->Subject=__($guid, 'REMINDER:').' '.$row['subject'] ;
+    				$mail->Subject=__('REMINDER:').' '.$row['subject'] ;
 
                     //Scan through receipients
                     foreach ($gibbonMessengerReceiptIDs as $gibbonMessengerReceiptID) {

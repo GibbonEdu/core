@@ -1,0 +1,26 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs the contents of the HTML <head> tag. This includes 
+all stylesheets and scripts with a 'head' context.
+-->#}
+
+{% for family in families %}
+
+    {% if loop.length > 1 %}
+        <u>{{ family.name }}</u><br/>
+    {% endif %}
+
+    {{ formatUsing('address', family.homeAddress, family.homeAddressDistrict, family.homeAddressCountry) }}
+
+    {% if not loop.last %}<br/><br/>{% endif %}
+
+{% else %}
+
+    {{ formatUsing('address', person.address1, person.address1District, person.address1Country) }}
+
+{% endfor %}

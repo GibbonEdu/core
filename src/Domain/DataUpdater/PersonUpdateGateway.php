@@ -65,9 +65,15 @@ class PersonUpdateGateway extends QueryableGateway
             ->newQuery()
             ->from('gibbonPerson')
             ->cols([
-                'gibbonPerson.gibbonPersonID', 'gibbonPerson.surname', 'gibbonPerson.preferredName', 'gibbonPerson.gibbonPersonID', 'gibbonRollGroup.name as rollGroupName', 
-                'MAX(gibbonPersonUpdate.timestamp) as personalUpdate', 
-                'MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate'
+                'gibbonPerson.gibbonPersonID', 
+                'gibbonPerson.surname', 
+                'gibbonPerson.preferredName', 
+                'gibbonPerson.gibbonPersonID', 
+                'gibbonRollGroup.name as rollGroupName', 
+                'gibbonPersonUpdate.gibbonPersonUpdateID', 
+                'gibbonPersonMedicalUpdate.gibbonPersonMedicalUpdateID', 
+                "MAX(gibbonPersonUpdate.timestamp) as personalUpdate", 
+                "MAX(gibbonPersonMedicalUpdate.timestamp) as medicalUpdate"
             ])
             ->innerJoin('gibbonStudentEnrolment', 'gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID')
             ->innerJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
@@ -83,11 +89,8 @@ class PersonUpdateGateway extends QueryableGateway
 
         $criteria->addFilterRules([
             'cutoff' => function ($query, $cutoffDate) {
-                $query->where(function($query) {
-                    $query->where('(gibbonPersonUpdateID IS NULL OR gibbonPersonUpdate.timestamp < :cutoffDate)')
-                          ->orWhere('(gibbonPersonMedicalUpdateID IS NULL OR gibbonPersonMedicalUpdate.timestamp < :cutoffDate)');
-                });
-
+                $query->having("((gibbonPersonUpdateID IS NULL OR personalUpdate < :cutoffDate)
+                    OR (gibbonPersonMedicalUpdateID IS NULL OR medicalUpdate < :cutoffDate))");
                 $query->bindValue('cutoffDate', $cutoffDate);
             },
         ]);

@@ -32,7 +32,7 @@ $gibbonLibraryItemID = isset($_POST['gibbonLibraryItemID'])? $_POST['gibbonLibra
 if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_catalog_add.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     $data = array('gibbonLibraryTypeID' => $gibbonLibraryTypeID);

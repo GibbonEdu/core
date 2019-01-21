@@ -23,7 +23,6 @@ include '../../gibbon.php';
 
 $gibbonPersonID = $_GET['gibbonPersonID'];
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/data_medical.php&gibbonPersonID=$gibbonPersonID";
-$URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
 
 if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.php') == false) {
     $URL .= '&return=error0';
@@ -43,6 +42,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
             //Check access to person
             $checkCount = 0;
             if ($highestAction == 'Update Medical Data_any') {
+                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_medical.php&gibbonPersonID='.$gibbonPersonID;
+
                 try {
                     $dataSelect = array();
                     $sqlSelect = "SELECT surname, preferredName, gibbonPerson.gibbonPersonID FROM gibbonPerson WHERE status='Full' ORDER BY surname, preferredName";
@@ -55,6 +56,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                 }
                 $checkCount = $resultSelect->rowCount();
             } else {
+                $URLSuccess = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Data Updater/data_updates.php&gibbonPersonID='.$gibbonPersonID;
+
                 try {
                     $dataCheck = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
                     $sqlCheck = "SELECT gibbonFamilyAdult.gibbonFamilyID, name FROM gibbonFamilyAdult JOIN gibbonFamily ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID) WHERE gibbonPersonID=:gibbonPersonID AND childDataAccess='Y' ORDER BY name";
@@ -157,10 +160,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                             $lastEpisode = null;
                         }
                         $lastEpisodeTreatment = $_POST["lastEpisodeTreatment$i"];
-                        $comment = $_POST["comment$i"];
+                        $commentCond = $_POST["commentCond$i"];
 
                         try {
-                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalConditionUpdateID' => $gibbonPersonMedicalConditionUpdateID);
+                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonMedicalConditionUpdateID' => $gibbonPersonMedicalConditionUpdateID);
                             $sql = 'UPDATE gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater WHERE gibbonPersonMedicalConditionUpdateID=:gibbonPersonMedicalConditionUpdateID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -188,10 +191,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                             $lastEpisode = null;
                         }
                         $lastEpisodeTreatment = $_POST["lastEpisodeTreatment$i"];
-                        $comment = $_POST["comment$i"];
+                        $commentCond = $_POST["commentCond$i"];
 
                         try {
-                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                            $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalConditionID' => $gibbonPersonMedicalConditionID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                             $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalConditionID=:gibbonPersonMedicalConditionID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
@@ -225,10 +228,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
                                 $lastEpisode = null;
                             }
                             $lastEpisodeTreatment = $_POST['lastEpisodeTreatment'];
-                            $comment = $_POST['comment'];
+                            $commentCond = $_POST['commentCond'];
 
                             try {
-                                $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $comment, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
+                                $data = array('gibbonPersonMedicalUpdateID' => $gibbonPersonMedicalUpdateID, 'gibbonPersonMedicalID' => $gibbonPersonMedicalID, 'name' => $name, 'gibbonAlertLevelID' => $gibbonAlertLevelID, 'triggers' => $triggers, 'reaction' => $reaction, 'response' => $response, 'medication' => $medication, 'lastEpisode' => $lastEpisode, 'lastEpisodeTreatment' => $lastEpisodeTreatment, 'comment' => $commentCond, 'gibbonPersonIDUpdater' => $_SESSION[$guid]['gibbonPersonID']);
                                 $sql = 'INSERT INTO gibbonPersonMedicalConditionUpdate SET gibbonPersonMedicalUpdateID=:gibbonPersonMedicalUpdateID, gibbonPersonMedicalID=:gibbonPersonMedicalID, name=:name, gibbonAlertLevelID=:gibbonAlertLevelID, triggers=:triggers, reaction=:reaction, response=:response, medication=:medication, lastEpisode=:lastEpisode, lastEpisodeTreatment=:lastEpisodeTreatment, comment=:comment, gibbonPersonIDUpdater=:gibbonPersonIDUpdater';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);

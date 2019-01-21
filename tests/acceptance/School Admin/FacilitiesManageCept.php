@@ -58,7 +58,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'space_manage_delete.php', array('gibbonSpaceID' => $gibbonSpaceID));
-$I->seeBreadcrumb('Delete Facility');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

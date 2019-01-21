@@ -21,20 +21,18 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+$page->breadcrumbs->add(__('View Resources'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Resources').'</div>';
-    echo '</div>';
-
     echo '<h3>';
-    echo __($guid, 'Filters');
+    echo __('Filters');
     echo '</h3>';
 
     //Get current filter values
@@ -89,7 +87,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     }
 
     echo '<h3>';
-    echo __($guid, 'View');
+    echo __('View');
     echo '</h3>';
 
     //Search with filters applied
@@ -131,12 +129,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
     }
 
     echo "<div class='linkTop'>";
-    echo " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/resources_manage_add.php'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+    echo " <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/resources_manage_add.php'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
     echo '</div>';
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -146,21 +144,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
         echo "<table cellspacing='0' style='width: 100%'>";
         echo "<tr class='head'>";
         echo '<th>';
-        echo __($guid, 'Name').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Contributor').'</span>';
+        echo __('Name').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Contributor').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Type');
+        echo __('Type');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Category').'<br/>';
-        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Purpose').'</span>';
+        echo __('Category').'<br/>';
+        echo "<span style='font-size: 85%; font-style: italic'>".__('Purpose').'</span>';
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Tags');
+        echo __('Tags');
         echo '</th>';
         echo '<th>';
-        echo __($guid, 'Year Groups');
+        echo __('Year Groups');
         echo '</th>';
         echo '</tr>';
 
@@ -214,7 +212,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
             $years = explode(',', $row['gibbonYearGroupIDList']);
             if (count($years) > 0 and $years[0] != '') {
                 if (count($years) == $resultYears->rowCount()) {
-                    echo '<i>'.__($guid, 'All Years').'</i>';
+                    echo '<i>'.__('All Years').'</i>';
                 } else {
                     $count3 = 0;
                     $count4 = 0;
@@ -224,7 +222,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
                                 if ($count3 > 0 and $count4 > 0) {
                                     echo ', ';
                                 }
-                                echo __($guid, $rowYears['nameShort']);
+                                echo __($rowYears['nameShort']);
                                 ++$count4;
                             }
                         }
@@ -232,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_view.php
                     }
                 }
             } else {
-                echo '<i>'.__($guid, 'None').'</i>';
+                echo '<i>'.__('None').'</i>';
             }
             echo '</td>';
             echo '</tr>';

@@ -21,21 +21,20 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
+
+// set page breadcrumb
+$page->breadcrumbs->add(__('Attendance Summary by Date'));
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_byDate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Attendance Summary by Date').'</div>';
-    echo '</div>';
-
     echo '<h2>';
-    echo __($guid, 'Choose Date');
+    echo __('Choose Date');
     echo '</h2>';
 
     $today = date('Y-m-d');
@@ -83,12 +82,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
 
-    $options = array("all" => "All Students");
+    $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
-        $options["class"] = "Class";
+        $options["class"] = __('Class');
     }
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byRollGroup.php")) {
-        $options["rollGroup"] = "Roll Group";
+        $options["rollGroup"] = __('Roll Group');
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
@@ -131,20 +130,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     if ($resultCodes->rowCount() == 0) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no attendance codes defined.');
+        echo __('There are no attendance codes defined.');
         echo '</div>';
     }
     else if ( empty($dateStart) || empty($group)) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else if ($dateStart > $today || $dateEnd > $today) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified date is in the future: it must be today or earlier.');
+            echo __('The specified date is in the future: it must be today or earlier.');
             echo '</div>';
     } else {
         echo '<h2>';
-        echo __($guid, 'Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
+        echo __('Report Data').': '. date('M j', strtotime($dateStart) ) .' - '. date('M j, Y', strtotime($dateEnd) );
         echo '</h2>';
 
         try {
@@ -159,8 +158,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
         $schoolDayCounts = $resultSchoolDays->fetch();
 
         echo '<p style="color:#666;">';
-            echo '<strong>' . __($guid, 'Total number of school days to date:').' '.$schoolDayCounts['total'].'</strong><br/>';
-            echo __($guid, 'Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
+            echo '<strong>' . __('Total number of school days to date:').' '.$schoolDayCounts['total'].'</strong><br/>';
+            echo __('Total number of school days in date range:').' '.$schoolDayCounts['dateRange'];
         echo '</p>';
 
         $data = array('dateStart' => $dateStart, 'dateEnd' => $dateEnd, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -230,34 +229,34 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
 
             echo "<div class='linkTop'>";
-            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL'].'/report.php?q=/modules/'.$_SESSION[$guid]['module'].'/report_summary_byDate_print.php&dateStart='.dateConvertBack($guid, $dateStart).'&dateEnd='.dateConvertBack($guid, $dateEnd).'&gibbonCourseClassID='.$gibbonCourseClassID.'&gibbonRollGroupID='.$gibbonRollGroupID.'&gibbonAttendanceCodeID='. $gibbonAttendanceCodeID .'&group=' . $group . '&sort=' . $sort . "'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             echo '<table cellspacing="0" class="fullWidth colorOddEven" >';
 
             echo "<tr class='head'>";
             echo '<th style="width:80px" rowspan=2>';
-            echo __($guid, 'Roll Group');
+            echo __('Roll Group');
             echo '</th>';
             echo '<th rowspan=2>';
-            echo __($guid, 'Name');
+            echo __('Name');
             echo '</th>';
 
             if ($reportType == 'types') {
                 echo '<th colspan='.count($attendanceCodes['In']).' class="columnDivider" style="text-align:center;">';
-                echo __($guid, 'IN');
+                echo __('IN');
                 echo '</th>';
                 echo '<th colspan='.count($attendanceCodes['Out']).' class="columnDivider" style="text-align:center;">';
-                echo __($guid, 'OUT');
+                echo __('OUT');
                 echo '</th>';
             } else if ($reportType == 'reasons') {
                 echo '<th colspan='.count($attendanceReasons).' class="columnDivider" style="text-align:center;">';
-                echo __($guid, $attendanceCodeInfo['name'] );
+                echo __($attendanceCodeInfo['name'] );
                 echo '</th>';
             }
             echo '</tr>';
@@ -272,7 +271,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 for( $i = 0; $i < count($attendanceCodes['In']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['In'][$i]['scope'].'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['In'][$i]['gibbonAttendanceCodeID'].'">';
-                        echo $attendanceCodes['In'][$i]['name'];
+                        echo __($attendanceCodes['In'][$i]['name']);
                         echo '</a>';
                     echo '</th>';
                 }
@@ -280,7 +279,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
                 for( $i = 0; $i < count($attendanceCodes['Out']); $i++ ) {
                     echo '<th class="'.( $i == 0? 'verticalHeader columnDivider' : 'verticalHeader').'" title="'.$attendanceCodes['Out'][$i]['scope'].'">';
                         echo '<a class="verticalText" href="'.$href.'&gibbonAttendanceCodeID='.$attendanceCodes['Out'][$i]['gibbonAttendanceCodeID'].'">';
-                        echo $attendanceCodes['Out'][$i]['name'];
+                        echo __($attendanceCodes['Out'][$i]['name']);
                         echo '</a>';
                     echo '</th>';
                 }
@@ -335,7 +334,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
             if ($result->rowCount() == 0) {
                 echo "<tr>";
                 echo '<td colspan=5>';
-                echo __($guid, 'All students are present.');
+                echo __('All students are present.');
                 echo '</td>';
                 echo '</tr>';
             }

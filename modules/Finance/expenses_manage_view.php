@@ -18,33 +18,36 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID='.$_GET['gibbonFinanceBudgetCycleID']."'>".__($guid, 'Manage Expenses')."</a> > </div><div class='trailEnd'>".__($guid, 'View Expense').'</div>';
-        echo '</div>';
+        $gibbonFinanceBudgetCycleID = $_GET['gibbonFinanceBudgetCycleID'];
+    
+        $urlParams = compact('gibbonFinanceBudgetCycleID');        
+        
+        $page->breadcrumbs
+            ->add(__('Manage Expenses'), 'expenses_manage.php',  $urlParams)
+            ->add(__('View Expense'));        
 
         //Check if params are specified
         $gibbonFinanceExpenseID = isset($_GET['gibbonFinanceExpenseID'])? $_GET['gibbonFinanceExpenseID'] : '';
-        $gibbonFinanceBudgetCycleID = isset($_GET['gibbonFinanceBudgetCycleID'])? $_GET['gibbonFinanceBudgetCycleID'] : '';
         $status2 = isset($_GET['status2'])? $_GET['status2'] : '';
         $gibbonFinanceBudgetID2 = isset($_GET['gibbonFinanceBudgetID2'])? $_GET['gibbonFinanceBudgetID2'] : '';
         if ($gibbonFinanceExpenseID == '' or $gibbonFinanceBudgetCycleID == '') {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             //Check if have Full or Write in any budgets
@@ -66,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
             if ($budgetsAccess == false) {
                 echo "<div class='error'>";
-                echo __($guid, 'You do not have Full or Write access to any budgets.');
+                echo __('You do not have Full or Write access to any budgets.');
                 echo '</div>';
             } else {
                 //Get and check settings
@@ -75,7 +78,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                 $expenseRequestTemplate = getSettingByScope($connection2, 'Finance', 'expenseRequestTemplate');
                 if ($expenseApprovalType == '' or $budgetLevelExpenseApproval == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'An error has occurred with your expense and budget settings.');
+                    echo __('An error has occurred with your expense and budget settings.');
                     echo '</div>';
                 } else {
                     //Check if there are approvers
@@ -90,7 +93,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'An error has occurred with your expense and budget settings.');
+                        echo __('An error has occurred with your expense and budget settings.');
                         echo '</div>';
                     } else {
                         //Ready to go! Just check record exists and we have access, and load it ready to use...
@@ -123,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
                         if ($result->rowCount() != 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'The specified record cannot be found.');
+                            echo __('The specified record cannot be found.');
                             echo '</div>';
                         } else {
                             //Let's go!
@@ -131,19 +134,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
                             if ($status2 != '' or $gibbonFinanceBudgetID2 != '') {
                                 echo "<div class='linkTop'>";
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__($guid, 'Back to Search Results').'</a>';
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Finance/expenses_manage.php&gibbonFinanceBudgetCycleID=$gibbonFinanceBudgetCycleID&status2=$status2&gibbonFinanceBudgetID2=$gibbonFinanceBudgetID2'>".__('Back to Search Results').'</a>';
                                 echo '</div>';
                             }
                             ?>
 								<table class='smallIntBorder fullWidth' cellspacing='0'>
 									<tr class='break'>
 										<td colspan=2>
-											<h3><?php echo __($guid, 'Basic Information') ?></h3>
+											<h3><?php echo __('Basic Information') ?></h3>
 										</td>
 									</tr>
 									<tr>
 										<td style='width: 275px'>
-											<b><?php echo __($guid, 'Budget Cycle') ?></b><br/>
+											<b><?php echo __('Budget Cycle') ?></b><br/>
 										</td>
 										<td class="right">
 											<?php
@@ -171,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td style='width: 275px'>
-											<b><?php echo __($guid, 'Budget') ?></b><br/>
+											<b><?php echo __('Budget') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=20 value="<?php echo $row['budget']; ?>" type="text" class="standardWidth">
@@ -179,7 +182,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Title') ?></b><br/>
+											<b><?php echo __('Title') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['title']; ?>" type="text" class="standardWidth">
@@ -187,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Status') ?></b><br/>
+											<b><?php echo __('Status') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="name" id="name" maxlength=60 value="<?php echo $row['status']; ?>" type="text" class="standardWidth">
@@ -195,7 +198,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td colspan=2>
-											<b><?php echo __($guid, 'Description') ?></b>
+											<b><?php echo __('Description') ?></b>
 											<?php
                                                 echo '<p>';
 												echo $row['body'];
@@ -205,14 +208,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Total Cost') ?></b><br/>
+											<b><?php echo __('Total Cost') ?></b><br/>
 											<span style="font-size: 90%">
 												<i>
 												<?php
                                                 if ($_SESSION[$guid]['currency'] != '') {
-                                                    echo sprintf(__($guid, 'Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
+                                                    echo sprintf(__('Numeric value of the fee in %1$s.'), $_SESSION[$guid]['currency']);
                                                 } else {
-                                                    echo __($guid, 'Numeric value of the fee.');
+                                                    echo __('Numeric value of the fee.');
                                                 }
                             					?>
 												</i>
@@ -224,7 +227,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Count Against Budget') ?> *</b><br/>
+											<b><?php echo __('Count Against Budget') ?> *</b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="countAgainstBudget" id="countAgainstBudget" maxlength=60 value="<?php echo ynExpander($guid, $row['countAgainstBudget']); ?>" type="text" class="standardWidth">
@@ -232,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td>
-											<b><?php echo __($guid, 'Purchase By') ?></b><br/>
+											<b><?php echo __('Purchase By') ?></b><br/>
 										</td>
 										<td class="right">
 											<input readonly name="purchaseBy" id="purchaseBy" maxlength=60 value="<?php echo $row['purchaseBy']; ?>" type="text" class="standardWidth">
@@ -240,7 +243,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 									</tr>
 									<tr>
 										<td colspan=2>
-											<b><?php echo __($guid, 'Purchase Details') ?></b>
+											<b><?php echo __('Purchase Details') ?></b>
 											<?php
                                                 echo '<p>';
 												echo $row['purchaseDetails'];
@@ -251,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 
 									<tr class='break'>
 										<td colspan=2>
-											<h3><?php echo __($guid, 'Log') ?></h3>
+											<h3><?php echo __('Log') ?></h3>
 										</td>
 									</tr>
 									<tr>
@@ -267,13 +270,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
                                         ?>
 										<tr class='break' id="paidTitle">
 											<td colspan=2>
-												<h3><?php echo __($guid, 'Payment Information') ?></h3>
+												<h3><?php echo __('Payment Information') ?></h3>
 											</td>
 										</tr>
 										<tr id="paymentDateRow">
 											<td>
-												<b><?php echo __($guid, 'Date Paid') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Date of payment, not entry to system.') ?></span>
+												<b><?php echo __('Date Paid') ?></b><br/>
+												<span class="emphasis small"><?php echo __('Date of payment, not entry to system.') ?></span>
 											</td>
 											<td class="right">
 												<input readonly name="paymentDate" id="paymentDate" maxlength=10 value="<?php echo dateConvertBack($guid, $row['paymentDate']) ?>" type="text" class="standardWidth">
@@ -281,8 +284,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</tr>
 										<tr id="paymentAmountRow">
 											<td>
-												<b><?php echo __($guid, 'Amount Paid') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Final amount paid.') ?>
+												<b><?php echo __('Amount Paid') ?></b><br/>
+												<span class="emphasis small"><?php echo __('Final amount paid.') ?>
 												<?php
                                                 if ($_SESSION[$guid]['currency'] != '') {
                                                     echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
@@ -296,8 +299,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</tr>
 										<tr id="payeeRow">
 											<td>
-												<b><?php echo __($guid, 'Payee') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Staff who made, or arranged, the payment.') ?></span>
+												<b><?php echo __('Payee') ?></b><br/>
+												<span class="emphasis small"><?php echo __('Staff who made, or arranged, the payment.') ?></span>
 											</td>
 											<td class="right">
 												<?php
@@ -320,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</tr>
 										<tr id="paymentMethodRow">
 											<td>
-												<b><?php echo __($guid, 'Payment Method') ?></b><br/>
+												<b><?php echo __('Payment Method') ?></b><br/>
 											</td>
 											<td class="right">
 												<input readonly name="paymentMethod" id="paymentMethod" maxlength=10 value="<?php echo $row['paymentMethod'] ?>" type="text" class="standardWidth">
@@ -328,8 +331,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_vi
 										</tr>
 										<tr id="paymentIDRow">
 											<td>
-												<b><?php echo __($guid, 'Payment ID') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Transaction ID to identify this payment.') ?></span>
+												<b><?php echo __('Payment ID') ?></b><br/>
+												<span class="emphasis small"><?php echo __('Transaction ID to identify this payment.') ?></span>
 											</td>
 											<td class="right">
 												<input readonly name="paymentID" id="paymentID" maxlength=100 value="<?php echo $row['paymentID'] ?>" type="text" class="standardWidth">

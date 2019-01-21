@@ -19,34 +19,39 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         $gibbonPersonID = $_GET['gibbonPersonID'];
 
-        echo "<div class='trail'>";
         if ($highestAction == 'Individual Needs Records_view') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__($guid, 'All Student Records')."</a> > </div><div class='trailEnd'>".__($guid, 'View Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('View Student Records'), 'in_view.php')
+                ->add(__('View Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewContribute') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__($guid, 'All Student Records')."</a> > </div><div class='trailEnd'>".__($guid, 'View & Contribute To Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('View Student Records'), 'in_view.php')
+                ->add(__('View & Contribute To Individual Needs Record'));
         } elseif ($highestAction == 'Individual Needs Records_viewEdit') {
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/in_view.php'>".__($guid, 'All Student Records')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Individual Needs Record').'</div>';
+            $page->breadcrumbs
+                ->add(__('View Student Records'), 'in_view.php')
+                ->add(__('Edit Individual Needs Record'));
         }
-        echo '</div>';
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.'));
@@ -63,7 +68,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+            echo __('The selected record does not exist, or you do not have access to it.');
             echo '</div>';
         } else {
             $student = $result->fetch();
@@ -77,11 +82,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
             if ($search != '' and $source == '') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Individual Needs/in_view.php&search='.$search."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Individual Needs/in_view.php&search='.$search."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             } elseif (($gibbonINDescriptorID != '' or $gibbonAlertLevelID != '' or $gibbonRollGroupID != '' or $gibbonYearGroupID != '') and $source == 'summary') {
                 echo "<div class='linkTop'>";
-                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID='.$gibbonINDescriptorID.'&gibbonAlertLevelID='.$gibbonAlertLevelID.'&=gibbonRollGroupID'.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID."'>".__($guid, 'Back to Search Results').'</a>';
+                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Individual Needs/in_summary.php&gibbonINDescriptorID='.$gibbonINDescriptorID.'&gibbonAlertLevelID='.$gibbonAlertLevelID.'&=gibbonRollGroupID'.$gibbonRollGroupID.'&gibbonYearGroupID='.$gibbonYearGroupID."'>".__('Back to Search Results').'</a>';
                 echo '</div>';
             }
 
@@ -138,15 +143,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
-            echo formatName('', $student['preferredName'], $student['surname'], 'Student');
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
+            echo Format::name('', $student['preferredName'], $student['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year Group').'</span><br/>';
-            echo '<i>'.__($guid, $student['yearGroup']).'</i>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Group').'</span><br/>';
+            echo '<i>'.__($student['yearGroup']).'</i>';
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Roll Group').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Roll Group').'</span><br/>';
             echo '<i>'.$student['rollGroup'].'</i>';
             echo '</td>';
             echo '</tr>';
@@ -187,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
 
                     foreach ($educationalAssistants as $ea) {
                         $row = $table->addRow();
-                            $row->addContent(formatName('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
+                            $row->addContent(Format::name('', $ea['preferredName'], $ea['surname'], 'Staff', true, true));
                             $row->addContent($ea['comment']);
 
                         if ($highestAction == 'Individual Needs Records_viewEdit') {
@@ -270,7 +275,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
                     }
             }
 
-            if ($highestAction == 'Individual Needs Records_viewEdit' or $highestAction == 'Individual Needs Records_viewContribute') {
+            if (empty($gibbonINArchiveID) && ($highestAction == 'Individual Needs Records_viewEdit' || $highestAction == 'Individual Needs Records_viewContribute')) {
                 $table->addRow()->addSubmit();
             }
 
@@ -278,5 +283,5 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_edit.p
         }
     }
     //Set sidebar
-    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $student['image_240'], 240);
+    $_SESSION[$guid]['sidebarExtra'] = getUserPhoto($guid, $student['image_240'] ?? '', 240);
 }

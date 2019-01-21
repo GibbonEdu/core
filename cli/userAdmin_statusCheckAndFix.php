@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Comms\NotificationEvent;
 
 require getcwd().'/../gibbon.php';
-require getcwd().'/../lib/PHPMailer/PHPMailerAutoload.php';
 
 getSystemSettings($guid, $connection2);
 
@@ -37,7 +36,7 @@ if (isset($_SESSION[$guid]['i18n']['code'])) {
 }
 
 //Check for CLI, so this cannot be run through browser
-if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from a browser, only via CLI.');
+if (!isCommandLineInterface()) { echo __('This script cannot be run from a browser, only via CLI.');
 } else {
     $count = 0;
 
@@ -114,7 +113,7 @@ if (!isCommandLineInterface()) { echo __($guid, 'This script cannot be run from 
     // Raise a new notification event
     $event = new NotificationEvent('User Admin', 'User Status Check and Fix');
 
-    $event->setNotificationText(sprintf(__($guid, 'A User Admin CLI script has run, updating %1$s users.'), $count));
+    $event->setNotificationText(sprintf(__('A User Admin CLI script has run, updating %1$s users.'), $count));
     $event->setActionLink('/index.php?q=/modules/User Admin/user_manage.php');
 
     //Notify admin

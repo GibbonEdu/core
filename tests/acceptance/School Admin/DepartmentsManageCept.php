@@ -6,7 +6,7 @@ $I->amOnModulePage('School Admin', 'department_manage.php');
 
 // Add ------------------------------------------------
 $I->clickNavigation('Add');
-$I->seeBreadcrumb('Add Learning Area');
+$I->seeBreadcrumb('Add Department');
 
 $addFormValues = array(
     'type'           => 'Learning Area',
@@ -40,7 +40,6 @@ $I->seeSuccessMessage();
 
 // Delete ------------------------------------------------
 $I->amOnModulePage('School Admin', 'department_manage_delete.php', array('gibbonDepartmentID' => $gibbonDepartmentID));
-$I->seeBreadcrumb('Delete Department');
 
 $I->click('Yes');
 $I->seeSuccessMessage();

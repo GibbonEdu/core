@@ -20,25 +20,23 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Update').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Update'));
 
     $return = null;
     if (isset($_GET['return'])) {
         $return = $_GET['return'];
     }
     $returns = array();
-    $returns['warning1'] = __($guid, 'Some aspects of your request failed, but others were successful. The elements that failed are shown below:');
+    $returns['warning1'] = __('Some aspects of your request failed, but others were successful. The elements that failed are shown below:');
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, $returns);
     }
@@ -46,7 +44,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     if (isset($_SESSION[$guid]['systemUpdateError'])) {
         if ($_SESSION[$guid]['systemUpdateError'] != '') {
             echo "<div class='error'>";
-            echo __($guid, 'The following SQL statements caused errors:').' '.$_SESSION[$guid]['systemUpdateError'];
+            echo __('The following SQL statements caused errors:').' '.$_SESSION[$guid]['systemUpdateError'];
             echo '</div>';
         }
         $_SESSION[$guid]['systemUpdateError'] = null;
@@ -58,7 +56,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     $versionCode = $version;
 
     echo '<p>';
-    echo __($guid, 'This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.');
+    echo __('This page allows you to semi-automatically update your Gibbon installation to a new version. You need to take care of the file updates, and based on the new files, Gibbon will do the database upgrades.');
     echo '</p>';
 
     $cuttingEdgeCode = getSettingByScope($connection2, 'System', 'cuttingEdgeCode');
@@ -70,33 +68,33 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
         if ($return == 'success0') {
             $databaseUpdated = true;
             echo '<p>';
-            echo '<b>'.__($guid, 'You seem to be all up to date, good work buddy!').'</b>';
+            echo '<b>'.__('You seem to be all up to date, good work buddy!').'</b>';
             echo '</p>';
         } elseif (version_compare($versionDB, $versionCode, '=')) {
             $databaseUpdated = true;
             //Instructions on how to update
             echo '<h3>';
-            echo __($guid, 'Update Instructions');
+            echo __('Update Instructions');
             echo '</h3>';
             echo '<ol>';
-            echo '<li>'.sprintf(__($guid, 'You are currently using Gibbon v%1$s.'), $versionCode).'</i></li>';
-            echo '<li>'.sprintf(__($guid, 'Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>").'</li>';
-            echo '<li>'.__($guid, 'Download the latest version, and unzip it on your computer.').'</li>';
-            echo '<li>'.__($guid, 'Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
-            echo '<li>'.__($guid, 'Reload this page and follow the instructions to update your database to the latest version.').'</li>';
+            echo '<li>'.sprintf(__('You are currently using Gibbon v%1$s.'), $versionCode).'</i></li>';
+            echo '<li>'.sprintf(__('Check %1$s for a newer version of Gibbon.'), "<a target='_blank' href='https://gibbonedu.org/download'>the Gibbon download page</a>").'</li>';
+            echo '<li>'.__('Download the latest version, and unzip it on your computer.').'</li>';
+            echo '<li>'.__('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
+            echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
             echo '</ol>';
         } elseif (version_compare($versionDB, $versionCode, '>')) {
             //Error
             echo "<div class='error'>";
-            echo __($guid, 'An error has occurred determining the version of the system you are using.');
+            echo __('An error has occurred determining the version of the system you are using.');
             echo '</div>';
         } elseif (version_compare($versionDB, $versionCode, '<')) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Database Update');
+            echo __('Database Update');
             echo '</h3>';
             echo '<p>';
-            echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
+            echo sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s to v%2$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $versionCode).'</b>';
             echo '</p>';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=regularRelease');
@@ -130,34 +128,34 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
 
         //Go! Start with warning about cutting edge code
         echo "<div class='warning'>";
-        echo __($guid, 'Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.');
+        echo __('Your system is set up to run Cutting Edge code, which may or may not be as reliable as regular release code. Backup before installing, and avoid using cutting edge in production.');
         echo '</div>';
 
         if ($return == 'success0') {
             $databaseUpdated = true;
             echo '<p>';
-            echo '<b>'.__($guid, 'You seem to be all up to date, good work buddy!').'</b>';
+            echo '<b>'.__('You seem to be all up to date, good work buddy!').'</b>';
             echo '</p>';
         } elseif ($update == false) {
             $databaseUpdated = true;
             //Instructions on how to update
             echo '<h3>';
-            echo __($guid, 'Update Instructions');
+            echo __('Update Instructions');
             echo '</h3>';
             echo '<ol>';
-            echo '<li>'.sprintf(__($guid, 'You are currently using Cutting Edge Gibbon v%1$s'), $versionCode).'</i></li>';
-            echo '<li>'.sprintf(__($guid, 'Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>").'</li>';
-            echo '<li>'.__($guid, 'Download the latest commits, and unzip it on your computer.').'</li>';
-            echo '<li>'.__($guid, 'Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
-            echo '<li>'.__($guid, 'Reload this page and follow the instructions to update your database to the latest version.').'</li>';
+            echo '<li>'.sprintf(__('You are currently using Cutting Edge Gibbon v%1$s'), $versionCode).'</i></li>';
+            echo '<li>'.sprintf(__('Check %1$s to get the latest commits.'), "<a target='_blank' href='https://github.com/GibbonEdu/core'>our GitHub repo</a>").'</li>';
+            echo '<li>'.__('Download the latest commits, and unzip it on your computer.').'</li>';
+            echo '<li>'.__('Use an FTP client to upload the new files to your server, making sure not to overwrite any additional modules and themes previously added to the system.').'</li>';
+            echo '<li>'.__('Reload this page and follow the instructions to update your database to the latest version.').'</li>';
             echo '</ol>';
         } elseif ($update == true) {
             //Time to update
             echo '<h3>';
-            echo __($guid, 'Database Update');
+            echo __('Database Update');
             echo '</h3>';
             echo '<p>';
-            echo sprintf(__($guid, 'It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';
+            echo sprintf(__('It seems that you have updated your Gibbon code to a new version, and are ready to update your database from v%1$s line %2$s to v%3$s line %4$s. <b>Click "Submit" below to continue. This operation cannot be undone: backup your entire database prior to running the update!'), $versionDB, $cuttingEdgeCodeLine, $versionCode, $versionMaxLinesMax).'</b>';
             echo '</p>';
 
             $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/updateProcess.php?type=cuttingEdge');
@@ -174,7 +172,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
     //INNODB UPGRADE - can be removed
     if (version_compare($version, '16.0.00', '>=')) {
         echo '<h3>';
-        echo __($guid, 'Database Engine Migration');
+        echo __('Database Engine Migration');
         echo '</h3>';
         echo '<p>';
         echo __('Starting from v16, Gibbon is offering installations the option to migrate from MySQL\'s MyISAM engine to InnoDB, as a way to achieve greater reliability and performance.');
@@ -198,7 +196,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 while ($row = $result->fetch()) {
@@ -233,7 +231,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
             }
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'There are no records to display.');
+                echo __('There are no records to display.');
                 echo '</div>';
             } else {
                 while ($row = $result->fetch()) {

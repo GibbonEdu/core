@@ -27,9 +27,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/User Admin/user_manage.php'>".__('Manage Users')."</a> > </div><div class='trailEnd'>".__('Add User').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+         ->add(__('Manage Users'), 'user_manage.php')
+         ->add(__('Add User'));
 
     $returns = array();
     $returns['error5'] = __('Your request failed because your passwords did not match.');
@@ -66,15 +66,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->isRequired()->maxLength(30);
+        $row->addTextField('preferredName')->isRequired()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
@@ -82,7 +82,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
-        $row->addTextField('nameInCharacters')->maxLength(20);
+        $row->addTextField('nameInCharacters')->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
@@ -128,15 +128,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addLabel('gibbonRoleIDPrimary', __('Primary Role'))->description(__('Controls what a user can do and see.'));
         $row->addSelect('gibbonRoleIDPrimary')->fromArray($availableRoles)->isRequired()->placeholder();
 
-    $generateUsername = $form->getFactory()->createButton(__('Generate'))->addClass('generateUsername alignRight')->setTabIndex(-1);
     $row = $form->addRow();
-        $row->addLabel('username', __('Username'))->description(__('System login name. Cannot be changed.'));
-        $row->addTextField('username')
+        $row->addLabel('username', __('Username'))->description(__('System login name.'));
+        $row->addUsername('username')
             ->isRequired()
-            ->maxLength(20)
-            ->append($generateUsername->getOutput())
-            ->addValidation('Validate.Format', 'pattern: /^[a-zA-Z0-9_\-\.]*$/, failureMessage: "'.__('Must be alphanumeric').'"')
-            ->isUnique($_SESSION[$guid]['absoluteURL'].'/publicRegistrationCheck.php');
+            ->addGenerateUsernameButton($form);
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {
@@ -174,7 +170,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $emailLabel = $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->maxLength(50);
+        $email = $row->addEmail('email');
         
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
@@ -183,7 +179,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('emailAlternate', __('Alternate Email'));
-        $row->addEmail('emailAlternate')->maxLength(50);
+        $row->addEmail('emailAlternate');
 
     $row = $form->addRow();
     $row->addAlert(__('Address information for an individual only needs to be set under the following conditions:'), 'warning')
@@ -369,15 +365,15 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('profession', __('Profession'));
-        $row->addTextField('profession')->maxLength(30);
+        $row->addTextField('profession')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('employer', __('Employer'));
-        $row->addTextField('employer')->maxLength(30);
+        $row->addTextField('employer')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('jobTitle', __('Job Title'));
-        $row->addTextField('jobTitle')->maxLength(30);
+        $row->addTextField('jobTitle')->maxLength(90);
 
     // EMERGENCY CONTACTS
     $form->addRow()->addHeading(__('Emergency Contacts'));
@@ -386,7 +382,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('emergency1Name', __('Contact 1 Name'));
-        $row->addTextField('emergency1Name')->maxLength(30);
+        $row->addTextField('emergency1Name')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('emergency1Relationship', __('Contact 1 Relationship'));
@@ -402,7 +398,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
 
     $row = $form->addRow();
         $row->addLabel('emergency2Name', __('Contact 2 Name'));
-        $row->addTextField('emergency2Name')->maxLength(30);
+        $row->addTextField('emergency2Name')->maxLength(90);
 
     $row = $form->addRow();
         $row->addLabel('emergency2Relationship', __('Contact 2 Relationship'));
@@ -452,14 +448,13 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addTextField('vehicleRegistration')->maxLength(20);
 
     $privacySetting = getSettingByScope($connection2, 'User Admin', 'privacy');
-        $privacyBlurb = getSettingByScope($connection2, 'User Admin', 'privacyBlurb');
-        $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
+    $privacyOptions = getSettingByScope($connection2, 'User Admin', 'privacyOptions');
 
-    if ($privacySetting == 'Y' && !empty($privacyBlurb) && !empty($privacyOptions)) {
+    if ($privacySetting == 'Y' && !empty($privacyOptions)) {
         $options = array_map(function($item) { return trim($item); }, explode(',', $privacyOptions));
 
         $row = $form->addRow();
-            $row->addLabel('privacyOptions[]', __('Privacy'))->description($privacyBlurb);
+            $row->addLabel('privacyOptions[]', __('Privacy'))->description(__('Check to indicate which privacy options are required.'));
             $row->addCheckbox('privacyOptions[]')->fromArray($options);
     }
 
@@ -477,38 +472,4 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         $row->addSubmit();
 
     echo $form->getOutput();
-    ?>
-
-    <script type="text/javascript">
-        // Username Generation
-        $(".generateUsername").click(function(){
-            $.ajax({
-                type : 'POST',
-                data : {
-                    gibbonRoleID: $('#gibbonRoleIDPrimary').val(),
-                    preferredName: $('#preferredName').val(),
-                    firstName: $('#firstName').val(),
-                    surname: $('#surname').val(),
-                },
-                url: "./modules/User Admin/user_manage_usernameAjax.php",
-                success: function(responseText){
-                    if (responseText == 0) {
-                        $('#gibbonRoleIDPrimary').change();
-                        $('#preferredName').blur();
-                        $('#firstName').blur();
-                        $('#surname').blur();
-                        alert("<?php
-                            echo __('The following fields are required to generate a username:').'\n\n';
-                            echo __('Primary Role').', '.__('Preferred Name').', '.__('First Name').', '.__('Surname').'\n';
-                        ?>");
-                    } else {
-                        $('#username').val(responseText);
-                        $('#username').trigger('input');
-                        $('#username').blur();
-                    }
-                }
-            });
-        });
-    </script>
-    <?php
 }

@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../gibbon.php';
 include '../../config.php';
 
@@ -39,6 +41,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
     $organisationNameShort = $_POST['organisationNameShort'];
     $organisationEmail = $_POST['organisationEmail'];
     $organisationLogo = $_POST['organisationLogo'];
+    $organisationBackground = $_POST['organisationBackground'];
     $organisationAdministrator = $_POST['organisationAdministrator'];
     $organisationDBA = $_POST['organisationDBA'];
     $organisationHR = $_POST['organisationHR'];
@@ -136,6 +139,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
         }
 
         try {
+            $data = array('organisationBackground' => $organisationBackground);
+            $sql = "UPDATE gibbonSetting SET value=:organisationBackground WHERE scope='System' AND name='organisationBackground'";
+            $result = $connection2->prepare($sql);
+            $result->execute($data);
+        } catch (PDOException $e) {
+            $fail = true;
+        }
+
+        $gibbon->session->set('organisationBackground', $organisationBackground);
+
+        try {
             $data = array('organisationEmail' => $organisationEmail);
             $sql = "UPDATE gibbonSetting SET value=:organisationEmail WHERE scope='System' AND name='organisationEmail'";
             $result = $connection2->prepare($sql);
@@ -166,7 +180,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdministratorName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationAdministratorName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationAdministratorEmail'] = $row['email'];
         }
 
@@ -191,7 +205,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationDBAName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationDBAName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationDBAEmail'] = $row['email'];
         }
 
@@ -216,7 +230,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationHRName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationHRName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationHREmail'] = $row['email'];
         }
 
@@ -241,7 +255,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/systemSetting
             $fail = true;
         } else {
             $row = $result->fetch();
-            $_SESSION[$guid]['organisationAdmissionsName'] = formatName('', $row['preferredName'], $row['surname'], 'Staff', false, true);
+            $_SESSION[$guid]['organisationAdmissionsName'] = Format::name('', $row['preferredName'], $row['surname'], 'Staff', false, true);
             $_SESSION[$guid]['organisationAdmissionsEmail'] = $row['email'];
         }
 

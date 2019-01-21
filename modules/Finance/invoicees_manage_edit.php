@@ -20,18 +20,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_edit.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/invoicees_manage.php'>".__($guid, 'Manage Invoicees')."</a> > </div><div class='trailEnd'>".__($guid, 'Edit Invoicee').'</div>';
-    echo '</div>';
+    $page->breadcrumbs
+        ->add(__('Manage Invoicees'), 'invoicees_manage.php')
+        ->add(__('Edit Invoicee'));        
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, null);
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
     if ($_GET['search'] != '' or $_GET['allUsers'] == 'on') {
         echo "<div class='linkTop'>";
-        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$_GET['search'].'&allUsers='.$_GET['allUsers']."'>".__($guid, 'Back to Search Results').'</a>';
+        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Finance/invoicees_manage.php&search='.$_GET['search'].'&allUsers='.$_GET['allUsers']."'>".__('Back to Search Results').'</a>';
         echo '</div>';
     }
 
@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
     $gibbonFinanceInvoiceeID = $_GET['gibbonFinanceInvoiceeID'];
     if ($gibbonFinanceInvoiceeID == '') {
         echo "<div class='error'>";
-        echo __($guid, 'You have not specified one or more required parameters.');
+        echo __('You have not specified one or more required parameters.');
         echo '</div>';
     } else {
         try {
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
 
         if ($result->rowCount() != 1) {
             echo "<div class='error'>";
-            echo __($guid, 'The specified record does not exist.');
+            echo __('The specified record does not exist.');
             echo '</div>';
         } else {
             //Let's go!
@@ -70,11 +70,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoicees_manage_e
             echo "<table class='smallIntBorder' cellspacing='0' style='width: 100%'>";
             echo '<tr>';
             echo "<td style='width: 34%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Name').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Name').'</span><br/>';
             echo formatName('', $values['preferredName'], $values['surname'], 'Student');
             echo '</td>';
             echo "<td style='width: 33%; vertical-align: top'>";
-            echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Status').'</span><br/>';
+            echo "<span style='font-size: 115%; font-weight: bold'>".__('Status').'</span><br/>';
             echo '<i>'.$values['status'].'</i>';
             echo '</td>';
             echo "<td style='width: 34%; vertical-align: top'>";

@@ -17,13 +17,15 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Module\Attendance\AttendanceView;
+
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_studentsNotPresent_byDate_print.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     if ($_GET['currentDate'] == '') {
@@ -36,12 +38,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
     $sort = !empty($_GET['sort'])? $_GET['sort'] : 'surname, preferredName';
     $gibbonYearGroupIDList = (!empty($_GET['gibbonYearGroupIDList'])) ? explode(',', $_GET['gibbonYearGroupIDList']) : null ;
 
-    require_once $_SESSION[$guid]['absolutePath'].'/modules/Attendance/src/attendanceView.php';
-    $attendance = new Module\Attendance\attendanceView($gibbon, $pdo);
+    require_once __DIR__ . '/src/AttendanceView.php';
+    $attendance = new AttendanceView($gibbon, $pdo);
 
     //Proceed!
     echo '<h2>';
-    echo __($guid, 'Students Not Present').', '.dateConvertBack($guid, $currentDate);
+    echo __('Students Not Present').', '.dateConvertBack($guid, $currentDate);
     echo '</h2>';
 
     //Produce array of attendance data
@@ -56,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     if ($result->rowCount() < 1) {
         echo "<div class='error'>";
-        echo __($guid, 'There are no records to display.');
+        echo __('There are no records to display.');
         echo '</div>';
     } else {
         $log = array();
@@ -97,11 +99,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __($guid, 'There are no records to display.');
+            echo __('There are no records to display.');
             echo '</div>';
         } else {
             echo "<div class='linkTop'>";
-            echo "<a href='javascript:window.print()'>".__($guid, 'Print')."<img style='margin-left: 5px' title='".__($guid, 'Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
+            echo "<a href='javascript:window.print()'>".__('Print')."<img style='margin-left: 5px' title='".__('Print')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/print.png'/></a>";
             echo '</div>';
 
             $lastPerson = '';
@@ -109,22 +111,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             echo "<table class='mini' cellspacing='0' style='width: 100%'>";
             echo "<tr class='head'>";
             echo '<th>';
-            echo __($guid, 'Count');
+            echo __('Count');
             echo '</th>';
             echo '<th style="width:80px">';
-            echo __($guid, 'Roll Group');
+            echo __('Roll Group');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Name');
+            echo __('Name');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Status');
+            echo __('Status');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Reason');
+            echo __('Reason');
             echo '</th>';
             echo '<th>';
-            echo __($guid, 'Comment');
+            echo __('Comment');
             echo '</th>';
             echo '</tr>';
 
@@ -137,7 +139,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     } else {
                         $rowNum = 'odd';
                     }
-                    ++$count;
 
                     try {
                         $dataAttendance = array('date' => $currentDate, 'gibbonPersonID' => $row['gibbonPersonID']);
@@ -152,6 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
                     if ($resultAttendance->rowCount()<1 && $allStudents == FALSE) {
                         continue;
                     }
+                    ++$count;
 
                     //COLOR ROW BY STATUS!
                     echo "<tr class=$rowNum>";
@@ -188,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
             if ($count == 0) {
                 echo "<tr class=$rowNum>";
                 echo '<td colspan=5>';
-                echo __($guid, 'All students are present.');
+                echo __('All students are present.');
                 echo '</td>';
                 echo '</tr>';
             }

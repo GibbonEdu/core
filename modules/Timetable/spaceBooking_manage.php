@@ -24,25 +24,23 @@ use Gibbon\Domain\Timetable\FacilityBookingGateway;
 if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_manage.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Proceed!
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Manage Facility Bookings').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('Manage Facility Bookings'));
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
-            echo '<p>'.__($guid, 'This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';
+            echo '<p>'.__('This page allows you to create facility and library bookings, whilst managing bookings created by all users. Only current and future bookings are shown: past bookings are hidden.').'</p>';
         } else {
-            echo '<p>'.__($guid, 'This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.').'</p>';
+            echo '<p>'.__('This page allows you to create and manage facility and library bookings. Only current and future changes are shown: past bookings are hidden.').'</p>';
         }
 
         if (isset($_GET['return'])) {
@@ -53,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
 
         $criteria = $facilityBookingGateway->newQueryCriteria()
             ->sortBy(['date', 'name'])
-            ->fromArray($_POST);
+            ->fromPOST();
 
         if ($highestAction == 'Manage Facility Bookings_allBookings') {
             $facilityBookings = $facilityBookingGateway->queryFacilityBookings($criteria);
@@ -71,8 +69,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
         $table->addColumn('date', __('Date'))
             ->format(Format::using('date', 'date'));
         $table->addColumn('name', __('Facility'))
-            ->format(function($row) {
-                return $row['name'].'<br/><small><i>'
+            ->format(function($row) use ($guid) {
+                if ($row['foreignKey']=='gibbonSpaceID') {
+                    $output = Format::link($_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Timetable/tt_space_view.php&gibbonSpaceID='.str_pad($row['foreignKeyID'], 10, '0', STR_PAD_LEFT).'&ttDate='.dateConvertBack($guid, $row['date']), $row['name']);
+                } else {
+                    $output = $row['name'];
+                }
+
+                return $output.'<br/><small><i>'
                      .($row['foreignKey'] == 'gibbonLibraryItemID'? __('Library') :'').'</i></small>';
             });
         $table->addColumn('time', __('Time'))

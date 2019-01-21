@@ -1,0 +1,23 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+
+Page Foot: Outputs at the bottom, right before the closing </body> tag.
+Useful for scripts that need to execute after the page has loaded.
+-->#}
+
+{% for code in page.extraFoot %}
+    {{ code|raw }}
+{% endfor %}
+
+{% for asset in page.scriptsFoot %}
+    {% set assetVersion = asset.version is not empty ? asset.version : version %}
+    {% if asset.type == 'inline' %}
+        <script type="text/javascript">{{ asset.src|raw }}</script>
+    {% else %}
+        <script type="text/javascript" src="{{ absoluteURL }}/{{ asset.src }}?v={{ assetVersion }}"></script>
+    {% endif %}
+{% endfor %}

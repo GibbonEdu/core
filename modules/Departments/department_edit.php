@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edit.php') == false) {
     //Acess denied
@@ -51,9 +51,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_edi
         } else {
             $values = $result->fetch();
 
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__('Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__(getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/departments.php'>".__('View All')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/department.php&gibbonDepartmentID='.$_GET['gibbonDepartmentID']."'>".$values['name']."</a> > </div><div class='trailEnd'>".__('Edit Department').'</div>';
-            echo '</div>';
+            $urlParams = ['gibbonDepartmentID' => $gibbonDepartmentID];
+            
+            $page->breadcrumbs
+                ->add(__('View All'), 'departments.php')
+                ->add($values['name'], 'department.php', $urlParams)
+                ->add(__('Edit Department'));            
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, array('error3' => 'Your request failed due to an attachment error.'));

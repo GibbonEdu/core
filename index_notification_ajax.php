@@ -28,7 +28,7 @@ if (isset($_SESSION[$guid]['gibbonThemeName'])) {
 }
 
 if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']) == false) {
-    $output .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
+    $output .= "<a class='inactive' title='".__('Notifications')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='./themes/Default/img/notifications.png'></a>";
 } else {
     //CHECK FOR SYSTEM ALARM
     if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
@@ -39,7 +39,7 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
                 if ($alarm == 'Lockdown') {
                     $type = 'lockdown';
                 } elseif ($alarm == 'Custom') {
-                    $type == 'custom';
+                    $type = 'custom';
                 }
                 $output .= "<script>
 					if ($('div#TB_window').is(':visible')==true && $('div#TB_window').attr('class')!='alarm') {
@@ -76,9 +76,9 @@ if (isset($_SESSION[$guid]) == false or isset($_SESSION[$guid]['gibbonPersonID']
     }
 
     if ($resultNotifications->rowCount() > 0) {
-        $output .= "<a title='".__($guid, 'Notifications')."' href='./index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications.png'></a>";
+        $output .= "<a title='".__('Notifications')."' href='./index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img style='margin-left: 2px; vertical-align: -75%' src='./themes/".$themeName."/img/notifications.png'></a>";
     } else {
-        $output .= "<a class='inactive' title='".__($guid, 'Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+        $output .= "<a class='inactive' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
     }
 }
 

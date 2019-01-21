@@ -18,18 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Set variables
@@ -37,7 +37,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
         //Proceed!
         //Get viewBy, date and class variables
-        $params = '';
+        $params = [];
         $viewBy = null;
         if (isset($_GET['viewBy'])) {
             $viewBy = $_GET['viewBy'];
@@ -62,15 +62,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
             }
             list($dateYear, $dateMonth, $dateDay) = explode('-', $date);
             $dateStamp = mktime(0, 0, 0, $dateMonth, $dateDay, $dateYear);
-            $params = "&viewBy=date&date=$date";
+            $params += [
+                'viewBy' => 'date',
+                'date' => $date,
+            ];
         } elseif ($viewBy == 'class') {
             $class = null;
             if (isset($_GET['class'])) {
                 $class = $_GET['class'];
             }
             $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-            $params = "&viewBy=class&class=$class&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView";
-        }
+            $params += [
+                'viewBy' => 'class',
+                'date' => $class,
+                'gibbonCourseClassID' => $gibbonCourseClassID,
+                'subView' => $subView,
+            ];
+		}
 
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
@@ -80,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $gibbonPlannerEntryID = $_GET['gibbonPlannerEntryID'];
         if ($gibbonPlannerEntryID == '' or ($viewBy == 'class' and $gibbonCourseClassID == 'Y')) {
             echo "<div class='error'>";
-            echo __($guid, 'You have not specified one or more required parameters.');
+            echo __('You have not specified one or more required parameters.');
             echo '</div>';
         } else {
             try {
@@ -101,28 +109,27 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 $otherYearDuplicateSuccess = false;
                 //Deal with duplicate to other year
                 $returns = array();
-                $returns['success0'] = __($guid, 'Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
+                $returns['success0'] = __('Your request was completed successfully, but the target class is in another year, so you cannot see the results here.');
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, $returns);
                 }
                 if ($otherYearDuplicateSuccess != true) {
                     echo "<div class='error'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 }
             } else {
                 //Let's go!
-                $row = $result->fetch();
+				$row = $result->fetch();
+				
+				// target of the planner
+				$target = ($viewBy === 'class') ? $row['course'].'.'.$row['class'] : dateConvertBack($guid, $date);
 
-                if ($viewBy == 'date') {
-                    $extra = dateConvertBack($guid, $date);
-                } else {
-                    $extra = $row['course'].'.'.$row['class'];
-                }
-
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q'])."/planner.php$params'>".__($guid, 'Planner')." $extra</a> > </div><div class='trailEnd'>".__($guid, 'Duplicate Lesson Plan').'</div>';
-                echo '</div>';
+				$page->breadcrumbs
+					->add(__('Planner for {classDesc}', [
+						'classDesc' => $target,
+					]), 'planner.php', $params)
+					->add(__('Duplicate Lesson Plan'));
 
                 if (isset($_GET['return'])) {
                     returnProcess($guid, $_GET['return'], null, null);
@@ -139,18 +146,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                 if ($step == 1) {
                     ?>
 					<p>
-					<?php echo __($guid, 'This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
+					<?php echo __('This process will duplicate all aspects of the selected lesson. If a lesson is copied into another course, Smart Block content will be added into the lesson body, so it does not get left out.') ?>
 					</p>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner_duplicate.php&gibbonPlannerEntryID=$gibbonPlannerEntryID&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&step=2" ?>">
 						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
 								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Target Year') ?> *</b><br/>
+									<b><?php echo __('Target Year') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonSchoolYearID" id="gibbonSchoolYearID" class="standardWidth">
 										<?php
-                                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                        echo "<option value='Please select...'>".__('Please select...').'</option>';
 										try {
 											$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
 											$sqlSelect = 'SELECT * FROM gibbonSchoolYear WHERE sequenceNumber>=(SELECT sequenceNumber FROM gibbonSchoolYear WHERE gibbonSchoolYearID=:gibbonSchoolYearID) ORDER BY sequenceNumber';
@@ -170,18 +177,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __('Select something!') ?>"});
 									</script>
 								</td>
 							</tr>
 							<tr>
 								<td style='width: 275px'>
-									<b><?php echo __($guid, 'Target Class') ?> *</b><br/>
+									<b><?php echo __('Target Class') ?> *</b><br/>
 								</td>
 								<td class="right">
 									<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
 										<?php
-                                        echo "<option value='Please select...'>".__($guid, 'Please select...').'</option>';
+                                        echo "<option value='Please select...'>".__('Please select...').'</option>';
 										try {
 											if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
 												$dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -202,7 +209,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 									</select>
 									<script type="text/javascript">
 										var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __($guid, 'Select something!') ?>"});
+										gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __('Select something!') ?>"});
 									</script>
 									<script type="text/javascript">
 										$("#gibbonCourseClassID").chainedTo("#gibbonSchoolYearID");
@@ -224,8 +231,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								?>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Duplicate Markbook Columns?') ?></b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Will duplicate any columns linked to this lesson.') ?><br/></span>
+										<b><?php echo __('Duplicate Markbook Columns?') ?></b><br/>
+										<span class="emphasis small"><?php echo __('Will duplicate any columns linked to this lesson.') ?><br/></span>
 									</td>
 									<td class="right">
 										<select name="duplicate" id="duplicate" class="standardWidth">
@@ -241,14 +248,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
 							<tr>
 								<td>
-									<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+									<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 								</td>
 								<td class="right">
 									<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 									<input name="gibbonPlannerEntryID_org" id="gibbonPlannerEntryID_org" value="<?php echo $gibbonPlannerEntryID ?>" type="hidden">
 									<input name="subView" id="subView" value="<?php echo $subView ?>" type="hidden">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Next') ?>">
+									<input type="submit" value="<?php echo __('Next') ?>">
 								</td>
 							</tr>
 						</table>
@@ -265,7 +272,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                     }
                     if ($gibbonCourseClassID == '' or $gibbonSchoolYearID == '') {
                         echo "<div class='error'>";
-                        echo __($guid, 'You have not specified one or more required parameters.');
+                        echo __('You have not specified one or more required parameters.');
                         echo '</div>';
                     } else {
                         ?>
@@ -273,8 +280,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr>
 									<td style='width: 275px'>
-										<b><?php echo __($guid, 'Class') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'This value cannot be changed.') ?></span>
+										<b><?php echo __('Class') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('This value cannot be changed.') ?></span>
 									</td>
 									<td class="right">
 										<?php
@@ -320,13 +327,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
                                         ?>
 										<tr>
 											<td>
-												<b><?php echo __($guid, 'Keep lesson in original unit?') ?></b><br/>
-												<span class="emphasis small"><?php echo __($guid, 'Only available if source and target classes are in the same course.') ?><br/></span>
+												<b><?php echo __('Keep lesson in original unit?') ?></b><br/>
+												<span class="emphasis small"><?php echo __('Only available if source and target classes are in the same course.') ?><br/></span>
 											</td>
 											<td class="right">
 												<select name="keepUnit" id="keepUnit" class="standardWidth">
-													<option value='Y'><?php echo __($guid, 'Yes') ?></option>
-													<option value='N'><?php echo __($guid, 'No') ?></option>
+													<option value='Y'><?php echo __('Yes') ?></option>
+													<option value='N'><?php echo __('No') ?></option>
 												</select>
 											</td>
 										</tr>
@@ -338,7 +345,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Name') ?> *</b><br/>
+										<b><?php echo __('Name') ?> *</b><br/>
 									</td>
 									<td class="right">
 										<input name="name" id="name" maxlength=20 value="<?php echo htmlPrep($row['name']) ?>" type="text" class="standardWidth">
@@ -379,8 +386,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								?>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Date') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
+										<b><?php echo __('Date') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
 										} else {
 											echo $_SESSION[$guid]['i18n']['dateFormat'];
 										}
@@ -412,8 +419,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'Start Time') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
+										<b><?php echo __('Start Time') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
 									</td>
 									<td class="right">
 										<input name="timeStart" id="timeStart" maxlength=5 value="<?php echo substr($nextTimeStart, 0, 5) ?>" type="text" class="standardWidth">
@@ -445,8 +452,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								</tr>
 								<tr>
 									<td>
-										<b><?php echo __($guid, 'End Time') ?> *</b><br/>
-										<span class="emphasis small"><?php echo __($guid, 'Format: hh:mm (24hr)') ?><br/></span>
+										<b><?php echo __('End Time') ?> *</b><br/>
+										<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
 									</td>
 									<td class="right">
 										<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php echo substr($nextTimeEnd, 0, 5) ?>" type="text" class="standardWidth">
@@ -478,7 +485,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 								</tr>
 								<tr>
 									<td>
-										<span class="emphasis small">* <?php echo __($guid, 'denotes a required field'); ?></span>
+										<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 									</td>
 									<td class="right">
 										<input name="duplicate" id="duplicate" value="<?php echo $duplicate ?>" type="hidden">
@@ -488,7 +495,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
 										<input name="viewBy" id="viewBy" value="<?php echo $viewBy ?>" type="hidden">
 										<input name="subView" id="subView" value="<?php echo $subView ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-										<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+										<input type="submit" value="<?php echo __('Submit'); ?>">
 									</td>
 								</tr>
 							</table>
@@ -503,4 +510,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_duplicate.
         $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $_SESSION[$guid]['gibbonPersonID'], $dateStamp, $gibbonCourseClassID);
     }
 }
-?>

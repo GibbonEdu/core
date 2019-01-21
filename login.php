@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Comms\NotificationEvent;
 
-include 'functions.php';
-include 'config.php';
+// Gibbon system-wide include
+require_once './gibbon.php';
 
 setCurrentSchoolYear($guid, $connection2);
 
@@ -50,7 +50,7 @@ if (empty($username) or empty($password)) {
 else {
     try {
         $data = array('username' => $username);
-        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin, canLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
+        $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -65,9 +65,21 @@ else {
     } else {
         $row = $result->fetch();
 
-        // Insufficient privledges to login
+        // Insufficient privileges to login
         if ($row['canLogin'] != 'Y') {
             $URL .= '?loginReturn=fail2';
+            header("Location: {$URL}");
+            exit;
+        }
+
+        // Get primary role info
+        $data = array('gibbonRoleIDPrimary' => $row['gibbonRoleIDPrimary']);
+        $sql = "SELECT * FROM gibbonRole WHERE gibbonRoleID=:gibbonRoleIDPrimary";
+        $role = $pdo->selectOne($sql, $data);
+
+        // Login not allowed for this role
+        if (!empty($role['canLoginRole']) && $role['canLoginRole'] != 'Y') {
+            $URL .= '?loginReturn=fail9';
             header("Location: {$URL}");
             exit;
         }
@@ -174,7 +186,7 @@ else {
                             //Check number of rows returned.
                             //If it is not 1, show error
                             if (!($resultYear->rowCount() == 1)) {
-                                die(__($guid, 'Configuration Error: there is a problem accessing the current Academic Year from the database.'));
+                                die(__('Configuration Error: there is a problem accessing the current Academic Year from the database.'));
                             }
                             //Else get year details
                             else {
@@ -217,7 +229,7 @@ else {
                         }
                         if ($resultLanguage->rowCount() == 1) {
                             $rowLanguage = $resultLanguage->fetch();
-                            setLanguageSession($guid, $rowLanguage);
+                            setLanguageSession($guid, $rowLanguage, false);
                         }
                     } else {
                         //If no language specified, get user preference if it exists
@@ -231,7 +243,7 @@ else {
                             }
                             if ($resultLanguage->rowCount() == 1) {
                                 $rowLanguage = $resultLanguage->fetch();
-                                setLanguageSession($guid, $rowLanguage);
+                                setLanguageSession($guid, $rowLanguage, false);
                             }
                         }
                     }

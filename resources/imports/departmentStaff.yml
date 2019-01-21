@@ -1,0 +1,27 @@
+details:
+    type: departmentStaff
+    name: Departments - Staff
+    table: gibbonDepartmentStaff
+    modes: { update: true, insert: true, export: true }
+access:
+    module: School Admin
+    action: Manage Departments
+primaryKey:
+    gibbonDepartmentStaffID
+uniqueKeys:
+    - [ gibbonDepartmentID, gibbonPersonID ]
+table:
+    gibbonDepartmentID:
+        name: "Department"
+        desc: "Short Name"
+        args: { filter: string, required: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    gibbonPersonID:
+        name: "Staff"
+        desc: "Username"
+        args: { filter: nospaces, required: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    role:
+        name: "Role"
+        desc: ""
+        args: { filter: string, required: true, custom: true }

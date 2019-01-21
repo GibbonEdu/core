@@ -1,0 +1,178 @@
+details:
+    type: libraryRecordPrint
+    name: Records - Print Publication
+    table: gibbonLibraryItem
+    modes: { update: true, insert: true, export: true }
+access:
+    module: Library
+    action: Manage Catalog
+primaryKey:
+    gibbonLibraryItemID
+uniqueKeys:
+    - id
+table:
+    gibbonLibraryTypeID: 
+        name: "Type"
+        desc: ""
+        value: "Print Publication"
+        args: { filter: string, required: true, custom: true, hidden: true }
+        relationship: { table: gibbonLibraryType, key: gibbonLibraryTypeID, field: name  }
+    name: 
+        name: "Name"
+        desc: "Volume or product name."
+        args: { filter: string, required: true }
+    id: 
+        name: "ID"
+        desc: "Must be unique, or will lead to update not insert."
+        args: { filter: string, required: true }
+    producer: 
+        name: "Author/Brand"
+        desc: "Who created the item?"
+        args: { filter: string, required: true, custom: true }
+    vendor: 
+        name: "Vendor"
+        desc: "Who supplied the item?"
+        args: { filter: string, custom: true }
+    purchaseDate: 
+        name: "Purchase Date"
+        desc: ""
+        args: { filter: date, custom: true }
+    invoiceNumber: 
+        name: "Invoice Number"
+        desc: ""
+        args: { filter: string, custom: true }
+    gibbonSpaceID: 
+        name: "Location"
+        desc: "Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonSpace, key: gibbonSpaceID, field: name }
+    locationDetail: 
+        name: "Location Detail"
+        desc: "Shelf, cabinet, sector, etc"
+        args: { filter: string, custom: true }
+    ownershipType: 
+        name: "Ownership Type"
+        desc: ""
+        args: { filter: string, custom: true }
+    gibbonPersonIDOwnership: 
+        name: "Main User"
+        desc: "Username of person the device is assigned to."
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonPerson, key: gibbonPersonID, field: username  }
+    gibbonDepartmentID:
+        name: "Department"
+        desc: "Short Name"
+        args: { filter: string, custom: true }
+        relationship: { table: gibbonDepartment, key: gibbonDepartmentID, field: nameShort  }
+    borrowable: 
+        name: "Borrowable?"
+        desc: "Is item available for loan?"
+        args: { filter: yesno, custom: true }
+    status: 
+        name: "Status?"
+        desc: ""
+        args: { filter: string, custom: true }
+    replacement: 
+        name: "Replacement?"
+        desc: ""
+        args: { filter: yesno, custom: true }
+    replacementCost: 
+        name: "Replacement Cost"
+        desc: ""
+        args: { filter: decimal, custom: true }
+    gibbonSchoolYearIDReplacement : 
+        name: "Replacement Year"
+        desc: "School year name, as set in School Admin. Must already exist."
+        args: { filter: schoolyear, custom: true }
+        relationship: { table: gibbonSchoolYear, key: gibbonSchoolYearID, field: name  }
+    comment: 
+        name: "Comments/Notes"
+        desc: ""
+        args: { filter: string, custom: true  }
+
+    # Type-Specific Serializable Fields
+
+    fieldFormat: 
+        name: "Format"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldPublisher: 
+        name: "Publisher"
+        desc: "Name of the company who published the volume."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldPublicationDate: 
+        name: "Publication Date"
+        desc: ""
+        args: { filter: date, custom: true, readonly: true, serialize: fields  }
+    fieldCountryofPublication: 
+        name: "Country of Publication"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldEdition: 
+        name: "Edition"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldISBN10: 
+        name: "ISBN10"
+        desc: "10-digit unique ISBN number."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldISBN13: 
+        name: "ISBN13"
+        desc: "13-digit unique ISBN number."
+        args: { filter: string, required: true, custom: true, readonly: true, serialize: fields  }
+    fieldDescription: 
+        name: "Description"
+        desc: "A brief blurb describing the volume."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldSubjects: 
+        name: "Subjects"
+        desc: "Comma separated list of subjects."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldCollection: 
+        name: "Collection"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldControlNumber: 
+        name: "Control Number"
+        desc: ""
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldCatalogingAuthority: 
+        name: "Cataloging Authority"
+        desc: " Issuing authority for Control Number."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldReaderYoungest: 
+        name: "Reader Age (Youngest)"
+        desc: "Age in years, youngest reading age recommendation."
+        args: { filter: numeric, custom: true, readonly: true, serialize: fields  }
+    fieldReaderOldest: 
+        name: "Reader Age (Oldest)"
+        desc: "Age in years, oldest reading age recommendation."
+        args: { filter: numeric, custom: true, readonly: true, serialize: fields  }
+    fieldPageCount: 
+        name: "Page Count"
+        desc: "The number of pages in the volume."
+        args: { filter: numeric, custom: true, readonly: true, serialize: fields  }
+    fieldHeight: 
+        name: "Height"
+        desc: "The physical height of the volume, in cm."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldWidth: 
+        name: "Width"
+        desc: "The physical width of the volume, in cm."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldThickness: 
+        name: "Thickness"
+        desc: "The physical thickness of the volume, in cm."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldLanguage: 
+        name: "Language"
+        desc: "The primary language of the volume."
+        args: { filter: string, custom: true, readonly: true, serialize: fields  }
+    fieldLink: 
+        name: "Link"
+        desc: "Link to web-based information on the volume."
+        args: { filter: url, custom: true, readonly: true, serialize: fields  }
+    fields:
+        name: "Type-Specific Details"
+        desc: ""
+        args: { filter: string, serialize: fields, hidden: true, custom: true }

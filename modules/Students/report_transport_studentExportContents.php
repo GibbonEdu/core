@@ -17,12 +17,14 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Services\Format;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_student.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
@@ -51,19 +53,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
     for($col = 'A'; $col !== 'F'; $col++)
         $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
 
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __($guid, 'Transport'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __('Transport'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __($guid, 'Student'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __('Student'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __($guid, 'Address'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __('Address'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __($guid, 'Parents'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __('Parents'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __($guid, 'Roll Group'));
+	$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __('Roll Group'));
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
     $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
 
@@ -77,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, $row['transport']);
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
         //Column B
- 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName('', $row['preferredName'], $row['surname'], 'Student', true));
+ 		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, Format::name('', $row['preferredName'], $row['surname'], 'Student', true));
         $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
         //Column C
 		$dataFamily = array('gibbonPersonID' => $row['gibbonPersonID']);
@@ -132,7 +134,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                 $contact .= $e->getMessage().'. ';
             }
             while ($rowFamily2 = $resultFamily2->fetch()) {
-                $contact .= formatName($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').': ';
+                $contact .= Format::name($rowFamily2['title'], $rowFamily2['preferredName'], $rowFamily2['surname'], 'Parent').': ';
                 $numbers = 0;
                 for ($i = 1; $i < 5; ++$i) {
                     if ($rowFamily2['phone'.$i] != '') {
@@ -147,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
                     }
                 }
                 if ($numbers == 0) {
-                    $contact .= __($guid, "No number available").". ";
+                    $contact .= __("No number available").". ";
                 }
             }
         }
@@ -160,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         $excel->getActiveSheet()->getStyleByColumnAndRow(4, $r)->applyFromArray($style_border);
     }
     if ($count == 0) {
-  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __($guid, 'There are no records to display.'));
+  		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, __('There are no records to display.'));
         $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
     }
     $excel->exportWorksheet();

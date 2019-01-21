@@ -20,24 +20,22 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
-        echo "<div class='trail'>";
-        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'View Activities').'</div>';
-        echo '</div>';
+        $page->breadcrumbs->add(__('View Activities'));          
 
         if (isset($_GET['return'])) {
             returnProcess($guid, $_GET['return'], null, array('success0' => 'Registration was successful.', 'success1' => 'Unregistration was successful.', 'success2' => 'Registration was successful, but the activity is full, so you are on the waiting list.'));
@@ -52,19 +50,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         if (!($access == 'View' or $access == 'Register')) {
             echo "<div class='error'>";
-            echo __($guid, 'Activity listing is currently closed.');
+            echo __('Activity listing is currently closed.');
             echo '</div>';
         } else {
             if ($access == 'View') {
                 echo "<div class='warning'>";
-                echo __($guid, 'Registration is currently closed, but you can still view activities.');
+                echo __('Registration is currently closed, but you can still view activities.');
                 echo '</div>';
             }
 
             $disableExternalProviderSignup = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup');
             if ($disableExternalProviderSignup == 'Y') {
                 echo "<div class='warning'>";
-                echo __($guid, 'Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.');
+                echo __('Registration for activities offered by outside providers is disabled. Check activity details for instructions on how to register for such acitvities.');
                 echo '</div>';
             }
 
@@ -90,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
+                    echo __('Access denied.');
                     echo '</div>';
                 } else {
                     $options = array();
@@ -121,19 +119,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($countChild == 0) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     }
                 }
             }
 
             echo '<h2>';
-            echo __($guid, 'Filter & Search');
+            echo __('Filter & Search');
             echo '</h2>';
 
             $search = isset($_GET['search'])? $_GET['search'] : null;
 
-            $form = Form::create('search', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
+            $form = Form::create('searchForm', $_SESSION[$guid]['absoluteURL'].'/index.php','get');
             $form->setClass('noIntBorder fullWidth');
 
             $form->addHiddenValue('q', "/modules/".$_SESSION[$guid]['module']."/activities_view.php");
@@ -154,7 +152,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             echo $form->getOutput();
 
             echo '<h2>';
-            echo __($guid, 'Activities');
+            echo __('Activities');
             echo '</h2>';
 
             //Set pagination variable
@@ -262,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($result->rowCount() < 1) {
                     echo "<div class='error'>";
-                    echo __($guid, 'There are no records to display.');
+                    echo __('There are no records to display.');
                     echo '</div>';
                 } else {
                     if ($result->rowCount() > $_SESSION[$guid]['pagination']) {
@@ -271,7 +269,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     if ($dateType == 'Term' and $maxPerTerm > 0 and (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0))) {
                         echo "<div class='warning'>";
-                        echo __($guid, "Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
+                        echo __("Remember, each student can register for no more than $maxPerTerm activities per term. Your current registration count by term is:");
                         $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
                         echo '<ul>';
                         for ($i = 0; $i < count($terms); $i = $i + 2) {
@@ -299,35 +297,35 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo "<table cellspacing='0' style='width: 100%'>";
                     echo "<tr class='head'>";
                     echo '<th>';
-                    echo __($guid, 'Activity');
+                    echo __('Activity');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Provider');
+                    echo __('Provider');
                     echo '</th>';
                     echo '<th>';
                     if ($dateType != 'Date') {
-                        echo __($guid, 'Terms').'<br/>';
+                        echo __('Terms').'<br/>';
                     } else {
-                        echo __($guid, 'Dates').'<br/>';
+                        echo __('Dates').'<br/>';
                     }
                     echo "<span style='font-style: italic; font-size: 85%'>";
-                    echo __($guid, 'Days');
+                    echo __('Days');
                     echo '</span>';
                     echo '</th>';
                     echo "<th style='width: 100px'>";
-                    echo __($guid, 'Years');
+                    echo __('Years');
                     echo '</th>';
                     echo '<th>';
-                    echo __($guid, 'Cost').'<br/>';
+                    echo __('Cost').'<br/>';
                     echo "<span style='font-style: italic; font-size: 85%'>".$_SESSION[$guid]['currency'].'</span>';
                     echo '</th>';
                     if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                         echo '<th>';
-                        echo __($guid, 'Enrolment');
+                        echo __('Enrolment');
                         echo '</th>';
                     }
                     echo "<th style='width: 80px'>";
-                    echo __($guid, 'Actions');
+                    echo __('Actions');
                     echo '</th>';
                     echo '</tr>';
 
@@ -405,11 +403,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             if ($count2 > 0) {
                                 echo ', ';
                             }
-                            echo __($guid, $rowSlots['nameShort']);
+                            echo __($rowSlots['nameShort']);
                             ++$count2;
                         }
                         if ($count2 == 0) {
-                            echo '<i>'.__($guid, 'None').'</i>';
+                            echo '<i>'.__('None').'</i>';
                         }
                         echo '</span>';
                         echo '</td>';
@@ -418,10 +416,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         echo '</td>';
                         echo '<td>';
                         if ($hideExternalProviderCost == 'Y' and $row['provider'] == 'External') {
-                            echo '<i>'.__($guid, 'See activity details').'</i>';
+                            echo '<i>'.__('See activity details').'</i>';
                         } else {
                             if ($row['payment'] == 0) {
-                                echo '<i>'.__($guid, 'None').'</i>';
+                                echo '<i>'.__('None').'</i>';
                             } else {
                                 if (substr($_SESSION[$guid]['currency'], 4) != '') {
                                     echo substr($_SESSION[$guid]['currency'], 4);
@@ -437,16 +435,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                             echo '<td>';
                             if ($row['provider'] == 'External' and $disableExternalProviderSignup == 'Y') {
-                                echo '<i>'.__($guid, 'See activity details').'</i>';
+                                echo '<i>'.__('See activity details').'</i>';
                             } elseif ($row['registration'] == 'N') {
-                                echo __($guid, 'Closed').'<br/>';
+                                echo __('Closed').'<br/>';
                             } else {
                                 echo $rowEnrol['status'];
                             }
                             echo '</td>';
                         }
                         echo '<td>';
-                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__($guid, 'View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                        echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/activities_view_full.php&gibbonActivityID='.$row['gibbonActivityID']."&width=1000&height=550'><img title='".__('View Details')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                         $signup = true;
                         if ($access == 'View') {
                             $signup = false;
@@ -460,9 +458,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         if ($signup) {
                             if (($roleCategory == 'Student' and $highestAction == 'View Activities_studentRegister') or ($roleCategory == 'Parent' and $highestAction == 'View Activities_studentRegisterByParent' and $gibbonPersonID != '' and $countChild > 0)) {
                                 if ($resultEnrol->rowCount() < 1) {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=register&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Register')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=register&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__('Register')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> ";
                                 } else {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=unregister&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__($guid, 'Unregister')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/activities_view_register.php&gibbonPersonID=$gibbonPersonID&search=".$search.'&mode=unregister&gibbonActivityID='.$row['gibbonActivityID']."'><img title='".__('Unregister')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                                 }
                             }
                         }

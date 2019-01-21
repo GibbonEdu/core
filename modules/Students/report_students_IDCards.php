@@ -21,20 +21,19 @@ use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_IDCards.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'You do not have access to this action.');
+    echo __('You do not have access to this action.');
     echo '</div>';
 } else {
     //Proceed!
-    echo "<div class='trail'>";
-    echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Student ID Cards').'</div>';
-    echo '</div>';
+    $page->breadcrumbs->add(__('Student ID Cards'));
+
     echo '<p>';
-    echo __($guid, 'This report allows a user to select a range of students and create ID cards for those students.');
+    echo __('This report allows a user to select a range of students and create ID cards for those students.');
     echo '</p>';
 
     echo '<h2>';
@@ -68,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
     if (count($choices) > 0) {
         echo '<h2>';
-        echo __($guid, 'Report Data');
+        echo __('Report Data');
         echo '</h2>';
 
         try {
@@ -93,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
             echo '</div>';
         } else {
             echo '<p>';
-            echo __($guid, 'These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale.');
+            echo __('These cards are designed to be printed to credit-card size, however, they will look bigger on screen. To print in high quality (144dpi) and at true size, save the cards as an image, and print to 50% scale.');
             echo '</p>';
 
             //Get background image
@@ -108,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
 
                 if (empty($attachment)) {
                     echo '<div class="error">';
-                        echo __($guid, 'Your request failed due to an attachment error.');
+                        echo __('Your request failed due to an attachment error.');
                         echo ' '.$fileUploader->getLastError();
                     echo '</div>';
                 } else {
@@ -140,10 +139,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
                 echo "<td style='padding: 15px 0 0 0 ; text-align: left; width: 280px; vertical-align: top; font-size: 22px'>";
                 echo "<div style='padding: 5px; background-color: rgba(255,255,255,0.3); min-height: 200px'>";
                 echo "<div style='font-weight: bold; font-size: 30px'>".$row['officialName'].'</div><br/>';
-                echo '<b>'.__($guid, 'DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
-                echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__($guid, 'ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
-                echo '<b>'.__($guid, 'Year/Roll')."</b>: <span style='float: right'><i>".__($guid, $row['year']).' / '.$row['roll'].'</span><br/>';
-                echo '<b>'.__($guid, 'School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['gibbonSchoolYearName'].'</span><br/>';
+                echo '<b>'.__('DOB')."</b>: <span style='float: right'><i>".dateConvertBack($guid, $row['dob']).'</span><br/>';
+                echo '<b>'.$_SESSION[$guid]['organisationNameShort'].' '.__('ID')."</b>: <span style='float: right'><i>".$row['studentID'].'</span><br/>';
+                echo '<b>'.__('Year/Roll')."</b>: <span style='float: right'><i>".__($row['year']).' / '.$row['roll'].'</span><br/>';
+                echo '<b>'.__('School Year')."</b>: <span style='float: right'><i>".$_SESSION[$guid]['gibbonSchoolYearName'].'</span><br/>';
                 echo '</div>';
                 echo '</td>';
                 echo '</tr>';
@@ -168,4 +167,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_I
         }
     }
 }
-?>

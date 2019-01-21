@@ -18,19 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Set variables
@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         }
         list($todayYear, $todayMonth, $todayDay) = explode('-', $today);
         $todayStamp = mktime(0, 0, 0, $todayMonth, $todayDay, $todayYear);
-        $gibbonPersonID = '';
+        $gibbonPersonIDArray = [];
 
         //My children's classes
         if ($highestAction == 'Lesson Planner_viewMyChildrensClasses') {
@@ -84,9 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             if (isset($_GET['search'])) {
                 $search = $_GET['search'];
             }
-            echo "<div class='trail'>";
-            echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'My Children\'s Classes').'</div>';
-            echo '</div>';
+            $page->breadcrumbs->add(__('My Children\'s Classes'));
 
             if (isset($_GET['return'])) {
                 returnProcess($guid, $_GET['return'], null, null);
@@ -104,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
             if ($result->rowCount() < 1) {
                 echo "<div class='error'>";
-                echo __($guid, 'Access denied.');
+                echo __('Access denied.');
                 echo '</div>';
             } else {
                 //Get child list
@@ -116,37 +114,36 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         $sqlChild = "SELECT * FROM gibbonFamilyChild JOIN gibbonPerson ON (gibbonFamilyChild.gibbonPersonID=gibbonPerson.gibbonPersonID) JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID) JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFamilyID=:gibbonFamilyID AND gibbonPerson.status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY surname, preferredName ";
                         $resultChild = $connection2->prepare($sqlChild);
                         $resultChild->execute($dataChild);
-                    } catch (PDOException $e) {
-                    }
+                    } catch (PDOException $e) {}
                     while ($rowChild = $resultChild->fetch()) {
                         $select = '';
                         if ($rowChild['gibbonPersonID'] == $search) {
                             $select = 'selected';
                         }
 
-                        $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student').'</option>';
-                        $gibbonPersonID[$count] = $rowChild['gibbonPersonID'];
+                        $options .= "<option $select value='".$rowChild['gibbonPersonID']."'>".formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student').'</option>';
+                        $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                         ++$count;
                     }
                 }
 
                 if ($count == 0) {
                     echo "<div class='error'>";
-                    echo __($guid, 'Access denied.');
+                    echo __('Access denied.');
                     echo '</div>';
                 } elseif ($count == 1) {
-                    $search = $gibbonPersonID[0];
+                    $search = $gibbonPersonIDArray[0];
                 } else {
                     echo '<h2>';
-                    echo __($guid, 'Choose');
+                    echo __('Choose');
                     echo '</h2>'; ?>
 					<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
 						<table class='noIntBorder' cellspacing='0' style="width: 100%">
 							<tr><td style="width: 30%"></td><td></td></tr>
 							<tr>
 								<td>
-									<b><?php echo __($guid, 'Search For') ?></b><br/>
-									<span class="emphasis small"><?php echo __($guid, 'Preferred, surname, username.') ?></span>
+									<b><?php echo __('Search For') ?></b><br/>
+									<span class="emphasis small"><?php echo __('Preferred, surname, username.') ?></span>
 								</td>
 								<td class="right">
 									<select name="search" id="search" class="standardWidth">
@@ -168,7 +165,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     ?>
                                     <input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner.php">
 									<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-									<input type="submit" value="<?php echo __($guid, 'Submit'); ?>">
+									<input type="submit" value="<?php echo __('Submit'); ?>">
 								</td>
 							</tr>
 						</table>
@@ -192,14 +189,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                     if ($resultChild->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         $rowChild = $resultChild->fetch();
 
                         if ($count > 1) {
                             echo '<h2>';
-                            echo __($guid, 'Lessons');
+                            echo __('Lessons');
                             echo '</h2>';
                         }
 
@@ -207,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         if ($viewBy == 'date') {
                             if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2) == false) {
                                 echo "<div class='warning'>";
-                                echo __($guid, 'School is closed on the specified day.');
+                                echo __('School is closed on the specified day.');
                                 echo '</div>';
                             } else {
                                 try {
@@ -244,38 +241,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 //Only show add if user has edit rights
                                 if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
                                     echo "<div class='linkTop'>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&date=$date'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&date=$date'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                                     echo '</div>';
                                 }
 
                                 if ($result->rowCount() < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There are no records to display.');
+                                    echo __('There are no records to display.');
                                     echo '</div>';
                                 } else {
                                     echo "<table cellspacing='0' style='width: 100%'>";
                                     echo "<tr class='head'>";
                                     echo '<th>';
-                                    echo __($guid, 'Class');
+                                    echo __('Class');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Lesson').'</br>';
-                                    echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+                                    echo __('Lesson').'</br>';
+                                    echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Time');
+                                    echo __('Time');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Homework');
+                                    echo __('Homework');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Access');
+                                    echo __('Access');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Like');
+                                    echo __('Like');
                                     echo '</th>';
                                     echo "<th style='min-width: 140px'>";
-                                    echo __($guid, 'Actions');
+                                    echo __('Actions');
                                     echo '</th>';
                                     echo '</tr>';
 
@@ -307,7 +304,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             if (isset($unit[0])) {
                                                 echo $unit[0];
                                                 if ($unit[1] != '') {
-                                                    echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                                    echo '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                                                 }
                                             }
                                             echo '</span>';
@@ -317,31 +314,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo '</td>';
                                             echo '<td>';
                                             if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                                                echo __($guid, 'No');
+                                                echo __('No');
                                             } else {
                                                 if ($row['homework'] == 'Y') {
-                                                    echo __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                                                    echo __('Yes').': '.__('Teacher Recorded').'<br/>';
                                                     if ($row['homeworkSubmission'] == 'Y') {
-                                                        echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                                                        echo "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                                                         if ($row['homeworkCrowdAssess'] == 'Y') {
-                                                            echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                                            echo "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                                                         }
                                                     }
                                                 }
                                                 if ($row['myHomeworkDueDateTime'] != '') {
-                                                    echo __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                                                    echo __('Yes').': '.__('Student Recorded').'</br>';
                                                 }
                                             }
                                             echo '</td>';
                                             echo '<td>';
                                             if ($row['viewableStudents'] == 'Y') {
-                                                echo __($guid, 'Students');
+                                                echo __('Students');
                                             }
                                             if ($row['viewableStudents'] == 'Y' and $row['viewableParents'] == 'Y') {
                                                 echo ', ';
                                             }
                                             if ($row['viewableParents'] == 'Y') {
-                                                echo __($guid, 'Parents');
+                                                echo __('Parents');
                                             }
                                             echo '</td>';
                                             echo '<td>';
@@ -353,7 +350,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             }
                                             echo '</td>';
                                             echo '<td>';
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                             echo '</td>';
                                             echo '</tr>';
                                         }
@@ -364,7 +361,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         } elseif ($viewBy == 'class') {
                             if ($gibbonCourseClassID == '') {
                                 echo "<div class='error'>";
-                                echo __($guid, 'You have not specified one or more required parameters.');
+                                echo __('You have not specified one or more required parameters.');
                                 echo '</div>';
                             } else {
                                 try {
@@ -378,7 +375,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                                 if ($result->rowCount() != 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                                    echo __('The selected record does not exist, or you do not have access to it.');
                                     echo '</div>';
                                 } else {
                                     $row = $result->fetch();
@@ -395,38 +392,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     //Only show add if user has edit rights
                                     if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
                                         echo "<div class='linkTop'>";
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                                         echo '</div>';
                                     }
 
                                     if ($result->rowCount() < 1) {
                                         echo "<div class='error'>";
-                                        echo __($guid, 'There are no records to display.');
+                                        echo __('There are no records to display.');
                                         echo '</div>';
                                     } else {
                                         echo "<table cellspacing='0' style='width: 100%'>";
                                         echo "<tr class='head'>";
                                         echo '<th>';
-                                        echo __($guid, 'Date');
+                                        echo __('Date');
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __($guid, 'Lesson').'</br>';
-                                        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+                                        echo __('Lesson').'</br>';
+                                        echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __($guid, 'Time');
+                                        echo __('Time');
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __($guid, 'Homework');
+                                        echo __('Homework');
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __($guid, 'Access');
+                                        echo __('Access');
                                         echo '</th>';
                                         echo '<th>';
-                                        echo __($guid, 'Like');
+                                        echo __('Like');
                                         echo '</th>';
                                         echo "<th style='min-width: 140px'>";
-                                        echo __($guid, 'Actions');
+                                        echo __('Actions');
                                         echo '</th>';
                                         echo '</tr>';
 
@@ -462,7 +459,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                         echo "<span style='font-size: 85%; font-style: italic'>";
                                                             echo $unit[0];
                                                             if ($unit[1] != '') {
-                                                                echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                                                echo '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                                                             }
                                                         echo '</span>';
                                                     }
@@ -476,31 +473,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 echo '</td>';
                                                 echo '<td>';
                                                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                                                    echo __($guid, 'No');
+                                                    echo __('No');
                                                 } else {
                                                     if ($row['homework'] == 'Y') {
-                                                        echo __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                                                        echo __('Yes').': '.__('Teacher Recorded').'<br/>';
                                                         if ($row['homeworkSubmission'] == 'Y') {
-                                                            echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                                                            echo "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                                                             if ($row['homeworkCrowdAssess'] == 'Y') {
-                                                                echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                                                echo "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                                                             }
                                                         }
                                                     }
                                                     if ($row['myHomeworkDueDateTime'] != '') {
-                                                        echo __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                                                        echo __('Yes').': '.__('Student Recorded').'</br>';
                                                     }
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';
                                                 if ($row['viewableStudents'] == 'Y') {
-                                                    echo __($guid, 'Students');
+                                                    echo __('Students');
                                                 }
                                                 if ($row['viewableStudents'] == 'Y' and $row['viewableParents'] == 'Y') {
                                                     echo ', ';
                                                 }
                                                 if ($row['viewableParents'] == 'Y') {
-                                                    echo __($guid, 'Parents');
+                                                    echo __('Parents');
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';
@@ -512,7 +509,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                                                echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                                 echo '</td>';
                                                 echo '</tr>';
                                             }
@@ -530,9 +527,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         elseif ($highestAction == 'Lesson Planner_viewMyClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
             $gibbonPersonID = $_SESSION[$guid]['gibbonPersonID'];
             if ($viewBy == 'date') {
-                echo "<div class='trail'>";
-                echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Planner').' '.dateConvertBack($guid, $date).'</div>';
-                echo '</div>';
+                $page->breadcrumbs->add(__('Planner for {classDesc}', [
+                    'classDesc' => dateConvertBack($guid, $date),
+                ]));
 
                 //Get Smart Workflow help message
                 $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -549,7 +546,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                 if (isSchoolOpen($guid, date('Y-m-d', $dateStamp), $connection2) == false) {
                     echo "<div class='warning'>";
-                    echo __($guid, 'School is closed on the specified day.');
+                    echo __('School is closed on the specified day.');
                     echo '</div>';
                 } else {
                     //Set pagination variable
@@ -578,38 +575,38 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                     //Only show add if user has edit rights
                     if ($highestAction == 'Lesson Planner_viewEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
                         echo "<div class='linkTop'>";
-                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&date=$date'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                        echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&date=$date'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
                     }
 
                     if ($result->rowCount() < 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'There are no records to display.');
+                        echo __('There are no records to display.');
                         echo '</div>';
                     } else {
                         echo "<table cellspacing='0' style='width: 100%'>";
                         echo "<tr class='head'>";
                         echo '<th>';
-                        echo __($guid, 'Class');
+                        echo __('Class');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Lesson').'</br>';
-                        echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+                        echo __('Lesson').'</br>';
+                        echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Time');
+                        echo __('Time');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Homework');
+                        echo __('Homework');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Access');
+                        echo __('Access');
                         echo '</th>';
                         echo '<th>';
-                        echo __($guid, 'Like');
+                        echo __('Like');
                         echo '</th>';
                         echo "<th style='min-width: 140px'>";
-                        echo __($guid, 'Actions');
+                        echo __('Actions');
                         echo '</th>';
                         echo '</tr>';
 
@@ -645,7 +642,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 if (isset($unit[0])) {
                                     echo $unit[0];
                                     if ($unit[1] != '') {
-                                        echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                        echo '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                                     }
                                 }
                                 echo '</span>';
@@ -655,30 +652,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 echo '</td>';
                                 echo '<td>';
                                 if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                                    echo __($guid, 'No');
+                                    echo __('No');
                                 } else {
                                     if ($row['homework'] == 'Y') {
-                                        echo __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                                        echo __('Yes').': '.__('Teacher Recorded').'<br/>';
                                         if ($row['homeworkSubmission'] == 'Y') {
-                                            echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                                            echo "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                                             if ($row['homeworkCrowdAssess'] == 'Y') {
-                                                echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                                echo "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                                             }
                                         }
                                     }
                                     if ($row['myHomeworkDueDateTime'] != '') {
-                                        echo __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                                        echo __('Yes').': '.__('Student Recorded').'</br>';
                                     }
                                 }
                                 echo '<td>';
                                 if ($row['viewableStudents'] == 'Y') {
-                                    echo __($guid, 'Students');
+                                    echo __('Students');
                                 }
                                 if ($row['viewableStudents'] == 'Y' and $row['viewableParents'] == 'Y') {
                                     echo ', ';
                                 }
                                 if ($row['viewableParents'] == 'Y') {
-                                    echo __($guid, 'Parents');
+                                    echo __('Parents');
                                 }
                                 echo '</td>';
                                 echo '<td>';
@@ -694,11 +691,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 }
                                 echo '</td>';
                                 echo '<td>';
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                 if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                    echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img style='margin-left: 3px' title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
                                 }
                                 echo '</td>';
                                 echo '</tr>';
@@ -710,7 +707,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
             } elseif ($viewBy == 'class') {
                 if ($gibbonCourseClassID == '') {
                     echo "<div class='error'>";
-                    echo __($guid, 'You have not specified one or more required parameters.');
+                    echo __('You have not specified one or more required parameters.');
                     echo '</div>';
                 } else {
                     if ($highestAction == 'Lesson Planner_viewEditAllClasses' or $highestAction == 'Lesson Planner_viewAllEditMyClasses') {
@@ -747,14 +744,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                     if ($result->rowCount() != 1) {
                         echo "<div class='error'>";
-                        echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                        echo __('The selected record does not exist, or you do not have access to it.');
                         echo '</div>';
                     } else {
                         $row = $result->fetch();
 
-                        echo "<div class='trail'>";
-                        echo "<div class='trailHead'><a href='".$_SESSION[$guid]['absoluteURL']."'>".__($guid, 'Home')."</a> > <a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['q']).'/'.getModuleEntry($_GET['q'], $connection2, $guid)."'>".__($guid, getModuleName($_GET['q']))."</a> > </div><div class='trailEnd'>".__($guid, 'Planner').' '.$row['course'].'.'.$row['class'].'</div>';
-                        echo '</div>';
+                        $page->breadcrumbs->add(__('Planner for {classDesc}', [
+                            'classDesc' => $row['course'].'.'.$row['class'],
+                        ]));
 
                         //Get Smart Workflow help message
                         $category = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
@@ -766,7 +763,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         }
 
                         $returns = array();
-                        $returns['success1'] = __($guid, 'Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
+                        $returns['success1'] = __('Bump was successful. It is possible that some lessons have not been moved (if there was no space for them), but a reasonable effort has been made.');
                         if (isset($_GET['return'])) {
                             returnProcess($guid, $_GET['return'], null, $returns);
                         }
@@ -797,19 +794,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                             if ($subView == 'lesson' or $subView == '') {
                                 $style = "style='font-weight: bold'";
                             }
-                            echo "<a $style href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=lesson'>".__($guid, 'Lesson View').'</a> | ';
+                            echo "<a $style href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=lesson'>".__('Lesson View').'</a> | ';
                             $style = '';
                             if ($subView == 'year') {
                                 $style = "style='font-weight: bold'";
                             }
-                            echo "<a $style href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=year'>".__($guid, 'Year Overview').'</a> | ';
-                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'>".__($guid, 'Add')."<img style='margin-left: 5px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+                            echo "<a $style href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=year'>".__('Year Overview').'</a> | ';
+                            echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                             echo '</div>';
                         }
 
                         if ($result->rowCount() < 1) {
                             echo "<div class='error'>";
-                            echo __($guid, 'There are no records to display.');
+                            echo __('There are no records to display.');
                             echo '</div>';
                         } else {
                             //PRINT LESSON VIEW
@@ -817,26 +814,26 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 echo "<table cellspacing='0' style='width: 100%'>";
                                 echo "<tr class='head'>";
                                 echo '<th>';
-                                echo __($guid, 'Date');
+                                echo __('Date');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Lesson').'</br>';
-                                echo "<span style='font-size: 85%; font-style: italic'>".__($guid, 'Unit').'</span>';
+                                echo __('Lesson').'</br>';
+                                echo "<span style='font-size: 85%; font-style: italic'>".__('Unit').'</span>';
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Time');
+                                echo __('Time');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Homework');
+                                echo __('Homework');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Access');
+                                echo __('Access');
                                 echo '</th>';
                                 echo '<th>';
-                                echo __($guid, 'Like');
+                                echo __('Like');
                                 echo '</th>';
                                 echo "<th style='min-width: 150px'>";
-                                echo __($guid, 'Actions');
+                                echo __('Actions');
                                 echo '</th>';
                                 echo '</tr>';
 
@@ -884,7 +881,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             echo $unit[0];
                                             if (isset($unit[1])) {
                                                 if ($unit[1] != '') {
-                                                    echo '<br/><i>'.$unit[1].' '.__($guid, 'Unit').'</i>';
+                                                    echo '<br/><i>'.$unit[1].' '.__('Unit').'</i>';
                                                 }
                                             }
                                         }
@@ -897,31 +894,31 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo '</td>';
                                         echo '<td>';
                                         if ($row['homework'] == 'N' and $row['myHomeworkDueDateTime'] == '') {
-                                            echo __($guid, 'No');
+                                            echo __('No');
                                         } else {
                                             if ($row['homework'] == 'Y') {
-                                                echo __($guid, 'Yes').': '.__($guid, 'Teacher Recorded').'<br/>';
+                                                echo __('Yes').': '.__('Teacher Recorded').'<br/>';
                                                 if ($row['homeworkSubmission'] == 'Y') {
-                                                    echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Submission').'</span><br/>';
+                                                    echo "<span style='font-size: 85%; font-style: italic'>+".__('Submission').'</span><br/>';
                                                     if ($row['homeworkCrowdAssess'] == 'Y') {
-                                                        echo "<span style='font-size: 85%; font-style: italic'>+".__($guid, 'Crowd Assessment').'</span><br/>';
+                                                        echo "<span style='font-size: 85%; font-style: italic'>+".__('Crowd Assessment').'</span><br/>';
                                                     }
                                                 }
                                             }
                                             if ($row['myHomeworkDueDateTime'] != '') {
-                                                echo __($guid, 'Yes').': '.__($guid, 'Student Recorded').'</br>';
+                                                echo __('Yes').': '.__('Student Recorded').'</br>';
                                             }
                                         }
                                         echo '</td>';
                                         echo '<td>';
                                         if ($row['viewableStudents'] == 'Y') {
-                                            echo __($guid, 'Students');
+                                            echo __('Students');
                                         }
                                         if ($row['viewableStudents'] == 'Y' and $row['viewableParents'] == 'Y') {
                                             echo ', ';
                                         }
                                         if ($row['viewableParents'] == 'Y') {
-                                            echo __($guid, 'Parents');
+                                            echo __('Parents');
                                         }
                                         echo '</td>';
                                         echo '<td>';
@@ -937,14 +934,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         }
                                         echo '</td>';
                                         echo '<td>';
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                         if ((($highestAction == 'Lesson Planner_viewAllEditMyClasses' and $teacher == true) or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_bump.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__($guid, 'Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
-                                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_bump.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID'><img title='".__('Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
+                                            echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
                                         }
                                         if ($highestAction == 'Lesson Planner_viewAllEditMyClasses' or $highestAction == 'Lesson Planner_viewEditAllClasses') {
-                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
+                                            echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img style='margin-left: 3px' title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
                                         }
                                         echo '</td>';
                                         echo '</tr>';
@@ -1019,7 +1016,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                                 if (count($lessons) < 1) {
                                     echo "<div class='error'>";
-                                    echo __($guid, 'There are no records to display.');
+                                    echo __('There are no records to display.');
                                     echo '</div>';
                                 } else {
                                     //Get term dates
@@ -1036,10 +1033,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 
                                     while ($rowTerms = $resultTerms->fetch()) {
                                         $terms[$termCount][0] = $rowTerms['firstDay'];
-                                        $terms[$termCount][1] = __($guid, 'Start of').' '.$rowTerms['nameShort'];
+                                        $terms[$termCount][1] = __('Start of').' '.$rowTerms['nameShort'];
                                         ++$termCount;
                                         $terms[$termCount][0] = $rowTerms['lastDay'];
-                                        $terms[$termCount][1] = __($guid, 'End of').' '.$rowTerms['nameShort'];
+                                        $terms[$termCount][1] = __('End of').' '.$rowTerms['nameShort'];
                                         ++$termCount;
                                     }
                                     //Get school closure special days
@@ -1088,21 +1085,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     echo "<table cellspacing='0' style='width: 100%'>";
                                     echo "<tr class='head'>";
                                     echo '<th>';
-                                    echo __($guid, 'Lesson<br/>Number');
+                                    echo __('Lesson<br/>Number');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Date');
+                                    echo __('Date');
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'TT Period').'<br/>';
+                                    echo __('TT Period').'<br/>';
                                     echo "<span style='font-size: 85%; font-style: italic'>Time</span>";
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Planned Lesson').'<br/>';
+                                    echo __('Planned Lesson').'<br/>';
                                     echo "<span style='font-size: 85%; font-style: italic'>Unit</span>";
                                     echo '</th>';
                                     echo '<th>';
-                                    echo __($guid, 'Actions');
+                                    echo __('Actions');
                                     echo '</th>';
                                     echo '</tr>';
 
@@ -1197,14 +1194,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
 											echo '</td>';
 											echo "<td $style>";
 											if ($lesson['0'] == 'Unplanned') {
-												echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=".$lesson[1].'&timeStart='.$lesson[2].'&timeEnd='.$lesson[3]."&subView=$subView'><img style='margin-bottom: -4px' title='".__($guid, 'Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
+												echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_add.php&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=".$lesson[1].'&timeStart='.$lesson[2].'&timeEnd='.$lesson[3]."&subView=$subView'><img style='margin-bottom: -4px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
 											} else {
-												echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='".__($guid, 'View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
+												echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_view_full.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=class&gibbonCourseClassID=$gibbonCourseClassID&width=1000&height=550&subView=$subView'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
 												if ((($highestAction == 'Lesson Planner_viewAllEditMyClasses' and $teacher == true) or $highestAction == 'Lesson Planner_viewEditAllClasses')) {
-													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
-													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_bump.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__($guid, 'Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
-													echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__($guid, 'Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
-													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img style='margin-left: 3px' title='".__($guid, 'Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_edit.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__('Edit')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/config.png'/></a> ";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_bump.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&subView=$subView'><img title='".__('Bump')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_right.png'/></a>";
+													echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/Planner/planner_delete.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView&width=650&height=135'><img title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a>";
+													echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/planner_duplicate.php&gibbonPlannerEntryID='.$lesson[12]."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&subView=$subView'><img style='margin-left: 3px' title='".__('Duplicate')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copy.png'/></a>";
 												}
 											}
 											echo '</td>';
@@ -1250,4 +1247,3 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
         $_SESSION[$guid]['sidebarExtra'] = sidebarExtra($guid, $connection2, $todayStamp, $gibbonPersonID, $dateStamp, $gibbonCourseClassID);
     }
 }
-?>

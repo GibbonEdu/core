@@ -18,19 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 //Module includes
-include './modules/'.$_SESSION[$guid]['module'].'/moduleFunctions.php';
+require_once __DIR__ . '/moduleFunctions.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view_full.php') == false) {
     //Acess denied
     echo "<div class='error'>";
-    echo __($guid, 'Your request failed because you do not have access to this action.');
+    echo __('Your request failed because you do not have access to this action.');
     echo '</div>';
 } else {
     //Get action with highest precendence
     $highestAction = getHighestGroupedAction($guid, $_GET['q'], $connection2);
     if ($highestAction == false) {
         echo "<div class='error'>";
-        echo __($guid, 'The highest grouped action cannot be determined.');
+        echo __('The highest grouped action cannot be determined.');
         echo '</div>';
     } else {
         //Check access controls
@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
         if (!($access == 'View' or $access == 'Register')) {
             echo "<div class='error'>";
-            echo __($guid, 'Activity listing is currently closed.');
+            echo __('Activity listing is currently closed.');
             echo '</div>';
         } else {
             //Should we show date as term or date?
@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
             $gibbonActivityID = $_GET['gibbonActivityID'];
             if ($gibbonActivityID == '') {
                 echo "<div class='warning'>";
-                echo __($guid, 'Your request failed because your inputs were invalid.');
+                echo __('Your request failed because your inputs were invalid.');
                 echo '</div>';
             }
             //Check existence of and access to this class.
@@ -73,7 +73,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                 if ($result->rowCount() != 1) {
                     echo "<div class='warning'>";
-                    echo __($guid, 'The selected record does not exist, or you do not have access to it.');
+                    echo __('The selected record does not exist, or you do not have access to it.');
                     echo '</div>';
                 } else {
                     $row = $result->fetch();
@@ -92,7 +92,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo '<tr>';
                     if ($dateType != 'Date') {
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Terms').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Terms').'</span><br/>';
                         $terms = getTerms($connection2, $_SESSION[$guid]['gibbonSchoolYearID']);
                         $termList = '';
                         for ($i = 0; $i < count($terms); $i = $i + 2) {
@@ -101,40 +101,40 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                             }
                         }
                         if ($termList == '') {
-                            echo '<i>'.__($guid, 'NA').'</i>';
+                            echo '<i>'.__('NA').'</i>';
                         } else {
                             echo substr($termList, 0, -2);
                         }
                         echo '</td>';
                     } else {
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Start Date').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Start Date').'</span><br/>';
                         echo dateConvertBack($guid, $row['programStart']);
                         echo '</td>';
                         echo "<td style='width: 33%; vertical-align: top'>";
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'End Date').'</span><br/>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('End Date').'</span><br/>';
                         echo dateConvertBack($guid, $row['programEnd']);
                         echo '</td>';
                     }
                     echo "<td style='width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Year Groups').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Year Groups').'</span><br/>';
                     echo getYearGroupsFromIDList($guid, $connection2, $row['gibbonYearGroupIDList']);
                     echo '</td>';
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
                     if ($hideExternalProviderCost == 'Y' and $row['provider'] == 'External') {
-                        echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Cost').'</span><br/>';
-                        echo '<i>'.__($guid, 'See Description below.').'</i>';
+                        echo "<span style='font-size: 115%; font-weight: bold'>".__('Cost').'</span><br/>';
+                        echo '<i>'.__('See Description below.').'</i>';
                     } else {
                         if ($row['paymentFirmness'] == 'Finalised') {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, 'Cost (%1$s)'), $row['paymentType']).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('Cost (%1$s)'), $row['paymentType']).'</span><br/>';
                         }
                         else {
-                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__($guid, '%1$s Cost (%2$s)'), $row['paymentFirmness'], $row['paymentType']).'</span><br/>';
+                            echo "<span style='font-size: 115%; font-weight: bold'>".sprintf(__('%1$s Cost (%2$s)'), $row['paymentFirmness'], $row['paymentType']).'</span><br/>';
                         }
                         if ($row['payment'] == 0) {
-                            echo '<i>'.__($guid, 'None').'</i>';
+                            echo '<i>'.__('None').'</i>';
                         } else {
                             if (substr($_SESSION[$guid]['currency'], 4) != '') {
                                 echo substr($_SESSION[$guid]['currency'], 4);
@@ -144,11 +144,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Maximum Participants').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Maximum Participants').'</span><br/>';
                     echo $row['maxParticipants'];
                     echo '</td>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top'>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Staff').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Staff').'</span><br/>';
                     try {
                         $dataStaff = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlStaff = "SELECT title, preferredName, surname, role FROM gibbonActivityStaff JOIN gibbonPerson ON (gibbonActivityStaff.gibbonPersonID=gibbonPerson.gibbonPersonID) WHERE gibbonActivityID=:gibbonActivityID AND gibbonPerson.status='Full' ORDER BY surname, preferredName";
@@ -159,7 +159,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     }
 
                     if ($resultStaff->rowCount() < 1) {
-                        echo '<i>'.__($guid, 'None').'</i>';
+                        echo '<i>'.__('None').'</i>';
                     } else {
                         echo "<ul style='margin-left: 15px'>";
                         while ($rowStaff = $resultStaff->fetch()) {
@@ -171,12 +171,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     echo '</tr>';
                     echo '<tr>';
                     echo "<td style='padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";
-                    echo "<span style='font-size: 115%; font-weight: bold'>".__($guid, 'Provider').'</span><br/>';
+                    echo "<span style='font-size: 115%; font-weight: bold'>".__('Provider').'</span><br/>';
                     echo '<i>';
                     if ($row['provider'] == 'School') {
                         echo $_SESSION[$guid]['organisationNameShort'];
                     } else {
-                        echo __($guid, 'External');
+                        echo __('External');
                     };
                     echo '</i>';
                     echo '</td>';
@@ -184,7 +184,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                     if ($row['description'] != '') {
                         echo '<tr>';
                         echo "<td style='text-align: justify; padding-top: 15px; width: 33%; vertical-align: top' colspan=3>";
-                        echo '<h2>'.__($guid, 'Description').'</h2>';
+                        echo '<h2>'.__('Description').'</h2>';
                         echo $row['description'];
                         echo '</td>';
                         echo '</tr>';
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     //Slots & Participants
                     echo "<div style='width:400px; float: right; font-size: 115%; padding-top: 6px'>";
-                    echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__($guid, 'Time Slots').'</h3>';
+                    echo "<h3 style='padding-top: 0px; margin-top: 5px'>".__('Time Slots').'</h3>';
                     try {
                         $dataSlots = array('gibbonActivityID' => $row['gibbonActivityID']);
                         $sqlSlots = 'SELECT gibbonActivitySlot.*, gibbonDaysOfWeek.name AS day, gibbonSpace.name AS space FROM gibbonActivitySlot JOIN gibbonDaysOfWeek ON (gibbonActivitySlot.gibbonDaysOfWeekID=gibbonDaysOfWeek.gibbonDaysOfWeekID) LEFT JOIN gibbonSpace ON (gibbonActivitySlot.gibbonSpaceID=gibbonSpace.gibbonSpaceID) WHERE gibbonActivityID=:gibbonActivityID ORDER BY sequenceNumber';
@@ -205,25 +205,25 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
 
                     $count = 0;
                     while ($rowSlots = $resultSlots->fetch()) {
-                        echo '<h4>'.__($guid, $rowSlots['day']).'</h4>';
+                        echo '<h4>'.__($rowSlots['day']).'</h4>';
                         echo '<p>';
-                        echo '<i>'.__($guid, 'Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
+                        echo '<i>'.__('Time').'</i>: '.substr($rowSlots['timeStart'], 0, 5).' - '.substr($rowSlots['timeEnd'], 0, 5).'<br/>';
                         if ($rowSlots['gibbonSpaceID'] != '') {
-                            echo '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['space'];
+                            echo '<i>'.__('Location').'</i>: '.$rowSlots['space'];
                         } else {
-                            echo '<i>'.__($guid, 'Location').'</i>: '.$rowSlots['locationExternal'];
+                            echo '<i>'.__('Location').'</i>: '.$rowSlots['locationExternal'];
                         }
                         echo '</p>';
 
                         ++$count;
                     }
                     if ($count == 0) {
-                        echo '<i>'.__($guid, 'None').'</i>';
+                        echo '<i>'.__('None').'</i>';
                     }
 
                     $role = getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2);
                     if ($role == 'Staff') {
-                        echo '<h3>'.__($guid, 'Participants').'</h3>';
+                        echo '<h3>'.__('Participants').'</h3>';
 
                         try {
                             $dataStudents = array('gibbonActivityID' => $row['gibbonActivityID']);
@@ -235,7 +235,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
 
                         if ($resultStudents->rowCount() < 1) {
-                            echo '<i>'.__($guid, 'None').'</i>';
+                            echo '<i>'.__('None').'</i>';
                         } else {
                             echo "<ul style='margin-left: 15px'>";
                             while ($rowStudent = $resultStudents->fetch()) {
@@ -254,7 +254,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_view
                         }
 
                         if ($resultStudents->rowCount() > 0) {
-                            echo '<h3>'.__($guid, 'Waiting List').'</h3>';
+                            echo '<h3>'.__('Waiting List').'</h3>';
                             echo "<ol style='margin-left: 15px'>";
                             while ($rowStudent = $resultStudents->fetch()) {
                                 echo '<li>'.formatName('', $rowStudent['preferredName'], $rowStudent['surname'], 'Student').'</li>';

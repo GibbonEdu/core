@@ -12,10 +12,6 @@ $I->seeInFormFields('#content form', $originalFormValues);
 // Make Changes ------------------------------------------------
 
 $newFormValues = array(
-    'smsUsername'            => 'usernameTest',
-    'smsPassword'            => 'passwordTest',
-    'smsURL'                 => 'http://url.test',
-    'smsURLCredit'           => 'http://credit.test',
     'messageBubbleWidthType' => 'Wide',
     'messageBubbleBGColor'   => '1A2B3C',
     'messageBubbleAutoHide'  => 'Y',
