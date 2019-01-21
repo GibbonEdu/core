@@ -812,22 +812,33 @@ ALTER TABLE `gibbonActivityAttendance` CHANGE `gibbonPersonIDTaker` `gibbonPerso
 ALTER TABLE `gibbonApplicationForm` CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '';end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent1gender` `parent1gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified', CHANGE `parent2gender` `parent2gender` ENUM('M','F','Other','Unspecified') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'Unspecified';end
 ALTER TABLE `gibbonApplicationForm` CHANGE `parent1surname` `parent1surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '', CHANGE `parent1firstName` `parent1firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '', CHANGE `parent1preferredName` `parent1preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '', CHANGE `parent2surname` `parent2surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '', CHANGE `parent2firstName` `parent2firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '', CHANGE `parent2preferredName` `parent2preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '';end
--- No Primary Key.
+-- No Primary Key.  (InnoDB works faster with a key.)
 TABLE `gibbonCountry` ADD PRIMARY KEY(`printable_name`);end
 -- Match FinanceBudget Definition 5 => 4
-ALTER TABLE `gibbonFinanceBudgetCycleAllocation` CHANGE `gibbonFinanceBudgetID` `gibbonFinanceBudgetID` INT(4) UNSIGNED ZEROFILL NOT NULL;end-- Match CourseClass Primary Key size
-ALTER TABLE `gibbonFirstAid` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(8) UNSIGNED ZEROFILL NULL DEFAULT NULL;end-- Match ScaleGrade Primary Key attributes
-ALTER TABLE `gibbonMarkbookTarget` CHANGE `gibbonScaleGradeID` `gibbonScaleGradeID` INT(7) UNSIGNED ZEROFILL NULL DEFAULT NULL;end-- Match Person primary key size 11 => 10
-ALTER TABLE `gibbonMessengerCannedResponse` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end-- Match Person primary key size 8 => 10
-ALTER TABLE `gibbonOutcome` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end-- Match Person Primary Key attributes & primary key size 11 => 10
+ALTER TABLE `gibbonFinanceBudgetCycleAllocation` CHANGE `gibbonFinanceBudgetID` `gibbonFinanceBudgetID` INT(4) UNSIGNED ZEROFILL NOT NULL;end
+-- Match CourseClass Primary Key size
+ALTER TABLE `gibbonFirstAid` CHANGE `gibbonCourseClassID` `gibbonCourseClassID` INT(8) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+-- Match ScaleGrade Primary Key attributes
+ALTER TABLE `gibbonMarkbookTarget` CHANGE `gibbonScaleGradeID` `gibbonScaleGradeID` INT(7) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+-- Match Person primary key size 11 => 10
+ALTER TABLE `gibbonMessengerCannedResponse` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+-- Match Person primary key size 8 => 10
+ALTER TABLE `gibbonOutcome` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+-- Match Person Primary Key attributes & primary key size 11 => 10
 ALTER TABLE `gibbonPersonMedicalSymptoms` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL, CHANGE `gibbonPersonIDTaker` `gibbonPersonIDTaker` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 -- Match Person Table Requirements
-ALTER TABLE `gibbonPersonUpdate` CHANGE `emergency1Name` `emergency1Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `emergency2Name` `emergency2Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `nameInCharacters` `nameInCharacters` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `profession` `profession` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `employer` `employer` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `jobTitle` `jobTitle` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end-- Match Person Primary Key attributes
-ALTER TABLE `gibbonPlannerEntryStudentHomework` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL;end-- Match Person primary key size 8 => 10
-ALTER TABLE `gibbonRubric` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end-- Match Rubric Primary Key attributes
-ALTER TABLE `gibbonRubricEntry` CHANGE `gibbonRubricID` `gibbonRubricID` INT(8) UNSIGNED ZEROFILL NOT NULL;end-- Match Person Table Requirements
-ALTER TABLE `gibbonStaffApplicationForm` CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `nameInCharacters` `nameInCharacters` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end-- Match Space Primary Key size 5 => 10
-ALTER TABLE `gibbonTTDayRowClass` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;endALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonPersonUpdate` CHANGE `emergency1Name` `emergency1Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `emergency2Name` `emergency2Name` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '', CHANGE `nameInCharacters` `nameInCharacters` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL, CHANGE `profession` `profession` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `employer` `employer` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `jobTitle` `jobTitle` VARCHAR(90) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+-- Match Person Primary Key attributes
+ALTER TABLE `gibbonPlannerEntryStudentHomework` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+-- Match Person primary key size 8 => 10
+ALTER TABLE `gibbonRubric` CHANGE `gibbonPersonIDCreator` `gibbonPersonIDCreator` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+-- Match Rubric Primary Key attributes
+ALTER TABLE `gibbonRubricEntry` CHANGE `gibbonRubricID` `gibbonRubricID` INT(8) UNSIGNED ZEROFILL NOT NULL;end
+-- Match Person Table Requirements
+ALTER TABLE `gibbonStaffApplicationForm` CHANGE `surname` `surname` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `firstName` `firstName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `preferredName` `preferredName` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL, CHANGE `nameInCharacters` `nameInCharacters` VARCHAR(60) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;end
+-- Match Space Primary Key size 5 => 10
+ALTER TABLE `gibbonTTDayRowClass` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
+ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 -- Match Person primary key size 12 => 10
 ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 -- foreignKey needs to be length of 10 to match gibbonLibraryItemID which this item references.
