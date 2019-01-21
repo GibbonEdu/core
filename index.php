@@ -547,8 +547,15 @@ if (!$session->has('address')) {
     } else {
         // Custom content loader
         if (!$session->exists('index_custom.php')) {
-            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php'));
-        } elseif ($session->has('index_custom.php')) {
+            $globals = [
+                'guid'        => $guid,
+                'connection2' => $connection2,
+            ];
+
+            $session->set('index_custom.php', $page->fetchFromFile('./index_custom.php', $globals));
+        }
+        
+        if ($session->exists('index_custom.php')) {
             $page->write($session->get('index_custom.php'));
         }
 

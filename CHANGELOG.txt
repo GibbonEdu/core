@@ -16,6 +16,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 CHANGELOG
 =========
+v18.0.00
+--------
+    Headlines
+
+    Changes With Important Notices
+
+    Significant Changes
+
+    Security
+
+    Tweaks & Additions
+
+    Bug Fixes
+        System: fixed non-rendering HTML issue in Welcome text on logged-out index
+        System: fixed missing globals in custom index scripts
+        System: fixed index_custom.php content not loading on first login
+
+
 v17.0.00
 --------
     Headlines
@@ -81,7 +99,7 @@ v17.0.00
         User Admin: added missing custom field description into OOified forms
         User Admin: added the ability to change usernames which will check to ensure it's still unique
 
-    Bux Fixes
+    Bug Fixes
         System: fixed an issue with hidden fields in bulk action forms after pagination
         System: fixed demo data issue causing FL07 demo unit not to show in Unit Planner
         System: fixed IE incompatibility with javascript and select inputs
