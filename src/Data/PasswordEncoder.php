@@ -93,7 +93,7 @@ class PasswordEncoder
     /**
      * {@inheritdoc}
      */
-    public function encodeArgon2iPassword($raw, $salt = null): ?string
+    public function encodeArgon2iPassword($raw, $salt = null)
     {
         if ($this->getHighestAvailableEncryption() !== 'Argon2i')
             return null;
@@ -145,6 +145,7 @@ class PasswordEncoder
 
         return $hash;
     }
+
     /**
      * Encodes the raw password.
      *
@@ -165,7 +166,7 @@ class PasswordEncoder
      *
      * @see http://lxr.php.net/xref/PHP_5_5/ext/standard/password.c#111
      */
-    private function encodeBCryptPassword($raw, $salt = null)
+    private function encodeBCryptPassword($raw)
     {
         if (!in_array($this->getHighestAvailableEncryption(), ['Argon2i', 'BCrypt']))
             return null;
@@ -179,9 +180,11 @@ class PasswordEncoder
     }
 
     /**
-     * {@inheritdoc}
+     * @param $encoded
+     * @param $raw
+     * @return bool
      */
-    private function isBCryptPasswordValid($encoded, $raw, $salt)
+    private function isBCryptPasswordValid($encoded, $raw)
     {
         if (!in_array($this->getHighestAvailableEncryption(), ['Argon2i', 'BCrypt']))
             return false;
@@ -297,7 +300,7 @@ class PasswordEncoder
     /**
      * @return string|null
      */
-    public function getCurrentEncryption(): string
+    public function getCurrentEncryption()
     {
         return $this->currentEncryption ?: self::HIGHEST_AVAILABLE;
     }
