@@ -17,13 +17,13 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\LoginManager;
+use Gibbon\Data\LoginSupervisor;
 
 include './gibbon.php';
 
-$loginManager = new LoginManager($container);
+$loginSupervisor = new LoginSupervisor($container);
 
-$loginManager
+$loginSupervisor
     ->setReturnParameters(['q' => '/preferences.php', 'forceReset' => $_SESSION[$guid]['passwordForceReset']])
     ->isValidPassword()
     ->isUserInDatabase()

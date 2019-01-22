@@ -17,10 +17,10 @@ use Gibbon\Session;
 use Psr\Container\ContainerInterface;
 
 /**
- * Class LoginManager
+ * Class LoginSupervisor
  * @package Gibbon\Data
  */
-class LoginManager
+class LoginSupervisor
 {
     /**
      * @var string
@@ -48,7 +48,7 @@ class LoginManager
     private $returnParameters = [];
 
     /**
-     * LoginManager constructor.
+     * LoginSupervisor constructor.
      */
     public function __construct(ContainerInterface $container)
     {
@@ -130,9 +130,9 @@ class LoginManager
     private $user;
 
     /**
-     * @return LoginManager
+     * @return LoginSupervisor
      */
-    public function isUserInDatabase(): LoginManager
+    public function isUserInDatabase(): LoginSupervisor
     {
         $data = ['username' => $this->getPostValue('username') ?: $this->getSession()->get('username')];
         $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
@@ -220,7 +220,7 @@ class LoginManager
     }
 
     /**
-     * @return LoginManager
+     * @return LoginSupervisor
      */
     public function verifyPassword()
     {
@@ -374,9 +374,9 @@ class LoginManager
     }
 
     /**
-     * @return LoginManager
+     * @return LoginSupervisor
      */
-    public function isValidPassword(): LoginManager
+    public function isValidPassword(): LoginSupervisor
     {
         if (empty($this->getPostValue('password')) || empty($this->getPostValue('passwordNew')) || empty($this->getPostValue('passwordConfirm'))) {
             $this->redirectTo(['return' => 'error1']);
@@ -451,9 +451,9 @@ class LoginManager
 
     /**
      * @param array $parameters
-     * @return LoginManager
+     * @return LoginSupervisor
      */
-    public function setReturnParameters(array $parameters): LoginManager
+    public function setReturnParameters(array $parameters): LoginSupervisor
     {
         $this->returnParameters = $parameters;
         return $this;
@@ -480,9 +480,9 @@ class LoginManager
     private $forceReset = false;
 
     /**
-     * @return LoginManager
+     * @return LoginSupervisor
      */
-    public function saveNewPassword(): LoginManager
+    public function saveNewPassword(): LoginSupervisor
     {
         $encoder = new PasswordEncoder();
         $this->user['passwordStrong'] = $encoder->encodePassword($this->getPostValue('passwordNew'));

@@ -17,12 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-use Gibbon\Data\LoginManager;
+use Gibbon\Data\LoginSupervisor;
 
 // Gibbon system-wide include
 require_once './gibbon.php';
-$loginManager = new LoginManager($container);
-$loginManager->isValidUserPassword()
+$loginSupervisor = new LoginSupervisor($container);
+$loginSupervisor->isValidUserPassword()
     ->isUserInDatabase()
     ->canUserLogin()
     ->canRoleLogin()
