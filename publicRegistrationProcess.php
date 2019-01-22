@@ -71,9 +71,8 @@ if ($proceed == false) {
     $email = trim($_POST['email']);
     $username = trim($_POST['usernameCheck']);
     $password = $_POST['passwordNew'];
-    $salt = getSalt();
     $encoder = new \Gibbon\Data\PasswordEncoder();
-    $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
+    $passwordStrong = $encoder->encodePassword($password, 'SHA256');
     $status = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultStatus');
     $gibbonRoleIDPrimary = getSettingByScope($connection2, 'User Admin', 'publicRegistrationDefaultRole');
     $gibbonRoleIDAll = $gibbonRoleIDPrimary;
@@ -151,7 +150,7 @@ if ($proceed == false) {
                 } else {
                     //Write to database
                     try {
-                        $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
+                        $data = array('surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => $officialName, 'gender' => $gender, 'dob' => $dob, 'email' => $email, 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $encoder::getSalt(), 'status' => $status, 'gibbonRoleIDPrimary' => $gibbonRoleIDPrimary, 'gibbonRoleIDAll' => $gibbonRoleIDAll, 'fields' => $fields);
                         $sql = "INSERT INTO gibbonPerson SET surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, gender=:gender, dob=:dob, email=:email, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, fields=:fields";
                         $result = $connection2->prepare($sql);
                         $result->execute($data);

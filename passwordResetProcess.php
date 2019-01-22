@@ -185,11 +185,10 @@ else {
                                 header("Location: {$URL}");
                             } else {
                                 //Update password
-                                $salt = getSalt();
                                 $encoder = new \Gibbon\Data\PasswordEncoder();
-                                $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
+                                $passwordStrong = $encoder->encodePassword($password, 'SHA256');
                                 try {
-                                    $data = array('passwordStrong' => $passwordStrong, 'salt' => $salt, 'gibbonPersonID' => $gibbonPersonID);
+                                    $data = array('passwordStrong' => $passwordStrong, 'salt' => $encoder::getSalt(), 'gibbonPersonID' => $gibbonPersonID);
                                     $sql = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:salt, passwordForceReset='N', failCount=0 WHERE gibbonPersonID=:gibbonPersonID";
                                     $result = $connection2->prepare($sql);
                                     $result->execute($data);

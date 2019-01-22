@@ -678,14 +678,13 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                             echo __('Your request failed because your passwords did not match.');
                                             echo '</div>';
                                         } else {
-                                            $salt = getSalt();
                                             $encoder = new \Gibbon\Data\PasswordEncoder();
-                                            $passwordStrong = $encoder->encodePassword($password, $salt, 'SHA256');
+                                            $passwordStrong = $encoder->encodePassword($password, 'SHA256');
 
                                             $userFail = false;
                                             //Write to database
                                             try {
-                                                $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => ($firstName.' '.$surname), 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $salt, 'status' => 'Full', 'canLogin' => 'Y', 'passwordForceReset' => 'N', 'gibbonRoleIDPrimary' => '001', 'gibbonRoleIDAll' => '001', 'email' => $email);
+                                                $data = array('title' => $title, 'surname' => $surname, 'firstName' => $firstName, 'preferredName' => $preferredName, 'officialName' => ($firstName.' '.$surname), 'username' => $username, 'passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $encoder::getSalt(), 'status' => 'Full', 'canLogin' => 'Y', 'passwordForceReset' => 'N', 'gibbonRoleIDPrimary' => '001', 'gibbonRoleIDAll' => '001', 'email' => $email);
                                                 $sql = "INSERT INTO gibbonPerson SET gibbonPersonID=1, title=:title, surname=:surname, firstName=:firstName, preferredName=:preferredName, officialName=:officialName, username=:username, password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt, status=:status, canLogin=:canLogin, passwordForceReset=:passwordForceReset, gibbonRoleIDPrimary=:gibbonRoleIDPrimary, gibbonRoleIDAll=:gibbonRoleIDAll, email=:email";
                                                 $result = $connection2->prepare($sql);
                                                 $result->execute($data);

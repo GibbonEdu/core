@@ -266,6 +266,9 @@ class PasswordEncoder
     }
 
     /**
+     * Encode Password
+     *
+     * If necessary, generate a salt and expose the salt for database storage.
      * @param $raw
      * @param $salt
      * @param string $useHighest
