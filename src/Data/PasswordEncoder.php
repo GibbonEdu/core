@@ -9,24 +9,30 @@
  * Date: 4/01/2019
  * Time: 15:22
  */
-
 namespace Gibbon\Data;
 
-
+/**
+ * Class PasswordEncoder
+ * @package Gibbon\Data
+ */
 class PasswordEncoder
 {
+    CONST HIGHEST_AVAILABLE = 'SHA256';  // Should be BCrypt minimum
+
     /**
      *
      */
     CONST ENCRYPTION = [
         'Argon2i' => 4,
-        'BCRYPT' => 3,
+        'BCrypt' => 3,
         'SHA256' => 2,
         'MD5' => 1,
     ];
 
-    public function getHighestAvailableExcryption()
+    public function getHighestAvailableEncryption()
     {
+        if (self::HIGHEST_AVAILABLE === 'SHA256')
+            return self::HIGHEST_AVAILABLE;
         if (\PHP_VERSION_ID >= 70200) {
             return 'Argon2i';
         }
@@ -37,7 +43,7 @@ class PasswordEncoder
             return 'Argon2i';
         }
         if (\defined('PASSWORD_BCRYPT') && \PHP_VERSION_ID > 50500 )
-            return 'BCRYPT';
+            return 'BCrypt';
         return 'SHA256';
     }
     /**
@@ -48,7 +54,7 @@ class PasswordEncoder
      */
     private function isArgon2iPasswordValid($encoded, $raw, $salt): bool
     {
-        if ($this->getHighestAvailableExcryption() !== 'Argon2i')
+        if ($this->getHighestAvailableEncryption() !== 'Argon2i')
             return false;
         if (\PHP_VERSION_ID >= 70200) {
             $this->currentEncryption = 'Argon2i';
@@ -89,7 +95,7 @@ class PasswordEncoder
      */
     public function encodeArgon2iPassword($raw, $salt = null): ?string
     {
-        if ($this->getHighestAvailableExcryption() !== 'Argon2i')
+        if ($this->getHighestAvailableEncryption() !== 'Argon2i')
             return null;
         if ($this->isPasswordTooLong($raw)) {
             throw new \Exception('Invalid password.');
@@ -161,7 +167,7 @@ class PasswordEncoder
      */
     private function encodeBCryptPassword($raw, $salt = null)
     {
-        if (!in_array($this->getHighestAvailableExcryption(), ['Argon2i', 'BCRYPT']))
+        if (!in_array($this->getHighestAvailableEncryption(), ['Argon2i', 'BCrypt']))
             return null;
         if ($this->isPasswordTooLong($raw)) {
             throw new \Exception('Invalid password.');
@@ -177,9 +183,9 @@ class PasswordEncoder
      */
     private function isBCryptPasswordValid($encoded, $raw, $salt)
     {
-        if (!in_array($this->getHighestAvailableExcryption(), ['Argon2i', 'BCRYPT']))
+        if (!in_array($this->getHighestAvailableEncryption(), ['Argon2i', 'BCrypt']))
             return false;
-        $this->currentEncryption = 'BCRYPT';
+        $this->currentEncryption = 'BCrypt';
         return !$this->isPasswordTooLong($raw) && password_verify($raw, $encoded);
     }
     /**
@@ -225,7 +231,7 @@ class PasswordEncoder
      */
     private function isMD5PasswordValid($encoded, $raw): bool
     {
-        if ($encoded === md5($raw))
+        if (strtolower($encoded) === md5($raw))
         {
             $this->currentEncryption = 'MD5';
             return true;
@@ -264,32 +270,59 @@ class PasswordEncoder
      * @param $salt
      * @param string $useHighest
      */
-    public function encodePassword($raw, $salt, $useHighestEncryption = null)
+    public function encodePassword($raw, $useHighestEncryption = null)
     {
-        $highestAvailableEncryption = $this->getHighestAvailableExcryption();
+        $highestAvailableEncryption = $this->getHighestAvailableEncryption();
         if (empty($useHighestEncryption))
             $useHighestEncryption = $highestAvailableEncryption;
         if (self::ENCRYPTION[$highestAvailableEncryption] > self::ENCRYPTION[$useHighestEncryption])
             $highestAvailableEncryption = $useHighestEncryption;
         switch(strtoupper($highestAvailableEncryption)){
             case 'ARGON2I':
-                return $this->encodeArgon2iPassword($raw, $salt);
+                return $this->encodeArgon2iPassword($raw);
             case 'BCRYPT':
-                return $this->encodeBCryptPassword($raw, $salt);
+                return $this->encodeBCryptPassword($raw);
         }
-        return $this->encodeSHA256Password($raw, $salt);
+        return $this->encodeSHA256Password($raw, self::getSalt());
+    }
+
+    /**
+     * @var string|null
+     */
+    private $currentEncryption;
+
+    /**
+     * @return string|null
+     */
+    public function getCurrentEncryption(): string
+    {
+        return $this->currentEncryption ?: self::HIGHEST_AVAILABLE;
     }
 
     /**
      * @var string
      */
-    private $currentEncryption;
+    private static $salt = '';
 
     /**
+     * getSalt
+     *
+     * @param bool $refresh
      * @return string
      */
-    public function getCurrentEncryption(): string
+    public static function getSalt(bool $refresh = false)
     {
-        return $this->currentEncryption;
+        if (!$refresh && ! empty(self::$salt))
+            return self::$salt;
+        if (self::HIGHEST_AVAILABLE !== 'SHA256')
+            return self::$salt = '';
+        $c = explode(' ', '. / a A b B c C d D e E f F g G h H i I j J k K l L m M n N o O p P q Q r R s S t T u U v V w W x X y Y z Z 0 1 2 3 4 5 6 7 8 9');
+        $ks = array_rand($c, 22);
+        $s = '';
+        foreach ($ks as $k) {
+            $s .= $c[$k];
+        }
+
+        return self::$salt = $s;
     }
 }
