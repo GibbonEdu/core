@@ -1,11 +1,21 @@
 <?php
 /**
- * Created by PhpStorm.
+ * Gibbon, Flexible & Open School System
+ * Copyright (C) 2010, Ross Parker
  *
- * Gibbon
- * (c) 2019 Craig Rayner <craig@craigrayner.com>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * User: craig
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
  * Date: 4/01/2019
  * Time: 15:22
  */
@@ -20,15 +30,18 @@ class PasswordEncoder
     CONST HIGHEST_AVAILABLE = 'SHA256';  // Should be BCrypt minimum
 
     /**
-     *
+     * @var array
      */
     CONST ENCRYPTION = [
-        'Argon2i' => 4,
-        'BCrypt' => 3,
+        'Argon2i' => 8,
+        'BCrypt' => 4,
         'SHA256' => 2,
         'MD5' => 1,
     ];
 
+    /**
+     * @return string
+     */
     public function getHighestAvailableEncryption()
     {
         if (self::HIGHEST_AVAILABLE === 'SHA256')
@@ -46,6 +59,7 @@ class PasswordEncoder
             return 'BCrypt';
         return 'SHA256';
     }
+
     /**
      * @param $encoded
      * @param $raw
