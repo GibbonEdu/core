@@ -1,5 +1,0 @@
-*.swp
-.DS_Store
-vendor/
-composer.lock
-test*

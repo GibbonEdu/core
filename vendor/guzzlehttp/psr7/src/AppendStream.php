@@ -16,6 +16,7 @@ class AppendStream implements StreamInterface
     private $seekable = true;
     private $current = 0;
     private $pos = 0;
+    private $detached = false;
 
     /**
      * @param StreamInterface[] $streams Streams to decorate. Each stream must
@@ -72,7 +73,6 @@ class AppendStream implements StreamInterface
     public function close()
     {
         $this->pos = $this->current = 0;
-        $this->seekable = true;
 
         foreach ($this->streams as $stream) {
             $stream->close();
@@ -82,22 +82,14 @@ class AppendStream implements StreamInterface
     }
 
     /**
-     * Detaches each attached stream.
-     *
-     * Returns null as it's not clear which underlying stream resource to return.
+     * Detaches each attached stream
      *
      * {@inheritdoc}
      */
     public function detach()
     {
-        $this->pos = $this->current = 0;
-        $this->seekable = true;
-
-        foreach ($this->streams as $stream) {
-            $stream->detach();
-        }
-
-        $this->streams = [];
+        $this->close();
+        $this->detached = true;
     }
 
     public function tell()
