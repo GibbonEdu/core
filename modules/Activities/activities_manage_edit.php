@@ -219,19 +219,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 				$form->addRow()->addSubheading(__('Slot').' '.$i)->addClass("slotRow{$i}");
 
 				$row = $form->addRow()->addClass("slotRow{$i}");
-					$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__('Slot %1$s Day'), $i));
+					$row->addLabel("gibbonDaysOfWeekID{$i}", sprintf(__('Slot %1$d Day'), $i));
 					$row->addSelect("gibbonDaysOfWeekID{$i}")->fromQuery($pdo, $sqlWeekdays)->placeholder();
 
 				$row = $form->addRow()->addClass("slotRow{$i}");
-					$row->addLabel('timeStart'.$i, sprintf(__('Slot %1$s Start Time'), $i));
+					$row->addLabel('timeStart'.$i, sprintf(__('Slot %1$d Start Time'), $i));
 					$row->addTime('timeStart'.$i);
 
 				$row = $form->addRow()->addClass("slotRow{$i}");
-					$row->addLabel("timeEnd{$i}", sprintf(__('Slot %1$s End Time'), $i));
+					$row->addLabel("timeEnd{$i}", sprintf(__('Slot %1$d End Time'), $i));
 					$row->addTime("timeEnd{$i}")->chainedTo('timeStart'.$i);
 
 				$row = $form->addRow()->addClass("slotRow{$i}");
-					$row->addLabel("slot{$i}Location", sprintf(__('Slot %1$s Location'), $i));
+					$row->addLabel("slot{$i}Location", sprintf(__('Slot %1$d Location'), $i));
 					$row->addRadio("slot{$i}Location")->fromArray($locations)->inline();
 
 				$form->toggleVisibilityByClass("slotRow{$i}Internal")->onRadio("slot{$i}Location")->when('Internal');
