@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Database;
 
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Services\LoggerFactory;
 use PDO;
 
 /**
@@ -56,6 +58,8 @@ class Connection implements ConnectionInterface
     {
         $this->pdo = $pdo;
         $this->config = $config;
+        $factory = new LoggerFactory(new SettingGateway($this));
+        $this->logger = $factory->getLogger('mysql');
     }
 
     /**
@@ -190,6 +194,7 @@ class Connection implements ConnectionInterface
     protected function handleQueryException($e)
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
+        $this->logger->error(__('Your request failed due to a database error.'), (array) $e);
 
         return new \PDOStatement();
     }

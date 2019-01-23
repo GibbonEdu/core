@@ -1,7 +1,7 @@
 <?php
 /**
  * Gibbon, Flexible & Open School System
- * Copyright (C) 2010, Gibbon Collaborative Team
+ * Copyright (C) 2010, Ross Parker
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
  */
 namespace Gibbon\Services;
 
+use Gibbon\Domain\System\SettingGateway;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
 
@@ -45,6 +46,73 @@ class LoggerFactory
     {
         if (isset($this->loggerStack['gibbon']))
             return $this->loggerStack['gibbon'];
-        $stream = new RotatingFileHandler(__DIR__.'/my_app.log', Logger::DEBUG);
+
+        $stream = new RotatingFileHandler($this->getFilePath().$channel.'.log', $this->getKeepDays(), $this->getLoggerLevel());
+
+        $logger = new Logger($channel, [$stream]);
+
+        $this->loggerStack[$channel] = $logger;
+
+        return $logger;
+    }
+
+    /**
+     * @var int
+     */
+    private $keepDays = 7;
+
+    /**
+     * @var string
+     */
+    private $filePath;
+
+    /**
+     * @var int
+     */
+    private $loggerLevel = 100;
+
+    /**
+     * LoggerFactory constructor.
+     * @param SettingGateway $settingGateway
+     */
+    public function __construct(SettingGateway $settingGateway)
+    {
+        $this->settingGateway = $settingGateway;
+        $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath'). DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
+        $this->loggerLevel = $settingGateway->getSettingByScope('System', 'installType') === 'Production' ? Logger::WARNING : Logger::DEBUG;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFilePath(): string
+    {
+        return $this->filePath;
+    }
+
+    /**
+     * @param string $filePath
+     * @return LoggerFactory
+     */
+    public function setFilePath(string $filePath): LoggerFactory
+    {
+        $this->filePath = $filePath;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLoggerLevel(): int
+    {
+        return $this->loggerLevel;
+    }
+
+    /**
+     * @return int
+     */
+    public function getKeepDays(): int
+    {
+        return $this->keepDays;
     }
 }
