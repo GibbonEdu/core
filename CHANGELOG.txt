@@ -27,7 +27,10 @@ v18.0.00
     Security
 
     Tweaks & Additions
+        Students: added link from student profile to Individual Needs edit screen
+
         System: Changes to key integer length in database tables to ensure referential integrity.
+
 
     Bug Fixes
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
