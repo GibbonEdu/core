@@ -20,15 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Services;
 
 use Gibbon\Core;
+use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Locale;
 use Gibbon\Session;
 use Gibbon\View\Page;
 use Gibbon\Comms\Mailer;
 use Gibbon\Comms\SMS;
-use Gibbon\Services\Format;
 use Gibbon\Domain\System\Theme;
 use Gibbon\Domain\System\Module;
-use Gibbon\Services\ErrorHandler;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 use Gibbon\Contracts\Comms\SMS as SMSInterface;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -68,6 +67,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         'theme',
         MailerInterface::class,
         SMSInterface::class,
+        'gibbon_logger',
+        'mysql_logger',
     ];
 
     /**
@@ -104,6 +105,18 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
         $pdo = $container->get('db');
+
+        $container->share('gibbon_logger', function () use ($container) {
+            $factory = new LoggerFactory($container->get(SettingGateway::class));
+            return $factory->getLogger('gibbon');
+        });
+
+        $container->share('mysql_logger', function () use ($container) {
+            $factory = new LoggerFactory($container->get(SettingGateway::class));
+            return $factory->getLogger('mysql');
+        });
+
+        $pdo->setLogger($container->get('mysql_logger'));
 
         $container->share('twig', function () use ($absolutePath, $session) {
             $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');

@@ -1,7 +1,7 @@
 <?php
 /**
  * Gibbon, Flexible & Open School System
- * Copyright (C) 2010, Gibbon Collaborative Team
+ * Copyright (C) 2010, Ross Parker
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

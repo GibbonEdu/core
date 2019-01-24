@@ -17,7 +17,6 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http:// www.gnu.org/licenses/>.
 */
 
-use Gibbon\View\Page;
 use Gibbon\Domain\System\ModuleGateway;
 use Gibbon\Domain\DataUpdater\DataUpdaterGateway;
 
@@ -34,6 +33,9 @@ require_once './gibbon.php';
 // functions because this file was included via getNotificationTray()
 // TODO: Fix that :)
 require_once './modules/Messenger/moduleFunctions.php';
+
+$logger = $container->get('gibbon_logger');
+$logger->debug('Yes it does really work!', (array) $container);
 
 // Setup the Page and Session objects
 $page = $container->get('page');

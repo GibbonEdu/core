@@ -20,10 +20,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Database;
 
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\LoggerFactory;
 use Monolog\Logger;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 /**
  * Database Connection.
@@ -60,12 +59,10 @@ class Connection implements ConnectionInterface
      * @param \PDO $pdo
      * @param array $config
      */
-    public function __construct($pdo, array $config = [])
+    public function __construct(PDO $pdo, array $config = [])
     {
         $this->pdo = $pdo;
         $this->config = $config;
-        $factory = new LoggerFactory(new SettingGateway($this));
-        $this->logger = $factory->getLogger('mysql');
     }
 
     /**
@@ -200,7 +197,7 @@ class Connection implements ConnectionInterface
     protected function handleQueryException($e)
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
-        if (! empty($this->logger))
+        if ($this->hasLogger())
             $this->logger->error(__('Your request failed due to a database error.'), (array) $e);
 
         return new \PDOStatement();
@@ -243,5 +240,24 @@ class Connection implements ConnectionInterface
     public function getResult()
     {
         return $this->result;
+    }
+
+    /**
+     * @param Logger|null $logger
+     * @return Connection
+     */
+    public function setLogger(Logger $logger): Connection
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    /**
+     * hasLogger
+     * @return bool
+     */
+    private function hasLogger(): bool
+    {
+        return $this->logger instanceof LoggerInterface;
     }
 }
