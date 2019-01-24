@@ -37,7 +37,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
         echo "<div class='error'>".$e->getMessage().'</div>';
     }
 
-    $excel = new Gibbon\Excel('studentTransport.xlsx');
+    $excel = new Gibbon\Spreadsheet();
+    $excel->defineWorksheet('studentTransport.xlsx');
 	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
 		return Gibbon\csv::generate($pdo, 'studentTransport');
 	$excel->setActiveSheetIndex(0);
@@ -46,8 +47,42 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 	$excel->getProperties()->setDescription('Student Transport');
 
     //Create border and fill style
-    $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
-    $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+    $style_border = [
+        'borders' => [
+            'right' => [
+                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => [
+                    'argb' => '766f6e'
+                ]
+            ],
+            'left' => [
+                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => [
+                    'argb' => '766f6e'
+                ]
+            ],
+            'top' => [
+                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => [
+                    'argb' => '766f6e'
+                ]
+            ],
+            'bottom' => [
+                'style' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => [
+                    'argb' => '766f6e'
+                ]
+            ]
+        ]
+    ];
+    $style_head_fill = [
+        'fill' => [
+            'type' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => [
+                'rgb' => 'B89FE2'
+            ]
+        ]
+    ];
 
     //Auto set column widths
     for($col = 'A'; $col !== 'F'; $col++)
