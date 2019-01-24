@@ -22,6 +22,7 @@ namespace Gibbon\Database;
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Services\LoggerFactory;
+use Monolog\Logger;
 use PDO;
 
 /**
@@ -48,6 +49,11 @@ class Connection implements ConnectionInterface
      * @var \PDOStatement
      */
     protected $result = null;
+
+    /**
+     * @var Logger|null
+     */
+    private $logger;
 
     /**
      * Create the connection wrapper around a \PDO instance.
@@ -194,7 +200,8 @@ class Connection implements ConnectionInterface
     protected function handleQueryException($e)
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
-        $this->logger->error(__('Your request failed due to a database error.'), (array) $e);
+        if (! empty($this->logger))
+            $this->logger->error(__('Your request failed due to a database error.'), (array) $e);
 
         return new \PDOStatement();
     }
