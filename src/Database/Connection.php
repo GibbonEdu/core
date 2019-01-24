@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 namespace Gibbon\Database;
 
 use Gibbon\Contracts\Database\Connection as ConnectionInterface;
-use Monolog\Logger;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -50,7 +49,7 @@ class Connection implements ConnectionInterface
     protected $result = null;
 
     /**
-     * @var Logger|null
+     * @var LoggerInterface|null
      */
     private $logger;
 
@@ -243,10 +242,10 @@ class Connection implements ConnectionInterface
     }
 
     /**
-     * @param Logger|null $logger
+     * @param LoggerInterface|null $logger
      * @return Connection
      */
-    public function setLogger(Logger $logger): Connection
+    public function setLogger(LoggerInterface $logger): Connection
     {
         $this->logger = $logger;
         return $this;
