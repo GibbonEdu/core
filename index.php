@@ -34,9 +34,6 @@ require_once './gibbon.php';
 // TODO: Fix that :)
 require_once './modules/Messenger/moduleFunctions.php';
 
-$logger = $container->get('gibbon_logger');
-$logger->debug('Yes it does really work!', (array) $container);
-
 // Setup the Page and Session objects
 $page = $container->get('page');
 $session = $container->get('session');
