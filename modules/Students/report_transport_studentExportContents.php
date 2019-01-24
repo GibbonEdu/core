@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_transport_
 
     $excel = new Gibbon\Spreadsheet();
     $excel->defineWorksheet('studentTransport.xlsx');
-	if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
+	if ($excel->isSpreadsheetSizeOK($pdo))    //  If too big, then render csv instead.
 		return Gibbon\csv::generate($pdo, 'studentTransport');
 	$excel->setActiveSheetIndex(0);
 	$excel->getProperties()->setTitle('Student Transport');
