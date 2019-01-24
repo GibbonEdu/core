@@ -2388,7 +2388,7 @@ function getWeekNumber($date, $connection2, $guid)
         while ($rowWeek = $resultWeek->fetch()) {
             $firstDayStamp = strtotime($rowWeek['firstDay']);
             $lastDayStamp = strtotime($rowWeek['lastDay']);
-            while (date('N') !== '1') {
+            while (date('N', $firstDayStamp) !== '1') {
                 $firstDayStamp = $firstDayStamp - 86400;
             }
             $head = $firstDayStamp;
