@@ -21,7 +21,6 @@
  */
 namespace Gibbon;
 
-use Gibbon\Database\Connection;
 use Gibbon\Database\Result;
 use PhpOffice\PhpSpreadsheet\Spreadsheet as SpreadsheetBase;
 use PhpOffice\PhpSpreadsheet\Writer\Xls;
@@ -35,15 +34,15 @@ class Spreadsheet extends SpreadsheetBase
     private $fileName = '';
 
     /**
-     * isSpreadsheetSizeOK
+     * is Spreadsheet Size OK
      *
-     * @param Connection $pdo
+     * @param \PDOStatement $result
      * @param int $maxCells
      * @return bool
      */
-    public function isSpreadsheetSizeOK(Connection $pdo, int $maxCells = 8000): bool
+    public function isSpreadsheetSizeOK(\PDOStatement $result, int $maxCells = 8000): bool
     {
-        return $pdo->getResult() ? ($pdo->getResult()->columnCount (  ) * $pdo->getResult()->rowCount ( ) > $maxCells ? false : true) : true;
+        return $result ? ($result->columnCount() * $result->rowCount() > $maxCells ? false : true) : true;
     }
 
     /**

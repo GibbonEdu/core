@@ -302,4 +302,18 @@ class Session implements SessionInterface
         }
         return $actions;
     }
+
+    /**
+     * is Empty
+     *
+     * Return true is the setting does not exist,
+     * or the contents of an existing key is empty using PHP empty, so '', null, [], false.
+     * @param string $key
+     * @return bool
+     */
+    public function isEmpty(string $key): bool {
+        if (! $this->has($key))
+            return true;
+        return empty($this->get($key, null)) ? true : false;
+    }
 }
