@@ -17,15 +17,22 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
-include './gibbon.php';
+include '../../gibbon.php';
 
-$session = $container->get('session');
+if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_details.php') == false) {
+    //Acess denied
+    echo "<div class='error'>";
+    echo __('You do not have access to this action.');
+    echo '</div>';
+    die();
+}
+
 $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-$URL = $session->get('absoluteURL').'/index.php';
+$URL = $gibbon->session->get('absoluteURL').'/index.php';
 $connection = $container->get('db');
 
 try {
-    $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
+    $data = array('gibbonPersonIDTutor' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $gibbon->session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $gibbon->session->get('gibbonPersonID'));
     $sql = 'SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
@@ -45,9 +52,9 @@ if ($result) {
             header("Location: {$URL}");
         } else {
             //Proceed!
-            $sql = 'SELECT surname, preferredName, email FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID='.$gibbonRollGroupID." AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
+            $sql = "SELECT surname, preferredName, email FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID=:gibbonRollGroupID AND status='Full' AND (dateStart IS NULL OR dateStart<=:dateStart) AND (dateEnd IS NULL  OR dateEnd>=:dateEnd) ORDER BY surname, preferredName";
             try {
-                $studentQuery = $connection2->query($sql);
+                $studentQuery = $connection->select($sql,['gibbonRollGroupID' => $gibbonRollGroupID, 'dateStart' => date('Y-m-d'), 'dateEnd' => date('Y-m-d')]);
             }
             catch(PDOException $e) {
                 $URL .= '?return=error2';
