@@ -188,4 +188,23 @@ abstract class QueryableGateway extends Gateway
             return '`' . str_replace('`', '``', $piece) . '`';
         }, explode('.', $value, 2)));
     }
+
+    /**
+     * find
+     * @param int $gibbonID
+     * @return array
+     */
+    public function find(int $gibbonID): array
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([$this->getTableName().'.*'])
+            ->where($this->getTableName().'.'.$this->getTableName().'ID = :gibbonID')
+            ->bindValue('gibbonID', $gibbonID);
+
+        $dataSet = $this->runQuery($query, $this->newQueryCriteria());
+
+        return $dataSet->getResultCount() === 1 ? $dataSet->toArray()[0] : [];
+    }
 }

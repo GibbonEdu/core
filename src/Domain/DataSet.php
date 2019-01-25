@@ -123,7 +123,7 @@ class DataSet implements \Countable, \IteratorAggregate
      */
     public function getResultCount()
     {
-        return $this->resultCount;
+        return intval($this->resultCount);
     }
 
     /**

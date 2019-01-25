@@ -72,6 +72,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $studentGateway = $container->get(StudentGateway::class);
     $medicalGateway = $container->get(MedicalGateway::class);
 
+    $rollGroup = $rollGroupGateway->find($gibbonRollGroupID);
+
     // QUERY
     $criteria = $studentGateway->newQueryCriteria()
         ->sortBy(['rollGroup', 'surname', 'preferredName'])
@@ -82,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
     $students = $studentGateway->queryStudentEnrolmentByRollGroup($criteria, $gibbonRollGroupID != '*' ? $gibbonRollGroupID : null);
 
     // DATA TABLE
-    $table = ReportTable::createPaginated('studentsByRollGroup', $criteria)->setViewMode($viewMode, $gibbon->session);
+    $table = ReportTable::createPaginated('Roll Group '.$rollGroup['name'], $criteria)->setViewMode($viewMode, $gibbon->session);
     $table->setTitle(__('Report Data'));
     $table->setDescription(function () use ($gibbonRollGroupID, $rollGroupGateway) {
         $output = '';
@@ -110,6 +112,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_b
         ->format(function ($person) {
             return Format::name('', $person['preferredName'], $person['surname'], 'Student', true, true) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
         });
+
+    if ($criteria->hasFilter('view', 'withEmail')) {
+        $table->addColumn('email', __('Email'));
+    }
 
     if ($criteria->hasFilter('view', 'extended')) {
         $table->addColumn('gender', __('Gender'));

@@ -19,9 +19,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Tables\Prefab;
 
-use Gibbon\Tables\DataTable;
 use Gibbon\Domain\QueryCriteria;
-use Gibbon\Tables\Renderer\PaginatedRenderer;
+use Gibbon\Services\Format;
+use Gibbon\Tables\Columns\Column;
+use Gibbon\Tables\DataTable;
 use Gibbon\Tables\Renderer\PrintableRenderer;
 use Gibbon\Tables\Renderer\SpreadsheetRenderer;
 
@@ -65,16 +66,25 @@ class ReportTable extends DataTable
         return $table;
     }
 
+    /**
+     * setViewMode
+     * @param $viewMode
+     * @param $session
+     * @return $this
+     */
     public function setViewMode($viewMode, $session)
     {
         switch ($viewMode) {
-            case 'print':   $this->setRenderer(new PrintableRenderer()); break;
-            
-            case 'export':  $this->setRenderer(new SpreadsheetRenderer($session->get('absolutePath'))); break;
+            case 'print':
+                $this->setRenderer(new PrintableRenderer());
+                break;
+            case 'export':
+                $this->setRenderer(new SpreadsheetRenderer());
+                break;
         }
 
-        $this->addMetaData('filename', 'gibbonExport_'.$this->getID());
-        $this->addMetaData('creator', formatName('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
+        $this->addMetaData('filename', $this->getID());
+        $this->addMetaData('creator', Format::name('', $session->get('preferredName'), $session->get('surname'), 'Staff'));
 
         return $this;
     }

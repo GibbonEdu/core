@@ -124,7 +124,6 @@ class StudentGateway extends QueryableGateway
         }
             
         $criteria->addFilterRules($this->getSharedUserFilterRules());
-
         $criteria->addFilterRules([
             'view' => function ($query, $view) {
                 if ($view == 'extended') {
@@ -133,6 +132,10 @@ class StudentGateway extends QueryableGateway
                         ->leftJoin('gibbonPersonMedical', 'gibbonPersonMedical.gibbonPersonID=gibbonPerson.gibbonPersonID')
                         ->leftJoin('gibbonPersonMedicalCondition', 'gibbonPersonMedicalCondition.gibbonPersonMedicalID=gibbonPersonMedical.gibbonPersonMedicalID')
                         ->groupBy(['gibbonPerson.gibbonPersonID']);
+                }
+                if ($view === 'withEmail') {
+                    $query->cols(['gibbonPerson.email']);
+
                 }
                 return $query;
             },

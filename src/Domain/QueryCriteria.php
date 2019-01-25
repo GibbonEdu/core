@@ -61,6 +61,9 @@ class QueryCriteria
      */
     public function fromArray(array $criteria)
     {
+        if (empty($criteria))
+            return $this;
+
         if (isset($criteria['page'])) {
             $this->page($criteria['page']);
         }
