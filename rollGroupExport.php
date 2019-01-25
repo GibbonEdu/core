@@ -19,16 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 include './gibbon.php';
 
+$session = $container->get('session');
 $gibbonRollGroupID = $_GET['gibbonRollGroupID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php';
+$URL = $session->get('absoluteURL').'/index.php';
+$connection = $container->get('db');
 
 try {
-    $data = array('gibbonPersonIDTutor' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor2' => $_SESSION[$guid]['gibbonPersonID'], 'gibbonPersonIDTutor3' => $_SESSION[$guid]['gibbonPersonID']);
+    $data = array('gibbonPersonIDTutor' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor2' => $session->get('gibbonPersonID'), 'gibbonPersonIDTutor3' => $session->get('gibbonPersonID'));
     $sql = 'SELECT * FROM gibbonRollGroup WHERE (gibbonPersonIDTutor=:gibbonPersonIDTutor OR gibbonPersonIDTutor2=:gibbonPersonIDTutor2 OR gibbonPersonIDTutor3=:gibbonPersonIDTutor3)';
     $result = $connection2->prepare($sql);
     $result->execute($data);
 } catch (PDOException $e) {
-    $URL .= '?return=error0';
+    $URL .= '?return=error2';
     header("Location: {$URL}");
 }
 
@@ -37,14 +39,23 @@ if ($result) {
         $URL .= '?return=error1';
         header("Location: {$URL}");
     } else {
+        $rollGroup = $connection->selectOne('SELECT * FROM gibbonRollGroup WHERE gibbonRollGroupID = :gibbonRollGroupID', ['gibbonRollGroupID' => $gibbonRollGroupID]);
         if ($result->rowCount() < 1) {
             $URL .= '?return=error3';
             header("Location: {$URL}");
         } else {
             //Proceed!
             $sql = 'SELECT surname, preferredName, email FROM gibbonStudentEnrolment INNER JOIN gibbonPerson ON gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonRollGroupID='.$gibbonRollGroupID." AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY surname, preferredName";
-            $exp = new Gibbon\Excel();
-            $exp->exportWithQuery($sql, 'classList.xls', $connection2);
+            try {
+                $studentQuery = $connection2->query($sql);
+            }
+            catch(PDOException $e) {
+                $URL .= '?return=error2';
+                header("Location: {$URL}");
+            }
+            $exp = new Gibbon\Spreadsheet();
+            $exp->getActiveSheet()->setTitle('Roll Group '.$rollGroup['name']);
+            $exp->exportWithQueryResult($studentQuery, 'Roll Group '.str_replace('.', '_', $rollGroup['name']).' List.xlsx');
         }
     }
 }
