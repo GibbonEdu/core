@@ -268,9 +268,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                     echo '<th>';
                                     echo __('Access');
                                     echo '</th>';
-                                    echo '<th>';
-                                    echo __('Like');
-                                    echo '</th>';
                                     echo "<th style='min-width: 140px'>";
                                     echo __('Actions');
                                     echo '</th>';
@@ -342,14 +339,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                             }
                                             echo '</td>';
                                             echo '<td>';
-                                            $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                                            if ($likesGiven != 1) {
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                                            } else {
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
-                                            }
-                                            echo '</td>';
-                                            echo '<td>';
                                             echo "<a href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Planner/planner_view_full.php&search=$gibbonPersonID&gibbonPlannerEntryID=".$row['gibbonPlannerEntryID']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&width=1000&height=550'><img title='".__('View')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/plus.png'/></a> ";
                                             echo '</td>';
                                             echo '</tr>';
@@ -418,9 +407,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         echo '</th>';
                                         echo '<th>';
                                         echo __('Access');
-                                        echo '</th>';
-                                        echo '<th>';
-                                        echo __('Like');
                                         echo '</th>';
                                         echo "<th style='min-width: 140px'>";
                                         echo __('Actions');
@@ -498,14 +484,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                                 }
                                                 if ($row['viewableParents'] == 'Y') {
                                                     echo __('Parents');
-                                                }
-                                                echo '</td>';
-                                                echo '<td>';
-                                                $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                                                if ($likesGiven != 1) {
-                                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                                                } else {
-                                                    echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date&gibbonPersonID=$gibbonPersonID'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
                                                 }
                                                 echo '</td>';
                                                 echo '<td>';
@@ -602,9 +580,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                         echo '<th>';
                         echo __('Access');
                         echo '</th>';
-                        echo '<th>';
-                        echo __('Like');
-                        echo '</th>';
                         echo "<th style='min-width: 140px'>";
                         echo __('Actions');
                         echo '</th>';
@@ -676,18 +651,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 }
                                 if ($row['viewableParents'] == 'Y') {
                                     echo __('Parents');
-                                }
-                                echo '</td>';
-                                echo '<td>';
-                                if ($row['role'] == 'Teacher') {
-                                    echo countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
-                                } else {
-                                    $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                                    if ($likesGiven != 1) {
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                                    } else {
-                                        echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
-                                    }
                                 }
                                 echo '</td>';
                                 echo '<td>';
@@ -829,9 +792,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                 echo '<th>';
                                 echo __('Access');
                                 echo '</th>';
-                                echo '<th>';
-                                echo __('Like');
-                                echo '</th>';
                                 echo "<th style='min-width: 150px'>";
                                 echo __('Actions');
                                 echo '</th>';
@@ -919,18 +879,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') == f
                                         }
                                         if ($row['viewableParents'] == 'Y') {
                                             echo __('Parents');
-                                        }
-                                        echo '</td>';
-                                        echo '<td>';
-                                        if ($row['role'] == 'Teacher') {
-                                            echo countLikesByContext($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID']);
-                                        } else {
-                                            $likesGiven = countLikesByContextAndGiver($connection2, 'Planner', 'gibbonPlannerEntryID', $row['gibbonPlannerEntryID'], $_SESSION[$guid]['gibbonPersonID']);
-                                            if ($likesGiven != 1) {
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'></a>";
-                                            } else {
-                                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/modules/Planner/plannerProcess.php?gibbonPlannerEntryID='.$row['gibbonPlannerEntryID'].'&address='.$_GET['q']."&viewBy=$viewBy&gibbonCourseClassID=$gibbonCourseClassID&date=$date'><img src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'></a>";
-                                            }
                                         }
                                         echo '</td>';
                                         echo '<td>';
