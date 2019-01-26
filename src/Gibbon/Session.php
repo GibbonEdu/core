@@ -316,4 +316,18 @@ class Session implements SessionInterface
             return true;
         return empty($this->get($key, null)) ? true : false;
     }
+
+    /**
+     * append
+     * @param $key
+     * @param null $value
+     */
+    public function append($key, $value = null)
+    {
+        $keyValuePairs = is_array($key)? $key : [$key => $value];
+
+        foreach ($keyValuePairs as $key => $value) {
+            $this->set([$key => $this->get($key, '') . $value]);
+        }
+    }
 }
