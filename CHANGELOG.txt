@@ -21,12 +21,14 @@ v18.0.00
     Headlines
 
     Changes With Important Notices
+        System: removed Likes/Stars feature
 
     Significant Changes
 
     Security
 
     Tweaks & Additions
+        Students: added link from student profile to Individual Needs edit screen
 
     Bug Fixes
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
