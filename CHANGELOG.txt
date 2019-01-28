@@ -21,6 +21,7 @@ v18.0.00
     Headlines
 
     Changes With Important Notices
+        System: removed Likes/Stars feature
 
     Significant Changes
 
