@@ -29,3 +29,6 @@ nbproject/
 /vendor/**/Examples
 /vendor/**/examples
 
+
+# var Folder
+/var/*
