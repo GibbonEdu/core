@@ -32,17 +32,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     echo '</div>';
 } else {
     //Proceed!
-    $gibbonFinanceInvoiceIDs = $_SESSION[$guid]['financeInvoiceExportIDs'];
-    $gibbonSchoolYearID = $_GET['gibbonSchoolYearID'];
+    $invoiceIDList = $gibbon->session->remove('financeInvoiceExportIDs');
+    $schoolYear = $_GET['gibbonSchoolYearID'];
 
-    if ($gibbonFinanceInvoiceIDs == '' or $gibbonSchoolYearID == '') {
+    if ($invoiceIDList == '' or $schoolYear == '') {
         echo "<div class='error'>";
         echo __('List of invoices or school year have not been specified, and so this export cannot be completed.');
         echo '</div>';
     } else {
 
         $invoiceGateway = $container->get(InvoiceGateway::class);
-        $invoices = $invoiceGateway->findExportContent($gibbonSchoolYearID, $gibbonFinanceInvoiceIDs);
+        $invoices = $invoiceGateway->findExportContent($schoolYear, $invoiceIDList);
         $criteria = $invoiceGateway->newQueryCriteria()
             ->sortBy(["FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled')", 'invoiceIssueDate', 'surname', 'preferredName'])
             ->pageSize(0);
@@ -54,6 +54,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $invoiceNumber = $settingGateway->getSettingByScope("Finance", "invoiceNumber");
 
         $table = ReportTable::createPaginated('invoiceExportOn'.date('Y-m-d'), $criteria)->setViewMode('export',$gibbon->session);
+        $table->setTitle('Invoices');
+        $table->addMetaData('Subject','Invoice Export');
+        $table->setDescription('Invoice Export');
+
 
         $table->addColumn('invoiceNumber',  __("Invoice Number"));
         $table->addColumn('studentName',  __("Student"));
@@ -63,18 +67,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         $table->addColumn('gender',  __("Gender"));
         $table->addColumn('status',  __("Status"));
         $table->addColumn('billingSchedule',  __("Schedule"));
-        $table->addColumn('totalValue', __("Total Value") . '(' . $gibbon->session->get('currency') .')');
+        $table->addColumn('totalValue', __("Total Value") . ' (' . $gibbon->session->get('currency') .')');
         $table->addColumn('invoiceIssueDate',  __("Issue Date"));
         $table->addColumn('invoiceDueDate', __("Due Date"));
         $table->addColumn('paidDate', __("Date Paid"));
-        $table->addColumn('paidAmount', __("Amount Paid") . '(' . $gibbon->session->get('currency') .')');
+        $table->addColumn('paidAmount', __("Amount Paid") . ' (' . $gibbon->session->get('currency') .')');
 
         $invoiceFeeGateway = $container->get(FinanceInvoiceFeeGateway::class);
         $invoices->transform(function(&$item) use ($invoiceNumber, $invoiceFeeGateway) {
-            if ($invoiceNumber=="Person ID + Invoice ID") {
+            if ($invoiceNumber === "Person ID + Invoice ID") {
                 $item['invoiceNumber'] = ltrim($item["gibbonPersonID"],"0") . "-" . ltrim($item["gibbonFinanceInvoiceID"], "0");
             }
-            else if ($invoiceNumber=="Student ID + Invoice ID") {
+            else if ($invoiceNumber === "Student ID + Invoice ID") {
                 $item['invoiceNumber'] = ltrim($item["studentID"],"0") . "-" . ltrim($item["gibbonFinanceInvoiceID"], "0");
             }
             else {
@@ -97,7 +101,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
             return ;
         });
 
-        $gibbon->session->set('financeInvoiceExportIDs', null);
         $table->render($invoices);
 	}
 }
