@@ -44,8 +44,8 @@ class LoggerFactory
     public function getLogger(string $channel = 'gibbon')
 
     {
-        if (isset($this->loggerStack['gibbon']))
-            return $this->loggerStack['gibbon'];
+        if (isset($this->loggerStack[$channel]))
+            return $this->loggerStack[$channel];
 
         $stream = new RotatingFileHandler($this->getFilePath().$channel.'.log', $this->getKeepDays(), $this->getLoggerLevel());
 
@@ -78,7 +78,7 @@ class LoggerFactory
     public function __construct(SettingGateway $settingGateway)
     {
         $this->settingGateway = $settingGateway;
-        $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath'). DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
+        $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath') . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
         $this->loggerLevel = $settingGateway->getSettingByScope('System', 'installType') === 'Production' ? Logger::WARNING : Logger::DEBUG;
     }
 
