@@ -28,10 +28,19 @@ use Psr\Container\ContainerInterface;
 
 /**
  * Class LoginSupervisor
+ *
+ * This class will always try to encode the password at the encryption level defined,
+ * using the PasswordEncoder.
+ * If that encryption is lower than the system available encryption, provides tools
+ * to upgrade the password to the latest encryption techniques available.
+
  * @package Gibbon\Data
  */
 class LoginSupervisor
 {
+    CONST HIGHEST_ENCRYPTION  = 'SHA256'; //Change this to force lower encryption choices.  This can be changed ONLY when ALL
+    // pages that read encryption are using the new encoder, as the old code can only encode MD5 and SHA256.
+
     /**
      * @var string
      */
@@ -261,7 +270,7 @@ class LoginSupervisor
     private function migratePassword(PasswordEncoder $encoder): bool
     {
         //Migrate to strong password
-        $passwordStrong = $encoder->encodePassword($this->getPostValue('password'), 'SHA256');
+        $passwordStrong = $encoder->encodePassword($this->getPostValue('password'), self::HIGHEST_ENCRYPTION);
         $dataSecure = ['passwordStrong' => $passwordStrong, 'passwordStrongSalt' => $encoder->getSalt(), 'username' => $this->user['username']];
         $sqlSecure = "UPDATE gibbonPerson SET password='', passwordStrong=:passwordStrong, passwordStrongSalt=:passwordStrongSalt WHERE (username=:username)";
         if ($this->getConnection()->update($sqlSecure,$dataSecure, true) !== 1)
