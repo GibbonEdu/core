@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Domain\Finance;
 
+use Aura\SqlQuery\Common\SelectInterface;
 use Gibbon\Domain\Traits\TableAware;
 use Gibbon\Domain\QueryCriteria;
 use Gibbon\Domain\QueryableGateway;
@@ -137,5 +138,137 @@ class InvoiceGateway extends QueryableGateway
         ]);
 
         return $this->runQuery($query, $criteria);
+    }
+
+    /**
+     * findExportContent
+     * @param int $schoolYearID
+     * @param array $invoiceExportIDList
+     */
+    public function findExportContent(int $schoolYearID, array $invoiceExportIDList)
+    {
+        $data = array('schoolYearID' => $schoolYearID, 'invoiceIDList' => implode(',', $invoiceExportIDList));
+
+        $criteria = $this->newQueryCriteria()
+            ->sortBy(["FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled')", 'invoiceIssueDate', 'surname', 'preferredName'])
+            ->pageSize(0);
+
+        $query = $this->queryScheduleAndPending($data, $criteria, null,false);
+        $query = $query->union();
+        $query = $this->queryAdHocAndPending($data, $criteria, $query, false);
+        $query = $query->union();
+        $query = $this->queryNotPending($data, $criteria, $query, false);
+
+        return $this->runQuery($query, $criteria);
+    }
+
+    /**
+     * queryScheduleAndPending
+     * @param array $data
+     * @param QueryCriteria $criteria
+     * @param SelectInterface|null $query
+     * @param bool $returnResult
+     * @return SelectInterface|\Gibbon\Domain\DataSet
+     * @throws \Exception
+     */
+    public function queryScheduleAndPending(array $data, QueryCriteria $criteria, SelectInterface $query = null, bool $returnResult = true, string $identifier = '0')
+    {
+        $query = empty($query) ? $this->newQuery() : $query;
+        $parameters = [];
+        foreach($data as $q=>$w)
+            $parameters[$q.$identifier] = $w;
+        $query->from($this->getTableName())
+            ->cols(['gibbonFinanceInvoice.gibbonFinanceInvoiceID', 'surname', 'preferredName', 'gibbonPerson.gibbonPersonID', 'dob', 'gender,
+				studentID', 'gibbonFinanceInvoice.invoiceTo', 'gibbonFinanceInvoice.status', 'gibbonFinanceInvoice.invoiceIssueDate,
+				gibbonFinanceBillingSchedule.invoiceDueDate', 'paidDate', 'paidAmount', 'gibbonFinanceBillingSchedule.name AS billingSchedule,
+				NULL AS billingScheduleExtra', 'notes', 'gibbonRollGroup.name AS rollGroup'])
+            ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
+            ->leftJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID')
+            ->leftJoin('gibbonPerson', 'gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
+                            AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonFinanceInvoice.gibbonSchoolYearID=:schoolYearID0')
+            ->where('billingScheduleType=:scheduleType0')
+            ->where('gibbonFinanceInvoice.status=:status0')
+            ->bindValues(['scheduleType0' => 'Scheduled', 'status0' => 'Pending'])
+            ->where('gibbonFinanceInvoice.gibbonFinanceInvoiceID IN (:invoiceIDList0)')
+            ->bindValues($parameters)
+        ;
+
+        return $returnResult ? $this->runQuery($query, $criteria) : $query ;
+    }
+
+    /**
+     * queryAdHocAndPending
+     * @param array $data
+     * @param QueryCriteria $criteria
+     * @param SelectInterface|null $query
+     * @param bool $returnResult
+     * @param string $identifier
+     * @return SelectInterface|\Gibbon\Domain\DataSet
+     * @throws \Exception
+     */
+    public function queryAdHocAndPending(array $data = [], QueryCriteria $criteria, SelectInterface $query = null, bool $returnResult = true, string $identifier = '1')
+    {
+        $query = empty($query) ? $this->newQuery() : $query;
+        $parameters = [];
+        foreach($data as $q=>$w)
+            $parameters[$q.$identifier] = $w;
+        $query->from($this->getTableName())
+            ->cols(['gibbonFinanceInvoice.gibbonFinanceInvoiceID', 'surname', 'preferredName', 'gibbonPerson.gibbonPersonID', 'dob', 'gender,
+				studentID', 'gibbonFinanceInvoice.invoiceTo', 'gibbonFinanceInvoice.status', 'gibbonFinanceInvoice.invoiceIssueDate,
+				gibbonFinanceBillingSchedule.invoiceDueDate', 'paidDate', 'paidAmount', 'gibbonFinanceBillingSchedule.name AS billingSchedule,
+				NULL AS billingScheduleExtra', 'notes', 'gibbonRollGroup.name AS rollGroup'])
+            ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
+            ->leftJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID')
+            ->leftJoin('gibbonPerson', 'gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonFinanceInvoice.gibbonSchoolYearID=:schoolYearID1')
+            ->where('billingScheduleType=:scheduleType1')
+            ->where('gibbonFinanceInvoice.status=:status1')
+            ->bindValues(['scheduleType1' => 'Ad Hoc', 'status1' => 'Pending'])
+            ->where('gibbonFinanceInvoice.gibbonFinanceInvoiceID IN (:invoiceIDList1)')
+        ;
+        $query = ! empty($parameters) ? $query->bindValues($parameters) : $query;
+
+        return $returnResult ? $this->runQuery($query, $criteria) : $query ;
+    }
+
+    /**
+     * queryNotPending
+     * @param array $data
+     * @param QueryCriteria $criteria
+     * @param SelectInterface|null $query
+     * @param bool $returnResult
+     * @param string $identifier
+     * @return SelectInterface|\Gibbon\Domain\DataSet
+     * @throws \Exception
+     */
+    public function queryNotPending(array $data = [], QueryCriteria $criteria, SelectInterface $query = null, bool $returnResult = true, string $identifier = '2')
+    {
+        $query = empty($query) ? $this->newQuery() : $query;
+        $parameters = [];
+        foreach($data as $q=>$w)
+            $parameters[$q.$identifier] = $w;
+        $query->from($this->getTableName())
+            ->cols(['gibbonFinanceInvoice.gibbonFinanceInvoiceID', 'surname', 'preferredName', 'gibbonPerson.gibbonPersonID', 'dob', 'gender,
+				studentID', 'gibbonFinanceInvoice.invoiceTo', 'gibbonFinanceInvoice.status', 'gibbonFinanceInvoice.invoiceIssueDate,
+				gibbonFinanceBillingSchedule.invoiceDueDate', 'paidDate', 'paidAmount', 'gibbonFinanceBillingSchedule.name AS billingSchedule,
+				NULL AS billingScheduleExtra', 'notes', 'gibbonRollGroup.name AS rollGroup'])
+            ->leftJoin('gibbonFinanceBillingSchedule', 'gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID')
+            ->leftJoin('gibbonFinanceInvoicee', 'gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID')
+            ->leftJoin('gibbonPerson', 'gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID')
+            ->leftJoin('gibbonStudentEnrolment', 'gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID')
+            ->leftJoin('gibbonRollGroup', 'gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID')
+            ->where('gibbonFinanceInvoice.gibbonSchoolYearID=:schoolYearID2')
+            ->where('gibbonFinanceInvoice.status != :status2')
+            ->bindValue('status2', 'Pending')
+            ->where('gibbonFinanceInvoice.gibbonFinanceInvoiceID IN (:invoiceIDList2)')
+        ;
+        $query = ! empty($parameters) ? $query->bindValues($parameters) : $query;
+
+        return $returnResult ? $this->runQuery($query, $criteria) : $query ;
     }
 }

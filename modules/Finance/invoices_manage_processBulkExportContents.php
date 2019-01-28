@@ -17,6 +17,12 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Finance\FinanceInvoiceFeeGateway;
+use Gibbon\Domain\Finance\InvoiceGateway;
+use Gibbon\Services\Format;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Tables\Prefab\ReportTable;
+
 include '../../config.php';
 
 if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.php') == false) {
@@ -35,199 +41,63 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo '</div>';
     } else {
 
-		$whereCount = 0;
-		$whereSched = '(';
-		$whereAdHoc = '(';
-		$whereNotPending = '(';
-		$data = array('gibbonSchoolYearID' => $gibbonSchoolYearID);
-		foreach ($gibbonFinanceInvoiceIDs as $gibbonFinanceInvoiceID) {
-			$data['gibbonFinanceInvoiceID'.$whereCount] = $gibbonFinanceInvoiceID;
-			$whereSched .= 'gibbonFinanceInvoice.gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID'.$whereCount.' OR ';
-			++$whereCount;
+        $invoiceGateway = $container->get(InvoiceGateway::class);
+        $invoices = $invoiceGateway->findExportContent($gibbonSchoolYearID, $gibbonFinanceInvoiceIDs);
+        $criteria = $invoiceGateway->newQueryCriteria()
+            ->sortBy(["FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled')", 'invoiceIssueDate', 'surname', 'preferredName'])
+            ->pageSize(0);
+
+		if ($invoices->getResultCount() === 0) {
+			echo "<div class='error'>".__('Your request failed due to a database error.')."</div>";
 		}
-		$whereSched = substr($whereSched, 0, -4).')';
+        $settingGateway = $container->get(SettingGateway::class);
+        $invoiceNumber = $settingGateway->getSettingByScope("Finance", "invoiceNumber");
 
-		//SQL for billing schedule AND pending
-		$sql = "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender,
-				studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate,
-				gibbonFinanceBillingSchedule.invoiceDueDate, paidDate, paidAmount, gibbonFinanceBillingSchedule.name AS billingSchedule,
-				NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup
-			FROM gibbonFinanceInvoice
-				JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID)
-				JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID)
-				JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID)
-				LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID
-					AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID)
-				LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
-			WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID
-				AND billingScheduleType='Scheduled'
-				AND gibbonFinanceInvoice.status='Pending'
-				AND $whereSched)";
-		$sql .= ' UNION ';
-		//SQL for Ad Hoc AND pending
-		$sql .= "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, invoiceIssueDate, invoiceDueDate, paidDate, paidAmount, 'Ad Hoc' AS billingSchedule, NULL AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND billingScheduleType='Ad Hoc' AND gibbonFinanceInvoice.status='Pending' AND $whereSched)";
-		$sql .= ' UNION ';
-		//SQL for NOT Pending
-		$sql .= "(SELECT gibbonFinanceInvoice.gibbonFinanceInvoiceID, surname, preferredName, gibbonPerson.gibbonPersonID, dob, gender, studentID, gibbonFinanceInvoice.invoiceTo, gibbonFinanceInvoice.status, gibbonFinanceInvoice.invoiceIssueDate, gibbonFinanceInvoice.invoiceDueDate, paidDate, paidAmount, billingScheduleType AS billingSchedule, gibbonFinanceBillingSchedule.name AS billingScheduleExtra, notes, gibbonRollGroup.name AS rollGroup FROM gibbonFinanceInvoice LEFT JOIN gibbonFinanceBillingSchedule ON (gibbonFinanceInvoice.gibbonFinanceBillingScheduleID=gibbonFinanceBillingSchedule.gibbonFinanceBillingScheduleID) JOIN gibbonFinanceInvoicee ON (gibbonFinanceInvoice.gibbonFinanceInvoiceeID=gibbonFinanceInvoicee.gibbonFinanceInvoiceeID) JOIN gibbonPerson ON (gibbonFinanceInvoicee.gibbonPersonID=gibbonPerson.gibbonPersonID) LEFT JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID AND gibbonStudentEnrolment.gibbonSchoolYearID=gibbonFinanceInvoice.gibbonSchoolYearID) LEFT JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID) WHERE gibbonFinanceInvoice.gibbonSchoolYearID=:gibbonSchoolYearID AND NOT gibbonFinanceInvoice.status='Pending' AND $whereSched)";
-		$sql .= " ORDER BY FIND_IN_SET(status, 'Pending,Issued,Paid,Refunded,Cancelled'), invoiceIssueDate, surname, preferredName";
-		if (is_null($result = $pdo->executeQuery($data, $sql))) {
-			echo "<div class='error'>".$pdo->getError().'</div>';
-		}
+        $table = ReportTable::createPaginated('invoiceExportOn'.date('Y-m-d'), $criteria)->setViewMode('export',$gibbon->session);
 
-		$excel = new Gibbon\Excel('invoices.xlsx');
-		if ($excel->estimateCellCount($pdo) > 8000)    //  If too big, then render csv instead.
-			return Gibbon\csv::generate($pdo, 'Invoices');
-		$excel->setActiveSheetIndex(0);
-		$excel->getProperties()->setTitle('Invoices');
-		$excel->getProperties()->setSubject('Invoice Export');
-		$excel->getProperties()->setDescription('Invoice Export');
+        $table->addColumn('invoiceNumber',  __("Invoice Number"));
+        $table->addColumn('studentName',  __("Student"));
+        $table->addColumn('rollGroup',  __("Roll Group"));
+        $table->addColumn('invoiceTo',  __("Invoice To"));
+        $table->addColumn('dob',  __("DOB"));
+        $table->addColumn('gender',  __("Gender"));
+        $table->addColumn('status',  __("Status"));
+        $table->addColumn('billingSchedule',  __("Schedule"));
+        $table->addColumn('totalValue', __("Total Value") . '(' . $gibbon->session->get('currency') .')');
+        $table->addColumn('invoiceIssueDate',  __("Issue Date"));
+        $table->addColumn('invoiceDueDate', __("Due Date"));
+        $table->addColumn('paidDate', __("Date Paid"));
+        $table->addColumn('paidAmount', __("Amount Paid") . '(' . $gibbon->session->get('currency') .')');
 
-        //Create border and fill style
-        $style_border = array('borders' => array('right' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'left' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'top' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e')), 'bottom' => array('style' => PHPExcel_Style_Border::BORDER_THIN, 'color' => array('argb' => '766f6e'))));
-        $style_head_fill = array('fill' => array('type' => PHPExcel_Style_Fill::FILL_SOLID, 'color' => array('rgb' => 'B89FE2')));
+        $invoiceFeeGateway = $container->get(FinanceInvoiceFeeGateway::class);
+        $invoices->transform(function(&$item) use ($invoiceNumber, $invoiceFeeGateway) {
+            if ($invoiceNumber=="Person ID + Invoice ID") {
+                $item['invoiceNumber'] = ltrim($item["gibbonPersonID"],"0") . "-" . ltrim($item["gibbonFinanceInvoiceID"], "0");
+            }
+            else if ($invoiceNumber=="Student ID + Invoice ID") {
+                $item['invoiceNumber'] = ltrim($item["studentID"],"0") . "-" . ltrim($item["gibbonFinanceInvoiceID"], "0");
+            }
+            else {
+                $item['invoiceNumber'] = ltrim($item["gibbonFinanceInvoiceID"], "0");
+            }
+            $item['studentName'] = Format::name("", htmlPrep($item["preferredName"]), htmlPrep($item["surname"]), "Student", true);
 
-        //Auto set column widths
-        for($col = 'A'; $col !== 'I'; $col++)
-            $excel->getActiveSheet()->getColumnDimension($col)->setAutoSize(true);
+            $item['dob'] = Format::date($item['dob']);
+            if (! empty($item["billingScheduleExtra"]))  {
+                $item["billingSchedule"] = $item["billingScheduleExtra"];
+            }
 
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(0, 1, __("Invoice Number"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(0, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(1, 1, __("Student"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(1, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(2, 1, __("Roll Group"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(2, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(3, 1, __("Invoice To"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(3, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(4, 1, __("DOB"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(4, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(5, 1, __("Gender"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(5, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(6, 1, __("Status"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(6, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(7, 1, __("Schedule"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(7, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(8, 1, __("Total Value") . '(' . $_SESSION[$guid]["currency"] .')');
-        $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(8, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(9, 1, __("Issue Date"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(9, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(10, 1, __("Due Date"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(10, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(11, 1, __("Date Paid"));
-        $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(11, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->setCellValueByColumnAndRow(12, 1, __("Amount Paid") . " (" . $_SESSION[$guid]["currency"] . ")" );
-        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_border);
-        $excel->getActiveSheet()->getStyleByColumnAndRow(12, 1)->applyFromArray($style_head_fill);
-		$excel->getActiveSheet()->getStyle("1:1")->getFont()->setBold(true);
+            $item['invoiceIssueDate'] = Format::date($item["invoiceIssueDate"]);
+            $item['invoiceDueDate'] = Format::date($item["invoiceDueDate"]);
+            $item['paidDate'] = empty($item['paidDate']) ? '' : Format::date($item["paidDate"]);
 
-		$r = 2;
-		$count = 0;
+            $totalFee = $invoiceFeeGateway->getFee($item["gibbonFinanceInvoiceID"], $item['status']);
+            $item['totalValue'] = $totalFee === false ? __('Error calculating total') : number_format($totalFee, 2, ".", "") ;
 
-		while ($row=$result->fetch()) {
-			$count++ ;
-			//Column A
-			$invoiceNumber=getSettingByScope( $connection2, "Finance", "invoiceNumber" ) ;
-			if ($invoiceNumber=="Person ID + Invoice ID") {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, ltrim($row["gibbonPersonID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0"));
-			}
-			else if ($invoiceNumber=="Student ID + Invoice ID") {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, ltrim($row["studentID"],"0") . "-" . ltrim($row["gibbonFinanceInvoiceID"], "0"));
-			}
-			else {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(0, $r, ltrim($row["gibbonFinanceInvoiceID"], "0"));
-			}
-            $excel->getActiveSheet()->getStyleByColumnAndRow(0, $r)->applyFromArray($style_border);
-			//Column B
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(1, $r, formatName("", htmlPrep($row["preferredName"]), htmlPrep($row["surname"]), "Student", true));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(1, $r)->applyFromArray($style_border);
-			//Column C
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(2, $r, $row["rollGroup"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(2, $r)->applyFromArray($style_border);
-			//Column D
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(3, $r, $row["invoiceTo"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(3, $r)->applyFromArray($style_border);
-			//Column E
-            $excel->getActiveSheet()->setCellValueByColumnAndRow(4, $r, dateConvertBack($guid, $row["dob"]));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(4, $r)->applyFromArray($style_border);
-			//Column F
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(5, $r, $row["gender"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(5, $r)->applyFromArray($style_border);
-			//Column G
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(6, $r, $row["status"]);
-            $excel->getActiveSheet()->getStyleByColumnAndRow(6, $r)->applyFromArray($style_border);
-			//Column H
-			if ($row["billingScheduleExtra"]!="")  {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $row["billingScheduleExtra"]);
-			}
-			else {
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(7, $r, $row["billingSchedule"]);
-			}
-            $excel->getActiveSheet()->getStyleByColumnAndRow(7, $r)->applyFromArray($style_border);
-			//Column I
-			//Calculate total value
-			$totalFee=0 ;
-			$feeError = false ;
-			$dataTotal=array("gibbonFinanceInvoiceID"=>$row["gibbonFinanceInvoiceID"]);
-			if ($row["status"]=="Pending") {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, gibbonFinanceFee.fee AS fee2
-					FROM gibbonFinanceInvoiceFee
-						LEFT JOIN gibbonFinanceFee ON (gibbonFinanceInvoiceFee.gibbonFinanceFeeID=gibbonFinanceFee.gibbonFinanceFeeID)
-					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
-			}
-			else {
-				$sqlTotal="SELECT gibbonFinanceInvoiceFee.fee AS fee, NULL AS fee2
-					FROM gibbonFinanceInvoiceFee
-					WHERE gibbonFinanceInvoiceID=:gibbonFinanceInvoiceID" ;
-			}
-			if (is_null($resultTotal=$pdo->executeQuery($dataTotal, $sqlTotal)))
-			{
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, 'Error calculating total');
-				$feeError = true;
-			}
-			while ($rowTotal = $resultTotal->fetch()) {
-				if (is_numeric($rowTotal["fee2"])) {
-					$totalFee+=$rowTotal["fee2"] ;
-				}
-				else {
-					$totalFee+=$rowTotal["fee"] ;
-				}
-			}
-			$x = '';
-			if (! $feeError) {
-				$x .= number_format($totalFee, 2, ".", "") ;
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(8, $r, $x);
-			}
-            $excel->getActiveSheet()->getStyleByColumnAndRow(8, $r)->applyFromArray($style_border);
-			//Column J
-		    $excel->getActiveSheet()->setCellValueByColumnAndRow(9, $r, dateConvertBack($guid, $row["invoiceIssueDate"]));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(9, $r)->applyFromArray($style_border);
-			//Column K
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(10, $r, dateConvertBack($guid, $row["invoiceDueDate"]));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(10, $r)->applyFromArray($style_border);
-			//Column L
-            if ($row["paidDate"]!="")
-				$excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, dateConvertBack($guid, $row["paidDate"]));
-            else
-                $excel->getActiveSheet()->setCellValueByColumnAndRow(11, $r, '');
-            $excel->getActiveSheet()->getStyleByColumnAndRow(11, $r)->applyFromArray($style_border);
-			//Column M
-			$excel->getActiveSheet()->setCellValueByColumnAndRow(12, $r, number_format($row["paidAmount"], 2, ".", ""));
-            $excel->getActiveSheet()->getStyleByColumnAndRow(12, $r)->applyFromArray($style_border);
-			$r++;
-		}
+            return ;
+        });
 
-		$_SESSION[$guid]['financeInvoiceExportIDs'] = null;
-		$excel->exportWorksheet();
+        $gibbon->session->set('financeInvoiceExportIDs', null);
+        $table->render($invoices);
 	}
 }
