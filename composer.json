@@ -42,7 +42,8 @@
         "phpoffice/phpexcel": "1.8.*",
         "matthewbdaly/sms-client": "^1.0",
         "symfony/yaml": "^3.2",
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "symfony/options-resolver": "^3.3"
     },
     "require-dev": {
         "twbs/bootstrap": "^4.1"
