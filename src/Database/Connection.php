@@ -184,6 +184,9 @@ class Connection implements ConnectionInterface
             $this->querySuccess = false;
         }
 
+        if ($this->querySuccess && $this->hasLogger())
+            $this->logger->debug($query, $bindings);
+
         return $this->result;
     }
 

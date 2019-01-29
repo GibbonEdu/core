@@ -156,7 +156,6 @@ class LoggerFactory
      */
     private function getMysqlLogger(): Logger
     {
-        $level = $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG ;
         $streams = [];
         $streams[] = new RotatingFileHandler($this->getFilePath().'mysql.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
         $streams[] = new RotatingFileHandler($this->getFilePath().'gibbon.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
