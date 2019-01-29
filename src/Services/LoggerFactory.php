@@ -25,6 +25,7 @@ namespace Gibbon\Services;
 use Gibbon\Domain\System\SettingGateway;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class LoggerFactory
@@ -38,14 +39,20 @@ class LoggerFactory
     private $loggerStack;
 
     /**
+     * getLogger
      * @param string $channel
-     * @return mixed
+     * @param array $options
+     * @return mixed|Logger
      */
-    public function getLogger(string $channel = 'gibbon')
+    public function getLogger(string $channel = 'gibbon', array $options = [])
 
     {
         if (isset($this->loggerStack[$channel]))
             return $this->loggerStack[$channel];
+
+        $method = 'get' . ucfirst($channel) . 'Logger';
+        if (method_exists($this, $method))
+            return $this->$method();
 
         $stream = new RotatingFileHandler($this->getFilePath().$channel.'.log', $this->getKeepDays(), $this->getLoggerLevel());
 
@@ -69,7 +76,12 @@ class LoggerFactory
     /**
      * @var int
      */
-    private $loggerLevel = 100;
+    private $loggerLevel = Logger::DEBUG;
+
+    /**
+     * @var mixed|string
+     */
+    private $installType = 'Production';
 
     /**
      * LoggerFactory constructor.
@@ -79,7 +91,8 @@ class LoggerFactory
     {
         $this->settingGateway = $settingGateway;
         $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath') . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
-        $this->loggerLevel = $settingGateway->getSettingByScope('System', 'installType') === 'Production' ? Logger::WARNING : Logger::DEBUG;
+        $this->installType = $settingGateway->getSettingByScope('System', 'installType');
+        $this->loggerLevel = $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG;
     }
 
     /**
@@ -114,5 +127,45 @@ class LoggerFactory
     public function getKeepDays(): int
     {
         return $this->keepDays;
+    }
+
+    /**
+     * @var string
+     */
+    private $channel;
+
+    /**
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function getInstallType()
+    {
+        return $this->installType;
+    }
+
+    /**
+     * getMysqlLogger
+     * @return Logger
+     */
+    private function getMysqlLogger(): Logger
+    {
+        $level = $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG ;
+        $streams = [];
+        $streams[] = new RotatingFileHandler($this->getFilePath().'mysql.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
+        $streams[] = new RotatingFileHandler($this->getFilePath().'gibbon.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
+
+        $logger = new Logger('mysql', $streams);
+
+        $this->loggerStack['mysql'] = $logger;
+
+        return $logger;
+
     }
 }
