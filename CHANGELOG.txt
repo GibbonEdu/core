@@ -31,6 +31,7 @@ v18.0.00
     Tweaks & Additions
         System: updated Google login scopes to remove plus.me, based on Google API changes
         System: made disabled checkboxes more visible
+        System: method for columns that require the translation, and update the columns where this is applicable
         Students: added link from student profile to Individual Needs edit screen
 
     Bug Fixes
