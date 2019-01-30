@@ -28,6 +28,7 @@ v18.0.00
     Security
 
     Tweaks & Additions
+        System: updated Google login scopes to remove plus.me, based on Google API changes
         Students: added link from student profile to Individual Needs edit screen
 
     Bug Fixes
