@@ -19,6 +19,7 @@ CHANGELOG
 v18.0.00
 --------
     Headlines
+        Activated Urdu as an available language
 
     Changes With Important Notices
         System: removed Likes/Stars feature
