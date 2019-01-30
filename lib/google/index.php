@@ -33,8 +33,8 @@ $client->setClientId($client_id);
 $client->setClientSecret($client_secret);
 $client->setRedirectUri($redirect_uri);
 $client->setAccessType('offline');
-$client->setScopes(array('https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/plus.me',
+$client->setScopes(array('email',
+    'profile',
     'https://www.googleapis.com/auth/calendar')); // set scope during user login
 
 /************************************************

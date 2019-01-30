@@ -191,7 +191,7 @@ function getCalendarEvents($connection2, $guid, $xml, $startDayStamp, $endDaySta
 
             //Re-establish $client
             $client->setApplicationName($googleClientName); // Set your application name
-            $client->setScopes(array('https://www.googleapis.com/auth/userinfo.email', 'https://www.googleapis.com/auth/plus.me', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
+            $client->setScopes(array('email', 'profile', 'https://www.googleapis.com/auth/calendar')); // set scope during user login
             $client->setClientId($googleClientID); // paste the client id which you get from google API Console
             $client->setClientSecret($googleClientSecret); // set the client secret
             $client->setRedirectUri($googleRedirectUri); // paste the redirect URI where you given in APi Console. You will get the Access Token here during login success
