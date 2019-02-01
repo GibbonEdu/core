@@ -252,6 +252,13 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
                 0 => __DIR__ . '/..' . '/twig/twig/lib',
             ),
         ),
+        'P' => 
+        array (
+            'PHPExcel' => 
+            array (
+                0 => __DIR__ . '/..' . '/phpoffice/phpexcel/Classes',
+            ),
+        ),
         'G' => 
         array (
             'Google_Service_' => 
