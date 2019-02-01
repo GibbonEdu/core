@@ -44,7 +44,7 @@ class MarkbookColumnGateway extends QueryableGateway
         $query = $this
             ->newQuery()
             ->from('gibbonMarkbookColumn')
-            ->cols(['*'])
+            ->cols(['*', 'gibbonMarkbookColumn.name as name'])
             ->where('gibbonMarkbookColumn.gibbonCourseClassID = :gibbonCourseClassID')
             ->bindValue('gibbonCourseClassID', $gibbonCourseClassID)
             ->groupBy(['gibbonMarkbookColumn.gibbonMarkbookColumnID']);
