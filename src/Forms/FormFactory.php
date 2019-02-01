@@ -371,6 +371,7 @@ class FormFactory implements FormFactoryInterface
             'tr_TR' => 'Türkçe - Türkiye',
             'ar_SA' => 'العربية - المملكة العربية السعودية',
             'th_TH' => 'ภาษาไทย - ราชอาณาจักรไทย',
+            'ur_PK' => 'پاکستان - اُردُو',
             'zh_CN' => '汉语 - 中国',
             'zh_HK' => '體字 - 香港',
         );
