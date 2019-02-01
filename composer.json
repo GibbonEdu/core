@@ -27,7 +27,7 @@
         "test:phpunit": "Run unit tests with PHPUnit."
     },
     "require": {
-        "php" : "^7.0",
+        "php" : "^7.0|^7.1|^7.2",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
@@ -41,6 +41,7 @@
         "phpmailer/phpmailer": "5.2.*",
         "matthewbdaly/sms-client": "^1.0",
         "symfony/yaml": "^3.2",
+        "monolog/monolog": "^1.24",
         "phpoffice/phpspreadsheet": "^1.6"
     },
     "require-dev": {
