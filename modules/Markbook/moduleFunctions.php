@@ -337,21 +337,28 @@ function getLegacyGrade($pdo, $reportName, $gibbonSchoolYearID, $gibbonPersonIDS
     return ($rs && $rs->rowCount() >= 1)? $rs->fetchColumn(0) : false;
 }
 
-function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYearID ) {
+function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYearID, $finalizedReports = true) {
 
     $data = array(
         'gibbonPersonIDStudent' => $gibbonPersonIDStudent,
         'gibbonSchoolYearID' => $gibbonSchoolYearID,
-        'today' => date('Y-m-d'),
+        // 'today' => date('Y-m-d'),
     );
-    $sql = "SELECT arrReportGPA.GPA, arrReport.reportName, gibbonSchoolYear.name as schoolYearName
+    $sql = "SELECT arrReportGPA.GPA, arrReportGPA.status, arrReport.reportName, gibbonSchoolYear.name as schoolYearName
         FROM arrReportGPA
         JOIN arrReport ON (arrReportGPA.reportID=arrReport.reportID)
         JOIN gibbonSchoolYear ON (gibbonSchoolYear.gibbonSchoolYearID=arrReport.schoolYearID)
-        WHERE arrReport.schoolYearID=:gibbonSchoolYearID
-        AND arrReport.endDate<=:today
+        WHERE arrReport.schoolYearID=:gibbonSchoolYearID";
+
+    if ($finalizedReports) {
+        $data['today'] = date('Y-m-d');
+        $sql .= " AND arrReport.endDate<=:today ";
+    }
+    
+    $sql .= " 
         AND arrReportGPA.studentID=:gibbonPersonIDStudent
         ORDER BY arrReport.reportID ASC";
+
     $rs = $pdo->executeQuery($data, $sql);
 
     if ($rs->rowCount() == 0) return;
@@ -368,7 +375,7 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYea
             echo '<th class="columnLabel" style="border: 0; padding: 10px !important;text-align: center; width: 65px;font-size: 11px;">'.$row['reportName'].'</td>';
         }
 
-        echo '<td rowspan="2" style="padding: 10px 30px !important; border: 0; border-left: 1px solid #dfdfdf;">';
+        echo '<td rowspan="2" style="padding: 10px 30px !important; border: 0; border-left: 1px solid #dfdfdf;font-weight: normal;">';
             echo '<span class="small emphasis">A student\'s GPA is the weighted average of course marks, taking into account the credit value of each course. The GPA\'s listed here are from  posted report card marks.</span>';
         echo '</td>';
     echo '</tr>';
@@ -377,7 +384,7 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYea
 
         foreach ($marks as $row) {
             if (empty($row['GPA'])) continue;
-            echo '<td style="padding: 10px !important; text-align: center;">'.round( $row['GPA'], 1 ).'%</td>';
+            echo '<td style="padding: 10px !important; text-align: center;line-height: 1.5;">'.round( $row['GPA'], 1 ).'%<br/>'.$row['status'].'</td>';
         }
     echo '</tr>';
 
@@ -386,8 +393,10 @@ function renderStudentGPA( $pdo, $guid, $gibbonPersonIDStudent, $gibbonSchoolYea
 
 function renderStudentCourseAverage($pdo, $guid, $gibbonPersonIDStudent)
 {
+    return '';
+
     global $gibbon;
-    require_once './modules/Markbook/src/markbookView.php';
+    require_once './modules/Markbook/src/MarkbookView.php';
 
     $gibbonSchoolYearID = (!empty($gibbonSchoolYearID))? $gibbonSchoolYearID : $_SESSION[$guid]['gibbonSchoolYearID'];
 
@@ -417,7 +426,7 @@ function renderStudentCourseAverage($pdo, $guid, $gibbonPersonIDStudent)
     while ($course = $result->fetch())
     {
         // Build the markbook object for this class & student
-        $markbook = new Module\Markbook\markbookView($gibbon, $pdo, $course['gibbonCourseClassID'] );
+        $markbook = new Gibbon\Module\Markbook\MarkbookView($gibbon, $pdo, $course['gibbonCourseClassID'] );
         $markbook->cacheWeightings($gibbonPersonIDStudent);
         
         // Grab the course weight and grade
