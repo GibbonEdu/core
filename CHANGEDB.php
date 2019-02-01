@@ -812,4 +812,5 @@ $sql[$count][1] = "
 DELETE FROM gibbonAction WHERE gibbonModuleID=(SELECT gibbonModuleID FROM gibbonModule WHERE name='Planner') AND name='Staff Likes';end
 DROP TABLE gibbonLike;end
 UPDATE gibboni18n SET active='Y' WHERE code='ur_IN';end
+UPDATE gibboni18n SET code='ur_PK', name='پاکستان - اُردُو', active='Y' WHERE code='ur_IN';end
 ";
