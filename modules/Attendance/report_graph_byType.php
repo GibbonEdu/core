@@ -110,14 +110,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
         $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
 
     $typeOptions = array_column($attendance->getAttendanceTypes(), 'name');
+    $arrayTypeOptions = array();
+    foreach($typeOptions as $types){
+        $arrayTypeOptions[$types] = __($types);
+    }
     $row = $form->addRow();
         $row->addLabel('types', __('Types'));
-        $row->addSelect('types')->fromArray($typeOptions)->selectMultiple()->selected($types);
+        $row->addSelect('types')->fromArray($arrayTypeOptions)->selectMultiple()->selected($types);
 
     $reasonOptions = $attendance->getAttendanceReasons();
+    $arrayReasonOptions = array();
+    foreach($reasonOptions as $reasons){
+        $arrayReasonOptions[$reasons] = __($reasons);
+    }    
     $row = $form->addRow();
         $row->addLabel('reasons', __('Reasons'));
-        $row->addSelect('reasons')->fromArray($reasonOptions)->selectMultiple()->selected($reasons);
+        $row->addSelect('reasons')->fromArray($arrayReasonOptions)->selectMultiple()->selected($reasons);
 
     $row = $form->addRow();
         $row->addLabel('mode', __('Mode'));
