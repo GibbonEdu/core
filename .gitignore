@@ -28,4 +28,9 @@ nbproject/
 /vendor/**/unitTests
 /vendor/**/Examples
 /vendor/**/examples
+/vendor/**/samples
+/vendor/**/docs
 
+
+# var Folder
+/var/*

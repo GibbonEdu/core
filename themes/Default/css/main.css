@@ -793,6 +793,9 @@ input[type="button"].buttonLink:hover {
 	font-size: 13px;
 }
 
+input[type=checkbox][disabled]{
+  opacity: 1;
+}
 
 /* MESSAGES */
 div.message {
@@ -1777,7 +1780,7 @@ tr.selected, tr.selected td, div.selected, td.selected {
 }
 
 .bulkActionForm .bulkActionCount {
-    position: relative; 
+    position: relative;
     right: 10px;
     font-size:13px;
     line-height:32px;
