@@ -38,7 +38,7 @@ use Psr\Container\ContainerInterface;
  */
 class LoginSupervisor
 {
-    CONST HIGHEST_ENCRYPTION  = 'Argon2i'; //Change this to force lower encryption choices.  This can be changed ONLY when ALL
+    CONST HIGHEST_ENCRYPTION  = 'SHA256'; //Change this to force lower encryption choices.  This can be changed ONLY when ALL
     // pages that read encryption are using the new encoder, as the old code can only encode MD5 and SHA256.
 
     /**
