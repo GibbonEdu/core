@@ -302,4 +302,32 @@ class Session implements SessionInterface
         }
         return $actions;
     }
+
+    /**
+     * is Empty
+     *
+     * Return true is the setting does not exist,
+     * or the contents of an existing key is empty using PHP empty, so '', null, [], false.
+     * @param string $key
+     * @return bool
+     */
+    public function isEmpty(string $key): bool {
+        if (! $this->has($key))
+            return true;
+        return empty($this->get($key, null)) ? true : false;
+    }
+
+    /**
+     * append
+     * @param $key
+     * @param null $value
+     */
+    public function append($key, $value = null)
+    {
+        $keyValuePairs = is_array($key)? $key : [$key => $value];
+
+        foreach ($keyValuePairs as $key => $value) {
+            $this->set([$key => $this->get($key, '') . $value]);
+        }
+    }
 }

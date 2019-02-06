@@ -117,8 +117,13 @@ abstract class QueryableGateway extends Gateway
         // Sort By
         if ($criteria->hasSort()) {
             foreach ($criteria->getSortBy() as $column => $direction) {
-                $column = $this->escapeIdentifier($column);
-                $query->orderBy(["{$column} {$direction}"]);
+                if (strpos($column, 'FIND_IN_SET') !== 0)
+                    $column = $this->escapeIdentifier($column);
+                else {
+                    $column = $this->findInSetEscape($column);
+                    $direction = '';
+                }
+                $query->orderBy([trim("{$column} {$direction}")]);
             }
         }
 
@@ -187,5 +192,46 @@ abstract class QueryableGateway extends Gateway
         return implode('.', array_map(function ($piece) {
             return '`' . str_replace('`', '``', $piece) . '`';
         }, explode('.', $value, 2)));
+    }
+
+    /**
+     * findInSetEscape
+     * @param $column
+     * @return string
+     */
+    private function findInSetEscape($column): string
+    {
+        $start = strpos($column, '(');
+        $end = strpos($column, ')');
+        if ($start === false || $end === false || $end <= $start)
+            return '';
+        $set = explode(',', substr($column,$start+1,$end-1));
+        if (count($set) < 2)
+            return '';
+        $field = trim(array_shift($set), '( ');
+        foreach($set as $q=>$w)
+            $set[$q] = trim($w, '\' )');
+        $set = implode(',',$set);
+
+        return 'FIND_IN_SET('.$this->escapeIdentifier($field).', \''.$set.'\')';
+    }
+
+    /**
+     * find
+     * @param int $gibbonID
+     * @return array
+     */
+    public function find(int $gibbonID): array
+    {
+        $query = $this
+            ->newQuery()
+            ->from($this->getTableName())
+            ->cols([$this->getTableName().'.*'])
+            ->where($this->getTableName().'.'.$this->getTableName().'ID = :gibbonID')
+            ->bindValue('gibbonID', $gibbonID);
+
+        $dataSet = $this->runQuery($query, $this->newQueryCriteria());
+
+        return $dataSet->getResultCount() === 1 ? $dataSet->toArray()[0] : [];
     }
 }

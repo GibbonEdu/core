@@ -61,6 +61,9 @@ class QueryCriteria
      */
     public function fromArray(array $criteria)
     {
+        if (empty($criteria))
+            return $this;
+
         if (isset($criteria['page'])) {
             $this->page($criteria['page']);
         }
@@ -379,10 +382,11 @@ class QueryCriteria
     {
         if (empty($column)) return $this;
 
-        $columns = is_array($column) ? $column : array($column);
+        $columns = is_array($column) ? $column : [$column];
 
         foreach ($columns as $column) {
-            $column = preg_replace('/[^a-zA-Z0-9\.\_]/', '', $column);
+            if (strpos($column, 'FIND_IN_SET') !== 0)
+                $column = preg_replace('/[^a-zA-Z0-9\.\_]/', '', $column);
             $this->criteria['sortBy'][$column] = (strtoupper($direction) == 'DESC') ? 'DESC' : 'ASC';
         }
 

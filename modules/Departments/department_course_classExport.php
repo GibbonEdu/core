@@ -17,48 +17,54 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Domain\Departments\CourseGateway;
+use Gibbon\Domain\Departments\CourseClassPersonGateway;
+use Gibbon\Tables\Prefab\ReportTable;
+
 include '../../gibbon.php';
 
-//Module includes
-include './moduleFunctions.php';
-
 $gibbonCourseClassID = $_GET['gibbonCourseClassID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
+$URL = $gibbon->session->get('absoluteURL').'/index.php?q=/modules/'.getModuleName($_GET['address'])."/department_course_class.php&gibbonCourseClassID=$gibbonCourseClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Departments/department_course_class.php') == false or getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2) != 'View Student Profile_full') {
     $URL .= '&return=error0';
     header("Location: {$URL}");
 } else {
-    if ($gibbonCourseClassID == '') {
+    if (empty($gibbonCourseClassID)) {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-            $sql = 'SELECT gibbonCourseClassID, gibbonCourse.nameShort AS courseName, gibbonCourseClass.nameShort AS className FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourse.gibbonCourseID=gibbonCourseClass.gibbonCourseID) WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY gibbonCourse.name, gibbonCourseClass.name';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            echo "<div class='error'>".$e->getMessage().'</div>';
-        }
-        if ($result->rowCount() < 1) {
+
+        $courseGateway = $container->get(CourseGateway::class);
+
+        $result = $courseGateway->queryByCourseClass($gibbonCourseClassID);
+
+        if (! $result->getResultCount() === 1) {
             $URL .= '&return=error1';
             header("Location: {$URL}");
         } else {
             //Proceed!
-            try {
-                $data = array();
-                $sql = "SELECT role, surname, preferredName, email, studentID FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY role DESC, surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+            $courseClassPersonGateway = $container->get(CourseClassPersonGateway::class);
 
-            $exp = new Gibbon\Excel();
-            $exp->exportWithQuery($sql, 'classList.xls', $connection2);
+            $criteria = $courseClassPersonGateway->newQueryCriteria()
+                ->sortBy(['role DESC', 'surname', 'preferredName'])
+                ->pageSize(0);
+
+            $students = $courseClassPersonGateway->queryFullByDate($gibbonCourseClassID, date('Y-m-d'));
+
+            $courseClass = $result->getRow(0);
+
+            $table = ReportTable::createPaginated(__('Course').' '.__('Class').' '.$courseClass['course'].'_'.$courseClass['class'], $criteria)->setViewMode('export',$gibbon->session);
+            $table->setTitle(__('Course').' '.__('Class').' '.$courseClass['course'].'.'.$courseClass['class']);
+            $table->setDescription(__('Course').' '.__('Class').' '.$courseClass['courseLong'].'.'.$courseClass['class'] . __(' in School Year') . ' ' . $courseClass['year']);
+
+            $table->addColumn('role', __('Role'));
+            $table->addColumn('surname', __('Surname'));
+            $table->addColumn('preferredName', __('Preferred Name'));
+            $table->addColumn('email', __('Email'));
+            $table->addColumn('studentID', __('Student Identifier'));
+
+            $table->render($students);
         }
     }
 }

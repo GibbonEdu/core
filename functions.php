@@ -625,7 +625,7 @@ function getStaffDashboardContents($connection2, $guid, $gibbonPersonID)
         if ($rowRollGroups['attendance'] == 'Y' AND $attendanceAccess) {
             $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Attendance/attendance_take_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Take Attendance')."<img style='margin-left: 5px' title='".__('Take Attendance')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/attendance.png'/></a> | ";
         }
-        $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/indexExport.php?gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
+        $rollGroups[$count][2] .= "<a href='".$_SESSION[$guid]['absoluteURL'].'/export.php?q=/modules/Students/report_students_byRollGroup.php&gibbonRollGroupID='.$rowRollGroups['gibbonRollGroupID']."&format=export&view=withEmail&search=view:basic'>".__('Export to Excel')."<img style='margin-left: 5px' title='".__('Export to Excel')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/download.png'/></a>";
         $rollGroups[$count][2] .= '</div>';
         $rollGroups[$count][2] .= getRollGroupTable($guid, $rowRollGroups['gibbonRollGroupID'], 5, $connection2);
 
