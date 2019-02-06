@@ -39,10 +39,11 @@
         "twig/twig": "^2.0",
         "slim/slim": "^3.0",
         "phpmailer/phpmailer": "5.2.*",
-        "phpoffice/phpexcel": "1.8.*",
         "matthewbdaly/sms-client": "^1.0",
         "symfony/yaml": "^3.2",
-        "monolog/monolog": "^1.24"
+        "monolog/monolog": "^1.24",
+        "phpoffice/phpspreadsheet": "^1.6",
+        "phpoffice/phpexcel": "1.8.1"
     },
     "require-dev": {
         "twbs/bootstrap": "^4.1"

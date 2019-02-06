@@ -19,6 +19,7 @@ CHANGELOG
 v18.0.00
 --------
     Headlines
+        Activated Urdu as an available language
 
     Changes With Important Notices
         System: removed Likes/Stars feature
@@ -28,12 +29,18 @@ v18.0.00
     Security
 
     Tweaks & Additions
+        System: updated Google login scopes to remove plus.me, based on Google API changes
+        System: made disabled checkboxes more visible
+        System: method for columns that require the translation, and update the columns where this is applicable
         Students: added link from student profile to Individual Needs edit screen
+        Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
 
     Bug Fixes
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
         System: fixed missing globals in custom index scripts
         System: fixed index_custom.php content not loading on first login
+        System: fix SQL key integer length in database tables to ensure referential integrity
+        Markbook: fix column title showing term's name when the term filter is applied in View Markbook
 
 
 v17.0.00
