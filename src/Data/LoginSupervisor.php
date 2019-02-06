@@ -157,7 +157,7 @@ class LoginSupervisor
         $sql = "SELECT gibbonPerson.*, futureYearsLogin, pastYearsLogin FROM gibbonPerson LEFT JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE ((username=:username OR (LOCATE('@', :username)>0 AND email=:username) ) AND (status='Full'))";
         $result = $this->getConnection()->selectOne($sql, $data, true);
 
-        if ($result instanceof PDOStatement)
+        if ($result instanceof \PDOStatement)
         {
             setLog($this->getConnection()->getConnection(), $this->getSession()->get('gibbonSchoolYearIDCurrent'), null, null, 'Login - Failed', ['username' => $this->getPostValue('username'), 'reason' => 'Username does not exist'], $_SERVER['REMOTE_ADDR']);
             $this->redirectTo(['loginReturn'=>'fail1']);
@@ -260,6 +260,7 @@ class LoginSupervisor
             setLog($this->getConnection()->getConnection(), $this->getSession()->get('gibbonSchoolYearIDCurrent'), null, $this->user['gibbonPersonID'], 'Login - Failed', array('username' => $this->user['username'], 'reason' => 'Incorrect password'), $_SERVER['REMOTE_ADDR']);
             $this->redirectTo(['loginReturn'=>'fail1']);
         }
+
         return $this;
     }
 

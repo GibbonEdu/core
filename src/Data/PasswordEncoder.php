@@ -113,14 +113,14 @@ class PasswordEncoder
             throw new \Exception('Invalid password.');
         }
 
-        if (\PHP_VERSION_ID >= 70200) {
-            return $this->encodePasswordNative($raw);
-        }
         if (\function_exists('sodium_crypto_pwhash_str')) {
             return $this->encodePasswordSodiumFunction($raw);
         }
         if (\extension_loaded('libsodium')) {
             return $this->encodePasswordSodiumExtension($raw);
+        }
+        if (\PHP_VERSION_ID >= 50500) {
+            return $this->encodePasswordNative($raw);
         }
 
         return null;
@@ -170,15 +170,14 @@ class PasswordEncoder
      * It is almost best to **not** pass a salt and let PHP generate one for you.
      *
      * @param string $raw  The password to encode
-     * @param string $salt The salt
      *
      * @return string The encoded password
      *
-     * @throws BadCredentialsException when the given password is too long
+     * @throws \Exception when the given password is too long
      *
      * @see http://lxr.php.net/xref/PHP_5_5/ext/standard/password.c#111
      */
-    private function encodeBCryptPassword($raw)
+    private function encodePasswordNative($raw)
     {
         if (!in_array($this->getHighestAvailableEncryption(), ['Argon2i', 'BCrypt']))
             return null;
@@ -186,8 +185,16 @@ class PasswordEncoder
             throw new \Exception('Invalid password.');
         }
 
-        $options = array('cost' => 15);
+        if (\PHP_VERSION_ID >= 70300) {
+            $options = ['memory_cost' => 2048, 'time_cost' => 4, 'threads' => 3];
+            return password_hash($raw, PASSWORD_ARGON2ID, $options);
+        }
+        if (\PHP_VERSION_ID >= 70200) {
+            $options = ['memory_cost' => 2048, 'time_cost' => 4, 'threads' => 3];
+            return password_hash($raw, PASSWORD_ARGON2I, $options);
+        }
 
+        $options = array('cost' => 15);
         return password_hash($raw, PASSWORD_BCRYPT, $options);
     }
 
@@ -301,7 +308,7 @@ class PasswordEncoder
                 return $this->encodeArgon2iPassword($raw);
             case 'BCRYPT':
                 self::$currentEncryption = "BCrypt";
-                return $this->encodeBCryptPassword($raw);
+                return $this->encodePasswordNative($raw);
         }
         self::$currentEncryption = "SHA256"; //Need to set this so that salt is correctly generated for SHA256
         return $this->encodeSHA256Password($raw, self::getSalt());

@@ -24,7 +24,7 @@ include './gibbon.php';
 $loginSupervisor = new LoginSupervisor($container);
 
 $loginSupervisor
-    ->setReturnParameters(['q' => '/preferences.php', 'forceReset' => $_SESSION[$guid]['passwordForceReset']])
+    ->setReturnParameters(['q' => '/preferences.php', 'forceReset' => $gibbon->session->get('passwordForceReset')])
     ->isValidPassword()
     ->isUserInDatabase()
     ->verifyPassword()
