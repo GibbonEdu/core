@@ -88,6 +88,7 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
             'Symfony\\Polyfill\\Mbstring\\' => 26,
             'Symfony\\Polyfill\\Ctype\\' => 23,
             'Symfony\\Component\\Yaml\\' => 23,
+            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Slim\\' => 5,
         ),
         'P' => 
@@ -156,6 +157,10 @@ class ComposerStaticInit3046e8c42bde92b8c2d990c2f6dd9601
         'Symfony\\Component\\Yaml\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
+        ),
+        'Symfony\\Component\\OptionsResolver\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
         'Slim\\' => 
         array (

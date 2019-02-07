@@ -243,7 +243,7 @@ class LoginSupervisor
      */
     public function verifyPassword()
     {
-        $encoder = new PasswordEncoder();
+        $encoder = new PasswordEncoder(self::HIGHEST_ENCRYPTION);
 
         $salt = $this->user['passwordStrongSalt'];
         $password = $this->user['passwordStrong'] . (isset($this->user['password']) ? $this->user['password'] : '');
@@ -504,7 +504,7 @@ class LoginSupervisor
      */
     public function saveNewPassword(): LoginSupervisor
     {
-        $encoder = new PasswordEncoder();
+        $encoder = new PasswordEncoder(self::HIGHEST_ENCRYPTION);
         $this->user['passwordStrong'] = $encoder->encodePassword($this->getPostValue('passwordNew'));
         $this->user['passwordStrongSalt'] = $encoder->getSalt();
         $this->forceReset = $this->user['passwordForceReset'] === 'Y' ? true : false ;

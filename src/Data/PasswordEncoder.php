@@ -21,6 +21,9 @@
  */
 namespace Gibbon\Data;
 
+use Symfony\Component\OptionsResolver\Exception\InvalidOptionsException;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /**
  * Class PasswordEncoder
  *
@@ -44,18 +47,18 @@ class PasswordEncoder
      */
     public function getHighestAvailableEncryption()
     {
-        if (\PHP_VERSION_ID >= 70200) {
-            return 'Argon2i';
+        if (\PHP_VERSION_ID >= 70200 && $this->highestAvailableEncryption === 'Argon2i') {
+            return $this->highestAvailableEncryption = 'Argon2i';
         }
-        if (\function_exists('sodium_crypto_pwhash_str_verify')) {
-            return 'Argon2i';
+        if (\function_exists('sodium_crypto_pwhash_str_verify') && $this->highestAvailableEncryption === 'Argon2i') {
+            return $this->highestAvailableEncryption = 'Argon2i';
         }
-        if (\extension_loaded('libsodium')) {
-            return 'Argon2i';
+        if (\extension_loaded('libsodium') && $this->highestAvailableEncryption === 'Argon2i') {
+            return $this->highestAvailableEncryption = 'Argon2i';
         }
-        if (\defined('PASSWORD_BCRYPT') && \PHP_VERSION_ID > 50500 )
-            return 'BCrypt';
-        return 'SHA256';
+        if (\defined('PASSWORD_BCRYPT') && \PHP_VERSION_ID > 50500  && $this->highestAvailableEncryption === 'BCrypt')
+            return $this->highestAvailableEncryption = 'BCrypt';
+        return $this->highestAvailableEncryption = 'SHA256';
     }
 
     /**
@@ -352,5 +355,28 @@ class PasswordEncoder
         }
 
         return self::$salt = $s;
+    }
+
+    /**
+     * string
+     */
+    private $highestAvailableEncryption;
+
+    /**
+     * PasswordEncoder constructor.
+     * @param null $highestAvailableEncryption
+     * @throws InvalidOptionsException
+     */
+    public function __construct($highestAvailableEncryption = null)
+    {
+
+        $resolver = new OptionsResolver();
+        $resolver->setRequired(['highestAvailableEncryption']);
+        $test['highestAvailableEncryption'] = $highestAvailableEncryption;
+        $resolver->setAllowedValues('highestAvailableEncryption', [null,'SHA256','BCrypt','Argon2i']);
+        $resolver->setAllowedTypes('highestAvailableEncryption', ['null','string']);
+        $test = $resolver->resolve($test);  //Throws InvalidOptionsException on an error
+
+        $this->highestAvailableEncryption = $highestAvailableEncryption;
     }
 }
