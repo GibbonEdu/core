@@ -81,12 +81,12 @@ class FormatTest extends TestCase
 
     public function testFormatsUnixTimestamps()
     {
-        $this->assertEquals('1526572800', Format::timestamp('2018-05-18'));
+        $this->assertEquals(strtotime('2018-05-18'), Format::timestamp('2018-05-18'));
     }
 
     public function testFormatsUnixTimestampsFromMysqlTimestamps()
     {
-        $this->assertEquals('1526607015', Format::timestamp('2018-05-18 09:30:15'));
+        $this->assertEquals(strtotime('2018-05-18 09:30:15'), Format::timestamp('2018-05-18 09:30:15'));
     }
 
     public function testFormatsTimes()

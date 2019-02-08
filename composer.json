@@ -19,7 +19,7 @@
             "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && phpunit --verbose --configuration phpunit.xml"
+            "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
         ]
     },
     "scripts-descriptions": {
@@ -46,7 +46,8 @@
         "phpoffice/phpexcel": "1.8.1"
     },
     "require-dev": {
-        "twbs/bootstrap": "^4.1"
+        "twbs/bootstrap": "^4.1",
+        "phpunit/phpunit": "^6.5"
     },
     "repositories": [
         {
