@@ -52,7 +52,7 @@ before_install:
 # Install packages those will be required during build
 install:
   - travis_retry composer self-update
-  - travis_retry composer global require "phpunit/phpunit:^6.5"
+  - travis_retry composer global require "phpunit/phpunit:6.5.14"
   - travis_retry composer global require "codeception/codeception"
   - travis_retry composer install --prefer-dist --no-interaction
 
