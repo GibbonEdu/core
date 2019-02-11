@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 //Make the display for a block, according to the input provided, where $i is a unique number appended to the block's field ids.
 //Mode can be masterAdd, masterEdit, workingDeploy, workingEdit, plannerEdit, embed
 //Outcomes is the result set of a mysql query of all outcomes from the unit the class belongs to
-function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $type = '', $length = '', $contents = '', $complete = 'N', $gibbonUnitBlockID = '', $gibbonUnitClassBlockID = '', $teachersNotes = '', $outerBlock = true, $unitOutcomes = null, $gibbonOutcomeIDList = null)
+function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $type = '', $length = '', $contents = '', $complete = 'N', $gibbonUnitBlockID = '', $gibbonUnitClassBlockID = '', $teachersNotes = '', $outerBlock = true)
 {
     if ($outerBlock) {
         echo "<div id='blockOuter$i' class='blockOuter'>";
@@ -192,59 +192,6 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
                     } elseif ($teachersNotes != '') {
                         echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Teacher\'s Notes').'</div>';
                         echo "<div style='max-width: 595px; margin-right: 0!important; padding: 5px!important; background-color: #F6CECB'><p>$teachersNotes</p></div>";
-                    }
-
-                    //Outcomes
-                    if ($mode == 'masterAdd') {
-                        echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Outcomes').'</div>';
-                        echo "<div class='warning'>".__('After creating this unit, you will be able to edit the unit and assign unit outcomes to individual blocks. These will then become lesson outcomes when you deploy a unit.').'</div>';
-                    } elseif ($mode == 'masterEdit' or $mode == 'workingDeploy' or $mode == 'workingEdit' or $mode == 'plannerEdit') {
-                        echo "<div style='text-align: left; font-weight: bold; margin-top: 15px'>".__('Outcomes').'</div>';
-                        if (count($unitOutcomes) < 1) {
-                            echo "<div class='warning'>".__('There are no records to display.').'</div>';
-                        } else {
-                            echo "<table cellspacing='0' style='width:100%'>";
-                            echo "<tr class='head'>";
-                            echo '<th>';
-                            echo __('Scope');
-                            echo '</th>';
-                            echo '<th>';
-                            echo __('Category');
-                            echo '</th>';
-                            echo '<th>';
-                            echo __('Name');
-                            echo '</th>';
-                            echo '<th>';
-                            echo __('Include');
-                            echo '</th>';
-                            echo '</tr>';
-
-                            foreach ($unitOutcomes as $unitOutcome) {
-                                //COLOR ROW BY STATUS!
-                                    echo '<tr>';
-                                echo "<td style='padding: 5px!important'>";
-                                echo '<b>'.$unitOutcome['scope'].'</b><br/>';
-                                if ($unitOutcome['scope'] == 'Learning Area' and $unitOutcome['department'] != '') {
-                                    echo "<span style='font-size: 75%; font-style: italic'>".$unitOutcome['department'].'</span>';
-                                }
-                                echo '</td>';
-                                echo "<td style='padding: 5px!important'>";
-                                echo $unitOutcome['category'];
-                                echo '</td>';
-                                echo "<td style='padding: 5px!important'>";
-                                echo $unitOutcome['name'];
-                                echo '</td>';
-                                echo "<td style='padding: 5px!important'>";
-                                $checked = '';
-                                if (strpos($gibbonOutcomeIDList, $unitOutcome['gibbonOutcomeID']) !== false) {
-                                    $checked = 'checked';
-                                }
-                                echo "<input $checked type='checkbox' name='outcomes".$i."[]' value='".$unitOutcome['gibbonOutcomeID']."' />";
-                                echo '</td>';
-                                echo '</tr>';
-                            }
-                            echo '</table>';
-                        }
                     }
    				 	?>
 				</td>
