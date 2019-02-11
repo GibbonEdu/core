@@ -85,8 +85,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                     $partialFail = false;
 
                     try {
-                        $data = array('title' => $row['title'], 'type' => $row['type'], 'length' => $row['length'], 'contents' => $row['contents'], 'teachersNotes' => $row['teachersNotes'], 'gibbonOutcomeIDList' => $row['gibbonOutcomeIDList'], 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'gibbonUnitID' => $gibbonUnitID);
-                        $sql = 'UPDATE gibbonUnitBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, gibbonOutcomeIDList=:gibbonOutcomeIDList WHERE gibbonUnitBlockID=:gibbonUnitBlockID AND gibbonUnitID=:gibbonUnitID';
+                        $data = array('title' => $row['title'], 'type' => $row['type'], 'length' => $row['length'], 'contents' => $row['contents'], 'teachersNotes' => $row['teachersNotes'], 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'gibbonUnitID' => $gibbonUnitID);
+                        $sql = 'UPDATE gibbonUnitBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes WHERE gibbonUnitBlockID=:gibbonUnitBlockID AND gibbonUnitID=:gibbonUnitID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -96,8 +96,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                     $working = $_POST['working'];
                     if ($working == 'Y') {
                         try {
-                            $data = array('title' => $row['title'], 'type' => $row['type'], 'length' => $row['length'], 'contents' => $row['contents'], 'teachersNotes' => $row['teachersNotes'], 'gibbonOutcomeIDList' => $row['gibbonOutcomeIDList'], 'gibbonUnitBlockID' => $gibbonUnitBlockID);
-                            $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, gibbonOutcomeIDList=:gibbonOutcomeIDList WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
+                            $data = array('title' => $row['title'], 'type' => $row['type'], 'length' => $row['length'], 'contents' => $row['contents'], 'teachersNotes' => $row['teachersNotes'], 'gibbonUnitBlockID' => $gibbonUnitBlockID);
+                            $sql = 'UPDATE gibbonUnitClassBlock SET title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
                             $result = $connection2->prepare($sql);
                             $result->execute($data);
                         } catch (PDOException $e) {

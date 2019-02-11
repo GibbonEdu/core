@@ -61,6 +61,7 @@ before_script:
   - echo 'date.timezone = "Etc/UTC"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - php -S 127.0.0.1:8888 -t $TRAVIS_BUILD_DIR >/dev/null 2>&1 &
   - sleep 1
+  - phpunit --version
 
 # omitting "script:" will default to phpunit
 # use the $DB env variable to determine the phpunit.xml to use
