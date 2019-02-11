@@ -10,7 +10,7 @@ os:
 php:
   - 7.0
   - 7.1
-#  - 7.2  Temporarily removed
+  - 7.2
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
