@@ -32,6 +32,7 @@ v18.0.00
         System: updated Google login scopes to remove plus.me, based on Google API changes
         System: made disabled checkboxes more visible
         System: method for columns that require the translation, and update the columns where this is applicable
+        Planner: removed Unit embed feature
         Students: added link from student profile to Individual Needs edit screen
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
 
