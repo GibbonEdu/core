@@ -51,7 +51,7 @@ before_install:
 # Install packages those will be required during build
 install:
   - travis_retry composer self-update
-  - travis_retry composer global require "codeception/codeception:2.1.*@dev"
+#  - travis_retry composer global require "codeception/codeception:2.1.*@dev"
   - travis_retry composer install --prefer-dist --no-interaction
 
 # execute any number of scripts before the test run, custom env's are available as variables
