@@ -19,7 +19,7 @@
             "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && $TRAVIS_BUILD_DIR/vendor/bin/phpunit --verbose --configuration phpunit.xml"
+            "cd tests && phpunit --verbose --configuration phpunit.xml"
         ]
     },
     "scripts-descriptions": {
