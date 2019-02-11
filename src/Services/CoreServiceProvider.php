@@ -106,14 +106,15 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $session = $container->get('session');
         $pdo = $container->get('db');
 
-        $container->share('gibbon_logger', function () use ($container) {
-            $factory = new LoggerFactory($container->get(SettingGateway::class));
-            return $factory->getLogger('gibbon');
+        $settingGateway = $container->get(SettingGateway::class);
+        $logFactory = new LoggerFactory($settingGateway->getSettingByScope('System', 'absolutePath'), $settingGateway->getSettingByScope('System', 'installType'));
+
+        $container->share('gibbon_logger', function () use ($logFactory) {
+            return $logFactory->getLogger('gibbon');
         });
 
-        $container->share('mysql_logger', function () use ($container) {
-            $factory = new LoggerFactory($container->get(SettingGateway::class));
-            return $factory->getLogger('mysql');
+        $container->share('mysql_logger', function () use ($logFactory) {
+            return $logFactory->getLogger('mysql');
         });
 
         $pdo->setLogger($container->get('mysql_logger'));

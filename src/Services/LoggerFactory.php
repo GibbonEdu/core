@@ -22,10 +22,8 @@
  */
 namespace Gibbon\Services;
 
-use Gibbon\Domain\System\SettingGateway;
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class LoggerFactory
@@ -85,13 +83,13 @@ class LoggerFactory
 
     /**
      * LoggerFactory constructor.
-     * @param SettingGateway $settingGateway
+     * @param string $filePath
+     * @param string $installType
      */
-    public function __construct(SettingGateway $settingGateway)
+    public function __construct(string $filePath, string $installType = 'Production')
     {
-        $this->settingGateway = $settingGateway;
-        $this->filePath = $settingGateway->getSettingByScope('System', 'absolutePath') . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR;
-        $this->installType = $settingGateway->getSettingByScope('System', 'installType');
+        $this->setFilePath($filePath . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . 'log' . DIRECTORY_SEPARATOR);
+        $this->setInstallType($installType);
         $this->loggerLevel = $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG;
     }
 
@@ -143,28 +141,49 @@ class LoggerFactory
     }
 
     /**
-     * @return mixed|string
+     * getInstallType
+     * @return string
      */
-    public function getInstallType()
+    public function getInstallType(): string
     {
-        return $this->installType;
+        return in_array($this->installType, ['Production', 'Testing', 'Development']) ? $this->installType : 'Production';
+    }
+
+    /**
+     * setInstallType
+     * @param string $installType
+     * @return LoggerFactory
+     */
+    public function setInstallType(string $installType = 'Production'): LoggerFactory
+    {
+        $this->installType = in_array($installType, ['Production', 'Testing', 'Development']) ? $installType : 'Production';
+        return $this;
     }
 
     /**
      * getMysqlLogger
+     * Dynamic call ONLY
      * @return Logger
      */
     private function getMysqlLogger(): Logger
     {
         $streams = [];
-        $streams[] = new RotatingFileHandler($this->getFilePath().'mysql.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
-        $streams[] = new RotatingFileHandler($this->getFilePath().'gibbon.log', $this->getKeepDays(), $this->getInstallType() === 'Production' ? Logger::WARNING : Logger::DEBUG);
+        $streams[] = new RotatingFileHandler($this->getFilePath().'mysql.log', $this->getKeepDays(), $this->isProductionInstall() ? Logger::WARNING : Logger::DEBUG);
+        $streams[] = new RotatingFileHandler($this->getFilePath().'gibbon.log', $this->getKeepDays(), $this->isProductionInstall() ? Logger::WARNING : Logger::DEBUG);
 
         $logger = new Logger('mysql', $streams);
 
         $this->loggerStack['mysql'] = $logger;
 
         return $logger;
+    }
 
+    /**
+     * isProductionInstall
+     * @return bool
+     */
+    private function isProductionInstall(): bool
+    {
+        return $this->getInstallType() === 'Production';
     }
 }
