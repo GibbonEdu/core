@@ -101,8 +101,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyBac
                     $partialFail = false;
                     while ($rowBlocks = $resultBlocks->fetch()) {
                         try {
-                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $rowBlocks['title'], 'type' => $rowBlocks['type'], 'length' => $rowBlocks['length'], 'contents' => $rowBlocks['contents'], 'sequenceNumber' => $rowBlocks['sequenceNumber'], 'gibbonOutcomeIDList' => $rowBlocks['gibbonOutcomeIDList']);
-                            $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList';
+                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $rowBlocks['title'], 'type' => $rowBlocks['type'], 'length' => $rowBlocks['length'], 'contents' => $rowBlocks['contents'], 'sequenceNumber' => $rowBlocks['sequenceNumber']);
+                            $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber';
                             $resultBlock = $connection2->prepare($sqlBlock);
                             $resultBlock->execute($dataBlock);
                         } catch (PDOException $e) {
