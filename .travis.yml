@@ -52,7 +52,7 @@ before_install:
 install:
   - travis_retry composer self-update
   - travis_retry composer global require "phpunit/phpunit:5.3.*"
-  - travis_retry composer global require "codeception/codeception:2.1.*@dev"
+  - travis_retry composer global require "codeception/codeception:2.2.*"
   - travis_retry composer install --prefer-dist --no-interaction
 
 # execute any number of scripts before the test run, custom env's are available as variables
