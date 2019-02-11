@@ -19,7 +19,7 @@
             "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && phpunit --verbose --configuration phpunit.xml"
+            "cd tests && $TRAVIS_BUILD_DIR/vendor/bin/phpunit --verbose --configuration phpunit.xml"
         ]
     },
     "scripts-descriptions": {
@@ -27,7 +27,7 @@
         "test:phpunit": "Run unit tests with PHPUnit."
     },
     "require": {
-        "php" : "^7.0|^7.1|^7.2",
+        "php" : "^7.0",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",
