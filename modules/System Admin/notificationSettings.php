@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
         return $row;
     });
 
-    $table->addColumn('moduleName', __('Module'))->isTranslatable();
+    $table->addColumn('moduleName', __('Module'))->translatable();
     $table->addColumn('event', __('Name'))->format($nameFormat);
     $table->addColumn('listenerCount', __('Subscribers'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));
