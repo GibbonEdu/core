@@ -836,4 +836,6 @@ ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonPersonID` `gibbonPersonID` INT(1
 ALTER TABLE `gibbonTTSpaceBooking` CHANGE `foreignKey` `foreignKey` INT(10) UNSIGNED ZEROFILL NOT NULL;end
 UPDATE gibboni18n SET active='Y' WHERE code='hr_HR';end
 ALTER TABLE gibbonUnit DROP COLUMN embeddable;end
+ALTER TABLE gibbonUnitBlock DROP COLUMN gibbonOutcomeIDList;end
+ALTER TABLE gibbonUnitClassBlock DROP COLUMN gibbonOutcomeIDList;end
 ";

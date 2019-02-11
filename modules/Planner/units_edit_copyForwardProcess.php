@@ -113,8 +113,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                         //Write blocks to new unit
                         while ($rowBlocks = $resultBlocks->fetch()) {
                             try {
-                                $dataBlock = array('gibbonUnitID' => $gibbinUnitIDNew, 'title' => $rowBlocks['title'], 'type' => $rowBlocks['type'], 'length' => $rowBlocks['length'], 'contents' => $rowBlocks['contents'], 'sequenceNumber' => $rowBlocks['sequenceNumber'], 'gibbonOutcomeIDList' => $rowBlocks['gibbonOutcomeIDList']);
-                                $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList';
+                                $dataBlock = array('gibbonUnitID' => $gibbinUnitIDNew, 'title' => $rowBlocks['title'], 'type' => $rowBlocks['type'], 'length' => $rowBlocks['length'], 'contents' => $rowBlocks['contents'], 'sequenceNumber' => $rowBlocks['sequenceNumber']);
+                                $sqlBlock = 'INSERT INTO gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, sequenceNumber=:sequenceNumber';
                                 $resultBlock = $connection2->prepare($sqlBlock);
                                 $resultBlock->execute($dataBlock);
                             } catch (PDOException $e) {
@@ -153,7 +153,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_copyFor
                         header("Location: {$URL}");
                     } else {
                         $URLCopy = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/units_edit.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseIDTarget&gibbonUnitID=$gibbinUnitIDNew";
-                        $URLCopy = $URLCopy.'&copyForwardReturn=success2';
+                        $URLCopy = $URLCopy.'&return=success0';
                         header("Location: {$URLCopy}");
                     }
                 }

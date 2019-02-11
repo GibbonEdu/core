@@ -689,18 +689,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
-												try {
-													$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-													$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-													$resultOutcomes = $connection2->prepare($sqlOutcomes);
-													$resultOutcomes->execute($dataOutcomes);
-												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
-												}
-												$unitOutcomes = $resultOutcomes->fetchall();
 												$i = 1;
 												while ($rowBlocks = $resultBlocks->fetch()) {
-													makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
+													makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true);
 													++$i;
 												}
 												?>

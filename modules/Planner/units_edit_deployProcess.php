@@ -192,21 +192,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                             $teachersNotes = $_POST['teachersNotes'.$order];
                             $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order];
 
-                            //Deal with outcomes
-                            $gibbonOutcomeIDList = '';
-                            if (isset($_POST['outcomes'.$order])) {
-                                if (is_array($_POST['outcomes'.$order])) {
-                                    foreach ($_POST['outcomes'.$order] as $outcome) {
-                                        $gibbonOutcomeIDList .= $outcome.',';
-                                    }
-                                }
-                                $gibbonOutcomeIDList = substr($gibbonOutcomeIDList, 0, -1);
-                            }
-
                             try {
                                 if ($hooked == false) {
-                                    $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber, 'gibbonOutcomeIDList' => $gibbonOutcomeIDList);
-                                    $sql = "INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList, complete='N'";
+                                    $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
+                                    $sql = "INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, complete='N'";
                                 } else {
                                     $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
                                     $sql = 'INSERT INTO '.$hookOptions['classSmartBlockTable'].' SET '.$hookOptions['classSmartBlockJoinField'].'=:gibbonUnitClassID, '.$hookOptions['classSmartBlockPlannerJoin'].'=:gibbonPlannerEntryID, '.$hookOptions['classSmartBlockUnitBlockJoinField'].'=:gibbonUnitBlockID, '.$hookOptions['classSmartBlockTitleField'].'=:title, '.$hookOptions['classSmartBlockTypeField'].'=:type, '.$hookOptions['classSmartBlockLengthField'].'=:length, '.$hookOptions['classSmartBlockContentsField'].'=:contents, '.$hookOptions['classSmartBlockTeachersNotesField'].'=:teachersNotes, '.$hookOptions['classSmartBlockSequenceNumberField']."=:sequenceNumber, complete='N'";

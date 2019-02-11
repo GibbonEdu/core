@@ -185,21 +185,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                     $teachersNotes = $_POST["teachersNotes$i"];
                                     $gibbonUnitBlockID = $_POST["gibbonUnitBlockID$i"];
 
-                                    //Deal with outcomes
-                                    $gibbonOutcomeIDList = '';
-                                    if (isset($_POST['outcomes'.$i])) {
-                                        if (is_array($_POST['outcomes'.$i])) {
-                                            foreach ($_POST['outcomes'.$i] as $outcome) {
-                                                $gibbonOutcomeIDList .= $outcome.',';
-                                            }
-                                        }
-                                        $gibbonOutcomeIDList = substr($gibbonOutcomeIDList, 0, -1);
-                                    }
-
                                     if ($gibbonUnitBlockID != '') {
                                         try {
-                                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber, 'gibbonOutcomeIDList' => $gibbonOutcomeIDList, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
-                                            $sqlBlock = 'UPDATE gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber, gibbonOutcomeIDList=:gibbonOutcomeIDList WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
+                                            $dataBlock = array('gibbonUnitID' => $gibbonUnitID, 'title' => $title, 'type' => $type2, 'length' => $length, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber, 'gibbonUnitBlockID' => $gibbonUnitBlockID);
+                                            $sqlBlock = 'UPDATE gibbonUnitBlock SET gibbonUnitID=:gibbonUnitID, title=:title, type=:type, length=:length, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
                                             $resultBlock = $connection2->prepare($sqlBlock);
                                             $resultBlock->execute($dataBlock);
                                         } catch (PDOException $e) {
