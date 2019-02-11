@@ -31,7 +31,7 @@ class DeleteForm extends Form
 {
     public static function createForm($action, $confirmation = false, $submit = true)
     {
-        $form = parent::create('deleteRecord', $action);
+        $form = parent::create('deleteRecord'.substr(md5(random_bytes(10)), 0, 20), $action);
         $form->addHiddenValue('address', $_GET['q']);
 
         foreach ($_GET as $key => $value) {

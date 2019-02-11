@@ -395,11 +395,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
                         //Lesson outcomes
                         try {
-                            $dataOutcomes = array('gibbonPlannerEntryID1' => $row['gibbonPlannerEntryID'], 'gibbonPlannerEntryID2' => $row['gibbonPlannerEntryID']);
-                            $sqlOutcomes = "(SELECT scope, name, nameShort, category, gibbonYearGroupIDList, sequenceNumber, content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID1 AND active='Y')
-							UNION
-							(SELECT scope, name, nameShort, category, gibbonYearGroupIDList, '' AS sequenceNumber, description AS content FROM gibbonUnitClassBlock JOIN gibbonOutcome ON (gibbonUnitClassBlock.gibbonOutcomeIDList LIKE concat( '%', gibbonOutcome.gibbonOutcomeID, '%' )) WHERE gibbonUnitClassBlock.gibbonPlannerEntryID=:gibbonPlannerEntryID2 AND active='Y')
-							ORDER BY (sequenceNumber='') ASC, sequenceNumber, category, name";
+                            $dataOutcomes = array('gibbonPlannerEntryID' => $row['gibbonPlannerEntryID']);
+                            $sqlOutcomes = "SELECT scope, name, nameShort, category, gibbonYearGroupIDList, sequenceNumber, content FROM gibbonPlannerEntryOutcome JOIN gibbonOutcome ON (gibbonPlannerEntryOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) WHERE gibbonPlannerEntryID=:gibbonPlannerEntryID AND active='Y' ORDER BY (sequenceNumber='') ASC, sequenceNumber, category, name";
                             $resultOutcomes = $connection2->prepare($sqlOutcomes);
                             $resultOutcomes->execute($dataOutcomes);
                         } catch (PDOException $e) {
@@ -578,17 +575,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 
 										<div class="sortable" id="sortable" style='width: 100%; padding: 5px 0px 0px 0px; border-top: 1px dotted #666; border-bottom: 1px dotted #666'>
 											<?php
-											//Get outcomes
-											try {
-												$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-												$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-												$resultOutcomes = $connection2->prepare($sqlOutcomes);
-												$resultOutcomes->execute($dataOutcomes);
-											} catch (PDOException $e) {
-												echo "<div class='error'>".$e->getMessage().'</div>';
-											}
-											$unitOutcomes = $resultOutcomes->fetchall();
-
 											$i = 1;
 											$minSeq = 0;
 											while ($rowBlocks = $resultBlocks->fetch()) {
@@ -596,7 +582,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
 													$minSeq = $rowBlocks['sequenceNumber'];
 												}
 												if ($hooked == false) {
-													makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], $rowBlocks['complete'], '', $rowBlocks['gibbonUnitClassBlockID'], $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
+													makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], $rowBlocks['complete'], '', $rowBlocks['gibbonUnitClassBlockID'], $rowBlocks['teachersNotes'], true);
 												} else {
 													makeBlock($guid, $connection2, $i, 'plannerEdit', $rowBlocks[$hookOptions['classSmartBlockTitleField']], $rowBlocks[$hookOptions['classSmartBlockTypeField']], $rowBlocks[$hookOptions['classSmartBlockLengthField']], $rowBlocks[$hookOptions['classSmartBlockContentsField']], $rowBlocks[$hookOptions['classSmartBlockCompleteField']], '', $rowBlocks[$hookOptions['classSmartBlockIDField']], $rowBlocks[$hookOptions['classSmartBlockTeachersNotesField']]);
 												}
