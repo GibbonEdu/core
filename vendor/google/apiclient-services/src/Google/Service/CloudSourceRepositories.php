@@ -19,7 +19,7 @@
  * Service definition for CloudSourceRepositories (v1).
  *
  * <p>
- * Access source code repositories hosted by Google.</p>
+ * Accesses source code repositories hosted by Google.</p>
  *
  * <p>
  * For more information about this service, see the API

@@ -86,6 +86,11 @@ class Google_Service_StreetViewPublish_Resource_Photo extends Google_Service_Res
    *
    * @opt_param string view Specifies if a download URL for the photo bytes should
    * be returned in the Photo response.
+   * @opt_param string languageCode The BCP-47 language code, such as "en-US" or
+   * "sr-Latn". For more information, see
+   * http://www.unicode.org/reports/tr35/#Unicode_locale_identifier. If
+   * language_code is unspecified, the user's language preference for Google
+   * services will be used.
    * @return Google_Service_StreetViewPublish_Photo
    */
   public function get($photoId, $optParams = array())

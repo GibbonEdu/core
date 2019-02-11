@@ -20,6 +20,8 @@ class Google_Service_Testing_AndroidInstrumentationTest extends Google_Collectio
   protected $collection_key = 'testTargets';
   protected $appApkType = 'Google_Service_Testing_FileReference';
   protected $appApkDataType = '';
+  protected $appBundleType = 'Google_Service_Testing_AppBundle';
+  protected $appBundleDataType = '';
   public $appPackageId;
   public $orchestratorOption;
   protected $testApkType = 'Google_Service_Testing_FileReference';
@@ -41,6 +43,20 @@ class Google_Service_Testing_AndroidInstrumentationTest extends Google_Collectio
   public function getAppApk()
   {
     return $this->appApk;
+  }
+  /**
+   * @param Google_Service_Testing_AppBundle
+   */
+  public function setAppBundle(Google_Service_Testing_AppBundle $appBundle)
+  {
+    $this->appBundle = $appBundle;
+  }
+  /**
+   * @return Google_Service_Testing_AppBundle
+   */
+  public function getAppBundle()
+  {
+    return $this->appBundle;
   }
   public function setAppPackageId($appPackageId)
   {

@@ -31,7 +31,7 @@
  */
 class Google_Service_Drive extends Google_Service
 {
-  /** View and manage the files in your Google Drive. */
+  /** See, edit, create, and delete all of your Google Drive files. */
   const DRIVE =
       "https://www.googleapis.com/auth/drive";
   /** View and manage its own configuration data in your Google Drive. */
@@ -49,7 +49,7 @@ class Google_Service_Drive extends Google_Service
   /** View the photos, videos and albums in your Google Photos. */
   const DRIVE_PHOTOS_READONLY =
       "https://www.googleapis.com/auth/drive.photos.readonly";
-  /** View the files in your Google Drive. */
+  /** See and download all your Google Drive files. */
   const DRIVE_READONLY =
       "https://www.googleapis.com/auth/drive.readonly";
   /** Modify your Google Apps Script scripts' behavior. */

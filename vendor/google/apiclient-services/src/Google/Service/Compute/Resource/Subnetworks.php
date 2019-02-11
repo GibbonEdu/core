@@ -152,6 +152,22 @@ class Google_Service_Compute_Resource_Subnetworks extends Google_Service_Resourc
     return $this->call('get', array($params), "Google_Service_Compute_Subnetwork");
   }
   /**
+   * Gets the access control policy for a resource. May be empty if no such policy
+   * or resource exists. (subnetworks.getIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function getIamPolicy($project, $region, $resource, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource);
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Creates a subnetwork in the specified project using the data included in the
    * request. (subnetworks.insert)
    *
@@ -288,10 +304,9 @@ class Google_Service_Compute_Resource_Subnetworks extends Google_Service_Resourc
   }
   /**
    * Patches the specified subnetwork with the data included in the request. Only
-   * the following fields within the subnetwork resource can be specified in the
-   * request: secondary_ip_range, allow_subnet_cidr_routes_overlap and role. It is
-   * also mandatory to specify the current fingeprint of the subnetwork resource
-   * being patched. (subnetworks.patch)
+   * certain fields can up updated with a patch request as indicated in the field
+   * descriptions. You must specify the current fingeprint of the subnetwork
+   * resource being patched. (subnetworks.patch)
    *
    * @param string $project Project ID for this request.
    * @param string $region Name of the region scoping this request.
@@ -318,6 +333,23 @@ class Google_Service_Compute_Resource_Subnetworks extends Google_Service_Resourc
     $params = array('project' => $project, 'region' => $region, 'subnetwork' => $subnetwork, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('patch', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (subnetworks.setIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_RegionSetPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function setIamPolicy($project, $region, $resource, Google_Service_Compute_RegionSetPolicyRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', array($params), "Google_Service_Compute_Policy");
   }
   /**
    * Set whether VMs in this subnet can access Google services without assigning
@@ -349,5 +381,22 @@ class Google_Service_Compute_Resource_Subnetworks extends Google_Service_Resourc
     $params = array('project' => $project, 'region' => $region, 'subnetwork' => $subnetwork, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('setPrivateIpGoogleAccess', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Returns permissions that a caller has on the specified resource.
+   * (subnetworks.testIamPermissions)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_TestPermissionsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_TestPermissionsResponse
+   */
+  public function testIamPermissions($project, $region, $resource, Google_Service_Compute_TestPermissionsRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('testIamPermissions', array($params), "Google_Service_Compute_TestPermissionsResponse");
   }
 }

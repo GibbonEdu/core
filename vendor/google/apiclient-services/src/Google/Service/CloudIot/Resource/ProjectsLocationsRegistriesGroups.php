@@ -26,6 +26,21 @@
 class Google_Service_CloudIot_Resource_ProjectsLocationsRegistriesGroups extends Google_Service_Resource
 {
   /**
+   * Associates the device with the gateway. (groups.bindDeviceToGateway)
+   *
+   * @param string $parent The name of the registry. For example, `projects
+   * /example-project/locations/us-central1/registries/my-registry`.
+   * @param Google_Service_CloudIot_BindDeviceToGatewayRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_CloudIot_BindDeviceToGatewayResponse
+   */
+  public function bindDeviceToGateway($parent, Google_Service_CloudIot_BindDeviceToGatewayRequest $postBody, $optParams = array())
+  {
+    $params = array('parent' => $parent, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('bindDeviceToGateway', array($params), "Google_Service_CloudIot_BindDeviceToGatewayResponse");
+  }
+  /**
    * Gets the access control policy for a resource. Returns an empty policy if the
    * resource exists and does not have a policy set. (groups.getIamPolicy)
    *
@@ -76,5 +91,21 @@ class Google_Service_CloudIot_Resource_ProjectsLocationsRegistriesGroups extends
     $params = array('resource' => $resource, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('testIamPermissions', array($params), "Google_Service_CloudIot_TestIamPermissionsResponse");
+  }
+  /**
+   * Deletes the association between the device and the gateway.
+   * (groups.unbindDeviceFromGateway)
+   *
+   * @param string $parent The name of the registry. For example, `projects
+   * /example-project/locations/us-central1/registries/my-registry`.
+   * @param Google_Service_CloudIot_UnbindDeviceFromGatewayRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_CloudIot_UnbindDeviceFromGatewayResponse
+   */
+  public function unbindDeviceFromGateway($parent, Google_Service_CloudIot_UnbindDeviceFromGatewayRequest $postBody, $optParams = array())
+  {
+    $params = array('parent' => $parent, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('unbindDeviceFromGateway', array($params), "Google_Service_CloudIot_UnbindDeviceFromGatewayResponse");
   }
 }

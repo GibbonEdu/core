@@ -26,7 +26,10 @@ class Google_Service_Compute_Address extends Google_Collection
   public $ipVersion;
   public $kind;
   public $name;
+  public $network;
   public $networkTier;
+  public $prefixLength;
+  public $purpose;
   public $region;
   public $selfLink;
   public $status;
@@ -97,6 +100,14 @@ class Google_Service_Compute_Address extends Google_Collection
   {
     return $this->name;
   }
+  public function setNetwork($network)
+  {
+    $this->network = $network;
+  }
+  public function getNetwork()
+  {
+    return $this->network;
+  }
   public function setNetworkTier($networkTier)
   {
     $this->networkTier = $networkTier;
@@ -104,6 +115,22 @@ class Google_Service_Compute_Address extends Google_Collection
   public function getNetworkTier()
   {
     return $this->networkTier;
+  }
+  public function setPrefixLength($prefixLength)
+  {
+    $this->prefixLength = $prefixLength;
+  }
+  public function getPrefixLength()
+  {
+    return $this->prefixLength;
+  }
+  public function setPurpose($purpose)
+  {
+    $this->purpose = $purpose;
+  }
+  public function getPurpose()
+  {
+    return $this->purpose;
   }
   public function setRegion($region)
   {

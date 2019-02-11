@@ -38,6 +38,8 @@ class Google_Service_Vision_GoogleCloudVisionV1p2beta1AnnotateImageResponse exte
   protected $localizedObjectAnnotationsDataType = 'array';
   protected $logoAnnotationsType = 'Google_Service_Vision_GoogleCloudVisionV1p2beta1EntityAnnotation';
   protected $logoAnnotationsDataType = 'array';
+  protected $productSearchResultsType = 'Google_Service_Vision_GoogleCloudVisionV1p2beta1ProductSearchResults';
+  protected $productSearchResultsDataType = '';
   protected $safeSearchAnnotationType = 'Google_Service_Vision_GoogleCloudVisionV1p2beta1SafeSearchAnnotation';
   protected $safeSearchAnnotationDataType = '';
   protected $textAnnotationsType = 'Google_Service_Vision_GoogleCloudVisionV1p2beta1EntityAnnotation';
@@ -184,6 +186,20 @@ class Google_Service_Vision_GoogleCloudVisionV1p2beta1AnnotateImageResponse exte
   public function getLogoAnnotations()
   {
     return $this->logoAnnotations;
+  }
+  /**
+   * @param Google_Service_Vision_GoogleCloudVisionV1p2beta1ProductSearchResults
+   */
+  public function setProductSearchResults(Google_Service_Vision_GoogleCloudVisionV1p2beta1ProductSearchResults $productSearchResults)
+  {
+    $this->productSearchResults = $productSearchResults;
+  }
+  /**
+   * @return Google_Service_Vision_GoogleCloudVisionV1p2beta1ProductSearchResults
+   */
+  public function getProductSearchResults()
+  {
+    return $this->productSearchResults;
   }
   /**
    * @param Google_Service_Vision_GoogleCloudVisionV1p2beta1SafeSearchAnnotation

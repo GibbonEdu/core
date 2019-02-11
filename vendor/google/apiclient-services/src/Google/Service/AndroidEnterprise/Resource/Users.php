@@ -43,6 +43,8 @@ class Google_Service_AndroidEnterprise_Resource_Users extends Google_Service_Res
    * provision the given EMM-managed user account on a device. The generated token
    * is single-use and expires after a few minutes.
    *
+   * You can provision a maximum of 10 devices per user.
+   *
    * This call only works with EMM-managed accounts.
    * (users.generateAuthenticationToken)
    *

@@ -18,6 +18,7 @@
 class Google_Service_Dataproc_WorkflowMetadata extends Google_Model
 {
   public $clusterName;
+  public $clusterUuid;
   protected $createClusterType = 'Google_Service_Dataproc_ClusterOperation';
   protected $createClusterDataType = '';
   protected $deleteClusterType = 'Google_Service_Dataproc_ClusterOperation';
@@ -38,6 +39,14 @@ class Google_Service_Dataproc_WorkflowMetadata extends Google_Model
   public function getClusterName()
   {
     return $this->clusterName;
+  }
+  public function setClusterUuid($clusterUuid)
+  {
+    $this->clusterUuid = $clusterUuid;
+  }
+  public function getClusterUuid()
+  {
+    return $this->clusterUuid;
   }
   /**
    * @param Google_Service_Dataproc_ClusterOperation

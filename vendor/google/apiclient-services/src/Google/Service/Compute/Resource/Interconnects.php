@@ -68,6 +68,21 @@ class Google_Service_Compute_Resource_Interconnects extends Google_Service_Resou
     return $this->call('get', array($params), "Google_Service_Compute_Interconnect");
   }
   /**
+   * Returns the interconnectDiagnostics for the specified interconnect.
+   * (interconnects.getDiagnostics)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $interconnect Name of the interconnect resource to query.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_InterconnectsGetDiagnosticsResponse
+   */
+  public function getDiagnostics($project, $interconnect, $optParams = array())
+  {
+    $params = array('project' => $project, 'interconnect' => $interconnect);
+    $params = array_merge($params, $optParams);
+    return $this->call('getDiagnostics', array($params), "Google_Service_Compute_InterconnectsGetDiagnosticsResponse");
+  }
+  /**
    * Creates a Interconnect in the specified project using the data included in
    * the request. (interconnects.insert)
    *

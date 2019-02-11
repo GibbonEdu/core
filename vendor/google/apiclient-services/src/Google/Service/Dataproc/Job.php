@@ -24,6 +24,7 @@ class Google_Service_Dataproc_Job extends Google_Collection
   protected $hadoopJobDataType = '';
   protected $hiveJobType = 'Google_Service_Dataproc_HiveJob';
   protected $hiveJobDataType = '';
+  public $jobUuid;
   public $labels;
   protected $pigJobType = 'Google_Service_Dataproc_PigJob';
   protected $pigJobDataType = '';
@@ -89,6 +90,14 @@ class Google_Service_Dataproc_Job extends Google_Collection
   public function getHiveJob()
   {
     return $this->hiveJob;
+  }
+  public function setJobUuid($jobUuid)
+  {
+    $this->jobUuid = $jobUuid;
+  }
+  public function getJobUuid()
+  {
+    return $this->jobUuid;
   }
   public function setLabels($labels)
   {

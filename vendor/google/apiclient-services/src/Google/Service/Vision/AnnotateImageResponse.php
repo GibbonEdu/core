@@ -38,6 +38,8 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
   protected $localizedObjectAnnotationsDataType = 'array';
   protected $logoAnnotationsType = 'Google_Service_Vision_EntityAnnotation';
   protected $logoAnnotationsDataType = 'array';
+  protected $productSearchResultsType = 'Google_Service_Vision_ProductSearchResults';
+  protected $productSearchResultsDataType = '';
   protected $safeSearchAnnotationType = 'Google_Service_Vision_SafeSearchAnnotation';
   protected $safeSearchAnnotationDataType = '';
   protected $textAnnotationsType = 'Google_Service_Vision_EntityAnnotation';
@@ -184,6 +186,20 @@ class Google_Service_Vision_AnnotateImageResponse extends Google_Collection
   public function getLogoAnnotations()
   {
     return $this->logoAnnotations;
+  }
+  /**
+   * @param Google_Service_Vision_ProductSearchResults
+   */
+  public function setProductSearchResults(Google_Service_Vision_ProductSearchResults $productSearchResults)
+  {
+    $this->productSearchResults = $productSearchResults;
+  }
+  /**
+   * @return Google_Service_Vision_ProductSearchResults
+   */
+  public function getProductSearchResults()
+  {
+    return $this->productSearchResults;
   }
   /**
    * @param Google_Service_Vision_SafeSearchAnnotation

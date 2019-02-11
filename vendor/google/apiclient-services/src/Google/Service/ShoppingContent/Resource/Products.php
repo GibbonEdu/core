@@ -31,8 +31,6 @@ class Google_Service_ShoppingContent_Resource_Products extends Google_Service_Re
    *
    * @param Google_Service_ShoppingContent_ProductsCustomBatchRequest $postBody
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @return Google_Service_ShoppingContent_ProductsCustomBatchResponse
    */
   public function custombatch(Google_Service_ShoppingContent_ProductsCustomBatchRequest $postBody, $optParams = array())
@@ -48,8 +46,6 @@ class Google_Service_ShoppingContent_Resource_Products extends Google_Service_Re
    * This account cannot be a multi-client account.
    * @param string $productId The REST id of the product.
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    */
   public function delete($merchantId, $productId, $optParams = array())
   {
@@ -81,8 +77,6 @@ class Google_Service_ShoppingContent_Resource_Products extends Google_Service_Re
    * This account cannot be a multi-client account.
    * @param Google_Service_ShoppingContent_Product $postBody
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @return Google_Service_ShoppingContent_Product
    */
   public function insert($merchantId, Google_Service_ShoppingContent_Product $postBody, $optParams = array())
@@ -98,9 +92,6 @@ class Google_Service_ShoppingContent_Resource_Products extends Google_Service_Re
    * This account cannot be a multi-client account.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool includeInvalidInsertedItems Flag to include the invalid
-   * inserted items in the result of the list request. By default the invalid
-   * items are not shown (the default value is false).
    * @opt_param string maxResults The maximum number of products to return in the
    * response, used for paging.
    * @opt_param string pageToken The token returned by the previous request.

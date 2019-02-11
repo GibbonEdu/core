@@ -21,8 +21,6 @@ class Google_Service_ShoppingContent_AccountStatus extends Google_Collection
   public $accountId;
   protected $accountLevelIssuesType = 'Google_Service_ShoppingContent_AccountStatusAccountLevelIssue';
   protected $accountLevelIssuesDataType = 'array';
-  protected $dataQualityIssuesType = 'Google_Service_ShoppingContent_AccountStatusDataQualityIssue';
-  protected $dataQualityIssuesDataType = 'array';
   public $kind;
   protected $productsType = 'Google_Service_ShoppingContent_AccountStatusProducts';
   protected $productsDataType = 'array';
@@ -49,20 +47,6 @@ class Google_Service_ShoppingContent_AccountStatus extends Google_Collection
   public function getAccountLevelIssues()
   {
     return $this->accountLevelIssues;
-  }
-  /**
-   * @param Google_Service_ShoppingContent_AccountStatusDataQualityIssue
-   */
-  public function setDataQualityIssues($dataQualityIssues)
-  {
-    $this->dataQualityIssues = $dataQualityIssues;
-  }
-  /**
-   * @return Google_Service_ShoppingContent_AccountStatusDataQualityIssue
-   */
-  public function getDataQualityIssues()
-  {
-    return $this->dataQualityIssues;
   }
   public function setKind($kind)
   {

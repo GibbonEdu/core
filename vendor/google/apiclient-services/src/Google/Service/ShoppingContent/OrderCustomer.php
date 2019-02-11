@@ -18,7 +18,6 @@
 class Google_Service_ShoppingContent_OrderCustomer extends Google_Model
 {
   public $email;
-  public $explicitMarketingPreference;
   public $fullName;
   protected $marketingRightsInfoType = 'Google_Service_ShoppingContent_OrderCustomerMarketingRightsInfo';
   protected $marketingRightsInfoDataType = '';
@@ -30,14 +29,6 @@ class Google_Service_ShoppingContent_OrderCustomer extends Google_Model
   public function getEmail()
   {
     return $this->email;
-  }
-  public function setExplicitMarketingPreference($explicitMarketingPreference)
-  {
-    $this->explicitMarketingPreference = $explicitMarketingPreference;
-  }
-  public function getExplicitMarketingPreference()
-  {
-    return $this->explicitMarketingPreference;
   }
   public function setFullName($fullName)
   {

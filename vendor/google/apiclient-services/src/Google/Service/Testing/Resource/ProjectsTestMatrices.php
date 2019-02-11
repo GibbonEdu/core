@@ -48,7 +48,7 @@ class Google_Service_Testing_Resource_ProjectsTestMatrices extends Google_Servic
     return $this->call('cancel', array($params), "Google_Service_Testing_CancelTestMatrixResponse");
   }
   /**
-   * Request to run a matrix of tests according to the given specifications.
+   * Creates and runs a matrix of tests according to the given specifications.
    * Unsupported environments will be returned in the state UNSUPPORTED. Matrices
    * are limited to at most 200 supported executions.
    *
@@ -76,7 +76,7 @@ class Google_Service_Testing_Resource_ProjectsTestMatrices extends Google_Servic
     return $this->call('create', array($params), "Google_Service_Testing_TestMatrix");
   }
   /**
-   * Check the status of a test matrix.
+   * Checks the status of a test matrix.
    *
    * May return any of the following canonical error codes:
    *

@@ -19,6 +19,7 @@ class Google_Service_FirebaseDynamicLinks_GetIosReopenAttributionResponse extend
 {
   public $deepLink;
   public $invitationId;
+  public $iosMinAppVersion;
   public $resolvedLink;
   public $utmCampaign;
   public $utmMedium;
@@ -39,6 +40,14 @@ class Google_Service_FirebaseDynamicLinks_GetIosReopenAttributionResponse extend
   public function getInvitationId()
   {
     return $this->invitationId;
+  }
+  public function setIosMinAppVersion($iosMinAppVersion)
+  {
+    $this->iosMinAppVersion = $iosMinAppVersion;
+  }
+  public function getIosMinAppVersion()
+  {
+    return $this->iosMinAppVersion;
   }
   public function setResolvedLink($resolvedLink)
   {

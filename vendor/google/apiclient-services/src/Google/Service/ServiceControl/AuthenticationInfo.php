@@ -19,6 +19,7 @@ class Google_Service_ServiceControl_AuthenticationInfo extends Google_Model
 {
   public $authoritySelector;
   public $principalEmail;
+  public $serviceAccountKeyName;
   public $thirdPartyPrincipal;
 
   public function setAuthoritySelector($authoritySelector)
@@ -36,6 +37,14 @@ class Google_Service_ServiceControl_AuthenticationInfo extends Google_Model
   public function getPrincipalEmail()
   {
     return $this->principalEmail;
+  }
+  public function setServiceAccountKeyName($serviceAccountKeyName)
+  {
+    $this->serviceAccountKeyName = $serviceAccountKeyName;
+  }
+  public function getServiceAccountKeyName()
+  {
+    return $this->serviceAccountKeyName;
   }
   public function setThirdPartyPrincipal($thirdPartyPrincipal)
   {

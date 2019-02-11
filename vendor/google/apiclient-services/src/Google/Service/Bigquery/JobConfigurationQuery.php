@@ -37,6 +37,8 @@ class Google_Service_Bigquery_JobConfigurationQuery extends Google_Collection
   public $query;
   protected $queryParametersType = 'Google_Service_Bigquery_QueryParameter';
   protected $queryParametersDataType = 'array';
+  protected $rangePartitioningType = 'Google_Service_Bigquery_RangePartitioning';
+  protected $rangePartitioningDataType = '';
   public $schemaUpdateOptions;
   protected $tableDefinitionsType = 'Google_Service_Bigquery_ExternalDataConfiguration';
   protected $tableDefinitionsDataType = 'map';
@@ -189,6 +191,20 @@ class Google_Service_Bigquery_JobConfigurationQuery extends Google_Collection
   public function getQueryParameters()
   {
     return $this->queryParameters;
+  }
+  /**
+   * @param Google_Service_Bigquery_RangePartitioning
+   */
+  public function setRangePartitioning(Google_Service_Bigquery_RangePartitioning $rangePartitioning)
+  {
+    $this->rangePartitioning = $rangePartitioning;
+  }
+  /**
+   * @return Google_Service_Bigquery_RangePartitioning
+   */
+  public function getRangePartitioning()
+  {
+    return $this->rangePartitioning;
   }
   public function setSchemaUpdateOptions($schemaUpdateOptions)
   {

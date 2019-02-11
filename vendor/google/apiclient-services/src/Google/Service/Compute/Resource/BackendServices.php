@@ -167,7 +167,7 @@ class Google_Service_Compute_Resource_BackendServices extends Google_Service_Res
   }
   /**
    * Returns the specified BackendService resource. Gets a list of available
-   * backend services by making a list() request. (backendServices.get)
+   * backend services. (backendServices.get)
    *
    * @param string $project Project ID for this request.
    * @param string $backendService Name of the BackendService resource to return.

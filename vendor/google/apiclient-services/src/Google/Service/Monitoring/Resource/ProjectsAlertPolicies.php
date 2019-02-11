@@ -84,6 +84,9 @@ class Google_Service_Monitoring_Resource_ProjectsAlertPolicies extends Google_Se
    * a single alerting policy by name, use the GetAlertPolicy operation, instead.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string filter If provided, this field specifies the criteria that
+   * must be met by alert policies to be included in the response.For more
+   * details, see sorting and filtering.
    * @opt_param string orderBy A comma-separated list of fields by which to sort
    * the result. Supports the same set of field references as the filter field.
    * Entries can be prefixed with a minus sign to sort by the field in descending
@@ -94,9 +97,6 @@ class Google_Service_Monitoring_Resource_ProjectsAlertPolicies extends Google_Se
    * call.
    * @opt_param int pageSize The maximum number of results to return in a single
    * response.
-   * @opt_param string filter If provided, this field specifies the criteria that
-   * must be met by alert policies to be included in the response.For more
-   * details, see sorting and filtering.
    * @return Google_Service_Monitoring_ListAlertPoliciesResponse
    */
   public function listProjectsAlertPolicies($name, $optParams = array())

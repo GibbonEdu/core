@@ -30,7 +30,7 @@
  */
 class Google_Service_Calendar extends Google_Service
 {
-  /** Manage your calendars. */
+  /** See, edit, share, and permanently delete all the calendars you can access using Google Calendar. */
   const CALENDAR =
       "https://www.googleapis.com/auth/calendar";
   /** View and edit events on all your calendars. */

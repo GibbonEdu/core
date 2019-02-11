@@ -67,6 +67,21 @@ class Google_Service_Compute_Resource_Licenses extends Google_Service_Resource
     return $this->call('get', array($params), "Google_Service_Compute_License");
   }
   /**
+   * Gets the access control policy for a resource. May be empty if no such policy
+   * or resource exists. (licenses.getIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function getIamPolicy($project, $resource, $optParams = array())
+  {
+    $params = array('project' => $project, 'resource' => $resource);
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Create a License resource in the specified project. (licenses.insert)
    *
    * @param string $project Project ID for this request.
@@ -151,11 +166,27 @@ class Google_Service_Compute_Resource_Licenses extends Google_Service_Resource
     return $this->call('list', array($params), "Google_Service_Compute_LicensesListResponse");
   }
   /**
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (licenses.setIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_GlobalSetPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function setIamPolicy($project, $resource, Google_Service_Compute_GlobalSetPolicyRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Returns permissions that a caller has on the specified resource.
    * (licenses.testIamPermissions)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_Compute_TestPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Compute_TestPermissionsResponse
