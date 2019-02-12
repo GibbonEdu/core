@@ -35,7 +35,7 @@
         "google/apiclient": "v2.2.0",
         "league/container": "^2.4",
         "aura/sqlquery": "3.*-dev",
-        "tecnickcom/tcpdf": "6.0.038",
+        "tecnickcom/tcpdf": "^6.0",
         "twig/twig": "^2.0",
         "slim/slim": "^3.0",
         "phpmailer/phpmailer": "5.2.*",
