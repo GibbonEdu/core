@@ -10,7 +10,7 @@ os:
 php:
   - 7.0
   - 7.1
-#  - 7.2  Temporarily removed
+  - 7.2
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
@@ -51,8 +51,8 @@ before_install:
 # Install packages those will be required during build
 install:
   - travis_retry composer self-update
-  - travis_retry composer global require "phpunit/phpunit:^6"
-  - travis_retry composer global require "codeception/codeception:2.4.*"
+  - travis_retry composer global require "phpunit/phpunit:6.5.14"
+  - travis_retry composer global require "codeception/codeception"
   - travis_retry composer install --prefer-dist --no-interaction
 
 # execute any number of scripts before the test run, custom env's are available as variables
