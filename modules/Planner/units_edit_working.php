@@ -222,7 +222,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $blocks2[$blockCount2][3] = $rowBlocks2['length'];
                             $blocks2[$blockCount2][4] = $rowBlocks2['contents'];
                             $blocks2[$blockCount2][5] = $rowBlocks2['teachersNotes'];
-                            $blocks2[$blockCount2][6] = $rowBlocks2['gibbonOutcomeIDList'];
                             ++$blockCount2;
                         }
 
@@ -342,7 +341,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                                 while ($rowLessonBlocks = $resultLessonBlocks->fetch()) {
                                     if ($hooked == false) {
-                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingEdit', $rowLessonBlocks['title'], $rowLessonBlocks['type'], $rowLessonBlocks['length'], $rowLessonBlocks['contents'], $rowLessonBlocks['complete'], $rowLessonBlocks['gibbonUnitBlockID'], $rowLessonBlocks['gibbonUnitClassBlockID'], $rowLessonBlocks['teachersNotes'], true, $unitOutcomes, $rowLessonBlocks['gibbonOutcomeIDList']);
+                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingEdit', $rowLessonBlocks['title'], $rowLessonBlocks['type'], $rowLessonBlocks['length'], $rowLessonBlocks['contents'], $rowLessonBlocks['complete'], $rowLessonBlocks['gibbonUnitBlockID'], $rowLessonBlocks['gibbonUnitClassBlockID'], $rowLessonBlocks['teachersNotes'], true);
                                     } else {
                                         makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingEdit', $rowLessonBlocks[$hookOptions['classSmartBlockTitleField']], $rowLessonBlocks[$hookOptions['classSmartBlockTypeField']], $rowLessonBlocks[$hookOptions['classSmartBlockLengthField']], $rowLessonBlocks[$hookOptions['classSmartBlockContentsField']], $rowLessonBlocks['complete'], $rowLessonBlocks['gibbonUnitBlockID'], $rowLessonBlocks['gibbonUnitClassBlockID'], $rowLessonBlocks[$hookOptions['classSmartBlockTeachersNotesField']], true);
                                     }
