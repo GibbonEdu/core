@@ -689,18 +689,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
                                                 } catch (PDOException $e) {
                                                     echo "<div class='error'>".$e->getMessage().'</div>';
                                                 }
-												try {
-													$dataOutcomes = array('gibbonUnitID' => $gibbonUnitID);
-													$sqlOutcomes = "SELECT gibbonOutcome.gibbonOutcomeID, gibbonOutcome.name, gibbonOutcome.category, scope, gibbonDepartment.name AS department FROM gibbonUnitOutcome JOIN gibbonOutcome ON (gibbonUnitOutcome.gibbonOutcomeID=gibbonOutcome.gibbonOutcomeID) LEFT JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE gibbonUnitID=:gibbonUnitID AND active='Y' ORDER BY sequenceNumber";
-													$resultOutcomes = $connection2->prepare($sqlOutcomes);
-													$resultOutcomes->execute($dataOutcomes);
-												} catch (PDOException $e) {
-													echo "<div class='error'>".$e->getMessage().'</div>';
-												}
-												$unitOutcomes = $resultOutcomes->fetchall();
 												$i = 1;
 												while ($rowBlocks = $resultBlocks->fetch()) {
-													makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true, $unitOutcomes, $rowBlocks['gibbonOutcomeIDList']);
+													makeBlock($guid, $connection2, $i, 'masterEdit', $rowBlocks['title'], $rowBlocks['type'], $rowBlocks['length'], $rowBlocks['contents'], 'N', $rowBlocks['gibbonUnitBlockID'], '', $rowBlocks['teachersNotes'], true);
 													++$i;
 												}
 												?>
@@ -769,44 +760,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit.php') =
 
                                     }
                                     ?>
-                                    <tr>
-                                        <td>
-                                            <b><?php echo __('Embeddable') ?> *</b><br/>
-                                            <span class="emphasis small"><?php echo __('Can this unit be embedded and shared publicly in other websites?') ?></span>
-                                        </td>
-                                        <td class="right">
-                                            <input <?php if ($row['embeddable'] == 'Y') { echo 'checked'; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="Y" /> <?php echo __('Yes') ?>
-                                            <input <?php if ($row['embeddable'] == 'N') { echo 'checked'; } ?> type="radio" id="embeddable" name="embeddable" class="embeddable" value="N" /> <?php echo __('No') ?>
-                                        </td>
-                                    </tr>
-                                    <script type="text/javascript">
-                                        $(document).ready(function(){
-                                            <?php
-                                            if ($row['embeddable'] == 'Y') {
-                                                echo '$("#embeddableRow").slideDown("fast", $("#embeddableRow").css("display","table-row"));';
-                                            }
-                                            ?>
-                                            $(".embeddable").click(function(){
-                                                if ($('input[name=embeddable]:checked').val()=="Y" ) {
-                                                    $("#embeddableRow").slideDown("fast", $("#embeddableRow").css("display","table-row"));
-                                                } else {
-                                                    $("#embeddableRow").css("display","none");
-
-                                                }
-                                             });
-                                        });
-                                    </script>
-
-                                    <tr id="embeddableRow" <?php if ($row['embeddable'] == 'N') { echo "style='display: none'";} ?>>
-                                        <td>
-                                            <b><?php echo __('Embed Code') ?></b><br/>
-                                            <span class="emphasis small"><?php echo __('Copy and paste this HTML code into the target website.') ?></span>
-                                        </td>
-                                        <td class="right">
-                                            <textarea readonly name='embedCode' id='embedCode' rows=5 style='width: 300px'><?php echo "<iframe style='border: none; width: 620px; height: 800px; overflow-x: hidden; overflow-y: scroll' src=\"".$_SESSION[$guid]['absoluteURL']."/modules/Planner/units_embed.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&themeName=".$_SESSION[$guid]['gibbonThemeName'].'&title=false"></iframe>' ?></textarea>
-                                        </td>
-                                    </tr>
-
 									<tr>
 										<td>
 											<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>

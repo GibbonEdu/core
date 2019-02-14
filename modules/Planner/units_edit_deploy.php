@@ -523,7 +523,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                     $blocks[$blockCount][3] = $rowBlocks['length'];
                                     $blocks[$blockCount][4] = $rowBlocks['contents'];
                                     $blocks[$blockCount][5] = $rowBlocks['teachersNotes'];
-                                    $blocks[$blockCount][6] = $rowBlocks['gibbonOutcomeIDList'];
                                 } else {
                                     $blocks[$blockCount][0] = $rowBlocks[$hookOptions['unitSmartBlockIDField']];
                                     $blocks[$blockCount][1] = $rowBlocks[$hookOptions['unitSmartBlockTitleField']];
@@ -553,7 +552,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                 $blocks2[$blockCount2][3] = $rowBlocks2['length'];
                                 $blocks2[$blockCount2][4] = $rowBlocks2['contents'];
                                 $blocks2[$blockCount2][5] = $rowBlocks2['teachersNotes'];
-                                $blocks2[$blockCount2][6] = $rowBlocks2['gibbonOutcomeIDList'];
                                 ++$blockCount2;
                             }
 
@@ -651,7 +649,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_deploy.
                                                     ++$deployCount;
                                                 } else {
                                                     if (($length - $blocks[$deployCount][3]) >= 0) {
-                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true, $unitOutcomes, @$blocks[$deployCount][6]);
+                                                        makeBlock($guid,  $connection2, $blockCount2, $mode = 'workingDeploy', $blocks[$deployCount][1], $blocks[$deployCount][2], $blocks[$deployCount][3], $blocks[$deployCount][4], 'N', $blocks[$deployCount][0], '', $blocks[$deployCount][5], true);
                                                         $length = $length - $blocks[$deployCount][3];
                                                         ++$deployCount;
                                                     }
