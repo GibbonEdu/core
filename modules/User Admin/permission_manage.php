@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $form->getRenderer()->setWrapper('cell', 'div');
 
         while ($rowModules = $resultModules->fetch()) {
-            $form->addRow()->addHeading($rowModules['name']);
+            $form->addRow()->addHeading(__($rowModules['name']));
             $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
             try {
