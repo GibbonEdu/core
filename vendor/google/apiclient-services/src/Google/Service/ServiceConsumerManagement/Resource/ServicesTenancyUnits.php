@@ -44,6 +44,55 @@ class Google_Service_ServiceConsumerManagement_Resource_ServicesTenancyUnits ext
     return $this->call('addProject', array($params), "Google_Service_ServiceConsumerManagement_Operation");
   }
   /**
+   * Apply configuration to an existing tenant project. This project must exist in
+   * active state and have the original owner account. Caller must have the
+   * permission to add a project to the given tenancy unit. Configuration will be
+   * applied, but any existing settings on the project will not be modified.
+   * Specified policy bindings will be applied. Existing binding will not be
+   * modified. Specified services will be activated.   No service will be
+   * deactivated. New billing configuration will be applied if specified. Omit
+   * billing configuration to keep the existing one. Service account in the
+   * project will be created if previously non existing. Specified folder will be
+   * ignored, moving tenant project to a different folder is not supported.
+   * Operation fails if any of the steps fail, but no rollback of already applied
+   * configuration changes is attempted. Operation.
+   * (tenancyUnits.applyProjectConfig)
+   *
+   * @param string $name Name of the tenancy unit.
+   * @param Google_Service_ServiceConsumerManagement_ApplyTenantProjectConfigRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_ServiceConsumerManagement_Operation
+   */
+  public function applyProjectConfig($name, Google_Service_ServiceConsumerManagement_ApplyTenantProjectConfigRequest $postBody, $optParams = array())
+  {
+    $params = array('name' => $name, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('applyProjectConfig', array($params), "Google_Service_ServiceConsumerManagement_Operation");
+  }
+  /**
+   * Attach an existing project to the tenancy unit as a new tenant resource. The
+   * project could be either the tenant project reserved by calling
+   * AddTenantProject under tenancy unit for the producer project of service, or
+   * from outside. Caller will be checked against the permission as if calling
+   * AddTenantProject on the same consumer. To trigger the attachement, the
+   * targeted tenant project must be in a folder. Please also make sure
+   * ServiceConsumerManagement service account is the owner of that project. Note
+   * that these two requirements are already met if the project is reserved
+   * through AddTenantProject. Operation. (tenancyUnits.attachProject)
+   *
+   * @param string $name Name of the tenancy unit that project will be attached
+   * to.
+   * @param Google_Service_ServiceConsumerManagement_AttachTenantProjectRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_ServiceConsumerManagement_Operation
+   */
+  public function attachProject($name, Google_Service_ServiceConsumerManagement_AttachTenantProjectRequest $postBody, $optParams = array())
+  {
+    $params = array('name' => $name, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('attachProject', array($params), "Google_Service_ServiceConsumerManagement_Operation");
+  }
+  /**
    * Creates a tenancy unit with no tenant resources. (tenancyUnits.create)
    *
    * @param string $parent services/{service}/{collection id}/{resource id}
@@ -64,7 +113,8 @@ class Google_Service_ServiceConsumerManagement_Resource_ServicesTenancyUnits ext
   }
   /**
    * Delete a tenancy unit.  Before the tenancy unit is deleted, there should be
-   * no tenant resources in it. Operation. (tenancyUnits.delete)
+   * no tenant resources in it not in DELETED state. Operation.
+   * (tenancyUnits.delete)
    *
    * @param string $name Name of the tenancy unit to be deleted.
    * @param array $optParams Optional parameters.
@@ -110,7 +160,9 @@ class Google_Service_ServiceConsumerManagement_Resource_ServicesTenancyUnits ext
    * Removes specified project resource identified by tenant resource tag. It will
    * remove project lien with 'TenantManager' origin if that was added. It will
    * then attempt to delete the project. If that operation fails, this method
-   * fails. Operation. (tenancyUnits.removeProject)
+   * fails. After the project has been deleted, or if was already in DELETED
+   * state, resource metadata is permanently removed from the tenancy unit.
+   * Operation. (tenancyUnits.removeProject)
    *
    * @param string $name Name of the tenancy unit. Such as
    * 'services/service.googleapis.com/projects/12345/tenancyUnits/abcd'.

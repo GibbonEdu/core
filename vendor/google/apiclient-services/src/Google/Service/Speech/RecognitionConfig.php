@@ -19,6 +19,7 @@ class Google_Service_Speech_RecognitionConfig extends Google_Collection
 {
   protected $collection_key = 'speechContexts';
   public $enableAutomaticPunctuation;
+  public $enableSeparateRecognitionPerChannel;
   public $enableWordTimeOffsets;
   public $encoding;
   public $languageCode;
@@ -37,6 +38,14 @@ class Google_Service_Speech_RecognitionConfig extends Google_Collection
   public function getEnableAutomaticPunctuation()
   {
     return $this->enableAutomaticPunctuation;
+  }
+  public function setEnableSeparateRecognitionPerChannel($enableSeparateRecognitionPerChannel)
+  {
+    $this->enableSeparateRecognitionPerChannel = $enableSeparateRecognitionPerChannel;
+  }
+  public function getEnableSeparateRecognitionPerChannel()
+  {
+    return $this->enableSeparateRecognitionPerChannel;
   }
   public function setEnableWordTimeOffsets($enableWordTimeOffsets)
   {

@@ -41,6 +41,8 @@ class Google_Service_Reports_Resource_UserUsageReport extends Google_Service_Res
    * operator value.
    * @opt_param string maxResults Maximum number of results to return. Maximum
    * allowed is 1000
+   * @opt_param string orgUnitID the organizational unit's ID to filter usage
+   * parameters from users belonging to a specific OU or one of its sub-OU(s).
    * @opt_param string pageToken Token to specify next page.
    * @opt_param string parameters Represents the application name, parameter name
    * pairs to fetch in csv as app_name1:param_name1, app_name2:param_name2.

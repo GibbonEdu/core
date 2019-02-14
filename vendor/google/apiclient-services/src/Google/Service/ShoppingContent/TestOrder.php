@@ -25,10 +25,9 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
   protected $lineItemsType = 'Google_Service_ShoppingContent_TestOrderLineItem';
   protected $lineItemsDataType = 'array';
   public $notificationMode;
-  protected $paymentMethodType = 'Google_Service_ShoppingContent_TestOrderPaymentMethod';
-  protected $paymentMethodDataType = '';
+  public $predefinedBillingAddress;
   public $predefinedDeliveryAddress;
-  protected $promotionsType = 'Google_Service_ShoppingContent_OrderLegacyPromotion';
+  protected $promotionsType = 'Google_Service_ShoppingContent_OrderPromotion';
   protected $promotionsDataType = 'array';
   protected $shippingCostType = 'Google_Service_ShoppingContent_Price';
   protected $shippingCostDataType = '';
@@ -88,19 +87,13 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
   {
     return $this->notificationMode;
   }
-  /**
-   * @param Google_Service_ShoppingContent_TestOrderPaymentMethod
-   */
-  public function setPaymentMethod(Google_Service_ShoppingContent_TestOrderPaymentMethod $paymentMethod)
+  public function setPredefinedBillingAddress($predefinedBillingAddress)
   {
-    $this->paymentMethod = $paymentMethod;
+    $this->predefinedBillingAddress = $predefinedBillingAddress;
   }
-  /**
-   * @return Google_Service_ShoppingContent_TestOrderPaymentMethod
-   */
-  public function getPaymentMethod()
+  public function getPredefinedBillingAddress()
   {
-    return $this->paymentMethod;
+    return $this->predefinedBillingAddress;
   }
   public function setPredefinedDeliveryAddress($predefinedDeliveryAddress)
   {
@@ -111,14 +104,14 @@ class Google_Service_ShoppingContent_TestOrder extends Google_Collection
     return $this->predefinedDeliveryAddress;
   }
   /**
-   * @param Google_Service_ShoppingContent_OrderLegacyPromotion
+   * @param Google_Service_ShoppingContent_OrderPromotion
    */
   public function setPromotions($promotions)
   {
     $this->promotions = $promotions;
   }
   /**
-   * @return Google_Service_ShoppingContent_OrderLegacyPromotion
+   * @return Google_Service_ShoppingContent_OrderPromotion
    */
   public function getPromotions()
   {

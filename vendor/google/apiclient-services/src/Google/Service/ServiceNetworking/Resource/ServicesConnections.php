@@ -26,18 +26,19 @@
 class Google_Service_ServiceNetworking_Resource_ServicesConnections extends Google_Service_Resource
 {
   /**
-   * To connect service to a VPC network peering connection must be established
-   * prior to service provisioning. This method must be invoked by the consumer
-   * VPC network administrator It will establish a permanent peering connection
-   * with a shared network created in the service producer organization and
-   * register a allocated IP range(s) to be used for service subnetwork
-   * provisioning. This connection will be used for all supported services in the
-   * service producer organization, so it only needs to be invoked once.
-   * Operation. (connections.create)
+   * Creates a private connection that establishes a VPC Network Peering
+   * connection to a VPC network in the service producer's organization. The
+   * administrator of the service consumer's VPC network invokes this method. The
+   * administrator must assign one or more allocated IP ranges for provisioning
+   * subnetworks in the service producer's VPC network. This connection is used
+   * for all supported services in the service producer's organization, so it only
+   * needs to be invoked once. The response from the `get` operation will be of
+   * type `Connection` if the operation successfully completes.
+   * (connections.create)
    *
-   * @param string $parent Provider peering service that is managing peering
-   * connectivity for a service provider organization. For Google services that
-   * support this functionality it is 'services/servicenetworking.googleapis.com'.
+   * @param string $parent The service that is managing peering connectivity for a
+   * service producer's organization. For Google services that support this
+   * functionality, this value is `services/servicenetworking.googleapis.com`.
    * @param Google_Service_ServiceNetworking_Connection $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_ServiceNetworking_Operation
@@ -49,19 +50,22 @@ class Google_Service_ServiceNetworking_Resource_ServicesConnections extends Goog
     return $this->call('create', array($params), "Google_Service_ServiceNetworking_Operation");
   }
   /**
-   * Service consumers use this method to list configured peering connection for
-   * the given service and consumer network. (connections.listServicesConnections)
+   * List the private connections that are configured in a service consumer's VPC
+   * network. (connections.listServicesConnections)
    *
-   * @param string $parent Provider peering service that is managing peering
-   * connectivity for a service provider organization. For Google services that
-   * support this functionality it is 'services/servicenetworking.googleapis.com'.
+   * @param string $parent The service that is managing peering connectivity for a
+   * service producer's organization. For Google services that support this
+   * functionality, this value is `services/servicenetworking.googleapis.com`. If
+   * you specify `-` as the parameter value, all configured public peering
+   * services are listed.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string network Network name in the consumer project.   This
-   * network must have been already peered with a shared VPC network using
-   * CreateConnection method. Must be in a form
-   * 'projects/{project}/global/networks/{network}'. {project} is a project
-   * number, as in '12345' {network} is network name.
+   * @opt_param string network The name of service consumer's VPC network that's
+   * connected with service producer network through a private connection. The
+   * network name must be in the following format:
+   * `projects/{project}/global/networks/{network}`. {project} is a project
+   * number, such as in `12345` that includes the VPC service consumer's VPC
+   * network. {network} is the name of the service consumer's VPC network.
    * @return Google_Service_ServiceNetworking_ListConnectionsResponse
    */
   public function listServicesConnections($parent, $optParams = array())

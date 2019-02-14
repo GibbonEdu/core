@@ -19,7 +19,6 @@ class Google_Service_CloudIAP_SetIamPolicyRequest extends Google_Model
 {
   protected $policyType = 'Google_Service_CloudIAP_Policy';
   protected $policyDataType = '';
-  public $updateMask;
 
   /**
    * @param Google_Service_CloudIAP_Policy
@@ -34,13 +33,5 @@ class Google_Service_CloudIAP_SetIamPolicyRequest extends Google_Model
   public function getPolicy()
   {
     return $this->policy;
-  }
-  public function setUpdateMask($updateMask)
-  {
-    $this->updateMask = $updateMask;
-  }
-  public function getUpdateMask()
-  {
-    return $this->updateMask;
   }
 }

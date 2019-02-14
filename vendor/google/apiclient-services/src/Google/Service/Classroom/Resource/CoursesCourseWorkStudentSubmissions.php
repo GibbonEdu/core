@@ -70,6 +70,15 @@ class Google_Service_Classroom_Resource_CoursesCourseWorkStudentSubmissions exte
    * work in the specified course.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string userId Optional argument to restrict returned student work
+   * to those owned by the student with the specified identifier. The identifier
+   * can be one of the following:
+   *
+   * * the numeric identifier for the user * the email address of the user * the
+   * string literal `"me"`, indicating the requesting user
+   * @opt_param string late Requested lateness value. If specified, returned
+   * student submissions are restricted by the requested value. If unspecified,
+   * submissions are returned regardless of `late` value.
    * @opt_param string pageToken nextPageToken value returned from a previous list
    * call, indicating that the subsequent page of results should be returned.
    *
@@ -81,15 +90,6 @@ class Google_Service_Classroom_Resource_CoursesCourseWorkStudentSubmissions exte
    * The server may return fewer than the specified number of results.
    * @opt_param string states Requested submission states. If specified, returned
    * student submissions match one of the specified submission states.
-   * @opt_param string userId Optional argument to restrict returned student work
-   * to those owned by the student with the specified identifier. The identifier
-   * can be one of the following:
-   *
-   * * the numeric identifier for the user * the email address of the user * the
-   * string literal `"me"`, indicating the requesting user
-   * @opt_param string late Requested lateness value. If specified, returned
-   * student submissions are restricted by the requested value. If unspecified,
-   * submissions are returned regardless of `late` value.
    * @return Google_Service_Classroom_ListStudentSubmissionsResponse
    */
   public function listCoursesCourseWorkStudentSubmissions($courseId, $courseWorkId, $optParams = array())
@@ -176,7 +176,7 @@ class Google_Service_Classroom_Resource_CoursesCourseWorkStudentSubmissions exte
    * Reclaims a student submission on behalf of the student that owns it.
    *
    * Reclaiming a student submission transfers ownership of attached Drive files
-   * to the student and update the submission state.
+   * to the student and updates the submission state.
    *
    * Only the student that owns the requested student submission may call this
    * method, and only for a student submission that has been turned in.

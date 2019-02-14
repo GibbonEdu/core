@@ -30,6 +30,8 @@ class Google_Service_Storage_Bucket extends Google_Collection
   protected $encryptionType = 'Google_Service_Storage_BucketEncryption';
   protected $encryptionDataType = '';
   public $etag;
+  protected $iamConfigurationType = 'Google_Service_Storage_BucketIamConfiguration';
+  protected $iamConfigurationDataType = '';
   public $id;
   public $kind;
   public $labels;
@@ -139,6 +141,20 @@ class Google_Service_Storage_Bucket extends Google_Collection
   public function getEtag()
   {
     return $this->etag;
+  }
+  /**
+   * @param Google_Service_Storage_BucketIamConfiguration
+   */
+  public function setIamConfiguration(Google_Service_Storage_BucketIamConfiguration $iamConfiguration)
+  {
+    $this->iamConfiguration = $iamConfiguration;
+  }
+  /**
+   * @return Google_Service_Storage_BucketIamConfiguration
+   */
+  public function getIamConfiguration()
+  {
+    return $this->iamConfiguration;
   }
   public function setId($id)
   {

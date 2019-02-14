@@ -162,10 +162,10 @@ class Google_Service_Dataproc_Resource_ProjectsRegionsWorkflowTemplates extends 
    * projects/{project_id}/regions/{region}
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string pageToken Optional. The page token, returned by a previous
-   * call, to request the next page of results.
    * @opt_param int pageSize Optional. The maximum number of results to return in
    * each response.
+   * @opt_param string pageToken Optional. The page token, returned by a previous
+   * call, to request the next page of results.
    * @return Google_Service_Dataproc_ListWorkflowTemplatesResponse
    */
   public function listProjectsRegionsWorkflowTemplates($parent, $optParams = array())

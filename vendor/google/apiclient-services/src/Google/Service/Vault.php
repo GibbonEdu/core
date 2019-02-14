@@ -41,6 +41,7 @@ class Google_Service_Vault extends Google_Service
   public $matters_exports;
   public $matters_holds;
   public $matters_holds_accounts;
+  public $matters_savedQueries;
   
   /**
    * Constructs the internal representation of the Vault service.
@@ -229,13 +230,13 @@ class Google_Service_Vault extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
               ),
             ),
@@ -417,6 +418,74 @@ class Google_Service_Vault extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->matters_savedQueries = new Google_Service_Vault_Resource_MattersSavedQueries(
+        $this,
+        $this->serviceName,
+        'savedQueries',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v1/matters/{matterId}/savedQueries',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'matterId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/matters/{matterId}/savedQueries/{savedQueryId}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'matterId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'savedQueryId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/matters/{matterId}/savedQueries/{savedQueryId}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'matterId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'savedQueryId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/matters/{matterId}/savedQueries',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'matterId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
               ),
             ),

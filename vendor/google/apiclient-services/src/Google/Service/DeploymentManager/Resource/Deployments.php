@@ -77,7 +77,7 @@ class Google_Service_DeploymentManager_Resource_Deployments extends Google_Servi
    * or resource exists. (deployments.getIamPolicy)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param array $optParams Optional parameters.
    * @return Google_Service_DeploymentManager_Policy
    */
@@ -200,7 +200,7 @@ class Google_Service_DeploymentManager_Resource_Deployments extends Google_Servi
    * existing policy. (deployments.setIamPolicy)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_DeploymentManager_GlobalSetPolicyRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_DeploymentManager_Policy
@@ -233,7 +233,7 @@ class Google_Service_DeploymentManager_Resource_Deployments extends Google_Servi
    * (deployments.testIamPermissions)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_DeploymentManager_TestPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_DeploymentManager_TestPermissionsResponse

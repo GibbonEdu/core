@@ -19,7 +19,7 @@
  * Service definition for Slides (v1).
  *
  * <p>
- * An API for creating and editing Google Slides presentations.</p>
+ * Reads and writes Google Slides presentations.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -30,13 +30,13 @@
  */
 class Google_Service_Slides extends Google_Service
 {
-  /** View and manage the files in your Google Drive. */
+  /** See, edit, create, and delete all of your Google Drive files. */
   const DRIVE =
       "https://www.googleapis.com/auth/drive";
   /** View and manage Google Drive files and folders that you have opened or created with this app. */
   const DRIVE_FILE =
       "https://www.googleapis.com/auth/drive.file";
-  /** View the files in your Google Drive. */
+  /** See and download all your Google Drive files. */
   const DRIVE_READONLY =
       "https://www.googleapis.com/auth/drive.readonly";
   /** View and manage your Google Slides presentations. */
@@ -45,7 +45,7 @@ class Google_Service_Slides extends Google_Service
   /** View your Google Slides presentations. */
   const PRESENTATIONS_READONLY =
       "https://www.googleapis.com/auth/presentations.readonly";
-  /** View and manage your spreadsheets in Google Drive. */
+  /** See, edit, create, and delete your spreadsheets in Google Drive. */
   const SPREADSHEETS =
       "https://www.googleapis.com/auth/spreadsheets";
   /** View your Google Spreadsheets. */

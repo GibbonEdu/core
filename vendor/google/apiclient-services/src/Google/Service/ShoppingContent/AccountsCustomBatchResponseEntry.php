@@ -23,7 +23,6 @@ class Google_Service_ShoppingContent_AccountsCustomBatchResponseEntry extends Go
   protected $errorsType = 'Google_Service_ShoppingContent_Errors';
   protected $errorsDataType = '';
   public $kind;
-  public $linkStatus;
 
   /**
    * @param Google_Service_ShoppingContent_Account
@@ -68,13 +67,5 @@ class Google_Service_ShoppingContent_AccountsCustomBatchResponseEntry extends Go
   public function getKind()
   {
     return $this->kind;
-  }
-  public function setLinkStatus($linkStatus)
-  {
-    $this->linkStatus = $linkStatus;
-  }
-  public function getLinkStatus()
-  {
-    return $this->linkStatus;
   }
 }

@@ -26,14 +26,14 @@
 class Google_Service_Compute_Resource_InstanceGroupManagers extends Google_Service_Resource
 {
   /**
-   * Schedules a group action to remove the specified instances from the managed
-   * instance group. Abandoning an instance does not delete the instance, but it
-   * does remove the instance from any target pools that are applied by the
-   * managed instance group. This method reduces the targetSize of the managed
-   * instance group by the number of instances that you abandon. This operation is
-   * marked as DONE when the action is scheduled even if the instances have not
-   * yet been removed from the group. You must separately verify the status of the
-   * abandoning action with the listmanagedinstances method.
+   * Flags the specified instances to be removed from the managed instance group.
+   * Abandoning an instance does not delete the instance, but it does remove the
+   * instance from any target pools that are applied by the managed instance
+   * group. This method reduces the targetSize of the managed instance group by
+   * the number of instances that you abandon. This operation is marked as DONE
+   * when the action is scheduled even if the instances have not yet been removed
+   * from the group. You must separately verify the status of the abandoning
+   * action with the listmanagedinstances method.
    *
    * If the group is part of a backend service that has enabled connection
    * draining, it can take up to 60 seconds after the connection draining duration
@@ -156,13 +156,13 @@ class Google_Service_Compute_Resource_InstanceGroupManagers extends Google_Servi
     return $this->call('delete', array($params), "Google_Service_Compute_Operation");
   }
   /**
-   * Schedules a group action to delete the specified instances in the managed
-   * instance group. The instances are also removed from any target pools of which
-   * they were a member. This method reduces the targetSize of the managed
-   * instance group by the number of instances that you delete. This operation is
-   * marked as DONE when the action is scheduled even if the instances are still
-   * being deleted. You must separately verify the status of the deleting action
-   * with the listmanagedinstances method.
+   * Flags the specified instances in the managed instance group for immediate
+   * deletion. The instances are also removed from any target pools of which they
+   * were a member. This method reduces the targetSize of the managed instance
+   * group by the number of instances that you delete. This operation is marked as
+   * DONE when the action is scheduled even if the instances are still being
+   * deleted. You must separately verify the status of the deleting action with
+   * the listmanagedinstances method.
    *
    * If the group is part of a backend service that has enabled connection
    * draining, it can take up to 60 seconds after the connection draining duration
@@ -218,11 +218,11 @@ class Google_Service_Compute_Resource_InstanceGroupManagers extends Google_Servi
   }
   /**
    * Creates a managed instance group using the information that you specify in
-   * the request. After the group is created, it schedules an action to create
-   * instances in the group using the specified instance template. This operation
-   * is marked as DONE when the group is created even if the instances in the
-   * group have not yet been created. You must separately verify the status of the
-   * individual instances with the listmanagedinstances method.
+   * the request. After the group is created, instances in the group are created
+   * using the specified instance template. This operation is marked as DONE when
+   * the group is created even if the instances in the group have not yet been
+   * created. You must separately verify the status of the individual instances
+   * with the listmanagedinstances method.
    *
    * A managed instance group can have up to 1000 VM instances per group. Please
    * contact Cloud Support if you need an increase in this limit.
@@ -370,12 +370,48 @@ class Google_Service_Compute_Resource_InstanceGroupManagers extends Google_Servi
     return $this->call('listManagedInstances', array($params), "Google_Service_Compute_InstanceGroupManagersListManagedInstancesResponse");
   }
   /**
-   * Schedules a group action to recreate the specified instances in the managed
-   * instance group. The instances are deleted and recreated using the current
-   * instance template for the managed instance group. This operation is marked as
-   * DONE when the action is scheduled even if the instances have not yet been
-   * recreated. You must separately verify the status of the recreating action
-   * with the listmanagedinstances method.
+   * Updates a managed instance group using the information that you specify in
+   * the request. This operation is marked as DONE when the group is patched even
+   * if the instances in the group are still in the process of being patched. You
+   * must separately verify the status of the individual instances with the
+   * listManagedInstances method. This method supports PATCH semantics and uses
+   * the JSON merge patch format and processing rules.
+   * (instanceGroupManagers.patch)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone where you want to create the managed
+   * instance group.
+   * @param string $instanceGroupManager The name of the instance group manager.
+   * @param Google_Service_Compute_InstanceGroupManager $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string requestId An optional request ID to identify requests.
+   * Specify a unique request ID so that if you must retry your request, the
+   * server will know to ignore the request if it has already been completed.
+   *
+   * For example, consider a situation where you make an initial request and the
+   * request times out. If you make the request again with the same request ID,
+   * the server can check if original operation with the same request ID was
+   * received, and if so, will ignore the second request. This prevents clients
+   * from accidentally creating duplicate commitments.
+   *
+   * The request ID must be a valid UUID with the exception that zero UUID is not
+   * supported (00000000-0000-0000-0000-000000000000).
+   * @return Google_Service_Compute_Operation
+   */
+  public function patch($project, $zone, $instanceGroupManager, Google_Service_Compute_InstanceGroupManager $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'instanceGroupManager' => $instanceGroupManager, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('patch', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Flags the specified instances in the managed instance group to be immediately
+   * recreated. The instances are deleted and recreated using the current instance
+   * template for the managed instance group. This operation is marked as DONE
+   * when the flag is set even if the instances have not yet been recreated. You
+   * must separately verify the status of the recreating action with the
+   * listmanagedinstances method.
    *
    * If the group is part of a backend service that has enabled connection
    * draining, it can take up to 60 seconds after the connection draining duration
@@ -418,6 +454,16 @@ class Google_Service_Compute_Resource_InstanceGroupManagers extends Google_Servi
    * when the resize actions are scheduled even if the group has not yet added or
    * deleted any instances. You must separately verify the status of the creating
    * or deleting actions with the listmanagedinstances method.
+   *
+   * When resizing down, the instance group arbitrarily chooses the order in which
+   * VMs are deleted. The group takes into account some VM attributes when making
+   * the selection including:
+   *
+   * + The status of the VM instance. + The health of the VM instance. + The
+   * instance template version the VM is based on. + For regional managed instance
+   * groups, the location of the VM instance.
+   *
+   * This list is subject to change.
    *
    * If the group is part of a backend service that has enabled connection
    * draining, it can take up to 60 seconds after the connection draining duration

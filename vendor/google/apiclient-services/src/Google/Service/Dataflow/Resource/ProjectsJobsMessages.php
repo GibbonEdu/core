@@ -32,6 +32,11 @@ class Google_Service_Dataflow_Resource_ProjectsJobsMessages extends Google_Servi
    * @param string $jobId The job to get messages about.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param int pageSize If specified, determines the maximum number of
+   * messages to return.  If unspecified, the service may choose an appropriate
+   * default, or may return an arbitrarily large number of results.
+   * @opt_param string minimumImportance Filter to only get messages with
+   * importance >= level
    * @opt_param string location The location which contains the job specified by
    * job_id.
    * @opt_param string endTime Return only messages with timestamps < end_time.
@@ -42,11 +47,6 @@ class Google_Service_Dataflow_Resource_ProjectsJobsMessages extends Google_Servi
    * @opt_param string startTime If specified, return only messages with
    * timestamps >= start_time. The default is the job creation time (i.e.
    * beginning of messages).
-   * @opt_param int pageSize If specified, determines the maximum number of
-   * messages to return.  If unspecified, the service may choose an appropriate
-   * default, or may return an arbitrarily large number of results.
-   * @opt_param string minimumImportance Filter to only get messages with
-   * importance >= level
    * @return Google_Service_Dataflow_ListJobMessagesResponse
    */
   public function listProjectsJobsMessages($projectId, $jobId, $optParams = array())

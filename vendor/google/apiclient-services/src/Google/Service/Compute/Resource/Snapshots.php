@@ -31,7 +31,7 @@ class Google_Service_Compute_Resource_Snapshots extends Google_Service_Resource
    * data on the snapshot that is marked for deletion is needed for subsequent
    * snapshots, the data will be moved to the next corresponding snapshot.
    *
-   * For more information, see Deleting snaphots. (snapshots.delete)
+   * For more information, see Deleting snapshots. (snapshots.delete)
    *
    * @param string $project Project ID for this request.
    * @param string $snapshot Name of the Snapshot resource to delete.
@@ -71,6 +71,21 @@ class Google_Service_Compute_Resource_Snapshots extends Google_Service_Resource
     $params = array('project' => $project, 'snapshot' => $snapshot);
     $params = array_merge($params, $optParams);
     return $this->call('get', array($params), "Google_Service_Compute_Snapshot");
+  }
+  /**
+   * Gets the access control policy for a resource. May be empty if no such policy
+   * or resource exists. (snapshots.getIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function getIamPolicy($project, $resource, $optParams = array())
+  {
+    $params = array('project' => $project, 'resource' => $resource);
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', array($params), "Google_Service_Compute_Policy");
   }
   /**
    * Retrieves the list of Snapshot resources contained within the specified
@@ -126,11 +141,27 @@ class Google_Service_Compute_Resource_Snapshots extends Google_Service_Resource
     return $this->call('list', array($params), "Google_Service_Compute_SnapshotList");
   }
   /**
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (snapshots.setIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_GlobalSetPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function setIamPolicy($project, $resource, Google_Service_Compute_GlobalSetPolicyRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Sets the labels on a snapshot. To learn more about labels, read the Labeling
    * Resources documentation. (snapshots.setLabels)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_Compute_GlobalSetLabelsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Compute_Operation
@@ -140,5 +171,21 @@ class Google_Service_Compute_Resource_Snapshots extends Google_Service_Resource
     $params = array('project' => $project, 'resource' => $resource, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('setLabels', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Returns permissions that a caller has on the specified resource.
+   * (snapshots.testIamPermissions)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_TestPermissionsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_TestPermissionsResponse
+   */
+  public function testIamPermissions($project, $resource, Google_Service_Compute_TestPermissionsRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('testIamPermissions', array($params), "Google_Service_Compute_TestPermissionsResponse");
   }
 }

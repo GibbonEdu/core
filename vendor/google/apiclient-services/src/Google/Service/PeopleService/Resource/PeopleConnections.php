@@ -36,6 +36,10 @@ class Google_Service_PeopleService_Resource_PeopleConnections extends Google_Ser
    * `people/me` is valid.
    * @param array $optParams Optional parameters.
    *
+   * @opt_param string syncToken A sync token returned by a previous call to
+   * `people.connections.list`. Only resources changed since the sync token was
+   * created will be returned. Sync requests that specify `sync_token` have an
+   * additional rate limit.
    * @opt_param string personFields **Required.** A field mask to restrict which
    * fields on each person are returned. Multiple fields can be specified by
    * separating them with commas. Valid values are:
@@ -53,15 +57,11 @@ class Google_Service_PeopleService_Resource_PeopleConnections extends Google_Ser
    * subsequent sync requests use the `sync_token` param instead. Initial sync
    * requests that specify `request_sync_token` have an additional rate limit.
    * @opt_param string pageToken The token of the page to be returned.
+   * @opt_param int pageSize The number of connections to include in the response.
+   * Valid values are between 1 and 2000, inclusive. Defaults to 100.
    * @opt_param string requestMask.includeField **Required.** Comma-separated list
    * of person fields to be included in the response. Each path should start with
    * `person.`: for example, `person.names` or `person.photos`.
-   * @opt_param int pageSize The number of connections to include in the response.
-   * Valid values are between 1 and 2000, inclusive. Defaults to 100.
-   * @opt_param string syncToken A sync token returned by a previous call to
-   * `people.connections.list`. Only resources changed since the sync token was
-   * created will be returned. Sync requests that specify `sync_token` have an
-   * additional rate limit.
    * @return Google_Service_PeopleService_ListConnectionsResponse
    */
   public function listPeopleConnections($resourceName, $optParams = array())

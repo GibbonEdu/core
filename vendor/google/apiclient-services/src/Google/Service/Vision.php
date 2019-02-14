@@ -43,6 +43,10 @@ class Google_Service_Vision extends Google_Service
   public $images;
   public $locations_operations;
   public $operations;
+  public $projects_locations_productSets;
+  public $projects_locations_productSets_products;
+  public $projects_locations_products;
+  public $projects_locations_products_referenceImages;
   
   /**
    * Constructs the internal representation of the Vision service.
@@ -150,6 +154,10 @@ class Google_Service_Vision extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -158,9 +166,277 @@ class Google_Service_Vision extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'filter' => array(
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_productSets = new Google_Service_Vision_Resource_ProjectsLocationsProductSets(
+        $this,
+        $this->serviceName,
+        'productSets',
+        array(
+          'methods' => array(
+            'addProduct' => array(
+              'path' => 'v1/{+name}:addProduct',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'create' => array(
+              'path' => 'v1/{+parent}/productSets',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'productSetId' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'import' => array(
+              'path' => 'v1/{+parent}/productSets:import',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/productSets',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'removeProduct' => array(
+              'path' => 'v1/{+name}:removeProduct',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_productSets_products = new Google_Service_Vision_Resource_ProjectsLocationsProductSetsProducts(
+        $this,
+        $this->serviceName,
+        'products',
+        array(
+          'methods' => array(
+            'list' => array(
+              'path' => 'v1/{+name}/products',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_products = new Google_Service_Vision_Resource_ProjectsLocationsProducts(
+        $this,
+        $this->serviceName,
+        'products',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v1/{+parent}/products',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'productId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/products',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_products_referenceImages = new Google_Service_Vision_Resource_ProjectsLocationsProductsReferenceImages(
+        $this,
+        $this->serviceName,
+        'referenceImages',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v1/{+parent}/referenceImages',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'referenceImageId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/referenceImages',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
               ),
             ),

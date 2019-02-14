@@ -30,7 +30,7 @@ class Google_Service_Compute_Resource_NodeGroups extends Google_Service_Resource
    *
    * @param string $project Project ID for this request.
    * @param string $zone The name of the zone for this request.
-   * @param string $nodeGroup Name of the NodeGroup resource to delete.
+   * @param string $nodeGroup Name of the NodeGroup resource.
    * @param Google_Service_Compute_NodeGroupsAddNodesRequest $postBody
    * @param array $optParams Optional parameters.
    *
@@ -182,6 +182,22 @@ class Google_Service_Compute_Resource_NodeGroups extends Google_Service_Resource
     return $this->call('get', array($params), "Google_Service_Compute_NodeGroup");
   }
   /**
+   * Gets the access control policy for a resource. May be empty if no such policy
+   * or resource exists. (nodeGroups.getIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function getIamPolicy($project, $zone, $resource, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'resource' => $resource);
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Creates a NodeGroup resource in the specified project using the data included
    * in the request. (nodeGroups.insert)
    *
@@ -322,11 +338,28 @@ class Google_Service_Compute_Resource_NodeGroups extends Google_Service_Resource
     return $this->call('listNodes', array($params), "Google_Service_Compute_NodeGroupsListNodes");
   }
   /**
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (nodeGroups.setIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_ZoneSetPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function setIamPolicy($project, $zone, $resource, Google_Service_Compute_ZoneSetPolicyRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Updates the node template of the node group. (nodeGroups.setNodeTemplate)
    *
    * @param string $project Project ID for this request.
    * @param string $zone The name of the zone for this request.
-   * @param string $nodeGroup Name of the NodeGroup resource to delete.
+   * @param string $nodeGroup Name of the NodeGroup resource to update.
    * @param Google_Service_Compute_NodeGroupsSetNodeTemplateRequest $postBody
    * @param array $optParams Optional parameters.
    *
@@ -349,5 +382,22 @@ class Google_Service_Compute_Resource_NodeGroups extends Google_Service_Resource
     $params = array('project' => $project, 'zone' => $zone, 'nodeGroup' => $nodeGroup, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('setNodeTemplate', array($params), "Google_Service_Compute_Operation");
+  }
+  /**
+   * Returns permissions that a caller has on the specified resource.
+   * (nodeGroups.testIamPermissions)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $zone The name of the zone for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_TestPermissionsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_TestPermissionsResponse
+   */
+  public function testIamPermissions($project, $zone, $resource, Google_Service_Compute_TestPermissionsRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'zone' => $zone, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('testIamPermissions', array($params), "Google_Service_Compute_TestPermissionsResponse");
   }
 }

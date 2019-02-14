@@ -218,7 +218,7 @@ class Google_Service_Compute_Resource_RegionDisks extends Google_Service_Resourc
    *
    * @param string $project Project ID for this request.
    * @param string $region The region for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_Compute_RegionSetLabelsRequest $postBody
    * @param array $optParams Optional parameters.
    *
@@ -248,7 +248,7 @@ class Google_Service_Compute_Resource_RegionDisks extends Google_Service_Resourc
    *
    * @param string $project Project ID for this request.
    * @param string $region The name of the region for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_Compute_TestPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Compute_TestPermissionsResponse

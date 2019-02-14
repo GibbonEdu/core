@@ -21,6 +21,8 @@ class Google_Service_Container_Cluster extends Google_Collection
   protected $addonsConfigType = 'Google_Service_Container_AddonsConfig';
   protected $addonsConfigDataType = '';
   public $clusterIpv4Cidr;
+  protected $conditionsType = 'Google_Service_Container_StatusCondition';
+  protected $conditionsDataType = 'array';
   public $createTime;
   public $currentMasterVersion;
   public $currentNodeCount;
@@ -89,6 +91,20 @@ class Google_Service_Container_Cluster extends Google_Collection
   public function getClusterIpv4Cidr()
   {
     return $this->clusterIpv4Cidr;
+  }
+  /**
+   * @param Google_Service_Container_StatusCondition
+   */
+  public function setConditions($conditions)
+  {
+    $this->conditions = $conditions;
+  }
+  /**
+   * @return Google_Service_Container_StatusCondition
+   */
+  public function getConditions()
+  {
+    return $this->conditions;
   }
   public function setCreateTime($createTime)
   {

@@ -30,7 +30,7 @@
  */
 class Google_Service_Tasks extends Google_Service
 {
-  /** Manage your tasks. */
+  /** Create, edit, organize, and delete all your tasks. */
   const TASKS =
       "https://www.googleapis.com/auth/tasks";
   /** View your tasks. */

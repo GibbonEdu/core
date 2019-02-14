@@ -63,8 +63,6 @@ class Google_Service_ShoppingContent_Resource_Accounts extends Google_Service_Re
    *
    * @param Google_Service_ShoppingContent_AccountsCustomBatchRequest $postBody
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @return Google_Service_ShoppingContent_AccountsCustomBatchResponse
    */
   public function custombatch(Google_Service_ShoppingContent_AccountsCustomBatchRequest $postBody, $optParams = array())
@@ -82,7 +80,6 @@ class Google_Service_ShoppingContent_Resource_Accounts extends Google_Service_Re
    * @param string $accountId The ID of the account.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @opt_param bool force Flag to delete sub-accounts with products. The default
    * value is false.
    */
@@ -115,8 +112,6 @@ class Google_Service_ShoppingContent_Resource_Accounts extends Google_Service_Re
    * multi-client account.
    * @param Google_Service_ShoppingContent_Account $postBody
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @return Google_Service_ShoppingContent_Account
    */
   public function insert($merchantId, Google_Service_ShoppingContent_Account $postBody, $optParams = array())
@@ -163,26 +158,6 @@ class Google_Service_ShoppingContent_Resource_Accounts extends Google_Service_Re
     return $this->call('list', array($params), "Google_Service_ShoppingContent_AccountsListResponse");
   }
   /**
-   * Updates a Merchant Center account. This method supports patch semantics.
-   * (accounts.patch)
-   *
-   * @param string $merchantId The ID of the managing account. If this parameter
-   * is not the same as accountId, then this account must be a multi-client
-   * account and accountId must be the ID of a sub-account of this account.
-   * @param string $accountId The ID of the account.
-   * @param Google_Service_ShoppingContent_Account $postBody
-   * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
-   * @return Google_Service_ShoppingContent_Account
-   */
-  public function patch($merchantId, $accountId, Google_Service_ShoppingContent_Account $postBody, $optParams = array())
-  {
-    $params = array('merchantId' => $merchantId, 'accountId' => $accountId, 'postBody' => $postBody);
-    $params = array_merge($params, $optParams);
-    return $this->call('patch', array($params), "Google_Service_ShoppingContent_Account");
-  }
-  /**
    * Updates a Merchant Center account. (accounts.update)
    *
    * @param string $merchantId The ID of the managing account. If this parameter
@@ -191,8 +166,6 @@ class Google_Service_ShoppingContent_Resource_Accounts extends Google_Service_Re
    * @param string $accountId The ID of the account.
    * @param Google_Service_ShoppingContent_Account $postBody
    * @param array $optParams Optional parameters.
-   *
-   * @opt_param bool dryRun Flag to run the request in dry-run mode.
    * @return Google_Service_ShoppingContent_Account
    */
   public function update($merchantId, $accountId, Google_Service_ShoppingContent_Account $postBody, $optParams = array())

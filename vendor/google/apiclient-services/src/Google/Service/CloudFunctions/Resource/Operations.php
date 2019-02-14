@@ -54,10 +54,13 @@ class Google_Service_CloudFunctions_Resource_Operations extends Google_Service_R
    *
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string name The name of the operation's parent resource.
+   * @opt_param string filter Required. A filter for matching the requested
+   * operations. The supported formats of filter are: To query for specific
+   * function: project:*,location:*,function:* To query for all of the latest
+   * operations for a project: project:*,latest:true
+   * @opt_param string name Must not be set.
    * @opt_param string pageToken The standard list page token.
    * @opt_param int pageSize The standard list page size.
-   * @opt_param string filter The standard list filter.
    * @return Google_Service_CloudFunctions_ListOperationsResponse
    */
   public function listOperations($optParams = array())

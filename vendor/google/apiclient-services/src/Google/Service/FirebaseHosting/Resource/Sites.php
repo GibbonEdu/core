@@ -25,4 +25,39 @@
  */
 class Google_Service_FirebaseHosting_Resource_Sites extends Google_Service_Resource
 {
+  /**
+   * Gets the Hosting metadata for a specific site. (sites.getConfig)
+   *
+   * @param string $name Required. The site for which to get the SiteConfig, in
+   * the format: sites/site-name/config
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_FirebaseHosting_SiteConfig
+   */
+  public function getConfig($name, $optParams = array())
+  {
+    $params = array('name' => $name);
+    $params = array_merge($params, $optParams);
+    return $this->call('getConfig', array($params), "Google_Service_FirebaseHosting_SiteConfig");
+  }
+  /**
+   * Sets the Hosting metadata for a specific site. (sites.updateConfig)
+   *
+   * @param string $name Required. The site for which to update the SiteConfig, in
+   * the format: sites/site-name/config
+   * @param Google_Service_FirebaseHosting_SiteConfig $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string updateMask A set of field names from your [site
+   * configuration](../sites.SiteConfig) that you want to update. A field will be
+   * overwritten if, and only if, it's in the mask. If a mask is not provided then
+   * a default mask of only [`max_versions`](../sites.SiteConfig.max_versions)
+   * will be used.
+   * @return Google_Service_FirebaseHosting_SiteConfig
+   */
+  public function updateConfig($name, Google_Service_FirebaseHosting_SiteConfig $postBody, $optParams = array())
+  {
+    $params = array('name' => $name, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('updateConfig', array($params), "Google_Service_FirebaseHosting_SiteConfig");
+  }
 }

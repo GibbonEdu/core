@@ -26,21 +26,23 @@
 class Google_Service_ServiceNetworking_Resource_Services extends Google_Service_Resource
 {
   /**
-   * Service producers use this method to provision a new subnet in peered service
-   * shared VPC network. It will validate previously provided allocated ranges,
-   * find non-conflicting sub-range of requested size (expressed in number of
-   * leading bits of ipv4 network mask, as in CIDR range notation). It will then
-   * create a subnetwork in the request region. The subsequent call will try to
-   * reuse the subnetwork previously created if subnetwork name, region and prefix
-   * length of the IP range match. Operation (services.addSubnetwork)
+   * For service producers, provisions a new subnet in a peered service's shared
+   * VPC network in the requested region and with the requested size that's
+   * expressed as a CIDR range (number of leading bits of ipV4 network mask). The
+   * method checks against the assigned allocated ranges to find a non-conflicting
+   * IP address range. The method will reuse a subnet if subsequent calls contain
+   * the same subnet name, region, and prefix length. This method will make
+   * producer's tenant project to be a shared VPC service project as needed. The
+   * response from the `get` operation will be of type `Subnetwork` if the
+   * operation successfully completes. (services.addSubnetwork)
    *
-   * @param string $parent Required. This is a 'tenant' project in the service
-   * producer organization. services/{service}/{collection-id}/{resource-id}
-   * {collection id} is the cloud resource collection type representing the tenant
-   * project. Only 'projects' are currently supported. {resource id} is the tenant
-   * project numeric id: '123456'. {service} the name of the peering service, for
-   * example 'service-peering.example.com'. This service must be activated. in the
-   * consumer project.
+   * @param string $parent Required. A tenant project in the service producer
+   * organization, in the following format: services/{service}/{collection-id
+   * }/{resource-id}. {collection-id} is the cloud resource collection type that
+   * represents the tenant project. Only `projects` are supported. {resource-id}
+   * is the tenant project numeric id, such as `123456`. {service} the name of the
+   * peering service, such as `service-peering.example.com`. This service must
+   * already be enabled in the service consumer's project.
    * @param Google_Service_ServiceNetworking_AddSubnetworkRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_ServiceNetworking_Operation
@@ -50,5 +52,50 @@ class Google_Service_ServiceNetworking_Resource_Services extends Google_Service_
     $params = array('parent' => $parent, 'postBody' => $postBody);
     $params = array_merge($params, $optParams);
     return $this->call('addSubnetwork', array($params), "Google_Service_ServiceNetworking_Operation");
+  }
+  /**
+   * Service producers can use this method to find a currently unused range within
+   * consumer allocated ranges.   This returned range is not reserved, and not
+   * guaranteed to remain unused. It will validate previously provided allocated
+   * ranges, find non-conflicting sub-range of requested size (expressed in number
+   * of leading bits of ipv4 network mask, as in CIDR range notation). Operation
+   * (services.searchRange)
+   *
+   * @param string $parent Required. This is in a form services/{service}.
+   * {service} the name of the private access management service, for example
+   * 'service-peering.example.com'.
+   * @param Google_Service_ServiceNetworking_SearchRangeRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_ServiceNetworking_Operation
+   */
+  public function searchRange($parent, Google_Service_ServiceNetworking_SearchRangeRequest $postBody, $optParams = array())
+  {
+    $params = array('parent' => $parent, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('searchRange', array($params), "Google_Service_ServiceNetworking_Operation");
+  }
+  /**
+   * Updates the allocated ranges that are assigned to a connection. The response
+   * from the `get` operation will be of type `Connection` if the operation
+   * successfully completes. (services.updateConnections)
+   *
+   * @param string $name The service producer peering service that is managing
+   * peering connectivity for a service producer organization. For Google services
+   * that support this functionality, this is
+   * `services/servicenetworking.googleapis.com`.
+   * @param Google_Service_ServiceNetworking_Connection $postBody
+   * @param array $optParams Optional parameters.
+   *
+   * @opt_param string updateMask The update mask. If this is omitted, it defaults
+   * to "*". You can only update the listed peering ranges.
+   * @opt_param bool force If a previously defined allocated range is removed,
+   * force flag must be set to true.
+   * @return Google_Service_ServiceNetworking_Operation
+   */
+  public function updateConnections($name, Google_Service_ServiceNetworking_Connection $postBody, $optParams = array())
+  {
+    $params = array('name' => $name, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('updateConnections', array($params), "Google_Service_ServiceNetworking_Operation");
   }
 }

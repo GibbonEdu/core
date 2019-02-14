@@ -24,6 +24,7 @@ AES, Blowfish, Twofish, SSH-1, SSH-2, SFTP, and X.509
 
 ### 2.0
 
+* Long term support (LTS) release
 * Modernized version of 1.0
 * Minimum PHP version: 5.3.3
 * PSR-4 autoloading with namespace rooted at `\phpseclib`
@@ -36,7 +37,7 @@ AES, Blowfish, Twofish, SSH-1, SSH-2, SFTP, and X.509
 * Composer compatible (PSR-0 autoloading)
 * Install using Composer: `composer require phpseclib/phpseclib ~1.0`
 * Install using PEAR: See [phpseclib PEAR Channel Documentation](http://phpseclib.sourceforge.net/pear.htm)
-* [Download 1.0.12 as ZIP](http://sourceforge.net/projects/phpseclib/files/phpseclib1.0.12.zip/download)
+* [Download 1.0.14 as ZIP](http://sourceforge.net/projects/phpseclib/files/phpseclib1.0.14.zip/download)
 
 ## Support
 

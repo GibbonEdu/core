@@ -123,6 +123,22 @@ class Google_Service_Compute_Resource_NodeTemplates extends Google_Service_Resou
     return $this->call('get', array($params), "Google_Service_Compute_NodeTemplate");
   }
   /**
+   * Gets the access control policy for a resource. May be empty if no such policy
+   * or resource exists. (nodeTemplates.getIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function getIamPolicy($project, $region, $resource, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource);
+    $params = array_merge($params, $optParams);
+    return $this->call('getIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
    * Creates a NodeTemplate resource in the specified project using the data
    * included in the request. (nodeTemplates.insert)
    *
@@ -204,5 +220,39 @@ class Google_Service_Compute_Resource_NodeTemplates extends Google_Service_Resou
     $params = array('project' => $project, 'region' => $region);
     $params = array_merge($params, $optParams);
     return $this->call('list', array($params), "Google_Service_Compute_NodeTemplateList");
+  }
+  /**
+   * Sets the access control policy on the specified resource. Replaces any
+   * existing policy. (nodeTemplates.setIamPolicy)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_RegionSetPolicyRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_Policy
+   */
+  public function setIamPolicy($project, $region, $resource, Google_Service_Compute_RegionSetPolicyRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('setIamPolicy', array($params), "Google_Service_Compute_Policy");
+  }
+  /**
+   * Returns permissions that a caller has on the specified resource.
+   * (nodeTemplates.testIamPermissions)
+   *
+   * @param string $project Project ID for this request.
+   * @param string $region The name of the region for this request.
+   * @param string $resource Name or id of the resource for this request.
+   * @param Google_Service_Compute_TestPermissionsRequest $postBody
+   * @param array $optParams Optional parameters.
+   * @return Google_Service_Compute_TestPermissionsResponse
+   */
+  public function testIamPermissions($project, $region, $resource, Google_Service_Compute_TestPermissionsRequest $postBody, $optParams = array())
+  {
+    $params = array('project' => $project, 'region' => $region, 'resource' => $resource, 'postBody' => $postBody);
+    $params = array_merge($params, $optParams);
+    return $this->call('testIamPermissions', array($params), "Google_Service_Compute_TestPermissionsResponse");
   }
 }

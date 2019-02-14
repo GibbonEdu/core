@@ -3,7 +3,7 @@
 // File name   : tcpdf_filters.php
 // Version     : 1.0.001
 // Begin       : 2011-05-23
-// Last Update : 2013-09-15
+// Last Update : 2014-04-25
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
@@ -148,7 +148,7 @@ class TCPDF_FILTERS {
 	 * @public static
 	 */
 	public static function decodeFilterASCIIHexDecode($data) {
-		// intialize string to return
+		// initialize string to return
 		$decoded = '';
 		// all white-space characters shall be ignored
 		$data = preg_replace('/[\s]/', '', $data);
@@ -188,7 +188,7 @@ class TCPDF_FILTERS {
 	 * @public static
 	 */
 	public static function decodeFilterASCII85Decode($data) {
-		// intialize string to return
+		// initialize string to return
 		$decoded = '';
 		// all white-space characters shall be ignored
 		$data = preg_replace('/[\s]/', '', $data);
@@ -272,7 +272,7 @@ class TCPDF_FILTERS {
 	 * @public static
 	 */
 	public static function decodeFilterLZWDecode($data) {
-		// intialize string to return
+		// initialize string to return
 		$decoded = '';
 		// data length
 		$data_length = strlen($data);
@@ -320,12 +320,12 @@ class TCPDF_FILTERS {
 				if ($index < $dix) {
 					// index exist on dictionary
 					$decoded .= $dictionary[$index];
-					$dic_val = $dictionary[$prev_index].$dictionary[$index]{0};
+					$dic_val = $dictionary[$prev_index].$dictionary[$index][0];
 					// store current index
 					$prev_index = $index;
 				} else {
 					// index do not exist on dictionary
-					$dic_val = $dictionary[$prev_index].$dictionary[$prev_index]{0};
+					$dic_val = $dictionary[$prev_index].$dictionary[$prev_index][0];
 					$decoded .= $dic_val;
 				}
 				// update dictionary
@@ -353,7 +353,7 @@ class TCPDF_FILTERS {
 	 * @public static
 	 */
 	public static function decodeFilterFlateDecode($data) {
-		// intialize string to return
+		// initialize string to return
 		$decoded = @gzuncompress($data);
 		if ($decoded === false) {
 			self::Error('decodeFilterFlateDecode: invalid code');
@@ -369,7 +369,7 @@ class TCPDF_FILTERS {
 	 * @public static
 	 */
 	public static function decodeFilterRunLengthDecode($data) {
-		// intialize string to return
+		// initialize string to return
 		$decoded = '';
 		// data length
 		$data_length = strlen($data);

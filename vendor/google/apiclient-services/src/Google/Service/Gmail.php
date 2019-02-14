@@ -30,7 +30,7 @@
  */
 class Google_Service_Gmail extends Google_Service
 {
-  /** Read, send, delete, and manage your email. */
+  /** Read, compose, send, and permanently delete all your email from Gmail. */
   const MAIL_GOOGLE_COM =
       "https://mail.google.com/";
   /** Manage drafts and send emails. */

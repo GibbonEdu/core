@@ -33,6 +33,8 @@ class Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta
   protected $shotAnnotationsDataType = 'array';
   protected $shotLabelAnnotationsType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1LabelAnnotation';
   protected $shotLabelAnnotationsDataType = 'array';
+  protected $speechTranscriptionsType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1SpeechTranscription';
+  protected $speechTranscriptionsDataType = 'array';
   protected $textAnnotationsType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1TextAnnotation';
   protected $textAnnotationsDataType = 'array';
 
@@ -141,6 +143,20 @@ class Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta
   public function getShotLabelAnnotations()
   {
     return $this->shotLabelAnnotations;
+  }
+  /**
+   * @param Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1SpeechTranscription
+   */
+  public function setSpeechTranscriptions($speechTranscriptions)
+  {
+    $this->speechTranscriptions = $speechTranscriptions;
+  }
+  /**
+   * @return Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1SpeechTranscription
+   */
+  public function getSpeechTranscriptions()
+  {
+    return $this->speechTranscriptions;
   }
   /**
    * @param Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1p2beta1TextAnnotation

@@ -79,38 +79,8 @@ class Google_Service_ServiceControl extends Google_Service
                   'required' => true,
                 ),
               ),
-            ),'endReconciliation' => array(
-              'path' => 'v1/services/{serviceName}:endReconciliation',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'serviceName' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'releaseQuota' => array(
-              'path' => 'v1/services/{serviceName}:releaseQuota',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'serviceName' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
             ),'report' => array(
               'path' => 'v1/services/{serviceName}:report',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'serviceName' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'startReconciliation' => array(
-              'path' => 'v1/services/{serviceName}:startReconciliation',
               'httpMethod' => 'POST',
               'parameters' => array(
                 'serviceName' => array(

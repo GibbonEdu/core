@@ -18,6 +18,7 @@
 class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
 {
   public $autoRenewing;
+  public $autoResumeTimeMillis;
   public $cancelReason;
   protected $cancelSurveyResultType = 'Google_Service_AndroidPublisher_SubscriptionCancelSurveyResult';
   protected $cancelSurveyResultDataType = '';
@@ -48,6 +49,14 @@ class Google_Service_AndroidPublisher_SubscriptionPurchase extends Google_Model
   public function getAutoRenewing()
   {
     return $this->autoRenewing;
+  }
+  public function setAutoResumeTimeMillis($autoResumeTimeMillis)
+  {
+    $this->autoResumeTimeMillis = $autoResumeTimeMillis;
+  }
+  public function getAutoResumeTimeMillis()
+  {
+    return $this->autoResumeTimeMillis;
   }
   public function setCancelReason($cancelReason)
   {

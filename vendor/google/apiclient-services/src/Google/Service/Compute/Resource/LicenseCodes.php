@@ -46,7 +46,7 @@ class Google_Service_Compute_Resource_LicenseCodes extends Google_Service_Resour
    * (licenseCodes.testIamPermissions)
    *
    * @param string $project Project ID for this request.
-   * @param string $resource Name of the resource for this request.
+   * @param string $resource Name or id of the resource for this request.
    * @param Google_Service_Compute_TestPermissionsRequest $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Compute_TestPermissionsResponse

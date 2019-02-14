@@ -17,7 +17,7 @@
 
 class Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1VideoAnnotationResults extends Google_Collection
 {
-  protected $collection_key = 'shotLabelAnnotations';
+  protected $collection_key = 'speechTranscriptions';
   protected $errorType = 'Google_Service_CloudVideoIntelligence_GoogleRpcStatus';
   protected $errorDataType = '';
   protected $explicitAnnotationType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1ExplicitContentAnnotation';
@@ -31,6 +31,8 @@ class Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1VideoA
   protected $shotAnnotationsDataType = 'array';
   protected $shotLabelAnnotationsType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1LabelAnnotation';
   protected $shotLabelAnnotationsDataType = 'array';
+  protected $speechTranscriptionsType = 'Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1SpeechTranscription';
+  protected $speechTranscriptionsDataType = 'array';
 
   /**
    * @param Google_Service_CloudVideoIntelligence_GoogleRpcStatus
@@ -123,5 +125,19 @@ class Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1VideoA
   public function getShotLabelAnnotations()
   {
     return $this->shotLabelAnnotations;
+  }
+  /**
+   * @param Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1SpeechTranscription
+   */
+  public function setSpeechTranscriptions($speechTranscriptions)
+  {
+    $this->speechTranscriptions = $speechTranscriptions;
+  }
+  /**
+   * @return Google_Service_CloudVideoIntelligence_GoogleCloudVideointelligenceV1SpeechTranscription
+   */
+  public function getSpeechTranscriptions()
+  {
+    return $this->speechTranscriptions;
   }
 }
