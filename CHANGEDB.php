@@ -833,9 +833,11 @@ ALTER TABLE `gibbonStaffApplicationForm` CHANGE `surname` `surname` VARCHAR(60) 
 ALTER TABLE `gibbonTTDayRowClass` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonSpaceID` `gibbonSpaceID` INT(10) UNSIGNED ZEROFILL NULL DEFAULT NULL;end
 ALTER TABLE `gibbonTTSpaceChange` CHANGE `gibbonPersonID` `gibbonPersonID` INT(10) UNSIGNED ZEROFILL NOT NULL;end
-ALTER TABLE `gibbonTTSpaceBooking` CHANGE `foreignKey` `foreignKey` INT(10) UNSIGNED ZEROFILL NOT NULL;end
+SELECT foreignKey FROM `gibbonTTSpaceBooking` LIMIT 0, 1;end
 UPDATE gibboni18n SET active='Y' WHERE code='hr_HR';end
 ALTER TABLE gibbonUnit DROP COLUMN embeddable;end
 ALTER TABLE gibbonUnitBlock DROP COLUMN gibbonOutcomeIDList;end
 ALTER TABLE gibbonUnitClassBlock DROP COLUMN gibbonOutcomeIDList;end
+ALTER TABLE `gibbonTTSpaceBooking` CHANGE `foreignKey` `foreignKey` ENUM('gibbonSpaceID','gibbonLibraryItemID') NOT NULL DEFAULT 'gibbonSpaceID';end
+UPDATE gibbonTTSpaceBooking SET foreignKey='gibbonSpaceID' WHERE foreignKey='';end
 ";
