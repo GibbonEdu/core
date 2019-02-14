@@ -96,9 +96,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
         $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
 
     $setting = getSettingByScope($connection2, 'Students', 'noteCreationNotification', true);
+    $noteCreationNotificationRoles = array(
+        'Tutors' => __('Tutors'), 
+        'Tutors & Teachers' => __('Tutors & Teachers')
+    );
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Tutors, Tutors & Teachers')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($noteCreationNotificationRoles)->selected($setting['value'])->isRequired();
 
     $form->addRow()->addHeading(__('Alerts'));
 
