@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings.ph
 
     
     $table->addColumn('sequenceNumber', __('Sequence'));
-    $table->addColumn('name', __('Name').'<br/>'.Format::small('Short Name'))
+    $table->addColumn('name', __('Name').'<br/>'.Format::small(__('Short Name')))
         ->width('15%')
         ->format(function($values) {
             return '<strong>'.$values['name'].'</strong><br/>'.Format::small($values['nameShort']);
