@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Permissions'));  
+    $page->breadcrumbs->add(__('Manage Permissions'));
 
     $returns = array();
     $returns['error3'] = sprintf(__('Your PHP environment cannot handle all of the fields in this form (the current limit is %1$s). Ask your web host or system administrator to increase the value of the max_input_vars in php.ini.'), ini_get('max_input_vars'));
@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
             $dataModules = array();
             $sqlModules = "SELECT * FROM gibbonModule WHERE active='Y' ORDER BY name";
         }
-        
+
         $resultModules = $connection2->prepare($sqlModules);
         $resultModules->execute($dataModules);
     } catch (PDOException $e) {
@@ -113,14 +113,14 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
-        
+
         // To render the form as multiple tables
         $form->getRenderer()->setWrapper('form', 'div');
         $form->getRenderer()->setWrapper('row', 'div');
         $form->getRenderer()->setWrapper('cell', 'div');
 
         while ($rowModules = $resultModules->fetch()) {
-            $form->addRow()->addHeading($rowModules['name']);
+            $form->addRow()->addHeading(__($rowModules['name']));
             $table = $form->addRow()->addTable()->setClass('mini rowHighlight columnHighlight fullWidth');
 
             try {
@@ -146,9 +146,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
 
                     // Add names and hover-over descriptions for each Action
                     if ($rowModules['type'] == 'Core') {
-                        $row->addContent($rowActions['name'])->wrap('<span title="'.htmlPrep(__($rowActions['description'])).'">', '</span>');
+                        $row->addContent(__($rowActions['name']))->wrap('<span title="'.htmlPrep(__($rowActions['description'])).'">', '</span>');
                     } else {
-                        $row->addContent($rowActions['name'], $rowModules['name'])->wrap('<span title="'.htmlPrep(__($rowActions['description'], $rowModules['name'])).'">', '</span>');
+                        $row->addContent(__($rowActions['name']), $rowModules['name'])->wrap('<span title="'.htmlPrep(__($rowActions['description'], $rowModules['name'])).'">', '</span>');
                     }
 
                     foreach ($roleArray as $role) {

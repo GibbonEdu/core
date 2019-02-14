@@ -152,9 +152,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                         ?>
 						<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL']."/modules/Planner/units_edit_working_copybackProcess.php?gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitID=$gibbonUnitID&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=$gibbonUnitClassID";
                         ?>">
-							<table class='smallIntBorder fullWidth' cellspacing='0'>	
+							<table class='smallIntBorder fullWidth' cellspacing='0'>
 								<tr>
-									<td style='width: 275px'> 
+									<td style='width: 275px'>
 										<b><?php echo __('Include Working Units?') ?> *</b><br/>
 										<span class="emphasis small"></span>
 									</td>
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 											<?php
                                             echo "<option value='N'>".__('No').'</option>';
                         					echo "<option value='Y'>".__('Yes').'</option>';
-                        					?>				
+                        					?>
 										</select>
 									</td>
 								</tr>
@@ -172,7 +172,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 										<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
 									</td>
 									<td class="right">
-										<input name="gibbonTTID" id="gibbonTTID" value="<?php echo $_GET['gibbonTTID'] ?>" type="hidden">
 										<input name="gibbonSchoolYearID" id="gibbonSchoolYearID" value="<?php echo $_GET['gibbonSchoolYearID'] ?>" type="hidden">
 										<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
 										<input type="submit" value="<?php echo __('Submit'); ?>">
