@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
     $result = $gateway->selectAllNotificationEvents();
 
     $nameFormat = function ($row) use ($guid) {
-        $output = $row['event'];
+        $output = __($row['event']);
         if ($row['type'] == 'CLI') {
             $output .= " <img title='".__('This is a CLI notification event. It will only run if the corresponding CLI script has been setup on the server.')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/run.png'/ style='float: right; width:20px; height:20px;margin: -4px 0 -4px 4px;opacity: 0.6;'>";
         }
@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/notificationS
         return $row;
     });
 
-    $table->addColumn('moduleName', __('Module'));
+    $table->addColumn('moduleName', __('Module'))->translatable();
     $table->addColumn('event', __('Name'))->format($nameFormat);
     $table->addColumn('listenerCount', __('Subscribers'));
     $table->addColumn('active', __('Active'))->format(Format::using('yesNo', 'active'));

@@ -214,7 +214,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
                             echo "<a class='thickbox' href='".$_SESSION[$guid]['absoluteURL'].'/fullscreen.php?q=/modules/'.$_SESSION[$guid]['module'].'/schoolYearSpecialDay_manage_delete.php&gibbonSchoolYearSpecialDayID='.$rowSpecial['gibbonSchoolYearSpecialDayID']."&gibbonSchoolYearID=$gibbonSchoolYearID&width=650&height=135'><img style='margin-top: 3px' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/></a> ";
                             $rowSpecial = $resultSpecial->fetch();
                         } else {
-                            echo "<span style='color: #000000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>School Day</span>';
+                            echo "<span style='color: #000000'>".dateConvertBack($guid, date('Y-m-d', $i)).'<br/>'.__('School Day').'</span>';
                             echo '<br/>';
                             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/schoolYearSpecialDay_manage_add.php&gibbonSchoolYearID=$gibbonSchoolYearID&dateStamp=".$i.'&gibbonSchoolYearTermID='.$row['gibbonSchoolYearTermID']."&firstDay=$firstDayStamp&lastDay=$lastDayStamp'><img style='margin-top: 3px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> ";
                         }

@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/daysOfWeek_ma
         while ($day = $result->fetch()) {
             $form->addHiddenValue($day['name'].'sequenceNumber', $day['sequenceNumber']);
 
-            $form->addRow()->addHeading(__($day['name'].' ('.$day['nameShort'].')'));
+            $form->addRow()->addHeading(__($day['name']).' ('.__($day['nameShort']).')');
 
             $row = $form->addRow();
                 $row->addLabel($day['name'].'schoolDay', __('School Day'));

@@ -179,7 +179,7 @@ class Column
      *
      * @return self
      */
-    public function isTranslatable() 
+    public function translatable() 
     {
         $this->translatable = true;
         
