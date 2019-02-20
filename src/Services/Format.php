@@ -188,6 +188,53 @@ class Format
     }
 
     /**
+     * Formats a Date or DateTime string relative to the current time. Eg: 1 hr ago, 3 mins from now.
+     *
+     * @param string $dateString
+     * @return string
+     */
+    public static function relativeTime($dateString, $tooltip = true)
+    {
+        if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+
+        $timeDifference = time() - $date->format('U');
+        $seconds = abs($timeDifference);
+
+        switch ($seconds) {
+            case ($seconds < 60):
+                $time = __('Less than 1 min');
+                break;
+            case ($seconds >= 60 && $seconds < 3600):
+                $minutes = floor($seconds / 60);
+                $time = __n('{count} min', '{count} mins', $minutes);
+                break;
+            case ($seconds >= 3600 && $seconds < 86400):
+                $hours = floor($seconds / 3600);
+                $time = __n('{count} hr', '{count} hrs', $hours);
+                break;
+            case ($seconds >= 86400 && $seconds < 2419200):
+                $days = floor($seconds / 86400);
+                $time = __n('{count} day', '{count} days', $days);
+                break;
+            default:
+                return self::tooltip($date->format(
+                    strlen($dateString) == 10
+                        ? static::$settings['dateFormatPHP']
+                        : static::$settings['dateTimeFormatPHP']
+                ));
+        }
+
+        $time = ($timeDifference >= 0)
+            ? __('{time} ago', ['time' => $time])
+            : __('{time} from now', ['time' => $time]);
+
+        return $tooltip 
+            ? self::tooltip($time, $dateString)
+            : $time;
+    }
+
+    /**
      * Converts a YYYY-MM-DD date to a Unix timestamp.
      *
      * @return string
@@ -288,6 +335,17 @@ class Format
     public static function small($value)
     {
         return '<span class="small emphasis">'.$value.'</span>';
+    }
+
+    /**
+     * Formats a string of additional details for a hover-over tooltip.
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function tooltip($value, $tooltip = '')
+    {
+        return '<span title="'.$tooltip.'">'.$value.'</span>';
     }
 
     /**
