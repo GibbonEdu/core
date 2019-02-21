@@ -10,7 +10,7 @@ os:
 php:
   - 7.0
   - 7.1
-#  - 7.2  Temporarily removed
+  - 7.2
 
 # optionally specify a list of environments, for example to test different RDBMS
 env:
@@ -65,7 +65,3 @@ before_script:
 # use the $DB env variable to determine the phpunit.xml to use
 script:
   - composer test
-
-# configure notifications (email, IRC, campfire etc)
-notifications:
-  email: $GIBBON_NOTIFICATION_EMAIL
