@@ -19,7 +19,7 @@
             "cd tests && codecept run acceptance --env $CI_PLATFORM"
         ],
         "test:phpunit": [
-            "cd tests && phpunit --verbose --configuration phpunit.xml"
+            "cd tests && ../vendor/bin/phpunit --verbose --configuration phpunit.xml"
         ]
     },
     "scripts-descriptions": {
@@ -47,7 +47,8 @@
         "symfony/options-resolver": "^3.3"
     },
     "require-dev": {
-        "twbs/bootstrap": "^4.1"
+        "twbs/bootstrap": "^4.1",
+        "phpunit/phpunit": "6.5.14"
     },
     "repositories": [
         {
