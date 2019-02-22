@@ -26,13 +26,12 @@
 class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extends Google_Service_Resource
 {
   /**
-   * Deletes a web property-Google Ads link. (webPropertyAdWordsLinks.delete)
+   * Deletes a web property-AdWords link. (webPropertyAdWordsLinks.delete)
    *
    * @param string $accountId ID of the account which the given web property
    * belongs to.
-   * @param string $webPropertyId Web property ID to delete the Google Ads link
-   * for.
-   * @param string $webPropertyAdWordsLinkId Web property Google Ads link ID.
+   * @param string $webPropertyId Web property ID to delete the AdWords link for.
+   * @param string $webPropertyAdWordsLinkId Web property AdWords link ID.
    * @param array $optParams Optional parameters.
    */
   public function delete($accountId, $webPropertyId, $webPropertyAdWordsLinkId, $optParams = array())
@@ -42,14 +41,14 @@ class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extend
     return $this->call('delete', array($params));
   }
   /**
-   * Returns a web property-Google Ads link to which the user has access.
+   * Returns a web property-AdWords link to which the user has access.
    * (webPropertyAdWordsLinks.get)
    *
    * @param string $accountId ID of the account which the given web property
    * belongs to.
-   * @param string $webPropertyId Web property ID to retrieve the Google Ads link
+   * @param string $webPropertyId Web property ID to retrieve the AdWords link
    * for.
-   * @param string $webPropertyAdWordsLinkId Web property-Google Ads link ID.
+   * @param string $webPropertyAdWordsLinkId Web property-AdWords link ID.
    * @param array $optParams Optional parameters.
    * @return Google_Service_Analytics_EntityAdWordsLink
    */
@@ -60,7 +59,7 @@ class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extend
     return $this->call('get', array($params), "Google_Service_Analytics_EntityAdWordsLink");
   }
   /**
-   * Creates a webProperty-Google Ads link. (webPropertyAdWordsLinks.insert)
+   * Creates a webProperty-AdWords link. (webPropertyAdWordsLinks.insert)
    *
    * @param string $accountId ID of the Google Analytics account to create the
    * link for.
@@ -76,19 +75,19 @@ class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extend
     return $this->call('insert', array($params), "Google_Service_Analytics_EntityAdWordsLink");
   }
   /**
-   * Lists webProperty-Google Ads links for a given web property.
+   * Lists webProperty-AdWords links for a given web property.
    * (webPropertyAdWordsLinks.listManagementWebPropertyAdWordsLinks)
    *
    * @param string $accountId ID of the account which the given web property
    * belongs to.
-   * @param string $webPropertyId Web property ID to retrieve the Google Ads links
+   * @param string $webPropertyId Web property ID to retrieve the AdWords links
    * for.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param int max-results The maximum number of webProperty-Google Ads links
-   * to include in this response.
-   * @opt_param int start-index An index of the first webProperty-Google Ads link
-   * to retrieve. Use this parameter as a pagination mechanism along with the max-
+   * @opt_param int max-results The maximum number of webProperty-AdWords links to
+   * include in this response.
+   * @opt_param int start-index An index of the first webProperty-AdWords link to
+   * retrieve. Use this parameter as a pagination mechanism along with the max-
    * results parameter.
    * @return Google_Service_Analytics_EntityAdWordsLinks
    */
@@ -99,14 +98,14 @@ class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extend
     return $this->call('list', array($params), "Google_Service_Analytics_EntityAdWordsLinks");
   }
   /**
-   * Updates an existing webProperty-Google Ads link. This method supports patch
+   * Updates an existing webProperty-AdWords link. This method supports patch
    * semantics. (webPropertyAdWordsLinks.patch)
    *
    * @param string $accountId ID of the account which the given web property
    * belongs to.
-   * @param string $webPropertyId Web property ID to retrieve the Google Ads link
+   * @param string $webPropertyId Web property ID to retrieve the AdWords link
    * for.
-   * @param string $webPropertyAdWordsLinkId Web property-Google Ads link ID.
+   * @param string $webPropertyAdWordsLinkId Web property-AdWords link ID.
    * @param Google_Service_Analytics_EntityAdWordsLink $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Analytics_EntityAdWordsLink
@@ -118,14 +117,14 @@ class Google_Service_Analytics_Resource_ManagementWebPropertyAdWordsLinks extend
     return $this->call('patch', array($params), "Google_Service_Analytics_EntityAdWordsLink");
   }
   /**
-   * Updates an existing webProperty-Google Ads link.
+   * Updates an existing webProperty-AdWords link.
    * (webPropertyAdWordsLinks.update)
    *
    * @param string $accountId ID of the account which the given web property
    * belongs to.
-   * @param string $webPropertyId Web property ID to retrieve the Google Ads link
+   * @param string $webPropertyId Web property ID to retrieve the AdWords link
    * for.
-   * @param string $webPropertyAdWordsLinkId Web property-Google Ads link ID.
+   * @param string $webPropertyAdWordsLinkId Web property-AdWords link ID.
    * @param Google_Service_Analytics_EntityAdWordsLink $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_Analytics_EntityAdWordsLink

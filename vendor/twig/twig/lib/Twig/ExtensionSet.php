@@ -28,8 +28,8 @@ final class Twig_ExtensionSet
     private $unaryOperators;
     private $binaryOperators;
     private $globals;
-    private $functionCallbacks = [];
-    private $filterCallbacks = [];
+    private $functionCallbacks = array();
+    private $filterCallbacks = array();
     private $lastModified = 0;
 
     public function __construct()
@@ -330,7 +330,7 @@ final class Twig_ExtensionSet
             return $this->globals;
         }
 
-        $globals = [];
+        $globals = array();
         foreach ($this->extensions as $extension) {
             if (!$extension instanceof Twig_Extension_GlobalsInterface) {
                 continue;
@@ -386,19 +386,6 @@ final class Twig_ExtensionSet
             return $this->tests[$name];
         }
 
-        foreach ($this->tests as $pattern => $test) {
-            $pattern = str_replace('\\*', '(.*?)', preg_quote($pattern, '#'), $count);
-
-            if ($count) {
-                if (preg_match('#^'.$pattern.'$#', $name, $matches)) {
-                    array_shift($matches);
-                    $test->setArguments($matches);
-
-                    return $test;
-                }
-            }
-        }
-
         return false;
     }
 
@@ -432,13 +419,13 @@ final class Twig_ExtensionSet
 
     private function initExtensions()
     {
-        $this->parsers = [];
-        $this->filters = [];
-        $this->functions = [];
-        $this->tests = [];
-        $this->visitors = [];
-        $this->unaryOperators = [];
-        $this->binaryOperators = [];
+        $this->parsers = array();
+        $this->filters = array();
+        $this->functions = array();
+        $this->tests = array();
+        $this->visitors = array();
+        $this->unaryOperators = array();
+        $this->binaryOperators = array();
 
         foreach ($this->extensions as $extension) {
             $this->initExtension($extension);

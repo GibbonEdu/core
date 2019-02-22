@@ -48,8 +48,6 @@ class Google_Service_Reports_Resource_Activities extends Google_Service_Resource
    * value],...
    * @opt_param int maxResults Number of activity records to be shown in each
    * page.
-   * @opt_param string orgUnitID the organizational unit's(OU) ID to filter
-   * activities from users belonging to a specific OU or one of its sub-OU(s)
    * @opt_param string pageToken Token to specify next page.
    * @opt_param string startTime Return events which occurred at or after this
    * time.
@@ -84,8 +82,6 @@ class Google_Service_Reports_Resource_Activities extends Google_Service_Resource
    * value],...
    * @opt_param int maxResults Number of activity records to be shown in each
    * page.
-   * @opt_param string orgUnitID the organizational unit's(OU) ID to filter
-   * activities from users belonging to a specific OU or one of its sub-OU(s)
    * @opt_param string pageToken Token to specify next page.
    * @opt_param string startTime Return events which occurred at or after this
    * time.

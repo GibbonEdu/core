@@ -7,7 +7,7 @@ FOO{{ tmp }}BAR
 --TEMPLATE(foo.twig)--
 FOOBAR
 --DATA--
-return []
+return array()
 --EXPECT--
 FOO
 FOOBARBAR

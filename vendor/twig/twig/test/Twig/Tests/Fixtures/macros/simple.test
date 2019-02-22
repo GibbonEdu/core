@@ -14,7 +14,7 @@ macro
 {{ test.test(1, "c") }}
 {{ test(1, "c") }}
 --DATA--
-return []
+return array();
 --EXPECT--
 a<br />b<br />
 a<br />b<br />

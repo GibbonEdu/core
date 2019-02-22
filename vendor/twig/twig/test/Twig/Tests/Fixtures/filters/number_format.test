@@ -8,7 +8,7 @@
 {{ 1020.25|number_format(2, ',') }}
 {{ 1020.25|number_format(2, ',', '.') }}
 --DATA--
-return []
+return array();
 --EXPECT--
 20
 20

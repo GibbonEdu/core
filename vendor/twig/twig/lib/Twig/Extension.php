@@ -13,32 +13,32 @@ abstract class Twig_Extension implements Twig_ExtensionInterface
 {
     public function getTokenParsers()
     {
-        return [];
+        return array();
     }
 
     public function getNodeVisitors()
     {
-        return [];
+        return array();
     }
 
     public function getFilters()
     {
-        return [];
+        return array();
     }
 
     public function getTests()
     {
-        return [];
+        return array();
     }
 
     public function getFunctions()
     {
-        return [];
+        return array();
     }
 
     public function getOperators()
     {
-        return [];
+        return array();
     }
 }
 

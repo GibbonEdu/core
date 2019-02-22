@@ -66,17 +66,7 @@ class Google_Service_CloudIot extends Google_Service
         'registries',
         array(
           'methods' => array(
-            'bindDeviceToGateway' => array(
-              'path' => 'v1/{+parent}:bindDeviceToGateway',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'parent' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'create' => array(
+            'create' => array(
               'path' => 'v1/{+parent}/registries',
               'httpMethod' => 'POST',
               'parameters' => array(
@@ -168,16 +158,6 @@ class Google_Service_CloudIot extends Google_Service
                   'required' => true,
                 ),
               ),
-            ),'unbindDeviceFromGateway' => array(
-              'path' => 'v1/{+parent}:unbindDeviceFromGateway',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'parent' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
             ),
           )
         )
@@ -231,11 +211,11 @@ class Google_Service_CloudIot extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'fieldMask' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageToken' => array(
+                'fieldMask' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -248,22 +228,10 @@ class Google_Service_CloudIot extends Google_Service
                   'type' => 'string',
                   'repeated' => true,
                 ),
-                'gatewayListOptions.associationsDeviceId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'deviceNumIds' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
-                ),
-                'gatewayListOptions.gatewayType' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'gatewayListOptions.associationsGatewayId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
                 ),
               ),
             ),'modifyCloudToDeviceConfig' => array(
@@ -358,17 +326,7 @@ class Google_Service_CloudIot extends Google_Service
         'groups',
         array(
           'methods' => array(
-            'bindDeviceToGateway' => array(
-              'path' => 'v1/{+parent}:bindDeviceToGateway',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'parent' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'getIamPolicy' => array(
+            'getIamPolicy' => array(
               'path' => 'v1/{+resource}:getIamPolicy',
               'httpMethod' => 'POST',
               'parameters' => array(
@@ -393,16 +351,6 @@ class Google_Service_CloudIot extends Google_Service
               'httpMethod' => 'POST',
               'parameters' => array(
                 'resource' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'unbindDeviceFromGateway' => array(
-              'path' => 'v1/{+parent}:unbindDeviceFromGateway',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'parent' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -441,27 +389,10 @@ class Google_Service_CloudIot extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'deviceIds' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ),
                 'deviceNumIds' => array(
                   'location' => 'query',
                   'type' => 'string',
                   'repeated' => true,
-                ),
-                'gatewayListOptions.associationsDeviceId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'gatewayListOptions.gatewayType' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'gatewayListOptions.associationsGatewayId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
                 ),
                 'pageToken' => array(
                   'location' => 'query',
@@ -474,6 +405,11 @@ class Google_Service_CloudIot extends Google_Service
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'deviceIds' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
               ),
             ),'modifyCloudToDeviceConfig' => array(

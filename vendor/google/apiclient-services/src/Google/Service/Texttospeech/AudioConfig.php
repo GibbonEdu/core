@@ -15,11 +15,9 @@
  * the License.
  */
 
-class Google_Service_Texttospeech_AudioConfig extends Google_Collection
+class Google_Service_Texttospeech_AudioConfig extends Google_Model
 {
-  protected $collection_key = 'effectsProfileId';
   public $audioEncoding;
-  public $effectsProfileId;
   public $pitch;
   public $sampleRateHertz;
   public $speakingRate;
@@ -32,14 +30,6 @@ class Google_Service_Texttospeech_AudioConfig extends Google_Collection
   public function getAudioEncoding()
   {
     return $this->audioEncoding;
-  }
-  public function setEffectsProfileId($effectsProfileId)
-  {
-    $this->effectsProfileId = $effectsProfileId;
-  }
-  public function getEffectsProfileId()
-  {
-    return $this->effectsProfileId;
   }
   public function setPitch($pitch)
   {

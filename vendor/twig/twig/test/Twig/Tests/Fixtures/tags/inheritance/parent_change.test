@@ -7,10 +7,10 @@ FOO
 --TEMPLATE(bar.twig)--
 BAR
 --DATA--
-return ['foo' => true]
+return array('foo' => true)
 --EXPECT--
 FOO
 --DATA--
-return ['foo' => false]
+return array('foo' => false)
 --EXPECT--
 BAR

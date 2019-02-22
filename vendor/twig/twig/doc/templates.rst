@@ -550,12 +550,11 @@ even if you're not working with PHP you should feel comfortable with it.
 
 .. note::
 
-    The operator precedence is as follows, with the lowest-precedence operators
-    listed first: ``?:`` (ternary operator), ``b-and``, ``b-xor``, ``b-or``,
-    ``or``, ``and``, ``==``, ``!=``, ``<``, ``>``, ``>=``, ``<=``, ``in``,
-    ``matches``, ``starts with``, ``ends with``, ``..``, ``+``, ``-``, ``~``,
-    ``*``, ``/``, ``//``, ``%``, ``is`` (tests), ``**``, ``??``, ``|``
-    (filters), ``[]``, and ``.``.
+    The operator precedence is as follows, with the lowest-precedence
+    operators listed first: ``b-and``, ``b-xor``, ``b-or``, ``or``, ``and``,
+    ``==``, ``!=``, ``<``, ``>``, ``>=``, ``<=``, ``in``, ``matches``,
+    ``starts with``, ``ends with``, ``..``, ``+``, ``-``, ``~``, ``*``, ``/``,
+    ``//``, ``%``, ``is``, ``**``, ``|``, ``[]``, and ``.``:
 
     .. code-block:: jinja
 
@@ -652,8 +651,6 @@ but exists for completeness' sake. The following operators are supported:
 * ``**``: Raises the left operand to the power of the right operand. ``{{ 2 **
   3 }}`` would return ``8``.
 
-.. _template_logic:
-
 Logic
 ~~~~~
 
@@ -669,7 +666,7 @@ You can combine multiple expressions with the following operators:
 
 .. note::
 
-    Twig also supports bitwise operators (``b-and``, ``b-xor``, and ``b-or``).
+    Twig also support bitwise operators (``b-and``, ``b-xor``, and ``b-or``).
 
 .. note::
 

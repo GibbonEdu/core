@@ -61,7 +61,7 @@
 
 {% endautoescape %}
 --DATA--
-return ['var' => "<Fabien>\nTwig"]
+return array('var' => "<Fabien>\nTwig")
 --EXPECT--
 
 (escape_and_nl2br is an escaper filter)

@@ -11,9 +11,9 @@ $foo1 = new TwigTestFoo();
 $foo->position = $foo1;
 $foo1->position = $foo;
 
-return [
+return array(
     'object'      => $foo,
-    'object_list' => [$foo1, $foo],
-]
+    'object_list' => array($foo1, $foo),
+);
 --EXPECT--
 TRUE

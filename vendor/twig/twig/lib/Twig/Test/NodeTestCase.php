@@ -42,7 +42,7 @@ abstract class Twig_Test_NodeTestCase extends TestCase
 
     protected function getEnvironment()
     {
-        return new Twig_Environment(new Twig_Loader_Array([]));
+        return new Twig_Environment(new Twig_Loader_Array(array()));
     }
 
     protected function getVariableGetter($name, $line = false)

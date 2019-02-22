@@ -17,19 +17,10 @@
 
 class Google_Service_Slides_Line extends Google_Model
 {
-  public $lineCategory;
   protected $linePropertiesType = 'Google_Service_Slides_LineProperties';
   protected $linePropertiesDataType = '';
   public $lineType;
 
-  public function setLineCategory($lineCategory)
-  {
-    $this->lineCategory = $lineCategory;
-  }
-  public function getLineCategory()
-  {
-    return $this->lineCategory;
-  }
   /**
    * @param Google_Service_Slides_LineProperties
    */

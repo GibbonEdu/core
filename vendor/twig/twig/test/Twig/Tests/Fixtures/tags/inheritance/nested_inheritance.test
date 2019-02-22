@@ -11,6 +11,6 @@
 --TEMPLATE(base.twig)--
 {% block body '' %}
 --DATA--
-return []
+return array()
 --EXPECT--
 INSIDE

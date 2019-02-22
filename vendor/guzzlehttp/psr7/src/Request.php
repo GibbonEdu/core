@@ -45,7 +45,7 @@ class Request implements RequestInterface
         $this->setHeaders($headers);
         $this->protocol = $version;
 
-        if (!isset($this->headerNames['host'])) {
+        if (!$this->hasHeader('Host')) {
             $this->updateHostFromUri();
         }
 
@@ -110,7 +110,7 @@ class Request implements RequestInterface
         $new = clone $this;
         $new->uri = $uri;
 
-        if (!$preserveHost || !isset($this->headerNames['host'])) {
+        if (!$preserveHost) {
             $new->updateHostFromUri();
         }
 

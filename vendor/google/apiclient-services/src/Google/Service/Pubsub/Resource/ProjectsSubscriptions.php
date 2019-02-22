@@ -47,19 +47,16 @@ class Google_Service_Pubsub_Resource_ProjectsSubscriptions extends Google_Servic
     return $this->call('acknowledge', array($params), "Google_Service_Pubsub_PubsubEmpty");
   }
   /**
-   * Creates a subscription to a given topic. See the
-   *
-   * resource name rules. If the subscription already exists, returns
-   * `ALREADY_EXISTS`. If the corresponding topic doesn't exist, returns
-   * `NOT_FOUND`.
+   * Creates a subscription to a given topic. See the  resource name rules. If the
+   * subscription already exists, returns `ALREADY_EXISTS`. If the corresponding
+   * topic doesn't exist, returns `NOT_FOUND`.
    *
    * If the name is not provided in the request, the server will assign a random
    * name for this subscription on the same project as the topic, conforming to
    * the [resource name
-   * format](https://cloud.google.com/pubsub/docs/admin#resource_names). The
-   * generated name is populated in the returned Subscription object. Note that
-   * for REST API requests, you must specify a name in the request.
-   * (subscriptions.create)
+   * format](https://cloud.google.com/pubsub/docs/overview#names). The generated
+   * name is populated in the returned Subscription object. Note that for REST API
+   * requests, you must specify a name in the request. (subscriptions.create)
    *
    * @param string $name The name of the subscription. It must have the format
    * `"projects/{project}/subscriptions/{subscription}"`. `{subscription}` must

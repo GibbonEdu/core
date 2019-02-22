@@ -22,8 +22,6 @@ class Google_Service_WebSecurityScanner_ScanConfig extends Google_Collection
   protected $authenticationDataType = '';
   public $blacklistPatterns;
   public $displayName;
-  protected $latestRunType = 'Google_Service_WebSecurityScanner_ScanRun';
-  protected $latestRunDataType = '';
   public $maxQps;
   public $name;
   protected $scheduleType = 'Google_Service_WebSecurityScanner_Schedule';
@@ -61,20 +59,6 @@ class Google_Service_WebSecurityScanner_ScanConfig extends Google_Collection
   public function getDisplayName()
   {
     return $this->displayName;
-  }
-  /**
-   * @param Google_Service_WebSecurityScanner_ScanRun
-   */
-  public function setLatestRun(Google_Service_WebSecurityScanner_ScanRun $latestRun)
-  {
-    $this->latestRun = $latestRun;
-  }
-  /**
-   * @return Google_Service_WebSecurityScanner_ScanRun
-   */
-  public function getLatestRun()
-  {
-    return $this->latestRun;
   }
   public function setMaxQps($maxQps)
   {

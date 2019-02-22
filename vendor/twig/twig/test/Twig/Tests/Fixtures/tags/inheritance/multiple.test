@@ -7,6 +7,6 @@
 --TEMPLATE(base.twig)--
 {% block content %}base {% endblock %}
 --DATA--
-return []
+return array()
 --EXPECT--
 base layout index

@@ -23,7 +23,7 @@
 
 {% endautoescape %}
 --DATA--
-return []
+return array()
 --EXPECT--
 
 1. Simple literal

@@ -21,7 +21,7 @@ B
 {% endblock %}
 C
 --DATA--
-return ['foo' => 'foo.twig']
+return array('foo' => 'foo.twig')
 --EXPECT--
 FOO
 

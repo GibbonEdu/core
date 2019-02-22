@@ -7,7 +7,7 @@
 {% endwith %}
 {{ foo }}{{ bar }}
 --DATA--
-return ['foo' => 'foo', 'bar' => 'bar']
+return array('foo' => 'foo', 'bar' => 'bar')
 --EXPECT--
 fooBAZ
 foobar

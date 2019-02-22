@@ -4,7 +4,7 @@ Twig supports string interpolation
 {{ "foo #{"foo #{bar} baz"} baz" }}
 {{ "foo #{bar}#{bar} baz" }}
 --DATA--
-return ['bar' => 'BAR']
+return array('bar' => 'BAR');
 --EXPECT--
 foo foo BAR baz baz
 foo BARBAR baz

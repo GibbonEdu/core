@@ -10,6 +10,6 @@
 {% endblock %}
 --TEMPLATE(foo.twig)--
 --DATA--
-return []
+return array()
 --EXPECT--
 CONTENTSUBCONTENTENDCONTENT

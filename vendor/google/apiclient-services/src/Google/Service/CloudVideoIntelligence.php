@@ -19,8 +19,7 @@
  * Service definition for CloudVideoIntelligence (v1).
  *
  * <p>
- * Detects objects, explicit content, and scene changes in videos. It also
- * specifies the region for annotation and transcribes speech to text.</p>
+ * Cloud Video Intelligence API.</p>
  *
  * <p>
  * For more information about this service, see the API

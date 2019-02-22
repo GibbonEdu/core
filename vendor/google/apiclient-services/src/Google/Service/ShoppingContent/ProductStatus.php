@@ -19,6 +19,8 @@ class Google_Service_ShoppingContent_ProductStatus extends Google_Collection
 {
   protected $collection_key = 'itemLevelIssues';
   public $creationDate;
+  protected $dataQualityIssuesType = 'Google_Service_ShoppingContent_ProductStatusDataQualityIssue';
+  protected $dataQualityIssuesDataType = 'array';
   protected $destinationStatusesType = 'Google_Service_ShoppingContent_ProductStatusDestinationStatus';
   protected $destinationStatusesDataType = 'array';
   public $googleExpirationDate;
@@ -27,6 +29,8 @@ class Google_Service_ShoppingContent_ProductStatus extends Google_Collection
   public $kind;
   public $lastUpdateDate;
   public $link;
+  protected $productType = 'Google_Service_ShoppingContent_Product';
+  protected $productDataType = '';
   public $productId;
   public $title;
 
@@ -37,6 +41,20 @@ class Google_Service_ShoppingContent_ProductStatus extends Google_Collection
   public function getCreationDate()
   {
     return $this->creationDate;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_ProductStatusDataQualityIssue
+   */
+  public function setDataQualityIssues($dataQualityIssues)
+  {
+    $this->dataQualityIssues = $dataQualityIssues;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_ProductStatusDataQualityIssue
+   */
+  public function getDataQualityIssues()
+  {
+    return $this->dataQualityIssues;
   }
   /**
    * @param Google_Service_ShoppingContent_ProductStatusDestinationStatus
@@ -97,6 +115,20 @@ class Google_Service_ShoppingContent_ProductStatus extends Google_Collection
   public function getLink()
   {
     return $this->link;
+  }
+  /**
+   * @param Google_Service_ShoppingContent_Product
+   */
+  public function setProduct(Google_Service_ShoppingContent_Product $product)
+  {
+    $this->product = $product;
+  }
+  /**
+   * @return Google_Service_ShoppingContent_Product
+   */
+  public function getProduct()
+  {
+    return $this->product;
   }
   public function setProductId($productId)
   {

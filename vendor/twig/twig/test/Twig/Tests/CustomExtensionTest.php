@@ -30,10 +30,10 @@ class CustomExtensionTest extends \PHPUnit\Framework\TestCase
 
     public function provideInvalidExtensions()
     {
-        return [
-            [new InvalidOperatorExtension(new stdClass()), '"InvalidOperatorExtension::getOperators()" must return an array with operators, got "stdClass".'],
-            [new InvalidOperatorExtension([1, 2, 3]), '"InvalidOperatorExtension::getOperators()" must return an array of 2 elements, got 3.'],
-        ];
+        return array(
+            array(new InvalidOperatorExtension(new stdClass()), '"InvalidOperatorExtension::getOperators()" must return an array with operators, got "stdClass".'),
+            array(new InvalidOperatorExtension(array(1, 2, 3)), '"InvalidOperatorExtension::getOperators()" must return an array of 2 elements, got 3.'),
+        );
     }
 }
 
@@ -48,27 +48,27 @@ class InvalidOperatorExtension implements Twig_ExtensionInterface
 
     public function getTokenParsers()
     {
-        return [];
+        return array();
     }
 
     public function getNodeVisitors()
     {
-        return [];
+        return array();
     }
 
     public function getFilters()
     {
-        return [];
+        return array();
     }
 
     public function getTests()
     {
-        return [];
+        return array();
     }
 
     public function getFunctions()
     {
-        return [];
+        return array();
     }
 
     public function getOperators()

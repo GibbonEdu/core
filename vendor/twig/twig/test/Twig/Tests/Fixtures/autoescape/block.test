@@ -14,8 +14,8 @@ blocks and autoescape
 {% set _content = block('content')|raw %}
 {{ _content|raw }}
 --DATA--
-return ['br' => '<br />']
+return array('br' => '<br />')
 --CONFIG--
-return ['autoescape' => 'name']
+return array('autoescape' => 'name')
 --EXPECT--
 &lt;br /&gt;

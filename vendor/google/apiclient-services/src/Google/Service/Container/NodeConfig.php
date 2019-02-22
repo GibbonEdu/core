@@ -17,7 +17,7 @@
 
 class Google_Service_Container_NodeConfig extends Google_Collection
 {
-  protected $collection_key = 'taints';
+  protected $collection_key = 'tags';
   protected $acceleratorsType = 'Google_Service_Container_AcceleratorConfig';
   protected $acceleratorsDataType = 'array';
   public $diskSizeGb;
@@ -32,8 +32,6 @@ class Google_Service_Container_NodeConfig extends Google_Collection
   public $preemptible;
   public $serviceAccount;
   public $tags;
-  protected $taintsType = 'Google_Service_Container_NodeTaint';
-  protected $taintsDataType = 'array';
 
   /**
    * @param Google_Service_Container_AcceleratorConfig
@@ -144,19 +142,5 @@ class Google_Service_Container_NodeConfig extends Google_Collection
   public function getTags()
   {
     return $this->tags;
-  }
-  /**
-   * @param Google_Service_Container_NodeTaint
-   */
-  public function setTaints($taints)
-  {
-    $this->taints = $taints;
-  }
-  /**
-   * @return Google_Service_Container_NodeTaint
-   */
-  public function getTaints()
-  {
-    return $this->taints;
   }
 }

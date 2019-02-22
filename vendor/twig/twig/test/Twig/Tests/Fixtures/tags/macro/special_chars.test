@@ -9,6 +9,6 @@
   §{{ foo }}§
 {% endmacro %}
 --DATA--
-return []
+return array()
 --EXPECT--
 §foo§

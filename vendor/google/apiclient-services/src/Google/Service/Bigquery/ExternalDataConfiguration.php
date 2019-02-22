@@ -26,7 +26,6 @@ class Google_Service_Bigquery_ExternalDataConfiguration extends Google_Collectio
   protected $csvOptionsDataType = '';
   protected $googleSheetsOptionsType = 'Google_Service_Bigquery_GoogleSheetsOptions';
   protected $googleSheetsOptionsDataType = '';
-  public $hivePartitioningMode;
   public $ignoreUnknownValues;
   public $maxBadRecords;
   protected $schemaType = 'Google_Service_Bigquery_TableSchema';
@@ -91,14 +90,6 @@ class Google_Service_Bigquery_ExternalDataConfiguration extends Google_Collectio
   public function getGoogleSheetsOptions()
   {
     return $this->googleSheetsOptions;
-  }
-  public function setHivePartitioningMode($hivePartitioningMode)
-  {
-    $this->hivePartitioningMode = $hivePartitioningMode;
-  }
-  public function getHivePartitioningMode()
-  {
-    return $this->hivePartitioningMode;
   }
   public function setIgnoreUnknownValues($ignoreUnknownValues)
   {

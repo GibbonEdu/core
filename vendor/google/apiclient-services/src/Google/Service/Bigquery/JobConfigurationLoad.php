@@ -32,14 +32,11 @@ class Google_Service_Bigquery_JobConfigurationLoad extends Google_Collection
   protected $destinationTablePropertiesDataType = '';
   public $encoding;
   public $fieldDelimiter;
-  public $hivePartitioningMode;
   public $ignoreUnknownValues;
   public $maxBadRecords;
   public $nullMarker;
   public $projectionFields;
   public $quote;
-  protected $rangePartitioningType = 'Google_Service_Bigquery_RangePartitioning';
-  protected $rangePartitioningDataType = '';
   protected $schemaType = 'Google_Service_Bigquery_TableSchema';
   protected $schemaDataType = '';
   public $schemaInline;
@@ -157,14 +154,6 @@ class Google_Service_Bigquery_JobConfigurationLoad extends Google_Collection
   {
     return $this->fieldDelimiter;
   }
-  public function setHivePartitioningMode($hivePartitioningMode)
-  {
-    $this->hivePartitioningMode = $hivePartitioningMode;
-  }
-  public function getHivePartitioningMode()
-  {
-    return $this->hivePartitioningMode;
-  }
   public function setIgnoreUnknownValues($ignoreUnknownValues)
   {
     $this->ignoreUnknownValues = $ignoreUnknownValues;
@@ -204,20 +193,6 @@ class Google_Service_Bigquery_JobConfigurationLoad extends Google_Collection
   public function getQuote()
   {
     return $this->quote;
-  }
-  /**
-   * @param Google_Service_Bigquery_RangePartitioning
-   */
-  public function setRangePartitioning(Google_Service_Bigquery_RangePartitioning $rangePartitioning)
-  {
-    $this->rangePartitioning = $rangePartitioning;
-  }
-  /**
-   * @return Google_Service_Bigquery_RangePartitioning
-   */
-  public function getRangePartitioning()
-  {
-    return $this->rangePartitioning;
   }
   /**
    * @param Google_Service_Bigquery_TableSchema

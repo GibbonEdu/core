@@ -7,6 +7,6 @@
 
 {% endspaceless %}
 --DATA--
-return []
+return array()
 --EXPECT--
 <div><div>   foo   </div></div>

@@ -39,7 +39,7 @@ escape types
 {% endautoescape %}
 
 --DATA--
-return ['msg' => "<>\n'\""]
+return array('msg' => "<>\n'\"")
 --EXPECT--
 
 1. autoescape 'html' |escape('js')

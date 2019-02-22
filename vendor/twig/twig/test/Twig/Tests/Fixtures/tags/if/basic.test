@@ -9,14 +9,14 @@
   NOTHING
 {% endif %}
 --DATA--
-return ['a' => 'a']
+return array('a' => 'a')
 --EXPECT--
   a
 --DATA--
-return ['b' => 'b']
+return array('b' => 'b')
 --EXPECT--
   b
 --DATA--
-return []
+return array()
 --EXPECT--
   NOTHING

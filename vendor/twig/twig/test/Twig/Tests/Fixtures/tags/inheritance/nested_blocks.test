@@ -17,6 +17,6 @@
     {% endblock %}
 {% endblock %}
 --DATA--
-return []
+return array()
 --EXPECT--
 SUBSUBCONTENT
