@@ -30,16 +30,16 @@
  */
 class Google_Service_Sheets extends Google_Service
 {
-  /** See, edit, create, and delete all of your Google Drive files. */
+  /** View and manage the files in your Google Drive. */
   const DRIVE =
       "https://www.googleapis.com/auth/drive";
   /** View and manage Google Drive files and folders that you have opened or created with this app. */
   const DRIVE_FILE =
       "https://www.googleapis.com/auth/drive.file";
-  /** See and download all your Google Drive files. */
+  /** View the files in your Google Drive. */
   const DRIVE_READONLY =
       "https://www.googleapis.com/auth/drive.readonly";
-  /** See, edit, create, and delete your spreadsheets in Google Drive. */
+  /** View and manage your spreadsheets in Google Drive. */
   const SPREADSHEETS =
       "https://www.googleapis.com/auth/spreadsheets";
   /** View your Google Spreadsheets. */
@@ -197,10 +197,6 @@ class Google_Service_Sheets extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'includeValuesInResponse' => array(
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ),
                 'responseValueRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -216,6 +212,10 @@ class Google_Service_Sheets extends Google_Service
                 'responseDateTimeRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'includeValuesInResponse' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ),
               ),
             ),'batchClear' => array(
@@ -351,10 +351,6 @@ class Google_Service_Sheets extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'includeValuesInResponse' => array(
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ),
                 'responseValueRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -366,6 +362,10 @@ class Google_Service_Sheets extends Google_Service
                 'responseDateTimeRenderOption' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'includeValuesInResponse' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
                 ),
               ),
             ),

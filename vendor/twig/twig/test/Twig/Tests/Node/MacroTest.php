@@ -14,7 +14,7 @@ class Twig_Tests_Node_MacroTest extends Twig_Test_NodeTestCase
     public function testConstructor()
     {
         $body = new Twig_Node_Text('foo', 1);
-        $arguments = new Twig_Node([new Twig_Node_Expression_Name('foo', 1)], [], 1);
+        $arguments = new Twig_Node(array(new Twig_Node_Expression_Name('foo', 1)), array(), 1);
         $node = new Twig_Node_Macro('foo', $body, $arguments, 1);
 
         $this->assertEquals($body, $node->getNode('body'));
@@ -25,24 +25,24 @@ class Twig_Tests_Node_MacroTest extends Twig_Test_NodeTestCase
     public function getTests()
     {
         $body = new Twig_Node_Text('foo', 1);
-        $arguments = new Twig_Node([
+        $arguments = new Twig_Node(array(
             'foo' => new Twig_Node_Expression_Constant(null, 1),
             'bar' => new Twig_Node_Expression_Constant('Foo', 1),
-        ], [], 1);
+        ), array(), 1);
         $node = new Twig_Node_Macro('foo', $body, $arguments, 1);
 
-        return [
-            [$node, <<<EOF
+        return array(
+            array($node, <<<EOF
 // line 1
 public function macro_foo(\$__foo__ = null, \$__bar__ = "Foo", ...\$__varargs__)
 {
-    \$context = \$this->env->mergeGlobals([
+    \$context = \$this->env->mergeGlobals(array(
         "foo" => \$__foo__,
         "bar" => \$__bar__,
         "varargs" => \$__varargs__,
-    ]);
+    ));
 
-    \$blocks = [];
+    \$blocks = array();
 
     ob_start();
     try {
@@ -54,7 +54,7 @@ public function macro_foo(\$__foo__ = null, \$__bar__ = "Foo", ...\$__varargs__)
     }
 }
 EOF
-            ],
-        ];
+            ),
+        );
     }
 }

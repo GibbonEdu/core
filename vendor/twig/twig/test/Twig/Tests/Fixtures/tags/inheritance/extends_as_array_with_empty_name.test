@@ -7,6 +7,6 @@
 foo
 {% endblock %}
 --DATA--
-return []
+return array()
 --EXPECT--
 foo

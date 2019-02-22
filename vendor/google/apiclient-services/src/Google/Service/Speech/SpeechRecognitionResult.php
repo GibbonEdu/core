@@ -20,7 +20,6 @@ class Google_Service_Speech_SpeechRecognitionResult extends Google_Collection
   protected $collection_key = 'alternatives';
   protected $alternativesType = 'Google_Service_Speech_SpeechRecognitionAlternative';
   protected $alternativesDataType = 'array';
-  public $channelTag;
 
   /**
    * @param Google_Service_Speech_SpeechRecognitionAlternative
@@ -35,13 +34,5 @@ class Google_Service_Speech_SpeechRecognitionResult extends Google_Collection
   public function getAlternatives()
   {
     return $this->alternatives;
-  }
-  public function setChannelTag($channelTag)
-  {
-    $this->channelTag = $channelTag;
-  }
-  public function getChannelTag()
-  {
-    return $this->channelTag;
   }
 }

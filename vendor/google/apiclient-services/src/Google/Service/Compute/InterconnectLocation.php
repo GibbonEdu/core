@@ -33,7 +33,6 @@ class Google_Service_Compute_InterconnectLocation extends Google_Collection
   protected $regionInfosType = 'Google_Service_Compute_InterconnectLocationRegionInfo';
   protected $regionInfosDataType = 'array';
   public $selfLink;
-  public $status;
 
   public function setAddress($address)
   {
@@ -152,13 +151,5 @@ class Google_Service_Compute_InterconnectLocation extends Google_Collection
   public function getSelfLink()
   {
     return $this->selfLink;
-  }
-  public function setStatus($status)
-  {
-    $this->status = $status;
-  }
-  public function getStatus()
-  {
-    return $this->status;
   }
 }

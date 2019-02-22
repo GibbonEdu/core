@@ -17,37 +17,37 @@
 
 class Google_Service_ShoppingContent_Amount extends Google_Model
 {
-  protected $priceAmountType = 'Google_Service_ShoppingContent_Price';
-  protected $priceAmountDataType = '';
-  protected $taxAmountType = 'Google_Service_ShoppingContent_Price';
-  protected $taxAmountDataType = '';
+  protected $pretaxType = 'Google_Service_ShoppingContent_Price';
+  protected $pretaxDataType = '';
+  protected $taxType = 'Google_Service_ShoppingContent_Price';
+  protected $taxDataType = '';
 
   /**
    * @param Google_Service_ShoppingContent_Price
    */
-  public function setPriceAmount(Google_Service_ShoppingContent_Price $priceAmount)
+  public function setPretax(Google_Service_ShoppingContent_Price $pretax)
   {
-    $this->priceAmount = $priceAmount;
+    $this->pretax = $pretax;
   }
   /**
    * @return Google_Service_ShoppingContent_Price
    */
-  public function getPriceAmount()
+  public function getPretax()
   {
-    return $this->priceAmount;
+    return $this->pretax;
   }
   /**
    * @param Google_Service_ShoppingContent_Price
    */
-  public function setTaxAmount(Google_Service_ShoppingContent_Price $taxAmount)
+  public function setTax(Google_Service_ShoppingContent_Price $tax)
   {
-    $this->taxAmount = $taxAmount;
+    $this->tax = $tax;
   }
   /**
    * @return Google_Service_ShoppingContent_Price
    */
-  public function getTaxAmount()
+  public function getTax()
   {
-    return $this->taxAmount;
+    return $this->tax;
   }
 }

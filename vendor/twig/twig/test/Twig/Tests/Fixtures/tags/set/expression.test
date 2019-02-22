@@ -6,7 +6,7 @@
 {{ foo }}
 {{ bar }}
 --DATA--
-return []
+return array()
 --EXPECT--
 foobar
 barfoo

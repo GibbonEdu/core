@@ -37,7 +37,7 @@
 
 5***
 --DATA--
-return []
+return array()
 --EXPECT--
 1***
     {{ 'bla' }}

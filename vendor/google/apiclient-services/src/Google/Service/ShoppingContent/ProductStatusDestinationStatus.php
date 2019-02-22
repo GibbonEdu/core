@@ -17,9 +17,27 @@
 
 class Google_Service_ShoppingContent_ProductStatusDestinationStatus extends Google_Model
 {
+  public $approvalPending;
+  public $approvalStatus;
   public $destination;
-  public $status;
+  public $intention;
 
+  public function setApprovalPending($approvalPending)
+  {
+    $this->approvalPending = $approvalPending;
+  }
+  public function getApprovalPending()
+  {
+    return $this->approvalPending;
+  }
+  public function setApprovalStatus($approvalStatus)
+  {
+    $this->approvalStatus = $approvalStatus;
+  }
+  public function getApprovalStatus()
+  {
+    return $this->approvalStatus;
+  }
   public function setDestination($destination)
   {
     $this->destination = $destination;
@@ -28,12 +46,12 @@ class Google_Service_ShoppingContent_ProductStatusDestinationStatus extends Goog
   {
     return $this->destination;
   }
-  public function setStatus($status)
+  public function setIntention($intention)
   {
-    $this->status = $status;
+    $this->intention = $intention;
   }
-  public function getStatus()
+  public function getIntention()
   {
-    return $this->status;
+    return $this->intention;
   }
 }

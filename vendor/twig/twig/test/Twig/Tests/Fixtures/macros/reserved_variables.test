@@ -9,6 +9,6 @@ macro
 
 {{ test(this) }}
 --DATA--
-return ['this' => 'foo']
+return array('this' => 'foo');
 --EXPECT--
 foo

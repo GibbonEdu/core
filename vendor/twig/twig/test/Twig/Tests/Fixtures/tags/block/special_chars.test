@@ -5,6 +5,6 @@
 §
 {% endblock § %}
 --DATA--
-return []
+return array()
 --EXPECT--
 §

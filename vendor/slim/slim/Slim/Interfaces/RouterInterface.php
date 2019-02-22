@@ -75,7 +75,7 @@ interface RouterInterface
     public function getNamedRoute($name);
 
     /**
-     * @param string $identifier
+     * @param $identifier
      *
      * @return \Slim\Interfaces\RouteInterface
      */

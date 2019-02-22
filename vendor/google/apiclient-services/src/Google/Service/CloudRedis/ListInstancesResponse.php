@@ -17,11 +17,10 @@
 
 class Google_Service_CloudRedis_ListInstancesResponse extends Google_Collection
 {
-  protected $collection_key = 'unreachable';
+  protected $collection_key = 'instances';
   protected $instancesType = 'Google_Service_CloudRedis_Instance';
   protected $instancesDataType = 'array';
   public $nextPageToken;
-  public $unreachable;
 
   /**
    * @param Google_Service_CloudRedis_Instance
@@ -44,13 +43,5 @@ class Google_Service_CloudRedis_ListInstancesResponse extends Google_Collection
   public function getNextPageToken()
   {
     return $this->nextPageToken;
-  }
-  public function setUnreachable($unreachable)
-  {
-    $this->unreachable = $unreachable;
-  }
-  public function getUnreachable()
-  {
-    return $this->unreachable;
   }
 }

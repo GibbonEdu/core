@@ -17,13 +17,11 @@
 
 class Google_Service_SQLAdmin_InstancesListResponse extends Google_Collection
 {
-  protected $collection_key = 'warnings';
+  protected $collection_key = 'items';
   protected $itemsType = 'Google_Service_SQLAdmin_DatabaseInstance';
   protected $itemsDataType = 'array';
   public $kind;
   public $nextPageToken;
-  protected $warningsType = 'Google_Service_SQLAdmin_ApiWarning';
-  protected $warningsDataType = 'array';
 
   /**
    * @param Google_Service_SQLAdmin_DatabaseInstance
@@ -54,19 +52,5 @@ class Google_Service_SQLAdmin_InstancesListResponse extends Google_Collection
   public function getNextPageToken()
   {
     return $this->nextPageToken;
-  }
-  /**
-   * @param Google_Service_SQLAdmin_ApiWarning
-   */
-  public function setWarnings($warnings)
-  {
-    $this->warnings = $warnings;
-  }
-  /**
-   * @return Google_Service_SQLAdmin_ApiWarning
-   */
-  public function getWarnings()
-  {
-    return $this->warnings;
   }
 }

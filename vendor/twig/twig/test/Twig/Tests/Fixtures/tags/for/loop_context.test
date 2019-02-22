@@ -8,7 +8,7 @@
 
 {% endfor %}
 --DATA--
-return ['items' => ['a', 'b']]
+return array('items' => array('a', 'b'))
 --EXPECT--
   * 1/0
   * 2/1

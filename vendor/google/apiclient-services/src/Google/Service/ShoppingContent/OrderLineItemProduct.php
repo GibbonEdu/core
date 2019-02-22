@@ -22,8 +22,6 @@ class Google_Service_ShoppingContent_OrderLineItemProduct extends Google_Collect
   public $channel;
   public $condition;
   public $contentLanguage;
-  protected $feesType = 'Google_Service_ShoppingContent_OrderLineItemProductFee';
-  protected $feesDataType = 'array';
   public $gtin;
   public $id;
   public $imageLink;
@@ -69,20 +67,6 @@ class Google_Service_ShoppingContent_OrderLineItemProduct extends Google_Collect
   public function getContentLanguage()
   {
     return $this->contentLanguage;
-  }
-  /**
-   * @param Google_Service_ShoppingContent_OrderLineItemProductFee
-   */
-  public function setFees($fees)
-  {
-    $this->fees = $fees;
-  }
-  /**
-   * @return Google_Service_ShoppingContent_OrderLineItemProductFee
-   */
-  public function getFees()
-  {
-    return $this->fees;
   }
   public function setGtin($gtin)
   {

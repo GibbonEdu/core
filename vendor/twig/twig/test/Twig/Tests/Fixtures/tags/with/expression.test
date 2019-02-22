@@ -5,6 +5,6 @@
     {{ foo }}{{ bar }}
 {% endwith %}
 --DATA--
-return ['foo' => 'baz']
+return array('foo' => 'baz')
 --EXPECT--
 fooBAZ

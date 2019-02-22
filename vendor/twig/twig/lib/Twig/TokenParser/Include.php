@@ -53,7 +53,7 @@ class Twig_TokenParser_Include extends Twig_TokenParser
 
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 
-        return [$variables, $only, $ignoreMissing];
+        return array($variables, $only, $ignoreMissing);
     }
 
     public function getTag()

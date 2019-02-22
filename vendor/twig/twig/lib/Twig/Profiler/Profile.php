@@ -24,9 +24,9 @@ class Twig_Profiler_Profile implements IteratorAggregate, Serializable
     private $template;
     private $name;
     private $type;
-    private $starts = [];
-    private $ends = [];
-    private $profiles = [];
+    private $starts = array();
+    private $ends = array();
+    private $profiles = array();
 
     public function __construct($template = 'main', $type = self::ROOT, $name = 'main')
     {
@@ -80,7 +80,7 @@ class Twig_Profiler_Profile implements IteratorAggregate, Serializable
         return $this->profiles;
     }
 
-    public function addProfile(self $profile)
+    public function addProfile(Twig_Profiler_Profile $profile)
     {
         $this->profiles[] = $profile;
     }
@@ -130,11 +130,11 @@ class Twig_Profiler_Profile implements IteratorAggregate, Serializable
      */
     public function enter()
     {
-        $this->starts = [
+        $this->starts = array(
             'wt' => microtime(true),
             'mu' => memory_get_usage(),
             'pmu' => memory_get_peak_usage(),
-        ];
+        );
     }
 
     /**
@@ -142,16 +142,16 @@ class Twig_Profiler_Profile implements IteratorAggregate, Serializable
      */
     public function leave()
     {
-        $this->ends = [
+        $this->ends = array(
             'wt' => microtime(true),
             'mu' => memory_get_usage(),
             'pmu' => memory_get_peak_usage(),
-        ];
+        );
     }
 
     public function reset()
     {
-        $this->starts = $this->ends = $this->profiles = [];
+        $this->starts = $this->ends = $this->profiles = array();
         $this->enter();
     }
 
@@ -162,7 +162,7 @@ class Twig_Profiler_Profile implements IteratorAggregate, Serializable
 
     public function serialize()
     {
-        return serialize([$this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles]);
+        return serialize(array($this->template, $this->name, $this->type, $this->starts, $this->ends, $this->profiles));
     }
 
     public function unserialize($data)

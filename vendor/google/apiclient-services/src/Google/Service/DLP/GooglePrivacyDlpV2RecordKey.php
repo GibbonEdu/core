@@ -15,14 +15,12 @@
  * the License.
  */
 
-class Google_Service_DLP_GooglePrivacyDlpV2RecordKey extends Google_Collection
+class Google_Service_DLP_GooglePrivacyDlpV2RecordKey extends Google_Model
 {
-  protected $collection_key = 'idValues';
   protected $bigQueryKeyType = 'Google_Service_DLP_GooglePrivacyDlpV2BigQueryKey';
   protected $bigQueryKeyDataType = '';
   protected $datastoreKeyType = 'Google_Service_DLP_GooglePrivacyDlpV2DatastoreKey';
   protected $datastoreKeyDataType = '';
-  public $idValues;
 
   /**
    * @param Google_Service_DLP_GooglePrivacyDlpV2BigQueryKey
@@ -51,13 +49,5 @@ class Google_Service_DLP_GooglePrivacyDlpV2RecordKey extends Google_Collection
   public function getDatastoreKey()
   {
     return $this->datastoreKey;
-  }
-  public function setIdValues($idValues)
-  {
-    $this->idValues = $idValues;
-  }
-  public function getIdValues()
-  {
-    return $this->idValues;
   }
 }

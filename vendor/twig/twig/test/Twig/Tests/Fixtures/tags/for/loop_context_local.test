@@ -5,6 +5,6 @@
 {% endfor %}
 {% if loop is not defined %}WORKS{% endif %}
 --DATA--
-return ['items' => []]
+return array('items' => array())
 --EXPECT--
 WORKS

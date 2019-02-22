@@ -19,8 +19,6 @@ class Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResults exten
 {
   protected $collection_key = 'results';
   public $indexTime;
-  protected $productGroupedResultsType = 'Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResult';
-  protected $productGroupedResultsDataType = 'array';
   protected $resultsType = 'Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResultsResult';
   protected $resultsDataType = 'array';
 
@@ -31,20 +29,6 @@ class Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResults exten
   public function getIndexTime()
   {
     return $this->indexTime;
-  }
-  /**
-   * @param Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResult
-   */
-  public function setProductGroupedResults($productGroupedResults)
-  {
-    $this->productGroupedResults = $productGroupedResults;
-  }
-  /**
-   * @return Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResultsGroupedResult
-   */
-  public function getProductGroupedResults()
-  {
-    return $this->productGroupedResults;
   }
   /**
    * @param Google_Service_Vision_GoogleCloudVisionV1p3beta1ProductSearchResultsResult

@@ -21,7 +21,6 @@ class Google_Service_CloudComposer_SoftwareConfig extends Google_Model
   public $envVariables;
   public $imageVersion;
   public $pypiPackages;
-  public $pythonVersion;
 
   public function setAirflowConfigOverrides($airflowConfigOverrides)
   {
@@ -54,13 +53,5 @@ class Google_Service_CloudComposer_SoftwareConfig extends Google_Model
   public function getPypiPackages()
   {
     return $this->pypiPackages;
-  }
-  public function setPythonVersion($pythonVersion)
-  {
-    $this->pythonVersion = $pythonVersion;
-  }
-  public function getPythonVersion()
-  {
-    return $this->pythonVersion;
   }
 }

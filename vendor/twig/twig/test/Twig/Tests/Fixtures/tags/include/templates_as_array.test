@@ -6,7 +6,7 @@
 --TEMPLATE(foo.twig)--
 foo
 --DATA--
-return []
+return array()
 --EXPECT--
 foo
 foo

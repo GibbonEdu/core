@@ -20,8 +20,6 @@ class Google_Service_Container_NodePool extends Google_Collection
   protected $collection_key = 'instanceGroupUrls';
   protected $autoscalingType = 'Google_Service_Container_NodePoolAutoscaling';
   protected $autoscalingDataType = '';
-  protected $conditionsType = 'Google_Service_Container_StatusCondition';
-  protected $conditionsDataType = 'array';
   protected $configType = 'Google_Service_Container_NodeConfig';
   protected $configDataType = '';
   public $initialNodeCount;
@@ -47,20 +45,6 @@ class Google_Service_Container_NodePool extends Google_Collection
   public function getAutoscaling()
   {
     return $this->autoscaling;
-  }
-  /**
-   * @param Google_Service_Container_StatusCondition
-   */
-  public function setConditions($conditions)
-  {
-    $this->conditions = $conditions;
-  }
-  /**
-   * @return Google_Service_Container_StatusCondition
-   */
-  public function getConditions()
-  {
-    return $this->conditions;
   }
   /**
    * @param Google_Service_Container_NodeConfig

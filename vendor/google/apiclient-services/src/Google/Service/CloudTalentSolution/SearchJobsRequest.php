@@ -18,7 +18,6 @@
 class Google_Service_CloudTalentSolution_SearchJobsRequest extends Google_Model
 {
   public $disableKeywordMatch;
-  public $diversificationLevel;
   public $enableBroadening;
   protected $histogramFacetsType = 'Google_Service_CloudTalentSolution_HistogramFacets';
   protected $histogramFacetsDataType = '';
@@ -41,14 +40,6 @@ class Google_Service_CloudTalentSolution_SearchJobsRequest extends Google_Model
   public function getDisableKeywordMatch()
   {
     return $this->disableKeywordMatch;
-  }
-  public function setDiversificationLevel($diversificationLevel)
-  {
-    $this->diversificationLevel = $diversificationLevel;
-  }
-  public function getDiversificationLevel()
-  {
-    return $this->diversificationLevel;
   }
   public function setEnableBroadening($enableBroadening)
   {

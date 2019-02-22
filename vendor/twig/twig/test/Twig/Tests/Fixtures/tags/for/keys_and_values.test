@@ -5,7 +5,7 @@
   * {{ key }}/{{ item }}
 {% endfor %}
 --DATA--
-return ['items' => ['a', 'b']]
+return array('items' => array('a', 'b'))
 --EXPECT--
   * 0/a
   * 1/b

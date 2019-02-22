@@ -43,7 +43,7 @@ use phpseclib\System\SSH\Agent\Identity;
  *
  * @package SSH\Agent
  * @author  Jim Wigginton <terrafrost@php.net>
- * @access  public
+ * @access  internal
  */
 class Agent
 {
@@ -117,20 +117,18 @@ class Agent
      * @return \phpseclib\System\SSH\Agent
      * @access public
      */
-    function __construct($address = null)
+    function __construct()
     {
-        if (!$address) {
-            switch (true) {
-                case isset($_SERVER['SSH_AUTH_SOCK']):
-                    $address = $_SERVER['SSH_AUTH_SOCK'];
-                    break;
-                case isset($_ENV['SSH_AUTH_SOCK']):
-                    $address = $_ENV['SSH_AUTH_SOCK'];
-                    break;
-                default:
-                    user_error('SSH_AUTH_SOCK not found');
-                    return false;
-            }
+        switch (true) {
+            case isset($_SERVER['SSH_AUTH_SOCK']):
+                $address = $_SERVER['SSH_AUTH_SOCK'];
+                break;
+            case isset($_ENV['SSH_AUTH_SOCK']):
+                $address = $_ENV['SSH_AUTH_SOCK'];
+                break;
+            default:
+                user_error('SSH_AUTH_SOCK not found');
+                return false;
         }
 
         $this->fsock = fsockopen('unix://' . $address, 0, $errno, $errstr);

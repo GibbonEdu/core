@@ -15,28 +15,13 @@
  * the License.
  */
 
-class Google_Service_ShoppingContent_CustomAttribute extends Google_Collection
+class Google_Service_ShoppingContent_CustomAttribute extends Google_Model
 {
-  protected $collection_key = 'groupValues';
-  protected $groupValuesType = 'Google_Service_ShoppingContent_CustomAttribute';
-  protected $groupValuesDataType = 'array';
   public $name;
+  public $type;
+  public $unit;
   public $value;
 
-  /**
-   * @param Google_Service_ShoppingContent_CustomAttribute
-   */
-  public function setGroupValues($groupValues)
-  {
-    $this->groupValues = $groupValues;
-  }
-  /**
-   * @return Google_Service_ShoppingContent_CustomAttribute
-   */
-  public function getGroupValues()
-  {
-    return $this->groupValues;
-  }
   public function setName($name)
   {
     $this->name = $name;
@@ -44,6 +29,22 @@ class Google_Service_ShoppingContent_CustomAttribute extends Google_Collection
   public function getName()
   {
     return $this->name;
+  }
+  public function setType($type)
+  {
+    $this->type = $type;
+  }
+  public function getType()
+  {
+    return $this->type;
+  }
+  public function setUnit($unit)
+  {
+    $this->unit = $unit;
+  }
+  public function getUnit()
+  {
+    return $this->unit;
   }
   public function setValue($value)
   {

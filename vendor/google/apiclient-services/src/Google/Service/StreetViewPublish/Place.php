@@ -17,26 +17,8 @@
 
 class Google_Service_StreetViewPublish_Place extends Google_Model
 {
-  public $languageCode;
-  public $name;
   public $placeId;
 
-  public function setLanguageCode($languageCode)
-  {
-    $this->languageCode = $languageCode;
-  }
-  public function getLanguageCode()
-  {
-    return $this->languageCode;
-  }
-  public function setName($name)
-  {
-    $this->name = $name;
-  }
-  public function getName()
-  {
-    return $this->name;
-  }
   public function setPlaceId($placeId)
   {
     $this->placeId = $placeId;

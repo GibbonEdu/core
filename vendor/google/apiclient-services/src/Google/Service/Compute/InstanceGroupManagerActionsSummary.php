@@ -25,7 +25,6 @@ class Google_Service_Compute_InstanceGroupManagerActionsSummary extends Google_M
   public $recreating;
   public $refreshing;
   public $restarting;
-  public $verifying;
 
   public function setAbandoning($abandoning)
   {
@@ -90,13 +89,5 @@ class Google_Service_Compute_InstanceGroupManagerActionsSummary extends Google_M
   public function getRestarting()
   {
     return $this->restarting;
-  }
-  public function setVerifying($verifying)
-  {
-    $this->verifying = $verifying;
-  }
-  public function getVerifying()
-  {
-    return $this->verifying;
   }
 }

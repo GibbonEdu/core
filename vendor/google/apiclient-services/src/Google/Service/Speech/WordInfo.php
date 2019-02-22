@@ -18,6 +18,7 @@
 class Google_Service_Speech_WordInfo extends Google_Model
 {
   public $endTime;
+  public $speakerTag;
   public $startTime;
   public $word;
 
@@ -28,6 +29,14 @@ class Google_Service_Speech_WordInfo extends Google_Model
   public function getEndTime()
   {
     return $this->endTime;
+  }
+  public function setSpeakerTag($speakerTag)
+  {
+    $this->speakerTag = $speakerTag;
+  }
+  public function getSpeakerTag()
+  {
+    return $this->speakerTag;
   }
   public function setStartTime($startTime)
   {

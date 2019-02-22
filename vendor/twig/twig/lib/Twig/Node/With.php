@@ -18,12 +18,12 @@ class Twig_Node_With extends Twig_Node
 {
     public function __construct(Twig_Node $body, Twig_Node $variables = null, $only = false, $lineno, $tag = null)
     {
-        $nodes = ['body' => $body];
+        $nodes = array('body' => $body);
         if (null !== $variables) {
             $nodes['variables'] = $variables;
         }
 
-        parent::__construct($nodes, ['only' => (bool) $only], $lineno, $tag);
+        parent::__construct($nodes, array('only' => (bool) $only), $lineno, $tag);
     }
 
     public function compile(Twig_Compiler $compiler)
@@ -46,7 +46,7 @@ class Twig_Node_With extends Twig_Node
             ;
 
             if ($this->getAttribute('only')) {
-                $compiler->write("\$context = ['_parent' => \$context];\n");
+                $compiler->write("\$context = array('_parent' => \$context);\n");
             } else {
                 $compiler->write("\$context['_parent'] = \$context;\n");
             }

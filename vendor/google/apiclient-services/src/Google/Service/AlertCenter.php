@@ -19,7 +19,8 @@
  * Service definition for AlertCenter (v1beta1).
  *
  * <p>
- * Manages alerts on issues affecting your domain.</p>
+ * G Suite Alert Center API to view and manage alerts on issues affecting your
+ * domain.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -30,13 +31,10 @@
  */
 class Google_Service_AlertCenter extends Google_Service
 {
-  /** See and delete your domain's G Suite alerts, and send alert feedback. */
-  const APPS_ALERTS =
-      "https://www.googleapis.com/auth/apps.alerts";
+
 
   public $alerts;
   public $alerts_feedback;
-  public $v1beta1;
   
   /**
    * Constructs the internal representation of the AlertCenter service.
@@ -89,6 +87,14 @@ class Google_Service_AlertCenter extends Google_Service
               'path' => 'v1beta1/alerts',
               'httpMethod' => 'GET',
               'parameters' => array(
+                'customerId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -100,24 +106,6 @@ class Google_Service_AlertCenter extends Google_Service
                 'orderBy' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'customerId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-              ),
-            ),'undelete' => array(
-              'path' => 'v1beta1/alerts/{alertId}:undelete',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'alertId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
                 ),
               ),
             ),
@@ -153,38 +141,6 @@ class Google_Service_AlertCenter extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'customerId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'filter' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->v1beta1 = new Google_Service_AlertCenter_Resource_V1beta1(
-        $this,
-        $this->serviceName,
-        'v1beta1',
-        array(
-          'methods' => array(
-            'getSettings' => array(
-              'path' => 'v1beta1/settings',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'customerId' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-              ),
-            ),'updateSettings' => array(
-              'path' => 'v1beta1/settings',
-              'httpMethod' => 'PATCH',
-              'parameters' => array(
                 'customerId' => array(
                   'location' => 'query',
                   'type' => 'string',

@@ -35,7 +35,6 @@ class Google_Service_CloudComposer extends Google_Service
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $projects_locations_environments;
-  public $projects_locations_imageVersions;
   public $projects_locations_operations;
   
   /**
@@ -123,34 +122,6 @@ class Google_Service_CloudComposer extends Google_Service
           )
         )
     );
-    $this->projects_locations_imageVersions = new Google_Service_CloudComposer_Resource_ProjectsLocationsImageVersions(
-        $this,
-        $this->serviceName,
-        'imageVersions',
-        array(
-          'methods' => array(
-            'list' => array(
-              'path' => 'v1/{+parent}/imageVersions',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'parent' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-              ),
-            ),
-          )
-        )
-    );
     $this->projects_locations_operations = new Google_Service_CloudComposer_Resource_ProjectsLocationsOperations(
         $this,
         $this->serviceName,
@@ -186,15 +157,15 @@ class Google_Service_CloudComposer extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
                 ),
                 'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

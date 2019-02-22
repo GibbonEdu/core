@@ -49,7 +49,6 @@ class Google_Service_AndroidEnterprise extends Google_Service
   public $storelayoutclusters;
   public $storelayoutpages;
   public $users;
-  public $webapps;
   
   /**
    * Constructs the internal representation of the AndroidEnterprise service.
@@ -256,6 +255,16 @@ class Google_Service_AndroidEnterprise extends Google_Service
               ),
             ),'get' => array(
               'path' => 'enterprises/{enterpriseId}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'enterpriseId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'getAndroidDevicePolicyConfig' => array(
+              'path' => 'enterprises/{enterpriseId}/androidDevicePolicyConfig',
               'httpMethod' => 'GET',
               'parameters' => array(
                 'enterpriseId' => array(
@@ -1521,96 +1530,6 @@ class Google_Service_AndroidEnterprise extends Google_Service
                   'required' => true,
                 ),
                 'userId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),
-          )
-        )
-    );
-    $this->webapps = new Google_Service_AndroidEnterprise_Resource_Webapps(
-        $this,
-        $this->serviceName,
-        'webapps',
-        array(
-          'methods' => array(
-            'delete' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps/{webAppId}',
-              'httpMethod' => 'DELETE',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'webAppId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'get' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps/{webAppId}',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'webAppId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'insert' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps',
-              'httpMethod' => 'POST',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'list' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps',
-              'httpMethod' => 'GET',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'patch' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps/{webAppId}',
-              'httpMethod' => 'PATCH',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'webAppId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-              ),
-            ),'update' => array(
-              'path' => 'enterprises/{enterpriseId}/webApps/{webAppId}',
-              'httpMethod' => 'PUT',
-              'parameters' => array(
-                'enterpriseId' => array(
-                  'location' => 'path',
-                  'type' => 'string',
-                  'required' => true,
-                ),
-                'webAppId' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,

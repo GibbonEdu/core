@@ -19,7 +19,8 @@
  * Service definition for CloudRedis (v1).
  *
  * <p>
- * Creates and manages Redis instances on the Google Cloud Platform.</p>
+ * The Google Cloud Memorystore for Redis API is used for creating and managing
+ * Redis instances on the Google Cloud Platform.</p>
  *
  * <p>
  * For more information about this service, see the API
@@ -76,6 +77,10 @@ class Google_Service_CloudRedis extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -83,10 +88,6 @@ class Google_Service_CloudRedis extends Google_Service
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
                 ),
               ),
             ),
@@ -142,13 +143,13 @@ class Google_Service_CloudRedis extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'patch' => array(

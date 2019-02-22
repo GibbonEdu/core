@@ -5,6 +5,6 @@
 {{ foo }}
 {% endverbatim %}
 --DATA--
-return []
+return array()
 --EXPECT--
 {{ foo }}

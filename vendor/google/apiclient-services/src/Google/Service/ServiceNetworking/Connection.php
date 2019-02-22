@@ -21,7 +21,6 @@ class Google_Service_ServiceNetworking_Connection extends Google_Collection
   public $network;
   public $peering;
   public $reservedPeeringRanges;
-  public $service;
 
   public function setNetwork($network)
   {
@@ -46,13 +45,5 @@ class Google_Service_ServiceNetworking_Connection extends Google_Collection
   public function getReservedPeeringRanges()
   {
     return $this->reservedPeeringRanges;
-  }
-  public function setService($service)
-  {
-    $this->service = $service;
-  }
-  public function getService()
-  {
-    return $this->service;
   }
 }

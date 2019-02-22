@@ -3,6 +3,6 @@
 --TEMPLATE--
 {{ 'foo'|§ }}
 --DATA--
-return []
+return array()
 --EXPECT--
 §foo§

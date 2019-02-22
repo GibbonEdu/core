@@ -3,6 +3,6 @@
 --TEMPLATE--
 {{ "愛していますか？ <br />"|e }}
 --DATA--
-return []
+return array()
 --EXPECT--
 愛していますか？ &lt;br /&gt;

@@ -28,7 +28,7 @@ B
 {% endblock %}
 C
 --DATA--
-return []
+return array()
 --EXPECT--
 FOO
 

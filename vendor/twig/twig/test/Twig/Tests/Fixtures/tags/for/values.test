@@ -5,7 +5,7 @@
   * {{ item }}
 {% endfor %}
 --DATA--
-return ['items' => ['a', 'b']]
+return array('items' => array('a', 'b'))
 --EXPECT--
   * a
   * b

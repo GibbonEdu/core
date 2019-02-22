@@ -9,6 +9,6 @@ macro with a filter
 
 {{ test.test() }}
 --DATA--
-return []
+return array();
 --EXPECT--
 foo&lt;br /&gt;

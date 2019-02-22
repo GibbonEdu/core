@@ -19,7 +19,7 @@ class UserForAutoEscapeTest
      return 'Fabien<br />';
   }
 }
-return ['user' => new UserForAutoEscapeTest()]
+return array('user' => new UserForAutoEscapeTest())
 --EXPECT--
 Fabien&lt;br /&gt;
 fabien&lt;br /&gt;

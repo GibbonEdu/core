@@ -3,6 +3,6 @@ __call calls
 --TEMPLATE--
 {{ 'foo'|magic_call }}
 --DATA--
-return []
+return array()
 --EXPECT--
 magic_foo

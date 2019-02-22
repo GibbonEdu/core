@@ -5,6 +5,6 @@
 {{ var|escape }}
 {% endautoescape %}
 --DATA--
-return ['var' => '<br />']
+return array('var' => '<br />')
 --EXPECT--
 &lt;br /&gt;

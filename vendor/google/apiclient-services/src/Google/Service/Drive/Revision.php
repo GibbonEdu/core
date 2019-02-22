@@ -17,7 +17,6 @@
 
 class Google_Service_Drive_Revision extends Google_Model
 {
-  public $exportLinks;
   public $id;
   public $keepForever;
   public $kind;
@@ -32,14 +31,6 @@ class Google_Service_Drive_Revision extends Google_Model
   public $publishedOutsideDomain;
   public $size;
 
-  public function setExportLinks($exportLinks)
-  {
-    $this->exportLinks = $exportLinks;
-  }
-  public function getExportLinks()
-  {
-    return $this->exportLinks;
-  }
   public function setId($id)
   {
     $this->id = $id;

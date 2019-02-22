@@ -23,7 +23,6 @@ class Google_Service_FirebaseDynamicLinks_IosInfo extends Google_Model
   public $iosFallbackLink;
   public $iosIpadBundleId;
   public $iosIpadFallbackLink;
-  public $iosMinimumVersion;
 
   public function setIosAppStoreId($iosAppStoreId)
   {
@@ -72,13 +71,5 @@ class Google_Service_FirebaseDynamicLinks_IosInfo extends Google_Model
   public function getIosIpadFallbackLink()
   {
     return $this->iosIpadFallbackLink;
-  }
-  public function setIosMinimumVersion($iosMinimumVersion)
-  {
-    $this->iosMinimumVersion = $iosMinimumVersion;
-  }
-  public function getIosMinimumVersion()
-  {
-    return $this->iosMinimumVersion;
   }
 }

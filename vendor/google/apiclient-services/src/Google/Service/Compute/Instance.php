@@ -27,7 +27,6 @@ class Google_Service_Compute_Instance extends Google_Collection
   protected $disksDataType = 'array';
   protected $guestAcceleratorsType = 'Google_Service_Compute_AcceleratorConfig';
   protected $guestAcceleratorsDataType = 'array';
-  public $hostname;
   public $id;
   public $kind;
   public $labelFingerprint;
@@ -118,14 +117,6 @@ class Google_Service_Compute_Instance extends Google_Collection
   public function getGuestAccelerators()
   {
     return $this->guestAccelerators;
-  }
-  public function setHostname($hostname)
-  {
-    $this->hostname = $hostname;
-  }
-  public function getHostname()
-  {
-    return $this->hostname;
   }
   public function setId($id)
   {

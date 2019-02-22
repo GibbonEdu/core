@@ -19,7 +19,6 @@ class Google_Service_Compute_Quota extends Google_Model
 {
   public $limit;
   public $metric;
-  public $owner;
   public $usage;
 
   public function setLimit($limit)
@@ -37,14 +36,6 @@ class Google_Service_Compute_Quota extends Google_Model
   public function getMetric()
   {
     return $this->metric;
-  }
-  public function setOwner($owner)
-  {
-    $this->owner = $owner;
-  }
-  public function getOwner()
-  {
-    return $this->owner;
   }
   public function setUsage($usage)
   {

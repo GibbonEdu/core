@@ -36,6 +36,9 @@ class Google_Service_Games extends Google_Service
   /** Share your Google+ profile information and view and manage your game activity. */
   const GAMES =
       "https://www.googleapis.com/auth/games";
+  /** Know the list of people in your circles, your age range, and language. */
+  const PLUS_LOGIN =
+      "https://www.googleapis.com/auth/plus.login";
 
   public $achievementDefinitions;
   public $achievements;

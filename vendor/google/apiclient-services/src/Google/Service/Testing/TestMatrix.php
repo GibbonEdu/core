@@ -22,7 +22,6 @@ class Google_Service_Testing_TestMatrix extends Google_Collection
   protected $clientInfoDataType = '';
   protected $environmentMatrixType = 'Google_Service_Testing_EnvironmentMatrix';
   protected $environmentMatrixDataType = '';
-  public $flakyTestAttempts;
   public $invalidMatrixDetails;
   public $projectId;
   protected $resultStorageType = 'Google_Service_Testing_ResultStorage';
@@ -62,14 +61,6 @@ class Google_Service_Testing_TestMatrix extends Google_Collection
   public function getEnvironmentMatrix()
   {
     return $this->environmentMatrix;
-  }
-  public function setFlakyTestAttempts($flakyTestAttempts)
-  {
-    $this->flakyTestAttempts = $flakyTestAttempts;
-  }
-  public function getFlakyTestAttempts()
-  {
-    return $this->flakyTestAttempts;
   }
   public function setInvalidMatrixDetails($invalidMatrixDetails)
   {

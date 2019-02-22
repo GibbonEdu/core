@@ -19,15 +19,11 @@ class Google_Service_Slides_LineProperties extends Google_Model
 {
   public $dashStyle;
   public $endArrow;
-  protected $endConnectionType = 'Google_Service_Slides_LineConnection';
-  protected $endConnectionDataType = '';
   protected $lineFillType = 'Google_Service_Slides_LineFill';
   protected $lineFillDataType = '';
   protected $linkType = 'Google_Service_Slides_Link';
   protected $linkDataType = '';
   public $startArrow;
-  protected $startConnectionType = 'Google_Service_Slides_LineConnection';
-  protected $startConnectionDataType = '';
   protected $weightType = 'Google_Service_Slides_Dimension';
   protected $weightDataType = '';
 
@@ -46,20 +42,6 @@ class Google_Service_Slides_LineProperties extends Google_Model
   public function getEndArrow()
   {
     return $this->endArrow;
-  }
-  /**
-   * @param Google_Service_Slides_LineConnection
-   */
-  public function setEndConnection(Google_Service_Slides_LineConnection $endConnection)
-  {
-    $this->endConnection = $endConnection;
-  }
-  /**
-   * @return Google_Service_Slides_LineConnection
-   */
-  public function getEndConnection()
-  {
-    return $this->endConnection;
   }
   /**
    * @param Google_Service_Slides_LineFill
@@ -96,20 +78,6 @@ class Google_Service_Slides_LineProperties extends Google_Model
   public function getStartArrow()
   {
     return $this->startArrow;
-  }
-  /**
-   * @param Google_Service_Slides_LineConnection
-   */
-  public function setStartConnection(Google_Service_Slides_LineConnection $startConnection)
-  {
-    $this->startConnection = $startConnection;
-  }
-  /**
-   * @return Google_Service_Slides_LineConnection
-   */
-  public function getStartConnection()
-  {
-    return $this->startConnection;
   }
   /**
    * @param Google_Service_Slides_Dimension

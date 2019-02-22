@@ -25,7 +25,7 @@ class Google_Service_ShoppingContent_OrderReportTransaction extends Google_Model
   public $merchantId;
   public $merchantOrderId;
   public $orderId;
-  protected $productAmountType = 'Google_Service_ShoppingContent_ProductAmount';
+  protected $productAmountType = 'Google_Service_ShoppingContent_Amount';
   protected $productAmountDataType = '';
   public $transactionDate;
 
@@ -92,14 +92,14 @@ class Google_Service_ShoppingContent_OrderReportTransaction extends Google_Model
     return $this->orderId;
   }
   /**
-   * @param Google_Service_ShoppingContent_ProductAmount
+   * @param Google_Service_ShoppingContent_Amount
    */
-  public function setProductAmount(Google_Service_ShoppingContent_ProductAmount $productAmount)
+  public function setProductAmount(Google_Service_ShoppingContent_Amount $productAmount)
   {
     $this->productAmount = $productAmount;
   }
   /**
-   * @return Google_Service_ShoppingContent_ProductAmount
+   * @return Google_Service_ShoppingContent_Amount
    */
   public function getProductAmount()
   {

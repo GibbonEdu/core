@@ -19,9 +19,9 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     /** Identifier of the main namespace. */
     const MAIN_NAMESPACE = '__main__';
 
-    protected $paths = [];
-    protected $cache = [];
-    protected $errorCache = [];
+    protected $paths = array();
+    protected $cache = array();
+    protected $errorCache = array();
 
     private $rootPath;
 
@@ -29,7 +29,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
      * @param string|array $paths    A path or an array of paths where to look for templates
      * @param string|null  $rootPath The root path common to all relative paths (null for getcwd())
      */
-    public function __construct($paths = [], $rootPath = null)
+    public function __construct($paths = array(), $rootPath = null)
     {
         $this->rootPath = (null === $rootPath ? getcwd() : $rootPath).DIRECTORY_SEPARATOR;
         if (false !== $realPath = realpath($rootPath)) {
@@ -50,7 +50,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
      */
     public function getPaths($namespace = self::MAIN_NAMESPACE)
     {
-        return isset($this->paths[$namespace]) ? $this->paths[$namespace] : [];
+        return isset($this->paths[$namespace]) ? $this->paths[$namespace] : array();
     }
 
     /**
@@ -74,10 +74,10 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     public function setPaths($paths, $namespace = self::MAIN_NAMESPACE)
     {
         if (!is_array($paths)) {
-            $paths = [$paths];
+            $paths = array($paths);
         }
 
-        $this->paths[$namespace] = [];
+        $this->paths[$namespace] = array();
         foreach ($paths as $path) {
             $this->addPath($path, $namespace);
         }
@@ -94,7 +94,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     public function addPath($path, $namespace = self::MAIN_NAMESPACE)
     {
         // invalidate the cache
-        $this->cache = $this->errorCache = [];
+        $this->cache = $this->errorCache = array();
 
         $checkPath = $this->isAbsolutePath($path) ? $path : $this->rootPath.$path;
         if (!is_dir($checkPath)) {
@@ -115,7 +115,7 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
     public function prependPath($path, $namespace = self::MAIN_NAMESPACE)
     {
         // invalidate the cache
-        $this->cache = $this->errorCache = [];
+        $this->cache = $this->errorCache = array();
 
         $checkPath = $this->isAbsolutePath($path) ? $path : $this->rootPath.$path;
         if (!is_dir($checkPath)) {
@@ -189,17 +189,9 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
             throw new Twig_Error_Loader($this->errorCache[$name]);
         }
 
-        try {
-            $this->validateName($name);
+        $this->validateName($name);
 
-            list($namespace, $shortname) = $this->parseName($name);
-        } catch (Twig_Error_Loader $e) {
-            if (!$throw) {
-                return false;
-            }
-
-            throw $e;
-        }
+        list($namespace, $shortname) = $this->parseName($name);
 
         if (!isset($this->paths[$namespace])) {
             $this->errorCache[$name] = sprintf('There are no registered paths for namespace "%s".', $namespace);
@@ -249,10 +241,10 @@ class Twig_Loader_Filesystem implements Twig_LoaderInterface, Twig_ExistsLoaderI
             $namespace = substr($name, 1, $pos - 1);
             $shortname = substr($name, $pos + 1);
 
-            return [$namespace, $shortname];
+            return array($namespace, $shortname);
         }
 
-        return [$default, $name];
+        return array($default, $name);
     }
 
     private function validateName($name)

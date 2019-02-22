@@ -34,7 +34,6 @@ class Google_Service_Compute_Disk extends Google_Collection
   public $licenses;
   public $name;
   public $options;
-  public $physicalBlockSizeBytes;
   public $region;
   public $replicaZones;
   public $selfLink;
@@ -175,14 +174,6 @@ class Google_Service_Compute_Disk extends Google_Collection
   public function getOptions()
   {
     return $this->options;
-  }
-  public function setPhysicalBlockSizeBytes($physicalBlockSizeBytes)
-  {
-    $this->physicalBlockSizeBytes = $physicalBlockSizeBytes;
-  }
-  public function getPhysicalBlockSizeBytes()
-  {
-    return $this->physicalBlockSizeBytes;
   }
   public function setRegion($region)
   {

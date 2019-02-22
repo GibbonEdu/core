@@ -33,7 +33,7 @@ class Twig_Node_Module extends Twig_Node
 
         $this->source = $source;
 
-        $nodes = [
+        $nodes = array(
             'body' => $body,
             'blocks' => $blocks,
             'macros' => $macros,
@@ -43,16 +43,16 @@ class Twig_Node_Module extends Twig_Node
             'constructor_start' => new Twig_Node(),
             'constructor_end' => new Twig_Node(),
             'class_end' => new Twig_Node(),
-        ];
+        );
         if (null !== $parent) {
             $nodes['parent'] = $parent;
         }
 
         // embedded templates are set as attributes so that they are only visited once by the visitors
-        parent::__construct($nodes, [
+        parent::__construct($nodes, array(
             'index' => null,
             'embedded_templates' => $embeddedTemplates,
-        ], 1);
+        ), 1);
 
         // populate the template name of all node children
         $this->setTemplateName($this->source->getName());
@@ -259,11 +259,11 @@ class Twig_Node_Module extends Twig_Node
                 ->write("\$this->blocks = array_merge(\n")
                 ->indent()
                 ->write("\$this->traits,\n")
-                ->write("[\n")
+                ->write("array(\n")
             ;
         } else {
             $compiler
-                ->write("\$this->blocks = [\n")
+                ->write("\$this->blocks = array(\n")
             ;
         }
 
@@ -274,25 +274,20 @@ class Twig_Node_Module extends Twig_Node
 
         foreach ($this->getNode('blocks') as $name => $node) {
             $compiler
-                ->write(sprintf("'%s' => [\$this, 'block_%s'],\n", $name, $name))
+                ->write(sprintf("'%s' => array(\$this, 'block_%s'),\n", $name, $name))
             ;
         }
 
         if ($countTraits) {
             $compiler
                 ->outdent()
-                ->write("]\n")
-                ->outdent()
-                ->write(");\n")
-            ;
-        } else {
-            $compiler
-                ->outdent()
-                ->write("];\n")
+                ->write(")\n")
             ;
         }
 
         $compiler
+            ->outdent()
+            ->write(");\n")
             ->outdent()
             ->subcompile($this->getNode('constructor_end'))
             ->write("}\n\n")
@@ -302,7 +297,7 @@ class Twig_Node_Module extends Twig_Node
     protected function compileDisplay(Twig_Compiler $compiler)
     {
         $compiler
-            ->write("protected function doDisplay(array \$context, array \$blocks = [])\n", "{\n")
+            ->write("protected function doDisplay(array \$context, array \$blocks = array())\n", "{\n")
             ->indent()
             ->subcompile($this->getNode('display_start'))
             ->subcompile($this->getNode('body'))
@@ -371,7 +366,7 @@ class Twig_Node_Module extends Twig_Node
             }
 
             if (!count($nodes)) {
-                $nodes = new Twig_Node([$nodes]);
+                $nodes = new Twig_Node(array($nodes));
             }
 
             foreach ($nodes as $node) {

@@ -5,6 +5,6 @@
 
 {{ foo }}
 --DATA--
-return []
+return array()
 --EXPECT--
 f<br />o<br />o

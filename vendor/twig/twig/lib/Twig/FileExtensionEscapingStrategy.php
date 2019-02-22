@@ -31,7 +31,7 @@ class Twig_FileExtensionEscapingStrategy
      */
     public static function guess($name)
     {
-        if (in_array(substr($name, -1), ['/', '\\'])) {
+        if (in_array(substr($name, -1), array('/', '\\'))) {
             return 'html'; // return html for directories
         }
 
