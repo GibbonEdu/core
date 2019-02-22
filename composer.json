@@ -43,8 +43,7 @@
         "symfony/yaml": "^3.2",
         "monolog/monolog": "^1.24",
         "phpoffice/phpspreadsheet": "^1.6",
-        "phpoffice/phpexcel": "1.8.1",
-        "symfony/options-resolver": "^3.3"
+        "phpoffice/phpexcel": "1.8.1"
     },
     "require-dev": {
         "twbs/bootstrap": "^4.1",
