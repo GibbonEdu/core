@@ -22,6 +22,8 @@ namespace Gibbon;
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session as SessionInterface;
+use Gibbon\Domain\System\SettingGateway;
+use Gibbon\Services\LoggerFactory;
 
 /**
  * Localization & Internationalization Class
@@ -245,9 +247,11 @@ class Locale implements LocaleInterface
         $domain = $options['domain'] ?? '';
 
         // get raw translated string with or without domain.
-        $text = empty($domain) ?
-            gettext($text) :
-            dgettext($domain, $text);
+        $text = $this->getTranslation($text, $domain);
+
+//        $text = empty($domain) ?
+//            gettext($text) :
+//            dgettext($domain, $text);
 
         // apply named replacement parameters, if presents.
         $text = static::formatString($text, $params);
@@ -290,5 +294,53 @@ class Locale implements LocaleInterface
 
         // apply custom string replacement logics and return.
         return $this->doStringReplacement($text);
+    }
+
+    /**
+     * @var array
+     */
+    private $messages = [];
+
+    /**
+     * getTranslation
+     * @param string $text
+     * @param string $domain
+     * @return string
+     * @throws Exception
+     */
+    private function getTranslation(string $text, string $domain): string
+    {
+        $domain = $domain === '' ? 'core' : $domain ;
+        $path = $domain === 'core' ? $this->absolutePath.'/i18n/' : $this->absolutePath.'/modules/'.$domain.'/i18n/';
+
+        $path .= $this->getLocale().'/LC_MESSAGES/';
+        $locale = ! empty($this->getLocale()) ? $this->getLocale() : 'en_GB';
+        
+        if (empty($this->messages[$domain][$locale]))
+        {
+            if (realpath($path.'gibbon.mo')) {
+                $loader = new MoFileLoader();
+                $this->messages[$domain][$locale] = $loader->loadResource($path.'gibbon.mo');
+            } elseif (realpath($path.'gibbon.po')) {
+                $loader = new PoFileLoader();
+                $this->messages[$domain][$locale] = $loader->loadResource($path . 'gibbon.po');
+            } else
+                throw new \RuntimeException(sprintf('Translation files for "%s" where not found for domain "%s".', $locale, $domain));
+        }
+
+        if (isset($this->messages[$domain][$locale][$text]))
+            return empty($this->messages[$domain][$locale][$text]) ? $text : $this->messages[$domain][$locale][$text] ;
+
+        /**
+         *  Log missing translations in DEV mod only.
+         * or create a simple text file and store
+         */
+
+        /*
+        $lf = new LoggerFactory(new SettingGateway());
+        $logger = $lf->getLogger('translations');
+        */
+
+        return $text;
     }
 }
