@@ -305,6 +305,9 @@ class Locale implements LocaleInterface
      * getTranslation
      * @param string $text
      * @param string $domain
+     *
+     * Eventually this single method will handle the ngettext and dngettext as well.
+     *
      * @return string
      * @throws Exception
      */
@@ -333,13 +336,8 @@ class Locale implements LocaleInterface
 
         /**
          *  Log missing translations in DEV mod only.
-         * or create a simple text file and store
+         * or create a simple text file and store those id that are not set in the translation matrix.
          */
-
-        /*
-        $lf = new LoggerFactory(new SettingGateway());
-        $logger = $lf->getLogger('translations');
-        */
 
         return $text;
     }
