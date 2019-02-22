@@ -10,7 +10,6 @@ file that was distributed with this source code.
 namespace Gibbon\Domain;
 
 use PHPUnit\Framework\TestCase;
-use Gibbon\Domain\QueryCriteria;
 
 /**
  * @covers QueryCriteria

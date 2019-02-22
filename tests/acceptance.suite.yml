@@ -20,6 +20,7 @@ modules:
         - Db
         - DbHelper
         - Filesystem
+        - Asserts
     config:
         Db:
             dsn: "mysql:host=%DB_HOST%;dbname=%DB_NAME%"

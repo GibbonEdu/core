@@ -46,7 +46,7 @@ try {
         'organisationNameShort' => 'GiT',
         'currency'              => 'HKD $',
         'country'               => 'Hong Kong',
-        'timezone'              => 'Asia/Hong_Kong',
+        'timezone'              => 'UTC',
     );
 
     $I->uncheckOption('#support');

@@ -176,10 +176,10 @@ class Format
      *
      * @return string
      */
-    public static function timestamp($dateString)
+    public static function timestamp($dateString, $timeZone = null)
     {
         if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString, $timeZone);
         return $date ? $date->getTimestamp() : 0;
     }
 
