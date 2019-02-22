@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "afd245fa74d958dae6f8177a7af1f483",
+    "content-hash": "c45f935c554d09d1ff9eb7028931dda3",
     "packages": [
         {
             "name": "aura/sqlquery",
@@ -2475,16 +2475,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "6.5.0",
+            "version": "6.5.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "9582244325db2dda80ee8bd920c3f353b0b6329d"
+                "reference": "bac23fe7ff13dbdb461481f706f0e9fe746334b7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9582244325db2dda80ee8bd920c3f353b0b6329d",
-                "reference": "9582244325db2dda80ee8bd920c3f353b0b6329d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/bac23fe7ff13dbdb461481f706f0e9fe746334b7",
+                "reference": "bac23fe7ff13dbdb461481f706f0e9fe746334b7",
                 "shasum": ""
             },
             "require": {
@@ -2498,11 +2498,11 @@
                 "phar-io/version": "^1.0",
                 "php": "^7.0",
                 "phpspec/prophecy": "^1.7",
-                "phpunit/php-code-coverage": "^5.2.3",
+                "phpunit/php-code-coverage": "^5.3",
                 "phpunit/php-file-iterator": "^1.4.3",
                 "phpunit/php-text-template": "^1.2.1",
                 "phpunit/php-timer": "^1.0.9",
-                "phpunit/phpunit-mock-objects": "^5.0",
+                "phpunit/phpunit-mock-objects": "^5.0.9",
                 "sebastian/comparator": "^2.1",
                 "sebastian/diff": "^2.0",
                 "sebastian/environment": "^3.1",
@@ -2555,7 +2555,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-11-30T16:20:46+00:00"
+            "time": "2019-02-01T05:22:47+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
@@ -3326,7 +3326,7 @@
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
-        "php": "^7.0|^7.1|^7.2",
+        "php": "^7.0",
         "ext-curl": "*",
         "ext-mbstring": "*",
         "ext-gettext": "*",

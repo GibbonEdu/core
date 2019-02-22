@@ -66,7 +66,3 @@ before_script:
 # use the $DB env variable to determine the phpunit.xml to use
 script:
   - composer test
-
-# configure notifications (email, IRC, campfire etc)
-notifications:
-  email: $GIBBON_NOTIFICATION_EMAIL
