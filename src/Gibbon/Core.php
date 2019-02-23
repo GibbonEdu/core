@@ -197,9 +197,5 @@ class Core
         if (empty($this->config) || !is_array($this->config)) {
             $this->config = compact('databaseServer', 'databaseUsername', 'databasePassword', 'databaseName', 'databasePort', 'guid', 'caching');
         }
-
-        $this->config['absolutePath'] =  $this->basePath;
     }
-
-
 }

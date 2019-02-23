@@ -30,7 +30,6 @@ class TranslateNTest extends TestCase
 
     public function setUp()
     {
-
         // Setup the composer autoloader
         $autoloader = require_once __DIR__.'/../../../../vendor/autoload.php';
 

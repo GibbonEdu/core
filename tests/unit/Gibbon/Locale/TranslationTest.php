@@ -9,6 +9,9 @@ file that was distributed with this source code.
 
 namespace Gibbon;
 
+use Gibbon\Contracts\Database\Connection;
+use Gibbon\Locale;
+use League\Container\Container;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,23 +19,51 @@ use PHPUnit\Framework\TestCase;
  */
 final class TranslationTest extends TestCase
 {
-    protected $guid;
+    private $mockPDO;
+    private $mockSession;
 
-    protected function setUp()
+    private $guid;
+    private $locale;
+    private $gibbonToRestore;
+
+    public function setUp()
     {
+
+        // Setup the composer autoloader
+        $autoloader = require_once __DIR__.'/../../../../vendor/autoload.php';
+
+        // Require the system-wide functions
+        require_once __DIR__.'/../../../../functions.php';
+
+        // Create a stub for the Gibbon\session class
+        $this->mockSession = $this->createMock(session::class);
+        $this->mockSession
+            ->method('get')
+            ->willReturn(null); // always return null
+
+        // mocked locale object
+        $i18ncode = 'es_ES';
+        $locale = new Locale(__DIR__ . '/mock', $this->mockSession);
+        $locale->setLocale($i18ncode);
+        $locale->setSystemTextDomain(__DIR__ . '/mock');
+
+        // mocked global gibbon object
         global $guid, $gibbon;
-
-        $gibbon->locale->setLocale('es_ES');
-        $gibbon->locale->setSystemTextDomain(realpath($gibbon->getConfig('absolutePath')));
-
         $this->guid = $guid;
+        $this->gibbonToRestore = isset($gibbon) ? $gibbon : null;
+        $gibbon = (object) [
+            'locale' => $locale,
+        ];
+
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         global $gibbon;
-
-        $gibbon->locale->setLocale('en_GB');
+        unset($gibbon);
+        if (isset($this->gibbonToRestore)) {
+            $gibbon = $this->gibbonToRestore; // restore gibbon before test
+        }
     }
 
     /**
