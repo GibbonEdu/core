@@ -246,15 +246,13 @@ class Locale implements LocaleInterface
         // get domain from options.
         $domain = $options['domain'] ?? '';
 
-        // get raw translated string with or without domain.
-        $text = $this->getTranslation($text, $domain);
-
-//        $text = empty($domain) ?
-//            gettext($text) :
-//            dgettext($domain, $text);
-
+/*        // get raw translated string with or without domain.
+        $text = empty($domain) ?
+            gettext($text) :
+            dgettext($domain, $text);
+*/
         // apply named replacement parameters, if presents.
-        $text = static::formatString($text, $params);
+        $text = static::formatString($this->getTranslation($text, $domain), $params);
 
         // apply custom string replacement logics and return.
         return $this->doStringReplacement($text);
@@ -324,11 +322,15 @@ class Locale implements LocaleInterface
             if (realpath($path.'gibbon.mo')) {
                 $loader = new MoFileLoader();
                 $this->messages[$domain][$locale] = $loader->loadResource($path.'gibbon.mo');
+                if ($locale === 'en_GB') {  //  Load ID's with empty translations for reporting of missing ID's later in the script
+                    $loader = new PoFileLoader();
+                    $this->messages[$domain][$locale] = array_merge($loader->loadResource($path . 'gibbon.po'), isset($this->messages[$domain][$locale]) ? $this->messages[$domain][$locale] : []);
+                }
             } elseif (realpath($path.'gibbon.po')) {
                 $loader = new PoFileLoader();
                 $this->messages[$domain][$locale] = $loader->loadResource($path . 'gibbon.po');
             } else
-                throw new \RuntimeException(sprintf('Translation files for "%s" where not found for domain "%s".', $locale, $domain));
+                throw new \RuntimeException(sprintf('Translation files for language "%s" where not found for domain "%s".', $locale, $domain));
         }
 
         if (isset($this->messages[$domain][$locale][$text]))

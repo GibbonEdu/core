@@ -76,6 +76,10 @@ class PoFileLoader
      * Items with an empty id are ignored.
      *
      * {@inheritdoc}
+     *
+     * loadResource
+     * @param $resource
+     * @return array
      */
     public function loadResource($resource)
     {
