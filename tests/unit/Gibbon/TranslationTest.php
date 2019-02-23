@@ -36,6 +36,16 @@ class TranslationTest extends TestCase
     }
 
     /**
+     * @covers setLocale/getLocale.
+     */
+    public function testLocale()
+    {
+        global $gibbon;
+
+        $this->assertEquals('es_ES', $gibbon->locale->getLocale());
+    }
+
+    /**
      * @covers __(string $guid, string $text)
      */
     public function testTranslateUsingGuid()

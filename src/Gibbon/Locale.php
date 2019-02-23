@@ -310,12 +310,13 @@ class Locale implements LocaleInterface
      */
     private function getTranslation(string $text, string $domain): string
     {
-        $domain = $domain === '' ? 'core' : $domain ;
-        $path = $domain === 'core' ? $this->absolutePath.'/i18n/' : $this->absolutePath.'/modules/'.$domain.'/i18n/';
+        $domain = $domain === '' ? 'gibbon' : $domain ;
+        $path = $domain === 'gibbon' ? $this->absolutePath.'/i18n/' : $this->absolutePath.'/modules/'.$domain.'/i18n/';
 
-        $path .= $this->getLocale().'/LC_MESSAGES/';
-        $locale = ! empty($this->getLocale()) ? $this->getLocale() : 'en_GB';
-        
+        $locale = empty($this->getLocale()) ? 'en_GB' : $this->getLocale();
+
+        $path .= $locale.'/LC_MESSAGES/';
+
         if (empty($this->messages[$domain][$locale]))
         {
             if (realpath($path.'gibbon.mo')) {
