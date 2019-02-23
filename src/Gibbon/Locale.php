@@ -321,7 +321,7 @@ class Locale implements LocaleInterface
             if (realpath($path.'gibbon.mo')) {
                 $loader = new MoFileLoader();
                 $this->messages[$domain][$locale] = $loader->loadResource($path.'gibbon.mo');
-                if ($locale === 'en_GB') {  //  Load ID's with empty translations for reporting of missing ID's later in the script
+                if ($locale === 'en_GB') {  //  Load ID's with empty translations for reporting of missing ID's later in the script.
                     $loader = new PoFileLoader();
                     $this->messages[$domain][$locale] = array_merge($loader->loadResource($path . 'gibbon.po'), isset($this->messages[$domain][$locale]) ? $this->messages[$domain][$locale] : []);
                 }
@@ -329,7 +329,7 @@ class Locale implements LocaleInterface
                 $loader = new PoFileLoader();
                 $this->messages[$domain][$locale] = $loader->loadResource($path . 'gibbon.po');
             } else {
-                ! is_null($this->getLogger()) ? $this->getLogger()->error(sprintf('Translation files for language "%s" where not found for domain "%s".', $locale, $domain)) : null;
+                $this->addLogMessage('error', sprintf('Translation files for language "%s" where not found for domain "%s".', $locale, $domain));
                 return $text;
             }
         }
@@ -337,22 +337,29 @@ class Locale implements LocaleInterface
         if (isset($this->messages[$domain][$locale][$text]))
             return empty($this->messages[$domain][$locale][$text]) ? $text : $this->messages[$domain][$locale][$text] ;
 
-        is_null($this->getLogger()) ? $this->getLogger()->debug(sprintf('Translation for "%s" is missing for language "%s" in domain "%s"', $text, $locale, $domain)) : null;
+        $this->addLogMessage('debug', sprintf('Translation for "%s" is missing for language "%s" in domain "%s"', $text, $locale, $domain));
 
         return $text;
     }
 
     /**
-     * @var LoggerInterface
+     * @var null|LoggerInterface
      */
     private $logger;
 
     /**
-     * @return LoggerInterface
+     * addLogMessage
+     * @param string $level
+     * @param string $message
+     * @param array $options
+     * @return Locale
      */
-    public function getLogger()
+    public function addLogMessage(string $level, string $message, array $options = []): Locale
     {
-        return $this->logger;
+        if (is_null($this->logger))
+            return $this;
+        $this->logger->$level($message, $options);
+        return $this;
     }
 
     /**
