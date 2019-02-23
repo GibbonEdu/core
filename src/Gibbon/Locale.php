@@ -22,8 +22,7 @@ namespace Gibbon;
 use Gibbon\Contracts\Services\Locale as LocaleInterface;
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\Contracts\Services\Session as SessionInterface;
-use Gibbon\Domain\System\SettingGateway;
-use Gibbon\Services\LoggerFactory;
+use Psr\Log\LoggerInterface;
 
 /**
  * Localization & Internationalization Class
@@ -329,18 +328,41 @@ class Locale implements LocaleInterface
             } elseif (realpath($path.'gibbon.po')) {
                 $loader = new PoFileLoader();
                 $this->messages[$domain][$locale] = $loader->loadResource($path . 'gibbon.po');
-            } else
-                throw new \RuntimeException(sprintf('Translation files for language "%s" where not found for domain "%s".', $locale, $domain));
+            } else {
+                ! is_null($this->getLogger()) ? $this->getLogger()->error(sprintf('Translation files for language "%s" where not found for domain "%s".', $locale, $domain)) : null;
+                return $text;
+            }
         }
 
         if (isset($this->messages[$domain][$locale][$text]))
             return empty($this->messages[$domain][$locale][$text]) ? $text : $this->messages[$domain][$locale][$text] ;
 
-        /**
-         *  Log missing translations in DEV mod only.
-         * or create a simple text file and store those id that are not set in the translation matrix.
-         */
+        is_null($this->getLogger()) ? $this->getLogger()->debug(sprintf('Translation for "%s" is missing for language "%s" in domain "%s"', $text, $locale, $domain)) : null;
 
         return $text;
+    }
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return Locale
+     */
+    public function setLogger(LoggerInterface $logger): Locale
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 }
