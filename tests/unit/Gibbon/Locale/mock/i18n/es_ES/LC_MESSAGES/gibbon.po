@@ -64,17 +64,17 @@ msgstr ""
 msgid "Hello {0} from {1}. Today is {dayOfWeek}."
 msgstr ""
 
-#. L10N: Translated string with mixed numerical and string placeholder.
-#: TranslateTest.php:120 TranslateTest.php:178
+#. L10N: Translated string.
+#: TranslationTest.php
 msgid "Welcome"
 msgstr "Bienvenido"
 
-#. L10N: Translated string with mixed numerical and string placeholder.
-#: TranslateTest.php:120 TranslateTest.php:178
+#. L10N: Translated string named placeholder.
+#: TranslationTest.php
 msgid "Foo {test} Bar"
 msgstr "Foo {test} Bar"
 
-#. L10N: Translated string with mixed numerical and string placeholder.
-#: TranslateTest.php:120 TranslateTest.php:178
+#. L10N: Translated string using sprintf replacement.
+#: TranslationTest.php
 msgid "Welcome to %1$s at %2$s"
 msgstr "Bienvenido a %1$s en %2$s"
