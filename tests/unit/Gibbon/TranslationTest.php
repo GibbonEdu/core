@@ -14,21 +14,21 @@ use PHPUnit\Framework\TestCase;
 /**
  * @covers __ function
  */
-class TranslationTest extends TestCase
+final class TranslationTest extends TestCase
 {
     protected $guid;
 
-    public function setUp()
+    protected function setUp()
     {
         global $guid, $gibbon;
 
         $gibbon->locale->setLocale('es_ES');
-        $gibbon->locale->setSystemTextDomain(realpath(__DIR__.'/../../..'));
+        $gibbon->locale->setSystemTextDomain(realpath($gibbon->getConfig('absolutePath')));
 
         $this->guid = $guid;
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         global $gibbon;
 
