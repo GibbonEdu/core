@@ -196,8 +196,6 @@ class Connection implements ConnectionInterface
     protected function handleQueryException($e)
     {
         trigger_error($e->getMessage(), E_USER_WARNING);
-        if ($this->hasLogger())
-            $this->logger->error(__('Your request failed due to a database error.'), (array) $e);
 
         return new \PDOStatement();
     }

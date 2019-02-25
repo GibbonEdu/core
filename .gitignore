@@ -32,5 +32,6 @@ nbproject/
 /vendor/**/docs
 
 
-# var Folder
-/var/*
+# Var Folder
+var/*
+!var/.htaccess
