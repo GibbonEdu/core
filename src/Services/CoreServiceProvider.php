@@ -118,7 +118,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         //     return $factory->getLogger('mysql');
         // });
 
-        $pdo->setLogger($container->get('mysql_logger'));
+        // $pdo->setLogger($container->get('mysql_logger'));
 
         $container->share('twig', function () use ($absolutePath, $session) {
             $loader = new \Twig_Loader_Filesystem($absolutePath.'/resources/templates');
