@@ -183,6 +183,17 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextField($setting['name'])->setValue($setting['value']);
 
+    $encryptionOptions = [
+        'auto' => __('Automatic'),
+        'tls'  => 'TLS',
+        'ssl'  => 'SSL',
+        'none' => __('None'),
+    ];
+    $setting = getSettingByScope($connection2, 'System', 'mailerSMTPSecure', true);
+    $row = $form->addRow()->addClass('smtpSettings');
+        $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
+        $row->addSelect($setting['name'])->fromArray($encryptionOptions)->selected($setting['value']);
+
     $setting = getSettingByScope($connection2, 'System', 'mailerSMTPUsername', true);
     $row = $form->addRow()->addClass('smtpSettings');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
