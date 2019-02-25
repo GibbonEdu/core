@@ -840,4 +840,5 @@ ALTER TABLE gibbonUnitBlock DROP COLUMN gibbonOutcomeIDList;end
 ALTER TABLE gibbonUnitClassBlock DROP COLUMN gibbonOutcomeIDList;end
 ALTER TABLE `gibbonTTSpaceBooking` CHANGE `foreignKey` `foreignKey` ENUM('gibbonSpaceID','gibbonLibraryItemID') NOT NULL DEFAULT 'gibbonSpaceID';end
 UPDATE gibbonTTSpaceBooking SET foreignKey='gibbonSpaceID' WHERE foreignKey='';end
+INSERT INTO `gibbonSetting` (`scope` ,`name` ,`nameDisplay` ,`description` ,`value`)VALUES ('System', 'mailerSMTPSecure', 'SMTP Encryption', 'Automatically sets the encryption based on the port, otherwise select one manually.', 'auto');end
 ";
