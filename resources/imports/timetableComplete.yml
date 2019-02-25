@@ -34,7 +34,7 @@ fields:
         desc: "ID"
         args: { filter: string, linked: gibbonCourse.nameShort, readonly: [ gibbonCourseClassPerson, gibbonTTDayRowClass ] }
         relationship: { table: gibbonCourse, key: gibbonCourseID, field: [ nameShort, gibbonSchoolYearID ]  }
-    gibbonYearGroupIDList: 
+    gibbonYearGroupIDList:
         name: "Year Groups"
         desc: ""
         args: { filter: string, linked: gibbonTTID }
@@ -63,7 +63,7 @@ fields:
         args: { filter: string, required: true, custom: true, readonly: true, linked: gibbonTTDayID }
         relationship: { table: gibbonTTColumn, key: gibbonTTColumnID, join: gibbonTTDay, on: [gibbonTTColumnID, gibbonTTColumnID], field: [ gibbonTTDayID ] }
     gibbonTTColumnRowID:
-        name: "Row Long Name"
+        name: "Row Name"
         desc: "as used in the target timetable"
         args: { filter: string, required: true, custom: true }
         relationship: { table: gibbonTTColumnRow, key: gibbonTTColumnRowID, field: [ name, gibbonTTColumnID ]  }
