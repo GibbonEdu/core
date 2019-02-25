@@ -54,7 +54,7 @@ class Action extends WebLink
                             break;
             case 'edit':    $this->setIcon('config');
                             break;
-            case 'delete':  $this->setIcon('garbage')->isModal(650, 135);
+            case 'delete':  $this->setIcon('garbage')->modalWindow(650, 135);
                             break;
             case 'print':   $this->setIcon('print');
                             break;
@@ -155,12 +155,20 @@ class Action extends WebLink
     }
 
     /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isModal($width = 650, $height = 650) 
+    {
+        return $this->modalWindow($width, $height);
+    }
+
+    /**
      * Load the action URL in a modal window rather than loading a new page. Commonly used for delete actions.
      *
      * @param bool $value
      * @return self
      */
-    public function isModal($width = 650, $height = 650) 
+    public function modalWindow($width = 650, $height = 650) 
     {
         $this->modal = true;
 
@@ -172,13 +180,21 @@ class Action extends WebLink
     }
 
     /**
+     * @deprecated Remove setters that start with isXXX for code consistency.
+     */
+    public function isDirect($value = true) 
+    {
+        return $this->directLink($value);
+    }
+
+    /**
      * The action link will not prepend an index.php?q=
      *
      * @return self
      */
-    public function isDirect() 
+    public function directLink($value = true) 
     {
-        $this->direct = true;
+        $this->direct = $value;
 
         return $this;
     }
