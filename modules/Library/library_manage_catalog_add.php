@@ -80,7 +80,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
     $row = $form->addRow()->addClass('general');
         $row->addLabel('idCheck', __('ID'));
         $row->addTextField('idCheck')
-            ->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php')
+            ->uniqueField('./modules/Library/library_manage_catalog_idCheckAjax.php')
             ->isRequired()
             ->maxLength(255);
 

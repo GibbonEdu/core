@@ -137,7 +137,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
                     $row = $form->addRow();
                         $row->addLabel('id'.$i, sprintf(__('Copy %1$s ID'), $i));
                         $row->addTextField('id'.$i)
-                            ->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('fieldName' => 'id'))
+                            ->uniqueField('./modules/Library/library_manage_catalog_idCheckAjax.php', array('fieldName' => 'id'))
                             ->isRequired()
                             ->maxLength(255);
                 }

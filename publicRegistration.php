@@ -83,7 +83,7 @@ if ($proceed == false) {
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
-        $email->isUnique('./publicRegistrationCheck.php');
+        $email->uniqueField('./publicRegistrationCheck.php');
     }
 
     $row = $form->addRow();
@@ -99,7 +99,7 @@ if ($proceed == false) {
         $row->addTextField('usernameCheck')
             ->maxLength(20)
             ->isRequired()
-            ->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'username'));
+            ->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'username'));
 
     $policy = getPasswordPolicy($guid, $connection2);
     if ($policy != false) {

@@ -288,7 +288,7 @@ if ($proceed == false) {
         $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email');
         if ($uniqueEmailAddress == 'Y') {
-            $email->isUnique('./publicRegistrationCheck.php');
+            $email->uniqueField('./publicRegistrationCheck.php');
         }
 
     for ($i = 1; $i < 3; ++$i) {
@@ -613,7 +613,7 @@ if ($proceed == false) {
                 $row->addLabel("parent{$i}email", __('Email'));
                 $email = $row->addEmail("parent{$i}email")->isRequired($i == 1)->loadFrom($application);
                 if ($uniqueEmailAddress == 'Y') {
-                    $email->isUnique('./publicRegistrationCheck.php', array('fieldName' => 'email'));
+                    $email->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'email'));
                 }
 
             for ($y = 1; $y < 3; ++$y) {

@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage_add
         
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
-        $email->isUnique($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage_emailAjax.php');
+        $email->uniqueField($_SESSION[$guid]['absoluteURL'].'/modules/User Admin/user_manage_emailAjax.php');
     }
 
     $row = $form->addRow();
