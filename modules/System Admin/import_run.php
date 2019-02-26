@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 ->addParam('type', $type)
                 ->addParam('sidebar', 'false')
                 ->setIcon('download')
-                ->isDirect()
+                ->directLink()
                 ->displayLabel();
         }
 
