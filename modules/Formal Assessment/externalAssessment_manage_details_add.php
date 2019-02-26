@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
                 $sql = "SELECT gibbonExternalAssessmentID as value, name FROM gibbonExternalAssessment WHERE active='Y' ORDER BY name";
                 $row = $form->addRow();
                     $row->addLabel('gibbonExternalAssessmentID', __('Choose Assessment'));
-                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+                    $row->addSelect('gibbonExternalAssessmentID')->fromQuery($pdo, $sql)->required()->placeholder();
 
                 $form->toggleVisibilityByClass('copyToGCSE')->onSelect('gibbonExternalAssessmentID')->when('0002');
                 $row = $form->addRow()->addClass('copyToGCSE');
@@ -358,11 +358,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/external
 
                     $row = $form->addRow();
                     $row->addLabel('name', __('Assessment Type'));
-                    $row->addTextField('name')->isRequired()->readOnly()->setValue(__($rowSelect['name']));
+                    $row->addTextField('name')->required()->readOnly()->setValue(__($rowSelect['name']));
 
                     $row = $form->addRow();
                     $row->addLabel('date', __('Date'));
-                    $row->addDate('date')->isRequired();
+                    $row->addDate('date')->required();
 
                     if ($rowSelect['allowFileUpload'] == 'Y') {
                         $row = $form->addRow();

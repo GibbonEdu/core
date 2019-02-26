@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Student'));
-                $row->addTextField('name')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->isRequired()->readonly();
+                $row->addTextField('name')->setValue(Format::name('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student'))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('bloodType', __('Blood Type'));

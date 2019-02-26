@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/studentEnrolment
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-                $row->addSelect('role')->fromArray($roles)->isRequired()->selected($values['role']);
+                $row->addSelect('role')->fromArray($roles)->required()->selected($values['role']);
             
             $row = $form->addRow();
                 $row->addFooter();

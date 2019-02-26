@@ -51,7 +51,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('applicationType', __('Type'));
-        $row->addSelect('applicationType')->fromArray($types)->isRequired();
+        $row->addSelect('applicationType')->fromArray($types)->required();
 
     $sql = "SELECT gibbonFamily.gibbonFamilyID as value, CONCAT(gibbonFamily.name, ' (', GROUP_CONCAT(DISTINCT CONCAT(gibbonPerson.preferredName, ' ', gibbonPerson.surname) SEPARATOR ', '), ')') as name FROM gibbonFamily
         JOIN gibbonFamilyAdult ON (gibbonFamilyAdult.gibbonFamilyID=gibbonFamily.gibbonFamilyID)
@@ -64,7 +64,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow()->addClass('typeFamily');
         $row->addLabel('gibbonFamilyID', __('Family'));
-        $row->addSelect('gibbonFamilyID')->fromQuery($pdo, $sql)->isRequired();
+        $row->addSelect('gibbonFamilyID')->fromQuery($pdo, $sql)->required();
 
     $sql = "SELECT gibbonPersonID as value, CONCAT(gibbonPerson.surname, ', ', gibbonPerson.preferredName, ' (', gibbonRole.category, ': ', gibbonPerson.username, ')') as name
             FROM gibbonPerson
@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow()->addClass('typePerson');
         $row->addLabel('gibbonPersonID', __('Person'));
-        $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql)->isRequired();
+        $row->addSelect('gibbonPersonID')->fromQuery($pdo, $sql)->required();
 
     $row = $form->addRow();
         $row->addFooter();

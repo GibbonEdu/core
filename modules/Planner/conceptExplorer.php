@@ -65,7 +65,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/conceptExplorer.ph
 
     $row = $form->addRow();
         $row->addLabel('tags', __('Concepts & Keywords'));
-        $row->addSelect('tags')->fromArray(array_column($tagsAll, 1))->selectMultiple()->isRequired()->selected($tags);
+        $row->addSelect('tags')->fromArray(array_column($tagsAll, 1))->selectMultiple()->required()->selected($tags);
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'));

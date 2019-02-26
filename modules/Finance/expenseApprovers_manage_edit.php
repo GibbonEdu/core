@@ -68,13 +68,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseApprovers_m
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Staff'));
-                $row->addSelectStaff('gibbonPersonID')->isRequired()->placeholder();
+                $row->addSelectStaff('gibbonPersonID')->required()->placeholder();
 
             $expenseApprovalType = getSettingByScope($connection2, 'Finance', 'expenseApprovalType');
             if ($expenseApprovalType == 'Chain Of All') {
                 $row = $form->addRow();
                     $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique.'));
-                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover', $values['sequenceNumber'])->isRequired()->maxLength(3);
+                    $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceExpenseApprover', $values['sequenceNumber'])->required()->maxLength(3);
             }
 
             $form->loadAllValuesFrom($values);

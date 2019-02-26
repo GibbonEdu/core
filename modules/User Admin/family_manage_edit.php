@@ -86,11 +86,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Family Name'));
-                $row->addTextField('name')->maxLength(100)->isRequired();
+                $row->addTextField('name')->maxLength(100)->required();
 
             $row = $form->addRow();
         		$row->addLabel('status', __('Marital Status'));
-        		$row->addSelectMaritalStatus('status')->isRequired();
+        		$row->addSelectMaritalStatus('status')->required();
 
             $row = $form->addRow();
                 $row->addLabel('languageHomePrimary', __('Home Language - Primary'));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('nameAddress', __('Address Name'))->description(__('Formal name to address parents with.'));
-                $row->addTextField('nameAddress')->maxLength(100)->isRequired();
+                $row->addTextField('nameAddress')->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
@@ -323,7 +323,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID', __('Child\'s Name'));
-                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->isRequired();
+                $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array('allStudents' => true, 'byName' => true, 'byRoll' => true, 'showRoll' => true))->placeholder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'));
@@ -452,7 +452,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             }
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonID2', __('Adult\'s Name'));
-                $row->addSelect('gibbonPersonID2')->fromArray($adults)->placeHolder()->isRequired();
+                $row->addSelect('gibbonPersonID2')->fromArray($adults)->placeHolder()->required();
 
             $row = $form->addRow();
                 $row->addLabel('comment2', __('Comment'))->description(__('Data displayed in full Student Profile'));
@@ -460,7 +460,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('childDataAccess', __('Data Access?'))->description(__('Access data on family\'s children?'));
-                $row->addYesNo('childDataAccess')->isRequired();
+                $row->addYesNo('childDataAccess')->required();
 
             $priorities = array(
                 '1' => __('1'),
@@ -469,23 +469,23 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
             );
             $row = $form->addRow();
                 $row->addLabel('contactPriority', __('Contact Priority'))->description(__('The order in which school should contact family members.'));
-                $row->addSelect('contactPriority')->fromArray($priorities)->isRequired();
+                $row->addSelect('contactPriority')->fromArray($priorities)->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactCall', __('Call?'))->description(__('Receive non-emergency phone calls from school?'));
-                $row->addYesNo('contactCall')->isRequired();
+                $row->addYesNo('contactCall')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactSMS', __('SMS?'))->description(__('Receive non-emergency SMS messages from school?'));
-                $row->addYesNo('contactSMS')->isRequired();
+                $row->addYesNo('contactSMS')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactEmail', __('Email?'))->description(__('Receive non-emergency emails from school?'));
-                $row->addYesNo('contactEmail')->isRequired();
+                $row->addYesNo('contactEmail')->required();
 
             $row = $form->addRow()->addClass('contact');
                 $row->addLabel('contactMail', __('Mail?'))->description(__('Receive postage mail from school?'));
-                $row->addYesNo('contactMail')->isRequired();
+                $row->addYesNo('contactMail')->required();
 
             $row = $form->addRow();
                 $row->addFooter();

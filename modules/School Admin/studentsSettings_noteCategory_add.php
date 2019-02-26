@@ -44,11 +44,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/studentsSetti
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(30);
+        $row->addTextField('name')->required()->maxLength(30);
     
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $row = $form->addRow();
         $row->addLabel('template', __('Template'))->description(__('HTML code to be inserted into blank note.'));

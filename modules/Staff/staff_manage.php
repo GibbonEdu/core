@@ -89,7 +89,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
 
     $col = $form->createBulkActionColumn($bulkActions);
         $col->addDate('dateEnd')
-            ->isRequired()
+            ->required()
             ->placeholder(__('Date End'))
             ->setClass('shortWidth dateEnd');
         $col->addSubmit(__('Go'));

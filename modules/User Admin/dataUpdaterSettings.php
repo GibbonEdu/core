@@ -54,12 +54,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/dataUpdaterSett
     $setting = getSettingByScope($connection2, 'Data Updater', 'requiredUpdatesByType', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray($updateTypes)->isRequired()->selectMultiple()->selected(explode(',', $setting['value']));
+        $row->addSelect($setting['name'])->fromArray($updateTypes)->required()->selectMultiple()->selected(explode(',', $setting['value']));
 
     $setting = getSettingByScope($connection2, 'Data Updater', 'cutoffDate', true);
     $row = $form->addRow()->addClass('requiredUpdates');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addDate($setting['name'])->isRequired()->setValue(dateConvertBack($guid, $setting['value']));
+        $row->addDate($setting['name'])->required()->setValue(dateConvertBack($guid, $setting['value']));
 
     $sql = "SELECT DISTINCT category as value, category as name FROM gibbonRole ORDER BY category";
     $setting = getSettingByScope($connection2, 'Data Updater', 'redirectByRoleCategory', true);

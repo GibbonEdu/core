@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAsse
 
                     $column = $form->addRow()->addColumn();
                         $column->addLabel('commentLabel', __('Write your comment below:'));
-                        $column->addEditor('comment', $guid)->setRows(10)->isRequired();
+                        $column->addEditor('comment', $guid)->setRows(10)->required();
 
                     $form->addRow()->addSubmit();
 

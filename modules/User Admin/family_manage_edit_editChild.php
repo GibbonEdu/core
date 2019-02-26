@@ -79,7 +79,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/family_manage_e
 
             $row = $form->addRow();
                 $row->addLabel('child', __('Childs\'s Name'));
-                $row->addTextField('child')->setValue(formatName(htmlPrep($values['title']), htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Parent'))->isRequired()->readonly();
+                $row->addTextField('child')->setValue(formatName(htmlPrep($values['title']), htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Parent'))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Comment'))->description(__('Data displayed in full Student Profile'));

@@ -80,11 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'));
-				$row->addTextField('name')->isRequired()->maxLength(40);
+				$row->addTextField('name')->required()->maxLength(40);
 
 			$row = $form->addRow();
 				$row->addLabel('provider', __('Provider'));
-				$row->addSelect('provider')->isRequired()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
+				$row->addSelect('provider')->required()->fromArray(array('School' => $_SESSION[$guid]['organisationNameShort'], 'External' => __('External')));
 
 			$activityTypes = getSettingByScope($connection2, 'Activities', 'activityTypes');
 			if (!empty($activityTypes)) {
@@ -95,11 +95,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
 				$row->addLabel('active', __('Active'));
-				$row->addYesNo('active')->isRequired();
+				$row->addYesNo('active')->required();
 
 			$row = $form->addRow();
 				$row->addLabel('registration', __('Registration'))->description(__('Assuming system-wide registration is open, should this activity be open for registration?'));
-				$row->addYesNo('registration')->isRequired();
+				$row->addYesNo('registration')->required();
 
 			$dateType = getSettingByScope($connection2, 'Activities', 'dateType');
 			$form->addHiddenValue('dateType', $dateType);
@@ -110,19 +110,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 			} else {
 				$row = $form->addRow();
 					$row->addLabel('listingStart', __('Listing Start Date'))->description(__('Default: 2 weeks before the end of the current term.'));
-					$row->addDate('listingStart')->isRequired()->setValue(dateConvertBack($guid, $values['listingStart']));
+					$row->addDate('listingStart')->required()->setValue(dateConvertBack($guid, $values['listingStart']));
 
 				$row = $form->addRow();
 					$row->addLabel('listingEnd', __('Listing End Date'))->description(__('Default: 2 weeks after the start of next term.'));
-					$row->addDate('listingEnd')->isRequired()->setValue(dateConvertBack($guid, $values['listingEnd']));
+					$row->addDate('listingEnd')->required()->setValue(dateConvertBack($guid, $values['listingEnd']));
 
 				$row = $form->addRow();
 					$row->addLabel('programStart', __('Program Start Date'))->description(__('Default: first day of next term.'));
-					$row->addDate('programStart')->isRequired()->setValue(dateConvertBack($guid, $values['programStart']));
+					$row->addDate('programStart')->required()->setValue(dateConvertBack($guid, $values['programStart']));
 
 				$row = $form->addRow();
 					$row->addLabel('programEnd', __('Program End Date'))->description(__('Default: last day of the next term.'));
-					$row->addDate('programEnd')->isRequired()->setValue(dateConvertBack($guid, $values['programEnd']));
+					$row->addDate('programEnd')->required()->setValue(dateConvertBack($guid, $values['programEnd']));
 			}
 
 			$row = $form->addRow();
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 			$row = $form->addRow();
 				$row->addLabel('maxParticipants', __('Max Participants'));
-				$row->addNumber('maxParticipants')->isRequired()->maxLength(4);
+				$row->addNumber('maxParticipants')->required()->maxLength(4);
 
 			$column = $form->addRow()->addColumn();
 				$column->addLabel('description', __('Description'));
@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 				$row = $form->addRow();
 					$row->addLabel('payment', __('Cost'));
-					$row->addCurrency('payment')->isRequired()->maxLength(9);
+					$row->addCurrency('payment')->required()->maxLength(9);
 
 				$costTypes = array(
 					'Entire Programme' => __('Entire Programme'),
@@ -154,7 +154,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 				$row = $form->addRow();
 					$row->addLabel('paymentType', __('Cost Type'));
-					$row->addSelect('paymentType')->isRequired()->fromArray($costTypes);
+					$row->addSelect('paymentType')->required()->fromArray($costTypes);
 
 				$costStatuses = array(
 					'Finalised' => __('Finalised'),
@@ -163,7 +163,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_mana
 
 				$row = $form->addRow();
 					$row->addLabel('paymentFirmness', __('Cost Status'));
-					$row->addSelect('paymentFirmness')->isRequired()->fromArray($costStatuses);
+					$row->addSelect('paymentFirmness')->required()->fromArray($costStatuses);
 			}
 
 			$form->addRow()->addHeading(__('Current Time Slots'));

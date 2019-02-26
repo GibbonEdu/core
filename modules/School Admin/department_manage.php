@@ -48,7 +48,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
     $setting = getSettingByScope($connection2, 'Departments', 'makeDepartmentsPublic', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->isRequired()->selected($setting['value']);
+        $row->addYesNo($setting['name'])->required()->selected($setting['value']);
 
     $row = $form->addRow();
         $row->addFooter();

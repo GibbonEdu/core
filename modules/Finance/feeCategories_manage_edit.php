@@ -69,15 +69,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/feeCategories_mana
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->maxLength(100)->isRequired();
+                $row->addTextField('name')->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->maxLength(14)->isRequired();
+                $row->addTextField('nameShort')->maxLength(14)->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));

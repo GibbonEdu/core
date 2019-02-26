@@ -71,15 +71,15 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'));
-        $row->addTextField('surname')->isRequired()->maxLength(30);
+        $row->addTextField('surname')->required()->maxLength(30);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'));
-        $row->addTextField('firstName')->isRequired()->maxLength(30);
+        $row->addTextField('firstName')->required()->maxLength(30);
 
     $row = $form->addRow();
         $row->addLabel('email', __('Email'));
-        $email = $row->addEmail('email')->isRequired();
+        $email = $row->addEmail('email')->required();
 
     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
     if ($uniqueEmailAddress == 'Y') {
@@ -88,17 +88,17 @@ if ($proceed == false) {
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
-        $row->addSelectGender('gender')->isRequired();
+        $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
         $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dob')->isRequired();
+        $row->addDate('dob')->required();
 
     $row = $form->addRow();
         $row->addLabel('usernameCheck', __('Username'));
         $row->addTextField('usernameCheck')
             ->maxLength(20)
-            ->isRequired()
+            ->required()
             ->uniqueField('./publicRegistrationCheck.php', array('fieldName' => 'username'));
 
     $policy = getPasswordPolicy($guid, $connection2);
@@ -111,7 +111,7 @@ if ($proceed == false) {
         $row->addPassword('passwordNew')
             ->addPasswordPolicy($pdo)
             ->addGeneratePasswordButton($form)
-            ->isRequired()
+            ->required()
             ->maxLength(30);
     
     // CUSTOM FIELDS
@@ -140,7 +140,7 @@ if ($proceed == false) {
 
         $row = $form->addRow();
             $row->addLabel('agreement', __('Do you agree to the above?'));
-            $row->addCheckbox('agreement')->isRequired()->prepend('Yes');
+            $row->addCheckbox('agreement')->required()->prepend('Yes');
     }
 
     $row = $form->addRow();

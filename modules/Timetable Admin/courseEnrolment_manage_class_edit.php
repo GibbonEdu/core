@@ -101,7 +101,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-                $row->addSelect('role')->fromArray($roles)->isRequired();
+                $row->addSelect('role')->fromArray($roles)->required();
 
             $row = $form->addRow();
                 $row->addFooter();

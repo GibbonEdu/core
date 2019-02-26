@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 	$row = $form->addRow();
         $row->addLabel('date1', __('Publication Dates'))->description(__('Select up to three individual dates.'));
 		$col = $row->addColumn('date1')->addClass('stacked');
-		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->isRequired();
+		$col->addDate('date1')->setValue(dateConvertBack($guid, date('Y-m-d')))->required();
 		$col->addDate('date2');
 		$col->addDate('date3');
 
@@ -70,12 +70,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Messenger/messenger_postQu
 
     $row = $form->addRow();
         $row->addLabel('subject', __('Subject'));
-        $row->addTextField('subject')->isRequired()->maxLength(60);
+        $row->addTextField('subject')->required()->maxLength(60);
 
     $row = $form->addRow();
         $col = $row->addColumn('body');
         $col->addLabel('body', __('Body'));
-        $col->addEditor('body', $guid)->isRequired()->setRows(20)->showMedia(true);
+        $col->addEditor('body', $guid)->required()->setRows(20)->showMedia(true);
 
     $row = $form->addRow();
         $row->addFooter();

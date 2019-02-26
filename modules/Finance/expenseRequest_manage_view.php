@@ -131,20 +131,20 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
                         $cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
                         $row = $form->addRow();
                             $row->addLabel('name', __('Budget Cycle'));
-                            $row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+                            $row->addTextField('name')->setValue($cycleName)->maxLength(20)->required()->readonly();
 
                         $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
                         $row = $form->addRow();
                             $row->addLabel('budget', __('Budget'));
-                            $row->addTextField('budget')->setValue($cycleName)->maxLength(20)->isRequired()->readonly()->setValue($values['budget']);
+                            $row->addTextField('budget')->setValue($cycleName)->maxLength(20)->required()->readonly()->setValue($values['budget']);
 
                         $row = $form->addRow();
                             $row->addLabel('title', __('Title'));
-                            $row->addTextField('title')->maxLength(60)->isRequired()->readonly()->setValue($values['title']);
+                            $row->addTextField('title')->maxLength(60)->required()->readonly()->setValue($values['title']);
 
                         $row = $form->addRow();
                             $row->addLabel('status', __('Status'));
-                            $row->addTextField('status')->maxLength(60)->isRequired()->readonly()->setValue($values['status']);
+                            $row->addTextField('status')->maxLength(60)->required()->readonly()->setValue($values['status']);
 
                         $row = $form->addRow();
                             $column = $row->addColumn();
@@ -153,15 +153,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenseRequest_man
 
                         $row = $form->addRow();
                         	$row->addLabel('cost', __('Total Cost'));
-                			$row->addCurrency('cost')->isRequired()->maxLength(15)->readonly()->setValue($values['cost']);
+                			$row->addCurrency('cost')->required()->maxLength(15)->readonly()->setValue($values['cost']);
 
                         $row = $form->addRow();
                             $row->addLabel('countAgainstBudget', __('Count Against Budget'));
-                            $row->addTextField('countAgainstBudget')->maxLength(3)->isRequired()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
+                            $row->addTextField('countAgainstBudget')->maxLength(3)->required()->readonly()->setValue(ynExpander($guid, $values['countAgainstBudget']));
 
                         $row = $form->addRow();
                             $row->addLabel('purchaseBy', __('Purchase By'));
-                            $row->addTextField('purchaseBy')->isRequired()->readonly()->setValue($values['purchaseBy']);
+                            $row->addTextField('purchaseBy')->required()->readonly()->setValue($values['purchaseBy']);
 
                         $row = $form->addRow();
                             $column = $row->addColumn();

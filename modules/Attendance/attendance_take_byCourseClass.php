@@ -78,13 +78,13 @@ if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take
     $row = $form->addRow();
     $row->addLabel('gibbonCourseClassID', __('Class'));
     $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'], $_SESSION[$guid]['gibbonPersonID'], array('attendance' => 'Y'))
-        ->isRequired()
+        ->required()
         ->selected($gibbonCourseClassID)
         ->placeholder();
 
     $row = $form->addRow();
     $row->addLabel('currentDate', __('Date'));
-    $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
+    $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
 
     $row = $form->addRow();
     $row->addSearchSubmit($gibbon->session);

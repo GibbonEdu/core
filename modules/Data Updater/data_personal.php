@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $row->addLabel('gibbonPersonID', __('Person'));
             $row->addSelect('gibbonPersonID')
                 ->fromArray($people)
-                ->isRequired()
+                ->required()
                 ->selected($gibbonPersonID)
                 ->placeholder();
         
