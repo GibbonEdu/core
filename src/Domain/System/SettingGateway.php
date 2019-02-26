@@ -54,4 +54,12 @@ class SettingGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data)->fetchAll();
     }
+
+    public function updateSettingByScope($scope, $name, $value)
+    {
+        $data = ['scope' => $scope, 'name' => $name, 'value' => $value];
+        $sql = "UPDATE gibbonSetting SET value=:value WHERE scope=:scope AND name=:name";
+
+        return $this->db()->update($sql, $data);
+    }
 }
