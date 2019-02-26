@@ -277,6 +277,9 @@ class Locale implements LocaleInterface
             return $singular;
         }
 
+        // Automatically set the named {count} parameter.
+        $params['count'] = $n;
+
         // get domain from options.
         $domain = $options['domain'] ?? '';
 
