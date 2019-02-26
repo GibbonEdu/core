@@ -1,20 +1,22 @@
 ---
-name: Feature Discussion
+name: Development Discussion
 about: Suggest an idea for this project
 title: ''
 labels: ''
 assignees: ''
 
 ---
+Be sure to check out [our contributor docs](https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-submit-a-pull-request) if you haven't already.
+To request new features, please use the [Feature Requests category](https://ask.gibbonedu.org/categories/feature-requests) in our support forums.
 
-**Is your feature discussion related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**Is your development discussion related to a problem?**
+Share a description of what the problem is. Eg: I'm always frustrated when [...]
 
 **Describe the solution you're proposing**
-A clear and concise description of what you're aiming to change or improve.
+Please describe in detail what you're suggesting to change or improve.
 
 **Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+Let us know of any alternative solutions or features you've considered.
 
 **Additional context**
-Add any other context or screenshots about the feature discussion here.
+Add any other context or screenshots about the discussion here.

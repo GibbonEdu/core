@@ -17,8 +17,9 @@ Why is this change suggested? Is there a problem it helps to solve?
 If this PR fixes an open issue, please link to the issue here.
 
 **How Has This Been Tested?**
-Please describe how you tested your changes. Include details of 
-your testing environment, and the tests you ran to see how your 
-change affects other areas of the code, etc.
+Please describe how you've tested your changes. Include details of 
+your testing environment, and any tests you've run to see how your 
+change affects other areas of the code.
 
-**Screenshots (if appropriate):**
+**Screenshots**
+If applicable, add screenshots to help illustrate your changes.
