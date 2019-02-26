@@ -46,15 +46,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/inSettings_ad
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(50);
+        $row->addTextField('name')->required()->maxLength(50);
     
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(5);
+        $row->addTextField('nameShort')->required()->maxLength(5);
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonINDescriptor')->isRequired()->maxLength(5);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonINDescriptor')->required()->maxLength(5);
 
     $row = $form->addRow();
         $row->addLabel('description', __('Description'));

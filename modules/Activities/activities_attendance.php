@@ -62,7 +62,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
 
     $row = $form->addRow();
         $row->addLabel('gibbonActivityID', __('Activity'));
-        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->isRequired()->placeholder();
+        $row->addSelect('gibbonActivityID')->fromQuery($pdo, $sql, $data)->selected($gibbonActivityID)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);

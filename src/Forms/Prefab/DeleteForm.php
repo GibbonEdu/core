@@ -48,7 +48,7 @@ class DeleteForm extends Form
             $row = $form->addRow();
             $row->addLabel('confirm', sprintf(__('Type %1$s to confirm'), __('DELETE')));
             $row->addTextField('confirm')
-                ->isRequired()
+                ->required()
                 ->addValidation(
                     'Validate.Inclusion',
                     'within: [\''.__('DELETE').'\'], failureMessage: "'.__('Please enter the text exactly as it is displayed to confirm this action.').'", caseSensitive: false')

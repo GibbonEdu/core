@@ -82,19 +82,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
 
             $row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
-                $row->addTextField('schoolYear')->maxLength(20)->isRequired()->readonly()->setValue($values['schoolYear']);
+                $row->addTextField('schoolYear')->maxLength(20)->required()->readonly()->setValue($values['schoolYear']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->maxLength(100)->isRequired();
+                $row->addTextField('name')->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'));
-                $row->addTextField('nameShort')->maxLength(6)->isRequired();
+                $row->addTextField('nameShort')->maxLength(6)->required();
 
             $row = $form->addRow();
                 $row->addLabel('active', __('Active'));
-                $row->addYesNo('active')->isRequired();
+                $row->addYesNo('active')->required();
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
@@ -104,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/fees_manage_edit.p
             $sql = "SELECT gibbonFinanceFeeCategoryID AS value, name FROM gibbonFinanceFeeCategory WHERE active='Y' AND NOT gibbonFinanceFeeCategoryID=1 ORDER BY name";
             $row = $form->addRow();
                 $row->addLabel('gibbonFinanceFeeCategoryID', __('Category'));
-                $row->addSelect('gibbonFinanceFeeCategoryID')->fromQuery($pdo, $sql, $data)->fromArray(array('1' => __('Other')))->isRequired()->placeholder();
+                $row->addSelect('gibbonFinanceFeeCategoryID')->fromQuery($pdo, $sql, $data)->fromArray(array('1' => __('Other')))->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('fee', __('Fee'))
                     ->description(__('Numeric value of the fee.'));
-                $row->addCurrency('fee')->isRequired();
+                $row->addCurrency('fee')->required();
 
             $row = $form->addRow();
             $row->addFooter();

@@ -59,7 +59,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Person'))->description(__('Must be unique.'));
-        $row->addSelectUsers('gibbonPersonID')->placeholder()->isRequired();
+        $row->addSelectUsers('gibbonPersonID')->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('initials', __('Initials'))->description(__('Must be unique if set.'));
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_add.php
     $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+        $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('jobTitle', __('Job Title'));

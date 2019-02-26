@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $setting = getSettingByScope($connection2, 'User Admin', 'privacy', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('privacy')->onSelect($setting['name'])->when('Y');
 
@@ -133,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/userSettings.ph
     $setting = getSettingByScope($connection2, 'User Admin', 'personalBackground', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Day-Type Options'));
 

@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			$sql = "SELECT gibbonLibraryTypeID AS value, name FROM gibbonLibraryType WHERE active='Y' ORDER BY name";
 			$row = $form->addRow();
 				$row->addLabel('type', __('Type'));
-				$row->addTextField('type')->isRequired()->readOnly();
+				$row->addTextField('type')->required()->readOnly();
 
 			$form->toggleVisibilityByClass('general')->onSelect('gibbonLibraryTypeID')->whenNot('Please select...');
 
@@ -93,18 +93,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Volume or product name.'));
-				$row->addTextField('name')->isRequired()->maxLength(255);
+				$row->addTextField('name')->required()->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('id', __('ID'));
 				$row->addTextField('id')
-					->isUnique('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
-					->isRequired()
+					->uniqueField('./modules/Library/library_manage_catalog_idCheckAjax.php', array('gibbonLibraryItemID' => $gibbonLibraryItemID))
+					->required()
 					->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('producer', __('Author/Brand'))->description(__('Who created the item?'));
-				$row->addTextField('producer')->isRequired()->maxLength(255);
+				$row->addTextField('producer')->required()->maxLength(255);
 
 			$row = $form->addRow();
 				$row->addLabel('vendor', __('Vendor'))->description(__('Who supplied the item?'));
@@ -130,14 +130,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 				$row->addFileUpload('imageFile')
 					->accepts('.jpg,.jpeg,.gif,.png')
 					->setMaxUpload(false)
-					->isRequired();
+					->required();
 
 			$form->toggleVisibilityByClass('imageLink')->onSelect('imageType')->when('Link');
 
 			$row = $form->addRow()->addClass('general imageLink');
 				$row->addLabel('imageLink', __('Image Link'))
 					->description(__('240px x 240px or smaller.'));
-				$row->addURL('imageLink')->maxLength(255)->isRequired()->setValue($values['imageLocation']);
+				$row->addURL('imageLink')->maxLength(255)->required()->setValue($values['imageLocation']);
 
 			$row = $form->addRow();
 				$row->addLabel('gibbonSpaceID', __('Location'));
@@ -190,15 +190,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 			);
 			$row = $form->addRow()->addClass('statusBorrowable');
 				$row->addLabel('statusBorrowable', __('Status?'));
-				$row->addTextField('statusBorrowable')->isRequired()->readOnly()->setValue(__('Available'));
+				$row->addTextField('statusBorrowable')->required()->readOnly()->setValue(__('Available'));
 
 			$row = $form->addRow()->addClass('statusNotBorrowable');
 				$row->addLabel('statusNotBorrowable', __('Status?'));
-				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->isRequired();
+				$row->addSelect('statusNotBorrowable')->fromArray($statuses)->required();
 
 			$row = $form->addRow();
 				$row->addLabel('replacement', __('Plan Replacement?'));
-				$row->addYesNo('replacement')->isRequired()->selected('N');
+				$row->addYesNo('replacement')->required()->selected('N');
 
 			$form->toggleVisibilityByClass('replacement')->onSelect('replacement')->when('Y');
 

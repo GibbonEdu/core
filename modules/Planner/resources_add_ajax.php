@@ -110,30 +110,30 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $types = array('File' => __('File'), 'Link' => __('Link'));
         $row = $form->addRow();
             $row->addLabel($id.'type', __('Type'));
-            $row->addSelect($id.'type')->fromArray($types)->isRequired()->placeholder();
+            $row->addSelect($id.'type')->fromArray($types)->required()->placeholder();
 
         // File
         $form->toggleVisibilityByClass('resourceFile')->onSelect($id.'type')->when('File');
         $row = $form->addRow()->addClass('resourceFile');
             $row->addLabel($id.'file', __('File'));
-            $row->addFileUpload($id.'file')->isRequired();
+            $row->addFileUpload($id.'file')->required();
 
         // Link
         $form->toggleVisibilityByClass('resourceLink')->onSelect($id.'type')->when('Link');
         $row = $form->addRow()->addClass('resourceLink');
             $row->addLabel($id.'link', __('Link'));
-            $row->addURL($id.'link')->maxLength(255)->isRequired();
+            $row->addURL($id.'link')->maxLength(255)->required();
 
         $form->addRow()->addSubheading(__('Resource Details'));
 
         $row = $form->addRow();
             $row->addLabel($id.'name', __('Name'));
-            $row->addTextField($id.'name')->isRequired()->maxLength(60);
+            $row->addTextField($id.'name')->required()->maxLength(60);
 
         $categories = getSettingByScope($connection2, 'Resources', 'categories');
         $row = $form->addRow();
             $row->addLabel($id.'category', __('Category'));
-            $row->addSelect($id.'category')->fromString($categories)->isRequired()->placeholder();
+            $row->addSelect($id.'category')->fromString($categories)->required()->placeholder();
 
         $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
         $purposesRestricted = ($highestAction == 'Manage Resources_all')? getSettingByScope($connection2, 'Resources', 'purposesRestricted') : '';
@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $row->addLabel($id.'tags', __('Tags'))->description(__('Use lots of tags!'));
             $row->addFinder($id.'tags')
                 ->fromQuery($pdo, $sql)
-                ->isRequired()
+                ->required()
                 ->setParameter('hintText', __('Type a tag...'))
                 ->setParameter('allowCreation', true);
 

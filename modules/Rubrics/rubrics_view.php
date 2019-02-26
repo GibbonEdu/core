@@ -113,7 +113,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_view.php')
         ->format(function ($rubric, $actions) {
             $actions->addAction('view', __('View'))
                 ->setURL('/modules/Rubrics/rubrics_view_full.php')
-                ->isModal(1100, 550);
+                ->modalWindow(1100, 550);
         });
 
     echo $table->render($rubrics);

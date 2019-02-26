@@ -49,7 +49,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/report_workSummary
 
     $row = $form->addRow();
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->selected($gibbonRollGroupID);
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID);
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session, __('Clear Filters'));

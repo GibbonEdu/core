@@ -111,15 +111,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('idLabel', __('ID'));
-                $row->addTextField('idLabel')->setValue($values['id'])->readonly()->isRequired();
+                $row->addTextField('idLabel')->setValue($values['id'])->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->setValue($values['name'])->readonly()->isRequired();
+                $row->addTextField('name')->setValue($values['name'])->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('statusCurrent', __('Current Status'));
-                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->isRequired();
+                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->required();
 
             $form->addRow()->addHeading(__('This Event'));
 
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             );
             $row = $form->addRow();
                 $row->addLabel('status', __('New Status'));
-                $row->addSelect('status')->fromArray($statuses)->isRequired()->selected('On Loan')->placeholder();
+                $row->addSelect('status')->fromArray($statuses)->required()->selected('On Loan')->placeholder();
 
             $people = array();
 
@@ -168,13 +168,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDStatusResponsible', __('Responsible User'))->description(__('Who is responsible for this new status?'));
-                $row->addSelect('gibbonPersonIDStatusResponsible')->fromArray($people)->placeholder()->isRequired();
+                $row->addSelect('gibbonPersonIDStatusResponsible')->fromArray($people)->placeholder()->required();
 
             $loanLength = getSettingByScope($connection2, 'Library', 'defaultLoanLength');
             $loanLength = (is_numeric($loanLength) == false or $loanLength < 0) ? 7 : $loanLength ;
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'))->description(sprintf(__('Default renew length is today plus %1$s day(s)'), $loanLength));
-                $row->addDate('returnExpected')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->isRequired();
+                $row->addDate('returnExpected')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP'], time() + ($loanLength * 60 * 60 * 24)))->required();
 
             $row = $form->addRow()->addHeading(__('On Return'));
 

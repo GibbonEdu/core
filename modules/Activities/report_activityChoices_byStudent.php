@@ -50,7 +50,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/report_activity
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->isRequired()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'], array("allStudents" => false, "byName" => true, "byRoll" => true))->required()->placeholder()->selected($gibbonPersonID);
 
     $row = $form->addRow();
         $row->addFooter();

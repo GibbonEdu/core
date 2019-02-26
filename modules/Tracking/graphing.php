@@ -61,10 +61,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Tracking/graphing.php') ==
 
         $row = $form->addRow();
             $row->addLabel('gibbonPersonIDs', __('Student'));
-            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->isRequired();
+            $row->addSelectStudent('gibbonPersonIDs', $_SESSION[$guid]['gibbonSchoolYearID'], array('byName' => true, 'byRoll' => true))->selectMultiple()->required();
         $row = $form->addRow();
             $row->addLabel('dataType', __('Data Type'));
-            $row->addSelect('dataType')->fromArray($dataTypes)->isRequired();
+            $row->addSelect('dataType')->fromArray($dataTypes)->required();
 
         $sql = "SELECT gibbonDepartmentID as value, name FROM gibbonDepartment WHERE type='Learning Area' ORDER BY name";
         $results = $pdo->executeQuery(array(), $sql);

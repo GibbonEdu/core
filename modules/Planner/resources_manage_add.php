@@ -65,37 +65,37 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
         $types = array('File' => __('File'), 'HTML' => __('HTML'), 'Link' => __('Link'));
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
+            $row->addSelect('type')->fromArray($types)->required()->placeholder();
 
         // File
         $form->toggleVisibilityByClass('resourceFile')->onSelect('type')->when('File');
         $row = $form->addRow()->addClass('resourceFile');
             $row->addLabel('file', __('File'));
-            $row->addFileUpload('file')->isRequired();
+            $row->addFileUpload('file')->required();
 
         // HTML
         $form->toggleVisibilityByClass('resourceHTML')->onSelect('type')->when('HTML');
         $row = $form->addRow()->addClass('resourceHTML');
             $column = $row->addColumn()->setClass('');
             $column->addLabel('html', __('HTML'));
-            $column->addEditor('html', $guid)->isRequired();
+            $column->addEditor('html', $guid)->required();
 
         // Link
         $form->toggleVisibilityByClass('resourceLink')->onSelect('type')->when('Link');
         $row = $form->addRow()->addClass('resourceLink');
             $row->addLabel('link', __('Link'));
-            $row->addURL('link')->maxLength(255)->isRequired();
+            $row->addURL('link')->maxLength(255)->required();
 
         $form->addRow()->addHeading(__('Resource Details'));
 
         $row = $form->addRow();
             $row->addLabel('name', __('Name'));
-            $row->addTextField('name')->isRequired()->maxLength(60);
+            $row->addTextField('name')->required()->maxLength(60);
 
         $categories = getSettingByScope($connection2, 'Resources', 'categories');
         $row = $form->addRow();
             $row->addLabel('category', __('Category'));
-            $row->addSelect('category')->fromString($categories)->isRequired()->placeholder();
+            $row->addSelect('category')->fromString($categories)->required()->placeholder();
 
         $purposesGeneral = getSettingByScope($connection2, 'Resources', 'purposesGeneral');
         $purposesRestricted = ($highestAction == 'Manage Resources_all')? getSettingByScope($connection2, 'Resources', 'purposesRestricted') : '';
@@ -109,7 +109,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/resources_manage_a
             $column->addLabel('tags', __('Tags'))->description(__('Use lots of tags!'));
             $column->addFinder('tags')
                 ->fromQuery($pdo, $sql)
-                ->isRequired()
+                ->required()
                 ->setParameter('hintText', __('Type a tag...'))
                 ->setParameter('allowCreation', true);
 

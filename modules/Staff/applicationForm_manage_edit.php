@@ -85,11 +85,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             $row = $form->addRow();
                 $row->addLabel('gibbonStaffApplicationFormID', __('Application ID'));
-                $row->addTextField('gibbonStaffApplicationFormID')->readOnly()->isRequired();
+                $row->addTextField('gibbonStaffApplicationFormID')->readOnly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-                $row->addSelect('priority')->fromArray(range(-9, 9))->isRequired();
+                $row->addSelect('priority')->fromArray(range(-9, 9))->required();
 
             // STATUS
             if ($values['status'] != 'Accepted') {
@@ -100,11 +100,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 );
                 $row = $form->addRow();
                         $row->addLabel('status', __('Status'))->description(__('Manually set status. "Approved" not permitted.'));
-                        $row->addSelect('status')->isRequired()->fromArray($statuses)->selected($values['status']);
+                        $row->addSelect('status')->required()->fromArray($statuses)->selected($values['status']);
             } else {
                 $row = $form->addRow();
                     $row->addLabel('status', __('Status'))->description(__('Manually set status. "Approved" not permitted.'));
-                    $row->addTextField('status')->isRequired()->readOnly()->setValue($values['status']);
+                    $row->addTextField('status')->required()->readOnly()->setValue($values['status']);
             }
 
             // MILESTONES
@@ -138,12 +138,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Job Type'));
-                $row->addTextField('type')->readOnly()->isRequired();
+                $row->addTextField('type')->readOnly()->required();
 
             $form->addHiddenValue('gibbonStaffJobOpeningID', $values['gibbonStaffJobOpeningID']);
             $row = $form->addRow();
                 $row->addLabel('jobTitle', __('Job Opening'));
-                $row->addTextField('jobTitle')->readOnly()->isRequired();
+                $row->addTextField('jobTitle')->readOnly()->required();
 
             $staffApplicationFormQuestions = getSettingByScope($connection2, 'Staff', 'staffApplicationFormQuestions');
             if ($staffApplicationFormQuestions != '') {
@@ -159,28 +159,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
                 $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonID']);
                 $row = $form->addRow();
                     $row->addLabel('surname', __('Surname'));
-                    $row->addTextField('surname')->isRequired()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['surname']);
+                    $row->addTextField('surname')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['surname']);
 
                 $row = $form->addRow();
                     $row->addLabel('preferredName', __('Preferred Name'));
-                    $row->addTextField('preferredName')->isRequired()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['preferredName']);
+                    $row->addTextField('preferredName')->required()->maxLength(30)->readonly()->setValue($_SESSION[$guid]['preferredName']);
             }
             else { //Not logged in
                 $row = $form->addRow();
                     $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-                    $row->addTextField('surname')->isRequired()->maxLength(30);
+                    $row->addTextField('surname')->required()->maxLength(30);
 
                 $row = $form->addRow();
                     $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-                    $row->addTextField('firstName')->isRequired()->maxLength(30);
+                    $row->addTextField('firstName')->required()->maxLength(30);
 
                 $row = $form->addRow();
                     $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                    $row->addTextField('preferredName')->isRequired()->maxLength(30);
+                    $row->addTextField('preferredName')->required()->maxLength(30);
 
                 $row = $form->addRow();
                     $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                    $row->addTextField('officialName')->isRequired()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
+                    $row->addTextField('officialName')->required()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
 
                 $row = $form->addRow();
                     $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -188,17 +188,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('gender', __('Gender'));
-                    $row->addSelectGender('gender')->isRequired();
+                    $row->addSelectGender('gender')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-                    $row->addDate('dob')->isRequired();
+                    $row->addDate('dob')->required();
 
                 $form->addRow()->addHeading(__('Background Data'));
 
                 $row = $form->addRow();
                     $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
-                    $row->addSelectLanguage('languageFirst')->isRequired();
+                    $row->addSelectLanguage('languageFirst')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('languageSecond', __('Second Language'));
@@ -210,15 +210,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('countryOfBirth', __('Country of Birth'));
-                    $row->addSelectCountry('countryOfBirth')->isRequired();
+                    $row->addSelectCountry('countryOfBirth')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('citizenship1', __('Citizenship'));
                     $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
                     if (!empty($nationalityList)) {
-                        $row->addSelect('citizenship1')->isRequired()->fromString($nationalityList)->placeholder(__('Please select...'));
+                        $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
                     } else {
-                        $row->addSelectCountry('citizenship1')->isRequired();
+                        $row->addSelectCountry('citizenship1')->required();
                     }
 
                 $countryName = (isset($_SESSION[$guid]['country']))? $_SESSION[$guid]['country'].' ' : '';
@@ -247,28 +247,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('email', __('Email'));
-                    $email = $row->addEmail('email')->isRequired();
+                    $email = $row->addEmail('email')->required();
 
                     $uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
                     if ($uniqueEmailAddress == 'Y') {
-                        $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+                        $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php');
                     }
 
                 $row = $form->addRow();
                     $row->addLabel('phone1', __('Phone'))->description(__('Type, country code, number.'));
-                    $row->addPhoneNumber('phone1')->isRequired();
+                    $row->addPhoneNumber('phone1')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
-                    $row->addTextField('homeAddress')->isRequired()->maxLength(255);
+                    $row->addTextField('homeAddress')->required()->maxLength(255);
 
                 $row = $form->addRow();
                     $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-                    $row->addTextFieldDistrict('homeAddressDistrict')->isRequired();
+                    $row->addTextFieldDistrict('homeAddressDistrict')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
-                    $row->addSelectCountry('homeAddressCountry')->isRequired();
+                    $row->addSelectCountry('homeAddressCountry')->required();
             }
 
             // CUSTOM FIELDS FOR STAFF
@@ -337,11 +337,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/applicationForm_mana
 
                 $row = $form->addRow();
                     $row->addLabel('referenceEmail1', __('Referee 1'))->description(__('An email address for a referee at the applicant\'s current school.'));
-                    $row->addEmail('referenceEmail1')->isRequired();
+                    $row->addEmail('referenceEmail1')->required();
 
                 $row = $form->addRow();
                     $row->addLabel('referenceEmail2', __('Referee 2'))->description(__('An email address for a second referee.'));
-                    $row->addEmail('referenceEmail2')->isRequired();
+                    $row->addEmail('referenceEmail2')->required();
 
             }
 

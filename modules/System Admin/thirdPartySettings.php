@@ -45,7 +45,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $setting = getSettingByScope($connection2, 'System', 'googleOAuth', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('googleSettings')->onSelect($setting['name'])->when('Y');
 
@@ -85,7 +85,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $setting = getSettingByScope($connection2, 'System', 'enablePayments', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('paypalSettings')->onSelect($setting['name'])->when('Y');
 
@@ -169,7 +169,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/thirdPartySet
     $setting = getSettingByScope($connection2, 'System', 'enableMailerSMTP', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('smtpSettings')->onSelect($setting['name'])->when('Y');
 

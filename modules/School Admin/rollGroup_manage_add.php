@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Needs to be unique in school year.'));
-                $row->addTextField('name')->isRequired()->maxLength(10);
+                $row->addTextField('name')->required()->maxLength(10);
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Needs to be unique in school year.'));
-                $row->addTextField('nameShort')->isRequired()->maxLength(5);
+                $row->addTextField('nameShort')->required()->maxLength(5);
 
             $row = $form->addRow();
                 $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));

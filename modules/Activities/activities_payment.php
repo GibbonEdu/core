@@ -81,7 +81,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             $bulkAction->addSelect('action')
                 ->fromArray($billingSchedules)
                 ->fromArray($defaultActions)
-                ->isRequired()
+                ->required()
                 ->setClass('mediumWidth floatNone')
                 ->placeholder(__('Select action'));
             $bulkAction->addSubmit(__('Go'));
@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
             $row->addContent($student['rollGroup']);
             $row->addContent(formatName('', $student['preferredName'], $student['surname'], 'Student', true));
             $row->addContent($student['name']);
-            $row->addCurrency("payment[$gibbonActivityStudentID]")->isRequired()->setValue($student['payment']);
+            $row->addCurrency("payment[$gibbonActivityStudentID]")->required()->setValue($student['payment']);
             $row->addCheckbox("gibbonActivityStudentID[$gibbonActivityStudentID]")->setValue($student['gibbonActivityStudentID'])->setClass('');
         }
         

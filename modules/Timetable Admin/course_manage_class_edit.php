@@ -70,19 +70,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/course_man
 			
 			$row = $form->addRow();
 				$row->addLabel('schoolYearName', __('School Year'));
-				$row->addTextField('schoolYearName')->isRequired()->readonly()->setValue($values['yearName']);
+				$row->addTextField('schoolYearName')->required()->readonly()->setValue($values['yearName']);
 			
 			$row = $form->addRow();
 				$row->addLabel('courseName', __('Course'));
-				$row->addTextField('courseName')->isRequired()->readonly()->setValue($values['courseName']);
+				$row->addTextField('courseName')->required()->readonly()->setValue($values['courseName']);
 
 			$row = $form->addRow();
 				$row->addLabel('name', __('Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('name')->isRequired()->maxLength(30);
+				$row->addTextField('name')->required()->maxLength(30);
 			
 			$row = $form->addRow();
 				$row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this course.'));
-				$row->addTextField('nameShort')->isRequired()->maxLength(8);
+				$row->addTextField('nameShort')->required()->maxLength(8);
 
 			$row = $form->addRow();
 				$row->addLabel('reportable', __('Reportable?'))->description(__('Should this class show in reports?'));

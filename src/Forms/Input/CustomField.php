@@ -86,8 +86,8 @@ class CustomField extends Input
         }
 
         if ($fields['required'] == 'Y') {
-            $this->customField->isRequired();
-            $this->isRequired();
+            $this->customField->required();
+            $this->required();
         }
 
         if (!empty($fields['default'])) {

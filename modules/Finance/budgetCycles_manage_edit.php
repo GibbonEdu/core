@@ -69,7 +69,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 
             $row = $form->addRow();
                 $row->addLabel("name", __("Name"))->description(__("Must be unique."));
-                $row->addTextField("name")->isRequired()->maxLength(7);
+                $row->addTextField("name")->required()->maxLength(7);
 
             $statusTypes = array(
                 'Upcoming' => __("Upcoming"),
@@ -83,15 +83,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
 
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-                $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle', $values['sequenceNumber'])->isRequired()->maxLength(3);
+                $row->addSequenceNumber('sequenceNumber', 'gibbonFinanceBudgetCycle', $values['sequenceNumber'])->required()->maxLength(3);
 
             $row = $form->addRow();
                 $row->addLabel("dateStart", __("Start Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-                $row->addDate("dateStart")->isRequired();
+                $row->addDate("dateStart")->required();
 
             $row = $form->addRow();
                 $row->addLabel("dateEnd", __("End Date"))->description(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-                $row->addDate("dateEnd")->isRequired();
+                $row->addDate("dateEnd")->required();
             
             $row = $form->addRow();
                 $row->addHeading(__("Budget Allocations"));
@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/budgetCycles_manag
                 while ($rowBudget = $resultBudget->fetch()) {
                     $row = $form->addRow();
                         $row->addLabel($rowBudget['gibbonFinanceBudgetID'], $rowBudget['name']);
-                        $row->addCurrency($rowBudget['gibbonFinanceBudgetID'])->setName('values[]')->isRequired()->maxLength(15)->setValue((is_null($rowBudget['value'])) ? '0.00' : $rowBudget['value']);
+                        $row->addCurrency($rowBudget['gibbonFinanceBudgetID'])->setName('values[]')->required()->maxLength(15)->setValue((is_null($rowBudget['value'])) ? '0.00' : $rowBudget['value']);
                     $form->addHiddenValue('gibbonFinanceBudgetIDs[]', $rowBudget['gibbonFinanceBudgetID']);
                 }
             }
