@@ -364,7 +364,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                             ->setID('columnText'.$count)
                             ->setClass('shortWidth columnText')
                             ->readonly()
-                            ->isDisabled();
+                            ->disabled();
 
                     $count++;
                 }
@@ -523,7 +523,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                 $row->onlyIf($overallSuccess)->addContent('');
                 
                 if (!$overallSuccess && !$ignoreErrors) {
-                    $row->addButton(__('Failed'))->setID('submitStep3')->isDisabled()->addClass('right');
+                    $row->addButton(__('Failed'))->setID('submitStep3')->disabled()->addClass('right');
                 } else {
                     $row->addSubmit()->setID('submitStep3');
                 }

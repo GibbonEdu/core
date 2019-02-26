@@ -204,7 +204,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                         } else {
                             $row = $form->addRow()->addClass('error');
                             $row->addLabel('dates[]', dateConvertBack($guid, $date))->description(__('Not Available'));
-                            $row->addCheckbox('dates[]')->setValue($date)->isDisabled();
+                            $row->addCheckbox('dates[]')->setValue($date)->disabled();
                         }
                     } elseif ($repeat == 'Daily' and $repeatDaily >= 2 and $repeatDaily <= 20) {
                         $continue = true;
@@ -228,7 +228,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->isDisabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
                                 }
                             } else {
                                 ++$failCount;
@@ -260,7 +260,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable/spaceBooking_man
                                 } else {
                                     $row = $form->addRow()->addClass('error');
                                     $row->addLabel('dates[]', dateConvertBack($guid, $dateTemp))->description(__('Not Available'));
-                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->isDisabled();
+                                    $row->addCheckbox('dates[]')->setValue($dateTemp)->disabled();
                                 }
                             } else {
                                 ++$failCount;

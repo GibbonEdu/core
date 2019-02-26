@@ -250,7 +250,7 @@ else {
                     // Handle the edge case where a user can post a Quick Wall message but doesn't have access to the Role target
                     $row = $form->addRow();
 						$row->addLabel('roleCategoryLabel', __('Role Category'))->description(__('Users of a certain type.'));
-                        $row->addYesNoRadio('roleCategoryLabel')->checked('Y')->readonly()->isDisabled();
+                        $row->addYesNoRadio('roleCategoryLabel')->checked('Y')->readonly()->disabled();
 
                     $form->addHiddenValue('role', 'N');
                     $form->addHiddenValue('roleCategory', 'Y');
