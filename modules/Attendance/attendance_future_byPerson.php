@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID',$_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID',$_SESSION[$guid]['gibbonSchoolYearID'])->required()->placeholder()->selected($gibbonPersonID);
 
     if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byCourseClass.php')) {
         $availableAbsenceTypes = array(
@@ -74,7 +74,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         $form->toggleVisibilityByClass('partialDateRow')->onSelect('absenceType')->when('partial');
         $row = $form->addRow()->addClass('partialDateRow');
             $row->addLabel('date', __('Date'));
-            $row->addDate('date')->isRequired()->setValue($date);
+            $row->addDate('date')->required()->setValue($date);
     }
 
     $form->addRow()->addSearchSubmit($gibbon->session);
@@ -174,7 +174,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
         if ($absenceType == 'full') {
             $row = $form->addRow();
                 $row->addLabel('dateStart', __('Start Date'));
-                $row->addDate('dateStart')->isRequired();
+                $row->addDate('dateStart')->required();
 
             $row = $form->addRow();
                 $row->addLabel('dateEnd', __('End Date'));
@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray($attendanceTypes)->isRequired()->selected('Absent');
+            $row->addSelect('type')->fromArray($attendanceTypes)->required()->selected('Absent');
 
         $row = $form->addRow();
             $row->addLabel('reason', __('Reason'));

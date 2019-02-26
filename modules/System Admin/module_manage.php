@@ -187,7 +187,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
                 if ($row['manifestOK']) {
                     $actions->addAction('install', __('Install'))
                             ->setIcon('page_new')
-                            ->isDirect()
+                            ->directLink()
                             ->setURL('/modules/System Admin/module_manage_installProcess.php');
                 }
             });

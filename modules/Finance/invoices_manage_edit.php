@@ -94,29 +94,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
             $row = $form->addRow();
                 $row->addLabel('schoolYear', __('School Year'));
-                $row->addTextField('schoolYear')->isRequired()->readonly();
+                $row->addTextField('schoolYear')->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('personName', __('Invoicee'));
-                $row->addTextField('personName')->isRequired()->readonly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
+                $row->addTextField('personName')->required()->readonly()->setValue(formatName('', $values['preferredName'], $values['surname'], 'Student', true));
 
             $row = $form->addRow();
                 $row->addLabel('billingScheduleType', __('Scheduling'));
-                $row->addTextField('billingScheduleType')->isRequired()->readonly();
+                $row->addTextField('billingScheduleType')->required()->readonly();
 
             if ($values['billingScheduleType'] == 'Scheduled') {
                 $row = $form->addRow();
                     $row->addLabel('billingScheduleName', __('Billing Schedule'));
-                    $row->addTextField('billingScheduleName')->isRequired()->readonly();
+                    $row->addTextField('billingScheduleName')->required()->readonly();
             } else {
                 if ($values['status'] == 'Pending' || $values['status'] == 'Issued') {
                     $row = $form->addRow();
                         $row->addLabel('invoiceDueDate', __('Invoice Due Date'));
-                        $row->addDate('invoiceDueDate')->isRequired();
+                        $row->addDate('invoiceDueDate')->required();
                 } else {
                     $row = $form->addRow();
                         $row->addLabel('invoiceDueDate', __('Invoice Due Date'));
-                        $row->addDate('invoiceDueDate')->isRequired()->readonly();
+                        $row->addDate('invoiceDueDate')->required()->readonly();
                 }
             }
 
@@ -124,7 +124,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 $row->addLabel('status', __('Status'))->description($values['status'] == 'Pending'
                     ? __('This value cannot be changed. Use the Issue function to change the status from "Pending" to "Issued".') 
                     : __('Available options are limited according to current status.'));
-                $row->addSelectInvoiceStatus('status', $values['status'])->isRequired();
+                $row->addSelectInvoiceStatus('status', $values['status'])->required();
 
             // PAYMENT INFO
             if ($values['status'] == 'Issued' or $values['status'] == 'Paid - Partial') {
@@ -132,7 +132,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paymentType', __('Payment Type'));
-                    $row->addSelectPaymentMethod('paymentType')->isRequired();       
+                    $row->addSelectPaymentMethod('paymentType')->required();       
 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paymentTransactionID', __('Transaction ID'))->description(__('Transaction ID to identify this payment.'));
@@ -140,7 +140,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paidDate', __('Date Paid'))->description(__('Date of payment, not entry to system.'));
-                    $row->addDate('paidDate')->isRequired();
+                    $row->addDate('paidDate')->required();
 
                 $remainingFee = getInvoiceTotalFee($pdo, $gibbonFinanceInvoiceID, $values['status']);
                 if ($values['status'] == 'Paid - Partial') {
@@ -150,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                 $row = $form->addRow()->addClass('paymentInfo');
                     $row->addLabel('paidAmount', __('Amount Paid'))->description(__('Amount in current payment.'));
-                    $row->addCurrency('paidAmount')->maxLength(14)->isRequired()->setValue(number_format($remainingFee, 2, '.', ''));
+                    $row->addCurrency('paidAmount')->maxLength(14)->required()->setValue(number_format($remainingFee, 2, '.', ''));
 
                 unset($values['paidDate']);
                 unset($values['paidAmount']);
@@ -185,7 +185,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
                 // Block template
                 $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
                 $row = $blockTemplate->addRow();
-                    $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->isRequired()->placeholder(__('Fee Name'))
+                    $row->addTextField('name')->setClass('standardWidth floatLeft noMargin title')->required()->placeholder(__('Fee Name'))
                         ->append('<input type="hidden" id="gibbonFinanceFeeID" name="gibbonFinanceFeeID" value="">')
                         ->append('<input type="hidden" id="feeType" name="feeType" value="">');
                     
@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage_ed
 
                     $col->addCurrency('fee')
                         ->setClass('shortWidth floatLeft')
-                        ->isRequired()
+                        ->required()
                         ->placeholder(__('Value').(!empty($_SESSION[$guid]['currency'])? ' ('.$_SESSION[$guid]['currency'].')' : ''));
                     
                 $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();

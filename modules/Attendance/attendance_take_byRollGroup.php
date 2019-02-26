@@ -78,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
         $row = $form->addRow();
             $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->selected($gibbonRollGroupID)->placeholder();
+            $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonRollGroupID)->placeholder();
 
         $row = $form->addRow();
             $row->addLabel('currentDate', __('Date'));
-            $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
+            $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
 
         $row = $form->addRow();
             $row->addSearchSubmit($gibbon->session);

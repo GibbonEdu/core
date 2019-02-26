@@ -118,7 +118,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
             $row->addLabel('gibbonPersonID', __('Person'));
             $row->addSelect('gibbonPersonID')
                 ->fromArray($people)
-                ->isRequired()
+                ->required()
                 ->selected($gibbonPersonID)
                 ->placeholder();
         
@@ -354,7 +354,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_personal
 
 					$uniqueEmailAddress = getSettingByScope($connection2, 'User Admin', 'uniqueEmailAddress');
 					if ($uniqueEmailAddress == 'Y') {
-						$email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
+						$email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('gibbonPersonID' => $gibbonPersonID));
 					}
 
 					$row = $form->addRow();

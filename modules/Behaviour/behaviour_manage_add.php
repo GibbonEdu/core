@@ -91,17 +91,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
             //Student
             $row = $form->addRow();
             	$row->addLabel('gibbonPersonID', __('Student'));
-            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->isRequired();
+            	$row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->placeholder(__('Please select...'))->selected($gibbonPersonID)->required();
 
             //Date
             $row = $form->addRow();
             	$row->addLabel('date', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->isRequired();
+            	$row->addDate('date')->setValue(date($_SESSION[$guid]['i18n']['dateFormatPHP']))->required();
 
             //Type
             $row = $form->addRow();
             	$row->addLabel('type', __('Type'));
-            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->isRequired();
+            	$row->addSelect('type')->fromArray(array('Positive' => __('Positive'), 'Negative' => __('Negative')))->selected($type)->required();
 
             //Descriptor
             if ($enableDescriptors == 'Y') {
@@ -120,7 +120,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         ->fromArray($positiveDescriptors)
                         ->fromArray($negativeDescriptors)
                         ->chainedTo('type', $chainedTo)
-                        ->isRequired()
+                        ->required()
                         ->placeholder();
             }
 

@@ -76,11 +76,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->isRequired();
+        $row->addDate('dateStart')->setValue(dateConvertBack($guid, $dateStart))->required();
 
     $row = $form->addRow();
         $row->addLabel('dateEnd', __('End Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->isRequired();
+        $row->addDate('dateEnd')->setValue(dateConvertBack($guid, $dateEnd))->required();
 
     $options = array("all" => __('All Students'));
     if (isActionAccessible($guid, $connection2, "/modules/Attendance/attendance_take_byCourseClass.php")) {
@@ -91,21 +91,21 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_summary_
     }
     $row = $form->addRow();
         $row->addLabel('group', __('Group By'));
-        $row->addSelect('group')->fromArray($options)->selected($group)->isRequired();
+        $row->addSelect('group')->fromArray($options)->selected($group)->required();
 
     $form->toggleVisibilityByClass('class')->onSelect('group')->when('class');
     $row = $form->addRow()->addClass('class');
         $row->addLabel('gibbonCourseClassID', __('Class'));
-        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->isRequired();
+        $row->addSelectClass('gibbonCourseClassID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonCourseClassID)->placeholder()->required();
 
     $form->toggleVisibilityByClass('rollGroup')->onSelect('group')->when('rollGroup');
     $row = $form->addRow()->addClass('rollGroup');
         $row->addLabel('gibbonRollGroupID', __('Roll Group'));
-        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->isRequired();
+        $row->addSelectRollGroup('gibbonRollGroupID', $_SESSION[$guid]['gibbonSchoolYearID'])->selected($gibbonRollGroupID)->placeholder()->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addFooter();

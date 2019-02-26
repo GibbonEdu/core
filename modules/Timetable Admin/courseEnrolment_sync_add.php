@@ -54,14 +54,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupID', __('Year Group'))->description(__('Determines the available courses and classes to map.'));
-        $row->addSelectYearGroup('gibbonYearGroupID')->isRequired();
+        $row->addSelectYearGroup('gibbonYearGroupID')->required();
 
     $row = $form->addRow();
         $column = $row->addColumn();
         $column->addLabel('courseClassMapping', __('Compare to Pattern'))->description(sprintf(__('Classes will be matched to Roll Groups that fit the specified pattern. Choose from %1$s. Must contain %2$s'), '[courseShortName] [yearGroupShortName] [rollGroupShortName]', '[classShortName]'));
 
         $row->addTextField('pattern')
-            ->isRequired()
+            ->required()
             ->setValue('[yearGroupShortName].[classShortName]')
             ->addValidation('Validate.Format', 'pattern: /(\[classShortName\])/');
 

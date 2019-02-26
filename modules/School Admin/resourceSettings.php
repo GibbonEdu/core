@@ -39,12 +39,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/resourceSetti
     $setting = getSettingByScope($connection2, 'Resources', 'categories', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->isRequired()->setValue($setting['value']);
+        $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Resources', 'purposesGeneral', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->isRequired()->setValue($setting['value']);
+        $row->addTextArea($setting['name'])->required()->setValue($setting['value']);
 
     $setting = getSettingByScope($connection2, 'Resources', 'purposesRestricted', true);
     $row = $form->addRow();

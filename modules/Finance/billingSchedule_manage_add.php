@@ -62,15 +62,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
         $row = $form->addRow();
         	$row->addLabel("yearName", __("School Year"))->description(__("This value cannot be changed."));
-        	$row->addTextField("yearName")->setValue($_SESSION[$guid]['gibbonSchoolYearName'])->readonly(true)->isRequired();
+        	$row->addTextField("yearName")->setValue($_SESSION[$guid]['gibbonSchoolYearName'])->readonly(true)->required();
 
         $row = $form->addRow();
         	$row->addLabel("name", __("Name"));
-        	$row->addTextField("name")->maxLength(100)->isRequired();
+        	$row->addTextField("name")->maxLength(100)->required();
 
         $row = $form->addRow();
         	$row->addLabel("active", __("Active"));
-        	$row->addYesNo("active")->isRequired();
+        	$row->addYesNo("active")->required();
 
         $row = $form->addRow();
         	$row->addLabel("description", __("Description"));
@@ -78,11 +78,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
         $row = $form->addRow();
         	$row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-        	$row->addDate('invoiceIssueDate')->isRequired();
+        	$row->addDate('invoiceIssueDate')->required();
 
         $row = $form->addRow();
 			$row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('Final payment date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-			$row->addDate('invoiceDueDate')->isRequired();
+			$row->addDate('invoiceDueDate')->required();
 
         $row = $form->addRow();
         	$row->addFooter();

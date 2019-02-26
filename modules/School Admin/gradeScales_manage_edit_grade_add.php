@@ -73,19 +73,19 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/gradeScales_m
 
             $row = $form->addRow();
                 $row->addLabel('value', __('Value'))->description(__('Must be unique for this grade scale.'));
-                $row->addTextField('value')->isRequired()->maxLength(10);
+                $row->addTextField('value')->required()->maxLength(10);
 
             $row = $form->addRow();
                 $row->addLabel('descriptor', __('Descriptor'));
-                $row->addTextField('descriptor')->isRequired()->maxLength(50);
+                $row->addTextField('descriptor')->required()->maxLength(50);
 
             $row = $form->addRow();
                 $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique for this grade scale.'));
-                $row->addNumber('sequenceNumber')->isRequired()->maxLength(5);
+                $row->addNumber('sequenceNumber')->required()->maxLength(5);
 
             $row = $form->addRow();
                 $row->addLabel('isDefault', __('Is Default?'))->description(__('Preselects this option when using this grade scale in appropriate contexts.'));
-                $row->addYesNo('isDefault')->isRequired()->selected('N');
+                $row->addYesNo('isDefault')->required()->selected('N');
 
             $row = $form->addRow();
                 $row->addFooter();

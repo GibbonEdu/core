@@ -61,7 +61,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $setting = getSettingByScope($connection2, 'Staff Application Form', 'staffApplicationFormPublicApplications', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormMilestones', true);
     $row = $form->addRow();
@@ -114,7 +114,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormRequiredDocumentsCompulsory', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Acceptance Options'));
 
@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/staffApplicatio
     $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormNotificationDefault', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Staff', 'staffApplicationFormDefaultEmail', true);
     $row = $form->addRow();

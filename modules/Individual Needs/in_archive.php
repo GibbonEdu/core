@@ -60,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Individual Needs/in_archiv
 
     $row = $form->addRow();
         $row->addLabel('deleteCurrentPlans', __('Delete Current Plans?'))->description(__('Deletes Individual Education Plan fields only, not Individual Needs Status fields.'));
-        $row->addYesNo('deleteCurrentPlans')->isRequired()->selected('N');
+        $row->addYesNo('deleteCurrentPlans')->required()->selected('N');
 
     $row = $form->addRow();
         $row->addLabel('title', __('Archive Title'));
-        $row->addTextField('title')->isRequired()->maxLength(50);
+        $row->addTextField('title')->required()->maxLength(50);
                         
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Students'));

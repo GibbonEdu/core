@@ -143,7 +143,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Roll Groups/rollGroups_det
 
             $row = $form->addRow();
                 $row->addLabel('sortBy', __('Sort By'));
-                $row->addSelect('sortBy')->fromArray(array('normal' => __('Roll Order'), 'surname' => __('Surname'), 'preferredName' => __('Preferred Name')))->selected($sortBy)->isRequired();
+                $row->addSelect('sortBy')->fromArray(array('normal' => __('Roll Order'), 'surname' => __('Surname'), 'preferredName' => __('Preferred Name')))->selected($sortBy)->required();
 
             $row = $form->addRow();
                 $row->addFooter();

@@ -58,12 +58,12 @@ $form->addHiddenValue('q', '/modules/' . $session->get('module') . '/attendance.
 
 $row = $form->addRow();
 $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-$row->addDate('currentDate')->setValue(Format::date($currentDate))->isRequired();
+$row->addDate('currentDate')->setValue(Format::date($currentDate))->required();
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_rollGroupsNotRegistered_byDate.php')) {
     $row = $form->addRow();
     $row->addLabel('gibbonPersonID', __('Staff'));
-    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->isRequired();
+    $row->addSelectStaff('gibbonPersonID')->selected($gibbonPersonID)->placeholder()->required();
 } else {
     $form->addHiddenValue('gibbonPersonID', $session->get('gibbonPersonID'));
 }

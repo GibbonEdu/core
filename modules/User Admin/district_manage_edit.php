@@ -66,7 +66,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/district_manage
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-                $row->addTextField('name')->setValue($values['name'])->maxLength(30)->isRequired();
+                $row->addTextField('name')->setValue($values['name'])->maxLength(30)->required();
 
             $row = $form->addRow();
             $row->addFooter();

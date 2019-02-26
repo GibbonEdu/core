@@ -95,19 +95,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_edit_da
 
                 $row = $form->addRow();
                     $row->addLabel('ttName', __('Timetable'));
-                    $row->addTextField('ttName')->maxLength(20)->isRequired()->readonly()->setValue($values['ttName']);
+                    $row->addTextField('ttName')->maxLength(20)->required()->readonly()->setValue($values['ttName']);
 
                 $row = $form->addRow();
                     $row->addLabel('dayName', __('Day'));
-                    $row->addTextField('dayName')->maxLength(20)->isRequired()->readonly()->setValue($values['dayName']);
+                    $row->addTextField('dayName')->maxLength(20)->required()->readonly()->setValue($values['dayName']);
 
                 $row = $form->addRow();
                     $row->addLabel('rowName', __('Period'));
-                    $row->addTextField('rowName')->maxLength(20)->isRequired()->readonly()->setValue($values['rowName']);
+                    $row->addTextField('rowName')->maxLength(20)->required()->readonly()->setValue($values['rowName']);
 
                 $row = $form->addRow();
                     $row->addLabel('class', __('Class'));
-                    $row->addTextField('class')->maxLength(20)->isRequired()->readonly()->setValue($course.'.'.$class);
+                    $row->addTextField('class')->maxLength(20)->required()->readonly()->setValue($course.'.'.$class);
 
                 $locations = array() ;
                 try {

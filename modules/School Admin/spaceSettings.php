@@ -39,7 +39,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/spaceSettings
     $setting = getSettingByScope($connection2, 'School Admin', 'facilityTypes', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow();
 		$row->addFooter();

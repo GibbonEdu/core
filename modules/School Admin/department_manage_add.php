@@ -68,15 +68,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
 
     $row = $form->addRow();
         $row->addLabel('type', 'Type');
-        $row->addSelect('type')->fromArray($types)->isRequired();
+        $row->addSelect('type')->fromArray($types)->required();
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'));
-        $row->addTextField('name')->maxLength(40)->isRequired();
+        $row->addTextField('name')->maxLength(40)->required();
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'));
-        $row->addTextField('nameShort')->maxLength(4)->isRequired();
+        $row->addTextField('nameShort')->maxLength(4)->required();
 
     $row = $form->addRow();
         $row->addLabel('subjectListing', __('Subject Listing'));

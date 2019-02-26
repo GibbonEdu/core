@@ -65,7 +65,7 @@ class BulkActionForm extends Form
 
         $col->addSelect('action')
             ->fromArray($actions)
-            ->isRequired()
+            ->required()
             ->setClass('shortWidth')
             ->placeholder(__('Select action'));
 

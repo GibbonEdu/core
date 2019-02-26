@@ -145,7 +145,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics.php') == f
                 if ($rubric['active'] == 'Y') {
                     $actions->addAction('view', __('View'))
                         ->setURL('/modules/Rubrics/rubrics_view_full.php')
-                        ->isModal(1100, 550);
+                        ->modalWindow(1100, 550);
                     }
             });
 

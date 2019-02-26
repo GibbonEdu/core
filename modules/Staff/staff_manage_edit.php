@@ -102,7 +102,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage_edit.ph
                 $types[__('System Roles')] = ($result->rowCount() > 0)? $result->fetchAll(\PDO::FETCH_KEY_PAIR) : array();
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromArray($types)->placeholder()->isRequired();
+                    $row->addSelect('type')->fromArray($types)->placeholder()->required();
 
                 $row = $form->addRow();
                     $row->addLabel('jobTitle', __('Job Title'));

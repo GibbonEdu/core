@@ -65,30 +65,30 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearTer
 
 		    $row = $form->addRow();
 		        $row->addLabel('gibbonSchoolYearID', __('School Year'));
-		        $row->addSelectSchoolYear('gibbonSchoolYearID')->isRequired()->selected($values['gibbonSchoolYearID']);
+		        $row->addSelectSchoolYear('gibbonSchoolYearID')->required()->selected($values['gibbonSchoolYearID']);
 
 		    $row = $form->addRow();
 		        $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
 		        $row->addSequenceNumber('sequenceNumber', 'gibbonSchoolYearTerm', $values['sequenceNumber'])
-		        	->isRequired()
+		        	->required()
 		        	->maxLength(3)
 		        	->setValue($values['sequenceNumber']);
 
 		    $row = $form->addRow();
 		        $row->addLabel('name', __('Name'));
-		        $row->addTextField('name')->isRequired()->maxLength(20)->setValue($values['name']);
+		        $row->addTextField('name')->required()->maxLength(20)->setValue($values['name']);
 
 		    $row = $form->addRow();
 		        $row->addLabel('nameShort', __('Short Name'));
-		        $row->addTextField('nameShort')->isRequired()->maxLength(4)->setValue($values['nameShort']);
+		        $row->addTextField('nameShort')->required()->maxLength(4)->setValue($values['nameShort']);
 
 		    $row = $form->addRow();
 		        $row->addLabel('firstDay', __('First Day'));
-		        $row->addDate('firstDay')->isRequired()->setValue(dateConvertBack($guid, $values['firstDay']));
+		        $row->addDate('firstDay')->required()->setValue(dateConvertBack($guid, $values['firstDay']));
 
 		    $row = $form->addRow();
 		        $row->addLabel('lastDay', __('Last Day'));
-		        $row->addDate('lastDay')->isRequired()->setValue(dateConvertBack($guid, $values['lastDay']));
+		        $row->addDate('lastDay')->required()->setValue(dateConvertBack($guid, $values['lastDay']));
 
 		    $row = $form->addRow();
 		        $row->addFooter();

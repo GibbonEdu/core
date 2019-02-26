@@ -82,19 +82,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/firstAidRecord_ed
             $form->addHiddenValue('gibbonPersonID', $values['gibbonPersonIDPatient']);
             $row = $form->addRow();
                 $row->addLabel('patient', __('Patient'));
-                $row->addTextField('patient')->setValue(Format::name('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->isRequired()->readonly();
+                $row->addTextField('patient')->setValue(Format::name('', $values['preferredNamePatient'], $values['surnamePatient'], 'Student'))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('First Aider'));
-                $row->addTextField('name')->setValue(Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider'], 'Staff', false, true))->isRequired()->readonly();
+                $row->addTextField('name')->setValue(Format::name('', $values['preferredNameFirstAider'], $values['surnameFirstAider'], 'Staff', false, true))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('date', __('Date'));
-                $row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->isRequired()->readonly();
+                $row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeIn', __('Time In'));
-                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->isRequired()->readonly();
+                $row->addTime('timeIn')->setValue(substr($values['timeIn'], 0, 5))->required()->readonly();
 
             $row = $form->addRow();
                 $row->addLabel('timeOut', __('Time Out'));

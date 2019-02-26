@@ -161,7 +161,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 							$cycleName = getBudgetCycleName($gibbonFinanceBudgetCycleID, $connection2);
 							$row = $form->addRow();
 								$row->addLabel('name', __('Budget Cycle'));
-								$row->addTextField('name')->setValue($cycleName)->maxLength(20)->isRequired()->readonly();
+								$row->addTextField('name')->setValue($cycleName)->maxLength(20)->required()->readonly();
 
                             //Can change budgets only if budget level approval is passed (e.g. you are a school approver.
                             if ($highestAction == 'Manage Expenses_all' and $values['statusApprovalBudgetCleared'] == 'Y') 
@@ -169,22 +169,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                 $sql = "SELECT gibbonFinanceBudgetID as value, name FROM gibbonFinanceBudget WHERE active='Y' ORDER BY name";
                                 $row = $form->addRow();
                                     $row->addLabel('gibbonFinanceBudgetID', __('Budget'));
-                                    $row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($values['gibbonFinanceBudgetID']);
+                                    $row->addSelect('gibbonFinanceBudgetID')->fromQuery($pdo, $sql)->required()->placeholder()->selected($values['gibbonFinanceBudgetID']);
                             } else {
                                 $form->addHiddenValue('gibbonFinanceBudgetID', $values['gibbonFinanceBudgetID']);
 
                                 $row = $form->addRow();
 								    $row->addLabel('budgetName', __('Budget'));
-								    $row->addTextField('budgetName')->setValue($values['budget'])->isRequired()->readonly();
+								    $row->addTextField('budgetName')->setValue($values['budget'])->required()->readonly();
                             }
 
 							$row = $form->addRow();
 								$row->addLabel('title', __('Title'));
-								$row->addTextField('title')->isRequired()->readonly();
+								$row->addTextField('title')->required()->readonly();
 
 							$row = $form->addRow();
 								$row->addLabel('status', __('Status'));
-								$row->addTextField('status')->isRequired()->readonly();
+								$row->addTextField('status')->required()->readonly();
 
 							$row = $form->addRow();
 								$col = $row->addColumn();
@@ -193,7 +193,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
 
 							$row = $form->addRow();
 								$row->addLabel('purchaseBy', __('Purchase By'));
-								$row->addTextField('purchaseBy')->isRequired()->readonly();
+								$row->addTextField('purchaseBy')->required()->readonly();
 
 							$row = $form->addRow();
 								$col = $row->addColumn();
@@ -204,28 +204,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                             
                             $row = $form->addRow();
                                 $row->addLabel('costLabel', __('Total Cost'));
-                                $row->addTextField('costLabel')->isRequired()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
+                                $row->addTextField('costLabel')->required()->readonly()->setValue(number_format($values['cost'], 2, '.', ','));
 
 							$row = $form->addRow();
 								$row->addLabel('countAgainstBudgetLabel', __('Count Against Budget'));
-                                $row->addTextField('countAgainstBudgetLabel')->setValue(ynExpander($guid, $values['countAgainstBudget']))->isRequired()->readonly();
+                                $row->addTextField('countAgainstBudgetLabel')->setValue(ynExpander($guid, $values['countAgainstBudget']))->required()->readonly();
                                 
                             if ($values['countAgainstBudget'] == 'Y') {
                                 $budgetAllocationLabel = (is_numeric($budgetAllocation))? number_format($budgetAllocation, 2, '.', ',') : $budgetAllocation;
                                 $row = $form->addRow();
                                     $row->addLabel('budgetAllocation', __('Budget For Cycle'))->description(__('Numeric value of the fee.'));
-                                    $row->addTextField('budgetAllocation')->isRequired()->readonly()->setValue($budgetAllocationLabel);
+                                    $row->addTextField('budgetAllocation')->required()->readonly()->setValue($budgetAllocationLabel);
                                 
                                 $budgetAllocatedLabel = (is_numeric($budgetAllocated))? number_format($budgetAllocated, 2, '.', ',') : $budgetAllocated;
                                 $row = $form->addRow();
                                     $row->addLabel('budgetForCycle', __('Amount already approved or spent'))->description(__('Numeric value of the fee.'));
-                                    $row->addTextField('budgetForCycle')->isRequired()->readonly()->setValue($budgetAllocatedLabel);
+                                    $row->addTextField('budgetForCycle')->required()->readonly()->setValue($budgetAllocatedLabel);
                                     
                                 $budgetRemainingLabel = (is_numeric($budgetRemaining))? number_format($budgetRemaining, 2, '.', ',') : $budgetRemaining;
                                 $row = $form->addRow();
                                     $row->addLabel('budgetRemaining', __('Budget Remaining For Cycle'))->description(__('Numeric value of the fee.'));
                                     $row->addTextField('budgetRemaining')
-                                        ->isRequired()
+                                        ->required()
                                         ->readonly()
                                         ->setValue($budgetRemainingLabel)
                                         ->addClass( (is_numeric($budgetRemaining) && $budgetRemaining - $values['cost'] > 0)? 'textUnderBudget' : 'textOverBudget' );
@@ -248,7 +248,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/expenses_manage_ap
                                 );
                                 $row = $form->addRow();
                                     $row->addLabel('approval', __('Approval'));
-                                    $row->addSelect('approval')->fromArray($approvalStatuses)->isRequired()->placeholder();
+                                    $row->addSelect('approval')->fromArray($approvalStatuses)->required()->placeholder();
 
                                 $col = $form->addRow()->addColumn();
                                     $col->addLabel('comment', __('Comment'));

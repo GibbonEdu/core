@@ -68,23 +68,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
 
             $row = $form->addRow();
                 $row->addLabel('columnName', __('Column'));
-                $row->addTextField('columnName')->maxLength(30)->isRequired()->readonly()->setValue($values['columnName']);
+                $row->addTextField('columnName')->maxLength(30)->required()->readonly()->setValue($values['columnName']);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('name')->maxLength(12)->isRequired();
+                $row->addTextField('name')->maxLength(12)->required();
 
             $row = $form->addRow();
                 $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique for this school year.'));
-                $row->addTextField('nameShort')->maxLength(4)->isRequired();
+                $row->addTextField('nameShort')->maxLength(4)->required();
 
             $row = $form->addRow();
                 $row->addLabel('timeStart', __('Start Time'));
-                $row->addTime('timeStart')->isRequired();
+                $row->addTime('timeStart')->required();
 
             $row = $form->addRow();
                 $row->addLabel('timeEnd', __('End Time'));
-                $row->addTime('timeEnd')->isRequired()->chainedTo('timeStart');
+                $row->addTime('timeEnd')->required()->chainedTo('timeStart');
 
             $types = array(
                 'Lesson' => __('Lesson'),
@@ -95,7 +95,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/ttColumn_e
                 'Other' => __('Other'));
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($types)->isRequired();
+                $row->addSelect('type')->fromArray($types)->required();
 
             $row = $form->addRow();
                 $row->addFooter();

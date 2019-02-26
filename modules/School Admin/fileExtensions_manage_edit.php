@@ -77,18 +77,18 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/fileExtension
 
             $row = $form->addRow();
                 $row->addLabel('extension', __('Extension'))->description(__('Must be unique.'));
-                $ext = $row->addTextField('extension')->isRequired()->maxLength(7)->setValue($values['extension']);
+                $ext = $row->addTextField('extension')->required()->maxLength(7)->setValue($values['extension']);
 
                 $within = implode(',', array_map(function ($str) { return sprintf("'%s'", $str); }, $illegalTypes));
                 $ext->addValidation('Validate.Exclusion', 'within: ['.$within.'], failureMessage: "Illegal file type!", partialMatch: true, caseSensitive: false');
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(50)->setValue($values['name']);
+                $row->addTextField('name')->required()->maxLength(50)->setValue($values['name']);
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($categories)->isRequired()->placeholder()->selected($values['type']);
+                $row->addSelect('type')->fromArray($categories)->required()->placeholder()->selected($values['type']);
 
             $row = $form->addRow();
                 $row->addFooter();

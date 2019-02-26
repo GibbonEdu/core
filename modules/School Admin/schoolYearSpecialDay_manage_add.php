@@ -80,11 +80,11 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
             $row = $form->addRow();
                 $row->addLabel('type', __('Type'));
-                $row->addSelect('type')->fromArray($types)->isRequired()->placeholder();
+                $row->addSelect('type')->fromArray($types)->required()->placeholder();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(20);
+                $row->addTextField('name')->required()->maxLength(20);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));

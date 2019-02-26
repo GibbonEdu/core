@@ -229,7 +229,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                 $row = $form->addRow();
                                     $row->addLabel('code', __('System Language'));
-                                    $row->addSelectSystemLanguage('code')->selected($code)->isRequired();
+                                    $row->addSelectSystemLanguage('code')->selected($code)->required();
 
                                 $row = $form->addRow();
                                     $row->addFooter();
@@ -255,23 +255,23 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                 $row = $form->addRow();
                                     $row->addLabel('type', __('Database Type'));
-                                    $row->addTextField('type')->setValue('MySQL')->readonly()->isRequired();
+                                    $row->addTextField('type')->setValue('MySQL')->readonly()->required();
 
                                 $row = $form->addRow();
                                     $row->addLabel('databaseServer', __('Database Server'))->description(__('Localhost, IP address or domain.'));
-                                    $row->addTextField('databaseServer')->isRequired()->maxLength(255);
+                                    $row->addTextField('databaseServer')->required()->maxLength(255);
 
                                 $row = $form->addRow();
                                     $row->addLabel('databaseName', __('Database Name'))->description(__('This database will be created if it does not already exist. Collation should be utf8_general_ci.'));
-                                    $row->addTextField('databaseName')->isRequired()->maxLength(50);
+                                    $row->addTextField('databaseName')->required()->maxLength(50);
 
                                 $row = $form->addRow();
                                     $row->addLabel('databaseUsername', __('Database Username'));
-                                    $row->addTextField('databaseUsername')->isRequired()->maxLength(50);
+                                    $row->addTextField('databaseUsername')->required()->maxLength(50);
 
                                 $row = $form->addRow();
                                     $row->addLabel('databasePassword', __('Database Password'));
-                                    $row->addPassword('databasePassword')->isRequired()->maxLength(255);
+                                    $row->addPassword('databasePassword')->required()->maxLength(255);
 
                                 $row = $form->addRow();
                                     $row->addLabel('demoData', __('Install Demo Data?'));
@@ -443,15 +443,15 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-                                                    $row->addTextField('surname')->isRequired()->maxLength(30);
+                                                    $row->addTextField('surname')->required()->maxLength(30);
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-                                                    $row->addTextField('firstName')->isRequired()->maxLength(30);
+                                                    $row->addTextField('firstName')->required()->maxLength(30);
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('email', __('Email'));
-                                                    $row->addEmail('email')->isRequired();
+                                                    $row->addEmail('email')->required();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('support', '<b>'.__('Receive Support?').'</b>')->description(__('Join our mailing list and recieve a welcome email from the team.'));
@@ -459,7 +459,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
 
                                                 $row = $form->addRow();
                                                     $row->addLabel('username', __('Username'))->description(__('Must be unique. System login name. Cannot be changed.'));
-                                                    $row->addTextField('username')->isRequired()->maxLength(20);
+                                                    $row->addTextField('username')->required()->maxLength(20);
 
                                                 $policy = getPasswordPolicy($guid, $connection2);
                                                 if ($policy != false) {
@@ -468,7 +468,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $row = $form->addRow();
                                                     $row->addLabel('passwordNew', __('Password'));
                                                     $password = $row->addPassword('passwordNew')
-                                                        ->isRequired()
+                                                        ->required()
                                                         ->maxLength(30);
 
                                                 $alpha = getSettingByScope($connection2, 'System', 'passwordPolicyAlpha');
@@ -492,7 +492,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $row = $form->addRow();
                                                     $row->addLabel('passwordConfirm', __('Confirm Password'));
                                                     $row->addPassword('passwordConfirm')
-                                                        ->isRequired()
+                                                        ->required()
                                                         ->maxLength(30)
                                                         ->addValidation('Validate.Confirmation', "match: 'passwordNew'");
 
@@ -507,17 +507,17 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'absoluteURL', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->isRequired();
+                                                    $row->addURL($setting['name'])->setValue($pageURL.$_SERVER['SERVER_NAME'].$port.substr($uri_parts[0], 0, -22))->maxLength(100)->required();
 
                                                 $setting = getSettingByScope($connection2, 'System', 'absolutePath', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->isRequired();
+                                                    $row->addTextField($setting['name'])->setValue(substr(__FILE__, 0, -22))->maxLength(100)->required();
 
                                                 $setting = getSettingByScope($connection2, 'System', 'systemName', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->maxLength(50)->isRequired()->setValue('Gibbon');
+                                                    $row->addTextField($setting['name'])->maxLength(50)->required()->setValue('Gibbon');
 
                                                 $installTypes = array(
                                                     'Production'  => __('Production'),
@@ -528,7 +528,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'installType', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->isRequired();
+                                                    $row->addSelect($setting['name'])->fromArray($installTypes)->selected('Testing')->required();
 
                                                 $statusInitial = "<div id='status' class='warning'><div style='width: 100%; text-align: center'><img style='margin: 10px 0 5px 0' src='../themes/Default/img/loading.gif' alt='Loading'/><br/>".__('Checking for Cutting Edge Code.')."</div></div>";
                                                 $row = $form->addRow();
@@ -567,19 +567,19 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'statsCollection', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addYesNo($setting['name'])->selected('Y')->isRequired();
+                                                    $row->addYesNo($setting['name'])->selected('Y')->required();
 
                                                 $form->addRow()->addHeading(__('Organisation Settings'));
 
                                                 $setting = getSettingByScope($connection2, 'System', 'organisationName', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->isRequired();
+                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
 
                                                 $setting = getSettingByScope($connection2, 'System', 'organisationNameShort', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->isRequired();
+                                                    $row->addTextField($setting['name'])->setValue('')->maxLength(50)->required();
 
                                                 $form->addRow()->addHeading(__('gibbonedu.com Value Added Services'));
 
@@ -598,12 +598,12 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'country', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelectCountry($setting['name'])->isRequired();
+                                                    $row->addSelectCountry($setting['name'])->required();
 
                                                 $setting = getSettingByScope($connection2, 'System', 'currency', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelectCurrency($setting['name'])->isRequired();
+                                                    $row->addSelectCurrency($setting['name'])->required();
 
                                                 $tzlist = array_reduce(DateTimeZone::listIdentifiers(DateTimeZone::ALL), function($group, $item) {
                                                     $group[$item] = __($item);
@@ -612,7 +612,7 @@ $_SESSION[$guid]['stringReplacement'] = array();
                                                 $setting = getSettingByScope($connection2, 'System', 'timezone', true);
                                                 $row = $form->addRow();
                                                     $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-                                                    $row->addSelect($setting['name'])->fromArray($tzlist)->isRequired()->placeholder();
+                                                    $row->addSelect($setting['name'])->fromArray($tzlist)->required()->placeholder();
 
                                                 $row = $form->addRow();
                                                     $row->addFooter();

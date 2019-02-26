@@ -46,7 +46,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	$setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleWidthType', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-    	$row->addSelect($setting['name'])->fromString('Regular, Wide')->selected($setting['value'])->isRequired();
+    	$row->addSelect($setting['name'])->fromString('Regular, Wide')->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor', true);
 	$row = $form->addRow();
@@ -56,12 +56,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/messengerSett
 	$setting = getSettingByScope($connection2, 'Messenger', 'messageBubbleAutoHide', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-		$row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+		$row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 	$setting = getSettingByScope($connection2, 'Messenger', 'enableHomeScreenWidget', true);
 	$row = $form->addRow();
     	$row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Miscellaneous'));
 

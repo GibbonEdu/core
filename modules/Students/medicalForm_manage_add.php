@@ -58,7 +58,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/medicalForm_manag
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->placeholder()->selected($gibbonPersonID);
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->placeholder()->selected($gibbonPersonID);
 
     $row = $form->addRow();
         $row->addLabel('bloodType', __('Blood Type'));

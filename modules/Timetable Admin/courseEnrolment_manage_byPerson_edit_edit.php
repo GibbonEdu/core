@@ -106,11 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
 
             $row = $form->addRow();
                 $row->addLabel('role', __('Role'));
-				$row->addSelect('role')->fromArray($roles)->isRequired()->selected($values['role']);
+				$row->addSelect('role')->fromArray($roles)->required()->selected($values['role']);
 			
 			$row = $form->addRow();
 				$row->addLabel('reportable', __('Reportable'));
-				$row->addYesNo('reportable')->isRequired()->selected($values['reportable']);
+				$row->addYesNo('reportable')->required()->selected($values['reportable']);
 
 			$row = $form->addRow();
 				$row->addFooter();

@@ -90,15 +90,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $row = $form->addRow();
                 $row->addLabel("yearName", __("School Year"))->description(__("This value cannot be changed."));
-                $row->addTextField("yearName")->setValue($yearName)->readonly(true)->isRequired();
+                $row->addTextField("yearName")->setValue($yearName)->readonly(true)->required();
 
             $row = $form->addRow();
                 $row->addLabel("name", __("Name"));
-                $row->addTextField("name")->setValue(htmlprep($resultRow['name']))->maxLength(100)->isRequired();
+                $row->addTextField("name")->setValue(htmlprep($resultRow['name']))->maxLength(100)->required();
 
             $row = $form->addRow();
                 $row->addLabel("active", __("Active"));
-                $row->addYesNo("active")->selected($resultRow['active'])->isRequired();
+                $row->addYesNo("active")->selected($resultRow['active'])->required();
 
             $row = $form->addRow();
                 $row->addLabel("description", __("Description"));
@@ -106,11 +106,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/billingSchedule_ma
 
             $row = $form->addRow();
                 $row->addLabel("invoiceIssueDate", __('Invoice Issue Date'))->description(__('Intended issue date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-                $row->addDate('invoiceIssueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceIssueDate']))->isRequired();
+                $row->addDate('invoiceIssueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceIssueDate']))->required();
 
             $row = $form->addRow();
                 $row->addLabel('invoiceDueDate', __('Invoice Due Date'))->description(__('Final payment date.').'<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-                $row->addDate('invoiceDueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceDueDate']))->isRequired();
+                $row->addDate('invoiceDueDate')->setValue(dateConvertBack($guid, $resultRow['invoiceDueDate']))->required();
 
             $row = $form->addRow();
                 $row->addFooter();

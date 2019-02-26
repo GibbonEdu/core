@@ -83,15 +83,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
 
             $row = $form->addRow();
                 $row->addLabel('id', __('ID'));
-                $row->addTextField('id')->setValue($values['id'])->readonly()->isRequired();
+                $row->addTextField('id')->setValue($values['id'])->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->setValue($values['name'])->readonly()->isRequired();
+                $row->addTextField('name')->setValue($values['name'])->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('statusCurrent', __('Current Status'));
-                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->isRequired();
+                $row->addTextField('statusCurrent')->setValue($values['status'])->readonly()->required();
 
             $form->addRow()->addHeading(__('This Event'));
 
@@ -104,16 +104,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_lending_it
             );
             $row = $form->addRow();
                 $row->addLabel('status', __('New Status'));
-                $row->addSelect('status')->fromArray($statuses)->isRequired()->selected($values['status'])->placeholder();
+                $row->addSelect('status')->fromArray($statuses)->required()->selected($values['status'])->placeholder();
 
             $form->addHiddenValue('gibbonPersonIDStatusResponsible', $values['gibbonPersonIDStatusResponsible']);
             $row = $form->addRow();
                 $row->addLabel('gibbonPersonIDStatusResponsiblename', __('Responsible User'));
-                $row->addTextField('gibbonPersonIDStatusResponsiblename')->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true))->readonly()->isRequired();
+                $row->addTextField('gibbonPersonIDStatusResponsiblename')->setValue(formatName('', htmlPrep($values['preferredName']), htmlPrep($values['surname']), 'Student', true))->readonly()->required();
 
             $row = $form->addRow();
                 $row->addLabel('returnExpected', __('Expected Return Date'));
-                $row->addDate('returnExpected')->setValue(dateConvertBack($guid, $values['returnExpected']))->isRequired();
+                $row->addDate('returnExpected')->setValue(dateConvertBack($guid, $values['returnExpected']))->required();
 
 
             $row = $form->addRow()->addHeading(__('On Return'));

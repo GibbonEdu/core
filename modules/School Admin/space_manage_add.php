@@ -44,13 +44,13 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/space_manage_
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(30);
+        $row->addTextField('name')->required()->maxLength(30);
 
     $types = getSettingByScope($connection2, 'School Admin', 'facilityTypes');
 
     $row = $form->addRow();
         $row->addLabel('type', __('Type'));
-        $row->addSelect('type')->fromString($types)->isRequired()->placeholder();
+        $row->addSelect('type')->fromString($types)->required()->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('capacity', __('Capacity'));

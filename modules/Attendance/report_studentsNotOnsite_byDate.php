@@ -60,11 +60,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_students
 
     $row = $form->addRow();
         $row->addLabel('currentDate', __('Date'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->isRequired();
+        $row->addDate('currentDate')->setValue(dateConvertBack($guid, $currentDate))->required();
 
     $row = $form->addRow();
         $row->addLabel('sort', __('Sort By'));
-        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->isRequired();
+        $row->addSelect('sort')->fromArray(array('surname' => __('Surname'), 'preferredName' => __('Preferred Name'), 'rollGroup' => __('Roll Group')))->selected($sort)->required();
 
     $row = $form->addRow();
         $row->addLabel('allStudents', __('All Students'))->description('Include all students, even those where attendance has not yet been recorded.');

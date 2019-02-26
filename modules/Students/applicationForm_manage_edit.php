@@ -99,7 +99,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('priority', __('Priority'))->description(__('Higher priority applicants appear first in list of applications.'));
-        $row->addSelect('priority')->fromArray(range(-9, 9))->isRequired();
+        $row->addSelect('priority')->fromArray(range(-9, 9))->required();
 
     // STATUS
     if ($application['applicationStatus'] != 'Accepted') {
@@ -111,11 +111,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         );
         $row = $form->addRow();
                 $row->addLabel('status', __('Status'))->description(__('Manually set status. "Approved" not permitted.'));
-                $row->addSelect('status')->isRequired()->fromArray($statuses)->selected($application['applicationStatus']);
+                $row->addSelect('status')->required()->fromArray($statuses)->selected($application['applicationStatus']);
     } else {
         $row = $form->addRow();
             $row->addLabel('status', __('Status'))->description(__('Manually set status. "Approved" not permitted.'));
-            $row->addTextField('status')->isRequired()->readOnly()->setValue($application['applicationStatus']);
+            $row->addTextField('status')->required()->readOnly()->setValue($application['applicationStatus']);
     }
 
     // MILESTONES
@@ -138,16 +138,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('dateStart', __('Start Date'))->description(__('Student\'s intended first day at school.'))->append(__('Format:').' '.$_SESSION[$guid]['i18n']['dateFormat']);
-        $row->addDate('dateStart')->isRequired();
+        $row->addDate('dateStart')->required();
 
     $row = $form->addRow();
         $row->addLabel('gibbonSchoolYearIDEntry', __('Year of Entry'))->description(__('When will the student join?'));
-        $row->addSelectSchoolYear('gibbonSchoolYearIDEntry', 'Active')->isRequired();
+        $row->addSelectSchoolYear('gibbonSchoolYearIDEntry', 'Active')->required();
 
     // YEAR GROUP
     $row = $form->addRow();
         $row->addLabel('gibbonYearGroupIDEntry', __('Year Group at Entry'))->description(__('Which year level will student enter.'));
-        $row->addSelectYearGroup('gibbonYearGroupIDEntry')->isRequired();
+        $row->addSelectYearGroup('gibbonYearGroupIDEntry')->required();
 
     // ROLL GROUP
     $sqlSelect = "SELECT gibbonRollGroupID as value, name, gibbonSchoolYearID FROM gibbonRollGroup ORDER BY gibbonSchoolYearID, name";
@@ -192,7 +192,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         // PAYMENT MADE
         $row = $form->addRow();
             $row->addLabel('paymentMade', __('Payment'))->description(sprintf(__('Has payment (%1$s %2$s) been made for this application.'), $currency, $applicationFee));
-            $row->addSelect('paymentMade')->fromArray($paymentMadeOptions)->isRequired();
+            $row->addSelect('paymentMade')->fromArray($paymentMadeOptions)->required();
 
         // PAYMENT DETAILS
         if (!empty($application['paymentToken']) || !empty($application['paymentPayerID']) || !empty($application['paymentTransactionID']) || !empty($application['paymentReceiptID'])) {
@@ -298,19 +298,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('surname', __('Surname'))->description(__('Family name as shown in ID documents.'));
-        $row->addTextField('surname')->isRequired()->maxLength(60);
+        $row->addTextField('surname')->required()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('firstName', __('First Name'))->description(__('First name as shown in ID documents.'));
-        $row->addTextField('firstName')->isRequired()->maxLength(60);
+        $row->addTextField('firstName')->required()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('preferredName', __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-        $row->addTextField('preferredName')->isRequired()->maxLength(60);
+        $row->addTextField('preferredName')->required()->maxLength(60);
 
     $row = $form->addRow();
         $row->addLabel('officialName', __('Official Name'))->description(__('Full name as shown in ID documents.'));
-        $row->addTextField('officialName')->isRequired()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
+        $row->addTextField('officialName')->required()->maxLength(150)->setTitle('Please enter full name as shown in ID documents');
 
     $row = $form->addRow();
         $row->addLabel('nameInCharacters', __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -318,18 +318,18 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('gender', __('Gender'));
-        $row->addSelectGender('gender')->isRequired();
+        $row->addSelectGender('gender')->required();
 
     $row = $form->addRow();
         $row->addLabel('dob', __('Date of Birth'))->description($_SESSION[$guid]['i18n']['dateFormat'])->prepend(__('Format:'));
-        $row->addDate('dob')->isRequired();
+        $row->addDate('dob')->required();
 
     // STUDENT BACKGROUND
     $form->addRow()->addSubheading(__('Student Background'));
 
     $row = $form->addRow();
         $row->addLabel('languageHomePrimary', __('Home Language - Primary'))->description(__('The primary language used in the student\'s home.'));
-        $row->addSelectLanguage('languageHomePrimary')->isRequired();
+        $row->addSelectLanguage('languageHomePrimary')->required();
 
     $row = $form->addRow();
         $row->addLabel('languageHomeSecondary', __('Home Language - Secondary'));
@@ -337,7 +337,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('languageFirst', __('First Language'))->description(__('Student\'s native/first/mother language.'));
-        $row->addSelectLanguage('languageFirst')->isRequired();
+        $row->addSelectLanguage('languageFirst')->required();
 
     $row = $form->addRow();
         $row->addLabel('languageSecond', __('Second Language'));
@@ -349,15 +349,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
     $row = $form->addRow();
         $row->addLabel('countryOfBirth', __('Country of Birth'));
-        $row->addSelectCountry('countryOfBirth')->isRequired();
+        $row->addSelectCountry('countryOfBirth')->required();
 
     $row = $form->addRow();
         $row->addLabel('citizenship1', __('Citizenship'));
         $nationalityList = getSettingByScope($connection2, 'User Admin', 'nationality');
         if (!empty($nationalityList)) {
-            $row->addSelect('citizenship1')->isRequired()->fromString($nationalityList)->placeholder(__('Please select...'));
+            $row->addSelect('citizenship1')->required()->fromString($nationalityList)->placeholder(__('Please select...'));
         } else {
-            $row->addSelectCountry('citizenship1')->isRequired();
+            $row->addSelectCountry('citizenship1')->required();
         }
 
     $countryName = (isset($_SESSION[$guid]['country']))? $_SESSION[$guid]['country'].' ' : '';
@@ -389,7 +389,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('email', __('Email'));
         $email = $row->addEmail('email');
         if ($uniqueEmailAddress == 'Y') {
-            $email->isUnique('./modules/User Admin/user_manage_emailAjax.php');
+            $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php');
         }
 
     for ($i = 1; $i < 3; ++$i) {
@@ -411,7 +411,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('sen', __('Special Educational Needs (SEN)'))->description(__('Are there any known or suspected SEN concerns, or previous SEN assessments?'));
-            $row->addYesNo('sen')->isRequired()->placeholder(__('Please select...'));
+            $row->addYesNo('sen')->required()->placeholder(__('Please select...'));
 
         $form->toggleVisibilityByClass('senDetailsRow')->onSelect('sen')->when('Y');
 
@@ -438,7 +438,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
     if (!empty($applicationFormRefereeLink)) {
         $row = $form->addRow();
             $row->addLabel('referenceEmail', __('Current School Reference Email'))->description(__('An email address for a referee at the applicant\'s current school.'));
-            $row->addEmail('referenceEmail')->isRequired();
+            $row->addEmail('referenceEmail')->required();
     }
 
     // PREVIOUS SCHOOLS TABLE
@@ -490,15 +490,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('homeAddress', __('Home Address'))->description(__('Unit, Building, Street'));
-            $row->addTextArea('homeAddress')->isRequired()->maxLength(255)->setRows(2);
+            $row->addTextArea('homeAddress')->required()->maxLength(255)->setRows(2);
 
         $row = $form->addRow();
             $row->addLabel('homeAddressDistrict', __('Home Address (District)'))->description(__('County, State, District'));
-            $row->addTextFieldDistrict('homeAddressDistrict')->isRequired();
+            $row->addTextFieldDistrict('homeAddressDistrict')->required();
 
         $row = $form->addRow();
             $row->addLabel('homeAddressCountry', __('Home Address (Country)'));
-            $row->addSelectCountry('homeAddressCountry')->isRequired();
+            $row->addSelectCountry('homeAddressCountry')->required();
 
 
         // PARENT 1 - IF EXISTS
@@ -519,7 +519,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow();
                 $row->addLabel('parent1relationship', __('Relationship'));
-                $row->addSelectRelationship('parent1relationship')->isRequired();
+                $row->addSelectRelationship('parent1relationship')->required();
 
             // CUSTOM FIELDS FOR PARENT 1 WITH FAMILY
             $existingFields = (isset($application["parent1fields"]))? unserialize($application["parent1fields"]) : null;
@@ -566,23 +566,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}title", __('Title'));
-                $row->addSelectTitle("parent{$i}title")->isRequired();
+                $row->addSelectTitle("parent{$i}title")->required();
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}surname", __('Surname'))->description(__('Family name as shown in ID documents.'));
-                $row->addTextField("parent{$i}surname")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}surname")->required()->maxLength(30);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}firstName", __('First Name'))->description(__('First name as shown in ID documents.'));
-                $row->addTextField("parent{$i}firstName")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}firstName")->required()->maxLength(30);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}preferredName", __('Preferred Name'))->description(__('Most common name, alias, nickname, etc.'));
-                $row->addTextField("parent{$i}preferredName")->isRequired()->maxLength(30);
+                $row->addTextField("parent{$i}preferredName")->required()->maxLength(30);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}officialName", __('Official Name'))->description(__('Full name as shown in ID documents.'));
-                $row->addTextField("parent{$i}officialName")->isRequired()->maxLength(150);
+                $row->addTextField("parent{$i}officialName")->required()->maxLength(150);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}nameInCharacters", __('Name In Characters'))->description(__('Chinese or other character-based name.'));
@@ -590,11 +590,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}gender", __('Gender'));
-                $row->addSelectGender("parent{$i}gender")->isRequired();
+                $row->addSelectGender("parent{$i}gender")->required();
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}relationship", __('Relationship'));
-                $row->addSelectRelationship("parent{$i}relationship")->isRequired();
+                $row->addSelectRelationship("parent{$i}relationship")->required();
 
             // PARENT PERSONAL BACKGROUND
             $row = $form->addRow()->setClass("parentSection{$i}");
@@ -638,10 +638,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}email", __('Email'));
-                $email = $row->addEmail("parent{$i}email")->isRequired($i == 1);
+                $email = $row->addEmail("parent{$i}email")->required($i == 1);
 
                 if ($uniqueEmailAddress == 'Y') {
-                    $email->isUnique('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
+                    $email->uniqueField('./modules/User Admin/user_manage_emailAjax.php', array('fieldName' => 'email'));
                 }
 
             for ($y = 1; $y < 3; ++$y) {
@@ -656,7 +656,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}profession", __('Profession'));
-                $row->addTextField("parent{$i}profession")->isRequired($i == 1)->maxLength(90);
+                $row->addTextField("parent{$i}profession")->required($i == 1)->maxLength(90);
 
             $row = $form->addRow()->setClass("parentSection{$i}");
                 $row->addLabel("parent{$i}employer", __('Employer'));
@@ -760,12 +760,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
 
         $row = $form->addRow();
             $row->addLabel('languageChoice', __('Language Choice'))->description(__('Please choose preferred additional language to study.'));
-            $row->addSelect('languageChoice')->fromArray($languages)->isRequired()->placeholder();
+            $row->addSelect('languageChoice')->fromArray($languages)->required()->placeholder();
 
         $row = $form->addRow();
             $column = $row->addColumn();
             $column->addLabel('languageChoiceExperience', __('Language Choice Experience'))->description(__('Has the applicant studied the selected language before? If so, please describe the level and type of experience.'));
-            $column->addTextArea('languageChoiceExperience')->isRequired()->setRows(5)->setClass('fullWidth');
+            $column->addTextArea('languageChoiceExperience')->required()->setRows(5)->setClass('fullWidth');
     }
 
     // SCHOLARSHIPS
@@ -810,19 +810,19 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         // COMPANY DETAILS
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyName', __('Company Name'));
-            $row->addTextField('companyName')->isRequired()->maxLength(100);
+            $row->addTextField('companyName')->required()->maxLength(100);
 
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyContact', __('Company Contact Person'));
-            $row->addTextField('companyContact')->isRequired()->maxLength(100);
+            $row->addTextField('companyContact')->required()->maxLength(100);
 
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyAddress', __('Company Address'));
-            $row->addTextField('companyAddress')->isRequired()->maxLength(255);
+            $row->addTextField('companyAddress')->required()->maxLength(255);
 
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyEmail', __('Company Emails'))->description(__('Comma-separated list of email address'));
-            $row->addTextField('companyEmail')->isRequired();
+            $row->addTextField('companyEmail')->required();
 
         $row = $form->addRow()->addClass('paymentCompany');
             $row->addLabel('companyCCFamily', __('CC Family?'))->description(__('Should the family be sent a copy of billing emails?'));
@@ -921,9 +921,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/applicationForm_m
         $row->addLabel('howDidYouHear', __('How Did You Hear About Us?'));
 
     if (empty($howDidYouHear)) {
-        $row->addTextField('howDidYouHear')->isRequired()->maxLength(30);
+        $row->addTextField('howDidYouHear')->required()->maxLength(30);
     } else {
-        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->isRequired()->placeholder();
+        $row->addSelect('howDidYouHear')->fromArray($howDidYouHearList)->required()->placeholder();
 
         $form->toggleVisibilityByClass('tellUsMore')->onSelect('howDidYouHear')->whenNot(__('Please select...'));
 

@@ -2753,7 +2753,7 @@ function sidebar($gibbon, $pdo)
             $row = $form->addRow();
                 $row->addContent(sprintf($loginIcon, 'attendance', __('Username or email')));
                 $row->addTextField('username')
-                    ->isRequired()
+                    ->required()
                     ->maxLength(50)
                     ->setClass('fullWidth')
                     ->placeholder(__('Username or email'))
@@ -2762,7 +2762,7 @@ function sidebar($gibbon, $pdo)
             $row = $form->addRow();
                 $row->addContent(sprintf($loginIcon, 'key', __('Password')));
                 $row->addPassword('password')
-                    ->isRequired()
+                    ->required()
                     ->maxLength(30)
                     ->setClass('fullWidth')
                     ->placeholder(__('Password'))

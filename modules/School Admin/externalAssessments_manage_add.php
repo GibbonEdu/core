@@ -47,23 +47,23 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/externalAsses
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(50);
+        $row->addTextField('name')->required()->maxLength(50);
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(10);
+        $row->addTextField('nameShort')->required()->maxLength(10);
 
     $row = $form->addRow();
         $row->addLabel('description', __('Description'))->description(__('Brief description of assessment and how it is used.'));
-        $row->addTextField('description')->isRequired()->maxLength(255);
+        $row->addTextField('description')->required()->maxLength(255);
 
     $row = $form->addRow();
         $row->addLabel('active', __('Active'));
-        $row->addYesNo('active')->isRequired();
+        $row->addYesNo('active')->required();
 
     $row = $form->addRow();
         $row->addLabel('allowFileUpload', __('Allow File Upload'))->description(__('Should the student record include the option of a file upload?'));
-        $row->addYesNo('allowFileUpload')->isRequired()->selected('N');
+        $row->addYesNo('allowFileUpload')->required()->selected('N');
 
     $row = $form->addRow();
         $row->addFooter();

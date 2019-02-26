@@ -46,15 +46,15 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/yearGroup_man
 
     $row = $form->addRow();
         $row->addLabel('name', __('Name'))->description(__('Must be unique.'));
-        $row->addTextField('name')->isRequired()->maxLength(15);
+        $row->addTextField('name')->required()->maxLength(15);
 
     $row = $form->addRow();
         $row->addLabel('nameShort', __('Short Name'))->description(__('Must be unique.'));
-        $row->addTextField('nameShort')->isRequired()->maxLength(4);
+        $row->addTextField('nameShort')->required()->maxLength(4);
 
     $row = $form->addRow();
         $row->addLabel('sequenceNumber', __('Sequence Number'))->description(__('Must be unique. Controls chronological ordering.'));
-        $row->addSequenceNumber('sequenceNumber', 'gibbonYearGroup')->isRequired()->maxLength(3);
+        $row->addSequenceNumber('sequenceNumber', 'gibbonYearGroup')->required()->maxLength(3);
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonIDHOY', __('Head of Year'));

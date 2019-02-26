@@ -75,11 +75,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
             $row = $form->addRow();
                 $row->addLabel('original', __('Original String'));
-                $row->addTextField('original')->isRequired()->maxLength(100)->setValue($values['original']);
+                $row->addTextField('original')->required()->maxLength(100)->setValue($values['original']);
 
             $row = $form->addRow();
                 $row->addLabel('replacement', __('Replacement String'));
-                $row->addTextField('replacement')->isRequired()->maxLength(100)->setValue($values['replacement']);
+                $row->addTextField('replacement')->required()->maxLength(100)->setValue($values['replacement']);
 
             $row = $form->addRow();
                 $row->addLabel('mode', __('Mode'));
@@ -89,11 +89,11 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/stringReplace
 
             $row = $form->addRow();
                 $row->addLabel('caseSensitive', __('Case Sensitive'));
-                $row->addYesNo('caseSensitive')->selected('N')->isRequired()->selected($values['caseSensitive']);
+                $row->addYesNo('caseSensitive')->selected('N')->required()->selected($values['caseSensitive']);
 
             $row = $form->addRow();
                 $row->addLabel('priority', __('Priority'))->description(__('Higher priorities are substituted first.'));
-                $row->addNumber('priority')->isRequired()->maxLength(2)->setValue($values['priority']);
+                $row->addNumber('priority')->required()->maxLength(2)->setValue($values['priority']);
 
             $row = $form->addRow();
                 $row->addFooter();

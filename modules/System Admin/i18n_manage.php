@@ -108,7 +108,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if (version_compare($version, $i18n['version'], '>')) {
                 $actions->addAction('update', __('Update'))
                     ->setIcon('delivery2')
-                    ->isModal(650, 135)
+                    ->modalWindow(650, 135)
                     ->addParam('mode', 'update')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }
@@ -166,7 +166,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
             if ($i18n['active'] == 'Y') {
                 $actions->addAction('install', __('Install'))
                     ->setIcon('page_new')
-                    ->isModal(650, 135)
+                    ->modalWindow(650, 135)
                     ->addParam('mode', 'install')
                     ->setURL('/modules/System Admin/i18n_manage_install.php');
             }

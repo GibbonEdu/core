@@ -45,40 +45,40 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
     $setting = getSettingByScope($connection2, 'Behaviour', 'enableDescriptors', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('descriptors')->onSelect($setting['name'])->when('Y');
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'positiveDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'negativeDescriptors', true);
     $row = $form->addRow()->addClass('descriptors');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Levels'));
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'enableLevels', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('levels')->onSelect($setting['name'])->when('Y');
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'levels', true);
     $row = $form->addRow()->addClass('levels');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+        $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Behaviour Letters'))->append(sprintf(__('By using an %1$sincluded CLI script%2$s, %3$s can be configured to automatically generate and email behaviour letters to parents and tutors, once certain negative behaviour threshold levels have been reached. In your letter text you may use the following fields: %4$s'), "<a target='_blank' href='https://gibbonedu.org/support/administrators/command-line-tools/'>", '</a>', $_SESSION[$guid]['systemName'], '[studentName], [rollGroup], [behaviourCount], [behaviourRecord]'));
 
     $setting = getSettingByScope($connection2, 'Behaviour', 'enableBehaviourLetters', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $form->toggleVisibilityByClass('behaviourLetters')->onSelect($setting['name'])->when('Y');
 
@@ -86,12 +86,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/behaviourSett
         $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Count', true);
         $row = $form->addRow()->addClass('behaviourLetters');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addSelect($setting['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($setting['value'])->isRequired();
+            $row->addSelect($setting['name'])->fromString('1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20')->selected($setting['value'])->required();
 
         $setting = getSettingByScope($connection2, 'Behaviour', 'behaviourLettersLetter'.$i.'Text', true);
         $row = $form->addRow()->addClass('behaviourLetters');
             $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-            $row->addTextArea($setting['name'])->setValue($setting['value'])->isRequired();
+            $row->addTextArea($setting['name'])->setValue($setting['value'])->required();
     }
 
     $row = $form->addRow()->addHeading(__('Miscellaneous'));

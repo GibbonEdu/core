@@ -104,12 +104,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                 //Date
                 $row = $form->addRow();
                 	$row->addLabel('date', __('Date'));
-                	$row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->isRequired()->readonly();
+                	$row->addDate('date')->setValue(dateConvertBack($guid, $values['date']))->required()->readonly();
 
                 //Date
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addTextField('type')->setValue($values['type'])->isRequired()->readonly();
+                    $row->addTextField('type')->setValue($values['type'])->required()->readonly();
 
                 //Descriptor
                 if ($enableDescriptors == 'Y') {
@@ -126,7 +126,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Behaviour/behaviour_manage
                         $row->addSelect('descriptor')
                             ->fromArray($descriptors)
                             ->selected($values['descriptor'])
-                            ->isRequired()
+                            ->required()
                             ->placeholder();
                 }
 

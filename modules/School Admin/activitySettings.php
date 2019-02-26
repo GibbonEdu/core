@@ -43,14 +43,14 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'dateType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray($dateTypes)->selected($setting['value'])->isRequired();    
+        $row->addSelect($setting['name'])->fromArray($dateTypes)->selected($setting['value'])->required();    
 
     $form->toggleVisibilityByClass('perTerm')->onSelect($setting['name'])->when('Term');
 
     $setting = getSettingByScope($connection2, 'Activities', 'maxPerTerm', true);
     $row = $form->addRow()->addClass('perTerm');
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5')->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromString('0,1,2,3,4,5')->selected($setting['value'])->required();
 
     $accessTypes = array(
         'None' => __('None'),
@@ -60,7 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'access', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray($accessTypes)->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($accessTypes)->selected($setting['value'])->required();
 
     $paymentTypes = array(
         'None' => __('None'),
@@ -71,7 +71,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'payment', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray($paymentTypes)->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($paymentTypes)->selected($setting['value'])->required();
 
     $enrolmentTypes = array(
         'Competitive' => __('Competitive'),
@@ -80,12 +80,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'enrolmentType', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addSelect($setting['name'])->fromArray($enrolmentTypes)->selected($setting['value'])->isRequired();
+        $row->addSelect($setting['name'])->fromArray($enrolmentTypes)->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Activities', 'backupChoice', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
 
     $setting = getSettingByScope($connection2, 'Activities', 'activityTypes', true);
@@ -96,12 +96,12 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/activitySetti
     $setting = getSettingByScope($connection2, 'Activities', 'disableExternalProviderSignup', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $setting = getSettingByScope($connection2, 'Activities', 'hideExternalProviderCost', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description($setting['description']);
-        $row->addYesNo($setting['name'])->selected($setting['value'])->isRequired();
+        $row->addYesNo($setting['name'])->selected($setting['value'])->required();
 
     $row = $form->addRow();
         $row->addFooter();

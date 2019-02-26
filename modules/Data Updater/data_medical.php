@@ -107,7 +107,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 			$row->addLabel('gibbonPersonID', __('Person'));
 			$row->addSelect('gibbonPersonID')
                 ->fromArray($people)
-                ->isRequired()
+                ->required()
                 ->selected($gibbonPersonID)
 				->placeholder();
 
@@ -266,11 +266,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 								$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 								$row = $form->addRow();
 									$row->addLabel('name'.$count, __('Condition Name'));
-									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->isRequired()->placeholder()->selected($rowCond['name']);
+									$row->addSelect('name'.$count)->fromQuery($pdo, $sql)->required()->placeholder()->selected($rowCond['name']);
 
 								$row = $form->addRow();
 									$row->addLabel('gibbonAlertLevelID'.$count, __('Risk'));
-									$row->addSelectAlert('gibbonAlertLevelID'.$count)->isRequired()->selected($rowCond['gibbonAlertLevelID']);
+									$row->addSelectAlert('gibbonAlertLevelID'.$count)->required()->selected($rowCond['gibbonAlertLevelID']);
 
 								$row = $form->addRow();
 									$row->addLabel('triggers'.$count, __('Triggers'));
@@ -317,11 +317,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Data Updater/data_medical.
 						$sql = "SELECT name AS value, name FROM gibbonMedicalCondition ORDER BY name";
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('name', __('Condition Name'));
-							$row->addSelect('name')->fromQuery($pdo, $sql)->isRequired()->placeholder();
+							$row->addSelect('name')->fromQuery($pdo, $sql)->required()->placeholder();
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('gibbonAlertLevelID', __('Risk'));
-							$row->addSelectAlert('gibbonAlertLevelID')->isRequired();
+							$row->addSelectAlert('gibbonAlertLevelID')->required();
 
 						$row = $form->addRow()->addClass('addConditionRow');
 							$row->addLabel('triggers', __('Triggers'));

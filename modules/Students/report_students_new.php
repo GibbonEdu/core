@@ -54,17 +54,17 @@ if (isActionAccessible($guid, $connection2, '/modules/Students/report_students_n
 
         $row = $form->addRow();
             $row->addLabel('type', __('Type'));
-            $row->addSelect('type')->fromArray(array('Current School Year' => __('Current School Year'), 'Date Range' => __('Date Range')))->selected($type)->isRequired();
+            $row->addSelect('type')->fromArray(array('Current School Year' => __('Current School Year'), 'Date Range' => __('Date Range')))->selected($type)->required();
 
         $form->toggleVisibilityByClass('dateRange')->onSelect('type')->when('Date Range');
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('startDateFrom', __('From Date'))->description('Earliest student start date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-            $row->addDate('startDateFrom')->setValue($startDateFrom)->isRequired();
+            $row->addDate('startDateFrom')->setValue($startDateFrom)->required();
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('startDateTo', __('To Date'))->description('Latest student start date to include.')->append('<br/>')->append(__('Format:').' ')->append($_SESSION[$guid]['i18n']['dateFormat']);
-            $row->addDate('startDateTo')->setValue($startDateTo)->isRequired();
+            $row->addDate('startDateTo')->setValue($startDateTo)->required();
 
         $row = $form->addRow()->addClass('dateRange');
             $row->addLabel('ignoreEnrolment', __('Ignore Enrolment'))->description('This is useful for picking up students who are set to Full, have a start date but are not yet enroled.');

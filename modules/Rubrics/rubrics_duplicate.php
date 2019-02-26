@@ -104,7 +104,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
                         $row->addLabel('scope', 'Scope');
                         
 					if ($highestAction == 'Manage Rubrics_viewEditAll') {
-                        $row->addSelect('scope')->fromArray($scopes)->isRequired()->placeholder();
+                        $row->addSelect('scope')->fromArray($scopes)->required()->placeholder();
                         $form->toggleVisibilityByClass('learningAreaRow')->onSelect('scope')->when('Learning Area');
 					} else if ($highestAction == 'Manage Rubrics_viewAllEditLearningArea') {
 						$row->addTextField('scope')->readOnly()->setValue('Learning Area');
@@ -120,11 +120,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Rubrics/rubrics_duplicate.
 					
 					$row = $form->addRow()->addClass('learningAreaRow');
 						$row->addLabel('gibbonDepartmentID', __('Learning Area'));
-						$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->isRequired()->placeholder();
+						$row->addSelect('gibbonDepartmentID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
 
 					$row = $form->addRow();
 						$row->addLabel('name', __('Name'));
-						$row->addTextField('name')->maxLength(50)->isRequired();
+						$row->addTextField('name')->maxLength(50)->required();
 						
 					$row = $form->addRow();
 						$row->addFooter();

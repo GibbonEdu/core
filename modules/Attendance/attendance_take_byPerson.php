@@ -55,11 +55,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
 
     $row = $form->addRow();
         $row->addLabel('gibbonPersonID', __('Student'));
-        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->isRequired()->selected($gibbonPersonID)->placeholder();
+        $row->addSelectStudent('gibbonPersonID', $_SESSION[$guid]['gibbonSchoolYearID'])->required()->selected($gibbonPersonID)->placeholder();
 
     $row = $form->addRow();
         $row->addLabel('currentDate', __('Date'));
-        $row->addDate('currentDate')->isRequired()->setValue(dateConvertBack($guid, $currentDate));
+        $row->addDate('currentDate')->required()->setValue(dateConvertBack($guid, $currentDate));
 
     $row = $form->addRow();
         $row->addSearchSubmit($gibbon->session);

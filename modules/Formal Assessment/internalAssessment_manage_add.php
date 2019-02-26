@@ -77,22 +77,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
                 $row->addSelect('gibbonCourseClassIDMulti')
                     ->fromQuery($pdo, $sql, $data, 'groupBy')
                     ->selectMultiple()
-                    ->isRequired()
+                    ->required()
                     ->selected($gibbonCourseClassID);
 
             $row = $form->addRow();
                 $row->addLabel('name', __('Name'));
-                $row->addTextField('name')->isRequired()->maxLength(20);
+                $row->addTextField('name')->required()->maxLength(20);
 
             $row = $form->addRow();
                 $row->addLabel('description', __('Description'));
-                $row->addTextField('description')->isRequired()->maxLength(1000);
+                $row->addTextField('description')->required()->maxLength(1000);
 
             $types = getSettingByScope($connection2, 'Formal Assessment', 'internalAssessmentTypes');
             if (!empty($types)) {
                 $row = $form->addRow();
                     $row->addLabel('type', __('Type'));
-                    $row->addSelect('type')->fromString($types)->isRequired()->placeholder();
+                    $row->addSelect('type')->fromString($types)->required()->placeholder();
             }
 
             $row = $form->addRow();
@@ -104,44 +104,44 @@ if (isActionAccessible($guid, $connection2, '/modules/Formal Assessment/internal
             $attainmentLabel = !empty($attainmentAlternativeName)? sprintf(__('Assess %1$s?'), $attainmentAlternativeName) : __('Assess Attainment?');
             $row = $form->addRow();
                 $row->addLabel('attainment', $attainmentLabel);
-                $row->addYesNoRadio('attainment')->isRequired();
+                $row->addYesNoRadio('attainment')->required();
 
             $form->toggleVisibilityByClass('attainmentRow')->onRadio('attainment')->when('Y');
 
             $attainmentScaleLabel = !empty($attainmentAlternativeName)? $attainmentAlternativeName.' '.__('Scale') : __('Attainment Scale');
             $row = $form->addRow()->addClass('attainmentRow');
                 $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
-                $row->addSelectGradeScale('gibbonScaleIDAttainment')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($_SESSION[$guid]['defaultAssessmentScale']);
 
             $effortLabel = !empty($effortAlternativeName)? sprintf(__('Assess %1$s?'), $effortAlternativeName) : __('Assess Effort?');
             $row = $form->addRow();
                 $row->addLabel('effort', $effortLabel);
-                $row->addYesNoRadio('effort')->isRequired();
+                $row->addYesNoRadio('effort')->required();
 
             $form->toggleVisibilityByClass('effortRow')->onRadio('effort')->when('Y');
 
             $effortScaleLabel = !empty($effortAlternativeName)? $effortAlternativeName.' '.__('Scale') : __('Effort Scale');
             $row = $form->addRow()->addClass('effortRow');
                 $row->addLabel('gibbonScaleIDEffort', $effortScaleLabel);
-                $row->addSelectGradeScale('gibbonScaleIDEffort')->isRequired()->selected($_SESSION[$guid]['defaultAssessmentScale']);
+                $row->addSelectGradeScale('gibbonScaleIDEffort')->required()->selected($_SESSION[$guid]['defaultAssessmentScale']);
 
             $row = $form->addRow();
                 $row->addLabel('comment', __('Include Comment?'));
-                $row->addYesNoRadio('comment')->isRequired();
+                $row->addYesNoRadio('comment')->required();
 
             $row = $form->addRow();
                 $row->addLabel('uploadedResponse', __('Include Uploaded Response?'));
-                $row->addYesNoRadio('uploadedResponse')->isRequired();
+                $row->addYesNoRadio('uploadedResponse')->required();
 
             $form->addRow()->addHeading(__('Access'));
 
             $row = $form->addRow();
                 $row->addLabel('viewableStudents', __('Viewable to Students'));
-                $row->addYesNo('viewableStudents')->isRequired();
+                $row->addYesNo('viewableStudents')->required();
 
             $row = $form->addRow();
                 $row->addLabel('viewableParents', __('Viewable to Parents'));
-                $row->addYesNo('viewableParents')->isRequired();
+                $row->addYesNo('viewableParents')->required();
 
             $row = $form->addRow();
                 $row->addLabel('completeDate', __('Go Live Date'))->prepend('1. ')->append('<br/>'.__('2. Column is hidden until date is reached.'));

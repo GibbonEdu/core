@@ -54,7 +54,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
 
         $row = $form->addRow();
             $row->addLabel('file', __('ZIP File'))->description(__('See Notes below for specification.'));
-            $row->addFileUpload('file')->isRequired();
+            $row->addFileUpload('file')->required();
 
         $row = $form->addRow();
             $row->addFooter();
