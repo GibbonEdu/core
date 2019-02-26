@@ -27,7 +27,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 		<meta charset="utf-8"/>
 		<meta name="author" content="Ross Parker, International College Hong Kong"/>
 		<meta name="robots" content="none"/>
-		
+
 		<link rel="shortcut icon" type="image/x-icon" href="./favicon.ico"/>
 		<link rel='stylesheet' type='text/css' href='./themes/Default/css/main.css' />
 	</head>
@@ -94,6 +94,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         echo '</div>';
                         exit;
                     }
+
+					// Update DB version for existing languages
+	                i18nCheckAndUpdateVersion($container, $versionDB);
+
+					// Clear the templates cache folder
+	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+
+					// Clear the var/log folder
+	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
 
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
@@ -207,6 +216,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                         echo '</div>';
                         exit;
                     }
+
+					// Update DB version for existing languages
+	                i18nCheckAndUpdateVersion($container, $versionDB);
+
+					// Clear the templates cache folder
+	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
+
+					// Clear the var/log folder
+	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
 
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
