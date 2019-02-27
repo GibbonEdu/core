@@ -1,18 +1,25 @@
-<!--- Provide a general summary of your changes in the Title above -->
+---
+name: Pull Request
+about: Submit improvements or bug fixes to the Gibbon core
+title: ''
+labels: ''
+assignees: ''
 
-**Bug Fix | New Feature | Documentation**
-<!--- What type of change does your code introduce? Remove the options that dont apply. -->
+---
+Provide a brief summary of your changes in the Pull Request title.
+Be sure to check out [our contributor docs](https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-submit-a-pull-request) for more info about pull requests.
 
-## Description
-<!--- Describe your changes in detail -->
+**Description**
+Please describe your changes in detail.
 
-## Motivation and Context
-<!--- Why is this change required? What problem does it solve? -->
-<!--- If it fixes an open issue, please link to the issue here. -->
+**Motivation and Context**
+Why is this change suggested? Is there a problem it helps to solve?
+If this PR fixes an open issue, please link to the issue here.
 
-## How Has This Been Tested?
-<!--- Please describe in detail how you tested your changes. -->
-<!--- Include details of your testing environment, and the tests you ran to -->
-<!--- see how your change affects other areas of the code, etc. -->
+**How Has This Been Tested?**
+Please describe how you've tested your changes. Include details of 
+your testing environment, and any tests you've run to see how your 
+change affects other areas of the code.
 
-## Screenshots (if appropriate):
+**Screenshots**
+If applicable, add screenshots to help illustrate your changes.
