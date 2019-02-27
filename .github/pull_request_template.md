@@ -1,13 +1,6 @@
----
-name: Pull Request
-about: Submit improvements or bug fixes to the Gibbon core
-title: ''
-labels: ''
-assignees: ''
-
----
 Provide a brief summary of your changes in the Pull Request title.
-Be sure to check out [our contributor docs](https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-submit-a-pull-request) for more info about pull requests.
+Be sure to check out our contributor docs for more info about pull requests.
+https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-submit-a-pull-request
 
 **Description**
 Please describe your changes in detail.
