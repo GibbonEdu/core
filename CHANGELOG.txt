@@ -39,6 +39,7 @@ v18.0.00
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
 
     Bug Fixes
+        Finance: fixed spelling error in Manage Invoices
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
         System: fixed missing globals in custom index scripts
         System: fixed index_custom.php content not loading on first login

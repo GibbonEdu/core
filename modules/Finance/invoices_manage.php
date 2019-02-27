@@ -34,7 +34,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Manage Invoices'));    
+    $page->breadcrumbs->add(__('Manage Invoices'));
 
     if (isset($_GET['return'])) {
         returnProcess($guid, $_GET['return'], null, array('success0' => 'Your request was completed successfully.', 'success1' => 'Your request was completed successfully, but one or more requested emails could not be sent.', 'error3' => 'Some elements of your request failed, but others were successful.'));
@@ -148,7 +148,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
         echo '</h3>';
 
         echo '<p class="bulkPaid">';
-        echo __('This bluk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.');
+        echo __('This bulk action can be used to update the status for more than one invoice to Paid (in full). It does NOT email receipts or work with payments requiring a Transaction ID. If you need to include email receipts, add a Transaction ID or process a partial payment use the Edit action for each individual invoice.');
         echo '</p>';
 
         // QUERY
@@ -305,7 +305,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Finance/invoices_manage.ph
                         ->setIcon('print');
                 }
             });
-            
+
         $table->addCheckboxColumn('gibbonFinanceInvoiceIDs', 'gibbonFinanceInvoiceID');
 
         echo $form->getOutput();
