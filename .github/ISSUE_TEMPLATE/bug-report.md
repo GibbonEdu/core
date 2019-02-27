@@ -7,7 +7,9 @@ assignees: ''
 
 ---
 
-Be sure to check out the [How to report a bug](https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-report-a-bug) section in our contributor docs if you haven't already. Then, edit this template to tell us about the issue. Thanks!
+Be sure to check out the How to report a bug section in our contributor docs if you haven't already. 
+https://github.com/GibbonEdu/core/blob/master/docs/CONTRIBUTING.md#how-to-report-a-bug
+Then, edit this template to tell us about the issue. Thanks!
 
 **Describe the bug**
 Please share a description of what the bug appears to be.
