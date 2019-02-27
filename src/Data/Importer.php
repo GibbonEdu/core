@@ -308,7 +308,7 @@ class Importer
 
             foreach ($importType->getAllFields() as $fieldName) {
                 $columnIndex = $columnOrder[$fieldCount];
-                $value = $importType->getField($fieldName, 'value');
+                $value = $importType->getField($fieldName, 'value', null);
 
                 if (!in_array($fieldName, $tableFields)) {
                     // Skip fields not used by this table
@@ -322,7 +322,7 @@ class Importer
                     continue;
                 } elseif ($columnIndex == Importer::COLUMN_DATA_CUSTOM) {
                     // Get the custom text value provided by the user (from Step 2)
-                    $value = (isset($customValues[$fieldCount]))? $customValues[$fieldCount] : '';
+                    $value = (isset($customValues[$fieldCount]))? $customValues[$fieldCount] : null;
                 } elseif ($columnIndex == Importer::COLUMN_DATA_FUNCTION) {
                     // Run a user_func based on the function name defined for that field
                     $value = $importType->doImportFunction($fieldName);
@@ -426,7 +426,7 @@ class Importer
                         }
                     }
 
-                    $value = implode(',', $relationalValue);
+                    $value = !empty($relationalValue) ? implode(',', $relationalValue) : null;
                 }
 
                 // Required field is empty?
