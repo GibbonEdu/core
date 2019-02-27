@@ -146,7 +146,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/applicationForm
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
-    $row = $form->addRow()->addHeading(__('Sections'))->append(__(''));
+    $row = $form->addRow()->addHeading(__('Sections'));
 
     $setting = getSettingByScope($connection2, 'Application Form', 'senOptionsActive', true);
     $row = $form->addRow();
