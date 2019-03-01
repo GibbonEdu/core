@@ -220,18 +220,21 @@ class Format
                 $time = __n('{count} day', '{count} days', $days);
                 break;
             default:
-                return self::tooltip($date->format(
+                $timeDifference = 0;
+                $time = $date->format(
                     strlen($dateString) == 10
                         ? static::$settings['dateFormatPHP']
                         : static::$settings['dateTimeFormatPHP']
-                ));
+                );
         }
 
-        $time = ($timeDifference >= 0)
-            ? __('{time} ago', ['time' => $time])
-            : __('{time} from now', ['time' => $time]);
-
-        return $tooltip 
+        if ($timeDifference > 0) {
+            $time = __('{time} ago', ['time' => $time]);
+        } elseif ($timeDifference < 0) {
+            $time = __('{time} from now', ['time' => $time]);
+        }
+        
+        return $tooltip
             ? self::tooltip($time, static::dateTime($dateString))
             : $time;
     }
