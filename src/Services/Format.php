@@ -74,68 +74,70 @@ class Format
     /**
      * Formats a YYYY-MM-DD date with the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @param string $format
      * @return string
      */
     public static function date($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d', substr($dateString, 0, 10));
+        $date = static::createDateTime($dateString);
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $dateString;
     }
 
     /**
      * Converts a date in the language-specific format to YYYY-MM-DD.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
     public static function dateConvert($dateString)
     {
-        $date = DateTime::createFromFormat(static::$settings['dateFormatPHP'], $dateString);
+        $date = static::createDateTime($dateString, static::$settings['dateFormatPHP']);
         return $date ? $date->format('Y-m-d') : $dateString;
     }
 
     /**
-     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a readable string. Optionally provide a format string to use.
+     * Formats a YYYY-MM-DD H:I:S MySQL timestamp as a language-specific string. Optionally provide a format string to use.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @param string $format
      * @return string
      */
     public static function dateTime($dateString, $format = false)
     {
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
         return $date ? $date->format($format ? $format : static::$settings['dateTimeFormatPHP']) : $dateString;
     }
     
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
     public static function dateReadable($dateString, $format = '%b %e, %G')
     {
-        return mb_convert_case(strftime($format, strtotime($dateString)), MB_CASE_TITLE);
+        $date = static::createDateTime($dateString);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
      * Formats a YYYY-MM-DD date as a readable string with month names and times.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
     public static function dateTimeReadable($dateString, $format = '%b %e, %G %H:%M')
     {
-        return mb_convert_case(strftime($format, strtotime($dateString)), MB_CASE_TITLE);
+        $date = static::createDateTime($dateString);
+        return mb_convert_case(strftime($format, $date->format('U')), MB_CASE_TITLE);
     }
 
     /**
      * Formats two YYYY-MM-DD dates with the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string $dateFrom
-     * @param string $dateTo
+     * @param DateTime|string $dateFrom
+     * @param DateTime|string $dateTo
      * @return string
      */
     public static function dateRange($dateFrom, $dateTo, $format = false)
@@ -146,8 +148,8 @@ class Format
     /**
      * Formats two YYYY-MM-DD dates as a readable string, collapsing same months and same years.
      *
-     * @param string $dateFrom
-     * @param string $dateTo
+     * @param DateTime|string $dateFrom
+     * @param DateTime|string $dateTo
      * @return string
      */
     public static function dateRangeReadable($dateFrom, $dateTo)
@@ -155,11 +157,11 @@ class Format
         $output = '';
         if (empty($dateFrom) || empty($dateTo)) return $output;
 
-        $startDate = ($dateFrom instanceof DateTime)? $dateFrom : new DateTime($dateFrom);
-        $endDate = ($dateTo instanceof DateTime)? $dateTo : new DateTime($dateTo);
+        $startDate = static::createDateTime($dateFrom);
+        $endDate = static::createDateTime($dateTo);
 
-        $startTime = $startDate->format('U');
-        $endTime = $endDate->format('U');
+        $startTime = $startDate->getTimestamp();
+        $endTime = $endDate->getTimestamp();
 
         if ($startDate->format('Y-m-d') == $endDate->format('Y-m-d')) {
             $output = strftime('%b %e, %G', $startTime);
@@ -177,26 +179,26 @@ class Format
     /**
      * Formats a Unix timestamp as the language-specific format. Optionally provide a format string to use instead.
      *
-     * @param string|int $timestamp
+     * @param DateTime|string|int $timestamp
      * @param string $format
      * @return string
      */
     public static function dateFromTimestamp($timestamp, $format = false)
     {
-        $date = DateTime::createFromFormat('U', $timestamp);
+        $date = static::createDateTime($timestamp, 'U');
         return $date ? $date->format($format ? $format : static::$settings['dateFormatPHP']) : $timestamp;
     }
 
     /**
      * Formats a Date or DateTime string relative to the current time. Eg: 1 hr ago, 3 mins from now.
      *
-     * @param string $dateString
+     * @param DateTime|string $dateString
      * @return string
      */
     public static function relativeTime($dateString, $tooltip = true)
     {
         if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString);
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s');
 
         $timeDifference = time() - $date->format('U');
         $seconds = abs($timeDifference);
@@ -237,34 +239,36 @@ class Format
     /**
      * Converts a YYYY-MM-DD date to a Unix timestamp.
      *
-     * @return string
+     * @param DateTime|string $dateString
+     * @param string $timezone
+     * @return int
      */
-    public static function timestamp($dateString, $timeZone = null)
+    public static function timestamp($dateString, $timezone = null)
     {
         if (strlen($dateString) == 10) $dateString .= ' 00:00:00';
-        $date = DateTime::createFromFormat('Y-m-d H:i:s', $dateString, $timeZone);
+        $date = static::createDateTime($dateString, 'Y-m-d H:i:s', $timezone);
         return $date ? $date->getTimestamp() : 0;
     }
 
     /**
      * Formats a time from a given MySQL time or timestamp value.
      * 
-     * @param string $timeString
+     * @param DateTime|string $timeString
      * @param string|bool $format
      * @return string
      */
     public static function time($timeString, $format = false)
     {
         $convertFormat = strlen($timeString) == 8? 'H:i:s' : 'Y-m-d H:i:s';
-        $date = DateTime::createFromFormat($convertFormat, $timeString);
+        $date = static::createDateTime($timeString, $convertFormat);
         return $date ? $date->format($format ? $format : static::$settings['timeFormatPHP']) : $timeString;
     }
 
     /**
      * Formats a range of times from two given MySQL time or timestamp values.
      * 
-     * @param string $timeFrom
-     * @param string $timeTo
+     * @param DateTime|string $timeFrom
+     * @param DateTime|string $timeTo
      * @param string|bool $format
      * @return string
      */
@@ -552,5 +556,14 @@ class Format
     public static function alert($message, $level = 'error')
     {
         return '<div class="'.$level.'">'.$message.'</div>';
+    }
+
+    private static function createDateTime($dateOriginal, $expectedFormat = null, $timezone = null)
+    {
+        if ($dateOriginal instanceof DateTime) return $dateOriginal;
+
+        return !empty($expectedFormat)
+            ? DateTime::createFromFormat($expectedFormat, $dateOriginal, $timezone)
+            : new DateTime($dateOriginal, $timezone);
     }
 }
