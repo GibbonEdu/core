@@ -204,8 +204,8 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/update.php') 
                 // Clear the templates cache folder
                 removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
 
-                // Clear the var/log folder
-                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
+                // Clear the var folder and remove it
+                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
 
                 //Reset cache to force top-menu reload
                 $_SESSION[$guid]['pageLoads'] = null;

@@ -101,8 +101,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					// Clear the templates cache folder
 	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
 
-					// Clear the var/log folder
-	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
+					// Clear the var folder and remove it
+	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
 
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
@@ -223,9 +223,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 					// Clear the templates cache folder
 	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/uploads/cache');
 
-					// Clear the var/log folder
-	                removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var/log');
-
+					// Clear the var folder and remove it
+                    removeDirectoryContents($_SESSION[$guid]['absolutePath'].'/var', true);
+                    
                     echo "<div class='success'>";
                     echo __('Your request was completed successfully.');
                     echo '</div>';
