@@ -311,7 +311,7 @@ function getThread($guid, $connection2, $gibbonPlannerEntryHomeworkID, $parent, 
             $output .= "<a name='".$rowDiscuss['gibbonCrowdAssessDiscussID']."'></a>";
             $output .= "<table class='noIntBorder chatBox $classExtra' cellspacing='0' style='width: ".(755 - ($level * 15)).'px; margin-left: '.($level * 15)."px'>";
             $output .= '<tr>';
-            $output .= '<td><i>'.formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category']).' '.__('said')</i>:</td>';
+            $output .= '<td><i>'.formatName($rowDiscuss['title'], $rowDiscuss['preferredName'], $rowDiscuss['surname'], $rowDiscuss['category']).' '.__('said').'</i>:</td>';
             $output .= "<td style='text-align: right'><i>Posted at <b>".substr($rowDiscuss['timestamp'], 11, 5).'</b> on <b>'.dateConvertBack($guid, substr($rowDiscuss['timestamp'], 0, 10)).'</b></i></td>';
             $output .= '</tr>';
             $output .= '<tr>';
