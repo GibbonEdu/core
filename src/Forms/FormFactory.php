@@ -58,9 +58,11 @@ class FormFactory implements FormFactoryInterface
         return new Layout\Table($this, $id);
     }
 
-    public function createDataTable($id, $criteria)
+    public function createDataTable($id, $criteria = null)
     {
-        return DataTable::createPaginated($id, $criteria);
+        return !empty($criteria)
+            ? DataTable::createPaginated($id, $criteria)
+            : DataTable::create($id);
     }
 
     public function createTableCell($content = '')
