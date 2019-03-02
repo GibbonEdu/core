@@ -34,6 +34,8 @@ class Finder extends TextField
     protected $params = array();
     protected $selected = null;
     protected $ajaxURL = null;
+    protected $resultsFormatter = null;
+    protected $tokenFormatter = null;
 
     /**
      * Create a finder with default params.
@@ -51,6 +53,7 @@ class Finder extends TextField
             'tokenLimit'        => null,
             'minChars'          => 1,
             'resultsLimit'      => null,
+            'enableHTML'        => true,
         );
 
         parent::__construct($name);
@@ -98,19 +101,44 @@ class Finder extends TextField
     }
 
     /**
-     * Returns a $key => $value array formatted as an {id: ..., name: ...} token csv list.
+     * Adds a javascript function as a string to replace the default Results Formatter.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function resultsFormatter($value)
+    {
+        $this->resultsFormatter = $value;
+        return $this;
+    }
+
+    /**
+     * Adds a javascript function as a string to replace the default Token Formatter.
+     *
+     * @param string $value
+     * @return self
+     */
+    public function tokenFormatter($value)
+    {
+        $this->tokenFormatter = $value;
+        return $this;
+    }
+
+    /**
+     * Returns a $key => $value array formatted as an {id: ..., name: ...} token array.
      * @param    array  $items
      * @return   string
      */
     protected function getTokenizedList($items)
     {
-        if (!is_array($items)) $items = array($items);
+        if (!is_array($items)) $items = [$items];
 
-        $list = array_map(function($key) use (&$items) {
-            return "{id: '".addslashes($key)."', name: '".addslashes($items[$key])."'}";
-        }, array_keys($items) );
+        return array_map(function ($key, $value) {
+            $token = ['id' => addslashes($key)];
+            $value = is_array($value)? $value : ['name' => $value];
 
-        return implode(',', $list);
+            return array_merge($token, $value);
+        }, array_keys($items), $items);
     }
 
     /**
@@ -128,37 +156,42 @@ class Finder extends TextField
         $output .= '</style>';
 
         $output .= '<script type="text/javascript">';
-            $output .= '$(document).ready(function() {';
-            $output .= '$("#'.$this->getID().'").tokenInput(';
+        $output .= '$(document).ready(function() {';
+        $output .= '$("#'.$this->getID().'").tokenInput(';
 
-            if (!empty($this->ajaxURL)) {
-                $output .= '"'.$this->ajaxURL.'",';
-            } else {
-                $output .= '['.$this->getTokenizedList($this->options).'],';
-            }
+        if (!empty($this->ajaxURL)) {
+            $output .= '"'.$this->ajaxURL.'",';
+        } else {
+            $output .= json_encode($this->getTokenizedList($this->options)).',';
+        }
 
-            $params = $this->params;
+        // Add the pre-populate param if there's selected items
+        if (!empty($this->selected)) {
+            $this->params['prePopulate'] = $this->getTokenizedList($this->selected);
+        }
 
-            // JSONify the parameter list for output
-            $paramsList = array_map(function($key) use (&$params) {
-                $value = $params[$key];
+        // Add the string placeholders for custom functions
+        if (!empty($this->resultsFormatter)) {
+            $this->params['resultsFormatter'] = 'CUSTOM_RESULTS_FORMATTER';
+        }
+        if (!empty($this->tokenFormatter)) {
+            $this->params['tokenFormatter'] = 'CUSTOM_TOKEN_FORMATTER';
+        }
 
-                if (is_string($value)) $value = '"'.$value.'"';
-                if (is_array($value)) $value = '['.implode(',', $value).']';
-                if (is_bool($value)) $value = ($value)? 'true' : 'false';
-                if (is_null($value)) $value = 'null';
+        $paramsOutput = json_encode($this->params);
 
-                return $key.': '.$value;
-            }, array_keys($params) );
+        // Replace the string placeholders with javascript functions - workaround for json string encoding
+        if (!empty($this->resultsFormatter) || !empty($this->tokenFormatter)) {
+            $paramsOutput = str_replace(
+                ['"CUSTOM_RESULTS_FORMATTER"', '"CUSTOM_TOKEN_FORMATTER"'],
+                [$this->resultsFormatter, $this->tokenFormatter],
+                $paramsOutput
+            );
+        }
 
-            // Add the pre-populate param if there's selected items
-            if (!empty($this->selected)) {
-                $paramsList[] = 'prePopulate: ['.$this->getTokenizedList($this->selected).']';
-            }
-
-            $output .= '{'.implode(',', $paramsList).'}';
-            $output .= ');';
-            $output .= '});';
+        $output .= $paramsOutput;
+        $output .= ');';
+        $output .= '});';
         $output .= '</script>';
 
         return $output;
