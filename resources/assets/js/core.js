@@ -21,7 +21,7 @@ jQuery(function($){
      * Form Class: generic check All/None checkboxes
      */
     $(document).on('click', '.checkall', function () {
-        $(this).parents('fieldset:eq(0)').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
+        $(this).closest('table').find(':checkbox').attr('checked', $(this).prop('checked')).trigger('change');
     });
 
     /**
@@ -44,10 +44,14 @@ jQuery(function($){
         $('.checkall').prop('checked', checkedCount > 0 );
         $('.checkall').prop('indeterminate', checkedCount > 0 && checkedCount < checkboxes.length);
 
-        $(this).parents('tr').toggleClass('selected', $(this).prop('checked'));
-        
+        $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
     });
 
+    // Highlight any pre-checked rows
+    $('.bulkActionForm').find('.bulkCheckbox :checkbox').each(function () {
+        $(this).closest('tr').toggleClass('selected', $(this).prop('checked'));
+    });
+    
     /**
      * Column Highlighting
      */
