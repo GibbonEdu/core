@@ -132,8 +132,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
                 .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
         });
 
-    $table->addColumn('type', __('Staff Type'))->width('20%');
-    $table->addColumn('status', __('Status'))->width('10%');
+    $table->addColumn('type', __('Staff Type'))->width('20%')->translatable();
+    $table->addColumn('status', __('Status'))->width('10%')->translatable();
     $table->addColumn('jobTitle', __('Job Title'))->width('20%');
 
     // ACTIONS
