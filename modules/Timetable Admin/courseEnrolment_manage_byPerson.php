@@ -138,7 +138,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
             });
         $table->addColumn('roleCategory', __('Role Category'))
             ->format(function($person) {
-                return __($person['roleCategory']) . '<br/><small><i>'.__(Format::userStatusInfo($person)).'</i></small>';
+                return __($person['roleCategory']) . '<br/><small><i>'.Format::userStatusInfo($person).'</i></small>';
             });
         $table->addColumn('yearGroup', __('Year Group'));
         $table->addColumn('rollGroup', __('Roll Group'));
