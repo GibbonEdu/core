@@ -110,7 +110,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php') == 
                     .'<br/><span style="font-size: 85%; font-style: italic">'.$person['initials']."</span>";
             });
 
-        $table->addColumn('type', __('Type'))->width('25%');
+        $table->addColumn('type', __('Type'))->width('25%')->translatable();
         $table->addColumn('jobTitle', __('Job Title'))->width('25%');
 
         // ACTIONS

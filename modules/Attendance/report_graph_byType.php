@@ -242,7 +242,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                     foreach ($data as $typeName => $dates) :
                     ?>
                     {
-                        label: "<?php echo $typeName; ?>",
+                        label: "<?php echo __($typeName); ?>",
 
                         fill: false,
                         backgroundColor: "<?php echo 'rgba('.$colors[ $datasetCount % $colorCount ].',1)'; ?>",

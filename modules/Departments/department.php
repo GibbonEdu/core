@@ -112,7 +112,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department.php
                     if ($rowStaff['jobTitle'] != '') {
                         echo $rowStaff['jobTitle'];
                     } else {
-                        echo $rowStaff['role'];
+                        echo __($rowStaff['role']);
                     }
                     echo '</i><br/></div>';
                     echo '</td>';

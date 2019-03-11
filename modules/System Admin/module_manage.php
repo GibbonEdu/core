@@ -135,7 +135,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/module_manage
     $table->addColumn('name', __('Name'));
     $table->addColumn('status', __('Status'))->notSortable();
     $table->addColumn('description', __('Description'))->translatable();
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('active', __('Active'))
           ->format(Format::using('yesNo', 'active'));
     $table->addColumn('versionDisplay', __('Version'))->sortable(['version']);

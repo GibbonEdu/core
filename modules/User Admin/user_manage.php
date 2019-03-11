@@ -114,9 +114,9 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/user_manage.php
         ->sortable(['surname', 'preferredName'])
         ->format(Format::using('name', ['title', 'preferredName', 'surname', 'Student', true]));
 
-    $table->addColumn('status', __('Status'))->width('10%');
+    $table->addColumn('status', __('Status'))->width('10%')->translatable();
 
-    $table->addColumn('primaryRole', __('Primary Role'))->width('16%');
+    $table->addColumn('primaryRole', __('Primary Role'))->width('16%')->translatable();
 
     $table->addColumn('family', __('Family'))
         ->notSortable()

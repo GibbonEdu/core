@@ -77,7 +77,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/department_ma
         ->displayLabel();
 
     $table->addColumn('name', __('Name'));
-    $table->addColumn('type', __('Type'));
+    $table->addColumn('type', __('Type'))->translatable();
     $table->addColumn('nameShort', __('Short Name'));
     $table->addColumn('staff', __('Staff'))
         ->sortable(false)

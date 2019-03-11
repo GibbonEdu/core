@@ -131,7 +131,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         }
 
                         echo '<td>';
-                        echo '<b>'.$rowLog['direction'].'</b> ('.$rowLog['type']. ( !empty($rowLog['reason'])? ', '.$rowLog['reason'] : '') .')';
+                        echo '<b>'.__($rowLog['direction']).'</b> ('.__($rowLog['type']). ( !empty($rowLog['reason'])? ', '.__($rowLog['reason']) : '') .')';
 
                         if ( !empty($rowLog['comment']) ) {
                             echo '&nbsp;<img title="'.$rowLog['comment'].'" src="./themes/'.$_SESSION[$guid]['gibbonThemeName'].'/img/messageWall.png" width=16 height=16/>';

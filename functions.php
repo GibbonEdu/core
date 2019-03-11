@@ -3594,7 +3594,7 @@ function printClassGroupTable($guid, $gibbonCourseClassID, $columns, $connection
             echo "<div style='padding-top: 5px'><b>".formatName($rowClassGroup['title'], $rowClassGroup['preferredName'], $rowClassGroup['surname'], 'Staff').'</b><br/>';
         }
 
-        echo '<i>'.$rowClassGroup['role'].'</i><br/><br/></div>';
+        echo '<i>'.__($rowClassGroup['role']).'</i><br/><br/></div>';
         echo '</td>';
 
         if ($count % $columns == ($columns - 1)) {
