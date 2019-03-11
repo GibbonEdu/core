@@ -539,7 +539,7 @@ class Format
             if (!(empty($person['dateEnd']) || $person['dateEnd'] >= date('Y-m-d'))) return __('After End Date');
             if (empty($person['yearGroup'])) return __('Not Enroled');
         } else {
-            if (!empty($person['staffType'])) return $person['staffType'];
+            if (!empty($person['staffType'])) return __($person['staffType']);
         }
         return '';
     }

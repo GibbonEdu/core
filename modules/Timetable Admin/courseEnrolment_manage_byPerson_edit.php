@@ -190,7 +190,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/courseEnro
                   ->sortable(['course', 'class'])
                   ->format(Format::using('courseClassName', ['course', 'class']));
             $table->addColumn('courseName', __('Course'));
-            $table->addColumn('role', __('Class Role'));
+            $table->addColumn('role', __('Class Role'))->translatable();
             $table->addColumn('reportable', __('Reportable'))
                   ->format(Format::using('yesNo', 'reportable'));
 
