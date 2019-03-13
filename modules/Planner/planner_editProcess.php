@@ -181,7 +181,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
                             }
                             $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                             $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
-                            if ($_POST['homeworkCrowdAssess'] == 'Yes') {
+                            if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Yes') {
                                 $homeworkCrowdAssess = 'Y';
                                 if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {
                                     $homeworkCrowdAssessOtherTeachersRead = 'Y';
