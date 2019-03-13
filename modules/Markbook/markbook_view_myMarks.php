@@ -125,7 +125,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     try {
         $dataList['gibbonPersonID'] = $_SESSION[$guid]['gibbonPersonID'];
         $dataList['gibbonPersonID2'] = $_SESSION[$guid]['gibbonPersonID'];
-        $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target FROM gibbonCourse JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class";
+        $sqlList = "SELECT gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class, gibbonCourse.name, gibbonCourseClass.gibbonCourseClassID, gibbonScaleGrade.value AS target, gibbonPerson.dateStart
+        FROM gibbonCourse 
+        JOIN gibbonCourseClass ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) 
+        JOIN gibbonCourseClassPerson ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) 
+        JOIN gibbonPerson ON (gibbonPerson.gibbonPersonID=gibbonCourseClassPerson.gibbonPersonID)
+        LEFT JOIN gibbonMarkbookTarget ON (gibbonMarkbookTarget.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID AND gibbonMarkbookTarget.gibbonPersonIDStudent=:gibbonPersonID2) LEFT JOIN gibbonScaleGrade ON (gibbonMarkbookTarget.gibbonScaleGradeID=gibbonScaleGrade.gibbonScaleGradeID) 
+        WHERE gibbonCourseClassPerson.gibbonPersonID=:gibbonPersonID $and ORDER BY course, class";
         $resultList = $connection2->prepare($sqlList);
         $resultList->execute($dataList);
     } catch (PDOException $e) {
@@ -401,7 +407,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 if (date('Y-m-d H:i:s') < $rowSub['homeworkDueDateTime']) {
                                     echo "<span title='Pending'>".__('Pending').'</span>';
                                 } else {
-                                    if (!empty($row['dateStart']) && $row['dateStart'] > $rowSub['date']) {
+                                    if (!empty($rowList['dateStart']) && $rowList['dateStart'] > $rowSub['date']) {
                                         echo "<span title='".__('Student joined school after assessment was given.')."' style='color: #000; font-weight: normal; border: 2px none #ff0000; padding: 2px 4px'>".__('NA').'</span>';
                                     } else {
                                         if ($rowSub['homeworkSubmissionRequired'] == 'Compulsory') {
