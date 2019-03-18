@@ -125,12 +125,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Timetable Admin/tt_delete.
 					echo '<li>'.__('The import does not include student lists.').'</li>';
 					echo '<li>'.__('The submitted file must have the following fields in the following order:').'</li>';
 						echo '<ol>';
-							echo '<li><b>'.__('Course Short Name</b> - e.g. DR10 for Year 10 Drama').'</li>';
-							echo '<li><b>'.__('Class Short Name</b> - e.g 1 for DR10.1').'</li>';
-							echo '<li><b>'.__('Day Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__('Row Long Name</b> - as used in the target timetable').'</li>';
-							echo '<li><b>'.__('Teacher Username</b> - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
-							echo '<li><b>'.__('Space Name</b> - the Gibbon name for the room the lesson takes place in.').'</li>';
+							echo '<li>'.__('Course Short Name - e.g. DR10 for Year 10 Drama').'</li>';
+							echo '<li>'.__('Class Short Name - e.g 1 for DR10.1').'</li>';
+							echo '<li>'.__('Day Name - as used in the target timetable').'</li>';
+							echo '<li>'.__('Row Long Name - as used in the target timetable').'</li>';
+							echo '<li>'.__('Teacher Username - comma-separated list of Gibbon usernames for teacher(s) of the lesson. Alternatively, give each teacher their own row.').'</li>';
+							echo '<li>'.__('Space Name - the Gibbon name for the room the lesson takes place in.').'</li>';
 						echo '</ol>';
 					echo '</li>';
 					echo '<li>'.__('Do not include a header row in the CSV files.').'</li>';
