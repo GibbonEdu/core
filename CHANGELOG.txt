@@ -40,6 +40,7 @@ v18.0.00
 
     Bug Fixes
         Finance: fixed spelling error in Manage Invoices
+        Library: fixed bug leading to loss of main user/owner field value in item edit
         System: fixed non-rendering HTML issue in Welcome text on logged-out index
         System: fixed missing globals in custom index scripts
         System: fixed index_custom.php content not loading on first login

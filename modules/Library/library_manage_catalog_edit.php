@@ -155,13 +155,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Library/library_manage_cat
 
 			$row = $form->addRow()->addClass('general ownershipSchool');
 				$row->addLabel('gibbonPersonIDOwnershipSchool', __('Main User'))->description(__('Person the device is assigned to.'));
-				$row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder();
+				$row->addSelectUsers('gibbonPersonIDOwnershipSchool')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
 			$form->toggleVisibilityByClass('ownershipIndividual')->onSelect('ownershipType')->when('Individual');
 
 			$row = $form->addRow()->addClass('general ownershipIndividual');
 				$row->addLabel('gibbonPersonIDOwnershipIndividual', __('Owner'));
-				$row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder();
+				$row->addSelectUsers('gibbonPersonIDOwnershipIndividual')->placeholder()->selected($values['gibbonPersonIDOwnership']);
 
 			$sql = "SELECT gibbonDepartmentID AS value, name FROM gibbonDepartment ORDER BY name";
 			$row = $form->addRow();
