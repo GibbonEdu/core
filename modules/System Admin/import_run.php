@@ -115,6 +115,7 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
             'last'       => __('Last Import'),
             'linearplus' => __('From Exported Data'),
             'linear'     => __('From Default Order (see notes)'),
+            'skip'       => __('Skip Non-Required Fields'),
         );
         $selectedOrder = (!empty($importLog))? 'last' : 'guess';
         $row = $form->addRow();
@@ -282,10 +283,10 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
 
                 $count = 0;
 
-                $defaultColumns = function ($fieldName) use (&$importType) {
+                $defaultColumns = function ($fieldName) use (&$importType, $mode) {
                     $columns = [];
                     
-                    if ($importType->isFieldRequired($fieldName) == false) {
+                    if ($importType->isFieldRequired($fieldName) == false || ($mode == 'update' && !$importType->isFieldUniqueKey($fieldName))) {
                         $columns[Importer::COLUMN_DATA_SKIP] = '[ '.__('Skip this Column').' ]';
                     }
                     if ($importType->getField($fieldName, 'custom')) {
@@ -303,9 +304,9 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                     return $group;
                 }, array());
 
-                $columnIndicators = function ($fieldName) use (&$importType) {
+                $columnIndicators = function ($fieldName) use (&$importType, $mode) {
                     $output = '';
-                    if ($importType->isFieldRequired($fieldName)) {
+                    if ($importType->isFieldRequired($fieldName) && !($mode == 'update' && !$importType->isFieldUniqueKey($fieldName))) {
                         $output .= " <strong class='highlight'>*</strong>";
                     }
                     if ($importType->isFieldUniqueKey($fieldName)) {
@@ -338,13 +339,17 @@ if (isActionAccessible($guid, $connection2, "/modules/System Admin/import_run.ph
                         $selectedColumn = ($columnOrder == 'linearplus')? $count+1 : $count;
                     } elseif ($columnOrder == 'last') {
                         $selectedColumn = isset($columnOrderLast[$count])? $columnOrderLast[$count] : '';
-                    } elseif ($columnOrder == 'guess') {
+                    } elseif ($columnOrder == 'guess' || $columnOrder == 'skip') {
                         foreach ($headings as $index => $columnName) {
                             if (mb_strtolower($columnName) == mb_strtolower($fieldName) || mb_strtolower($columnName) == mb_strtolower($importType->getField($fieldName, 'name'))) {
                                 $selectedColumn = $index;
                                 break;
                             }
                         }
+                    }
+
+                    if ($columnOrder == 'skip' && !($importType->isFieldRequired($fieldName) && !($mode == 'update' && !$importType->isFieldUniqueKey($fieldName)))) {
+                        $selectedColumn = Importer::COLUMN_DATA_SKIP;
                     }
 
                     $row = $table->addRow();
