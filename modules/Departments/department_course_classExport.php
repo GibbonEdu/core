@@ -46,19 +46,23 @@ if (isActionAccessible($guid, $connection2, '/modules/Departments/department_cou
             header("Location: {$URL}");
         } else {
             //Proceed!
-            try {
-                $data = array();
-                $sql = "SELECT role, surname, preferredName, email, studentID FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=$gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') ORDER BY role DESC, surname, preferredName";
-                $result = $connection2->prepare($sql);
-                $result->execute($data);
-            } catch (PDOException $e) {
-                $URL .= '&return=error2';
-                header("Location: {$URL}");
-                exit();
-            }
+
+            $data = ['gibbonCourseClassID' => $gibbonCourseClassID, 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d')];
+            $sql = "SELECT role, surname, preferredName, email, studentID, gibbonRollGroup.nameShort as rollGroup
+                    FROM gibbonCourseClassPerson 
+                    JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID 
+                    JOIN gibbonStudentEnrolment ON (gibbonStudentEnrolment.gibbonPersonID=gibbonPerson.gibbonPersonID)
+                    JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                    WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' 
+                    AND (dateStart IS NULL OR dateStart<=:today) 
+                    AND (dateEnd IS NULL  OR dateEnd>=:today) 
+                    AND gibbonStudentEnrolment.gibbonSchoolYearID=:gibbonSchoolYearID
+                    ORDER BY role DESC, surname, preferredName";
+
+            $result = $pdo->select($sql, $data);
 
             $exp = new Gibbon\Excel();
-            $exp->exportWithQuery($sql, 'classList.xls', $connection2);
+            $exp->exportWithQuery($result, 'classList.xls');
         }
     }
 }
