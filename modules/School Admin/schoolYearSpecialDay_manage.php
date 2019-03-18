@@ -90,7 +90,7 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/schoolYearSpe
 
         if ($result->rowCount() < 1) {
             echo "<div class='error'>";
-            echo __('There are no terms in the specied year.');
+            echo __('There are no terms in the specified year.');
             echo '</div>';
         } else {
             while ($row = $result->fetch()) {
