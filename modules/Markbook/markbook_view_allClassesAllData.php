@@ -142,6 +142,13 @@ use Gibbon\Services\Format;
 
     $markbookGateway = $container->get(MarkbookColumnGateway::class);
     $plannerGateway = $container->get(PlannerEntryGateway::class);
+	
+	//reset ordering
+	if(isset($_GET['reset']) && $_GET['reset']==1){
+		$data = array('gibbonCourseClassID' => $gibbonCourseClassID);
+		$sql = 'SET @count:=0;UPDATE gibbonMarkbookColumn SET `sequenceNumber`=@count:=@count+1 WHERE `gibbonCourseClassID` = :gibbonCourseClassID order by gibbonMarkbookColumnID ASC';
+		$result = $pdo->executeQuery($data, $sql);
+	}
 
     // Build the markbook object for this class
     $markbook = new MarkbookView($gibbon, $pdo, $gibbonCourseClassID);
@@ -244,6 +251,15 @@ use Gibbon\Services\Format;
         // Display the Top Links
         if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php') and $canEditThisClass) {
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_add.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Add')."<img title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a> | ";
+			echo '<script>
+					function resetOrder(){
+						var cf = confirm("'.__('Are you sure you want to reset the ordering of all the columns in this class?').'");
+						if(cf){
+							window.location.href = window.location.href + "&reset=1";
+						}
+					}
+				</script>';
+			echo "<a href='#' onclick='resetOrder()'>".__('Reset Order')."<img title='".__('Reset Order')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/reincarnate.png'/></a> | ";
             echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/markbook_edit_targets.php&gibbonCourseClassID=$gibbonCourseClassID'>".__('Targets')."<img title='".__('Set Personalised Attainment Targets')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/target.png'/></a> | ";
             if ($markbook->getSetting('enableColumnWeighting') == 'Y') {
                 if (isActionAccessible($guid, $connection2, '/modules/Markbook/weighting_manage.php') == true) {
