@@ -45,6 +45,7 @@ v18.0.00
         System: fixed SQL key integer length in database tables to ensure referential integrity
         Finance: fixed spelling error in Manage Invoices
         Library: fixed bug leading to loss of main user/owner field value in item edit
+        Library: removed lending icon for items that are not borrowable 
         Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
         School Admin: fixed interface string typos
