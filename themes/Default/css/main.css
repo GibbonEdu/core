@@ -370,19 +370,21 @@ ul.moduleMenu h4 {
 }
 
 /* LINKS */
-a:not([class]),a:not([class]):link,a:not([class]):hover {
-	background:transparent;
-	text-decoration:underline;
+
+a {
+    background:transparent;
+    color:#c00;
+    text-decoration: inherit;
 }
-a:not([class]):link {
-	color:#c00;
+
+a:not([class]) {
+    text-decoration:underline;
 }
-a:not([class]):visited {
-	color:#c00;
-}
-a:not([class]):hover,a:active {
+
+a:hover:not([class]),a:active:not([class]) {
 	color:#069;
 }
+
 a.active {
 	font-weight: bold ;
 	text-decoration: underline ;
