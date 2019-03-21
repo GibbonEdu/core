@@ -1349,10 +1349,6 @@ select[multiple] {
     display: table-cell;
 }
 
-.column.inline.displayNone {
-    display: none;
-}
-
 .column.inline div {
 	display:inline-block;
 	width:auto;
