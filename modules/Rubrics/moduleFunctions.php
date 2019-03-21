@@ -387,65 +387,67 @@ function rubricView($guid, $connection2, $gibbonRubricID, $mark, $gibbonPersonID
                     return (isset($item['visualise']) && $item['visualise'] == 'Y'); 
                 });
 
-                //Cycle through rows to calculate means
-                $means = array() ;
-                foreach ($rows as $row) {
-                    $means[$row['gibbonRubricRowID']]['title'] = $row['title'];
-                    $means[$row['gibbonRubricRowID']]['cumulative'] = 0;
-                    $means[$row['gibbonRubricRowID']]['denonimator'] = 0;
+                if (!empty($columns) && !empty($cells)) {
+                    //Cycle through rows to calculate means
+                    $means = array() ;
+                    foreach ($rows as $row) {
+                        $means[$row['gibbonRubricRowID']]['title'] = $row['title'];
+                        $means[$row['gibbonRubricRowID']]['cumulative'] = 0;
+                        $means[$row['gibbonRubricRowID']]['denonimator'] = 0;
 
-                    //Cycle through cells, and grab those for this row
-                    $cellCount = 1 ;
-                    foreach ($cells[$row['gibbonRubricRowID']] AS $cell) {
-                        $visualise = false ;
-                        foreach ($columns as $column) {
-                            if ($column['gibbonRubricColumnID'] == $cell['gibbonRubricColumnID']) {
-                                $visualise = true ;
-                            }
-                        }
-
-                        if ($visualise) {
-                            foreach ($contexts as $entry) {
-                                if ($entry['gibbonRubricCellID'] == $cell['gibbonRubricCellID']) {
-                                    $means[$row['gibbonRubricRowID']]['cumulative'] += $cellCount;
-                                    $means[$row['gibbonRubricRowID']]['denonimator']++;
+                        //Cycle through cells, and grab those for this row
+                        $cellCount = 1 ;
+                        foreach ($cells[$row['gibbonRubricRowID']] as $cell) {
+                            $visualise = false ;
+                            foreach ($columns as $column) {
+                                if ($column['gibbonRubricColumnID'] == $cell['gibbonRubricColumnID']) {
+                                    $visualise = true ;
                                 }
                             }
-                            $cellCount++;
+
+                            if ($visualise) {
+                                foreach ($contexts as $entry) {
+                                    if ($entry['gibbonRubricCellID'] == $cell['gibbonRubricCellID']) {
+                                        $means[$row['gibbonRubricRowID']]['cumulative'] += $cellCount;
+                                        $means[$row['gibbonRubricRowID']]['denonimator']++;
+                                    }
+                                }
+                                $cellCount++;
+                            }
                         }
                     }
-                }
-
-                $columnCount = count($columns);
-                $data = array_map(function ($mean) use ($columnCount) {
-                    return !empty($mean['denonimator'])
+                
+                    $columnCount = count($columns);
+                    $data = array_map(function ($mean) use ($columnCount) {
+                        return !empty($mean['denonimator'])
                         ? round((($mean['cumulative']/$mean['denonimator'])/$columnCount), 2)
                         : 0;
-                }, $means);
+                    }, $means);
 
-                $page->scripts->add('chart');
+                    $page->scripts->add('chart');
                 
-                $chart = Chart::create('visualisation', 'polarArea')
-                    ->setLegend(['display' => true, 'position' => 'right'])
-                    ->setLabels(array_column($means, 'title'))
-                    ->setColorOpacity(0.6);
+                    $chart = Chart::create('visualisation', 'polarArea')
+                        ->setLegend(['display' => true, 'position' => 'right'])
+                        ->setLabels(array_column($means, 'title'))
+                        ->setColorOpacity(0.6);
 
-                $chart->setOptions([
-                    'height' => '120%',
-                    'scale'  => [
-                        'ticks' => [
-                            'min' => 0.0,
-                            'max' => 1.0,
-                            'callback' => $chart->addFunction('function(tickValue, index, ticks) {
-                                return Number(tickValue).toFixed(1);
-                            }'),
+                        $chart->setOptions([
+                        'height' => '120%',
+                        'scale'  => [
+                            'ticks' => [
+                                'min' => 0.0,
+                                'max' => 1.0,
+                                'callback' => $chart->addFunction('function(tickValue, index, ticks) {
+                                    return Number(tickValue).toFixed(1);
+                                }'),
+                            ],
                         ],
-                    ],
-                ]);
+                    ]);
 
-                $chart->addDataset('rubric')->setData($data);
+                    $chart->addDataset('rubric')->setData($data);
 
-                $output .= $chart->render();
+                    $output .= $chart->render();
+                }
     
             $output .= "</div>";
 
