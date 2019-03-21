@@ -14,15 +14,15 @@ TODO: add template variable details.
         {{ include('head.twig.html') }}
     </head>
     <body style="{{ bodyBackground }}">
-        <div id="wrapOuterXXX">
+        <div id="wrapOuter">
             <div class="mx-auto max-w-6xl text-right text-white text-xs md:text-sm {{ gibbonHouseIDLogo ? 'mt-2' : 'mt-6' }}">
                 {{ minorLinks|raw }}
             </div>
 
-            <div id="wrapXXX" class="mx-auto max-w-6xl m-2 shadow-container rounded overflow-hidden">
+            <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded overflow-hidden">
                 {% block header %}
-                <div id="headerXXX" class="bg-white flex justify-between">
-                    <div id="header-logoXXX" class="">
+                <div id="header" class="bg-white flex justify-between">
+                    <div id="header-logo" class="">
                         <a class="block mt-4 mb-2" href="{{ absoluteURL }}">
                             <img alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" height="100px" width="400px"/>
                         </a>
@@ -35,16 +35,16 @@ TODO: add template variable details.
                     </div>
                 </div>
 
-                <nav id="header-menuXXX" class="w-full bg-gray-200 justify-between">
+                <nav id="header-menu" class="w-full bg-gray-200 justify-between">
                     {{ include('menu.twig.html') }}
                 </nav>
 
                 {% endblock %}
 
-                <div id="content-wrapXXX" class="w-full min-h-1/2 flex flex-wrap lg:flex-no-wrap lg:flex-row-reverse bg-transparent-100 clearfix">
+                <div id="content-wrap" class="w-full min-h-1/2 flex {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
 
                     {% if sidebar %}
-                        <div id="sidebarXXX" class="w-full lg:w-1/4 px-6 lg:border-l">
+                        <div id="sidebar" class="w-full lg:w-1/4 px-6 pb-6 lg:border-l">
                             {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
                                 {{ code|raw }}
                             {% endfor %}
@@ -61,7 +61,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="{{ not sidebar ? 'content-wideXXX' : 'contentXXX' }}" class="w-full lg:max-w-full lg:w-3/4 px-6 pb-6">
+                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}" class="w-full {{ sidebar ? 'lg:w-3/4' : '' }} lg:max-w-full px-6 pb-6">
 
                         {% block page %}
 

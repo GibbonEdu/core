@@ -10,10 +10,10 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
-<div class="pt-6">
+
 
 {% if sidebar %}
-
+<div class="pt-6">
     <ul class="list-reset m-0 -mb-6">
     {% for categoryName, items in menuModule %}
         <li class="p-0">
@@ -31,11 +31,14 @@ collapsed drop-down list in 'mini' view-mode.
         </li>
     {% endfor %}
     </ul>
-
+</div>
 {% else %}
 
     {% if menuModule %}
-        <select style="width: 200px" onchange="window.location.href=this.value">
+    <div class="float-right mt-4">
+        <span class="text-xs">{{ __('Module Menu') }}</span>
+
+        <select class="w-48 inline float-none" onchange="window.location.href=this.value">
             {% for categoryName, items in menuModule %}
             <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
 
@@ -48,13 +51,10 @@ collapsed drop-down list in 'mini' view-mode.
             </optgroup>
             {% endfor %}
         </select>
-        
-        <div style="float: right; padding-top: 10px; margin-left: 10px;">
-            {{ __('Module Menu') }}
-        </div>
+    </div>
     {% endif %}
 
 {% endif %}
 
-</div>
+
 
