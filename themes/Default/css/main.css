@@ -370,17 +370,17 @@ ul.moduleMenu h4 {
 }
 
 /* LINKS */
-a,a:link,a:hover {
+a:not([class]),a:not([class]):link,a:not([class]):hover {
 	background:transparent;
 	text-decoration:underline;
 }
-a:link {
+a:not([class]):link {
 	color:#c00;
 }
-a:visited {
+a:not([class]):visited {
 	color:#c00;
 }
-a:hover,a:active {
+a:not([class]):hover,a:active {
 	color:#069;
 }
 a.active {

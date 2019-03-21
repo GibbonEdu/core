@@ -21,4 +21,24 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * config file.
  */
  @tailwind utilities;
- 
+
+.bg-transparent-100 {
+    background-color: rgba(255,255,255,0.9);
+}
+
+.bg-transparent-600 {
+    background-color: rgba(50,50,50,0.6);
+}
+
+.bg-transparent-900 {
+    background-color: rgba(50,50,50,0.90);
+}
+
+.shadow-container {
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+}
+
+
+.list-reset {
+    list-style-type: none;
+}
