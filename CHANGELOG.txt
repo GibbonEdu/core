@@ -34,8 +34,8 @@ v18.0.00
         System: method for columns that require the translation, and update the columns where this is applicable
         System: added Omani Rial as a currency option
         System: added an option to select SMTP encryption in Third Party Settings
-        System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Students: added link from student profile to Individual Needs edit screen
+        System Admin: updated importer to add Skip Non-Required Fields option when importing partial data
         Timetable: update View Timetable by Person to access Expected users when All Users filter is enabled
 
     Bug Fixes
@@ -45,10 +45,11 @@ v18.0.00
         System: fixed SQL key integer length in database tables to ensure referential integrity
         Finance: fixed spelling error in Manage Invoices
         Library: fixed bug leading to loss of main user/owner field value in item edit
-        Library: removed lending icon for items that are not borrowable 
+        Library: removed lending icon for items that are not borrowable
         Markbook: fixed column title showing term's name when the term filter is applied in View Markbook
         Markbook: fixed bug preventing parents and students from viewing the markbook with work submitted to a lesson plan
         School Admin: fixed interface string typos
+        System Admin: fixed typo in Google integration settings
         Timetable Admin: fixed malformed translatable interface strings
         User Admin: fixed issue preventing action names from being translated in Manage Permissions
         User Admin: improved interface string consistency
