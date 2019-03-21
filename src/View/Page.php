@@ -155,23 +155,15 @@ class Page extends View
      */
     public function getAllStylesheets(string $context = null): array
     {
-        $stylesheets = $this->stylesheets->getAssets($context);
-
         if (!empty($this->getTheme())) {
-            $stylesheets = array_replace(
-                $stylesheets,
-                $this->getTheme()->stylesheets->getAssets($context)
-            );
+            $this->stylesheets->addMultiple($this->getTheme()->stylesheets->getAssets($context));
         }
 
         if (!empty($this->getModule())) {
-            $stylesheets = array_replace(
-                $stylesheets,
-                $this->getModule()->stylesheets->getAssets($context)
-            );
+            $this->stylesheets->addMultiple($this->getModule()->stylesheets->getAssets($context));
         }
 
-        return $stylesheets;
+        return $this->stylesheets->getAssets($context);
     }
 
     /**

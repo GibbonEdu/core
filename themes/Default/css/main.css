@@ -1343,7 +1343,12 @@ select[multiple] {
 }
 
 .column.inline {
-	white-space: nowrap;
+    white-space: nowrap;
+    display: table-cell;
+}
+
+.column.inline.displayNone {
+    display: none;
 }
 
 .column.inline div {

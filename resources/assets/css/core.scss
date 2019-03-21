@@ -16,4 +16,9 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-@import "bootstrap"
+/**
+ * This injects all of Tailwind's utility classes, generated based on your
+ * config file.
+ */
+ @tailwind utilities;
+ 
