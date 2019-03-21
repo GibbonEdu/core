@@ -10,18 +10,19 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
-<div class='linkTop'>
+<div class="pt-6">
 
 {% if sidebar %}
 
-    <ul class='moduleMenu'>
+    <ul class="list-reset m-0 -mb-6">
     {% for categoryName, items in menuModule %}
-        <li>
-            <h4>{{ __(categoryName, (items|first).textDomain) }}</h4>
-            <ul>
+        <li class="p-0">
+            <h5 class="m-0 mb-1 text-xs pb-0 ">{{ __(categoryName, (items|first).textDomain) }}</h5>
+
+            <ul class="list-reset m-0 mb-6">
             {% for item in items %}
-                <li>
-                    <a href="{{ item.url }}" class="{{ item.active ? 'active' : '' }}">
+                <li class="p-0">
+                    <a href="{{ item.url }}" {{ item.active ? 'class="active"' : '' }}>
                         {{ __(item.name, item.textDomain) }}
                     </a>
                 </li>
@@ -34,7 +35,7 @@ collapsed drop-down list in 'mini' view-mode.
 {% else %}
 
     {% if menuModule %}
-        <select style='width: 200px' onchange="window.location.href=this.value">
+        <select style="width: 200px" onchange="window.location.href=this.value">
             {% for categoryName, items in menuModule %}
             <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
 
@@ -48,7 +49,7 @@ collapsed drop-down list in 'mini' view-mode.
             {% endfor %}
         </select>
         
-        <div style='float: right; padding-top: 10px; margin-left: 10px;'>
+        <div style="float: right; padding-top: 10px; margin-left: 10px;">
             {{ __('Module Menu') }}
         </div>
     {% endif %}
