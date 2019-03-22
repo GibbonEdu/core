@@ -1860,8 +1860,13 @@ button[disabled], input[disabled], textarea[disabled] {
     position: absolute;
     top: 40%;
     right: 410px;
-    white-space: nowrap; 
+    white-space: nowrap;
 }
+.personSelect[multiple] + .LV_validation_message {
+    top: 78%;
+    right: 325px;
+}
+
 
 /* PRINT STYLES */
 body.print div.trail {
