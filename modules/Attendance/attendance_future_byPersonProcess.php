@@ -25,8 +25,9 @@ include __DIR__ . '/../../gibbon.php';
 //Module includes
 include __DIR__ . '/moduleFunctions.php';
 
-$gibbonPersonID = $_GET['gibbonPersonID'];
-$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID";
+$gibbonPersonID = $_POST['gibbonPersonID'];
+$scope = $_POST['scope'];
+$URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_POST['address'])."/attendance_future_byPerson.php&gibbonPersonID=$gibbonPersonID&scope=$scope";
 
 if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_future_byPerson.php') == false) {
     $URL .= '&return=error0';
@@ -34,22 +35,28 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 } else {
     //Proceed!
     //Check if person specified
-    if ($gibbonPersonID == '') {
+    if ($gibbonPersonID == '' & $scope == '') {
         $URL .= '&return=error1';
         header("Location: {$URL}");
     } else {
-        try {
-            $data = array('gibbonPersonID' => $gibbonPersonID);
-            $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
-            $result = $connection2->prepare($sql);
-            $result->execute($data);
-        } catch (PDOException $e) {
-            $URL .= '&return=error2';
-            header("Location: {$URL}");
-            exit();
+        $gibbonPersonID = explode(',', $gibbonPersonID);
+
+        $personCheck = true ;
+        foreach ($gibbonPersonID as $gibbonPersonIDCurrent) {
+            try {
+                $data = array('gibbonPersonID' => $gibbonPersonIDCurrent);
+                $sql = 'SELECT * FROM gibbonPerson WHERE gibbonPersonID=:gibbonPersonID';
+                $result = $connection2->prepare($sql);
+                $result->execute($data);
+            } catch (PDOException $e) {
+                $personCheck = false;
+            }
+            if ($result->rowCount() != 1) {
+                $personCheck = false;
+            }
         }
 
-        if ($result->rowCount() != 1) {
+        if (!$personCheck) {
             $URL .= '&return=error2';
             header("Location: {$URL}");
         } else {
@@ -92,72 +99,65 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
                     $date = date('Y-m-d', $i);
 
                     if (isSchoolOpen($guid, $date, $connection2)) { //Only add if school is open on this day
+                        foreach ($gibbonPersonID as $gibbonPersonIDCurrent) {
+                            //Check for record on same day
+                            try {
+                                $data = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'date' => "$date%");
+                                $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID IS NULL AND date LIKE :date ORDER BY date DESC';
+                                $result = $connection2->prepare($sql);
+                                $result->execute($data);
+                            } catch (PDOException $e) {
+                                $partialFail = true;
+                            }
 
-                        //Check for record on same day
-                        try {
-                            $data = array('gibbonPersonID' => $gibbonPersonID, 'date' => "$date%");
-                            $sql = 'SELECT * FROM gibbonAttendanceLogPerson WHERE gibbonPersonID=:gibbonPersonID AND gibbonCourseClassID IS NULL AND date LIKE :date ORDER BY date DESC';
-                            $result = $connection2->prepare($sql);
-                            $result->execute($data);
-                        } catch (PDOException $e) {
-                            $partialFail = true;
-                        }
-
-                        if ($result->rowCount() > 0 AND $absenceType == 'full') {
-                            $partialFail = true;
-                        } else {
-
-                            // Handle full-day absenses normally
-                            if ($absenceType == 'full') {
-                                try {
-                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Future\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
-                                    $resultUpdate = $connection2->prepare($sqlUpdate);
-                                    $resultUpdate->execute($dataUpdate);
-                                } catch (PDOException $e) {
-                                    $partialFail = true;
-                                }
-
-                            // Handle partial absenses per-class
-                            } else if ($absenceType == 'partial') {
-
-                                // Return error if full-day absense already recorded
-                                if ($result->rowCount() > 0) {
-                                    $URL .= '&return=error7';
-                                    header("Location: {$URL}");
-                                    exit();
-                                } else {
-
-                                    $courses = (isset($_POST['courses']))? $_POST['courses'] : null;
-
-                                    if (!empty($courses) && is_array($courses)) {
-
-                                        foreach ($courses as $course) {
-
-                                            try {
-                                                $dataUpdate = array('gibbonPersonID' => $gibbonPersonID, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
-                                                $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
-                                                $resultUpdate = $connection2->prepare($sqlUpdate);
-                                                $resultUpdate->execute($dataUpdate);
-                                            } catch (PDOException $e) {
-                                                $partialFail = true;
-                                            }
-
-                                        }
-                                        $URL .= '&absenceType=partial&date=' . $_POST['dateStart']; //Redirect to exact state of submit form
-                                    } else {
-                                        // Return error if no courses selected for partial absence
-                                        $URL .= '&return=error1';
-                                        header("Location: {$URL}");
-                                        exit();
+                            if ($result->rowCount() > 0 AND $absenceType == 'full') {
+                                $partialFail = true;
+                            } else {
+                                // Handle full-day absenses normally
+                                if ($absenceType == 'full') {
+                                    try {
+                                        $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'timestampTaken' => date('Y-m-d H:i:s'));
+                                        $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Future\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, timestampTaken=:timestampTaken';
+                                        $resultUpdate = $connection2->prepare($sqlUpdate);
+                                        $resultUpdate->execute($dataUpdate);
+                                    } catch (PDOException $e) {
+                                        $partialFail = true;
                                     }
 
-                                }
+                                // Handle partial absenses per-class
+                                } else if ($absenceType == 'partial') {
 
-                            } else {
-                                $URL .= '&return=error1';
-                                header("Location: {$URL}");
-                                exit();
+                                    // Return error if full-day absense already recorded
+                                    if ($result->rowCount() > 0) {
+                                        $URL .= '&return=error7';
+                                        header("Location: {$URL}");
+                                        exit();
+                                    } else {
+                                        $courses = (isset($_POST['courses']))? $_POST['courses'] : null;
+                                        if (!empty($courses) && is_array($courses)) {
+                                            foreach ($courses as $course) {
+                                                try {
+                                                    $dataUpdate = array('gibbonPersonID' => $gibbonPersonIDCurrent, 'direction' => $direction, 'type' => $type, 'reason' => $reason, 'comment' => $comment, 'gibbonPersonIDTaker' => $_SESSION[$guid]['gibbonPersonID'], 'date' => $date, 'gibbonCourseClassID' => $course, 'timestampTaken' => date('Y-m-d H:i:s'));
+                                                    $sqlUpdate = 'INSERT INTO gibbonAttendanceLogPerson SET gibbonAttendanceCodeID=(SELECT gibbonAttendanceCodeID FROM gibbonAttendanceCode WHERE name=:type), gibbonPersonID=:gibbonPersonID, direction=:direction, type=:type, context=\'Class\', reason=:reason, comment=:comment, gibbonPersonIDTaker=:gibbonPersonIDTaker, date=:date, gibbonCourseClassID=:gibbonCourseClassID, timestampTaken=:timestampTaken';
+                                                    $resultUpdate = $connection2->prepare($sqlUpdate);
+                                                    $resultUpdate->execute($dataUpdate);
+                                                } catch (PDOException $e) {
+                                                    $partialFail = true;
+                                                }
+                                            }
+                                            $URL .= '&absenceType=partial&date=' . $_POST['dateStart']; //Redirect to exact state of submit form
+                                        } else {
+                                            // Return error if no courses selected for partial absence
+                                            $URL .= '&return=error1';
+                                            header("Location: {$URL}");
+                                            exit();
+                                        }
+                                    }
+                                } else {
+                                    $URL .= '&return=error1';
+                                    header("Location: {$URL}");
+                                    exit();
+                                }
                             }
                         }
 
