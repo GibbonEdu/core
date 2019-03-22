@@ -46,9 +46,10 @@ class Person extends Select
         $this->addClass('personSelect');
 
         $output = '';
-
+        $output .= '<div class="flex justify-end items-center">';
         if ($this->displayPhoto) {
-            $output .= '<div id="'.$this->getID().'Photo" class="absolute w-20 h-20 z-10 rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat right-0" style="right: 324px; top: calc(50% - 2.5rem);">';
+
+            $output .= '<div id="'.$this->getID().'Photo" class="relative w-20 h-20 z-10 mr-4 rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat">';
             $output .= '<div id="'.$this->getID().'Count" class="hidden absolute bottom-0 right-0 bg-purple-400 text-white text-center rounded-full py-1 px-2"></div>';
             $output .= '</div>';
 
@@ -64,7 +65,7 @@ class Person extends Select
                             .css("background-image" , "url(./themes/Default/img/attendance_large.png)")
                             .css("background-size", "50px 50px")
                             .css("background-position", "50% 45%");
-                        
+
                         return;
                     } else {
                         $("#'.$this->getID().'Count").hide();
@@ -84,17 +85,18 @@ class Person extends Select
                     });
                 });
 
-                var value =  $("#'.$this->getID().'").val(); 
+                var value =  $("#'.$this->getID().'").val();
                 if (value != "" && value != "Please select...") {
                     $("#'.$this->getID().'").trigger("input");
                 }
             });
             </script>';
         }
-        
+
         $output .= parent::getElement();
 
-        
+        $output .= '</div>';
+
         return $output;
     }
 }
