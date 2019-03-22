@@ -25,6 +25,7 @@ v18.0.00
         System: removed Likes/Stars feature
 
     Significant Changes
+        Attendance: added ability to set future absence for multiple students
 
     Security
 
