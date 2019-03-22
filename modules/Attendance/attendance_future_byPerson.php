@@ -47,7 +47,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_futu
 
     $scope = (isset($_GET['scope']))? $_GET['scope'] : 'single';
     $gibbonPersonID = (isset($_GET['gibbonPersonID']))? $_GET['gibbonPersonID'] : null;
-    if (!is_array($gibbonPersonID)) {
+    if (!empty($gibbonPersonID) && !is_array($gibbonPersonID)) {
         $gibbonPersonID = explode(",", $gibbonPersonID);
     }
     $absenceType = (isset($_GET['absenceType']))? $_GET['absenceType'] : 'full';
