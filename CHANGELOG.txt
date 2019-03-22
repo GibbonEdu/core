@@ -20,6 +20,7 @@ v18.0.00
 --------
     Headlines
         Activated Urdu and Croatian as available languages
+        Added Burmese as a development language
 
     Changes With Important Notices
         System: removed Likes/Stars feature
