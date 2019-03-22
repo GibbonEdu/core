@@ -30,7 +30,13 @@ use Gibbon\Contracts\Database\Connection;
  */
 class Person extends Select
 {
-  
+    protected $displayPhoto = true;
+
+    public function photo($value)
+    {
+        $this->displayPhoto = $value;
+    }
+
     /**
      * Gets the HTML output for this form element.
      * @return  string
@@ -39,46 +45,56 @@ class Person extends Select
     {
         $this->addClass('personSelect');
 
-        $output = '<div id="'.$this->getID().'Photo" class="personPhoto"><div id="'.$this->getID().'Count" class="personCount"></div></div>';
+        $output = '';
+
+        if ($this->displayPhoto) {
+            $output .= '<div id="'.$this->getID().'Photo" class="absolute w-20 h-20 z-10 rounded-full bg-gray-200 border border-solid border-gray-400 bg-no-repeat right-0" style="right: 324px; top: calc(50% - 2.5rem);">';
+            $output .= '<div id="'.$this->getID().'Count" class="hidden absolute bottom-0 right-0 bg-purple-400 text-white text-center rounded-full py-1 px-2"></div>';
+            $output .= '</div>';
+
+            $output .= '<script>
+            $(function(){
+                $("#'.$this->getID().'").on("input", function() {
+                    var value =  $(this).val();
+
+                    if ( Array.isArray(value) && value.length > 1) {
+                        $("#'.$this->getID().'Count").show();
+                        $("#'.$this->getID().'Count").html(value.length);
+                        $("#'.$this->getID().'Photo")
+                            .css("background-image" , "url(./themes/Default/img/attendance_large.png)")
+                            .css("background-size", "50px 50px")
+                            .css("background-position", "50% 45%");
+                        
+                        return;
+                    } else {
+                        $("#'.$this->getID().'Count").hide();
+                    }
+                    var personID = Array.isArray(value) ? value[0] : value;
+                    $.ajax({
+                        url: "./modules/User Admin/user_manage_userPhotoAjax.php",
+                        data: { gibbonPersonID: personID, },
+                        type: "POST",
+                        success: function(data) {
+                            $("#'.$this->getID().'Count").html("");
+                            $("#'.$this->getID().'Photo")
+                                .css("background-image" , "url(./"+data+")")
+                                .css("background-size", "cover")
+                                .css("background-position", "50% 20%");
+                        }
+                    });
+                });
+
+                var value =  $("#'.$this->getID().'").val(); 
+                if (value != "" && value != "Please select...") {
+                    $("#'.$this->getID().'").trigger("input");
+                }
+            });
+            </script>';
+        }
         
         $output .= parent::getElement();
 
-        $output .= '<script>
-        $(function(){
-            $("#'.$this->getID().'").on("input", function() {
-                var value =  $(this).val();
-
-                if ( Array.isArray(value) && value.length > 1) {
-                    $("#'.$this->getID().'Count").html(value.length);
-                    $("#'.$this->getID().'Photo")
-                        .css("background-image" , "url(./themes/Default/img/attendance_large.png)")
-                        .css("background-size", "50px 50px")
-                        .css("background-position", "50% 45%");
-                    
-                    return;
-                }
-                var personID = Array.isArray(value) ? value[0] : value;
-                $.ajax({
-                    url: "./modules/User Admin/user_manage_userPhotoAjax.php",
-                    data: { gibbonPersonID: personID, },
-                    type: "POST",
-                    success: function(data) {
-                        $("#'.$this->getID().'Count").html("");
-                        $("#'.$this->getID().'Photo")
-                            .css("background-image" , "url(./"+data+")")
-                            .css("background-size", "cover")
-                            .css("background-position", "50% 20%");
-                    }
-                });
-            });
-
-            var value =  $("#'.$this->getID().'").val(); 
-            if (value != "" && value != "Please select...") {
-                $("#'.$this->getID().'").trigger("input");
-            }
-        });
-        </script>';
-
+        
         return $output;
     }
 }
