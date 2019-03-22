@@ -82,16 +82,16 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/rollGroup_man
             $row = $form->addRow();
                 $row->addLabel('tutors', __('Tutors'))->description(__('Up to 3 per roll group. The first-listed will be marked as "Main Tutor".'));
                 $column = $row->addColumn()->addClass('stacked');
-                $column->addSelectStaff('gibbonPersonIDTutor')->placeholder();
-                $column->addSelectStaff('gibbonPersonIDTutor2')->placeholder();
-                $column->addSelectStaff('gibbonPersonIDTutor3')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDTutor')->placeholder()->photo(false);
+                $column->addSelectStaff('gibbonPersonIDTutor2')->placeholder()->photo(false);
+                $column->addSelectStaff('gibbonPersonIDTutor3')->placeholder()->photo(false);
 
             $row = $form->addRow();
                 $row->addLabel('EAs', __('Educational Assistant'))->description(__('Up to 3 per roll group.'));
                 $column = $row->addColumn()->addClass('stacked');
-                $column->addSelectStaff('gibbonPersonIDEA')->placeholder();
-                $column->addSelectStaff('gibbonPersonIDEA2')->placeholder();
-                $column->addSelectStaff('gibbonPersonIDEA3')->placeholder();
+                $column->addSelectStaff('gibbonPersonIDEA')->placeholder()->photo(false);
+                $column->addSelectStaff('gibbonPersonIDEA2')->placeholder()->photo(false);
+                $column->addSelectStaff('gibbonPersonIDEA3')->placeholder()->photo(false);
 
             $row = $form->addRow();
                 $row->addLabel('gibbonSpaceID', __('Location'));

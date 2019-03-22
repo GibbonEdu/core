@@ -1855,6 +1855,14 @@ button[disabled], input[disabled], textarea[disabled] {
     opacity: 0.65;
 }
 
+/* PERSON SELECT - LiveValidation styling */
+.personSelect + .LV_validation_message {
+    position: absolute;
+    top: 40%;
+    right: 410px;
+    white-space: nowrap; 
+}
+
 /* PRINT STYLES */
 body.print div.trail {
     display: none;
