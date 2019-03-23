@@ -195,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo $row['courseShort'].'.'.$row['class'];
                     echo '</td>';
                     echo '<td>';
-                    echo Format::dateReadable($dateStart, '%b %d').' - '. Format::dateReadable($dateEnd, '%b %d, %Y');
+                    echo Format::dateRangeReadable($dateStart, $dateEnd);
                     echo '</td>';
                     echo '<td style="padding: 0;">';
 

@@ -149,7 +149,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                 echo $row['courseShort'].'.'.$row['class'];
                 echo '</td>';
                 echo '<td>';
-                echo Format::dateReadable($dateStart, '%b %d').' - '. Format::dateReadable($dateEnd, '%b %d, %Y');
+                echo Format::dateRangeReadable($dateStart, $dateEnd);
                 echo '</td>';
                 echo '<td style="padding: 0;">';
                 
@@ -163,7 +163,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                             echo '<i>'.__('NA').'</i>';
                             echo '</td>';
                         } else {
-                            $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
 
                             if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
                                 $class = 'highlightPresent';
@@ -172,20 +171,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                     $class = 'highlightAbsent';
                                 } else {
                                     $class = 'highlightNoData';
-                                    $link = '';
                                 }
                             }
 
                             echo "<td class='$class' style='padding: 12px !important;'>";
-                            if ($link != '') {
-                                echo "<a href='$link'>";
-                                echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
-                                echo '</a>';
-                            } else {
-                                echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
-                                echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
-                            }
+                            echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
+                            echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                             echo '</td>';                            
 
                             // Wrap to a new line every 10 dates
