@@ -26,7 +26,7 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
     echo '</div>';
 } else {
     //Proceed!
-    $page->breadcrumbs->add(__('Import User Photos'));   
+    $page->breadcrumbs->add(__('Import User Photos'));
 
     $step = null;
     if (isset($_GET['step'])) {
@@ -72,12 +72,12 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/import_userPhot
             <li><?php echo __('Imports cannot be run concurrently (e.g. make sure you are the only person importing at any one time).') ?></li>
             <li><?php echo __('Please note the following requirements for images in preparing your ZIP file:') ?></li>
                 <ol>
-                    <li><b><?php echo __('File Name') ?></b> - <?php echo __('File name of each image must be username plus extension, e.g. astudent.jpg') ?></li>
-                    <li><b><?php echo __('Folder') ?> *</b> - <?php echo __('The ZIP file must not contain any folders, only files.') ?></li>
-                    <li><b><?php echo __('File Type') ?> *</b> - <?php echo __('Images must be formatted as JPG or PNG.') ?></li>
-                    <li><b><?php echo __('Image Size') ?> *</b> - <?php echo __('Displayed at 240px by 320px.') ?></li>
-                    <li><b><?php echo __('Size Range') ?> *</b> - <?php echo __('Accepts images up to 360px by 480px.') ?></li>
-                    <li><b><?php echo __('Aspect Ratio Range') ?> *</b> - <?php echo __('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></li>
+                    <li><?php echo __('File Name') ?> - <?php echo __('File name of each image must be username plus extension, e.g. astudent.jpg') ?></li>
+                    <li><?php echo __('Folder') ?> * - <?php echo __('The ZIP file must not contain any folders, only files.') ?></li>
+                    <li><?php echo __('File Type') ?> * - <?php echo __('Images must be formatted as JPG or PNG.') ?></li>
+                    <li><?php echo __('Image Size') ?> * - <?php echo __('Displayed at 240px by 320px.') ?></li>
+                    <li><?php echo __('Size Range') ?> * - <?php echo __('Accepts images up to 360px by 480px.') ?></li>
+                    <li><?php echo __('Aspect Ratio Range') ?> * - <?php echo __('Accepts aspect ratio between 1:1.2 and 1:1.4.') ?></li>
                 </ol>
             </li>
         </ol>

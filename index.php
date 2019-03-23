@@ -282,7 +282,7 @@ $page->scripts->addMultiple([
     'jquery-ui'      => 'lib/jquery-ui/js/jquery-ui.min.js',
     'jquery-time'    => 'lib/jquery-timepicker/jquery.timepicker.min.js',
     'jquery-chained' => 'lib/chained/jquery.chained.min.js',
-    'core'           => 'resources/assets/js/core.js',
+    'core'           => 'resources/assets/js/core.min.js',
 ], ['context' => 'head']);
 
 // Set page scripts: foot - jquery
@@ -346,6 +346,9 @@ $page->stylesheets->add(
     'body { background: url('.$backgroundImage.') '.$backgroundScroll.' #A88EDB!important; }',
     ['type' => 'inline']
 );
+
+$page->stylesheets->add('theme-dev', 'resources/assets/css/theme.min.css');
+$page->stylesheets->add('core', 'resources/assets/css/core.min.css', ['weight' => 10]);
 
 /**
  * USER CONFIGURATION

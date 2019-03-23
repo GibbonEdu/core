@@ -21,6 +21,7 @@ namespace Gibbon\Forms;
 
 use Gibbon\Forms\FormFactory;
 use Gibbon\Contracts\Database\Connection;
+use Gibbon\Services\Format;
 
 /**
  * DatabaseFormFactory
@@ -267,16 +268,31 @@ class DatabaseFormFactory extends FormFactory
                 FROM gibbonPerson JOIN gibbonStaff ON (gibbonPerson.gibbonPersonID=gibbonStaff.gibbonPersonID)
                 WHERE status='Full' ORDER BY surname, preferredName";
 
-        $results = $this->pdo->executeQuery(array(), $sql);
+        $staff = $this->pdo->select($sql)->fetchGroupedUnique();
 
-        $values = array();
-        if ($results && $results->rowCount() > 0) {
-            while ($row = $results->fetch()) {
-                $values[$row['gibbonPersonID']] = formatName(htmlPrep($row['title']), ($row['preferredName']), htmlPrep($row['surname']), 'Staff', true, true);
-            }
-        }
+        $staff = array_map(function ($person) {
+            return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
+        }, $staff);
 
-        return $this->createSelect($name)->fromArray($values);
+        return $this->createSelectPerson($name)->fromArray($staff);
+    }
+
+    public function createSelectUsersFromList($name, $people = [])
+    {
+        $data = ['gibbonPersonIDList' => implode(',', $people)];
+        $sql = "SELECT gibbonPerson.gibbonPersonID, title, surname, preferredName
+                FROM gibbonPerson
+                WHERE status='Full' 
+                AND FIND_IN_SET(gibbonPersonID, :gibbonPersonIDList)
+                ORDER BY surname, preferredName";
+
+        $people = $this->pdo->select($sql, $data)->fetchGroupedUnique();
+
+        $people = array_map(function ($person) {
+            return Format::name($person['title'], $person['preferredName'], $person['surname'], 'Staff', true, true);
+        }, $people);
+
+        return $this->createSelectPerson($name)->fromArray($people);
     }
 
     public function createSelectUsers($name, $gibbonSchoolYearID = false, $params = array())
@@ -336,7 +352,7 @@ class DatabaseFormFactory extends FormFactory
             }, array());
         }
 
-        return $this->createSelect($name)->fromArray($users);
+        return $this->createSelectPerson($name)->fromArray($users);
     }
 
     /*
@@ -442,7 +458,7 @@ class DatabaseFormFactory extends FormFactory
             }
         }
 
-        return $this->createSelect($name)->fromArray($values);
+        return $this->createSelectPerson($name)->fromArray($values);
     }
 
     public function createSelectGradeScale($name)

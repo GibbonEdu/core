@@ -1343,7 +1343,12 @@ select[multiple] {
 }
 
 .column.inline {
-	white-space: nowrap;
+    white-space: nowrap;
+    display: table-cell;
+}
+
+.column.inline.displayNone {
+    display: none;
 }
 
 .column.inline div {
@@ -1849,6 +1854,19 @@ button[disabled], input[disabled], textarea[disabled] {
     width: 14px;
     opacity: 0.65;
 }
+
+/* PERSON SELECT - LiveValidation styling */
+.personSelect + .LV_validation_message {
+    position: absolute;
+    top: 40%;
+    right: 410px;
+    white-space: nowrap;
+}
+.personSelect[multiple] + .LV_validation_message {
+    top: 78%;
+    right: 325px;
+}
+
 
 /* PRINT STYLES */
 body.print div.trail {
