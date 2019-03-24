@@ -23,6 +23,7 @@ use Gibbon\Core;
 use Gibbon\Domain\System\SettingGateway;
 use Gibbon\Locale;
 use Gibbon\Session;
+use Gibbon\View\View;
 use Gibbon\View\Page;
 use Gibbon\Comms\Mailer;
 use Gibbon\Comms\SMS;
@@ -212,7 +213,8 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         });
 
         $container->add(MailerInterface::class, function () use ($container) {
-            return new Mailer($container->get('session'));
+            $view = new View($container->get('twig'));
+            return (new Mailer($container->get('session')))->setView($view);
         });
 
         $container->add(SMSInterface::class, function () use ($session, $container) {
