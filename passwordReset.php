@@ -50,7 +50,6 @@ if ($step == 1) {
 
     $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/passwordResetProcess.php?step=1');
 
-    $form->setClass('smallIntBorder fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
     $row = $form->addRow();
