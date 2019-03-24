@@ -1935,9 +1935,6 @@ else {
 			}
 
 			if ($email=="Y") {
-				//Prep message
-				$bodyFin = "<p style='font-style: italic'>" . sprintf(__('Email sent via %1$s at %2$s.'), $_SESSION[$guid]["systemName"], $_SESSION[$guid]["organisationName"]) ."</p>" ;
-
 				//Set up email
 				$emailCount=0 ;
 				$mail= $container->get(Mailer::class);
@@ -1952,8 +1949,10 @@ else {
 				$mail->Encoding="base64" ;
 				$mail->IsHTML(true);
 				$mail->Subject=$subject ;
-				$mail->Body = $body.$bodyFin ;
-				$mail->AltBody = emailBodyConvert($body.$bodyFin) ;
+				$mail->renderBody('mail/email.twig.html', [
+					'title'  => $subject,
+					'body'   => $body
+				]);
 
 				//Send to sender, if not in recipient list
 				$includeSender = true ;
@@ -2002,17 +2001,19 @@ else {
 						if ($emailReceipt == 'Y') {
 							$bodyReadReceipt = "<a target='_blank' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=/modules/Messenger/messenger_emailReceiptConfirm.php&gibbonMessengerID=$AI&gibbonPersonID=".$reportEntry[0]."&key=".$reportEntry[5]."'>".$emailReceiptText."</a>";
 							if (is_numeric(strpos($body, '[confirmLink]'))) {
-								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body).$bodyFin;
+								$bodyOut = str_replace('[confirmLink]', $bodyReadReceipt, $body);
 							}
 							else {
-								$bodyOut = $body.$bodyReadReceipt.$bodyFin;
+								$bodyOut = $body.$bodyReadReceipt;
 							}
 						}
 						else {
-							$bodyOut = $body.$bodyFin;
+							$bodyOut = $body;
 						}
-						$mail->Body = $bodyOut ;
-						$mail->AltBody = emailBodyConvert($bodyOut);
+						$mail->renderBody('mail/email.twig.html', [
+							'title'  => $subject,
+							'body'   => $bodyOut
+						]);
 						if(!$mail->Send()) {
 							$partialFail = TRUE ;
 							setLog($connection2, $_SESSION[$guid]['gibbonSchoolYearIDCurrent'], getModuleID($connection2, $_POST["address"]), $_SESSION[$guid]['gibbonPersonID'], 'Email Send Status', array('Status' => 'Not OK', 'Result' => $mail->ErrorInfo, 'Recipients' => $reportEntry[4]));
@@ -2036,9 +2037,11 @@ else {
                     $sender = formatName('', $_SESSION[$guid]['preferredName'], $_SESSION[$guid]['surname'], 'Staff');
                     $date = dateConvertBack($guid, date('Y-m-d')).' '.date('H:i:s');
 
-                    $mail->Body = __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body.$bodyFin;
-                    $mail->AltBody = emailBodyConvert($mail->Body);
-                    $mail->Send();
+                    $mail->renderBody('mail/email.twig.html', [
+						'title'  => $subject,
+						'body'   => __('Message Bcc').': '.sprintf(__('The following message was sent by %1$s on %2$s and delivered to %3$s recipients.'), $sender, $date, $emailCount).'<br/><br/>'.$body
+					]);
+					$mail->Send();
                 }
 
                 $mail->smtpClose();
