@@ -19,6 +19,7 @@ CHANGELOG
 v18.0.00
 --------
     Headlines
+        Added responsive HTML email templates for outgoing notifications and messages
         Activated Urdu and Croatian as available languages
         Added Burmese as a development language
 
