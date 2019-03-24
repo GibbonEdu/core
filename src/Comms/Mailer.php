@@ -21,6 +21,7 @@ namespace Gibbon\Comms;
 
 use Gibbon\Contracts\Services\Session;
 use Gibbon\Contracts\Comms\Mailer as MailerInterface;
+use Gibbon\View\View;
 
 /**
  * Mailer class
@@ -31,6 +32,7 @@ use Gibbon\Contracts\Comms\Mailer as MailerInterface;
 class Mailer extends \PHPMailer implements MailerInterface
 {
     protected $session;
+    protected $view;
 
     public function __construct(Session $session)
     {
@@ -44,6 +46,32 @@ class Mailer extends \PHPMailer implements MailerInterface
         }
 
         parent::__construct(null);
+    }
+
+    public function setView(View $view)
+    {
+        $this->view = $view;
+        $this->view->addData([
+            'systemName'            => $this->session->get('systemName'),
+            'organisationName'      => $this->session->get('organisationName'),
+            'organisationNameShort' => $this->session->get('organisationNameShort'),
+            'organisationEmail'     => $this->session->get('organisationEmail'),
+            'organisationLogo'      => $this->session->get('organisationLogo'),
+        ]);
+        
+        return $this;
+    }
+
+    public function renderBody(string $template, array $data = [])
+    {
+        $this->Body = $this->view->render($template, $data);
+        $this->AltBody = $this->emailBodyStripTags($data['body'] ?? '');
+    }
+
+    public function setDefaultSender($subject)
+    {
+        $this->Subject = $this->session->get('organisationNameShort').' - '.$subject;
+        $this->SetFrom($this->session->get('organisationEmail'), $this->session->get('organisationName'));
     }
 
     protected function setupSMTP()
@@ -84,5 +112,15 @@ class Mailer extends \PHPMailer implements MailerInterface
                 $this->SMTPSecure = $encryption;
             }
         }
+    }
+
+    protected function emailBodyStripTags($body)
+    {
+        $body = preg_replace('#<br\s*/?>#i', "\n", $body);
+        $body = str_replace(['</p>', '</div>'], "\n\n", $body);
+        $body = preg_replace("#\<a.+href\=[\"|\'](.+)[\"|\'].*\>.*\<\/a\>#U", '$1', $body);
+        $body = strip_tags($body, '<a>');
+
+        return $body;
     }
 }
