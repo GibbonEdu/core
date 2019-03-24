@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -115,7 +117,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
         } else {
             //Get child list
             $count = 0;
-            $options = '';
+            $options = array();
             while ($row = $result->fetch()) {
                 try {
                     $dataChild = array('gibbonFamilyID' => $row['gibbonFamilyID'], 'gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
@@ -127,11 +129,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 }
 
                 while ($rowChild = $resultChild->fetch()) {
-                    $select = '';
-                    if ($rowChild['gibbonPersonID'] == $gibbonPersonID) {
-                        $select = 'selected';
-                    }
-                    $options = $options."<option $select value='".$rowChild['gibbonPersonID']."'>".$rowChild['surname'].', '.$rowChild['preferredName'].'</option>';
+                    $options[$rowChild['gibbonPersonID']] = formatName('', $rowChild['preferredName'], $rowChild['surname'], 'Student');
                     $gibbonPersonIDArray[$count] = $rowChild['gibbonPersonID'];
                     ++$count;
                 }
@@ -148,35 +146,29 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_deadlines.
                 echo __('Choose');
                 echo '</h3>';
 
-                ?>
-				<form method="get" action="<?php echo $_SESSION[$guid]['absoluteURL']?>/index.php">
-					<table class='noIntBorder' cellspacing='0' style="width: 100%">
-						<tr><td style="width: 30%"></td><td></td></tr>
-						<tr>
-							<td>
-								<b><?php echo __('Search For') ?></b><br/>
-								<span class="emphasis small"><?php echo __('Preferred, surname, username.') ?></span>
-							</td>
-							<td class="right">
-								<select name="search" id="search" class="standardWidth">
-									<option value=""></value>
-									<?php echo $options; ?>
-								</select>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2 class="right">
-								<input type="hidden" name="q" value="/modules/<?php echo $_SESSION[$guid]['module'] ?>/planner_deadlines.php">
-								<input type="hidden" name="address" value="<?php echo $_SESSION[$guid]['address'] ?>">
-								<?php
-                                echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/planner.php'>".__('Clear Search').'</a>'; ?>
-								<input type="submit" value="<?php echo __('Submit'); ?>">
-							</td>
-						</tr>
-					</table>
-				</form>
-				<?php
+                $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/index.php', 'get');
 
+                $form->setClass('noIntBorder fullWidth');
+
+                $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+                $form->addHiddenValue('q', '/modules/'.$_SESSION[$guid]['module'].'/planner_deadlines.php');
+                if (isset($gibbonCourseClassID) && $gibbonCourseClassID != '') {
+                    $form->addHiddenValue('gibbonCourseClassID', $gibbonCourseClassID);
+                    $form->addHiddenValue('viewBy', 'class');
+                }
+                else {
+                    $form->addHiddenValue('viewBy', 'date');
+                }
+
+                $row = $form->addRow();
+                $row->addLabel('search', __('Student'));
+                $row->addSelect('search')->fromArray($options)->selected($gibbonPersonID)->placeholder();
+
+                $row = $form->addRow();
+                    $row->addFooter();
+                    $row->addSearchSubmit($gibbon->session);
+
+                echo $form->getOutput();
             }
 
             if ($gibbonPersonID != '' and $count > 0) {

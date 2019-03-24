@@ -17,6 +17,8 @@ You should have received a copy of the GNU General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
+use Gibbon\Forms\Form;
+
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
 
@@ -117,9 +119,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 
                     ?>
 					<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_bumpProcess.php?gibbonPlannerEntryID=$gibbonPlannerEntryID" ?>">
-						<table class='smallIntBorder fullWidth' cellspacing='0'>	
+						<table class='smallIntBorder fullWidth' cellspacing='0'>
 							<tr>
-								<td> 
+								<td>
 									<b><?php echo __('Bump Direction') ?> *</b><br/>
 									<span class="emphasis small"></span>
 								</td>
@@ -131,7 +133,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_bump.php')
 								</td>
 							</tr>
 							<tr>
-								<td colspan=2> 
+								<td colspan=2>
 									<?php echo sprintf(__('Pressing "Yes" below will move this lesson, and all preceeding or succeeding lessons in this class, to the previous or next available time slot. <b>Are you sure you want to bump %1$s?'), $row['name']) ?></b><br/>
 								</td>
 							</tr>
