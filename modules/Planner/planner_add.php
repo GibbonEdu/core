@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use Gibbon\Forms\Form;
+use Gibbon\Module\Planner\Forms\PlannerFormFactory;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -108,10 +109,10 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 if ($result->rowCount() != 1) {
                     $proceed = false;
                 } else {
-                    $row = $result->fetch();
-                    $extra = $row['course'].'.'.$row['class'];
-                    $gibbonDepartmentID = $row['gibbonDepartmentID'];
-                    $gibbonYearGroupIDList = $row['gibbonYearGroupIDList'];
+                    $values = $result->fetch();
+                    $extra = $values['course'].'.'.$values['class'];
+                    $gibbonDepartmentID = $values['gibbonDepartmentID'];
+                    $gibbonYearGroupIDList = $values['gibbonYearGroupIDList'];
                 }
             }
         } else {
@@ -144,749 +145,257 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 returnProcess($guid, $_GET['return'], $editLink, null);
             }
 
+            $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address']);
+            $form->setFactory(PlannerFormFactory::create($pdo));
+
+            $form->setClass('smallIntBorder fullWidth');
+
+            $form->addHiddenValue('address', $_SESSION[$guid]['address']);
+
+            //BASIC INFORMATION
+            $form->addRow()->addHeading(__('Basic Information'));
+
+            if ($viewBy == 'class') {
+                $form->addHiddenValue('gibbonCourseClassID', $values['gibbonCourseClassID']);
+                $row = $form->addRow();
+                    $row->addLabel('schoolYearName', __('Class'));
+                    $row->addTextField('schoolYearName')->setValue($values['course'].'.'.$values['class'])->required()->readonly();
+            } else {
+                if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                    $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".", gibbonCourseClass.nameShort) AS name FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY name';
+                } else {
+                    $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
+                    $sql = 'SELECT gibbonCourseClass.gibbonCourseClassID AS value, CONCAT(gibbonCourse.nameShort,".", gibbonCourseClass.nameShort) AS name FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY name';
+                }
+                $row = $form->addRow();
+                    $row->addLabel('gibbonCourseClassID', __('Class'));
+                    $row->addSelect('gibbonCourseClassID')->fromQuery($pdo, $sql, $data)->required()->placeholder();
+            }
+
+            if ($viewBy == 'class') {
+                $data = array('gibbonCourseClassID' => $values['gibbonCourseClassID']);
+                $sql = "SELECT gibbonCourseClassID AS chainedTo, gibbonUnit.gibbonUnitID as value, name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND active='Y' AND running='Y' ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonUnitID', __('Unit'));
+                    $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->placeholder();
+            }
+            else {
+                $data = array();
+                $sql = "SELECT gibbonCourseClassID AS chainedTo, gibbonUnit.gibbonUnitID as value, name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y' ORDER BY name";
+                $row = $form->addRow();
+                    $row->addLabel('gibbonUnitID', __('Unit'));
+                    $row->addSelect('gibbonUnitID')->fromQueryChained($pdo, $sql, $data, 'gibbonCourseClassID')->placeholder();
+            }
+
+            $row = $form->addRow();
+                $row->addLabel('name', __('Lesson Name'));
+                $row->addTextField('name')->setValue()->maxLength(50)->required();
+
+            $row = $form->addRow();
+                $row->addLabel('summary', __('Summary'));
+                $row->addTextField('summary')->setValue()->maxLength(255);
+
+            //Try and find the next unplanned slot for this class.
+            if ($viewBy == 'class') {
+                //Get $_GET values
+                $nextDate = null;
+                if (isset($_GET['date'])) {
+                    $nextDate = $_GET['date'];
+                }
+                $nextTimeStart = null;
+                if (isset($_GET['timeStart'])) {
+                    $nextTimeStart = $_GET['timeStart'];
+                }
+                $nextTimeEnd = null;
+                if (isset($_GET['timeEnd'])) {
+                    $nextTimeEnd = $_GET['timeEnd'];
+                }
+
+                if ($nextDate == '') {
+                    try {
+                        $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
+                        $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10';
+                        $resultNext = $connection2->prepare($sqlNext);
+                        $resultNext->execute($dataNext);
+                    } catch (PDOException $e) {
+                        echo "<div class='error'>".$e->getMessage().'</div>';
+                    }
+                    $nextDate = '';
+                    $nextTimeStart = '';
+                    $nextTimeEnd = '';
+                    while ($rowNext = $resultNext->fetch()) {
+                        try {
+                            $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
+                            $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
+                            $resultPlanner = $connection2->prepare($sqlPlanner);
+                            $resultPlanner->execute($dataPlanner);
+                        } catch (PDOException $e) {
+                            echo "<div class='error'>".$e->getMessage().'</div>';
+                        }
+                        if ($resultPlanner->rowCount() == 0) {
+                            $nextDate = $rowNext['date'];
+                            $nextTimeStart = $rowNext['timeStart'];
+                            $nextTimeEnd = $rowNext['timeEnd'];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if ($viewBy == 'date') {
+                $row = $form->addRow();
+                    $row->addLabel('date', __('Date'));
+                    $row->addDate('date')->setValue(dateConvertBack($guid, $date))->required()->readonly();
+            }
+            else {
+                $row = $form->addRow();
+                    $row->addLabel('date', __('Date'));
+                    $row->addDate('date')->setValue(dateConvertBack($guid, $nextDate))->required();
+            }
+
+            $nextTimeStart = (isset($nextTimeStart)) ? substr($nextTimeStart, 0, 5) : null;
+            $row = $form->addRow();
+                $row->addLabel('timeStart', __('Start Time'))->description("Format: hh:mm (24hr)");
+                $row->addTime('timeStart')->setValue($nextTimeStart)->required();
+
+            $nextTimeEnd = (isset($nextTimeEnd)) ? substr($nextTimeEnd, 0, 5) : null;
+            $row = $form->addRow();
+                $row->addLabel('timeEnd', __('End Time'))->description("Format: hh:mm (24hr)");
+                $row->addTime('timeEnd')->setValue($nextTimeEnd)->required();
+
+            $description = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate') ;
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('description', __('Lesson Details'));
+                $column->addEditor('description', $guid)->setRows(25)->showMedia()->setValue($description);
+
+            $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate');
+            $row = $form->addRow();
+                $column = $row->addColumn();
+                $column->addLabel('teachersNotes', __('Teacher\'s Notes'));
+                $column->addEditor('teachersNotes', $guid)->setRows(25)->showMedia()->setValue($teachersNotes);
+
+            //HOMEWORK
+            $form->addRow()->addHeading(__('Homework'));
+
+            $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
+            $row = $form->addRow();
+                $row->addLabel('homework', __('Homework?'));
+                $row->addRadio('homework')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+
+            $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkDueDate', __('Homework Due Date'));
+                $row->addDate('homeworkDueDate')->required();
+
+            $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkDueDateTime', __('Homework Due Date Time'))->description("Format: hh:mm (24hr)");
+                $row->addTime('homeworkDueDateTime');
+
+            $row = $form->addRow()->addClass('homework');
+                $column = $row->addColumn();
+                $column->addLabel('homeworkDetails', __('Homework Details'));
+                $column->addEditor('homeworkDetails', $guid)->setRows(15)->showMedia()->setValue($description)->required();
+
+            $form->toggleVisibilityByClass('homeworkSubmission')->onRadio('homeworkSubmission')->when('Y');
+            $row = $form->addRow()->addClass('homework');
+                $row->addLabel('homeworkSubmission', __('Online Submission?'));
+                $row->addRadio('homeworkSubmission')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+
+            $row = $form->addRow()->setClass('homework homeworkSubmission');
+                $row->addLabel('homeworkSubmissionDateOpen', __('Submission Open Date'));
+                $row->addDate('homeworkSubmissionDateOpen')->required();
+
+            $row = $form->addRow()->setClass('homework homeworkSubmission');
+                $row->addLabel('homeworkSubmissionDrafts', __('Drafts'));
+                $row->addSelect('homeworkSubmissionDrafts')->fromArray(array('0' => __('None'), '1' => __('1'), '2' => __('2'), '3' => __('3')))->required();
+
+            $row = $form->addRow()->setClass('homework homeworkSubmission');
+                $row->addLabel('homeworkSubmissionType', __('Submission Type'));
+                $row->addSelect('homeworkSubmissionType')->fromArray(array('Link' => __('Link'), 'File' => __('File'), 'Link/File' => __('Link/File')))->required();
+
+            $row = $form->addRow()->setClass('homework homeworkSubmission');
+                $row->addLabel('homeworkSubmissionRequired', __('Submission Required'));
+                $row->addSelect('homeworkSubmissionRequired')->fromArray(array('Optional' => __('Optional'), 'Compulsory' => __('Compulsory')))->required();
+
+            if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) {
+                $form->toggleVisibilityByClass('homeworkCrowdAssess')->onRadio('homeworkCrowdAssess')->when('Y');
+                $row = $form->addRow()->addClass('homework homeworkSubmission');
+                    $row->addLabel('homeworkCrowdAssess', __('Crowd Assessment?'));
+                    $row->addRadio('homeworkCrowdAssess')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+
+                $row = $form->addRow()->addClass('homework homeworkSubmission homeworkCrowdAssess');
+                    $row->addLabel('homeworkCrowdAssessControl', __('Access Controls?'))->description(__('Decide who can see this homework.'));
+                    $column = $row->addColumn();
+                        $column->addCheckbox('homeworkCrowdAssessClassTeacher')->checked(true)->description(__('Class Teacher'))->disabled();
+                        $column->addCheckbox('homeworkCrowdAssessClassSubmitter')->checked(true)->description(__('Submitter'))->disabled();
+                        $column->addCheckbox('homeworkCrowdAssessClassmatesRead')->description(__('Classmates'));
+                        $column->addCheckbox('homeworkCrowdAssessOtherStudentsRead')->description(__('Other Students'));
+                        $column->addCheckbox('homeworkCrowdAssessOtherTeachersRead')->description(__('Other Teachers'));
+                        $column->addCheckbox('homeworkCrowdAssessSubmitterParentsRead')->description(__('Submitter\'s Parents'));
+                        $column->addCheckbox('homeworkCrowdAssessClassmatesParentsRead')->description(__('Classmates\'s Parents'));
+                        $column->addCheckbox('homeworkCrowdAssessOtherParentsRead')->description(__('Other Parents'));
+            }
+
+            //OUTCOMES
+            if ($viewBy == 'date') {
+                $form->addRow()->addHeading(__('Outcomes'));
+                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
+            }
+            else {
+                $form->addRow()->addHeading(__('Outcomes'));
+                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
+
+                // Fee selector
+                $outcomeSelector = $form->getFactory()->createSelectOutcome('newOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID)->addClass('addBlock');
+
+                // Block template
+                $blockTemplate = $form->getFactory()->createTable()->setClass('blank');
+                    $row = $blockTemplate->addRow();
+                        $row->addTextField('outcometitle')->setClass('standardWidth floatLeft noMargin title')->required()->placeholder(__('Outcome Name'))->readonly()
+                            ->append('<input type="hidden" id="outcomegibbonOutcome" name="outcomegibbonOutcome" value="">');
+
+                    $col = $blockTemplate->addRow()->addColumn()->addClass('inline');
+                        $col->addTextField('outcomecategory')->setClass('standardWidth floatLeft noMargin')->required()->placeholder(__('Category'))->readonly();
+
+                    $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
+                        $col->addLabel('description', __('Description'));
+                        $col->addTextArea('description')->setRows('auto')->setClass('fullWidth floatNone noMargin');
+
+                // Custom Blocks for Fees
+                $row = $form->addRow();
+                    $customBlocks = $row->addCustomBlocks('feesBlock', $gibbon->session)
+                        ->fromTemplate($blockTemplate)
+                        ->settings(array('inputNameStrategy' => 'string', 'addOnEvent' => 'change', 'sortable' => true))
+                        ->placeholder(__('Key outcomes listed here...'))
+                        ->addToolInput($outcomeSelector)
+                        ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
+
+                // Add predefined block data (for templating new blocks, triggered with the outcomeSelector)
+                $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
+                $sql = "SELECT gibbonOutcomeID as groupBy, gibbonOutcomeID, name, description FROM gibbonOutcome ORDER BY name";
+                $result = $pdo->executeQuery($data, $sql);
+                $outcomeData = $result->rowCount() > 0? $result->fetchAll(\PDO::FETCH_GROUP|\PDO::FETCH_UNIQUE) : array();
+
+                $customBlocks->addPredefinedBlock('Ad Hoc Fee', array('feeType' => 'Ad Hoc', 'gibbonFinanceFeeID' => 0));
+                foreach ($outcomeData as $gibbonOutcomeID => $data) {
+                    $customBlocks->addPredefinedBlock($gibbonOutcomeID, $data);
+                }
+            }
+
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addSubmit();
+
+            echo $form->getOutput();
+
+
             ?>
 
 			<form method="post" action="<?php echo $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/planner_addProcess.php?viewBy=$viewBy&subView=$subView&address=".$_SESSION[$guid]['address'] ?>" enctype="multipart/form-data">
 				<table class='smallIntBorder fullWidth' cellspacing='0'>
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __('Basic Information') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td style='width: 275px'>
-							<b><?php echo __('Class') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<?php
-                            if ($viewBy == 'class') {
-                                ?>
-								<input readonly name="schoolYearName" id="schoolYearName" maxlength=20 value="<?php echo $row['course'].'.'.$row['class'] ?>" type="text" class="standardWidth">
-								<input name="gibbonCourseClassID" id="gibbonCourseClassID" maxlength=20 value="<?php echo $row['gibbonCourseClassID'] ?>" type="hidden" class="standardWidth">
-								<?php
-
-                            } else {
-                                ?>
-								<select name="gibbonCourseClassID" id="gibbonCourseClassID" class="standardWidth">
-									<?php
-                                    echo "<option value='Please select...'>".__('Please select...').'</option>';
-                                try {
-                                    if ($highestAction == 'Lesson Planner_viewEditAllClasses') {
-                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);
-                                        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClass JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID ORDER BY course, class';
-                                    } else {
-                                        $dataSelect = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                        $sqlSelect = 'SELECT gibbonCourseClass.gibbonCourseClassID, gibbonCourse.nameShort AS course, gibbonCourseClass.nameShort AS class FROM gibbonCourseClassPerson JOIN gibbonCourseClass ON (gibbonCourseClassPerson.gibbonCourseClassID=gibbonCourseClass.gibbonCourseClassID) JOIN gibbonCourse ON (gibbonCourseClass.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonCourse.gibbonSchoolYearID=:gibbonSchoolYearID AND gibbonPersonID=:gibbonPersonID ORDER BY course, class';
-                                    }
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    $selected = '';
-                                    if ($rowSelect['gibbonCourseClassID'] == $gibbonCourseClassID) {
-                                        $selected = 'selected';
-                                    }
-                                    echo "<option $selected value='".$rowSelect['gibbonCourseClassID']."'>".htmlPrep($rowSelect['course']).'.'.htmlPrep($rowSelect['class']).'</option>';
-                                }
-                                ?>
-								</select>
-								<script type="text/javascript">
-									var gibbonCourseClassID=new LiveValidation('gibbonCourseClassID');
-									gibbonCourseClassID.add(Validate.Exclusion, { within: ['Please select...'], failureMessage: "<?php echo __('Select something!') ?>"});
-								</script>
-								<?php
-
-                            }
-            				?>
-						</td>
-					</tr>
-
-					<tr>
-						<td>
-							<b><?php echo __('Unit') ?></b><br/>
-						</td>
-						<td class="right">
-							<?php
-                            if ($viewBy == 'class') {
-                                ?>
-								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
-									<?php
-                                    //List gibbon units
-                                    try {
-                                        $dataSelect = array('gibbonCourseClassID' => $row['gibbonCourseClassID']);
-                                        $sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND active='Y' AND running='Y' ORDER BY name";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                                    $lastType = '';
-                                    $currentType = '';
-                                    echo "<option value=''></option>";
-                                    echo "<optgroup label='--".__('Gibbon Units')."--'>";
-                                    while ($rowSelect = $resultSelect->fetch()) {
-                                        echo "<option value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                        $lastType = $currentType;
-                                    }
-                                    echo '</optgroup>';
-
-    								//List any hooked units
-    								$lastType = '';
-                                    $currentType = '';
-                                    try {
-                                        $dataHooks = array();
-                                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
-                                        $resultHooks = $connection2->prepare($sqlHooks);
-                                        $resultHooks->execute($dataHooks);
-                                    } catch (PDOException $e) {
-                                    }
-                                    while ($rowHooks = $resultHooks->fetch()) {
-                                        $hookOptions = unserialize($rowHooks['options']);
-                                        if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                                            try {
-                                                $dataHookUnits = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                                                $sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-                                                $resultHookUnits = $connection2->prepare($sqlHookUnits);
-                                                $resultHookUnits->execute($dataHookUnits);
-                                            } catch (PDOException $e) {
-                                            }
-                                            while ($rowHookUnits = $resultHookUnits->fetch()) {
-                                                $currentType = $rowHooks['name'];
-                                                if ($currentType != $lastType) {
-                                                    echo "<optgroup label='--".$currentType."--'>";
-                                                }
-                                                echo "<option value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-                                                $lastType = $currentType;
-                                            }
-                                        }
-                                    }
-                                    ?>
-								</select>
-								<?php
-
-                            } else {
-                                ?>
-								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
-									<?php
-                                    //List units
-                                    try {
-                                        $dataSelect = array();
-                                        $sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' ORDER BY name";
-                                        $resultSelect = $connection2->prepare($sqlSelect);
-                                        $resultSelect->execute($dataSelect);
-                                    } catch (PDOException $e) {
-                                    }
-                                $lastType = '';
-                                $currentType = '';
-                                echo "<option value=''></option>";
-                                echo "<optgroup label='--".__('Gibbon Units')."--'>";
-                                while ($rowSelect = $resultSelect->fetch()) {
-                                    echo "<option class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
-                                    $lastType = $currentType;
-                                }
-                                echo '</optgroup>';
-
-                                    //List any hooked units
-                                    $lastType = '';
-                                $currentType = '';
-                                try {
-                                    $dataHooks = array();
-                                    $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
-                                    $resultHooks = $connection2->prepare($sqlHooks);
-                                    $resultHooks->execute($dataHooks);
-                                } catch (PDOException $e) {
-                                }
-                                while ($rowHooks = $resultHooks->fetch()) {
-                                    $hookOptions = unserialize($rowHooks['options']);
-                                    if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                                        echo 'qhere';
-                                        try {
-                                            $dataHookUnits = array();
-                                            echo $sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-                                            $resultHookUnits = $connection2->prepare($sqlHookUnits);
-                                            $resultHookUnits->execute($dataHookUnits);
-                                        } catch (PDOException $e) {
-                                        }
-                                        while ($rowHookUnits = $resultHookUnits->fetch()) {
-                                            $currentType = $rowHooks['name'];
-                                            if ($currentType != $lastType) {
-                                                echo "<optgroup label='--".$currentType."--'>";
-                                            }
-                                            echo "<option class='".$rowHookUnits[$hookOptions['classLinkJoinFieldClass']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-                                            $lastType = $currentType;
-                                        }
-                                    }
-                                }
-                                ?>
-								</select>
-								<script type="text/javascript">
-									$("#gibbonUnitID").chainedTo("#gibbonCourseClassID");
-								</script>
-								<?php
-
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __('Lesson Name') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input name="name" id="name" maxlength=50 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var name2=new LiveValidation('name');
-								name2.add(Validate.Presence);
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __('Summary') ?></b><br/>
-						</td>
-						<td class="right">
-							<input name="summary" id="summary" maxlength=255 value="" type="text" class="standardWidth">
-						</td>
-					</tr>
-
 					<?php
-
-                    //Try and find the next unplanned slot for this class.
-                    if ($viewBy == 'class') {
-                        //Get $_GET values
-                        $nextDate = null;
-                        if (isset($_GET['date'])) {
-                            $nextDate = $_GET['date'];
-                        }
-                        $nextTimeStart = null;
-                        if (isset($_GET['timeStart'])) {
-                            $nextTimeStart = $_GET['timeStart'];
-                        }
-                        $nextTimeEnd = null;
-                        if (isset($_GET['timeEnd'])) {
-                            $nextTimeEnd = $_GET['timeEnd'];
-                        }
-
-                        if ($nextDate == '') {
-                            try {
-                                $dataNext = array('gibbonCourseClassID' => $gibbonCourseClassID, 'date' => date('Y-m-d'));
-                                $sqlNext = 'SELECT timeStart, timeEnd, date FROM gibbonTTDayRowClass JOIN gibbonTTColumnRow ON (gibbonTTDayRowClass.gibbonTTColumnRowID=gibbonTTColumnRow.gibbonTTColumnRowID) JOIN gibbonTTColumn ON (gibbonTTColumnRow.gibbonTTColumnID=gibbonTTColumn.gibbonTTColumnID) JOIN gibbonTTDay ON (gibbonTTDayRowClass.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) JOIN gibbonTTDayDate ON (gibbonTTDayDate.gibbonTTDayID=gibbonTTDay.gibbonTTDayID) WHERE gibbonCourseClassID=:gibbonCourseClassID AND date>=:date ORDER BY date, timestart LIMIT 0, 10';
-                                $resultNext = $connection2->prepare($sqlNext);
-                                $resultNext->execute($dataNext);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-                            $nextDate = '';
-                            $nextTimeStart = '';
-                            $nextTimeEnd = '';
-                            while ($rowNext = $resultNext->fetch()) {
-                                try {
-                                    $dataPlanner = array('date' => $rowNext['date'], 'timeStart' => $rowNext['timeStart'], 'timeEnd' => $rowNext['timeEnd'], 'gibbonCourseClassID' => $gibbonCourseClassID);
-                                    $sqlPlanner = 'SELECT * FROM gibbonPlannerEntry WHERE date=:date AND timeStart=:timeStart AND timeEnd=:timeEnd AND gibbonCourseClassID=:gibbonCourseClassID';
-                                    $resultPlanner = $connection2->prepare($sqlPlanner);
-                                    $resultPlanner->execute($dataPlanner);
-                                } catch (PDOException $e) {
-                                    echo "<div class='error'>".$e->getMessage().'</div>';
-                                }
-                                if ($resultPlanner->rowCount() == 0) {
-                                    $nextDate = $rowNext['date'];
-                                    $nextTimeStart = $rowNext['timeStart'];
-                                    $nextTimeEnd = $rowNext['timeEnd'];
-                                    break;
-                                }
-                            }
-                        }
-                    }
-            		?>
-
-					<tr>
-						<td>
-							<b><?php echo __('Date') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __('Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-							} else {
-								echo $_SESSION[$guid]['i18n']['dateFormat'];
-							}
-            				?><br/></span>
-						</td>
-						<td class="right">
-							<?php
-                            if ($viewBy == 'date') {
-                                ?>
-								<input readonly name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $date) ?>" type="text" class="standardWidth">
-								<?php
-
-                            } else {
-                                ?>
-								<input autocomplete='off' name="date" id="date" maxlength=10 value="<?php echo dateConvertBack($guid, $nextDate) ?>" type="text" class="standardWidth">
-								<script type="text/javascript">
-									var date=new LiveValidation('date');
-									date.add(Validate.Presence);
-									date.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') { echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-									}
-									?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-									} else {
-										echo $_SESSION[$guid]['i18n']['dateFormat'];
-									}
-                                	?>." } );
-								</script>
-								<script type="text/javascript">
-									$(function() {
-										$( "#date" ).datepicker();
-									});
-								</script>
-								<?php
-
-                            }
-            				?>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __('Start Time') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="timeStart" id="timeStart" maxlength=5 value="<?php if (isset($nextTimeStart)) { echo substr($nextTimeStart, 0, 5); } ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var timeStart=new LiveValidation('timeStart');
-								timeStart.add(Validate.Presence);
-								timeStart.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
-							</script>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT timeStart FROM gibbonPlannerEntry ORDER BY timeStart';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.substr($rowAuto['timeStart'], 0, 5).'", ';
-										}
-										?>
-									];
-									$( "#timeStart" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __('End Time') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="timeEnd" id="timeEnd" maxlength=5 value="<?php if (isset($nextTimeEnd)) { echo substr($nextTimeEnd, 0, 5); } ?>" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var timeEnd=new LiveValidation('timeEnd');
-								timeEnd.add(Validate.Presence);
-								timeEnd.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
-							</script>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT timeEnd FROM gibbonPlannerEntry ORDER BY timeEnd';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.substr($rowAuto['timeEnd'], 0, 5).'", ';
-										}
-										?>
-									];
-									$( "#timeEnd" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr>
-						<td colspan=2>
-							<b><?php echo __('Lesson Details') ?></b>
-							<?php $description = getSettingByScope($connection2, 'Planner', 'lessonDetailsTemplate') ?>
-							<?php echo getEditor($guid,  true, 'description', $description, 25, true, false, false) ?>
-						</td>
-					</tr>
-					<tr id="teachersNotesRow">
-						<td colspan=2>
-							<b><?php echo __('Teacher\'s Notes') ?></b>
-							<?php $teachersNotes = getSettingByScope($connection2, 'Planner', 'teachersNotesTemplate') ?>
-							<?php echo getEditor($guid,  true, 'teachersNotes', $teachersNotes, 25, true, false, false) ?>
-						</td>
-					</tr>
-
-
-
-					<script type="text/javascript">
-						/* Homework Control */
-						$(document).ready(function(){
-							$("#homeworkDueDateRow").css("display","none");
-							$("#homeworkDueDateTimeRow").css("display","none");
-							$("#homeworkDetailsRow").css("display","none");
-							$("#homeworkSubmissionRow").css("display","none");
-							$("#homeworkSubmissionDateOpenRow").css("display","none");
-							$("#homeworkSubmissionDraftsRow").css("display","none");
-							$("#homeworkSubmissionTypeRow").css("display","none");
-							$("#homeworkSubmissionRequiredRow").css("display","none");
-							$("#homeworkCrowdAssessRow").css("display","none");
-							$("#homeworkCrowdAssessControlRow").css("display","none");
-
-							//Response to clicking on homework control
-							$(".homework").click(function(){
-								if ($('input[name=homework]:checked').val()=="Yes" ) {
-									homeworkDueDate.enable();
-									homeworkDetails.enable();
-									$("#homeworkDueDateRow").slideDown("fast", $("#homeworkDueDateRow").css("display","table-row"));
-									$("#homeworkDueDateTimeRow").slideDown("fast", $("#homeworkDueDateTimeRow").css("display","table-row"));
-									$("#homeworkDetailsRow").slideDown("fast", $("#homeworkDetailsRow").css("display","table-row"));
-									$("#homeworkSubmissionRow").slideDown("fast", $("#homeworkSubmissionRow").css("display","table-row"));
-
-									if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
-										$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row"));
-										$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row"));
-										$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row"));
-										$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row"));
-										$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row"));
-
-										if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-											$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
-
-										} else {
-											$("#homeworkCrowdAssessControlRow").css("display","none");
-										}
-									} else {
-										$("#homeworkSubmissionDateOpenRow").css("display","none");
-										$("#homeworkSubmissionDraftsRow").css("display","none");
-										$("#homeworkSubmissionTypeRow").css("display","none");
-										$("#homeworkSubmissionRequiredRow").css("display","none");
-										$("#homeworkCrowdAssessRow").css("display","none");
-										$("#homeworkCrowdAssessControlRow").css("display","none");
-									}
-								} else {
-									homeworkDueDate.disable();
-									homeworkDetails.disable();
-									$("#homeworkDueDateRow").css("display","none");
-									$("#homeworkDueDateTimeRow").css("display","none");
-									$("#homeworkDetailsRow").css("display","none");
-									$("#homeworkSubmissionRow").css("display","none");
-									$("#homeworkSubmissionDateOpenRow").css("display","none");
-									$("#homeworkSubmissionDraftsRow").css("display","none");
-									$("#homeworkSubmissionTypeRow").css("display","none");
-									$("#homeworkSubmissionRequiredRow").css("display","none");
-									$("#homeworkCrowdAssessRow").css("display","none");
-									$("#homeworkCrowdAssessControlRow").css("display","none");
-								}
-							 });
-
-							 //Response to clicking on online submission control
-							 $(".homeworkSubmission").click(function(){
-								if ($('input[name=homeworkSubmission]:checked').val()=="Yes" ) {
-									$("#homeworkSubmissionDateOpenRow").slideDown("fast", $("#homeworkSubmissionDateOpenRow").css("display","table-row"));
-									$("#homeworkSubmissionDraftsRow").slideDown("fast", $("#homeworkSubmissionDraftsRow").css("display","table-row"));
-									$("#homeworkSubmissionTypeRow").slideDown("fast", $("#homeworkSubmissionTypeRow").css("display","table-row"));
-									$("#homeworkSubmissionRequiredRow").slideDown("fast", $("#homeworkSubmissionRequiredRow").css("display","table-row"));
-									$("#homeworkCrowdAssessRow").slideDown("fast", $("#homeworkCrowdAssessRow").css("display","table-row"));
-
-									if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-										$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
-
-									} else {
-										$("#homeworkCrowdAssessControlRow").css("display","none");
-									}
-								} else {
-									$("#homeworkSubmissionDateOpenRow").css("display","none");
-									$("#homeworkSubmissionDraftsRow").css("display","none");
-									$("#homeworkSubmissionTypeRow").css("display","none");
-									$("#homeworkSubmissionRequiredRow").css("display","none");
-									$("#homeworkCrowdAssessRow").css("display","none");
-									$("#homeworkCrowdAssessControlRow").css("display","none");
-								}
-							 });
-
-							 //Response to clicking on crowd assessment control
-							 $(".homeworkCrowdAssess").click(function(){
-								if ($('input[name=homeworkCrowdAssess]:checked').val()=="Yes" ) {
-									$("#homeworkCrowdAssessControlRow").slideDown("fast", $("#homeworkCrowdAssessControlRow").css("display","table-row"));
-
-								} else {
-									$("#homeworkCrowdAssessControlRow").css("display","none");
-								}
-							 });
-						});
-					</script>
-
-					<tr class='break' id="homeworkHeaderRow">
-						<td colspan=2>
-							<h3><?php echo __('Homework') ?></h3>
-						</td>
-					</tr>
-					<tr id="homeworkRow">
-						<td>
-							<b><?php echo __('Homework?') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<input type="radio" name="homework" value="Yes" class="homework" /> <?php echo __('Yes') ?>
-							<input checked type="radio" name="homework" value="No" class="homework" /> <?php echo __('No') ?>
-						</td>
-					</tr>
-					<tr id="homeworkDueDateRow">
-						<td>
-							<b><?php echo __('Homework Due Date') ?> *</b><br/>
-							<span class="emphasis small"><?php echo __('Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-							} else {
-								echo $_SESSION[$guid]['i18n']['dateFormat'];
-							}
-            				?><br/></span>
-						</td>
-						<td class="right">
-							<input autocomplete='off' name="homeworkDueDate" id="homeworkDueDate" maxlength=10 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var homeworkDueDate=new LiveValidation('homeworkDueDate');
-								homeworkDueDate.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } );
-							 	homeworkDueDate.add(Validate.Presence);
-								homeworkDueDate.disable();
-							</script>
-							 <script type="text/javascript">
-								$(function() {
-									$( "#homeworkDueDate" ).datepicker();
-								});
-							</script>
-						</td>
-					</tr>
-					<tr id="homeworkDueDateTimeRow">
-						<td>
-							<b><?php echo __('Homework Due Date Time') ?></b><br/>
-							<span class="emphasis small"><?php echo __('Format: hh:mm (24hr)') ?><br/></span>
-						</td>
-						<td class="right">
-							<input name="homeworkDueDateTime" id="homeworkDueDateTime" maxlength=5 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var homeworkDueDateTime=new LiveValidation('homeworkDueDateTime');
-								homeworkDueDateTime.add( Validate.Format, {pattern: /^(0[0-9]|[1][0-9]|2[0-3])[:](0[0-9]|[1-5][0-9])/i, failureMessage: "Use hh:mm" } );
-							</script>
-							<script type="text/javascript">
-								$(function() {
-									var availableTags=[
-										<?php
-                                        try {
-                                            $dataAuto = array();
-                                            $sqlAuto = 'SELECT DISTINCT SUBSTRING(homeworkDueDateTime,12,5) AS homeworkDueTime FROM gibbonPlannerEntry ORDER BY homeworkDueDateTime';
-                                            $resultAuto = $connection2->prepare($sqlAuto);
-                                            $resultAuto->execute($dataAuto);
-                                        } catch (PDOException $e) {
-                                        }
-										while ($rowAuto = $resultAuto->fetch()) {
-											echo '"'.$rowAuto['homeworkDueTime'].'", ';
-										}
-										?>
-									];
-									$( "#homeworkDueDateTime" ).autocomplete({source: availableTags});
-								});
-							</script>
-						</td>
-					</tr>
-					<tr id="homeworkDetailsRow">
-						<td colspan=2>
-							<b><?php echo __('Homework Details') ?> *</b>
-							<?php echo getEditor($guid,  true, 'homeworkDetails', '', 25, true, true, true) ?>
-						</td>
-					</tr>
-					<tr id="homeworkSubmissionRow">
-						<td>
-							<b><?php echo __('Online Submission?') ?> *</b><br/>
-						</td>
-						<td class="right">
-							<input type="radio" name="homeworkSubmission" value="Yes" class="homeworkSubmission" /> Yes
-							<input checked type="radio" name="homeworkSubmission" value="No" class="homeworkSubmission" /> No
-						</td>
-					</tr>
-					<tr id="homeworkSubmissionDateOpenRow">
-						<td>
-							<b><?php echo __('Submission Open Date') ?></b><br/>
-							<span class="emphasis small"><?php echo __('Format:') ?> <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') { echo 'dd/mm/yyyy';
-							} else {
-								echo $_SESSION[$guid]['i18n']['dateFormat'];
-							}
-							?><br/></span>
-						</td>
-						<td class="right">
-							<input name="homeworkSubmissionDateOpen" id="homeworkSubmissionDateOpen" maxlength=10 value="" type="text" class="standardWidth">
-							<script type="text/javascript">
-								var homeworkSubmissionDateOpen=new LiveValidation('homeworkSubmissionDateOpen');
-								homeworkSubmissionDateOpen.add( Validate.Format, {pattern: <?php if ($_SESSION[$guid]['i18n']['dateFormatRegEx'] == '') {
-								echo "/^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/i";
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormatRegEx'];
-								}
-											?>, failureMessage: "Use <?php if ($_SESSION[$guid]['i18n']['dateFormat'] == '') {
-									echo 'dd/mm/yyyy';
-								} else {
-									echo $_SESSION[$guid]['i18n']['dateFormat'];
-								}
-								?>." } );
-							</script>
-							 <script type="text/javascript">
-								$(function() {
-									$( "#homeworkSubmissionDateOpen" ).datepicker();
-								});
-							</script>
-						</td>
-					</tr>
-					<tr id="homeworkSubmissionDraftsRow">
-						<td>
-							<b><?php echo __('Drafts') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="homeworkSubmissionDrafts" id="homeworkSubmissionDrafts" class="standardWidth">
-								<option value="0"><?php echo __('None') ?></option>
-								<option value="1">1</option>
-								<option value="2">2</option>
-								<option value="3">3</option>
-							</select>
-						</td>
-					</tr>
-					<tr id="homeworkSubmissionTypeRow">
-						<td>
-							<b><?php echo __('Submission Type') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="homeworkSubmissionType" id="homeworkSubmissionType" class="standardWidth">
-								<option value="Link"><?php echo __('Link') ?></option>
-								<option value="File"><?php echo __('File') ?></option>
-								<option value="Link/File"><?php echo __('Link/File') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr id="homeworkSubmissionRequiredRow">
-						<td>
-							<b><?php echo __('Submission Required') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<select name="homeworkSubmissionRequired" id="homeworkSubmissionRequired" class="standardWidth">
-								<option value="Optional">Optional</option>
-								<option value="Compulsory">Compulsory</option>
-							</select>
-						</td>
-					</tr>
-					<?php if (isActionAccessible($guid, $connection2, '/modules/Crowd Assessment/crowdAssess.php')) { ?>
-						<tr id="homeworkCrowdAssessRow">
-							<td>
-								<b><?php echo __('Crowd Assessment?') ?> *</b><br/>
-								<span class="emphasis small"><?php echo __('Allow crowd assessment of homework?') ?></span>
-							</td>
-							<td class="right">
-								<input type="radio" name="homeworkCrowdAssess" value="Yes" class="homeworkCrowdAssess" /> <?php echo __('Yes') ?>
-								<input checked type="radio" name="homeworkCrowdAssess" value="No" class="homeworkCrowdAssess" /> <?php echo __('No') ?>
-							</td>
-						</tr>
-						<tr id="homeworkCrowdAssessControlRow">
-							<td>
-								<b><?php echo __('Access Controls?') ?></b><br/>
-								<span class="emphasis small"><?php echo __('Decide who can see this homework.') ?></span>
-							</td>
-							<td class="right">
-								<?php
-                                echo "<table cellspacing='0' style='width: 308px' align=right>";
-								echo "<tr class='head'>";
-								echo '<th>';
-								echo __('Role');
-								echo '</th>';
-								echo "<th style='text-align: center'>";
-								echo __('Access');
-								echo '</th>';
-								echo '</tr>';
-								echo "<tr class='even'>";
-								echo "<td style='text-align: left'>";
-								echo __('Class Teachers');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input checked disabled='disabled' type='checkbox' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='odd'>";
-								echo "<td style='text-align: left'>";
-								echo __('Submitter');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input checked disabled='disabled' type='checkbox' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='even'>";
-								echo "<td style='text-align: left'>";
-								echo __('Classmates');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessClassmatesRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='odd'>";
-								echo "<td style='text-align: left'>";
-								echo __('Other Students');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessOtherStudentsRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='even'>";
-								echo "<td style='text-align: left'>";
-								echo __('Other Teachers');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessOtherTeachersRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='odd'>";
-								echo "<td style='text-align: left'>";
-								echo __("Submitter's Parents");
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessSubmitterParentsRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='even'>";
-								echo "<td style='text-align: left'>";
-								echo __("Classmates's Parents");
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessClassmatesParentsRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo "<tr class='odd'>";
-								echo "<td style='text-align: left'>";
-								echo __('Other Parents');
-								echo '</td>';
-								echo "<td style='text-align: center'>";
-								echo "<input type='checkbox' name='homeworkCrowdAssessOtherParentsRead' />";
-								echo '</td>';
-								echo '</tr>';
-								echo '</table>';?>
-							</td>
-						</tr>
-					<?php
-					}
-            		//OUTCOMES
+					//OUTCOMES
                     if ($viewBy == 'date') {
                         ?>
 						<tr class='break'>
@@ -958,7 +467,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 															 });
 														});
 													</script>
-													<select id='newOutcome' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
+                                                    <select id='newOutcome2' onChange='outcomeDisplayElements(this.value);' style='float: none; margin-left: 3px; margin-top: 0px; margin-bottom: 3px; width: 350px'>
 														<option class='all' value='0'><?php echo __('Choose an outcome to add it to this lesson') ?></option>
 														<?php
                                                         $currentCategory = '';
@@ -994,7 +503,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 															$switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
 															$switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
 															$switchContents .= 'outcomeCount++ ;';
-															$switchContents .= "$('#newOutcome').val('0');";
+															$switchContents .= "$('#newOutcome2').val('0');";
 															$switchContents .= 'break;';
 															$lastCategory = $rowSelect['category'];
 														}
@@ -1036,7 +545,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 																$switchContents .= "$(\"#outcome\").append('<div id=\'outcomeOuter' + outcomeCount + '\'><img style=\'margin: 10px 0 5px 0\' src=\'".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/loading.gif\' alt=\'Loading\' onclick=\'return false;\' /><br/>Loading</div>');";
 																$switchContents .= '$("#outcomeOuter" + outcomeCount).load("'.$_SESSION[$guid]['absoluteURL'].'/modules/Planner/units_add_blockOutcomeAjax.php","type=outcome&id=" + outcomeCount + "&title='.urlencode($rowSelect['name'])."\&category=".urlencode($rowSelect['category']).'&gibbonOutcomeID='.$rowSelect['gibbonOutcomeID'].'&contents='.urlencode($rowSelect['description']).'&allowOutcomeEditing='.urlencode($allowOutcomeEditing).'") ;';
 																$switchContents .= 'outcomeCount++ ;';
-																$switchContents .= "$('#newOutcome').val('0');";
+																$switchContents .= "$('#newOutcome2').val('0');";
 																$switchContents .= 'break;';
 																$lastCategory = $rowSelect['category'];
 																$lastLA = $rowSelect['learningArea'];
@@ -1058,7 +567,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                                                         ?>
 														</select>
 														<script type="text/javascript">
-															$("#newOutcome").chainedTo("#outcomeFilter");
+															$("#newOutcome2").chainedTo("#outcomeFilter");
 														</script>
 														<?php
 
@@ -1079,7 +588,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 															}
 															else {
 																alert("This element has already been selected!") ;
-																$('#newOutcome').val('0');
+																$('#newOutcome2').val('0');
 															}
 														}
 													</script>
