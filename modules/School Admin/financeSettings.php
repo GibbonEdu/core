@@ -73,15 +73,24 @@ if (isActionAccessible($guid, $connection2, '/modules/School Admin/financeSettin
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
         $row->addTextArea($setting['name'])->setValue($setting['value']);
 
+    $invoiceeNameStyle = array(
+        'Surname, Preferred Name' => __('Surname') . ', ' . __('Preferred Name'),
+        'Official Name' => __('Official Name')
+    );
     $setting = getSettingByScope($connection2, 'Finance', 'invoiceeNameStyle', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('"Surname, Preferred Name", Official Name')->selected($setting['value'])->required();
+        $row->addSelect($setting['name'])->fromArray($invoiceeNameStyle)->selected($setting['value'])->required();
 
+    $invoiceNumber = array(
+        'Invoice ID' => __('Invoice ID'), 
+        'Person ID + Invoice ID' => __('Person ID')  . ' + ' . __('Invoice ID'), 
+        'Student ID + Invoice ID' => __('Student ID') . ' + ' . __('Invoice ID')
+    );
     $setting = getSettingByScope($connection2, 'Finance', 'invoiceNumber', true);
     $row = $form->addRow();
         $row->addLabel($setting['name'], __($setting['nameDisplay']))->description(__($setting['description']));
-        $row->addSelect($setting['name'])->fromString('Invoice ID, Person ID + Invoice ID, Student ID + Invoice ID')->selected($setting['value'])->required();
+        $row->addSelect($setting['name'])->fromArray($invoiceNumber)->selected($setting['value'])->required();
 
     $row = $form->addRow()->addHeading(__('Receipts'));
 

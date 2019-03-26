@@ -21,6 +21,7 @@ namespace Gibbon\Module\Attendance;
 
 use Gibbon\Contracts\Database\Connection;
 use Gibbon\session;
+use Gibbon\Services\Format;
 
 /**
  * Attendance display & edit class
@@ -221,8 +222,8 @@ class AttendanceView
 
                 $output .= '<td class="' . $class . '">';
                 $output .= '<a href="' . $link . '" title="' . $linkTitle . '">';
-                $output .= $currentDay->format('d') . '<br/>';
-                $output .= '<span>' . $currentDay->format('M') . '</span>';
+                $output .= Format::dateReadable($currentDay, '%d') . '<br/>';
+                $output .= '<span>' . Format::dateReadable($currentDay, '%b') . '</span>';
                 $output .= '</a>';
                 $output .= '</td>';
             }

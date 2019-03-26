@@ -84,7 +84,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Staff/staff_manage.php') =
     $form->addHiddenValue('search', $search);
 
     $bulkActions = array(
-        'Left' => __('Mark as Left'),
+        'Left' => __('Mark as left'),
     );
 
     $col = $form->createBulkActionColumn($bulkActions);
