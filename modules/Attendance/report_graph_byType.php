@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -232,7 +233,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_graph_by
                 labels: [
                     <?php
                         foreach ( $days as $date) {
-                            echo "'".date('M j', strtotime($date) )."',";
+                            echo "'".Format::dateReadable($date,'%b %d')."',";
                         }
                     ?>
                 ],

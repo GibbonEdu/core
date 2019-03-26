@@ -382,7 +382,7 @@ function report_studentHistory($guid, $gibbonPersonID, $print, $printURL, $conne
                                     }
                                     $output .= $formattedDate.'<br/>';
                                     if (count($log) > 0) {
-                                        $output .= "<span style='font-weight: bold' $title>".$log[0][0].'</span><br/>';
+                                        $output .= "<span style='font-weight: bold' $title>".__($log[0][0]).'</span><br/>';
 
                                         for ($x = count($log); $x >= 0; --$x) {
                                             if (isset($log[$x][0])) {

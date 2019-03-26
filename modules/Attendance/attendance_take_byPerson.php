@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
 use Gibbon\Module\Attendance\AttendanceView;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -125,9 +126,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         echo '<tr class="'.( $rowLog['direction'] == 'Out'? 'error' : 'current').'">';
 
                         if (  $currentDate != substr($rowLog['timestampTaken'], 0, 10) ) {
-                            echo '<td>'.date("g:i a, M j", $logTimestamp ).'</td>';
+                            echo '<td>'.Format::dateTimeReadable($rowLog['timestampTaken'], '%H:%M, %b %d').'</td>';
                         } else {
-                            echo '<td>'.date("g:i a", $logTimestamp ).'</td>';
+                            echo '<td>'.Format::dateTimeReadable($rowLog['timestampTaken'], '%H:%M').'</td>';
                         }
 
                         echo '<td>';
@@ -149,7 +150,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take
                         }
 
                         echo '<td>';
-                            echo formatName('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
+                            echo Format::name('', $rowLog['preferredName'], $rowLog['surname'], 'Staff', false, true);
                         echo '</td>';
 
                         if (isActionAccessible($guid, $connection2, '/modules/Attendance/attendance_take_byPerson_edit.php') == true) {

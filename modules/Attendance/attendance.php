@@ -119,8 +119,8 @@ if (isset($_SESSION[$guid]["username"])) {
                                 'currentDate' => $day['currentDate'],
                             ]);
                             $content =
-                                '<div class="day">' . date('d', $day['currentDayTimestamp']) . '</div>' .
-                                '<div class="month">' . date('M', $day['currentDayTimestamp']) . '</div>';
+                                '<div class="day">' . Format::dateReadable($day['currentDate'], '%d') . '</div>' .
+                                '<div class="month">' . Format::dateReadable($day['currentDate'], '%b') . '</div>';
                         }
 
                         // determine how to display link and content
