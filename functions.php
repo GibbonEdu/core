@@ -1984,7 +1984,7 @@ function getSmartWorkflowHelp($connection2, $guid, $step = '')
             }
             if ($step == 4) {
                 $output .= "<td style='width: 20%; border-top: 3px solid #fff; border-bottom: 2px solid rgba(255,255,255,0.0); background-color: rgba(255,255,255,0.25); padding: 4px'>";
-                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four').'/span><br/>';
+                $output .= "<span style='color: #c00; font-size: 270%; font-weight: bold; letter-spacing: 70%'>".__('Four').'</span><br/>';
                 $output .= "<span style='color: #c00; font-size: 140%; letter-spacing: 70%'>".sprintf(__('Assign & Collect %1$s Work'), '<br/>').'</span><br/></span>';
                 $output .= '</td>';
             } else {
