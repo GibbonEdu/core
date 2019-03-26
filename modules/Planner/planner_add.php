@@ -430,11 +430,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addLabel('role', __('Role'));
                 $row->addSelect('role')->fromArray($roles);
 
-            $row = $form->addRow();
-                $row->addFooter();
-                $row->addCheckbox('notify')->description('Notify all class participants');
-                $row->addSubmit();
-
             // Outcomes
 
             $form->addRow()->addHeading(__('Outcomes'));
@@ -448,7 +443,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
                 // CUSTOM BLOCKS
         
-                // Fee selector
+                // Outcome selector
                 $outcomeSelector = $form->getFactory()
                     ->createSelectOutcome('addOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID)
                     ->addClass('addBlock');
@@ -487,12 +482,16 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $sql = "SELECT gibbonOutcomeID, name as outcometitle, category as outcomecategory FROM gibbonOutcome ORDER BY name";
                 $outcomeData = $pdo->select($sql)->fetchAll();
 
-                $customBlocks->addPredefinedBlock('Ad Hoc Fee', array('feeType' => 'Ad Hoc', 'gibbonFinanceFeeID' => 0));
                 foreach ($outcomeData as $outcome) {
                     $customBlocks->addPredefinedBlock($outcome['gibbonOutcomeID'], $outcome);
                 }
             }
 
+            $row = $form->addRow();
+                $row->addFooter();
+                $row->addCheckbox('notify')->description('Notify all class participants');
+                $row->addSubmit();
+                
             echo $form->getOutput();
 
 
