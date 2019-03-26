@@ -383,8 +383,56 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 }
             }
 
+            //MARKBOOK
+            $form->addRow()->addHeading(__('Markbook'));
+
+            $form->toggleVisibilityByClass('homework')->onRadio('homework')->when('Y');
+            $row = $form->addRow();
+                $row->addLabel('markbook', __('Create Markbook Column?'))->description('Linked to this lesson by default.');
+                $row->addRadio('markbook')->fromArray(array('Y' => __('Yes'), 'N' => __('No')))->required()->checked('N')->inline(true);
+
+            //ADVANCED
+            $form->addRow()->addHeading(__('Advanced Options'));
+
+            $form->toggleVisibilityByClass('advanced')->onCheckbox('advanced')->when('Y');
+            $row = $form->addRow();
+                $row->addCheckbox('advanced')->setValue('Y')->description('Show Advanced Options');
+
+            //Access
+            $form->addRow()->addHeading(__('Access'))->addClass('advanced');
+
+            $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents');
+            $row = $form->addRow()->addClass('advanced');
+                $row->addLabel('viewableStudents', __('Viewable to Students'));
+                $row->addYesNo('viewableStudents')->required()->selected($sharingDefaultStudents);
+
+            $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents');
+            $row = $form->addRow()->addClass('advanced');
+                $row->addLabel('viewableParents', __('Viewable to Parents'));
+                $row->addYesNo('viewableParents')->required()->selected($sharingDefaultParents);
+
+            //Guests
+            $form->addRow()->addHeading(__('Guests'))->addClass('advanced');
+
+            $row = $form->addRow()->addClass('advanced');;
+                $row->addLabel('guests', __('Guest List'));
+                $row->addSelectUsers('guests')->selectMultiple();
+
+            $roles = array(
+                'Guest Student' => __('Guest Student'),
+                'Guest Teacher' => __('Guest Teacher'),
+                'Guest Assistant' => __('Guest Assistant'),
+                'Guest Technician' => __('Guest Technician'),
+                'Guest Parent' => __('Guest Parent'),
+                'Other Guest' => __('Other Guest'),
+            );
+            $row = $form->addRow()->addClass('advanced');;;
+                $row->addLabel('role', __('Role'));
+                $row->addSelect('role')->fromArray($roles);
+
             $row = $form->addRow();
                 $row->addFooter();
+                $row->addCheckbox('notify')->description('Notify all class participants');
                 $row->addSubmit();
 
             echo $form->getOutput();
@@ -603,156 +651,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
                     }
             		?>
-
-
-					<tr class='break'>
-						<td colspan=2>
-							<h3><?php echo __('Markbook') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<b><?php echo __('Create Markbook Column?') ?></b><br/>
-							<span class="emphasis small"><?php echo __('Linked to this lesson by default.') ?></span>
-						</td>
-						<td class="right">
-							<input type="radio" name="markbook" value="Y" id="markbook" /> <?php echo __('Yes') ?>
-							<input checked type="radio" name="markbook" value="N" id="markbook" /> <?php echo __('No') ?>
-						</td>
-					</tr>
-
-
-
-					<tr class='break'>
-						<script type="text/javascript">
-							/* Advanced Options Control */
-							$(document).ready(function(){
-								$("#accessRow").css("display","none");
-								$("#accessRowStudents").css("display","none");
-								$("#accessRowParents").css("display","none");
-								$("#guestRow").css("display","none");
-								$("#guestListRow").css("display","none");
-								$("#guestRoleRow").css("display","none");
-
-								$(".advanced").click(function(){
-									if ($('input[name=advanced]:checked').val()=="Yes" ) {
-										$("#accessRow").slideDown("fast", $("#accessRow").css("display","table-row"));
-										$("#accessRowStudents").slideDown("fast", $("#accessRowStudents").css("display","table-row"));
-										$("#accessRowParents").slideDown("fast", $("#accessRowParents").css("display","table-row"));
-										$("#guestRow").slideDown("fast", $("#guestRow").css("display","table-row"));
-										$("#guestListRow").slideDown("fast", $("#guestListRow").css("display","table-row"));
-										$("#guestRoleRow").slideDown("fast", $("#guestRoleRow").css("display","table-row"));
-									}
-									else {
-										$("#accessRow").slideUp("fast");
-										$("#accessRowStudents").slideUp("fast");
-										$("#accessRowParents").slideUp("fast");
-										$("#guestRow").slideUp("fast");
-										$("#guestListRow").slideUp("fast");
-										$("#guestRoleRow").slideUp("fast");
-									}
-								 });
-							});
-						</script>
-						<td colspan=2>
-							<h3><?php echo __('Advanced Options') ?></h3>
-						</td>
-					</tr>
-					<tr>
-						<td></td>
-						<td class="right">
-							<?php
-                            echo "<input type='checkbox' name='advanced' class='advanced' id='advanced' value='Yes' />";
-            				echo "<span style='font-size: 85%; font-weight: normal; font-style: italic'> ".__('Show Advanced Options').'</span>'; ?>
-						</td>
-					</tr>
-
-					<tr class='break' id="accessRow">
-						<td colspan=2>
-							<h4><?php echo __('Access') ?></h4>
-						</td>
-					</tr>
-					<tr id="accessRowStudents">
-						<td>
-							<b><?php echo __('Viewable to Students') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            $sharingDefaultStudents = getSettingByScope($connection2, 'Planner', 'sharingDefaultStudents'); ?>
-							<select name="viewableStudents" id="viewableStudents" class="standardWidth">
-								<option <?php if ($sharingDefaultStudents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __('Yes') ?></option>
-								<option <?php if ($sharingDefaultStudents == 'N') { echo 'selected'; } ?> value="N"><?php echo __('No') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr id="accessRowParents">
-						<td>
-							<b><?php echo __('Viewable to Parents') ?> *</b><br/>
-							<span class="emphasis small"></span>
-						</td>
-						<td class="right">
-							<?php
-                            $sharingDefaultParents = getSettingByScope($connection2, 'Planner', 'sharingDefaultParents'); ?>
-							<select name="viewableParents" id="viewableParents" class="standardWidth">
-								<option <?php if ($sharingDefaultParents == 'Y') { echo 'selected'; } ?> value="Y"><?php echo __('Yes') ?></option>
-								<option <?php if ($sharingDefaultParents == 'N') { echo 'selected'; } ?> value="N"><?php echo __('No') ?></option>
-							</select>
-						</td>
-					</tr>
-
-					<tr class='break' id="guestRow">
-						<td colspan=2>
-							<h4><?php echo __('Guests') ?></h4>
-						</td>
-					</tr>
-					<tr id="guestListRow">
-						<td>
-							<b><?php echo __('Guest List') ?></b><br/>
-							<span class="emphasis small"><?php echo __('Use Control, Command and/or Shift to select multiple.') ?></span>
-						</td>
-						<td class="right">
-							<select name="guests[]" id="guests[]" multiple class='standardWidth' style="height: 150px">
-								<?php
-                                try {
-                                    $dataSelect = array();
-                                    $sqlSelect = "SELECT title, surname, preferredName, category, gibbonPersonID FROM gibbonPerson JOIN gibbonRole ON (gibbonPerson.gibbonRoleIDPrimary=gibbonRole.gibbonRoleID) WHERE status='Full' ORDER BY surname, preferredName";
-                                    $resultSelect = $connection2->prepare($sqlSelect);
-                                    $resultSelect->execute($dataSelect);
-                                } catch (PDOException $e) {
-                                }
-								while ($rowSelect = $resultSelect->fetch()) {
-									echo "<option value='".$rowSelect['gibbonPersonID']."'>".formatName(htmlPrep($rowSelect['title']), htmlPrep($rowSelect['preferredName']), htmlPrep($rowSelect['surname']), htmlPrep($rowSelect['category']), true, true).'</option>';
-								}
-								?>
-							</select>
-						</td>
-					</tr>
-					<tr id="guestRoleRow">
-						<td>
-							<b><?php echo __('Role') ?></b><br/>
-						</td>
-						<td class="right">
-							<select name="role" id="role" class="standardWidth">
-								<option value="Guest Student"><?php echo __('Guest Student') ?></option>
-								<option value="Guest Teacher"><?php echo __('Guest Teacher') ?></option>
-								<option value="Guest Assistant"><?php echo __('Guest Assistant') ?></option>
-								<option value="Guest Technician"><?php echo __('Guest Technician') ?></option>
-								<option value="Guest Parent"><?php echo __('Guest Parent') ?></option>
-								<option value="Other Guest"><?php echo __('Other Guest') ?></option>
-							</select>
-						</td>
-					</tr>
-					<tr>
-						<td>
-							<span class="emphasis small">* <?php echo __('denotes a required field'); ?></span>
-						</td>
-						<td class="right">
-							<input type="checkbox" name="notify" value="on">
-							<label for="notify"><?php echo __('Notify all class participants') ?></label>
-							<input type="submit" value="<?php echo __('Submit'); ?>">
-						</td>
-					</tr>
 				</table>
 			</form>
 			<?php
