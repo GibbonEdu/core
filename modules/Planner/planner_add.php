@@ -435,6 +435,64 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $row->addCheckbox('notify')->description('Notify all class participants');
                 $row->addSubmit();
 
+            // Outcomes
+
+            $form->addRow()->addHeading(__('Outcomes'));
+
+            if ($viewBy == 'date') {
+                $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
+            } else {
+                $form->addRow()->addContent(__('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.'));
+
+                $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
+
+                // CUSTOM BLOCKS
+        
+                // Fee selector
+                $outcomeSelector = $form->getFactory()
+                    ->createSelectOutcome('addOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID)
+                    ->addClass('addBlock');
+
+                // Block template
+                $blockTemplate = $form->getFactory()->createTable()->setClass('blank w-full');
+                    $row = $blockTemplate->addRow();
+                    $row->addTextField('outcometitle')
+                        ->setClass('w-3/4 floatLeft noMargin title readonly')
+                        ->readonly()
+                        ->placeholder(__('Outcome Name'))
+                        ->append('<input type="hidden" id="gibbonOutcomeID" name="gibbonOutcomeID" value="">');
+
+                    $row = $blockTemplate->addRow();
+                    $row->addTextField('outcomecategory')
+                        ->setClass('w-3/4 floatLeft noMargin readonly')
+                        ->readonly();
+                        
+                    $col = $blockTemplate->addRow()->addClass('showHide fullWidth max-w-full')->addColumn();
+                    $col->addEditor('outcomecontents', $guid)->setRows(10)->setClass('max-w-full');
+
+                // Custom Blocks for Outcomes
+                $row = $form->addRow()->addClass('ui-state-default_dud');
+                    $customBlocks = $row->addCustomBlocks('outcomes', $gibbon->session)
+                        ->fromTemplate($blockTemplate)
+                        ->settings([
+                            'inputNameStrategy' => 'string',
+                            'addOnEvent' => 'change',
+                            'sortable' => true,
+                        ])
+                        ->placeholder(__('Key outcomes listed here...'))
+                        ->addToolInput($outcomeSelector)
+                        ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
+
+                // Add predefined block data (for templating new blocks, triggered with the feeSelector)
+                $sql = "SELECT gibbonOutcomeID, name as outcometitle, category as outcomecategory FROM gibbonOutcome ORDER BY name";
+                $outcomeData = $pdo->select($sql)->fetchAll();
+
+                $customBlocks->addPredefinedBlock('Ad Hoc Fee', array('feeType' => 'Ad Hoc', 'gibbonFinanceFeeID' => 0));
+                foreach ($outcomeData as $outcome) {
+                    $customBlocks->addPredefinedBlock($outcome['gibbonOutcomeID'], $outcome);
+                }
+            }
+
             echo $form->getOutput();
 
 
@@ -445,34 +503,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 					<?php
 					//OUTCOMES
                     if ($viewBy == 'date') {
-                        ?>
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __('Outcomes') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2>
-								<div class='warning'>
-									<?php echo __('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.') ?>
-								</div>
-							</td>
-						</tr>
-						<?php
 
                     } else {
-                        ?>
-						<tr class='break'>
-							<td colspan=2>
-								<h3><?php echo __('Outcomes') ?></h3>
-							</td>
-						</tr>
-						<tr>
-							<td colspan=2>
-								<p><?php echo __('Link this lesson to outcomes (defined in the Manage Outcomes section of the Planner), and track which outcomes are being met in which lessons.') ?></p>
-							</td>
-						</tr>
-						<?php
                         $type = 'outcome';
                         $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
                         $categories = array();
