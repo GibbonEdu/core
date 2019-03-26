@@ -47,6 +47,7 @@ v18.0.00
         System: fixed index_custom.php content not loading on first login
         System: fixed SQL key integer length in database tables to ensure referential integrity
         System: fixed issue leading to no theme on login if a personal theme has been removed from the system
+        System: fixed errant HTML issue in Smart Workflow on Deadlines page
         Finance: fixed spelling error in Manage Invoices
         Library: fixed bug leading to loss of main user/owner field value in item edit
         Library: removed lending icon for items that are not borrowable
