@@ -349,11 +349,9 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
 
                 // CUSTOM BLOCKS
-        
                 // Outcome selector
                 $outcomeSelector = $form->getFactory()
-                    ->createSelectOutcome('addOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID)
-                    ->addClass('addBlock');
+                    ->createSelectOutcome('addOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID);
 
                 // Block template
                 $blockTemplate = $form->getFactory()->createTable()->setClass('blank w-full');
@@ -369,8 +367,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         ->setClass('w-3/4 floatLeft noMargin readonly')
                         ->readonly();
                         
-                    $col = $blockTemplate->addRow()->addClass('showHide fullWidth max-w-full')->addColumn();
-                    $col->addEditor('outcomecontents', $guid)->setRows(10)->setClass('max-w-full');
+                    $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
+                    if ($allowOutcomeEditing == 'Y') {
+                        $col->addTextArea('outcomecontents')->setRows(10)->setClass('tinymce');
+                    } else {
+                        $col->addContent('')->wrap('<label for="outcomedescription" class="block pt-2">', '</label>')
+                            ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
+                    }
 
                 // Custom Blocks for Outcomes
                 $row = $form->addRow();
@@ -382,14 +385,14 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                             'preventDuplicates' => true,
                             'sortable'          => true,
                             'orderName'         => 'outcomeorder',
-                            'duplicateMessage' => __('This element has already been selected!'),
                         ])
                         ->placeholder(__('Key outcomes listed here...'))
                         ->addToolInput($outcomeSelector)
                         ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
                 // Add predefined block data (for templating new blocks, triggered with the outcome selector)
-                $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, name as outcometitle, category as outcomecategory FROM gibbonOutcome ORDER BY name";
+                $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, name as outcometitle, category as outcomecategory, description as outcomedescription, description as outcomecontents 
+                        FROM gibbonOutcome ORDER BY name";
                 $outcomeData = $pdo->select($sql)->fetchAll();
 
                 foreach ($outcomeData as $outcome) {

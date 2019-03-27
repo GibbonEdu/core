@@ -221,7 +221,13 @@ CustomBlocks.prototype.init = function() {
             handle: ".sortHandle",
         }).bind('sortstart', function(event, ui) {
             $(_.container).trigger('hideAll');
+
+            // Suspend the TinyMCE editors before sorting
+            $('textarea.tinymce', _.container).each(function(index, element) {
+                tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
+            });
         });
+        
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
@@ -248,6 +254,11 @@ CustomBlocks.prototype.init = function() {
                 $(button).addClass('showHidden');
                 $('img', button).prop('src', $(button).data('on'));
                 block.find('.showHide').show();
+
+                // Restart any TinyMCE editors that are not active
+                $('textarea.tinymce', _.container).each(function(index, element) {
+                    tinymce.EditorManager.execCommand('mceAddEditor', false, $(this).prop("id"));
+                });
             }
         })
         .on('hideAll', function(event, block, button) {
@@ -306,6 +317,7 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']", block).val(data[key]);
+        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
@@ -334,6 +346,14 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
 
     $("label", block).each(function(index, element) {
         $(this).prop("for", $(this).prop("for")+block.blockNumber);
+    });
+
+    // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
+    $("textarea.tinymce", block).each(function (index, element) {
+        var data = { id: $(this).prop("id"), value: $(this).val() };
+        $(this).parent().load('./modules/Planner/planner_add_editorAjax.php', data, function(responseText, textStatus, jqXHR) { 
+            tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
+        });
     });
 };
 

@@ -41,31 +41,53 @@ class PlannerFormFactory extends DatabaseFormFactory
 
     public function createSelectOutcome($name, $gibbonYearGroupIDList, $gibbonDepartmentID)
     {
-        //Get school outcomes
-        $countClause = 0;
-        $years = explode(',', $gibbonYearGroupIDList);
-        $data = array();
-        $sql = '';
-        foreach ($years as $year) {
-            $data['clause'.$countClause] = '%'.$year.'%';
-            $sql .= "(SELECT category AS groupBy, gibbonOutcomeID AS value, name AS name FROM gibbonOutcome WHERE active='Y' AND scope='School' AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
-            ++$countClause;
-        }
-        $sql = substr($sql, 0, -6).' ORDER BY groupBy, name';
+        // Get School Outcomes
+        $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
+        $sql = "SELECT category AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name 
+                FROM gibbonOutcome 
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
+                WHERE active='Y' AND scope='School' 
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                GROUP BY gibbonOutcome.gibbonOutcomeID
+                ORDER BY groupBy, name";
 
-        //Get departmental Outcomes
-        $data2 = array('gibbonDepartmentID' => $gibbonDepartmentID);
-        $sql2 = '';
-        foreach ($years as $year) {
-            $data2['clause'.$countClause] = '%'.$year.'%';
-            $sql2 .= "(SELECT gibbonDepartment.name AS groupBy, gibbonOutcomeID AS value, gibbonOutcome.name AS name FROM gibbonOutcome JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) WHERE active='Y' AND scope='Learning Area' AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID AND gibbonYearGroupIDList LIKE :clause".$countClause.') UNION ';
-            ++$countClause;
-        }
-        $sql2 = substr($sql2, 0, -6).' ORDER BY groupBy, name';
+        // Get Departmental Outcomes
+        $data2 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList, 'gibbonDepartmentID' => $gibbonDepartmentID];
+        $sql2 = "SELECT CONCAT(gibbonDepartment.name, ': ', category) AS groupBy, CONCAT('all ', category) as chainedTo, gibbonOutcomeID AS value, gibbonOutcome.name AS name 
+                FROM gibbonOutcome 
+                JOIN gibbonDepartment ON (gibbonOutcome.gibbonDepartmentID=gibbonDepartment.gibbonDepartmentID) 
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
+                WHERE active='Y' AND scope='Learning Area'
+                AND gibbonDepartment.gibbonDepartmentID=:gibbonDepartmentID 
+                AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                GROUP BY gibbonOutcome.gibbonOutcomeID
+                ORDER BY groupBy, gibbonOutcome.name";
 
-        return $this->createSelect($name)
-            ->fromArray(array('' => __('Choose an outcome to add it to this lesson')))
-            ->fromQuery($this->pdo, $sql, $data, 'groupBy')
-            ->fromQuery($this->pdo, $sql2, $data2, 'groupBy');
+        $col = $this->createColumn($name.'Col')->setClass('');
+
+        $col->addSelect($name)
+            ->setClass('addBlock floatNone standardWidth')
+            ->fromArray(['' => __('Choose an outcome to add it to this lesson')])
+            ->fromArray([__('SCHOOL OUTCOMES') => []])
+            // ->fromQuery($this->pdo, $sql, $data, 'groupBy')
+            ->fromQueryChained($this->pdo, $sql, $data, $name.'Filter', 'groupBy')
+
+            ->fromArray([__('LEARNING AREAS') => []])
+            // ->fromQuery($this->pdo, $sql2, $data2, 'groupBy');
+            ->fromQueryChained($this->pdo, $sql2, $data2, $name.'Filter', 'groupBy');
+
+        $data3 = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
+        $sql3 = "SELECT category as value, category as name
+                FROM gibbonOutcome
+                JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
+                WHERE active='Y' AND FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList) 
+                GROUP BY gibbonOutcome.category";
+
+        $col->addSelect($name.'Filter')
+            ->setClass('floatNone standardWidth mt-px')
+            ->fromArray(['all' => __('View All')])
+            ->fromQuery($this->pdo, $sql3, $data3);
+
+        return $col;
     }
 }
