@@ -371,7 +371,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     if ($allowOutcomeEditing == 'Y') {
                         $col->addTextArea('outcomecontents')->setRows(10)->setClass('tinymce');
                     } else {
-                        $col->addContent('')->wrap('<label for="outcomedescription" class="block pt-2">', '</label>')
+                        $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
                             ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
                     }
 
@@ -391,9 +391,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                         ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
 
                 // Add predefined block data (for templating new blocks, triggered with the outcome selector)
-                $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, name as outcometitle, category as outcomecategory, description as outcomedescription, description as outcomecontents 
-                        FROM gibbonOutcome ORDER BY name";
-                $outcomeData = $pdo->select($sql)->fetchAll();
+                $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
+                $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents 
+                        FROM gibbonOutcome 
+                        JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
+                        WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)";
+                $outcomeData = $pdo->select($sql, $data)->fetchAll();
 
                 foreach ($outcomeData as $outcome) {
                     $customBlocks->addPredefinedBlock($outcome['outcomegibbonOutcomeID'], $outcome);
