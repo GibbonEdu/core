@@ -338,7 +338,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             }
 
             // OUTCOMES
-
             if ($viewBy == 'date') {
                 $form->addRow()->addHeading(__('Outcomes'));
                 $form->addRow()->addAlert(__('Outcomes cannot be set when viewing the Planner by date. Use the "Choose A Class" dropdown in the sidebar to switch to a class. Make sure to save your changes first.'), 'warning');
@@ -348,59 +347,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
 
                 $allowOutcomeEditing = getSettingByScope($connection2, 'Planner', 'allowOutcomeEditing');
 
-                // CUSTOM BLOCKS
-                // Outcome selector
-                $outcomeSelector = $form->getFactory()
-                    ->createSelectOutcome('addOutcome', $gibbonYearGroupIDList, $gibbonDepartmentID);
-
-                // Block template
-                $blockTemplate = $form->getFactory()->createTable()->setClass('blank w-full');
-                    $row = $blockTemplate->addRow();
-                    $row->addTextField('outcometitle')
-                        ->setClass('w-3/4 floatLeft noMargin title readonly')
-                        ->readonly()
-                        ->placeholder(__('Outcome Name'))
-                        ->append('<input type="hidden" id="outcomegibbonOutcomeID" name="outcomegibbonOutcomeID" value="">');
-
-                    $row = $blockTemplate->addRow();
-                    $row->addTextField('outcomecategory')
-                        ->setClass('w-3/4 floatLeft noMargin readonly')
-                        ->readonly();
-                        
-                    $col = $blockTemplate->addRow()->addClass('showHide fullWidth')->addColumn();
-                    if ($allowOutcomeEditing == 'Y') {
-                        $col->addTextArea('outcomecontents')->setRows(10)->setClass('tinymce');
-                    } else {
-                        $col->addContent('')->wrap('<label for="outcomecontents" class="block pt-2">', '</label>')
-                            ->append('<input type="hidden" id="outcomecontents" name="outcomecontents" value="">');
-                    }
-
-                // Custom Blocks for Outcomes
                 $row = $form->addRow();
-                    $customBlocks = $row->addCustomBlocks('outcome', $gibbon->session)
-                        ->fromTemplate($blockTemplate)
-                        ->settings([
-                            'inputNameStrategy' => 'string',
-                            'addOnEvent'        => 'change',
-                            'preventDuplicates' => true,
-                            'sortable'          => true,
-                            'orderName'         => 'outcomeorder',
-                        ])
-                        ->placeholder(__('Key outcomes listed here...'))
-                        ->addToolInput($outcomeSelector)
-                        ->addBlockButton('showHide', __('Show/Hide'), 'plus.png');
-
-                // Add predefined block data (for templating new blocks, triggered with the outcome selector)
-                $data = ['gibbonYearGroupIDList' => $gibbonYearGroupIDList];
-                $sql = "SELECT gibbonOutcomeID as outcomegibbonOutcomeID, gibbonOutcome.name as outcometitle, category as outcomecategory, description as outcomecontents 
-                        FROM gibbonOutcome 
-                        JOIN gibbonYearGroup ON (FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, gibbonOutcome.gibbonYearGroupIDList))
-                        WHERE FIND_IN_SET(gibbonYearGroup.gibbonYearGroupID, :gibbonYearGroupIDList)";
-                $outcomeData = $pdo->select($sql, $data)->fetchAll();
-
-                foreach ($outcomeData as $outcome) {
-                    $customBlocks->addPredefinedBlock($outcome['outcomegibbonOutcomeID'], $outcome);
-                }
+                    $row->addPlannerOutcomeBlocks('outcome', $gibbon->session, $gibbonYearGroupIDList, $gibbonDepartmentID, $allowOutcomeEditing);
             }
 
             //MARKBOOK

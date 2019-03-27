@@ -380,6 +380,10 @@ CustomBlocks.prototype.removeBlockValidation = function(block) {
             eval("block."+id+"Validate.destroy();");
         }
     });
+
+    $('textarea.tinymce', block).each(function(index, element) {
+        tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
+    });
 };
 
 CustomBlocks.prototype.addBlockEvents = function(block) {
