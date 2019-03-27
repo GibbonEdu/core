@@ -1,7 +1,7 @@
 <p align="center">
     <a href="https://gibbonedu.org/" target="_blank"><img width="200" src="https://gibbonedu.org/img/gibbon-logo.png"></a><br>
     Gibbon is a flexible, open source school management platform designed <br>
-    to make like better for teachers, students, parents and schools.
+    to make life better for teachers, students, parents and schools.
 </p>
 
 ------
