@@ -172,16 +172,20 @@ CustomBlocks = (function(element, settings) {
     _.container = $(element);
     _.blockTemplate = $('.blockTemplate', element);
     _.blockCount = 0;
+    _.identifiers = [];
     _.validation = [];
     _.defaults = {
         inputNameStrategy: "object",    // array | object | string
         addSelector: ".addBlock",       // The selector to trigger an add block action on
         addOnEvent: "click",            // The event type to trigger an add block action on
         deleteMessage: "Delete?",       // The confirmation message when deleting a block
+        duplicateMessage: "Duplicate",  // The message to display when a duplicate is added
         animationSpeed: 600,            // The speed for block animations
         currentBlocks: [],              // Blocks that should be initialized when creating is object
         predefinedBlocks: [],           // Data to add for new blocks if the identifier matches a key.
+        preventDuplicates: false,       // Can the same block be added more than once?
         sortable: false,                // Enable jQuery-ui drag-drop sorting
+        orderName: 'order',             // Name of the variable used to hold sortable block order
     }
     _.settings = $.extend({}, _.defaults, settings);
 
@@ -197,8 +201,16 @@ CustomBlocks.prototype.init = function() {
             var identifier = $(this).val();
             if (!identifier) return;
 
+            if (_.settings.preventDuplicates && _.identifiers.includes(identifier)) {
+                alert(_.settings.duplicateMessage);
+                return;
+            }
+
             var data = _.settings.predefinedBlocks[identifier] || {};
+            data.identifier = identifier;
+
             _.addBlock(data);
+            _.identifiers.push(identifier);
         });
     });
 
@@ -255,7 +267,7 @@ CustomBlocks.prototype.addBlock = function(data) {
     _.blockCount++;
 
     var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
-    $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+    $(block).append('<input type="hidden" name="'+_.settings.orderName+'[]" value="'+_.blockCount+'" />');
 
     _.initBlock(block, data);
     _.refresh();
@@ -265,6 +277,9 @@ CustomBlocks.prototype.removeBlock = function(block) {
     var _ = this;
 
     _.blockCount--;
+
+    var index = _.identifiers.indexOf(block.identifier);
+    if (index !== -1) _.identifiers.splice(index, 1);
 
     _.removeBlockValidation(block);
 
@@ -278,6 +293,7 @@ CustomBlocks.prototype.initBlock = function(block, data) {
     var _ = this;
 
     block.blockNumber = _.blockCount;
+    block.identifier = data.identifier;
 
     _.loadBlockInputData(block, data);
     _.renameBlockFields(block);
@@ -303,7 +319,7 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
     var _ = this;
 
     $("input, textarea, select", block).each(function(index, element) {
-        if ($(this).prop("name") == 'order[]') return;
+        if ($(this).prop("name") == _.settings.orderName+'[]') return;
 
         var name;
         switch(_.settings.inputNameStrategy) {
