@@ -171,8 +171,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $homeworkCrowdAssessOtherParentsRead = 'N';
             }
 
-            $viewableParents = $_POST['viewableParents'];
-            $viewableStudents = $_POST['viewableStudents'];
+            $viewableParents = $_POST['viewableParents'] ?? 'Y';
+            $viewableStudents = $_POST['viewableStudents'] ?? 'Y';
             $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
             $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
@@ -217,10 +217,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 if (isset($_POST['guests'])) {
                     $guests = $_POST['guests'];
                 }
-                $role = $_POST['role'];
-                if ($role == '') {
-                    $role = 'Student';
-                }
+                $role = $_POST['role'] ?? 'Student';
+
                 if (count($guests) > 0) {
                     foreach ($guests as $t) {
                         //Check to see if person is already registered in this class
