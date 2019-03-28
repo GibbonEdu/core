@@ -196,22 +196,22 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         }
 
         $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
-        $form->setClass('w-full blank');
+        $form->setClass('blank w-full');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
 
-        $row = $form->addRow()->addClass('doublescroll-wrapper');
+        $row = $form->addRow()->addClass('doublescroll-wrapper smallIntBorder');
 
         // Headings as a separate table (for double-scroll)
         $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');
         $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->addClass('attendanceRowHeader');
+            $header->addContent(__('Student'))->addClass('attendanceRowHeader py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        $row->addContent("<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>");
+        $row->addContent("<div class='doublescroll-top -mt-4'><div class='doublescroll-top-tablewidth'></div></div>");
 
         // Wrap the attendance table in a double-scroll container
         $table = $row->addColumn()->addClass('doublescroll-container')
