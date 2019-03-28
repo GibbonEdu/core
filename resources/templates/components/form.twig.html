@@ -1,0 +1,40 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+<form {{ form.getAttributeString|raw }} onsubmit="gibbonFormSubmitted(this)">
+
+    {% if form.getTitle %}
+        <h2>{{ form.getTitle }}</h2>
+    {% endif %}
+
+    {% for values in form.getHiddenValues %}
+        <input type="hidden" name="{{ values.name }}" value="{{ values.value }}">
+    {% endfor %}
+
+    <table class="{{ form.getClass }}" cellspacing=0>
+    {% for row in form.getRows %}
+        <tr id="{{ row.getID }}" class="{{ row.getClass }}">
+
+        {% for element in row.getElements %}
+            {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
+
+            <td class="{{ element.getClass }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                {{ element.getOutput|raw }}
+            </td>
+        {% endfor %}
+
+        </tr>
+    {% endfor %}
+    </table>
+
+    <script type="text/javascript">
+        {% for code in javascript %}
+            {{ code|raw }}
+        {% endfor %}
+    </script>
+</form>
