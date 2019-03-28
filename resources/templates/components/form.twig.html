@@ -18,13 +18,19 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
 
     <table class="{{ form.getClass }}" cellspacing=0>
     {% for row in form.getRows %}
-        <tr id="{{ row.getID }}" class="{{ row.getClass }}">
+        <tr id="{{ row.getID }}" class="{{ row.getClass|replace({'standardWidth': ''}) }} flex flex-col sm:flex-row justify-between content-center p-0">
 
         {% for element in row.getElements %}
             {% set colspan = loop.last and loop.length < totalColumns ? (totalColumns + 1 - loop.length) : 0  %}
+            
+            {% if element.getType == "Gibbon\\Forms\\Layout\\Label" %}
+                {% set class = 'flex flex-col flex-grow justify-center' %}
+            {% else %}
+                {% set class = loop.last and loop.length > 1 ? 'w-full sm:w-1/2 md:w-2/5' : 'w-full' %}
+            {% endif %}
 
-            <td class="{{ element.getClass }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
-                {{ element.getOutput|raw }}
+            <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
+                {{ element.getOutput|replace({'standardWidth': 'w-full' })|raw }}
             </td>
         {% endfor %}
 

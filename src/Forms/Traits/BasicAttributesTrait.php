@@ -136,6 +136,11 @@ trait BasicAttributesTrait
         return ($decode)? json_decode($data) : $data;
     }
 
+    public function getType()
+    {
+        return get_class($this);
+    }
+
     /**
      * Add a $key => $value pair to the attributes collection.
      * @param  string  $key
