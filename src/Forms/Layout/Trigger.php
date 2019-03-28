@@ -139,10 +139,10 @@ class Trigger implements OutputableInterface
         $output .= "$(document).on('change showhide', '{$this->sourceSelector}', function(event){ \n";
             $output .= "if ($('{$this->sourceSelector}').prop('disabled') == false && {$comparisons}) { \n";
                 $output .= "$('{$this->targetSelector}').slideDown('fast'); \n";
-                $output .= "$('{$this->targetSelector} :input').each(function(index, element){ $(this).prop('disabled', element.disabledState).change(); });";
+                $output .= "$('{$this->targetSelector} :input:not(button)').each(function(index, element){ if ($(this).is(':visible, .tinymce')) { $(this).prop('disabled', element.disabledState).change(); } });";
             $output .= "} else { \n";
                 $output .= "$('{$this->targetSelector}').hide(); \n";
-                $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
+                $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
             $output .= "} \n";
         $output .= "}); \n";
 
@@ -153,7 +153,7 @@ class Trigger implements OutputableInterface
         $output .= "$(function() {";
             $output .= "if ( !({$comparisons}) ) { \n";
             $output .= "$('{$this->targetSelector}').hide(); \n";
-            $output .= "$('{$this->targetSelector} :input').prop('disabled', true).change(); \n";
+            $output .= "$('{$this->targetSelector} :input:not(button)').prop('disabled', true).change(); \n";
             $output .= "}\n\n";
         $output .= "});";
         
