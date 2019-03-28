@@ -10,7 +10,7 @@ file that was distributed with this source code.
 namespace Gibbon\Forms;
 
 use PHPUnit\Framework\TestCase;
-use Gibbon\Forms\Renderer\FormRendererInterface;
+use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\FormFactoryInterface;
 
 /**
