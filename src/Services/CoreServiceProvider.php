@@ -105,7 +105,6 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
         $container = $this->getContainer();
         $absolutePath = $this->absolutePath;
         $session = $container->get('session');
-        $pdo = $container->get('db');
 
         // Logging removed until properly setup & tested
         
@@ -149,7 +148,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
             return $twig;
         });
 
-        $container->share('action', function () use ($session, $pdo) {
+        $container->share('action', function () use ($session) {
             $data = [
                 'actionName'   => '%'.$session->get('action').'%',
                 'moduleName'   => $session->get('module'),
@@ -163,20 +162,20 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                     WHERE gibbonAction.URLList LIKE :actionName 
                     AND gibbonModule.name=:moduleName";
 
-            $actionData = $pdo->selectOne($sql, $data);
+            $actionData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             return $actionData ? $actionData : null;
         });
 
-        $container->share('module', function () use ($session, $pdo) {
+        $container->share('module', function () use ($session) {
             $data = ['moduleName' => $session->get('module')];
             $sql = "SELECT * FROM gibbonModule WHERE name=:moduleName AND active='Y'";
-            $moduleData = $pdo->selectOne($sql, $data);
+            $moduleData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             return $moduleData ? new Module($moduleData) : null;
         });
 
-        $container->share('theme', function () use ($session, $pdo) {
+        $container->share('theme', function () use ($session) {
             if ($session->has('gibbonThemeIDPersonal')) {
                 $data = ['gibbonThemeID' => $session->get('gibbonThemeIDPersonal')];
                 $sql = "SELECT * FROM gibbonTheme WHERE gibbonThemeID=:gibbonThemeID";
@@ -185,7 +184,7 @@ class CoreServiceProvider extends AbstractServiceProvider implements BootableSer
                 $sql = "SELECT * FROM gibbonTheme WHERE active='Y'";
             }
 
-            $themeData = $pdo->selectOne($sql, $data);
+            $themeData = $this->getContainer()->get('db')->selectOne($sql, $data);
 
             $session->set('gibbonThemeID', $themeData['gibbonThemeID'] ?? 001);
             $session->set('gibbonThemeName', $themeData['name'] ?? 'Default');
