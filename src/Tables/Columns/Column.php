@@ -93,6 +93,17 @@ class Column
         return $this->depth;
     }
 
+    public function responsive($breakpoint)
+    {
+        switch ($breakpoint) {
+            case 'sm': $this->addClass('hidden sm:table-cell'); break;
+            case 'md': $this->addClass('hidden md:table-cell'); break;
+            case 'lg': $this->addClass('hidden lg:table-cell'); break;
+        }
+
+        return $this;
+    }
+
     /**
      * Sets the column description, often displayed as smaller text below the label.
      *

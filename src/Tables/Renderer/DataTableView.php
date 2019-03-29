@@ -117,6 +117,7 @@ class DataTableView extends View implements RendererInterface
 
         $th->setTitle($column->getTitle())
            ->setClass('column')
+           ->addClass($column->getClass())
            ->addData('description', $column->getDescription());
 
         return $th;
@@ -153,6 +154,8 @@ class DataTableView extends View implements RendererInterface
         foreach ($column->getCellModifiers() as $callable) {
             $cell = $callable($data, $cell, $table->getColumnCount());
         }
+
+        $cell->addClass($column->getClass());
 
         return $cell;
     }
