@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 use Gibbon\Forms\Form;
 use Gibbon\Forms\DatabaseFormFactory;
+use Gibbon\Services\Format;
 
 //Module includes
 require_once __DIR__ . '/moduleFunctions.php';
@@ -194,7 +195,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo $row['courseShort'].'.'.$row['class'];
                     echo '</td>';
                     echo '<td>';
-                    echo date('M j', $timestampStart).' - '. date('M j, Y', $timestampEnd);
+                    echo Format::dateRangeReadable($dateStart, $dateEnd);
                     echo '</td>';
                     echo '<td style="padding: 0;">';
 
@@ -209,9 +210,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                                 echo '<i>'.__('NA').'</i>';
                                 echo '</td>';
                             } else {
-
-                                $currentDayTimestamp = dateConvertToTimestamp($lastNSchoolDays[$i]);
-
                                 $link = './index.php?q=/modules/Attendance/attendance_take_byCourseClass.php&gibbonCourseClassID='.$row['gibbonCourseClassID'].'&currentDate='.$lastNSchoolDays[$i];
 
                                 if ( isset($log[$row['gibbonCourseClassID']][$lastNSchoolDays[$i]]) == true ) {
@@ -228,15 +226,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
 
                                 echo "<td class='$class' style='padding: 12px !important;'>";
                                 if ($link != '') {
-                                    echo "<a href='$link' >";
-                                    echo date('d', $currentDayTimestamp).'<br/>';
-                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                    echo "<a href='$link'>";
+                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                                     echo '</a>';
                                 } else {
-                                    echo date('d', $currentDayTimestamp).'<br/>';
-                                    echo "<span>".date('M', $currentDayTimestamp).'</span>';
+                                    echo Format::dateReadable($lastNSchoolDays[$i], '%d').'<br/>';
+                                    echo "<span>".Format::dateReadable($lastNSchoolDays[$i], '%b').'</span>';
                                 }
-                                echo '</td>';
+                                echo '</td>';  
 
                                 // Wrap to a new line every 10 dates
                                 if (  ($historyCount+1) % 10 == 0 ) {
@@ -272,8 +270,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Attendance/report_courseCl
                     echo '</tr>';
                 }
             }
-
-
 
             if ($count == 0) {
                 echo "<tr";

@@ -278,7 +278,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                         echo "<div style='float: right; width: 35%; padding-right: 3px; margin-top: -52px'>";
                         if (strstr($row['role'], 'Guest') == false) {
                             //Links to previous and next lessons
-                                    echo "<p style='text-align: right; margin-top: 10px'>";
+                            echo "<p style='text-align: right; margin-top: 10px'>";
                             echo "<span style='font-size: 85%'>".__('For this class:').'</span><br/>';
                             try {
                                 if ($row['role'] == 'Teacher') {
@@ -410,7 +410,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                             echo "<table cellspacing='0' style='width: 100%'>";
                             echo "<tr class='head'>";
                             echo '<th>';
-                            echo 'Scope';
+                            echo __('Scope');
                             echo '</th>';
                             echo '<th>';
                             echo __('Category');
@@ -435,8 +435,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_view_full.
                                     $rowNum = 'odd';
                                 }
 
-                                    //COLOR ROW BY STATUS!
-                                    echo "<tr class=$rowNum>";
+                                //COLOR ROW BY STATUS!
+                                echo "<tr class=$rowNum>";
                                 echo '<td>';
                                 echo '<b>'.$rowOutcomes['scope'].'</b><br/>';
                                 if ($rowOutcomes['scope'] == 'Learning Area' and $gibbonDepartmentID != '') {
