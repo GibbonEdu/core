@@ -19,8 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 namespace Gibbon\Forms;
 
-use Gibbon\Forms\FormFactory;
 use Gibbon\Forms\Traits\BasicAttributesTrait;
+use Gibbon\Forms\View\FormRendererInterface;
+use Gibbon\Forms\FormFactoryInterface;
 
 /**
  * Form
@@ -47,7 +48,7 @@ class Form implements OutputableInterface
      * @param    string                 $action
      * @param    string                 $method
      */
-    public function __construct(FormFactoryInterface $factory, FormRendererInterface $renderer, $action, $method)
+    public function __construct(FormFactoryInterface $factory, FormRendererInterface $renderer, $action = '', $method = 'post')
     {
         $this->factory = $factory;
         $this->renderer = $renderer;
@@ -67,13 +68,13 @@ class Form implements OutputableInterface
      */
     public static function create($id, $action, $method = 'post', $class = 'smallIntBorder fullWidth standardForm')
     {
-        $factory = FormFactory::create();
-        $renderer = FormRenderer::create();
+        global $container;
 
-        $form = new Form($factory, $renderer, $action, $method);
-
-        $form->setID($id);
-        $form->setClass($class);
+        $form = $container->get(Form::class)
+            ->setID($id)
+            ->setClass($class)
+            ->setAction($action)
+            ->setMethod($method);
 
         return $form;
     }
@@ -147,6 +148,13 @@ class Form implements OutputableInterface
         return $this->getAttribute('method');
     }
 
+    public function setMethod(string $method)
+    {
+        $this->setAttribute('method', $method);
+
+        return $this;
+    }
+
     /**
      * Get the current action URL for the form.
      * @return  string
@@ -154,6 +162,13 @@ class Form implements OutputableInterface
     public function getAction()
     {
         return $this->getAttribute('action');
+    }
+
+    public function setAction(string $action)
+    {
+        $this->setAttribute('action', $action);
+
+        return $this;
     }
 
     /**
