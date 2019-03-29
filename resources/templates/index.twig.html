@@ -44,7 +44,7 @@ TODO: add template variable details.
                 <div id="content-wrap" class="w-full min-h-1/2 flex {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
 
                     {% if sidebar %}
-                        <div id="sidebar" class="w-full lg:w-1/4 px-6 pb-6 lg:border-l">
+                        <div id="sidebar" class="w-full lg:w-1/4 px-6 lg:border-l">
                             {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
                                 {{ code|raw }}
                             {% endfor %}

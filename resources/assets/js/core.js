@@ -17,6 +17,14 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 jQuery(function($){
+
+    /**
+     * Generic toggle switch
+     */
+    $(document).on('click', "[data-toggle]", function () {
+        $($(this).data('toggle')).toggleClass('hidden');
+    });
+
     /**
      * Form Class: generic check All/None checkboxes
      */

@@ -13,8 +13,14 @@ collapsed drop-down list in 'mini' view-mode.
 
 
 {% if sidebar %}
-<div class="pt-6">
-    <ul class="list-reset m-0 -mb-6">
+
+
+<div class="relative">
+
+    <button data-toggle="#navigation" class="block w-full sm:w-48 lg:hidden bg-white border border-grey-600 border-solid p-2 text-base mt-2 sm:absolute sm:top-0 sm:right-0">{{ __('Menu') }}</button>
+
+
+    <ul id="navigation" class="list-reset m-0 -mb-6 py-6 hidden lg:block">
     {% for categoryName, items in menuModule %}
         <li class="p-0">
             <h5 class="m-0 mb-1 text-xs pb-0 ">{{ __(categoryName, (items|first).textDomain) }}</h5>
@@ -35,7 +41,7 @@ collapsed drop-down list in 'mini' view-mode.
 {% else %}
 
     {% if menuModule %}
-    <div class="float-right mt-4">
+    <div class="float-right mt-4 py-6">
         <span class="text-xs">{{ __('Module Menu') }}</span>
 
         <select class="w-48 inline float-none" onchange="window.location.href=this.value">
