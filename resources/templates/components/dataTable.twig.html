@@ -1,0 +1,92 @@
+{#<!--
+Gibbon, Flexible & Open School System
+Copyright (C) 2010, Ross Parker
+
+This is a Gibbon template file, written in HTML and Twig syntax.
+For info about editing, see: https://twig.symfony.com/doc/2.x/
+-->#}
+
+{% if table.getTitle %}
+    <h2>{{ table.getTitle }}</h2>
+{% endif %}
+
+{% if table.getDescription %}
+    <p>{{ table.getDescription }}</p>
+{% endif %}
+
+{% block table %}
+
+    <header class="relative">
+    {% block header %}
+
+        {% if table.getHeader %}
+        <div class="linkTop">
+            {% for action in table.getHeader %}
+                {{ action.getOutput|raw }}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+    {% endblock header %}
+    </header>
+
+
+    {% if not rows %}
+
+        {% block blankslate %}
+            <div class="error">
+                {{ __('There are no records to display.') }}
+            </div>
+        {% endblock blankslate %}
+
+    {% else %}
+        <table class="w-full" cellspacing="0">
+            <thead>
+            {% for headerRow in headers %}
+                <tr class="head">
+                {% for columnIndex, column in columns %}
+                    {% set th = headerRow[columnIndex] %}
+                    {% if th %}
+                    <th {{ th.getAttributeString|raw }} style="width: {{ column.getWidth }}">
+                        {{ th.getOutput|raw }}
+
+                        {% if th.getData('description') %}
+                            <br/><small><i>{{ th.getData('description') }}</i></small>
+                        {% endif %}
+                    </th>
+                    {% endif %}
+                {% endfor %}
+                </tr>
+            {% endfor %}
+            </thead>
+
+            <tbody>
+            {% for rowIndex, rowData in rows %}
+                {% set row = rowData.row %}
+
+                <tr {{ row.getAttributeString|raw }}>
+                    {{ row.getPrepended|raw }}
+
+                    {% for columnIndex, column in columns %}
+                        {% set cell = rowData.cells[columnIndex] %}
+
+                        <td {{ cell.getAttributeString|raw }}>
+                            {{ cell.getPrepended|raw }}
+                            {{ column.getOutput(rowData.data)|raw }}
+                            {{ cell.getAppended|raw }}
+                        </td>
+                    {% endfor %}
+
+                    {{ row.getAppended|raw }}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+    <footer>
+    {% block footer %}
+    {% endblock footer %}
+    </footer>
+
+{% endblock table %}
