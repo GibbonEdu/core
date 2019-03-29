@@ -76,7 +76,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
             $description = $_POST['description'];
             $teachersNotes = $_POST['teachersNotes'];
             $homework = $_POST['homework'];
-            if ($_POST['homework'] == 'Yes') {
+            if ($_POST['homework'] == 'Y') {
                 $homework = 'Y';
                 $homeworkDetails = $_POST['homeworkDetails'];
                 if ($_POST['homeworkDueDateTime'] != '') {
@@ -88,7 +88,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $homeworkDueDate = dateConvert($guid, $_POST['homeworkDueDate']).' '.$homeworkDueDateTime;
                 }
 
-                if ($_POST['homeworkSubmission'] == 'Yes') {
+                if ($_POST['homeworkSubmission'] == 'Y') {
                     $homeworkSubmission = 'Y';
                     if ($_POST['homeworkSubmissionDateOpen'] != '') {
                         $homeworkSubmissionDateOpen = dateConvert($guid, $_POST['homeworkSubmissionDateOpen']);
@@ -98,7 +98,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     $homeworkSubmissionDrafts = $_POST['homeworkSubmissionDrafts'];
                     $homeworkSubmissionType = $_POST['homeworkSubmissionType'];
                     $homeworkSubmissionRequired = $_POST['homeworkSubmissionRequired'];
-                    if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Yes') {
+                    if (!empty($_POST['homeworkCrowdAssess']) && $_POST['homeworkCrowdAssess'] == 'Y') {
                         $homeworkCrowdAssess = 'Y';
                         if (isset($_POST['homeworkCrowdAssessOtherTeachersRead'])) {
                             $homeworkCrowdAssessOtherTeachersRead = 'Y';
@@ -171,8 +171,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 $homeworkCrowdAssessOtherParentsRead = 'N';
             }
 
-            $viewableParents = $_POST['viewableParents'];
-            $viewableStudents = $_POST['viewableStudents'];
+            $viewableParents = $_POST['viewableParents'] ?? 'Y';
+            $viewableStudents = $_POST['viewableStudents'] ?? 'Y';
             $gibbonPersonIDCreator = $_SESSION[$guid]['gibbonPersonID'];
             $gibbonPersonIDLastEdit = $_SESSION[$guid]['gibbonPersonID'];
 
@@ -217,10 +217,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                 if (isset($_POST['guests'])) {
                     $guests = $_POST['guests'];
                 }
-                $role = $_POST['role'];
-                if ($role == '') {
-                    $role = 'Student';
-                }
+                $role = $_POST['role'] ?? 'Student';
+
                 if (count($guests) > 0) {
                     foreach ($guests as $t) {
                         //Check to see if person is already registered in this class
@@ -308,7 +306,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_add.php') 
                     //Create notification for all people in class except me
                     $notificationGateway = new NotificationGateway($pdo);
                     $notificationSender = new NotificationSender($notificationGateway, $gibbon->session);
-    
+
                     try {
                         $dataClassGroup = array('gibbonCourseClassID' => $gibbonCourseClassID);
                         $sqlClassGroup = "SELECT * FROM gibbonCourseClassPerson INNER JOIN gibbonPerson ON gibbonCourseClassPerson.gibbonPersonID=gibbonPerson.gibbonPersonID WHERE gibbonCourseClassID=:gibbonCourseClassID AND status='Full' AND (dateStart IS NULL OR dateStart<='".date('Y-m-d')."') AND (dateEnd IS NULL  OR dateEnd>='".date('Y-m-d')."') AND (NOT role='Student - Left') AND (NOT role='Teacher - Left') ORDER BY role DESC, surname, preferredName";

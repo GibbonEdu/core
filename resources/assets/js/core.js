@@ -172,16 +172,20 @@ CustomBlocks = (function(element, settings) {
     _.container = $(element);
     _.blockTemplate = $('.blockTemplate', element);
     _.blockCount = 0;
+    _.identifiers = [];
     _.validation = [];
     _.defaults = {
         inputNameStrategy: "object",    // array | object | string
         addSelector: ".addBlock",       // The selector to trigger an add block action on
         addOnEvent: "click",            // The event type to trigger an add block action on
         deleteMessage: "Delete?",       // The confirmation message when deleting a block
+        duplicateMessage: "Duplicate",  // The message to display when a duplicate is added
         animationSpeed: 600,            // The speed for block animations
         currentBlocks: [],              // Blocks that should be initialized when creating is object
         predefinedBlocks: [],           // Data to add for new blocks if the identifier matches a key.
+        preventDuplicates: false,       // Can the same block be added more than once?
         sortable: false,                // Enable jQuery-ui drag-drop sorting
+        orderName: 'order',             // Name of the variable used to hold sortable block order
     }
     _.settings = $.extend({}, _.defaults, settings);
 
@@ -197,8 +201,16 @@ CustomBlocks.prototype.init = function() {
             var identifier = $(this).val();
             if (!identifier) return;
 
+            if (_.settings.preventDuplicates && _.identifiers.includes(identifier)) {
+                alert(_.settings.duplicateMessage);
+                return;
+            }
+
             var data = _.settings.predefinedBlocks[identifier] || {};
+            data.identifier = identifier;
+
             _.addBlock(data);
+            _.identifiers.push(identifier);
         });
     });
 
@@ -209,7 +221,13 @@ CustomBlocks.prototype.init = function() {
             handle: ".sortHandle",
         }).bind('sortstart', function(event, ui) {
             $(_.container).trigger('hideAll');
+
+            // Suspend the TinyMCE editors before sorting
+            $('textarea.tinymce', _.container).each(function(index, element) {
+                tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
+            });
         });
+        
         $(_.blockTemplate).prepend('<div class="sortHandle floatLeft"></div>');
     }
 
@@ -236,6 +254,11 @@ CustomBlocks.prototype.init = function() {
                 $(button).addClass('showHidden');
                 $('img', button).prop('src', $(button).data('on'));
                 block.find('.showHide').show();
+
+                // Restart any TinyMCE editors that are not active
+                $('textarea.tinymce', _.container).each(function(index, element) {
+                    tinymce.EditorManager.execCommand('mceAddEditor', false, $(this).prop("id"));
+                });
             }
         })
         .on('hideAll', function(event, block, button) {
@@ -255,7 +278,7 @@ CustomBlocks.prototype.addBlock = function(data) {
     _.blockCount++;
 
     var block = $(_.blockTemplate).clone().css("display", "block").appendTo($(".blocks", _.container));
-    $(block).append('<input type="hidden" name="order[]" value="'+_.blockCount+'" />');
+    $(block).append('<input type="hidden" name="'+_.settings.orderName+'[]" value="'+_.blockCount+'" />');
 
     _.initBlock(block, data);
     _.refresh();
@@ -265,6 +288,9 @@ CustomBlocks.prototype.removeBlock = function(block) {
     var _ = this;
 
     _.blockCount--;
+
+    var index = _.identifiers.indexOf(block.identifier);
+    if (index !== -1) _.identifiers.splice(index, 1);
 
     _.removeBlockValidation(block);
 
@@ -278,6 +304,7 @@ CustomBlocks.prototype.initBlock = function(block, data) {
     var _ = this;
 
     block.blockNumber = _.blockCount;
+    block.identifier = data.identifier;
 
     _.loadBlockInputData(block, data);
     _.renameBlockFields(block);
@@ -290,6 +317,7 @@ CustomBlocks.prototype.loadBlockInputData = function(block, data) {
 
     for (key in data) {
         $("[name='"+key+"']", block).val(data[key]);
+        $("label[for='"+key+"']", block).html(data[key]);
     }
 
     var readonly = data.readonly || [];
@@ -303,7 +331,7 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
     var _ = this;
 
     $("input, textarea, select", block).each(function(index, element) {
-        if ($(this).prop("name") == 'order[]') return;
+        if ($(this).prop("name") == _.settings.orderName+'[]') return;
 
         var name;
         switch(_.settings.inputNameStrategy) {
@@ -318,6 +346,14 @@ CustomBlocks.prototype.renameBlockFields = function(block) {
 
     $("label", block).each(function(index, element) {
         $(this).prop("for", $(this).prop("for")+block.blockNumber);
+    });
+
+    // Initialize any textareas tagged as tinymce using an AJAX load to grab a full editor
+    $("textarea.tinymce", block).each(function (index, element) {
+        var data = { id: $(this).prop("id"), value: $(this).val() };
+        $(this).parent().load('./modules/Planner/planner_add_editorAjax.php', data, function(responseText, textStatus, jqXHR) { 
+            tinymce.EditorManager.execCommand('mceAddEditor', false, data.id);
+        });
     });
 };
 
@@ -343,6 +379,10 @@ CustomBlocks.prototype.removeBlockValidation = function(block) {
             var id = $(this).prop("id");
             eval("block."+id+"Validate.destroy();");
         }
+    });
+
+    $('textarea.tinymce', block).each(function(index, element) {
+        tinymce.EditorManager.execCommand('mceRemoveEditor', false, $(this).prop("id"));
     });
 };
 
