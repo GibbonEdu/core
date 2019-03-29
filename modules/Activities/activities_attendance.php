@@ -195,13 +195,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
             echo '</div>';
         }
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID)->setClass('');
-        $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'div');
+        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_attendanceProcess.php?gibbonActivityID='.$gibbonActivityID);
+        $form->setClass('blank w-full');
 
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonPersonID', $_SESSION[$guid]['gibbonPersonID']);
 
-        $row = $form->addRow()->addClass('doublescroll-wrapper');
+        $row = $form->addRow('doublescroll-wrapper')->addClass('doublescroll-wrapper smallIntBorder');
 
         // Headings as a separate table (for double-scroll)
         $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');

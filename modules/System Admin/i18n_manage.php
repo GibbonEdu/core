@@ -67,7 +67,7 @@ if (isActionAccessible($guid, $connection2, '/modules/System Admin/i18n_manage.p
 
     $form->setClass('fullWidth');
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
-    $form->getRenderer()->setWrapper('form', 'div')->setWrapper('row', 'div')->setWrapper('cell', 'fieldset');
+    $form->setClass('w-full blank');
 
     // DATA TABLE
     $table = $form->addRow()->addDataTable('i18n', $criteria)->withData($languages);

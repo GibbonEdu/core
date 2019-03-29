@@ -60,10 +60,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_paym
 
         $form = Form::create('generateInvoices', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/activities_paymentProcessBulk.php');
         $form->addConfirmation(__('Are you sure you wish to process this action? It cannot be undone.'));
-
-        $form->getRenderer()->setWrapper('form', 'div');
-        $form->getRenderer()->setWrapper('row', 'div');
-        $form->getRenderer()->setWrapper('cell', 'fieldset');
+        $form->setClass('w-full blank');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         
         $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID']);

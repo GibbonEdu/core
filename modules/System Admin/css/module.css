@@ -22,11 +22,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 	color: #666666;
 }
 
-table.blank td::first-line {
-	font-size: 115%;
-	font-weight: bold;
-}
-
 tr.error td {
 	border-top: 1px solid #F8E4E2;
 	border-bottom: 1px solid #E7B7B2;

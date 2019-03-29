@@ -566,7 +566,7 @@ table tr.even > td {
 	background: -webkit-gradient(linear, left top, left bottom, from(#f2f2f2), to(#f0f0f0));
 	background: -moz-linear-gradient(top,  #f2f2f2,  #f0f0f0);
 }
-table tr:last-child td {
+table tr:last-child > td {
 	border-bottom:0;
 
 }
@@ -649,17 +649,19 @@ table.mini td {
 table.mini tr.head th {
 	padding: 5px!important ;
 }
-table.blank, table.blank tr {
+
+table.blank, table.blank > tbody > tr {
 	border: none!important ;
 	padding: 0px!important ;
 	background: none!important ;
-	box-shadow: none;!important
+    box-shadow: none!important;
 }
-table.blank td {
+table.blank > tbody > tr > td {
 	border: none!important ;
-	padding: 1px!important ;
+	padding: 0px!important ;
 	background: none!important ;
 }
+
 table.mceToolbar td, table.mceToolbar tr {
 	padding: 0px!important ;
 	background: none;
