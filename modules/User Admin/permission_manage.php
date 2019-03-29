@@ -109,15 +109,11 @@ if (isActionAccessible($guid, $connection2, '/modules/User Admin/permission_mana
         $permissionsArray = ($resultPermissions->rowCount() > 0)? $resultPermissions->fetchAll() : array();
         $totalCount = 0;
 
-        $form = Form::create('action', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/permission_manageProcess.php');
+        $form = Form::create('permissions', $_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module'].'/permission_manageProcess.php');
+        $form->setClass('w-full blank');
         $form->addHiddenValue('address', $_SESSION[$guid]['address']);
         $form->addHiddenValue('gibbonModuleID', $gibbonModuleID);
         $form->addHiddenValue('gibbonRoleID', $gibbonRoleID);
-
-        // To render the form as multiple tables
-        $form->getRenderer()->setWrapper('form', 'div');
-        $form->getRenderer()->setWrapper('row', 'div');
-        $form->getRenderer()->setWrapper('cell', 'div');
 
         while ($rowModules = $resultModules->fetch()) {
             $form->addRow()->addHeading(__($rowModules['name']));
