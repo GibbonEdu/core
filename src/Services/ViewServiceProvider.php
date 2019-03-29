@@ -22,6 +22,8 @@ namespace Gibbon\Services;
 use Gibbon\Forms\Form;
 use Gibbon\Forms\FormFactory;
 use Gibbon\Forms\View\FormView;
+use Gibbon\Tables\DataTable;
+use Gibbon\Tables\Renderer\DataTableView;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Gibbon\Forms\View\FormRendererInterface;
 use Gibbon\Forms\FormFactoryInterface;
@@ -46,6 +48,7 @@ class ViewServiceProvider extends AbstractServiceProvider
         Form::class,
         FormRendererInterface::class,
         FormFactoryInterface::class,
+        DataTable::class,
     ];
 
     /**
@@ -71,6 +74,12 @@ class ViewServiceProvider extends AbstractServiceProvider
 
         $container->add(FormFactoryInterface::class, function () {
             return new FormFactory();
+        });
+        
+        $container->add(DataTable::class, function () use ($container) {
+            $renderer = new DataTableView($container->get('twig'));
+
+            return new DataTable($renderer);
         });
     }
 }

@@ -57,9 +57,8 @@ class DataTable implements OutputableInterface
      * @param string $id
      * @param RendererInterface $renderer
      */
-    public function __construct($id, RendererInterface $renderer = null)
+    public function __construct(RendererInterface $renderer = null)
     {
-        $this->id = $id;
         $this->renderer = $renderer;
     }
 
@@ -72,7 +71,7 @@ class DataTable implements OutputableInterface
      */
     public static function create($id, RendererInterface $renderer = null)
     {
-        return new static($id, $renderer ? $renderer : new SimpleRenderer());
+        return (new static($renderer ? $renderer : new SimpleRenderer()))->setID($id);
     }
 
     /**
@@ -84,7 +83,7 @@ class DataTable implements OutputableInterface
      */
     public static function createPaginated($id, QueryCriteria $criteria)
     {
-        return new static($id, new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET)));
+        return (new static(new PaginatedRenderer($criteria, '/fullscreen.php?'.http_build_query($_GET))))->setID($id);
     }
 
     /**
