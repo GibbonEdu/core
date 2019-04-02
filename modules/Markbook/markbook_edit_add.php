@@ -115,14 +115,13 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
 
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
                 $sql = "SELECT gibbonUnit.gibbonUnitID as value, gibbonUnit.name FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE running='Y' AND gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
-                $hookedUnits = getHookedUnits($pdo, $gibbonCourseClassID);
 
                 $row = $form->addRow();
                     $row->addLabel('gibbonUnitID', __('Unit'));
-                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->fromArray($hookedUnits)->placeholder()->selected($gibbonUnitID);
+                    $units = $row->addSelect('gibbonUnitID')->fromQuery($pdo, $sql, $data)->placeholder()->selected($gibbonUnitID);
 
                 $data = array('gibbonCourseClassID' => $gibbonCourseClassID);
-                $sql = "SELECT (CASE WHEN gibbonHookID IS NOT NULL THEN CONCAT(gibbonHookID, '-', gibbonUnitID) ELSE gibbonUnitID END) as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
+                $sql = "SELECT gibbonUnitID as chainedTo, gibbonPlannerEntryID as value, name FROM gibbonPlannerEntry WHERE gibbonCourseClassID=:gibbonCourseClassID ORDER BY name";
                 $row = $form->addRow();
                     $row->addLabel('gibbonPlannerEntryID', __('Lesson'));
                     $row->addSelect('gibbonPlannerEntryID')->fromQueryChained($pdo, $sql, $data, 'gibbonUnitID')->placeholder()->selected($gibbonPlannerEntryID);
@@ -163,7 +162,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                     $sql = "SELECT gibbonSchoolYearTermID FROM gibbonSchoolYearTerm WHERE gibbonSchoolYearID=:gibbonSchoolYearID AND :date BETWEEN firstDay AND lastDay ORDER BY sequenceNumber";
                     $result = $pdo->executeQuery($data, $sql);
                     $currentTerm = ($result->rowCount() > 0)? $result->fetchColumn(0) : '';
-                    
+
                     $form->addRow()->addHeading(__('Term Date'));
 
                     $row = $form->addRow();
@@ -184,7 +183,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $attainmentScaleLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Scale') : __('Attainment Scale');
                 $attainmentRawMaxLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Total Mark') : __('Attainment Total Mark');
                 $attainmentWeightingLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Weighting') : __('Attainment Weighting');
-                $attainmentRubricLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Rubric') : __('Attainment Rubric'); 
+                $attainmentRubricLabel = !empty($attainmentAltName)? $attainmentAltName.' '.__('Rubric') : __('Attainment Rubric');
 
                 $row = $form->addRow();
                     $row->addLabel('attainment', $attainmentLabel);
@@ -195,7 +194,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 $row = $form->addRow()->addClass('attainmentRow');
                     $row->addLabel('gibbonScaleIDAttainment', $attainmentScaleLabel);
                     $row->addSelectGradeScale('gibbonScaleIDAttainment')->required()->selected($_SESSION[$guid]['defaultAssessmentScale']);
-                    
+
                 if ($enableRawAttainment == 'Y') {
                     $row = $form->addRow()->addClass('attainmentRow');
                         $row->addLabel('attainmentRawMax', $attainmentRawMaxLabel)->description(__('Leave blank to omit raw marks.'));
@@ -218,7 +217,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit_add
                 if ($enableEffort == 'Y') {
                     $effortLabel = !empty($effortAltName)? sprintf(__('Assess %1$s?'), $effortAltName) : __('Assess Effort?');
                     $effortScaleLabel = !empty($effortAltName)? $effortAltName.' '.__('Scale') : __('Effort Scale');
-                    $effortRubricLabel = !empty($effortAltName)? $effortAltName.' '.__('Rubric') : __('Effort Rubric'); 
+                    $effortRubricLabel = !empty($effortAltName)? $effortAltName.' '.__('Rubric') : __('Effort Rubric');
 
                     $row = $form->addRow();
                         $row->addLabel('effort', $effortLabel);

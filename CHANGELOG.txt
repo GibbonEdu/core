@@ -62,6 +62,7 @@ v18.0.00
     Deprecations
         Planner: removed Unit embed feature
         Planner: removed Smart Block to Lesson outcome mapping
+        Planner: removed Unit hook feature
 
 v17.0.00
 --------
