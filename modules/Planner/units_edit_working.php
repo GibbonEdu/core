@@ -158,30 +158,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             ++$blockCount;
                         }
 
-                        //Store STAR BLOCKS in array
-                        $blocks2 = array();
-                        try {
-                            $dataBlocks2 = array('gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                            $sqlBlocks2 = 'SELECT * FROM gibbonUnitBlockStar JOIN gibbonUnitBlock ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonPersonID=:gibbonPersonID ORDER BY title';
-                            $resultBlocks2 = $connection2->prepare($sqlBlocks2);
-                            $resultBlocks2->execute($dataBlocks2);
-                        } catch (PDOException $e) {
-                            echo "<div class='error'>".$e->getMessage().'</div>';
-                        }
-                        $blockCount2 = 0;
-                        while ($rowBlocks2 = $resultBlocks2->fetch()) {
-                            $blocks2[$blockCount2][0] = $rowBlocks2['gibbonUnitBlockID'];
-                            $blocks2[$blockCount2][1] = $rowBlocks2['title'];
-                            $blocks2[$blockCount2][2] = $rowBlocks2['type'];
-                            $blocks2[$blockCount2][3] = $rowBlocks2['length'];
-                            $blocks2[$blockCount2][4] = $rowBlocks2['contents'];
-                            $blocks2[$blockCount2][5] = $rowBlocks2['teachersNotes'];
-                            ++$blockCount2;
-                        }
+
 
                         echo "<form method='post' action='".$_SESSION[$guid]['absoluteURL'].'/modules/'.$_SESSION[$guid]['module']."/units_edit_workingProcess.php?gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&address=".$_GET['q']."&gibbonUnitClassID=$gibbonUnitClassID'>";
-                            //LESSONS (SORTABLES)
-                            echo "<div class='linkTop'>";
+                        //LESSONS (SORTABLES)
+                        echo "<div class='linkTop'>";
                         echo "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.$_SESSION[$guid]['module']."/units_edit_working_add.php&gibbonUnitID=$gibbonUnitID&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID'>".__('Add')."<img style='margin-left: 5px' title='".__('Add')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/page_new.png'/></a>";
                         echo '</div>';
                         echo "<div style='width: 100%; height: auto'>";
@@ -251,18 +232,11 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                                 echo '</script>';
                                 echo "<select name='blockAdd$i' id='blockAdd$i' style='width: 150px'>";
                                 echo "<option value=''></option>";
-                                echo "<optgroup label='--".__('Unit Blocks')."--'>";
                                 $blockSelectCount = 0;
                                 foreach ($blocks as $block) {
                                     echo "<option value='".$block[0]."'>".($blockSelectCount + 1).') '.htmlPrep($block[1]).'</option>';
                                     ++$blockSelectCount;
                                 }
-                                echo '</optgroup>';
-                                echo "<optgroup label='--".__('Star Blocks')."--'>";
-                                foreach ($blocks2 as $block2) {
-                                    echo "<option value='".$block2[0]."'>".htmlPrep($block2[1]).'</option>';
-                                }
-                                echo '</optgroup>';
                                 echo '</select>';
                                 echo '</div>';
                                 echo '</div>';
