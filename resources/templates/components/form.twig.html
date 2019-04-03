@@ -26,7 +26,7 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             {% if element.getType == "Gibbon\\Forms\\Layout\\Label" %}
                 {% set class = 'flex flex-col flex-grow justify-center' %}
             {% else %}
-                {% set class = loop.last and loop.length > 1 ? 'w-full sm:w-1/2 md:w-2/5' : 'w-full' %}
+                {% set class = loop.last and loop.length > 1 ? 'w-full max-w-full sm:max-w-sm' : 'flex-grow' %}  
             {% endif %}
 
             <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }}" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
