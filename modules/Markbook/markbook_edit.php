@@ -207,7 +207,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Markbook/markbook_edit.php
                         echo "<tr class=$rowNum>";
                         echo '<td>';
                         echo '<b>'.$row['name'].'</b><br/>';
-                        $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonHookID'], $row['gibbonCourseClassID']);
+                        $unit = getUnit($connection2, $row['gibbonUnitID'], $row['gibbonCourseClassID']);
                         if (isset($unit[0])) {
                             echo $unit[0];
                         }

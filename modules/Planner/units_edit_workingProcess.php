@@ -26,16 +26,6 @@ $gibbonUnitID = $_GET['gibbonUnitID'];
 $gibbonUnitClassID = $_GET['gibbonUnitClassID'];
 $orders = $_POST['order'];
 
-//IF UNIT DOES NOT CONTAIN HYPHEN, IT IS A GIBBON UNIT
-$gibbonUnitID = $_GET['gibbonUnitID'];
-if (strpos($gibbonUnitID, '-') == false) {
-    $hooked = false;
-} else {
-    $hooked = true;
-    $gibbonHookIDToken = substr($gibbonUnitID, 11);
-    $gibbonUnitIDToken = substr($gibbonUnitID, 0, 10);
-}
-
 $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/'.getModuleName($_GET['address'])."/units_edit_working.php&gibbonSchoolYearID=$gibbonSchoolYearID&gibbonCourseID=$gibbonCourseID&gibbonUnitID=$gibbonUnitID&gibbonCourseClassID=$gibbonCourseClassID&gibbonUnitClassID=$gibbonUnitClassID";
 
 if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working.php') == false) {
@@ -75,44 +65,15 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                 header("Location: {$URL}");
             } else {
                 //Check existence of specified unit
-                if ($hooked == false) {
-                    try {
-                        $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
-                        $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
-                        $result = $connection2->prepare($sql);
-                        $result->execute($data);
-                    } catch (PDOException $e) {
-                        $URL .= '&deployReturn=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-                } else {
-                    try {
-                        $dataHooks = array('gibbonHookID' => $gibbonHookIDToken);
-                        $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name";
-                        $resultHooks = $connection2->prepare($sqlHooks);
-                        $resultHooks->execute($dataHooks);
-                    } catch (PDOException $e) {
-                        $URL .= '&deployReturn=error2';
-                        header("Location: {$URL}");
-                        exit();
-                    }
-                    if ($resultHooks->rowCount() == 1) {
-                        $rowHooks = $resultHooks->fetch();
-                        $hookOptions = unserialize($rowHooks['options']);
-                        if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                            try {
-                                $data = array('unitIDField' => $gibbonUnitIDToken);
-                                $sql = 'SELECT '.$hookOptions['unitTable'].'.*, gibbonCourse.nameShort FROM '.$hookOptions['unitTable'].' JOIN gibbonCourse ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitCourseIDField'].'=gibbonCourse.gibbonCourseID) WHERE '.$hookOptions['unitIDField'].'=:unitIDField';
-                                $result = $connection2->prepare($sql);
-                                $result->execute($data);
-                            } catch (PDOException $e) {
-                                $URL .= '&deployReturn=error2';
-                                header("Location: {$URL}");
-                                exit();
-                            }
-                        }
-                    }
+                try {
+                    $data = array('gibbonUnitID' => $gibbonUnitID, 'gibbonCourseID' => $gibbonCourseID);
+                    $sql = 'SELECT gibbonCourse.nameShort AS courseName, gibbonUnit.* FROM gibbonUnit JOIN gibbonCourse ON (gibbonUnit.gibbonCourseID=gibbonCourse.gibbonCourseID) WHERE gibbonUnitID=:gibbonUnitID AND gibbonUnit.gibbonCourseID=:gibbonCourseID';
+                    $result = $connection2->prepare($sql);
+                    $result->execute($data);
+                } catch (PDOException $e) {
+                    $URL .= '&deployReturn=error2';
+                    header("Location: {$URL}");
+                    exit();
                 }
 
                 if ($result->rowCount() != 1) {
@@ -123,13 +84,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
 
                     //Remove all blocks
                     try {
-                        if ($hooked == false) {
-                            $data = array('gibbonUnitClassID' => $gibbonUnitClassID);
-                            $sql = 'DELETE FROM gibbonUnitClassBlock WHERE gibbonUnitClassID=:gibbonUnitClassID';
-                        } else {
-                            $data = array('gibbonUnitClassID' => $gibbonUnitClassID);
-                            $sql = 'DELETE FROM '.$hookOptions['classSmartBlockTable'].' WHERE '.$hookOptions['classSmartBlockJoinField'].'=:gibbonUnitClassID';
-                        }
+                        $data = array('gibbonUnitClassID' => $gibbonUnitClassID);
+                        $sql = 'DELETE FROM gibbonUnitClassBlock WHERE gibbonUnitClassID=:gibbonUnitClassID';
                         $result = $connection2->prepare($sql);
                         $result->execute($data);
                     } catch (PDOException $e) {
@@ -171,13 +127,8 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/units_edit_working
                             $gibbonUnitBlockID = $_POST['gibbonUnitBlockID'.$order];
 
                             try {
-                                if ($hooked == false) {
-                                    $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'complete' => $completes, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
-                                    $sql = 'INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, complete=:complete, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
-                                } else {
-                                    $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'complete' => $completes, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
-                                    $sql = 'INSERT INTO '.$hookOptions['classSmartBlockTable'].' SET '.$hookOptions['classSmartBlockJoinField'].'=:gibbonUnitClassID, '.$hookOptions['classSmartBlockPlannerJoin'].'=:gibbonPlannerEntryID, '.$hookOptions['classSmartBlockUnitBlockJoinField'].'=:gibbonUnitBlockID, '.$hookOptions['classSmartBlockTitleField'].'=:title, '.$hookOptions['classSmartBlockTypeField'].'=:type, '.$hookOptions['classSmartBlockLengthField'].'=:length, '.$hookOptions['classSmartBlockCompleteField'].'=:complete, '.$hookOptions['classSmartBlockContentsField'].'=:contents, '.$hookOptions['classSmartBlockTeachersNotesField'].'=:teachersNotes, '.$hookOptions['classSmartBlockSequenceNumberField'].'=:sequenceNumber';
-                                }
+                                $data = array('gibbonUnitClassID' => $gibbonUnitClassID, 'gibbonPlannerEntryID' => $AI, 'gibbonUnitBlockID' => $gibbonUnitBlockID, 'title' => $titles, 'type' => $types, 'length' => $lengths, 'complete' => $completes, 'contents' => $contents, 'teachersNotes' => $teachersNotes, 'sequenceNumber' => $sequenceNumber);
+                                $sql = 'INSERT INTO gibbonUnitClassBlock SET gibbonUnitClassID=:gibbonUnitClassID, gibbonPlannerEntryID=:gibbonPlannerEntryID, gibbonUnitBlockID=:gibbonUnitBlockID, title=:title, type=:type, length=:length, complete=:complete, contents=:contents, teachersNotes=:teachersNotes, sequenceNumber=:sequenceNumber';
                                 $result = $connection2->prepare($sql);
                                 $result->execute($data);
                             } catch (PDOException $e) {

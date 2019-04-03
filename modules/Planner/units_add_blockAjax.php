@@ -39,36 +39,11 @@ $gibbonUnitID = null;
 if (isset($_GET['gibbonUnitID'])) {
     $gibbonUnitID = $_GET['gibbonUnitID'];
 }
-if (strpos($gibbonUnitID, '-') == false) {
-    $hooked = false;
-} else {
-    $hooked = true;
-    $gibbonHookIDToken = substr($gibbonUnitID, 11);
-    $gibbonUnitIDToken = substr($gibbonUnitID, 0, 10);
-}
 
 if ($gibbonUnitBlockID != '') {
     try {
-        if ($hooked == false) {
-            $data = array('gibbonUnitBlockID' => $gibbonUnitBlockID);
-            $sql = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
-        } else {
-            try {
-                $dataHooks = array('gibbonHookID' => $gibbonHookIDToken);
-                $sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' AND gibbonHookID=:gibbonHookID ORDER BY name";
-                $resultHooks = $connection2->prepare($sqlHooks);
-                $resultHooks->execute($dataHooks);
-            } catch (PDOException $e) {
-            }
-            if ($resultHooks->rowCount() == 1) {
-                $rowHooks = $resultHooks->fetch();
-                $hookOptions = unserialize($rowHooks['options']);
-                if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-                    $data = array('unitSmartBlockIDField' => $gibbonUnitBlockID);
-                    $sql = 'SELECT * FROM '.$hookOptions['unitSmartBlockTable'].' WHERE '.$hookOptions['unitSmartBlockIDField'].'=:unitSmartBlockIDField';
-                }
-            }
-        }
+        $data = array('gibbonUnitBlockID' => $gibbonUnitBlockID);
+        $sql = 'SELECT * FROM gibbonUnitBlock WHERE gibbonUnitBlockID=:gibbonUnitBlockID';
         $result = $connection2->prepare($sql);
         $result->execute($data);
     } catch (PDOException $e) {
@@ -76,19 +51,11 @@ if ($gibbonUnitBlockID != '') {
     }
     if ($result->rowCount() == 1) {
         $row = $result->fetch();
-        if ($hooked == false) {
-            $title = $row['title'];
-            $type = $row['type'];
-            $length = $row['length'];
-            $contents = $row['contents'];
-            $teachersNotes = $row['teachersNotes'];
-        } else {
-            $title = $row[$hookOptions['unitSmartBlockTitleField']];
-            $type = $row[$hookOptions['unitSmartBlockTypeField']];
-            $length = $row[$hookOptions['unitSmartBlockLengthField']];
-            $contents = $row[$hookOptions['unitSmartBlockContentsField']];
-            $teachersNotes = $row[$hookOptions['unitSmartBlockTeachersNotesField']];
-        }
+        $title = $row['title'];
+        $type = $row['type'];
+        $length = $row['length'];
+        $contents = $row['contents'];
+        $teachersNotes = $row['teachersNotes'];
     }
 } else {
     $title = '';
