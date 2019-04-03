@@ -82,14 +82,6 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 						$('#block<?php echo $i ?>').fadeOut(600, function(){ $('#block<?php echo $i ?>').remove(); });
 					}
 				});
-
-				$('#star<?php echo $i ?>').unbind('click').click(function() {
-					$("#starBox<?php echo $i ?>").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php echo $_SESSION[$guid]['gibbonPersonID'] ?>", "gibbonUnitBlockID": "<?php echo $gibbonUnitBlockID ?>", "action": "star", "i": "<?php echo $i ?>" }) ;
-				});
-
-				$('#unstar<?php echo $i ?>').unbind('click').click(function() {
-					$("#starBox<?php echo $i ?>").load("<?php echo $_SESSION[$guid]['absoluteURL'] ?>/modules/Planner/units_edit_starAjax.php",{"gibbonPersonID": "<?php echo $_SESSION[$guid]['gibbonPersonID'] ?>", "gibbonUnitBlockID": "<?php echo $gibbonUnitBlockID ?>", "action": "unstar", "i": "<?php echo $i ?>" }) ;
-				});
 			});
 		</script>
 		<?php
@@ -108,42 +100,11 @@ function makeBlock($guid, $connection2, $i, $mode = 'masterAdd', $title = '', $t
 				<td style='text-align: right; width: 50%'>
 					<div style='margin-bottom: 5px'>
 						<?php
-                        if ($mode == 'masterEdit') {
-                            //Check if starred
-                            try {
-                                $dataCheck = array('gibbonUnitBlockID' => $gibbonUnitBlockID, 'gibbonPersonID' => $_SESSION[$guid]['gibbonPersonID']);
-                                $sqlCheck = 'SELECT * FROM gibbonUnitBlockStar WHERE gibbonPersonID=:gibbonPersonID AND gibbonUnitBlockID=:gibbonUnitBlockID';
-                                $resultCheck = $connection2->prepare($sqlCheck);
-                                $resultCheck->execute($dataCheck);
-                            } catch (PDOException $e) {
-                            }
-                            if ($resultCheck->rowCount() == 1) {
-                                echo "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='unstar$i' title='".__('Unstar')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'/></div> ";
-                            } else {
-                                echo "<div style='float: right; margin-top: -2px' id='starBox$i'><img id='star$i' title='".__('Star')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_off.png'/></div> ";
-                            }
-                        }
-						if ($mode != 'plannerEdit' and $mode != 'embed') {
+                        if ($mode != 'plannerEdit' and $mode != 'embed') {
 							echo "<img style='margin-top: 2px' id='delete$i' title='".__('Delete')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/garbage.png'/> ";
 						}
 						if ($mode == 'workingEdit') {
-							//Check that block is still connected to master (poor design in original smart units means that they might be disconnected, and so copyback will not work.
-                            try {
-                                $dataCheck = array('gibbonUnitBlockID' => $gibbonUnitBlockID, 'gibbonUnitClassBlockID' => $gibbonUnitClassBlockID);
-                                $sqlCheck = 'SELECT * FROM gibbonUnitBlock JOIN gibbonUnitClassBlock ON (gibbonUnitClassBlock.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) LEFT JOIN gibbonUnitBlockStar ON (gibbonUnitBlockStar.gibbonUnitBlockID=gibbonUnitBlock.gibbonUnitBlockID) WHERE gibbonUnitClassBlockID=:gibbonUnitClassBlockID AND gibbonUnitBlock.gibbonUnitBlockID=:gibbonUnitBlockID';
-                                $resultCheck = $connection2->prepare($sqlCheck);
-                                $resultCheck->execute($dataCheck);
-                            } catch (PDOException $e) {
-                                echo "<div class='error'>".$e->getMessage().'</div>';
-                            }
-							if ($resultCheck->rowCount() == 1) {
-								$rowCheck = $resultCheck->fetch();
-								if (is_null($rowCheck['gibbonUnitBlockStarID'])) {
-									echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$_GET['gibbonUnitClassID']."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
-								} else {
-									echo "<img style='margin-left: -2px; margin-right: 2px' title='".__('This is a Star Block')."' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/like_on.png'/> ";
-								}
-							}
+                            echo "<a onclick='return confirm(\"".__('Are you sure you want to leave this page? Any unsaved changes will be lost.')."\")' style='margin-right: 2px; font-weight: normal; font-style: normal; color: #fff' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Planner/units_edit_working_copyback.php&gibbonSchoolYearID='.$_GET['gibbonSchoolYearID'].'&gibbonCourseID='.$_GET['gibbonCourseID'].'&gibbonCourseClassID='.$_GET['gibbonCourseClassID'].'&gibbonUnitID='.$_GET['gibbonUnitID']."&gibbonUnitBlockID=$gibbonUnitBlockID&gibbonUnitClassBlockID=$gibbonUnitClassBlockID&gibbonUnitClassID=".$_GET['gibbonUnitClassID']."'><img id='copyback$i' title='Copy Back' src='./themes/".$_SESSION[$guid]['gibbonThemeName']."/img/copyback.png'/></a>";
 						}
 						if ($mode != 'embed') {
 							echo "<div title='".__('Show/Hide Details')."' id='show$i' style='margin-right: 3px; margin-top: 3px; margin-left: 3px; padding-right: 1px; float: right; width: 25px; height: 25px; background-image: url(\"".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/plus.png\"); background-repeat: no-repeat'></div></br>";

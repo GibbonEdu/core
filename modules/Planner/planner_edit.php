@@ -144,6 +144,7 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 
                 //Get gibbonUnitClassID
                 $gibbonUnitID = $row['gibbonUnitID'];
+                $gibbonUnitClassID = null;
                 try {
                     $dataUnitClass = array('gibbonCourseClassID' => $row['gibbonCourseClassID'], 'gibbonUnitID' => $gibbonUnitID);
                     $sqlUnitClass = 'SELECT gibbonUnitClassID FROM gibbonUnitClass WHERE gibbonCourseClassID=:gibbonCourseClassID AND gibbonUnitID=:gibbonUnitID';
@@ -216,7 +217,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 								<select name="gibbonUnitID" id="gibbonUnitID" class="standardWidth">
 									<?php
                                     echo "<option value=''></option>";
-									echo "<optgroup label='--".__('Gibbon Units')."--'>";
 									try {
 										$dataSelect = array();
 										$sqlSelect = "SELECT * FROM gibbonUnit JOIN gibbonUnitClass ON (gibbonUnit.gibbonUnitID=gibbonUnitClass.gibbonUnitID) WHERE active='Y' AND running='Y' ORDER BY name";
@@ -231,43 +231,6 @@ if (isActionAccessible($guid, $connection2, '/modules/Planner/planner_edit.php')
 										}
 										echo "<option $selected class='".$rowSelect['gibbonCourseClassID']."' value='".$rowSelect['gibbonUnitID']."'>".htmlPrep($rowSelect['name']).'</option>';
 									}
-									echo '</optgroup>';
-
-                                    //List any hooked units
-                                    $lastType = '';
-									$currentType = '';
-									try {
-										$dataHooks = array();
-										$sqlHooks = "SELECT * FROM gibbonHook WHERE type='Unit' ORDER BY name";
-										$resultHooks = $connection2->prepare($sqlHooks);
-										$resultHooks->execute($dataHooks);
-									} catch (PDOException $e) {
-									}
-									while ($rowHooks = $resultHooks->fetch()) {
-										$hookOptions = unserialize($rowHooks['options']);
-										if ($hookOptions['unitTable'] != '' and $hookOptions['unitIDField'] != '' and $hookOptions['unitCourseIDField'] != '' and $hookOptions['unitNameField'] != '' and $hookOptions['unitDescriptionField'] != '' and $hookOptions['classLinkTable'] != '' and $hookOptions['classLinkJoinFieldUnit'] != '' and $hookOptions['classLinkJoinFieldClass'] != '' and $hookOptions['classLinkIDField'] != '') {
-											try {
-												$dataHookUnits = array('gibbonCourseClassID' => $gibbonCourseClassID);
-												$sqlHookUnits = 'SELECT * FROM '.$hookOptions['unitTable'].' JOIN '.$hookOptions['classLinkTable'].' ON ('.$hookOptions['unitTable'].'.'.$hookOptions['unitIDField'].'='.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkJoinFieldUnit'].') WHERE '.$hookOptions['classLinkJoinFieldClass'].'=:gibbonCourseClassID ORDER BY '.$hookOptions['classLinkTable'].'.'.$hookOptions['classLinkIDField'];
-												$resultHookUnits = $connection2->prepare($sqlHookUnits);
-												$resultHookUnits->execute($dataHookUnits);
-											} catch (PDOException $e) {
-											}
-											while ($rowHookUnits = $resultHookUnits->fetch()) {
-												$selected = '';
-												if ($rowHookUnits[$hookOptions['unitIDField']] == $row['gibbonUnitID'] and $rowHooks['gibbonHookID'] == $row['gibbonHookID'] and $rowHookUnits[$hookOptions['classLinkJoinFieldClass']] == $row['gibbonCourseClassID']) {
-													$selected = 'selected';
-												}
-												$currentType = $rowHooks['name'];
-												if ($currentType != $lastType) {
-													echo "<optgroup label='--".$currentType."--'>";
-												}
-												echo "<option $selected class='".$rowHookUnits[$hookOptions['classLinkJoinFieldClass']]."' value='".$rowHookUnits[$hookOptions['unitIDField']].'-'.$rowHooks['gibbonHookID']."'>".htmlPrep($rowHookUnits[$hookOptions['unitNameField']]).'</option>';
-												$lastType = $currentType;
-											}
-										}
-									}
-
                 				?>
 								</select>
 								<script type="text/javascript">

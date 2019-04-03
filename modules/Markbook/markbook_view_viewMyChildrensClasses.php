@@ -294,7 +294,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                                 echo '<td>';
                                 echo "<span title='".htmlPrep($rowEntry['description'])."'><b><u>".$rowEntry['name'].'</u></b></span><br/>';
                                 echo "<span style='font-size: 90%; font-style: italic; font-weight: normal'>";
-                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonHookID'], $rowEntry['gibbonCourseClassID']);
+                                $unit = getUnit($connection2, $rowEntry['gibbonUnitID'], $rowEntry['gibbonCourseClassID']);
                                 if (isset($unit[0])) {
                                     echo $unit[0].'<br/>';
                                     if ($unit[1] != '') {

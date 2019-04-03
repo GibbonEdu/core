@@ -60,8 +60,10 @@ v18.0.00
         User Admin: improved interface string consistency
 
     Deprecations
-        Planner: removed Unit embed feature
+        Planner: removed Unit embed
         Planner: removed Smart Block to Lesson outcome mapping
+        Planner: removed Unit hook
+        Planner: removed Star Block
 
 v17.0.00
 --------
