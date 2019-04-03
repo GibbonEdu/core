@@ -1570,7 +1570,10 @@ button, input[type="submit"], input[type="button"] {
 	cursor: pointer;
 }
 
-button.active, input[type="submit"].active, input[type="button"].active {
+button.active {
+    background-color: #dedede;
+}
+input[type="submit"].active, input[type="button"].active {
 	background-color: #bbbbbb;
 }
 

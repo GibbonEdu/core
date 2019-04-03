@@ -19,9 +19,9 @@ TODO: add template variable details.
                 {{ minorLinks|raw }}
             </div>
 
-            <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded overflow-hidden">
+            <div id="wrap" class="mx-auto max-w-6xl m-2 shadow-container rounded">
                 {% block header %}
-                <div id="header" class="bg-white flex justify-between">
+                <div id="header" class="bg-white flex justify-between rounded-t">
                     <div id="header-logo" class="">
                         <a class="block mt-4 mb-2" href="{{ absoluteURL }}">
                             <img alt="Logo" src="{{ absoluteURL }}/{{ organisationLogo|default("/themes/Default/img/logo.png") }}" height="100px" width="400px"/>
@@ -41,27 +41,21 @@ TODO: add template variable details.
 
                 {% endblock %}
 
-                <div id="content-wrap" class="w-full min-h-1/2 flex {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
+                <div id="content-wrap" class="relative w-full min-h-1/2 flex {{ sidebar ? 'flex-wrap lg:flex-no-wrap' : 'flex-col' }} lg:flex-row-reverse bg-transparent-100 clearfix">
 
                     {% if sidebar %}
                         <div id="sidebar" class="w-full lg:w-1/4 px-6 lg:border-l">
-                            {% for code in page.extraSidebar if sidebarPosition != 'bottom' %}
-                                {{ code|raw }}
-                            {% endfor %}
-
-                            {{ sidebarContents|raw }}
+                            
 
                             {{ include('navigation.twig.html') }}
 
-                            {% for code in page.extraSidebar if sidebarPosition == 'bottom' %}
-                                {{ code|raw }}
-                            {% endfor %}
+                            
 
                         </div>
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}" class="w-full {{ sidebar ? 'lg:w-3/4' : '' }} lg:max-w-full px-6 pb-6">
+                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}" class="w-full {{ sidebar ? 'lg:w-3/4' : '' }} lg:max-w-full px-6 pb-6 sm:pt-16 lg:pt-0">
 
                         {% block page %}
 
@@ -70,7 +64,7 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="mt-4 mb-6 text-xs text-blue-700">
+                        <div class="sm:absolute lg:static top-0 my-6 text-xs text-blue-700">
                             {% for title, src in page.breadcrumbs %}
                                 {% if loop.last %}
                                     <span class="trailEnd">{{ title }}</span>
@@ -99,7 +93,7 @@ TODO: add template variable details.
                 </div>
 
                 {% block footer %}
-                <div class="relative bg-transparent-600 text-white text-center text-sm p-6 leading-normal">
+                <div class="relative bg-transparent-600 text-white text-center text-sm p-6 leading-normal rounded-b">
                     <span class="inline-block">
                         {{ __('Powered by') }} <a class="link-white" target='_blank' href='https://gibbonedu.org'>Gibbon</a> {{ versionName }}</span> 
                     <span class="inline-block">|  &#169; <a class="link-white" target='_blank' href='http://rossparker.org'>Ross Parker</a> 2010-{{ 'now'|date('Y') }}</span>
