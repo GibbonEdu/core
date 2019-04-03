@@ -52,7 +52,7 @@ TODO: add template variable details.
                         <br style="clear: both">
                     {% endif %}
 
-                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}" class="w-full {{ sidebar ? 'lg:w-3/4' : '' }} lg:max-w-full px-6 pb-6 sm:pt-16 lg:pt-0">
+                    <div id="{{ not sidebar ? 'content-wide' : 'content' }}" class="w-full {{ sidebar ? 'lg:w-3/4' : '' }} lg:max-w-full px-6 pb-6 pt-6 sm:pt-16 lg:pt-0">
 
                         {% block page %}
 
@@ -61,7 +61,7 @@ TODO: add template variable details.
                         {% endif %}
 
                         {% if page.breadcrumbs %}
-                        <div class="sm:absolute lg:static top-0 my-6 text-xs text-blue-700">
+                        <div class="absolute lg:static top-0 my-6 text-xs text-blue-700">
                             {% for title, src in page.breadcrumbs %}
                                 {% if loop.last %}
                                     <span class="trailEnd">{{ title }}</span>
