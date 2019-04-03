@@ -224,4 +224,17 @@ class StudentGateway extends QueryableGateway
 
         return $this->db()->select($sql, $data);
     }
+
+    public function getStudentEnrolmentCount($gibbonSchoolYearID)
+    {
+        $data = ['gibbonSchoolYearID' => $gibbonSchoolYearID, 'today' => date('Y-m-d')];
+        $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID) 
+                FROM gibbonPerson
+                JOIN gibbonStudentEnrolment ON (gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID)
+                JOIN gibbonRollGroup ON (gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID)
+                WHERE gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID
+                AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today)";
+
+        return $this->db()->selectOne($sql, $data);
+    }
 }

@@ -2111,46 +2111,15 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    $output = false;
-
-    $output .= "<div id='fastFinder'>";
-    $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
-    $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
-    $classIsAccessible = false;
-    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-    if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
-        $classIsAccessible = true;
-    }
-
-    $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 300px; float: right; height: 25px!important; margin-right: -5px; background: #fff; }';
-    $output .= 'div.token-input-dropdown-facebook { width: 298px !important; z-index: 99999999 }';
-    $output .= 'table.fastFinder { margin: 0px 0px; opacity: 0.8; }';
-    $output .= 'table.fastFinder td { border-top: none }';
-    $output .= '.fastFinderTotal { font-size: 9.6px; font-weight: normal; font-style: italic; line-height: 80%; color: #888; }';
-    $output .= '.fastFinderRow td { border-bottom: 0; }';
-    $output .= '#header-finder h2 { padding: 0;}';
-    $output .= '</style>';
-    $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
-
     $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
-    $form->setClass('smallIntBorder fastFinder fullWidth');
+    $form->setClass('blank fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $scopes = array(__('Actions'));
-    if ($classIsAccessible) $scopes[] = __('Classes');
-    if ($studentIsAccessible) $scopes[] = __('Students');
-    if ($staffIsAccessible) $scopes[] = __('Staff');
-
-    $row = $form->addRow()->setClass('right');
-        $row->addContent(__('Fast Finder').': ')
-            ->append(implode(', ', $scopes))
-            ->wrap('<h2>', '</h2>');
-
-    $row = $form->addRow()->addClass('fastFinderRow');
+    $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
+            ->setClass('w-full')
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
@@ -2158,27 +2127,17 @@ function getFastFinder($connection2, $guid)
             ->addValidation('Validate.Presence', 'failureMessage: " "');
         $row->addSubmit(__('Go'));
 
-    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
-            $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID) FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
-            $resultStudentCount = $connection2->prepare($sql);
-            $resultStudentCount->execute($data);
-        } catch (PDOException $e) {}
+    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
-        if ($resultStudentCount->rowCount() > 0) {
-            $form->addRow()->addContent(__('Total Student Enrolment:').' ')
-                ->append($resultStudentCount->fetchColumn(0))
-                ->addClass('right')
-                ->wrap('<span class="fastFinderTotal">', '</span>');
-            }
-        }
+    $templateData = [
+        'roleCategory'        => getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2),
+        'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
+        'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
+        'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+        'form'                => $form->getOutput(),
+    ];
 
-    $output .= $form->getOutput();
-
-    $output .= '</div></div>';
-
-    return $output;
+    return $templateData;
 }
 
 function getParentPhotoUploader($connection2, $guid)
