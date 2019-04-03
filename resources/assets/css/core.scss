@@ -22,6 +22,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
  @tailwind utilities;
 
+.shadow-container {
+    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+}
+
 .bg-transparent-100 {
     background-color: rgba(255,255,255,0.9);
 }
@@ -34,11 +38,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-color: rgba(50,50,50,0.90);
 }
 
-.shadow-container {
-    box-shadow: 0px 0px 20px rgba(0,0,0,0.4);
+.text-xxs {
+    font-size: 0.65rem;
 }
 
-
-.list-reset {
-    list-style-type: none;
-}

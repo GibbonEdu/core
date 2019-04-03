@@ -20,12 +20,12 @@ collapsed drop-down list in 'mini' view-mode.
     <button data-toggle="#navigation" class="block w-full sm:w-48 lg:hidden bg-white border border-grey-600 border-solid p-2 text-base mt-2 sm:absolute sm:top-0 sm:right-0">{{ __('Menu') }}</button>
 
 
-    <ul id="navigation" class="list-reset m-0 -mb-6 py-6 hidden lg:block">
+    <ul id="navigation" class="list-none m-0 -mb-6 py-6 hidden lg:block">
     {% for categoryName, items in menuModule %}
         <li class="p-0">
             <h5 class="m-0 mb-1 text-xs pb-0 ">{{ __(categoryName, (items|first).textDomain) }}</h5>
 
-            <ul class="list-reset m-0 mb-6">
+            <ul class="list-none m-0 mb-6">
             {% for item in items %}
                 <li class="p-0">
                     <a href="{{ item.url }}" {{ item.active ? 'class="active"' : '' }}>
