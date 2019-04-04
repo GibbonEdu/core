@@ -417,7 +417,7 @@ table.smallIntBorder td:last-child {
 	text-align: left;
 }
 tr.break td {
-	background: none!important;
+	background: #eaebec !important;
 }
 tr.break h3, tr.break h4 {
 	margin-top: 10px!important;

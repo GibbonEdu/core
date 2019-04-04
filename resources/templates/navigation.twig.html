@@ -14,7 +14,7 @@ collapsed drop-down list in 'mini' view-mode.
 <div class="">
 
     {% if menuModule %}
-    <button data-toggle="#navigation" class="w-full flex justify-center items-center sm:w-48 bg-white border border-grey-600 border-solid p-2 mt-12 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-50 {{ sidebar ? 'lg:hidden' }}">
+    <button data-toggle="#navigation" class="w-full flex justify-center items-center sm:w-48 bg-white border border-grey-600 border-solid p-2 mt-16 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-50 {{ sidebar ? 'lg:hidden' }}">
         <span class="text-gray-600 text-sm sm:text-xs font-bold uppercase ">{{ __('Module Menu') }}</span>
         <svg class="fill-current h-4 w-4 sm:h-3 sm:w-3 text-gray-600 ml-2" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>{{ __('Module Menu') }}</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
     </button>
@@ -29,7 +29,7 @@ collapsed drop-down list in 'mini' view-mode.
     {% endif %}
     
     {% if menuModule %}
-    <nav id="navigation" class="w-full hidden absolute top-0 z-50 mt-20 sm:mt-12 -ml-6 px-6  
+    <nav id="navigation" class="w-full hidden absolute top-0 z-50 mt-24 sm:mt-12 -ml-6 px-6  
         {{ sidebar ? 'lg:block lg:static lg:p-0 lg:my-6 lg:mx-0' }}">
 
         <ul class="w-full bg-white border list-none columns-1 sm:columns-2 md:columns-3 m-0 pt-6 px-6 shadow-lg 
