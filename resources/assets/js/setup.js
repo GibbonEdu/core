@@ -51,7 +51,7 @@ $(document).ready(function(){
         selector: "div#editorcontainer textarea",
         width: '100%',
         menubar : false,
-        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
+        toolbar: 'bold, italic, underline,forecolor,backcolor,|,alignleft, aligncenter, alignright, alignjustify, |, formatselect, |, fontselect, fontsizeselect, |, table, |, bullist, numlist,outdent, indent, |, link, unlink, image, media, hr, charmap, subscript, superscript, |, cut, copy, paste, undo, redo, fullscreen',
         plugins: 'table, template, paste, visualchars, link, template, textcolor, hr, charmap, fullscreen',
         statusbar: false,
         valid_elements: Gibbon.config.tinymce.valid_elements,

@@ -136,9 +136,9 @@ trait BasicAttributesTrait
         return ($decode)? json_decode($data) : $data;
     }
 
-    public function getType()
+    public function isInstanceOf($instance)
     {
-        return get_class($this);
+        return $this instanceof $instance;
     }
 
     /**
