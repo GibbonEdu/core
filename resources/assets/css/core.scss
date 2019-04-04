@@ -38,7 +38,17 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     background-color: rgba(50,50,50,0.90);
 }
 
+
+
 @responsive {
+    .w-content {
+        width: 72%;
+    }
+
+    .w-sidebar {
+        width: 28%;
+    }
+
     .text-xxs {
         font-size: 0.65rem;
     }
