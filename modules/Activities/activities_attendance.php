@@ -206,12 +206,12 @@ if (isActionAccessible($guid, $connection2, '/modules/Activities/activities_atte
         // Headings as a separate table (for double-scroll)
         $table = $row->addTable()->setClass('mini fullWidth noMargin noBorder');
         $header = $table->addHeaderRow();
-            $header->addContent(__('Student'))->addClass('attendanceRowHeader');
+            $header->addContent(__('Student'))->addClass('attendanceRowHeader py-8');
             $header->addContent(__('Attendance'));
             $header->addContent(sprintf(__('Sessions Recorded: %s of %s'), count($sessionAttendanceData), count($activitySessions)))
                 ->addClass('emphasis subdued right');
 
-        $row->addContent("<div class='doublescroll-top'><div class='doublescroll-top-tablewidth'></div></div>");
+        $row->addContent("<div class='doublescroll-top -mt-4'><div class='doublescroll-top-tablewidth'></div></div>");
 
         // Wrap the attendance table in a double-scroll container
         $table = $row->addColumn()->addClass('doublescroll-container')

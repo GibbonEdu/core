@@ -10,50 +10,54 @@ current user. Outputs the sidebar in 'full' view-mode and as a
 collapsed drop-down list in 'mini' view-mode.
 -->#}
 
-<div class='linkTop'>
 
-{% if sidebar %}
-
-    <ul class='moduleMenu'>
-    {% for categoryName, items in menuModule %}
-        <li>
-            <h4>{{ __(categoryName, (items|first).textDomain) }}</h4>
-            <ul>
-            {% for item in items %}
-                <li>
-                    <a href="{{ item.url }}" class="{{ item.active ? 'active' : '' }}">
-                        {{ __(item.name, item.textDomain) }}
-                    </a>
-                </li>
-            {% endfor %}
-            </ul>
-        </li>
-    {% endfor %}
-    </ul>
-
-{% else %}
+<div class="">
 
     {% if menuModule %}
-        <select style='width: 200px' onchange="window.location.href=this.value">
-            {% for categoryName, items in menuModule %}
-            <optgroup label="--{{ __(categoryName, (items|first).textDomain) }}--" >
-
-                {% for item in items %}
-                <option value="{{ item.url }}" {{ item.active ? 'selected' : '' }}>
-                    {{ __(item.name, item.textDomain) }}
-                </option>
-                {% endfor %}
-                
-            </optgroup>
-            {% endfor %}
-        </select>
-        
-        <div style='float: right; padding-top: 10px; margin-left: 10px;'>
-            {{ __('Module Menu') }}
-        </div>
+    <button data-toggle="#navigation" class="w-full flex justify-center items-center sm:w-48 bg-white border border-grey-600 border-solid p-2 mt-16 sm:mt-4 sm:absolute sm:top-0 sm:right-0 sm:mr-6 z-50 {{ sidebar ? 'lg:hidden' }}">
+        <span class="text-gray-600 text-sm sm:text-xs font-bold uppercase ">{{ __('Module Menu') }}</span>
+        <svg class="fill-current h-4 w-4 sm:h-3 sm:w-3 text-gray-600 ml-2" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>{{ __('Module Menu') }}</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+    </button>
     {% endif %}
 
-{% endif %}
+    
 
+    {% if sidebar and sidebarContents %}
+    <div class="mx-auto max-w-md">
+        {{ sidebarContents|raw }}
+    </div>
+    {% endif %}
+    
+    {% if menuModule %}
+    <nav id="navigation" class="w-full hidden absolute top-0 z-50 mt-24 sm:mt-12 -ml-6 px-6  
+        {{ sidebar ? 'lg:block lg:static lg:p-0 lg:my-6 lg:mx-0' }}">
+
+        <ul class="w-full bg-white border list-none columns-1 sm:columns-2 md:columns-3 m-0 pt-6 px-6 shadow-lg 
+            {{ sidebar ? 'lg:bg-transparent lg:border-0 lg:columns-1 lg:shadow-none lg:p-0' }}">
+
+            {% for categoryName, items in menuModule %}
+                <li class=" w-full inline-block p-0 ">
+                    <h5 class="m-0 mb-1 text-xs pb-0 ">{{ __(categoryName, (items|first).textDomain) }}</h5>
+
+                    <ul class="list-none m-0 mb-6">
+                    {% for item in items %}
+                        <li class="p-0 leading-normal lg:leading-tight">
+                            <a href="{{ item.url }}" {{ item.active ? 'class="active"' : '' }}>
+                                {{ __(item.name, item.textDomain) }}
+                            </a>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+    
+    {% for code in page.extraSidebar if sidebar and sidebarPosition == 'bottom' %}
+    <div class="sm:pt-12 lg:pt-0">
+        {{ code|raw }}
+    </div>
+    {% endfor %}
 </div>
 

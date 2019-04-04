@@ -223,12 +223,12 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 {
     $return = false;
 
-    $return .= "<div style='width: 250px; float: right'>";
+    $return .= '<div class="flex flex-row-reverse mb-1">';
 
     if (isset($_SESSION[$guid]['username']) != false) {
         //MESSAGE WALL!
         if (isActionAccessible($guid, $connection2, '/modules/Messenger/messageWall_view.php')) {
-            $return .= "<div id='messageWall' style='display: inline; float: right'>";
+            $return .= "<div id='messageWall'>";
 
             require_once './modules/Messenger/moduleFunctions.php';
 
@@ -282,12 +282,12 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
 
             $URL = $_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Messenger/messageWall_view.php';
             if (isset($_SESSION[$guid]['messageWallCount']) == false) {
-                $return .= " . <a class='inactive' title='".__('Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                $return .= "<a class='inactive inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
             } else {
                 if ($_SESSION[$guid]['messageWallCount'] < 1) {
-                    $return .= " . <a class='inactive' title='".__('Message Wall')."' href='#'>0 x <img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= "<a class='inactive inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><img class='minorLinkIcon' style='margin-left: 4px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                 } else {
-                    $return .= " . <a title='".__('Message Wall')."' href='$URL'>".$_SESSION[$guid]['messageWallCount']." x <img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
+                    $return .= "<a class='inline-block relative mr-4' title='".__('Message Wall')."' href='$URL'><span class='badge -mr-2 right-0'>".$_SESSION[$guid]['messageWallCount']."</span><img class='minorLinkIcon' style='margin-left: 4px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/messageWall.png'></a>";
                     if ($_SESSION[$guid]['pageLoads'] == 0 and ($_SESSION[$guid]['messengerLastBubble'] == null or $_SESSION[$guid]['messengerLastBubble'] < date('Y-m-d'))) {
                         $messageBubbleBGColor = getSettingByScope($connection2, 'Messenger', 'messageBubbleBGColor');
                         $bubbleBG = '';
@@ -386,7 +386,7 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
             });
         </script>';
 
-        $return .= "<div id='notifications' style='display: inline; float: right'>";
+        $return .= "<div id='notifications'>";
             //CHECK FOR SYSTEM ALARM
             if (isset($_SESSION[$guid]['gibbonRoleIDCurrentCategory'])) {
                 if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Staff') {
@@ -407,9 +407,9 @@ function getNotificationTray($connection2, $guid, $cacheLoad)
                 }
             }
         if ($resultNotifications->rowCount() > 0) {
-            $return .= "<a title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>".$resultNotifications->rowCount().' x '."<img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a class='inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><span class='badge -mr-2 right-0'>".$resultNotifications->rowCount()."</span><img class='minorLinkIcon' style='margin-left: 2px; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         } else {
-            $return .= "<a class='inactive' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'>0 x <img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
+            $return .= "<a class='inactive inline-block relative mr-4' title='".__('Notifications')."' href='".$_SESSION[$guid]['absoluteURL']."/index.php?q=notifications.php'><img class='minorLinkIcon' style='margin-left: 2px; opacity: 0.2; vertical-align: -75%' src='".$_SESSION[$guid]['absoluteURL'].'/themes/'.$_SESSION[$guid]['gibbonThemeName']."/img/notifications.png'></a>";
         }
         $return .= '</div>';
     }
@@ -426,7 +426,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
     if (isset($_SESSION[$guid]['i18n']['default']['code']) && isset($_SESSION[$guid]['i18n']['code'])) {
         if ($_SESSION[$guid]['i18n']['code'] != $_SESSION[$guid]['i18n']['default']['code']) {
             $systemDefaultShortName = trim(strstr($_SESSION[$guid]['i18n']['default']['name'], '-', true));
-            $languageLink = "<a href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
+            $languageLink = "<a class='link-white' href='".$_SESSION[$guid]['absoluteURL']."?i18n=".$_SESSION[$guid]['i18n']['default']['code']."'>".$systemDefaultShortName.'</a>';
         }
     }
 
@@ -435,7 +435,7 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
 
         if ($_SESSION[$guid]['webLink'] != '') {
             $return .= !empty($languageLink) ? ' . ' : '';
-            $return .= __('Return to')." <a style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
+            $return .= __('Return to')." <a class='link-white' style='margin-right: 12px' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
     } else {
         $name = $_SESSION[$guid]['preferredName'].' '.$_SESSION[$guid]['surname'];
@@ -443,20 +443,20 @@ function getMinorLinks($connection2, $guid, $cacheLoad)
             if ($_SESSION[$guid]['gibbonRoleIDCurrentCategory'] == 'Student') {
                 $highestAction = getHighestGroupedAction($guid, '/modules/Students/student_view_details.php', $connection2);
                 if ($highestAction == 'View Student Profile_brief') {
-                    $name = "<a href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
+                    $name = "<a class='link-white' href='".$_SESSION[$guid]['absoluteURL'].'/index.php?q=/modules/Students/student_view_details.php&gibbonPersonID='.$_SESSION[$guid]['gibbonPersonID']."'>".$name.'</a>';
                 }
             }
         }
         $return .= $name.' . ';
-        $return .= "<a href='./logout.php'>".__('Logout')."</a> . <a href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
+        $return .= "<a class='link-white' href='./logout.php'>".__('Logout')."</a> . <a class='link-white' href='./index.php?q=preferences.php'>".__('Preferences').'</a>';
         if ($_SESSION[$guid]['emailLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a>';
+            $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['emailLink']."'>".__('Email').'</a>';
         }
         if ($_SESSION[$guid]['webLink'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
+            $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['webLink']."'>".$_SESSION[$guid]['organisationNameShort'].' '.__('Website').'</a>';
         }
         if ($_SESSION[$guid]['website'] != '') {
-            $return .= " . <a target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a>';
+            $return .= " . <a class='link-white' target='_blank' href='".$_SESSION[$guid]['website']."'>".__('My Website').'</a>';
         }
 
         $return .= !empty($languageLink) ? ' . '.$languageLink : '';
@@ -2111,46 +2111,15 @@ function getPasswordPolicy($guid, $connection2)
 
 function getFastFinder($connection2, $guid)
 {
-    $output = false;
-
-    $output .= "<div id='fastFinder'>";
-    $studentIsAccessible = isActionAccessible($guid, $connection2, '/modules/students/student_view.php');
-    $staffIsAccessible = isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php');
-    $classIsAccessible = false;
-    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
-    if (isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') and $highestActionClass != 'Lesson Planner_viewMyChildrensClasses') {
-        $classIsAccessible = true;
-    }
-
-    $output .= '<style>';
-    $output .= 'ul.token-input-list-facebook { width: 300px; float: right; height: 25px!important; margin-right: -5px; background: #fff; }';
-    $output .= 'div.token-input-dropdown-facebook { width: 298px !important; z-index: 99999999 }';
-    $output .= 'table.fastFinder { margin: 0px 0px; opacity: 0.8; }';
-    $output .= 'table.fastFinder td { border-top: none }';
-    $output .= '.fastFinderTotal { font-size: 9.6px; font-weight: normal; font-style: italic; line-height: 80%; color: #888; }';
-    $output .= '.fastFinderRow td { border-bottom: 0; }';
-    $output .= '#header-finder h2 { padding: 0;}';
-    $output .= '</style>';
-    $output .= "<div style='padding-bottom: 7px; height: 40px; margin-top: 0px'>";
-
     $form = Form::create('fastFinder', $_SESSION[$guid]['absoluteURL'].'/indexFindRedirect.php', 'get');
-    $form->setClass('smallIntBorder fastFinder fullWidth');
+    $form->setClass('blank fullWidth');
 
     $form->addHiddenValue('address', $_SESSION[$guid]['address']);
 
-    $scopes = array(__('Actions'));
-    if ($classIsAccessible) $scopes[] = __('Classes');
-    if ($studentIsAccessible) $scopes[] = __('Students');
-    if ($staffIsAccessible) $scopes[] = __('Staff');
-
-    $row = $form->addRow()->setClass('right');
-        $row->addContent(__('Fast Finder').': ')
-            ->append(implode(', ', $scopes))
-            ->wrap('<h2>', '</h2>');
-
-    $row = $form->addRow()->addClass('fastFinderRow');
+    $row = $form->addRow();
         $row->addFinder('fastFinderSearch')
             ->fromAjax($_SESSION[$guid]['absoluteURL'].'/index_fastFinder_ajax.php')
+            ->setClass('w-full')
             ->setParameter('hintText', __('Start typing a name...'))
             ->setParameter('noResultsText', __('No results'))
             ->setParameter('searchingText', __('Searching...'))
@@ -2158,27 +2127,17 @@ function getFastFinder($connection2, $guid)
             ->addValidation('Validate.Presence', 'failureMessage: " "');
         $row->addSubmit(__('Go'));
 
-    if (getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2) == 'Staff') {
-        try {
-            $data = array('gibbonSchoolYearID' => $_SESSION[$guid]['gibbonSchoolYearID'], 'today' => date('Y-m-d') );
-            $sql = "SELECT COUNT(gibbonPerson.gibbonPersonID) FROM gibbonPerson, gibbonStudentEnrolment, gibbonRollGroup WHERE gibbonPerson.gibbonPersonID=gibbonStudentEnrolment.gibbonPersonID AND gibbonStudentEnrolment.gibbonRollGroupID=gibbonRollGroup.gibbonRollGroupID AND status='FULL' AND (dateStart IS NULL OR dateStart<=:today) AND (dateEnd IS NULL  OR dateEnd>=:today) AND gibbonRollGroup.gibbonSchoolYearID=:gibbonSchoolYearID";
-            $resultStudentCount = $connection2->prepare($sql);
-            $resultStudentCount->execute($data);
-        } catch (PDOException $e) {}
+    $highestActionClass = getHighestGroupedAction($guid, '/modules/Planner/planner.php', $connection2);
 
-        if ($resultStudentCount->rowCount() > 0) {
-            $form->addRow()->addContent(__('Total Student Enrolment:').' ')
-                ->append($resultStudentCount->fetchColumn(0))
-                ->addClass('right')
-                ->wrap('<span class="fastFinderTotal">', '</span>');
-            }
-        }
+    $templateData = [
+        'roleCategory'        => getRoleCategory($_SESSION[$guid]['gibbonRoleIDCurrent'], $connection2),
+        'studentIsAccessible' => isActionAccessible($guid, $connection2, '/modules/students/student_view.php'),
+        'staffIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Staff/staff_view.php'),
+        'classIsAccessible'   => isActionAccessible($guid, $connection2, '/modules/Planner/planner.php') && $highestActionClass != 'Lesson Planner_viewMyChildrensClasses',
+        'form'                => $form->getOutput(),
+    ];
 
-    $output .= $form->getOutput();
-
-    $output .= '</div></div>';
-
-    return $output;
+    return $templateData;
 }
 
 function getParentPhotoUploader($connection2, $guid)

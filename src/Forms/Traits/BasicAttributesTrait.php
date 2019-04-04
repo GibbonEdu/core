@@ -136,6 +136,11 @@ trait BasicAttributesTrait
         return ($decode)? json_decode($data) : $data;
     }
 
+    public function isInstanceOf($instance)
+    {
+        return $this instanceof $instance;
+    }
+
     /**
      * Add a $key => $value pair to the attributes collection.
      * @param  string  $key

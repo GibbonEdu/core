@@ -18,9 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 */
 
 /* Odd use-case for Activity Attendance double-scroll container */
-table.blank, 
-table.blank > tbody > tr,
-table.blank > tbody > tr > td {
+#content table.blank, 
+#content table.blank > tbody > tr,
+#content table.blank > tbody > tr > td {
     display: block !important;
 }
 
