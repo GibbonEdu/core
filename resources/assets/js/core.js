@@ -22,12 +22,13 @@ jQuery(function($){
      * Generic toggle switch
      */
     $(document).on('click', "[data-toggle]", function () {
-        if ($(this).hasClass('active')) {
-            $($(this).data('toggle')).addClass('hidden');
-            $(this).removeClass('active');
-        } else {
-            $($(this).data('toggle')).removeClass('hidden');
+        var toggle = $(this).data('toggle');
+        if ($(toggle).hasClass('hidden')) {
+            $(toggle).removeClass('hidden');
             $(this).addClass('active');
+        } else {
+            $(toggle).addClass('hidden');
+            $(this).removeClass('active');
         }
     });
 

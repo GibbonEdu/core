@@ -25,8 +25,10 @@ For info about editing, see: https://twig.symfony.com/doc/2.x/
             
             {% if element.isInstanceOf('Gibbon\\Forms\\Layout\\Label') %}
                 {% set class = 'flex flex-col flex-grow justify-center -mb-1 sm:mb-0' %}
-            {% else %}
+            {% elseif "standardForm" in form.getClass or "noIntBorder" in form.getClass %}
                 {% set class = loop.last and loop.length > 1 ? 'w-full max-w-full sm:max-w-xs justify-center' : 'flex-grow justify-center' %}  
+            {% else %}
+                {% set class = 'flex-grow justify-center' %}  
             {% endif %}
 
             <td class="{{ element.getClass|replace({'standardWidth': ''}) }} {{ class }} px-2 border-b-0 sm:border-b border-t-0" {{ colspan ? 'colspan="%s"'|format(colspan)|raw }}>
